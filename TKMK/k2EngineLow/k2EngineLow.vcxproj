@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Preview|Win32">
+      <Configuration>Preview</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Preview|x64">
+      <Configuration>Preview</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{23A5590A-18F2-4B56-B270-079C4F787FE8}</ProjectGuid>
+    <RootNamespace>k2EngineLow</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)\MiniEngine;$(ProjectDir);$(ProjectDir)\ExEngine;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)/ExEngine/bulletPhysics/src/;$(ProjectDir)/ExEngine/;$(ProjectDir)/;$(ProjectDir)/MiniEngine/;$(ProjectDir)/ExEngine/effekseer/install_msvc2019/include/Effekseer;$(ProjectDir)/ExEngine/effekseer/install_msvc2019/include/EffekseerRendererDX12;$(ProjectDir)\ExEngine\Photon;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\exlib\$(Platform)\$(Configuration)\;$(ProjectDir)\ExEngine\DirectXTK\Bin\Desktop_2019_Win10\$(Platform)\$(Configuration)\;$(ProjectDir)\ExEngine\effekseer/install_msvc2019/lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\Photon-cpp\lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\LoadBalancing-cpp\lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\Common-cpp\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>..\exlib\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)\MiniEngine;$(ProjectDir);$(ProjectDir)\ExEngine;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)\MiniEngine;$(ProjectDir);$(ProjectDir)\ExEngine;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)/ExEngine/bulletPhysics/src/;$(ProjectDir)/ExEngine/;$(ProjectDir)/;$(ProjectDir)/MiniEngine/;$(ProjectDir)/ExEngine/effekseer/install_msvc2019/include/Effekseer;$(ProjectDir)/ExEngine/effekseer/install_msvc2019/include/EffekseerRendererDX12;$(ProjectDir)\ExEngine\Photon;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\exlib\$(Platform)\$(Configuration)\;$(ProjectDir)\MiniEngine\DirectXTK\Bin\Desktop_2019_Win10\$(Platform)\$(Configuration)\;$(ProjectDir)\ExEngine\effekseer/install_msvc2019/lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\Common-cpp\lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\Photon-cpp\lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\LoadBalancing-cpp\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>..\exlib\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)/ExEngine/bulletPhysics/src/;$(ProjectDir)/ExEngine/;$(ProjectDir)/;$(ProjectDir)/MiniEngine/;$(ProjectDir)/ExEngine/effekseer/install_msvc2019/include/Effekseer;$(ProjectDir)/ExEngine/effekseer/install_msvc2019/include/EffekseerRendererDX12;$(ProjectDir)\ExEngine\Photon;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\exlib\$(Platform)\$(Configuration)\;$(ProjectDir)\MiniEngine\DirectXTK\Bin\Desktop_2019_Win10\$(Platform)\$(Configuration)\;$(ProjectDir)\ExEngine\effekseer/install_msvc2019/lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\Common-cpp\lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\Photon-cpp\lib;$(ProjectDir)..\k2EngineLow\ExEngine\Photon\LoadBalancing-cpp\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>..\exlib\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>k2EngineLowPreCompile.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);K2_DEBUG</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>k2EngineLowPreCompile.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <LanguageStandard>Default</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DXGI.lib;dxguid.lib;DirectXTK12.lib;d3d12.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;BulletCollision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;LinearMath_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>dxguid.lib;d3d12.lib;xaudio2.lib;DirectXTK12.lib;BulletCollision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;LinearMath_$(Configuration).lib;winmm.lib;Effekseerd.lib;EffekseerRendererDX12d.lib;LLGId.lib;Photon-cpp_vc16_debug_windows_mt_x64.lib;LoadBalancing-cpp_vc16_debug_windows_mt_x64.lib;Common-cpp_vc16_debug_windows_mt_x64.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>k2EngineLowPreCompile.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>k2EngineLowPreCompile.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>k2EngineLowPreCompile.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <LanguageStandard>Default</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DXGI.lib;dxguid.lib;DirectXTK12.lib;d3d12.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;BulletCollision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;LinearMath_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>dxguid.lib;d3d12.lib;DirectXTK12.lib;BulletCollision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;LinearMath_$(Configuration).lib;xaudio2.lib;winmm.lib;Effekseer.lib;EffekseerRendererDX12.lib;LLGI.lib;Photon-cpp_vc16_release_windows_mt_x64.lib;LoadBalancing-cpp_vc16_release_windows_mt_x64.lib;Common-cpp_vc16_release_windows_mt_x64.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);K2_DEBUG</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>k2EngineLowPreCompile.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <LanguageStandard>Default</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>DXGI.lib;dxguid.lib;DirectXTK12.lib;d3d12.lib;d3dcompiler.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;BulletCollision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;LinearMath_$(Configuration).lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>dxguid.lib;d3d12.lib;DirectXTK12.lib;BulletCollision_$(Configuration).lib;BulletDynamics_$(Configuration).lib;LinearMath_$(Configuration).lib;xaudio2.lib;winmm.lib;Effekseer.lib;EffekseerRendererDX12.lib;LLGI.lib;Photon-cpp_vc16_release_windows_mt_x64.lib;LoadBalancing-cpp_vc16_release_windows_mt_x64.lib;Common-cpp_vc16_release_windows_mt_x64.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AI\PathFinding\Cell.cpp" />
+    <ClCompile Include="AI\PathFinding\NaviMesh.cpp" />
+    <ClCompile Include="AI\PathFinding\Path.cpp" />
+    <ClCompile Include="AI\PathFinding\PathFinding.cpp" />
+    <ClCompile Include="gameObject\Gameobjectmanager.cpp" />
+    <ClCompile Include="gameObject\IGameObject.cpp" />
+    <ClCompile Include="geometry\AABB.cpp" />
+    <ClCompile Include="geometry\BSP.cpp" />
+    <ClCompile Include="graphics\Animation.cpp" />
+    <ClCompile Include="graphics\AnimationClip.cpp" />
+    <ClCompile Include="graphics\AnimationPlayController.cpp" />
+    <ClCompile Include="graphics\Camera.cpp" />
+    <ClCompile Include="graphics\ConstantBuffer.cpp" />
+    <ClCompile Include="graphics\DescriptorHeap.cpp" />
+    <ClCompile Include="graphics\effect\Effect.cpp" />
+    <ClCompile Include="graphics\effect\EffectEmitter.cpp" />
+    <ClCompile Include="graphics\effect\EffectEngine.cpp" />
+    <ClCompile Include="graphics\font\Font.cpp" />
+    <ClCompile Include="graphics\font\FontEngine.cpp" />
+    <ClCompile Include="graphics\FrameBuffer.cpp" />
+    <ClCompile Include="graphics\GaussianBlur.cpp" />
+    <ClCompile Include="graphics\GPUBuffer.cpp" />
+    <ClCompile Include="graphics\GraphicsEngine.cpp" />
+    <ClCompile Include="graphics\IndexBuffer.cpp" />
+    <ClCompile Include="graphics\Material.cpp" />
+    <ClCompile Include="graphics\MeshParts.cpp" />
+    <ClCompile Include="graphics\Model.cpp" />
+    <ClCompile Include="graphics\NullTextureMaps.cpp" />
+    <ClCompile Include="graphics\PipelineState.cpp" />
+    <ClCompile Include="graphics\raytracing\BLASBuffer.cpp" />
+    <ClCompile Include="graphics\raytracing\RaytracingDescriptorHeaps.cpp" />
+    <ClCompile Include="graphics\raytracing\RaytracingEngine.cpp" />
+    <ClCompile Include="graphics\raytracing\RaytracingInstance.cpp" />
+    <ClCompile Include="graphics\raytracing\RaytracingPSO.cpp" />
+    <ClCompile Include="graphics\raytracing\RaytracingShaderTable.cpp" />
+    <ClCompile Include="graphics\raytracing\RaytracingWorld.cpp" />
+    <ClCompile Include="graphics\raytracing\TLASBuffer.cpp" />
+    <ClCompile Include="graphics\RenderTarget.cpp" />
+    <ClCompile Include="graphics\RootSignature.cpp" />
+    <ClCompile Include="graphics\RWStructuredBuffer.cpp" />
+    <ClCompile Include="graphics\Shader.cpp" />
+    <ClCompile Include="graphics\Skeleton.cpp" />
+    <ClCompile Include="graphics\Sprite.cpp" />
+    <ClCompile Include="graphics\StructuredBuffer.cpp" />
+    <ClCompile Include="graphics\Texture.cpp" />
+    <ClCompile Include="graphics\VertexBuffer.cpp" />
+    <ClCompile Include="HID\GamePad.cpp" />
+    <ClCompile Include="k2EngineLow.cpp" />
+    <ClCompile Include="k2EngineLowPreCompile.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="level2D\CaslFile.cpp" />
+    <ClCompile Include="level2D\Level2D.cpp" />
+    <ClCompile Include="level2D\MapChip2D.cpp" />
+    <ClCompile Include="level3D\Level.cpp" />
+    <ClCompile Include="level3D\MapChip.cpp" />
+    <ClCompile Include="level3D\TklFile.cpp" />
+    <ClCompile Include="math\Matrix.cpp" />
+    <ClCompile Include="math\Vector.cpp" />
+    <ClCompile Include="online\SyncOnlineTwoPlayerMatchEngine.cpp" />
+    <ClCompile Include="physics\BoxCollider.cpp" />
+    <ClCompile Include="physics\CapsuleCollider.cpp" />
+    <ClCompile Include="physics\CharacterController.cpp" />
+    <ClCompile Include="physics\DebugWireframe.cpp" />
+    <ClCompile Include="physics\PhysicsGhostObject.cpp" />
+    <ClCompile Include="physics\MeshCollider.cpp" />
+    <ClCompile Include="physics\Physics.cpp" />
+    <ClCompile Include="physics\PhysicsStaticObject.cpp" />
+    <ClCompile Include="physics\RigidBody.cpp" />
+    <ClCompile Include="physics\SphereCollider.cpp" />
+    <ClCompile Include="sound\SoundEngine.cpp" />
+    <ClCompile Include="sound\SoundSource.cpp" />
+    <ClCompile Include="sound\WaveFile.cpp" />
+    <ClCompile Include="sound\WaveFileBank.cpp" />
+    <ClCompile Include="tkFile\TkaFile.cpp" />
+    <ClCompile Include="tkFile\TkmFile.cpp" />
+    <ClCompile Include="tkFile\TknFile.cpp" />
+    <ClCompile Include="tkFile\TksFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AI\PathFinding\Cell.h" />
+    <ClInclude Include="AI\PathFinding\NaviMesh.h" />
+    <ClInclude Include="AI\PathFinding\Path.h" />
+    <ClInclude Include="AI\PathFinding\PathFinding.h" />
+    <ClInclude Include="dbg\MyAssert.h" />
+    <ClInclude Include="dbg\MyLog.h" />
+    <ClInclude Include="gameObject\GameObjectManager.h" />
+    <ClInclude Include="gameObject\IGameobject.h" />
+    <ClInclude Include="geometry\AABB.h" />
+    <ClInclude Include="geometry\BSP.h" />
+    <ClInclude Include="graphics\Animation.h" />
+    <ClInclude Include="graphics\AnimationClip.h" />
+    <ClInclude Include="graphics\AnimationPlayController.h" />
+    <ClInclude Include="graphics\Camera.h" />
+    <ClInclude Include="graphics\ConstantBuffer.h" />
+    <ClInclude Include="graphics\d3dx12.h" />
+    <ClInclude Include="graphics\DescriptorHeap.h" />
+    <ClInclude Include="graphics\DescriptorHeap_inline.h" />
+    <ClInclude Include="graphics\effect\Effect.h" />
+    <ClInclude Include="graphics\effect\EffectEmitter.h" />
+    <ClInclude Include="graphics\effect\EffectEngine.h" />
+    <ClInclude Include="graphics\font\Font.h" />
+    <ClInclude Include="graphics\font\FontEngine.h" />
+    <ClInclude Include="graphics\FrameBuffer.h" />
+    <ClInclude Include="graphics\GaussianBlur.h" />
+    <ClInclude Include="graphics\GPUBuffer.h" />
+    <ClInclude Include="graphics\GraphicsEngine.h" />
+    <ClInclude Include="graphics\IndexBuffer.h" />
+    <ClInclude Include="graphics\IShaderResource.h" />
+    <ClInclude Include="graphics\IUnorderAccessResource.h" />
+    <ClInclude Include="graphics\Material.h" />
+    <ClInclude Include="graphics\MeshParts.h" />
+    <ClInclude Include="graphics\Model.h" />
+    <ClInclude Include="graphics\NullTextureMaps.h" />
+    <ClInclude Include="graphics\PipelineState.h" />
+    <ClInclude Include="graphics\raytracing\BLASBuffer.h" />
+    <ClInclude Include="graphics\raytracing\Raytracing.h" />
+    <ClInclude Include="graphics\raytracing\RaytracingDescriptorHeaps.h" />
+    <ClInclude Include="graphics\raytracing\RaytracingEngine.h" />
+    <ClInclude Include="graphics\raytracing\RaytracingInstance.h" />
+    <ClInclude Include="graphics\raytracing\RaytracingPSO.h" />
+    <ClInclude Include="graphics\raytracing\RaytracingShaderTable.h" />
+    <ClInclude Include="graphics\raytracing\RaytracingWorld.h" />
+    <ClInclude Include="graphics\raytracing\TLASBuffer.h" />
+    <ClInclude Include="graphics\RenderContext.h" />
+    <ClInclude Include="graphics\RenderContext_inline.h" />
+    <ClInclude Include="graphics\RenderTarget.h" />
+    <ClInclude Include="graphics\RootSignature.h" />
+    <ClInclude Include="graphics\RWStructuredBuffer.h" />
+    <ClInclude Include="graphics\Shader.h" />
+    <ClInclude Include="graphics\Skeleton.h" />
+    <ClInclude Include="graphics\Sprite.h" />
+    <ClInclude Include="graphics\StructuredBuffer.h" />
+    <ClInclude Include="graphics\Texture.h" />
+    <ClInclude Include="graphics\VertexBuffer.h" />
+    <ClInclude Include="HID\GamePad.h" />
+    <ClInclude Include="k2EngineLow.h" />
+    <ClInclude Include="k2EngineLowPreCompile.h" />
+    <ClInclude Include="level2D\CaslFile.h" />
+    <ClInclude Include="level2D\Level2D.h" />
+    <ClInclude Include="level2D\MapChip2D.h" />
+    <ClInclude Include="level3D\Level.h" />
+    <ClInclude Include="level3D\MapChip.h" />
+    <ClInclude Include="level3D\TklFile.h" />
+    <ClInclude Include="math\Math.h" />
+    <ClInclude Include="math\Matrix.h" />
+    <ClInclude Include="math\Vector.h" />
+    <ClInclude Include="online\SyncOnlineTwoPlayerMatchEngine.h" />
+    <ClInclude Include="physics\BoxCollider.h" />
+    <ClInclude Include="physics\CapsuleCollider.h" />
+    <ClInclude Include="physics\CharacterController.h" />
+    <ClInclude Include="physics\CollisionAttr.h" />
+    <ClInclude Include="physics\DebugWireframe.h" />
+    <ClInclude Include="physics\PhysicsGhostObject.h" />
+    <ClInclude Include="physics\ICollider.h" />
+    <ClInclude Include="physics\MeshCollider.h" />
+    <ClInclude Include="physics\Physics.h" />
+    <ClInclude Include="physics\PhysicsStaticObject.h" />
+    <ClInclude Include="physics\RigidBody.h" />
+    <ClInclude Include="physics\SphereCollider.h" />
+    <ClInclude Include="sound\SoundEngine.h" />
+    <ClInclude Include="sound\SoundSource.h" />
+    <ClInclude Include="sound\WaveFile.h" />
+    <ClInclude Include="sound\WaveFileBank.h" />
+    <ClInclude Include="time\FPSLimitter.h" />
+    <ClInclude Include="time\GameTime.h" />
+    <ClInclude Include="time\Stopwatch.h" />
+    <ClInclude Include="tkFile\TkaFile.h" />
+    <ClInclude Include="tkFile\TkmFile.h" />
+    <ClInclude Include="tkFile\TknFile.h" />
+    <ClInclude Include="tkFile\TksFile.h" />
+    <ClInclude Include="util\TResourceBank.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

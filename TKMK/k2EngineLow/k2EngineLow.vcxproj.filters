@@ -1,0 +1,562 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="k2EngineLowPreCompile.cpp" />
+    <ClCompile Include="graphics\Material.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\MeshParts.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Model.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\NullTextureMaps.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\PipelineState.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\RenderTarget.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\RootSignature.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\RWStructuredBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Shader.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Skeleton.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Sprite.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\StructuredBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Texture.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\VertexBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Animation.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\AnimationClip.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\AnimationPlayController.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\Camera.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\ConstantBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\DescriptorHeap.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GaussianBlur.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GPUBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\GraphicsEngine.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\IndexBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\font\FontEngine.cpp">
+      <Filter>graphics\font</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\font\Font.cpp">
+      <Filter>graphics\font</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\effect\Effect.cpp">
+      <Filter>graphics\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\effect\EffectEmitter.cpp">
+      <Filter>graphics\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\effect\EffectEngine.cpp">
+      <Filter>graphics\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\RaytracingPSO.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\RaytracingShaderTable.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\RaytracingWorld.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\TLASBuffer.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\BLASBuffer.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\RaytracingDescriptorHeaps.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\RaytracingEngine.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\raytracing\RaytracingInstance.cpp">
+      <Filter>graphics\raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\Gameobjectmanager.cpp">
+      <Filter>gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\IGameObject.cpp">
+      <Filter>gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HID\GamePad.cpp">
+      <Filter>HID</Filter>
+    </ClCompile>
+    <ClCompile Include="level2D\CaslFile.cpp">
+      <Filter>level2D</Filter>
+    </ClCompile>
+    <ClCompile Include="level2D\Level2D.cpp">
+      <Filter>level2D</Filter>
+    </ClCompile>
+    <ClCompile Include="level2D\MapChip2D.cpp">
+      <Filter>level2D</Filter>
+    </ClCompile>
+    <ClCompile Include="level3D\TklFile.cpp">
+      <Filter>level3D</Filter>
+    </ClCompile>
+    <ClCompile Include="level3D\Level.cpp">
+      <Filter>level3D</Filter>
+    </ClCompile>
+    <ClCompile Include="level3D\MapChip.cpp">
+      <Filter>level3D</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Matrix.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Vector.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\SphereCollider.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\BoxCollider.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\CapsuleCollider.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\CharacterController.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\DebugWireframe.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\MeshCollider.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\Physics.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\PhysicsStaticObject.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\RigidBody.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\SoundEngine.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\SoundSource.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\WaveFileBank.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="tkFile\TksFile.cpp">
+      <Filter>tkFile</Filter>
+    </ClCompile>
+    <ClCompile Include="tkFile\TkaFile.cpp">
+      <Filter>tkFile</Filter>
+    </ClCompile>
+    <ClCompile Include="tkFile\TkmFile.cpp">
+      <Filter>tkFile</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\WaveFile.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\PhysicsGhostObject.cpp">
+      <Filter>physics</Filter>
+    </ClCompile>
+    <ClCompile Include="k2EngineLow.cpp" />
+    <ClCompile Include="online\SyncOnlineTwoPlayerMatchEngine.cpp">
+      <Filter>online</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\AABB.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\BSP.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\PathFinding\PathFinding.cpp">
+      <Filter>AI\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\PathFinding\Path.cpp">
+      <Filter>AI\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\PathFinding\NaviMesh.cpp">
+      <Filter>AI\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="tkFile\TknFile.cpp">
+      <Filter>tkFile</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\PathFinding\Cell.cpp">
+      <Filter>AI\PathFinding</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\FrameBuffer.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="k2EngineLowPreCompile.h" />
+    <ClInclude Include="graphics\IShaderResource.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\IUnorderAccessResource.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Material.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\MeshParts.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Model.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\NullTextureMaps.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\PipelineState.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\RenderContext.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\RenderContext_inline.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\RenderTarget.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\RootSignature.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\RWStructuredBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Shader.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Skeleton.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Sprite.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\StructuredBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Texture.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\VertexBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Animation.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\AnimationClip.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\AnimationPlayController.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\Camera.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\ConstantBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\d3dx12.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\DescriptorHeap.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\DescriptorHeap_inline.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GaussianBlur.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GPUBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\GraphicsEngine.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\IndexBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\font\FontEngine.h">
+      <Filter>graphics\font</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\font\Font.h">
+      <Filter>graphics\font</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\effect\EffectEngine.h">
+      <Filter>graphics\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\effect\Effect.h">
+      <Filter>graphics\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\effect\EffectEmitter.h">
+      <Filter>graphics\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\RaytracingPSO.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\RaytracingShaderTable.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\RaytracingWorld.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\TLASBuffer.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\BLASBuffer.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\Raytracing.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\RaytracingDescriptorHeaps.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\RaytracingEngine.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\raytracing\RaytracingInstance.h">
+      <Filter>graphics\raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="dbg\MyAssert.h">
+      <Filter>dbg</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\IGameobject.h">
+      <Filter>gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\GameObjectManager.h">
+      <Filter>gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="HID\GamePad.h">
+      <Filter>HID</Filter>
+    </ClInclude>
+    <ClInclude Include="level2D\MapChip2D.h">
+      <Filter>level2D</Filter>
+    </ClInclude>
+    <ClInclude Include="level2D\CaslFile.h">
+      <Filter>level2D</Filter>
+    </ClInclude>
+    <ClInclude Include="level2D\Level2D.h">
+      <Filter>level2D</Filter>
+    </ClInclude>
+    <ClInclude Include="level3D\TklFile.h">
+      <Filter>level3D</Filter>
+    </ClInclude>
+    <ClInclude Include="level3D\Level.h">
+      <Filter>level3D</Filter>
+    </ClInclude>
+    <ClInclude Include="level3D\MapChip.h">
+      <Filter>level3D</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Vector.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Math.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Matrix.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\RigidBody.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\SphereCollider.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\BoxCollider.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\CapsuleCollider.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\CharacterController.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\CollisionAttr.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\DebugWireframe.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\ICollider.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\MeshCollider.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\Physics.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\PhysicsStaticObject.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="sound\WaveFileBank.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="sound\SoundEngine.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="sound\SoundSource.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="sound\WaveFile.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="time\GameTime.h">
+      <Filter>time</Filter>
+    </ClInclude>
+    <ClInclude Include="time\Stopwatch.h">
+      <Filter>time</Filter>
+    </ClInclude>
+    <ClInclude Include="tkFile\TksFile.h">
+      <Filter>tkFile</Filter>
+    </ClInclude>
+    <ClInclude Include="tkFile\TkaFile.h">
+      <Filter>tkFile</Filter>
+    </ClInclude>
+    <ClInclude Include="tkFile\TkmFile.h">
+      <Filter>tkFile</Filter>
+    </ClInclude>
+    <ClInclude Include="util\TResourceBank.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\PhysicsGhostObject.h">
+      <Filter>physics</Filter>
+    </ClInclude>
+    <ClInclude Include="k2EngineLow.h" />
+    <ClInclude Include="dbg\MyLog.h">
+      <Filter>dbg</Filter>
+    </ClInclude>
+    <ClInclude Include="online\SyncOnlineTwoPlayerMatchEngine.h">
+      <Filter>online</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\AABB.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\BSP.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="time\FPSLimitter.h">
+      <Filter>time</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\PathFinding\PathFinding.h">
+      <Filter>AI\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\PathFinding\Path.h">
+      <Filter>AI\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\PathFinding\NaviMesh.h">
+      <Filter>AI\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="tkFile\TknFile.h">
+      <Filter>tkFile</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\PathFinding\Cell.h">
+      <Filter>AI\PathFinding</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\FrameBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{ce8fbd31-56a9-41d2-92a6-552529d5e3a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\font">
+      <UniqueIdentifier>{c403987d-5c6a-4beb-b8a0-51573006513d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\effect">
+      <UniqueIdentifier>{9e0f35ab-35a2-4ba5-bc8e-a1dc3c1aa7eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\raytracing">
+      <UniqueIdentifier>{0a40c3fb-299b-4626-b558-3a049fb72c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dbg">
+      <UniqueIdentifier>{79cb2e01-6726-423e-8c6d-8f654d2abb7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gameObject">
+      <UniqueIdentifier>{9d446bbe-2113-4329-bec4-8b2e7dd889c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HID">
+      <UniqueIdentifier>{40fbc6f1-281e-445e-840a-214900cbae58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="level2D">
+      <UniqueIdentifier>{7f0084f2-a2b2-4404-99e9-723b67f2d09f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="level3D">
+      <UniqueIdentifier>{8468c3ec-e994-49b3-9b6a-a58ff7b275bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{57cde7f7-bbdb-44ec-b390-214df5ff4ef3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physics">
+      <UniqueIdentifier>{cfadd14f-05c4-4289-8c2e-75469d98d6fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sound">
+      <UniqueIdentifier>{b4bfd2b2-754c-4112-8c0d-bd8ec2eaf701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="time">
+      <UniqueIdentifier>{973a3ec8-080c-4aa1-9fee-4dca8a8a8036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkFile">
+      <UniqueIdentifier>{76a10421-a719-4ab3-82db-2cd452f086a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{d22bcaef-43e4-45a4-bd3b-412ecb38dfd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="online">
+      <UniqueIdentifier>{077f7c0d-1513-4644-b409-09887e0cfb01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="geometry">
+      <UniqueIdentifier>{8c4c7591-c46f-4829-beb3-2a2988bd47ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{2ab8c656-d044-458a-aa81-8981af12ef41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\PathFinding">
+      <UniqueIdentifier>{72d94fe6-e599-4523-8e54-81df808c96fd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

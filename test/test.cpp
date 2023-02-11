@@ -5,3 +5,8 @@ int main()
 
 	printf("‚¨‚ñ‚Î‚ñ‚É‚á\n");
 }
+
+void SetUp()
+{
+	printf("aa");
+}

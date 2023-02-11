@@ -2,5 +2,6 @@
 int main()
 {
 	printf("hello!!!!!!\n");
-	printf("hellooooooooo\n");
+
+	printf("‚¨‚ñ‚Î‚ñ‚É‚á\n");
 }

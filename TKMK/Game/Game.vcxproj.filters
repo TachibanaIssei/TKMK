@@ -11,11 +11,13 @@
     <ClCompile Include="system\system.cpp">
       <Filter>system</Filter>
     </ClCompile>
+    <ClCompile Include="ModelRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h">
       <Filter>system</Filter>
     </ClInclude>
+    <ClInclude Include="ModelRender.h" />
   </ItemGroup>
 </Project>

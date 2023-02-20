@@ -19,7 +19,7 @@ namespace nsK2EngineLow {
 	struct ModelInitData {
 		const char* m_tkmFilePath = nullptr;							// tkmファイルパス。
 		const char* m_vsEntryPointFunc = "VSMain";						// 頂点シェーダーのエントリーポイント。
-		const char* m_vsSkinEntryPointFunc = "VSMain";					// スキンありマテリアル用の頂点シェーダーのエントリーポイント。
+		const char* m_vsSkinEntryPointFunc = "VSSkinMain";					// スキンありマテリアル用の頂点シェーダーのエントリーポイント。
 		const char* m_psEntryPointFunc = "PSMain";						// ピクセルシェーダーのエントリーポイント。
 		const char* m_fxFilePath = nullptr;								// .fxファイルのファイルパス。
 		void* m_expandConstantBuffer = nullptr;							// ユーザー拡張の定数バッファ。

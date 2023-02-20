@@ -20,9 +20,19 @@ namespace nsK2EngineLow {
 			m_position = position;
 		};
 
+		void SetRotation(Quaternion rotation)
+		{
+			m_rotation = rotation;
+		}
+
+		void SetScale(Vector3 scale)
+		{
+			m_scale = scale;
+		}
+
 		void Update()
 		{
-			m_model.UpdateWorldMatrix(m_position,Quaternion::Identity,Vector3::One);
+			m_model.UpdateWorldMatrix(m_position,m_rotation, m_scale);
 		};
 
 		void Draw(RenderContext& rc)
@@ -31,7 +41,9 @@ namespace nsK2EngineLow {
 		};
 
 	private:
-		Vector3 m_position = Vector3(100.0f,0.0f,0.0f);
+		Vector3 m_position = Vector3(0.0f,0.0f,0.0f);
+		Vector3 m_scale = Vector3::One;
+		Quaternion m_rotation = Quaternion::Identity;
 		Model m_model;
 		ModelInitData m_modelInitData;
 	};

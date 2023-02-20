@@ -11,5 +11,7 @@ public:
 
 private:
 	ModelRender m_modelRender;
+
+	Quaternion m_rotation = Quaternion::Identity;
 };
 

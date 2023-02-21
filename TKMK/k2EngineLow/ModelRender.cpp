@@ -1,7 +1,7 @@
 #include "k2EngineLowPreCompile.h"
 #include "ModelRender.h"
 
-void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, EnModelUpAxis enModelUpAxis, AnimationClip* animationClips, int numAnimationClips)
+void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis)
 {
 	//ModelInitData
 	//tkmファイルパスを設定

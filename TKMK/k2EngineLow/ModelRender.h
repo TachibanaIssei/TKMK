@@ -4,57 +4,80 @@ namespace nsK2EngineLow {
 
 	class ModelRender
 	{
+	//メンバ関数
 	public:
+		/// <summary>
+		/// 通常の初期化
+		/// </summary>
+		/// <param name="tkmFilepath">tkmファイルパス</param>
+		/// <param name="enModelUpAxis">モデルの上方向</param>
+		/// <param name="animationClips">アニメーションクリップ</param>
+		/// <param name="numAnimationClips">アニメーションクリップの数</param>
 		void Init(
 			const char* tkmFilepath,
+			EnModelUpAxis enModelUpAxis,
 			AnimationClip* animationClips,
-			int numAnimationClips,
-			EnModelUpAxis enModelUpAxis
-		)
-		{
-			m_modelInitData.m_tkmFilePath = tkmFilepath;
-			m_modelInitData.m_fxFilePath = "Assets/shader/model.fx";
-			m_modelInitData.m_modelUpAxis = enModelUpAxis;
-			
-			// スケルトンを初期化。
-			InitSkeleton(tkmFilepath);
-			// アニメーションを初期化。
-			InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
-			
-			if (m_animationClips != nullptr)
-			{
-				//スケルトンを指定する
-				m_modelInitData.m_skeleton = &m_skeleton;
-			}
+			int numAnimationClips
+		);
 
-			m_model.Init(m_modelInitData);
-		};
-
+		/// <summary>
+		/// 座標の設定
+		/// </summary>
+		/// <param name="position">Vector3の座標</param>
 		void SetPosition(Vector3 position)
 		{
 			m_position = position;
 		};
 
+		/// <summary>
+		/// 座標の設定
+		/// </summary>
+		/// <param name="x">X軸</param>
+		/// <param name="y">Y軸</param>
+		/// <param name="z">Z軸</param>
+		void SetPosition(float x, float y, float z)
+		{
+			SetPosition({ x,y,z });
+		};
+
+		/// <summary>
+		/// 回転の設定
+		/// </summary>
+		/// <param name="rotation">回転</param>
 		void SetRotation(Quaternion rotation)
 		{
 			m_rotation = rotation;
 		}
 
+		/// <summary>
+		/// 大きさの設定
+		/// </summary>
+		/// <param name="scale">大きさ</param>
 		void SetScale(Vector3 scale)
 		{
 			m_scale = scale;
 		}
 
-		void Update()
+		/// <summary>
+		/// 大きさの設定
+		/// </summary>
+		/// <param name="x">X軸</param>
+		/// <param name="y">Y軸</param>
+		/// <param name="z">Z軸</param>
+		void SetScale(float x, float y, float z)
 		{
-			m_model.UpdateWorldMatrix(m_position,m_rotation, m_scale);
-			if (m_skeleton.IsInited())
-			{
-				m_skeleton.Update(m_model.GetWorldMatrix());
-			}
-			m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
+			SetScale({ x,y,z });
 		};
 
+		/// <summary>
+		/// 更新処理
+		/// </summary>
+		void Update();
+
+		/// <summary>
+		/// 描画処理
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
 		void Draw(RenderContext& rc)
 		{
 			m_model.Draw(rc);
@@ -92,14 +115,7 @@ namespace nsK2EngineLow {
 		/// スケルトンの初期化。
 		/// </summary>
 		/// <param name="filePath">ファイルパス。</param>
-		void InitSkeleton(const char* filePath)
-		{
-			//スケルトンのデータを読み込み。
-			std::string skeletonFilePath = filePath;
-			int pos = (int)skeletonFilePath.find(".tkm");
-			skeletonFilePath.replace(pos, 4, ".tks");
-			m_skeleton.Init(skeletonFilePath.c_str());
-		}
+		void InitSkeleton(const char* filePath);
 
 		/// <summary>
 		/// アニメーションの初期化。
@@ -107,31 +123,26 @@ namespace nsK2EngineLow {
 		/// <param name="animationClips">アニメーションクリップ。</param>
 		/// <param name="numAnimationClips">アニメーションクリップの数。</param>
 		/// <param name="enModelUpAxis">モデルの上向き。</param>
-		void InitAnimation(AnimationClip* animationClips,
+		void InitAnimation(
+			AnimationClip* animationClips,
 			int numAnimationClips,
-			EnModelUpAxis enModelUpAxis)
-		{
-			m_animationClips = animationClips;
-			m_numAnimationClips = numAnimationClips;
-			if (m_animationClips != nullptr) {
-				m_animation.Init(m_skeleton,
-					m_animationClips,
-					numAnimationClips);
-			}
-		}
+			EnModelUpAxis enModelUpAxis
+		);
 
+	//メンバ変数
 	private:
-		AnimationClip* m_animationClips = nullptr;		// アニメーションクリップ。
-		int	m_numAnimationClips = 0;					// アニメーションクリップの数。
-		Animation m_animation;							// アニメーション。
-		Vector3 m_position = Vector3(0.0f,0.0f,0.0f);
-		Vector3 m_scale = Vector3::One;
-		Quaternion m_rotation = Quaternion::Identity;
-		Model m_model;
-		ModelInitData m_modelInitData;
-		bool						m_isUpdateAnimation = true;
-		Skeleton					m_skeleton;
-		float						m_animationSpeed = 1.0f;
+		Skeleton					m_skeleton;									//スケルトン
+		AnimationClip*				m_animationClips	= nullptr;				// アニメーションクリップ。
+		int							m_numAnimationClips = 0;					// アニメーションクリップの数。
+		Animation					m_animation;								// アニメーション。
+		float						m_animationSpeed	= 1.0f;					//アニメーションスピード
+
+		Vector3						m_position			= Vector3::Zero;		//座標
+		Vector3						m_scale				= Vector3::One;			//大きさ
+		Quaternion					m_rotation			= Quaternion::Identity;	//回転
+
+		Model						m_model;									//Modelクラス
+		ModelInitData				m_modelInitData;							//ModelInitDataクラス
 	};
 
 }

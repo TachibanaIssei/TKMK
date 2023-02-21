@@ -8,7 +8,7 @@ Game::Game()
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/walk.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 
-	m_modelRender.Init("Assets/modelData/unityChan.tkm",m_animationClips,enAnimationClip_Num,enModelUpAxisY);
+	m_modelRender.Init("Assets/modelData/unityChan.tkm", enModelUpAxisY, m_animationClips,enAnimationClip_Num);
 	m_modelRender.SetPosition(Vector3(0.0f, 0.0f, 0.0f));
 	m_modelRender.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 

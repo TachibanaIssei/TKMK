@@ -55,9 +55,13 @@ void nsK2EngineLow::ModelRender::InitAnimation(AnimationClip* animationClips, in
 {
 	m_animationClips = animationClips;
 	m_numAnimationClips = numAnimationClips;
+
 	if (m_animationClips != nullptr) {
-		m_animation.Init(m_skeleton,
+		//アニメーションの初期化
+		m_animation.Init(
+			m_skeleton,
 			m_animationClips,
-			numAnimationClips);
+			numAnimationClips
+		);
 	}
 }

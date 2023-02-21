@@ -132,9 +132,9 @@ namespace nsK2EngineLow {
 	//メンバ変数
 	private:
 		Skeleton					m_skeleton;									//スケルトン
-		AnimationClip*				m_animationClips	= nullptr;				// アニメーションクリップ。
-		int							m_numAnimationClips = 0;					// アニメーションクリップの数。
-		Animation					m_animation;								// アニメーション。
+		AnimationClip*				m_animationClips	= nullptr;				//アニメーションクリップ。
+		int							m_numAnimationClips = 0;					//アニメーションクリップの数。
+		Animation					m_animation;								//アニメーション。
 		float						m_animationSpeed	= 1.0f;					//アニメーションスピード
 
 		Vector3						m_position			= Vector3::Zero;		//座標

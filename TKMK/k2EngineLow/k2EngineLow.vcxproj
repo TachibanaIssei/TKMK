@@ -306,6 +306,7 @@
     <ClCompile Include="level2D\CaslFile.cpp" />
     <ClCompile Include="level2D\Level2D.cpp" />
     <ClCompile Include="level2D\MapChip2D.cpp" />
+    <ClCompile Include="Level3DRender.cpp" />
     <ClCompile Include="level3D\Level.cpp" />
     <ClCompile Include="level3D\MapChip.cpp" />
     <ClCompile Include="level3D\TklFile.cpp" />
@@ -394,6 +395,7 @@
     <ClInclude Include="level2D\CaslFile.h" />
     <ClInclude Include="level2D\Level2D.h" />
     <ClInclude Include="level2D\MapChip2D.h" />
+    <ClInclude Include="Level3DRender.h" />
     <ClInclude Include="level3D\Level.h" />
     <ClInclude Include="level3D\MapChip.h" />
     <ClInclude Include="level3D\TklFile.h" />

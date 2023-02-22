@@ -1,5 +1,6 @@
 #pragma once
 #include "ModelRender.h"
+#include "SpriteRender.h"
 
 #include "Level3DRender.h"
 
@@ -26,7 +27,10 @@ private:
 	Level3DRender m_level3DRender;
 
 	Quaternion m_rotation = Quaternion::Identity;
-
+	Quaternion m_sRotation = Quaternion::Identity;
+	SpriteRender m_spriteRender;
 	BackGround* m_backGround = nullptr;
+
+	float m_spriteAlpha = 0.0f;
 };
 

@@ -18,6 +18,7 @@ Game::~Game()
 
 bool Game::Start()
 {
+	//プレイヤー
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/walk.tka");
@@ -30,6 +31,8 @@ bool Game::Start()
 	m_rotation.SetRotationY(0.0f);
 	m_modelRender.SetRotation(m_rotation);
 
+
+	//レベル
 	m_level3DRender.Init("Assets/level3D/testLevel.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"testBackGround") == true) {

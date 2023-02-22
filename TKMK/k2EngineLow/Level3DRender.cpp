@@ -49,27 +49,6 @@ void nsK2EngineLow::Level3DRender::Init(
 				//wchar型をint型に変換している
 				levelObjData.number = std::stoi(number.c_str());
 			}
-
-			//パスの作成
-			wchar_t filePath[256];
-			swprintf_s(filePath, L"Assets/modelData/%s.tkm", levelObjData.name);
-			//マルチバイトに変換 wchar→ char
-			//ベースの文字列。
-			size_t origsize = wcslen(filePath) + 1;
-			//変換した文字列
-			size_t convertedChars = 0;
-			//マルチバイト格納用
-			char strCon[] = "";
-			//サイズ
-			size_t strConSize = (strlen(strCon) + 1) * 2;
-			//変換後のサイズ。
-			const size_t newsize = origsize * 2;
-			//連結後のサイズ
-			char* cFilePath = new char[newsize + strConSize];
-			//マルチバイトに変換する。入りきらないものは切りすて
-			wcstombs_s(&convertedChars, cFilePath, newsize, filePath, _TRUNCATE);
-			//文字列の連結
-			_mbscat_s((unsigned char*)cFilePath, newsize + strConSize, (unsigned char*)strCon);
 		
 			//Hookが登録済みならばマップチップは作成不要
 				//false のままなら作成する。

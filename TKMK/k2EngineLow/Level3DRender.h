@@ -29,8 +29,8 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// –¼‘O‚ª‘O•ûˆê’v‚©’²‚×‚é
 		/// </summary>
-		/// <param name="n"></param>
-		/// <returns></returns>
+		/// <param name="n">’²‚×‚é–¼‘O</param>
+		/// <returns>ˆê’v‚µ‚Ä‚¢‚½‚çtrue‚ð•Ô‚·</returns>
 		bool ForwardMatchName(const wchar_t* n)
 		{
 			auto len = wcslen(n);

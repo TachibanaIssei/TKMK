@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ModelRender.h"
-
 class BackGround : public IGameObject
 {
 public:

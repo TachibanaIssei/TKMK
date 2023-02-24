@@ -1,6 +1,4 @@
 #pragma once
-#include "ModelRender.h"
-#include "SpriteRender.h"
 
 #include "Level3DRender.h"
 

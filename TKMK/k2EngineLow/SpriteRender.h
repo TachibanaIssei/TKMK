@@ -137,12 +137,12 @@ namespace nsK2EngineLow {
 		void Draw(RenderContext& rc);
 		
 	private:
-		Sprite m_sprite;
+		Sprite m_sprite;								//Spriteクラス
 
-		Vector2 m_pivot = Sprite::DEFAULT_PIVOT;
-		Vector3 m_position = Vector3::Zero;
-		Vector3	m_scale = Vector3::One;
-		Quaternion m_rotation = Quaternion::Identity;
+		Vector2 m_pivot = Sprite::DEFAULT_PIVOT;		//ピボット
+		Vector3 m_position = Vector3::Zero;				//座標
+		Vector3	m_scale = Vector3::One;					//大きさ
+		Quaternion m_rotation = Quaternion::Identity;	//回転
 	};
 }
 

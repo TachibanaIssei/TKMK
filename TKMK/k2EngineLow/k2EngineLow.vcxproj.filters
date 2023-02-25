@@ -197,7 +197,6 @@
     <ClCompile Include="physics\PhysicsGhostObject.cpp">
       <Filter>physics</Filter>
     </ClCompile>
-    <ClCompile Include="k2EngineLow.cpp" />
     <ClCompile Include="online\SyncOnlineTwoPlayerMatchEngine.cpp">
       <Filter>online</Filter>
     </ClCompile>

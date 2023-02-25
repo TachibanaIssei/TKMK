@@ -77,6 +77,11 @@ using namespace Microsoft::WRL;
 
 #include "graphics/GaussianBlur.h"
 
+
+//作成した部分
+#include "ModelRender.h"
+#include "SpriteRender.h"
+
 const UINT FRAME_BUFFER_W = 1600;	// フレームバッファの幅。
 const UINT FRAME_BUFFER_H = 900;	// フレームバッファの高さ。
 const UINT UI_SPACE_WIDTH = 1920;	// UI空間の幅。

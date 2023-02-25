@@ -24,7 +24,7 @@ namespace nsK2EngineLow {
 		/// À•W‚Ìİ’è
 		/// </summary>
 		/// <param name="position">Vector3‚ÌÀ•W</param>
-		void SetPosition(Vector3 position)
+		void SetPosition(const Vector3& position)
 		{
 			m_position = position;
 		};
@@ -37,14 +37,14 @@ namespace nsK2EngineLow {
 		/// <param name="z">Z²</param>
 		void SetPosition(float x, float y, float z)
 		{
-			SetPosition({ x,y,z });
+			SetPosition({ x, y, z });
 		};
 
 		/// <summary>
 		/// ‰ñ“]‚Ìİ’è
 		/// </summary>
 		/// <param name="rotation">‰ñ“]</param>
-		void SetRotation(Quaternion rotation)
+		void SetRotation(const Quaternion& rotation)
 		{
 			m_rotation = rotation;
 		}
@@ -53,7 +53,7 @@ namespace nsK2EngineLow {
 		/// ‘å‚«‚³‚Ìİ’è
 		/// </summary>
 		/// <param name="scale">‘å‚«‚³</param>
-		void SetScale(Vector3 scale)
+		void SetScale(const Vector3& scale)
 		{
 			m_scale = scale;
 		}

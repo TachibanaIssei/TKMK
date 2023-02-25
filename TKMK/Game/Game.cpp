@@ -46,6 +46,13 @@ bool Game::Start()
 		return false;
 	});
 
+	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
+	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
+	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);
+	m_sRotation.SetRotationZ(0.0f);
+	m_spriteRender.SetRotation(m_sRotation);
+	m_spriteRender.Update();
+
 	return true;
 }
 
@@ -60,10 +67,15 @@ void Game::Update()
 		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
 	}
 
+	m_spriteAlpha += g_gameTime->GetFrameDeltaTime() * 1.2f;
+	m_spriteRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0, fabsf(sinf(m_spriteAlpha))));
+
 	m_modelRender.Update();
+	m_spriteRender.Update();
 }
 
 void Game::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+	m_spriteRender.Draw(rc);
 }

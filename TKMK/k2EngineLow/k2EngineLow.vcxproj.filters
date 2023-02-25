@@ -197,7 +197,6 @@
     <ClCompile Include="physics\PhysicsGhostObject.cpp">
       <Filter>physics</Filter>
     </ClCompile>
-    <ClCompile Include="k2EngineLow.cpp" />
     <ClCompile Include="online\SyncOnlineTwoPlayerMatchEngine.cpp">
       <Filter>online</Filter>
     </ClCompile>
@@ -227,6 +226,7 @@
     </ClCompile>
     <ClCompile Include="ModelRender.cpp" />
     <ClCompile Include="Level3DRender.cpp" />
+    <ClCompile Include="SpriteRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -503,6 +503,7 @@
     </ClInclude>
     <ClInclude Include="ModelRender.h" />
     <ClInclude Include="Level3DRender.h" />
+    <ClInclude Include="SpriteRender.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

@@ -254,6 +254,7 @@
     <ClCompile Include="AI\PathFinding\NaviMesh.cpp" />
     <ClCompile Include="AI\PathFinding\Path.cpp" />
     <ClCompile Include="AI\PathFinding\PathFinding.cpp" />
+    <ClCompile Include="FontRender.cpp" />
     <ClCompile Include="gameObject\Gameobjectmanager.cpp" />
     <ClCompile Include="gameObject\IGameObject.cpp" />
     <ClCompile Include="geometry\AABB.cpp" />
@@ -341,6 +342,7 @@
     <ClInclude Include="AI\PathFinding\PathFinding.h" />
     <ClInclude Include="dbg\MyAssert.h" />
     <ClInclude Include="dbg\MyLog.h" />
+    <ClInclude Include="FontRender.h" />
     <ClInclude Include="gameObject\GameObjectManager.h" />
     <ClInclude Include="gameObject\IGameobject.h" />
     <ClInclude Include="geometry\AABB.h" />

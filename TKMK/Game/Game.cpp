@@ -53,6 +53,14 @@ bool Game::Start()
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
 
+
+	m_fontRender.SetText(L"hello");
+	m_fontRender.SetPosition(-500.0f, 200.0f);
+	m_fontRender.SetScale(3.0f);
+	m_fontRender.SetRotation(Math::DegToRad(90.0f));
+	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);
+
+
 	return true;
 }
 
@@ -78,4 +86,5 @@ void Game::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 	m_spriteRender.Draw(rc);
+	m_fontRender.Draw(rc);
 }

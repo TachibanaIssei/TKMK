@@ -11,12 +11,17 @@ public:
 	~Game();
 	bool Start();
 	void Update();
+
+	void TestPlayer();
+	void OnAnimationEvent(const wchar_t* clipName,const wchar_t* eventName);
+
 	void Render(RenderContext& rc);
 
 private:
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
 		enAnimationClip_Walk,
+		enAnimationClip_Jump,
 		enAnimationClip_Num,
 	};
 

@@ -79,7 +79,7 @@ namespace nsK2EngineLow {
 		/// <param name="rotation">‰ñ“]</param>
 		void SetRotation(const float rotation)
 		{
-			m_rotation = rotation;
+			m_rotation = Math::DegToRad(rotation);
 		}
 		/// <summary>
 		/// ‰ñ“]‚ðŽæ“¾‚·‚é

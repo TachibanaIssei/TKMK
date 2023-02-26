@@ -25,7 +25,9 @@ bool Game::Start()
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 
 	m_modelRender.Init("Assets/modelData/unityChan.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
-	m_modelRender.SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+	
+	m_position = { 0.0f,0.0f,0.0f };
+	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 
 	m_rotation.SetRotationY(0.0f);
@@ -60,23 +62,44 @@ bool Game::Start()
 	m_fontRender.SetRotation(Math::DegToRad(90.0f));
 	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);
 
+	m_charCon.Init(
+		15.0f,
+		35.0f,
+		m_position
+	);
+
+	//“–‚½‚è”»’è‚ð—LŒø‰»‚·‚éB
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }
 
 void Game::Update()
 {
+	m_moveSpeed.y -= 980.0f * 1.0f / 60.0f;
+
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.1f);
+		m_moveSpeed.y += 500.0f;
+		
 	}
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
 		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
 	}
 
+	m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+
+	if (m_charCon.IsOnGround())
+	{
+		m_moveSpeed.y = 0.0f;
+	}
+
 	m_spriteAlpha += g_gameTime->GetFrameDeltaTime() * 1.2f;
 	m_spriteRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0, fabsf(sinf(m_spriteAlpha))));
+
+	m_modelRender.SetPosition(m_position);
 
 	m_modelRender.Update();
 	m_spriteRender.Update();

@@ -21,6 +21,15 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// モデルを取得する
+		/// </summary>
+		/// <returns>モデル</returns>
+		Model& GetModel()
+		{
+			return m_model;
+		}
+
+		/// <summary>
 		/// 座標の設定
 		/// </summary>
 		/// <param name="position">Vector3の座標</param>

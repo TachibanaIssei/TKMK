@@ -40,7 +40,7 @@ public:
 	//現在のレベルを取得する関数
 	inline int GetLevel() { return Lv; }
 	//レベルアップの処理
-	void LevelUp(LvUpStatus);
+	void LevelUp(LvUpStatus lus);
 	//死んだときの処理
 	virtual void Death() = 0;
 
@@ -48,13 +48,6 @@ public:
 
 
 
-
-
-
-	//
-	void LevelUp(LvUpStatus) {
-
-	}
 
 
 

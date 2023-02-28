@@ -1,6 +1,12 @@
 #pragma once
 
 namespace nsK2EngineLow {
+	struct DirectionalLight
+	{
+		Vector3 lightDirection;	//ライトの方向
+		float pad;
+		Vector3 ligColor;		//ライトのカラー
+	};
 
 	class ModelRender
 	{
@@ -153,6 +159,8 @@ namespace nsK2EngineLow {
 			m_animationSpeed = animationSpeed;
 		}
 
+		void MakeDirectionData();
+
 	private:
 		/// <summary>
 		/// スケルトンの初期化。
@@ -186,6 +194,8 @@ namespace nsK2EngineLow {
 
 		Model						m_model;									//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
+
+		DirectionalLight			m_directionLight;							//ディレクションライト
 	};
 
 }

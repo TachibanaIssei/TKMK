@@ -1,15 +1,6 @@
 #pragma once
 
 namespace nsK2EngineLow {
-	struct DirectionalLight
-	{
-		Vector3 lightDirection;	//ライトの方向
-		float pad0;
-		Vector3 ligColor;		//ライトのカラー
-		float pad1;
-		Vector3 CameraEyePos;	//カメラ座標
-	};
-
 	class ModelRender
 	{
 	//メンバ関数
@@ -161,7 +152,10 @@ namespace nsK2EngineLow {
 			m_animationSpeed = animationSpeed;
 		}
 
-		void MakeDirectionData();
+		/// <summary>
+		/// ディレクションライトの情報を作成
+		/// </summary>
+		void MakeDirectionData();	
 
 	private:
 		/// <summary>
@@ -197,7 +191,7 @@ namespace nsK2EngineLow {
 		Model						m_model;									//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
 
-		DirectionalLight			m_directionLight;							//ディレクションライト
+		DirectionalLight*			m_directionLight = nullptr;					//ディレクションライト
 	};
 
 }

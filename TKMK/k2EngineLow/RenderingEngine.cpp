@@ -8,7 +8,19 @@ void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
 	}
 }
 
+void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc)
+{
+	for (auto& spriteObj : m_spriteList)
+	{
+		spriteObj->OnRenderSprite(rc);
+	}
+}
+
 void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
 	ModelRendering(rc);
+	SpriteRendering(rc);
+
+	m_modelList.clear();
+	m_spriteList.clear();
 }

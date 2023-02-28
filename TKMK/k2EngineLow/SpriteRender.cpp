@@ -21,5 +21,5 @@ void nsK2EngineLow::SpriteRender::Init(const char* filePath, const float w, cons
 
 void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc)
 {
-	m_sprite.Draw(rc);
+	g_renderingEngine->AddSpriteList(this);
 }

@@ -135,6 +135,11 @@ namespace nsK2EngineLow {
 		}
 
 		void Draw(RenderContext& rc);
+
+		void OnRenderSprite(RenderContext& rc)
+		{
+			m_sprite.Draw(rc);
+		}
 		
 	private:
 		Sprite m_sprite;

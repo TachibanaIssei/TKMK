@@ -17,7 +17,7 @@ namespace nsK2EngineLow {
 			const char* tkmFilepath,
 			AnimationClip* animationClips = nullptr,
 			int numAnimationClips = 0,
-			EnModelUpAxis enModelUpAxis = enModelUpAxisY
+			EnModelUpAxis enModelUpAxis = enModelUpAxisZ
 		);
 
 		/// <summary>

@@ -138,6 +138,6 @@ void Game::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 void Game::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	m_spriteRender.Draw(rc);
-	m_fontRender.Draw(rc);
+	//m_spriteRender.Draw(rc);
+	//m_fontRender.Draw(rc);
 }

@@ -23,9 +23,6 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 
 	MakeDirectionData();
 
-	m_modelInitData.m_expandConstantBuffer = &m_directionLight;
-	m_modelInitData.m_expandConstantBufferSize = sizeof(m_directionLight);
-
 	//モデルクラスの初期化
 	m_model.Init(m_modelInitData);
 }
@@ -56,6 +53,9 @@ void nsK2EngineLow::ModelRender::MakeDirectionData()
 	m_directionLight.ligColor = Vector3{ 0.5f,0.5f,0.5 };
 	//視点の位置を設定
 	m_directionLight.CameraEyePos = g_camera3D->GetPosition();
+
+	m_modelInitData.m_expandConstantBuffer = &m_directionLight;
+	m_modelInitData.m_expandConstantBufferSize = sizeof(m_directionLight);
 }
 
 void nsK2EngineLow::ModelRender::InitSkeleton(const char* filePath)

@@ -167,6 +167,13 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Draw(RenderContext& rc);
 
+		void OnRenderFont(RenderContext& rc)
+		{
+			m_font.Begin(rc);
+			m_font.Draw(m_text, Vector2(m_position.x, m_position.y), m_color, m_rotation, m_scale, m_pivot);
+			m_font.End(rc);
+		}
+
 	private:
 		Vector3		m_position = Vector3::Zero;			//座標
 		float		m_scale = 1.0f;						//大きさ

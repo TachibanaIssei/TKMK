@@ -16,11 +16,21 @@ void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc)
 	}
 }
 
+void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc)
+{
+	for (auto& fontObj : m_fontList)
+	{
+		fontObj->OnRenderFont(rc);
+	}
+}
+
 void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
 	ModelRendering(rc);
 	SpriteRendering(rc);
+	FontRendering(rc);
 
 	m_modelList.clear();
 	m_spriteList.clear();
+	m_fontList.clear();
 }

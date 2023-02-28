@@ -49,11 +49,13 @@ void nsK2EngineLow::ModelRender::Update()
 void nsK2EngineLow::ModelRender::MakeDirectionData()
 {
 	//ライトの方向
-	m_directionLight.lightDirection = Vector3{ 0.0f,-1.0f,-1.0f };
+	m_directionLight.lightDirection = Vector3{ 1.0f,-1.0f,-1.0f };
 	//正規化する
 	m_directionLight.lightDirection.Normalize();
 	//ライトの色
 	m_directionLight.ligColor = Vector3{ 0.5f,0.5f,0.5 };
+	//視点の位置を設定
+	m_directionLight.CameraEyePos = g_camera3D->GetPosition();
 }
 
 void nsK2EngineLow::ModelRender::InitSkeleton(const char* filePath)

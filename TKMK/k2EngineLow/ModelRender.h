@@ -4,8 +4,10 @@ namespace nsK2EngineLow {
 	struct DirectionalLight
 	{
 		Vector3 lightDirection;	//ライトの方向
-		float pad;
+		float pad0;
 		Vector3 ligColor;		//ライトのカラー
+		float pad1;
+		Vector3 CameraEyePos;	//カメラ座標
 	};
 
 	class ModelRender

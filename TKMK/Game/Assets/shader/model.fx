@@ -13,6 +13,13 @@ cbuffer ModelCb : register(b0){
 	float4x4 mProj;
 };
 
+cbuffer DirectionLightCB : register(b1)
+{
+    float3 lightDirection;	//ライトの方向
+    float3 lightColor;		//ライトの色
+    float3 CameraEyePos;	//カメラの座標を追加
+}
+
 ////////////////////////////////////////////////
 // 構造体
 ////////////////////////////////////////////////
@@ -25,12 +32,16 @@ struct SSkinVSIn{
 struct SVSIn{
 	float4 pos 		: POSITION;		//モデルの頂点座標。
 	float2 uv 		: TEXCOORD0;	//UV座標。
+    float3 normal	: NORMAL;
 	SSkinVSIn skinVert;				//スキン用のデータ。
 };
 //ピクセルシェーダーへの入力。
 struct SPSIn{
 	float4 pos 			: SV_POSITION;	//スクリーン空間でのピクセルの座標。
 	float2 uv 			: TEXCOORD0;	//uv座標。
+    float3 normal		: NORMAL;
+    float3 worldPos		: TEXCOORD1;	//ワールド座標
+	
 };
 
 ////////////////////////////////////////////////
@@ -76,6 +87,8 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 		m = mWorld;
 	}
 	psIn.pos = mul(m, vsIn.pos);
+    psIn.worldPos = psIn.pos;
+    psIn.normal = mul(m, vsIn.normal);
 	psIn.pos = mul(mView, psIn.pos);
 	psIn.pos = mul(mProj, psIn.pos);
 
@@ -104,5 +117,50 @@ SPSIn VSSkinMain( SVSIn vsIn )
 float4 PSMain( SPSIn psIn ) : SV_Target0
 {
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
+	
+	//拡散反射光
+	//内積の計算
+    float t = dot(psIn.normal, lightDirection);
+    //内積の結果に-1を乗算する
+	t *= -1;
+	
+	if(t < 0.0f)
+    {
+        t = 0.0f;
+    }
+	
+    float3 diffuseLight = lightColor * t;
+	
+	//鏡面反射光
+	//反射ベクトル
+    float3 refVec = reflect(lightDirection, psIn.normal);
+	//サーフェイスから視点に向かうベクトル
+    float3 toEyeVec = CameraEyePos - psIn.worldPos;
+	//正規化
+    toEyeVec = normalize(toEyeVec);
+	
+	//求めた2つのベクトルの内積
+    t = dot(refVec, toEyeVec);
+	//内積が負の場合は0.0fにする
+	if(t<0.0f)
+    {
+        t = 0.0f;
+    }
+	//強さを絞る
+    t = pow(t, 4.0f);
+	//鏡面反射光を求める
+    float3 specularLight = lightColor * t;
+	
+	
+	//拡散反射光と鏡面反射光を合成する
+    float3 light = diffuseLight + specularLight;
+	
+	//環境光
+    light.x += 0.6f;
+    light.y += 0.6f;
+    light.z += 0.6f;
+	
+    albedoColor.xyz *= light;
+	
 	return albedoColor;
 }

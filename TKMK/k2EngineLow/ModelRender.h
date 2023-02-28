@@ -89,8 +89,13 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダリングコンテキスト</param>
 		void Draw(RenderContext& rc)
 		{
-			m_model.Draw(rc);
+			g_renderingEngine->AddModelList(this);
 		};
+
+		void OnRenderModel(RenderContext& rc)
+		{
+			m_model.Draw(rc);
+		}
 
 		/// <summary>
 		/// ボーンの名前からボーン番号を検索

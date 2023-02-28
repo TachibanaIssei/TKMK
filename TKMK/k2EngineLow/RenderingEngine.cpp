@@ -34,3 +34,15 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	m_spriteList.clear();
 	m_fontList.clear();
 }
+
+void nsK2EngineLow::RenderingEngine::MakeDirectionLight()
+{
+	//ライトの方向
+	m_directionLight.lightDirection = m_directionLightDir;
+	//正規化する
+	m_directionLight.lightDirection.Normalize();
+	//ライトの色
+	m_directionLight.ligColor = m_directionLightColor;
+	//視点の位置を設定
+	m_directionLight.CameraEyePos = g_camera3D->GetPosition();
+}

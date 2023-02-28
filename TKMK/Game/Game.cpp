@@ -35,6 +35,10 @@ bool Game::Start()
 	m_rotation.SetRotationY(0.0f);
 	m_modelRender.SetRotation(m_rotation);
 
+	//ディレクションライトの設定
+	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
+	Vector3 directionLightColor = Vector3{ 0.5f,0.5f,0.5f };
+	g_renderingEngine->SetDirectionLight(directionLightDir,directionLightColor);
 
 	//レベル
 	m_level3DRender.Init("Assets/level3D/testLevel.tkl", [&](LevelObjectData& objData) {

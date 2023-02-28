@@ -229,6 +229,7 @@
     <ClCompile Include="Level3DRender.cpp" />
     <ClCompile Include="SpriteRender.cpp" />
     <ClCompile Include="FontRender.cpp" />
+    <ClCompile Include="RenderingEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -507,6 +508,7 @@
     <ClInclude Include="Level3DRender.h" />
     <ClInclude Include="SpriteRender.h" />
     <ClInclude Include="FontRender.h" />
+    <ClInclude Include="RenderingEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

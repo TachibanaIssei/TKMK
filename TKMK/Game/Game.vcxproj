@@ -226,6 +226,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rezult.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -240,6 +241,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameCamera.h" />
     <ClInclude Include="Rezult.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />

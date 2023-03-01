@@ -2,6 +2,7 @@
 #include "GameCamera.h"
 
 #include "Game.h"
+#include "KnightBase.h"
 
 GameCamera::GameCamera()
 {
@@ -15,6 +16,8 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
+	knightbase = FindGO<KnightBase>("knightbase");
+
 	m_toCameraPos = { 0.0f,100.0f,0.0f };
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
@@ -24,21 +27,12 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
-	if (g_pad[0]->IsPress(enButtonUp)) {
-		m_toCameraPos.y += 20.0f;
-	}
+	Vector3 TargetPos;
 
-	if (g_pad[0]->IsPress(enButtonDown)) {
-		m_toCameraPos.y -= 20.0f;
-	}
+	TargetPos = knightbase->m_position;
+	TargetPos.y += 80.0f;
 
-	if (g_pad[0]->IsPress(enButtonRight)) {
-		m_toCameraPos.x += 20.0f;
-	}
 
-	if (g_pad[0]->IsPress(enButtonLeft)) {
-		m_toCameraPos.x -= 20.0f;
-	}
 
 	Vector3 toCameraPosOld = m_toCameraPos;
 	//パッドの入力を使ってカメラを回す。
@@ -69,10 +63,15 @@ void GameCamera::Update()
 		m_toCameraPos = toCameraPosOld;
 	}
 
-	g_camera3D->SetPosition(m_toCameraPos);
+	Vector3 pos;
+	//視点と注視点を足す
+	pos = TargetPos + m_toCameraPos;
+
+	g_camera3D->SetPosition(pos);
 	
 	//カメラの更新。
 	g_camera3D->Update();
 }
+
 
 

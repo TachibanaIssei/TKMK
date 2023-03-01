@@ -5,6 +5,7 @@
 class BackGround;
 class Rezult;
 class GameCamera;
+class KnightBase;
 
 class Game : public IGameObject
 {
@@ -39,6 +40,7 @@ private:
 	BackGround* m_backGround = nullptr;
 	Rezult* rezult=nullptr;
 	GameCamera* gamecamera = nullptr;
+	KnightBase* knightbase = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

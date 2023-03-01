@@ -13,7 +13,7 @@ public:
 
 	Quaternion m_sRotation;
 	SpriteRender m_spriteRender;
-	Tittle* tittle;
+	Tittle* tittle=nullptr;
 
 };
 

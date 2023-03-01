@@ -2,6 +2,7 @@
 #include "Game.h"
 
 #include "BackGround.h"
+#include "Rezult.h"
 
 Game::Game()
 {
@@ -87,6 +88,13 @@ bool Game::Start()
 
 void Game::Update()
 {
+	if (g_pad[0]->IsTrigger(enButtonY))
+	{
+		Rezult* rezult = NewGO<Rezult>(0, "rezult");
+		DeleteGO(this);
+	}
+
+
 	TestPlayer();
 
 	m_spriteAlpha += g_gameTime->GetFrameDeltaTime() * 1.2f;

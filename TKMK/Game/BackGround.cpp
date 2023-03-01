@@ -11,7 +11,7 @@ BackGround::~BackGround()
 
 bool BackGround::Start()
 {
-	m_modelRender.Init("Assets/modelData/background/testBackGround.tkm");
+	m_modelRender.Init("Assets/modelData/background/stadium02.tkm");
 	
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rotation);

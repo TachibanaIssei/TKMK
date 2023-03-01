@@ -42,9 +42,9 @@ bool Game::Start()
 	g_renderingEngine->SetDirectionLight(directionLightDir,directionLightColor);
 
 	//ƒŒƒxƒ‹
-	m_level3DRender.Init("Assets/level3D/testLevel.tkl", [&](LevelObjectData& objData) {
+	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.EqualObjectName(L"testBackGround") == true) {
+		if (objData.EqualObjectName(L"stadium02") == true) {
 			m_backGround = NewGO<BackGround>(0, "backGround");
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);

@@ -18,7 +18,8 @@ bool GameCamera::Start()
 {
 	knightbase = FindGO<KnightBase>("knightbase");
 
-	m_toCameraPos = { 0.0f,100.0f,0.0f };
+	//注視点から視点までのベクトルを設定。
+	m_toCameraPos.Set(0.0f, 125.0f, -800.0f);
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
 
@@ -66,7 +67,7 @@ void GameCamera::Update()
 	Vector3 pos;
 	//視点と注視点を足す
 	pos = TargetPos + m_toCameraPos;
-
+	g_camera3D->SetTarget(TargetPos);
 	g_camera3D->SetPosition(pos);
 	
 	//カメラの更新。

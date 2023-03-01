@@ -32,7 +32,6 @@ private:
 	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
 	FontRender m_fontRender;
-	CharacterController m_charCon;
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;

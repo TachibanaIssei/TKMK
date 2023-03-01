@@ -15,10 +15,13 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	// アニメーションを初期化。
 	InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
 
+	//アニメーションが設定されていたら。
 	if (m_animationClips != nullptr)
 	{
 		//スケルトンを指定する
 		m_modelInitData.m_skeleton = &m_skeleton;
+		//スキンがある用の頂点シェーダーを設定する。
+		m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 	}
 	
 	//ディレクションライトの情報を作成

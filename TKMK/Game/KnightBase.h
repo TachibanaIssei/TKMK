@@ -19,9 +19,9 @@ public:
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	enum EnAnimationClip {
-		enAnimationClip_Idle,
-		enAnimationClip_Walk,
-		enAnimationClip_Jump,
+		//enAnimationClip_Idle,
+		enAnimationClip_Run,
+		//enAnimationClip_Jump,
 		enAnimationClip_Num,
 	};
 

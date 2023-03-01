@@ -2,6 +2,8 @@
 #include "Game.h"
 
 #include "BackGround.h"
+#include "Rezult.h"
+#include "GameCamera.h"
 
 Game::Game()
 {
@@ -14,6 +16,8 @@ Game::~Game()
 	{
 		DeleteGO(m_backGround);
 	}
+
+	DeleteGO(gamecamera);
 }
 
 bool Game::Start()
@@ -37,13 +41,14 @@ bool Game::Start()
 
 	//ディレクションライトの設定
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
+	directionLightDir.Normalize();
 	Vector3 directionLightColor = Vector3{ 0.5f,0.5f,0.5f };
-	g_renderingEngine->SetDirectionLight(directionLightDir,directionLightColor);
+	g_renderingEngine->GetLight()->SetDirectionLight(directionLightDir,directionLightColor);
 
 	//レベル
-	m_level3DRender.Init("Assets/level3D/testLevel.tkl", [&](LevelObjectData& objData) {
+	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.EqualObjectName(L"testBackGround") == true) {
+		if (objData.EqualObjectName(L"stadium02") == true) {
 			m_backGround = NewGO<BackGround>(0, "backGround");
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);
@@ -53,6 +58,9 @@ bool Game::Start()
 		}
 		return false;
 	});
+
+	//ゲームカメラの生成
+	gamecamera = NewGO<GameCamera>(0, "gamecamera");
 
 	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
 	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
@@ -87,6 +95,13 @@ bool Game::Start()
 
 void Game::Update()
 {
+	if (g_pad[0]->IsTrigger(enButtonY))
+	{
+		Rezult* rezult = NewGO<Rezult>(0, "rezult");
+		DeleteGO(this);
+	}
+
+
 	TestPlayer();
 
 	m_spriteAlpha += g_gameTime->GetFrameDeltaTime() * 1.2f;

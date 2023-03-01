@@ -311,6 +311,7 @@
     <ClCompile Include="level3D\Level.cpp" />
     <ClCompile Include="level3D\MapChip.cpp" />
     <ClCompile Include="level3D\TklFile.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="math\Matrix.cpp" />
     <ClCompile Include="math\Vector.cpp" />
     <ClCompile Include="ModelRender.cpp" />
@@ -403,6 +404,7 @@
     <ClInclude Include="level3D\Level.h" />
     <ClInclude Include="level3D\MapChip.h" />
     <ClInclude Include="level3D\TklFile.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="math\Math.h" />
     <ClInclude Include="math\Matrix.h" />
     <ClInclude Include="math\Vector.h" />

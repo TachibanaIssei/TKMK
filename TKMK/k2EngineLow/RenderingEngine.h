@@ -5,19 +5,13 @@ namespace nsK2EngineLow {
 	class SpriteRender;
 	class FontRender;
 	class RenderContext;
-
-	struct DirectionalLight
-	{
-		Vector3 lightDirection;	//ライトの方向
-		float pad0;
-		Vector3 ligColor;		//ライトのカラー
-		float pad1;
-		Vector3 CameraEyePos;	//カメラ座標
-	};
+	class Light;
 
 	class RenderingEngine
 	{
 	public:
+		void Init();
+
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
 		/// </summary>
@@ -65,37 +59,16 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
-		/// <summary>
-		/// ディレクションライトを取得する
-		/// </summary>
-		/// <returns>ディレクションライト</returns>
-		DirectionalLight* GetDirectionalLight()
+		Light* GetLight()
 		{
-			return &m_directionLight;
+			return m_light;
 		}
-
-		/// <summary>
-		/// ディレクションライトを設定する
-		/// </summary>
-		/// <param name="dir">ライトの方向</param>
-		/// <param name="color">ライトの色</param>
-		void SetDirectionLight(Vector3 dir,Vector3 color = {0.5f,0.5f,0.5f})
-		{
-			m_directionLightDir = dir;
-			
-			m_directionLightColor = color;
-		}
-		
-
-		void MakeDirectionLight();
 
 	private:
 		std::vector<ModelRender*>	m_modelList;											//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;											//スプライトクラスのリスト
 		std::vector<FontRender*>	m_fontList;												//フォントクラスのリスト
 
-		DirectionalLight			m_directionLight;										//ディレクションライト
-		Vector3						m_directionLightDir		= Vector3{ 1.0f,-1.0f,-1.0f };	//ディレクションライトの方向
-		Vector3						m_directionLightColor	= Vector3{0.5f,0.5f,0.5f};		//ディレクションライトの色
+		Light*						m_light			= nullptr;								//ライトクラス
 	};
 }

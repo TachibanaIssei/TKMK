@@ -43,7 +43,9 @@ namespace nsK2EngineLow {
 			EffectEngine::CreateInstance();
 		}
 
+		//レンダリングエンジンのインスタンスを作成する
 		g_renderingEngine = new RenderingEngine;
+		g_renderingEngine->Init();
 
 #ifdef K2_DEBUG
 		if (m_graphicsEngine) {

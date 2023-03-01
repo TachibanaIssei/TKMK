@@ -1,19 +1,19 @@
 #pragma once
 
-class Game;
+class Tittle;
 
-class Tittle:public IGameObject
+class Rezult:public IGameObject
 {
 public:
-	Tittle();
-	~Tittle();
+	Rezult();
+	~Rezult();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
 
 	Quaternion m_sRotation;
 	SpriteRender m_spriteRender;
-	Game* game=nullptr;
+	Tittle* tittle=nullptr;
 
 };
 

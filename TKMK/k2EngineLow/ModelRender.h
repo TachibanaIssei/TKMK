@@ -190,8 +190,6 @@ namespace nsK2EngineLow {
 
 		Model						m_model;									//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
-
-		DirectionalLight*			m_directionLight = nullptr;					//ディレクションライト
 	};
 
 }

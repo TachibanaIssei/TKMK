@@ -15,8 +15,8 @@ KnightBase::~KnightBase()
 bool KnightBase::Start()
 {
 	//プレイヤー
-	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/Knight_run.tka");
-	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Knight/Knight_idle.tka");
+	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	/*m_animationClips[enAnimationClip_Idle].Load("Assets/animData/idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/walk.tka");
@@ -99,11 +99,24 @@ void KnightBase::Update()
 		m_moveSpeed.y = 0.0f;
 	}
 
+	Rotation();
 
 	//モデルを動かす
 	m_modelRender.SetPosition(m_position);
 
 	m_modelRender.Update();
+}
+
+void KnightBase::Rotation()
+{
+	//xかzの移動速度があったら(スティックの入力があったら)。
+	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	{
+		//キャラクターの方向を変える。
+		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
+		//絵描きさんに回転を教える。
+		m_modelRender.SetRotation(m_rot);
+	}
 }
 
 void KnightBase::Attack()

@@ -19,7 +19,7 @@ bool GameCamera::Start()
 	knightbase = FindGO<KnightBase>("knightbase");
 
 	//注視点から視点までのベクトルを設定。
-	m_toCameraPos.Set(0.0f, 125.0f, -800.0f);
+	m_toCameraPos.Set(0.0f, 50.0f, -130.0f);
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
 

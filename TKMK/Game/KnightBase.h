@@ -16,11 +16,12 @@ public:
 	void Skill();
 	void UltimateSkill();
 	void Death();
+	void Rotation();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	enum EnAnimationClip {
-		//enAnimationClip_Idle,
-		enAnimationClip_Run,
+		enAnimationClip_Idle,
+		//enAnimationClip_Run,
 		//enAnimationClip_Jump,
 		enAnimationClip_Num,
 	};

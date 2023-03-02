@@ -41,6 +41,8 @@ bool Game::Start()
 	Vector3 directionLightColor = Vector3{ 0.5f,0.5f,0.5f };
 	g_renderingEngine->GetLight()->SetDirectionLight(directionLightDir,directionLightColor);
 
+	g_renderingEngine->GetLight()->SetPointLight({ 0.0f,10.0f,0.0f });
+
 	//ƒŒƒxƒ‹
 	m_level3DRender.Init("Assets/level3D/testLevel.tkl", [&](LevelObjectData& objData) {
 

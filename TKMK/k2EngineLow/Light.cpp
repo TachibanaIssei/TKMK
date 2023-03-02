@@ -3,10 +3,8 @@
 
 void nsK2EngineLow::Light::Init()
 {
-	//ライトの方向
-	m_directionLight.lightDirection = Vector3(1.0f,-1.0f,-1.0f);
-	//ライトの色
-	m_directionLight.ligColor = Vector3(0.5f,0.5f,0.5f);
-	//視点の位置を設定
-	m_directionLight.CameraEyePos = g_camera3D->GetPosition();
+	Vector3 dir = { 1.0f, -1.0f, -1.0f };
+	dir.Normalize();
+	SetDirectionLight(dir);
+	SetPointLight(Vector3(0.0f, 10.0f, 0.0f));
 }

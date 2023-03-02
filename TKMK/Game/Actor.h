@@ -7,22 +7,31 @@ public:
 
 protected:
 
+	struct Status {
+		int Hp;                    //ヒットポイント(体力)
+		int Atk;                   //攻撃力
+		float Speed;               //移動速度
+	};
+
+
 	//レベルアップしたときに上がるステータスの値
+	//レベルアップ時のヒットポイント
+	//レベルアップ時の攻撃力
+	//レベルアップ時の移動速度
 	struct LvUpStatus {
 		int LvHp;                  //レベルアップ時のヒットポイント
 		int LvAtk;                 //レベルアップ時の攻撃力
-		int LvSpeed;               //レベルアップ時の移動速度
+		float LvSpeed;               //レベルアップ時の移動速度
 	};
 
 	int Lv;                    //レベル
-	int Hp;                    //ヒットポイント(体力)
-	int Atk;                   //攻撃力
-	int Speed;                 //移動速度
+	//int Hp;                    //ヒットポイント(体力)
+	//int Atk;                   //攻撃力
+	//float Speed;               //移動速度
 	int AtkSpeed;              //攻撃速度
 	float Cooltime;            //スキルのクールタイム
 	bool SkillState=false;     //スキルが使用可能かどうかの判定
 	int Point;                 //敵を倒して手に入れたポイント
-	int ShieldPoint;           //シールド
 	int GetExp;                //中立の敵を倒したときの経験値
 	int ExpTable;              //経験値テーブル
 	bool isDeath = false;      //死んだかどうかの判定
@@ -45,7 +54,7 @@ public:
 	//現在のレベルを取得する関数
 	inline int GetLevel() { return Lv; }
 	//レベルアップの処理
-	void LevelUp(LvUpStatus lus);
+	void LevelUp(LvUpStatus& lus, Status& nowStatus);
 	//死んだときの処理
 	virtual void Death() = 0;
 

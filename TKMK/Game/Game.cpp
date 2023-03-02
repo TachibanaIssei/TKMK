@@ -18,8 +18,8 @@ Game::~Game()
 		DeleteGO(m_backGround);
 	}
 
-	DeleteGO(gamecamera);
-	DeleteGO(knightbase);
+	DeleteGO(m_gamecamera);
+	DeleteGO(m_knightbase);
 }
 
 bool Game::Start()
@@ -42,12 +42,14 @@ bool Game::Start()
 		}
 		return false;
 	});
-
+	//Œ•m‚Ìì¬
+	m_knightbase = NewGO<KnightBase>(0, "knightbase");
+	m_knightbase->SetSGame(this);
 	//ƒQ[ƒ€ƒJƒƒ‰‚Ì¶¬
-	gamecamera = NewGO<GameCamera>(0, "gamecamera");
+	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
+	m_gamecamera->SetKnight(m_knightbase);
 
-	//
-	knightbase = NewGO<KnightBase>(0, "knightbase");
+	
 
 	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
 	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);

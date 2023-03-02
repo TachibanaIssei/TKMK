@@ -10,12 +10,14 @@ Actor::~Actor()
 {
 
 }
-
-void Actor::LevelUp(LvUpStatus lus)
+//レベルアップ時に増加するステータス
+//現在のステータス
+void Actor::LevelUp(LvUpStatus& lus,Status& nowStatus)
 {
-	Hp += lus.LvHp;
-	Atk += lus.LvAtk;
-	Speed += lus.LvSpeed;
+
+	nowStatus.Hp += lus.LvHp;
+	nowStatus.Atk += lus.LvAtk;
+	nowStatus.Speed += lus.LvSpeed;
 }
 
 void Actor::COOlTIME(float SkillCooltimer, bool skillstate)

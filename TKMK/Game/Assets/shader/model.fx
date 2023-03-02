@@ -15,10 +15,19 @@ cbuffer ModelCb : register(b0){
 
 cbuffer DirectionLightCB : register(b1)
 {
-    float3 lightDirection;	//ライトの方向
-    float3 lightColor;		//ライトの色
-    float3 CameraEyePos;	//カメラの座標を追加
+    float3	lightDirection;	//ライトの方向
+    float3	lightColor;		//ライトの色
+    float3	CameraEyePos;	//カメラの座標を追加
+    float3	ptPosition;		//ポイントライトの位置
+    float	ptRange;		//ポイントライトの影響範囲
+    float3	ptColor;		//ポイントライトの色
 }
+
+////////////////////////////////////////////////
+// 関数宣言
+////////////////////////////////////////////////
+float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 normal);
+float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal);
 
 ////////////////////////////////////////////////
 // 構造体
@@ -54,7 +63,6 @@ sampler g_sampler : register(s0);	//サンプラステート。
 ////////////////////////////////////////////////
 // 関数定義。
 ////////////////////////////////////////////////
-
 /// <summary>
 //スキン行列を計算する。
 /// </summary>
@@ -118,40 +126,53 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 {
 	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
 	
-	//拡散反射光
-	//内積の計算
-    float t = dot(psIn.normal, lightDirection);
-    //内積の結果に-1を乗算する
-	t *= -1;
+	//ディレクションライトの拡散反射光
+    float3 diffDirection = CalcLambertDiffuse(
+        lightDirection,
+        lightColor,
+        psIn.normal);
 	
-	if(t < 0.0f)
-    {
-        t = 0.0f;
-    }
+	//ディレクションライトの鏡面反射光
+    float3 specDirection = CalcPhongSpecular(
+        lightDirection,
+        lightColor,
+        psIn.worldPos,
+        psIn.normal
+        );
 	
-    float3 diffuseLight = lightColor * t;
-	
-	//鏡面反射光
-	//反射ベクトル
-    float3 refVec = reflect(lightDirection, psIn.normal);
-	//サーフェイスから視点に向かうベクトル
-    float3 toEyeVec = CameraEyePos - psIn.worldPos;
-	//正規化
-    toEyeVec = normalize(toEyeVec);
-	
-	//求めた2つのベクトルの内積
-    t = dot(refVec, toEyeVec);
-	//内積が負の場合は0.0fにする
-	if(t<0.0f)
-    {
-        t = 0.0f;
-    }
-	//強さを絞る
-    t = pow(t, 4.0f);
-	//鏡面反射光を求める
-    float3 specularLight = lightColor * t;
-	
-	
+    //ポイントライト
+    //ポイントライトの光の向き
+    float3 ligDir = psIn.worldPos - ptPosition;
+    ligDir = normalize(ligDir);
+    //拡散反射光
+    float3 diffPoint = CalcLambertDiffuse(
+        ligDir,
+        ptColor,
+        psIn.normal
+    );
+    //鏡面反射光
+    float3 specPoint = CalcPhongSpecular(
+        ligDir,
+        ptColor,
+        psIn.worldPos,
+        psIn.normal
+    );
+    //ポイントライトとの距離計算
+    float3 distance = length(psIn.worldPos - ptPosition);
+    //影響率は距離に比例して小さくなる
+    float affect = 1.0f - 1.0f / ptRange * distance;
+    //影響力がマイナスにならないようにする
+    affect = max(0.0f, affect);
+    //影響を指数関数的にする
+    affect = pow(affect, 3.0f);
+    //減衰率を乗算して影響を弱める
+    diffPoint *= affect;
+    specPoint *= affect;
+    
+    //2つの反射光を合算して最終的な反射光を求める
+    float3 diffuseLight = diffPoint + diffDirection;
+    float3 specularLight = specPoint + specDirection;
+    
 	//拡散反射光と鏡面反射光を合成する
     float3 light = diffuseLight + specularLight;
 	
@@ -163,4 +184,44 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
     albedoColor.xyz *= light;
 	
 	return albedoColor;
+}
+
+/// <summary>
+/// Lambert拡散反射光を計算する
+/// </summary>
+float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 normal)
+{
+    // ピクセルの法線とライトの方向の内積を計算する
+    float t = dot(normal, lightDirection) * -1.0f;
+
+    // 内積の値を0以上の値にする
+    t = max(0.0f, t);
+
+    // 拡散反射光を計算する
+    return lightColor * t;
+}
+
+/// <summary>
+/// Phong鏡面反射光を計算する
+/// </summary>
+float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal)
+{
+    // 反射ベクトルを求める
+    float3 refVec = reflect(lightDirection, normal);
+
+    // 光が当たったサーフェイスから視点に伸びるベクトルを求める
+    float3 toEye = CameraEyePos - worldPos;
+    toEye = normalize(toEye);
+
+    // 鏡面反射の強さを求める
+    float t = dot(refVec, toEye);
+
+    // 鏡面反射の強さを0以上の数値にする
+    t = max(0.0f, t);
+
+    // 鏡面反射の強さを絞る
+    t = pow(t, 5.0f);
+
+    // 鏡面反射光を求める
+    return lightColor * t;
 }

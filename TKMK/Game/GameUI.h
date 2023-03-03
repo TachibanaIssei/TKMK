@@ -19,5 +19,6 @@ private:
 	FontRender m_SpeedFont;
 	KnightBase* m_knightbase=nullptr;
 
+	int LEVEL;
 };
 

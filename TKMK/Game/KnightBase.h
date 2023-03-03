@@ -15,23 +15,70 @@ public:
 	void Update();
 	void Move();
 	void Render(RenderContext& rc);
+
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
 	/// </summary>
 	/// <param name="GetExp">中立の敵の経験値</param>
 	void ExpProcess(int Exp);
+
 	void Attack();
+
+	/// <summary>
+	/// ダメージを受けたときの処理
+	/// </summary>
+	/// <param name="damege">敵の攻撃力</param>
 	void Dameged(int damege);
+
+	/// <summary>
+	/// スキルを使用したときの処理
+	/// </summary>
 	void Skill();
+
+	/// <summary>
+	/// 
+	/// </summary>
 	void UltimateSkill();
+
+	/// <summary>
+	/// 
+	/// </summary>
 	void SetRespawn();
+
+	/// <summary>
+	/// 
+	/// </summary>
 	void Death();
+
+	/// <summary>
+	/// 
+	/// </summary>
 	void Rotation();
-	//ステート管理。
+
+	/// <summary>
+	/// アニメーションのステートの管理
+	/// </summary>
 	void ManageState();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="clipName"></param>
+	/// <param name="eventName"></param>
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="PS"></param>
 	inline void SetPosition(Vector3 PS) { m_position = PS; }
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	inline Vector3 GetPosition() { return m_position; }
+
 	void SetSGame(Game* Cgame)
 	{
 		m_game = Cgame;
@@ -40,6 +87,11 @@ public:
 	{
 		return m_game;
 	}
+
+	/// <summary>
+	/// 特定のアニメーションが再生中ならfalseを返す
+	/// </summary>
+	/// <returns></returns>
 	bool IsEnableMove() const
 	{
 		return m_animState != enKnightState_FirstAtk &&
@@ -47,6 +99,12 @@ public:
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;
 	}
+
+	/// <summary>
+	/// 現在のレベルをint型の変数に代入する
+	/// </summary>
+	/// <param name="level"></param>
+	inline void SetLevel(int& level) { level = Lv; }
 
 
 private:
@@ -63,16 +121,17 @@ private:
 	void OnProcessSecondAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
 	void OnProcessDamegeStateTransition();
-	//HPが0になったときの処理
+	//HPが0になったときのステートの遷移処理
 	void OnProcessDeathStateTransition();
 
-	enum AnimationState {
+	enum PlayerState {
 		enKnightState_Idle,
 		enKnightState_Run,
 		enKnightState_FirstAtk,
 		enKnightState_SecondAtk,
 		enKnightState_Damege,
 		enKnightState_Death,
+		enKnightState_Skill,
 	};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -93,11 +152,11 @@ private:
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
-	//初期ステータス
+	//初期ステータス 最大HP、HP、攻撃力、スピード
 	Status status = { 150,150,35,150.0f };
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
-	AnimationState m_animState = enKnightState_Idle;
+	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ
 	int ComboState = 0;
 	//コンボが継続する時間を記録する

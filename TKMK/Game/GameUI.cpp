@@ -20,9 +20,11 @@ bool GameUI::Start()
 
 void GameUI::Update()
 {
-	/*int LEVEL=m_knightbase->*/
+	m_knightbase->SetLevel(LEVEL);
 
-
+	wchar_t Lv[255];
+	swprintf_s(Lv, 255, L"%d", LEVEL);
+	m_LevelFont.SetText(Lv);
 }
 
 void GameUI::Render(RenderContext& rc)

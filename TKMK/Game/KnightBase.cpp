@@ -159,8 +159,10 @@ void KnightBase::ExpProcess(int Exp)
 //移動の処理
 void KnightBase::Move()
 {
+	//攻撃、ダメージ、死亡アニメーションが再生中なら
 	if (IsEnableMove() == false)
 	{
+		//抜け出す
 		return;
 	}
 
@@ -256,7 +258,9 @@ void KnightBase::Dameged(int damege)
 //スキルを使用したときの処理
 void KnightBase::Skill()
 {
+	m_animState = enKnightState_Skill;
 
+	//当たり判定作成
 }
 
 //必殺技を使用したときの処理

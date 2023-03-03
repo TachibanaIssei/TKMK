@@ -5,6 +5,7 @@
 #include "Rezult.h"
 #include "GameCamera.h"
 #include "KnightBase.h"
+#include "Actor.h"
 
 Game::Game()
 {
@@ -42,6 +43,34 @@ bool Game::Start()
 		}
 		return false;
 	});
+
+	m_respawnLevel.Init("Assets/level3D/respawnLevel.tkl", [&](LevelObjectData& objData) {
+
+		if (objData.ForwardMatchName(L"Knight") == true) {
+			if (objData.number == 0){
+				Actor* m_actor;
+				m_actor->SetRespawnPos(objData.position,objData.number);
+				return true;
+			}
+			if (objData.number == 1) {
+				Actor* m_actor;
+				m_actor->SetRespawnPos(objData.position, objData.number);
+				return true;
+			}
+			if (objData.number == 2) {
+				Actor* m_actor;
+				m_actor->SetRespawnPos(objData.position, objData.number);
+				return true;
+			}
+			if (objData.number == 3) {
+				Actor* m_actor;
+				m_actor->SetRespawnPos(objData.position, objData.number);
+				return true;
+			}
+		}
+		return true;
+	});
+
 	//Œ•m‚Ìì¬
 	m_knightbase = NewGO<KnightBase>(0, "knightbase");
 	m_knightbase->SetSGame(this);

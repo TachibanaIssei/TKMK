@@ -5,9 +5,6 @@
 KnightBase::KnightBase()
 {
 	Lv=1;                    //レベル
-	//Hp=100;                    //ヒットポイント(体力)
-	//Atk=35;                   //攻撃力
-	//Speed=200.0f;                 //移動速度
 	AtkSpeed=20;              //攻撃速度
 	Cooltime=5;            //スキルのクールタイム
 	Point=0;                 //敵を倒して手に入れたポイント
@@ -61,8 +58,6 @@ bool KnightBase::Start()
 
 void KnightBase::Update()
 {
-
-	
 	/*if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		m_modelRender.PlayAnimation(enAnimationClip_Idle);
@@ -96,6 +91,12 @@ void KnightBase::Update()
 	{
 		m_animState = enKnightState_SecondAtk;
 	}*/
+
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		Death();
+	}
+
 	//
 	Move();
 	Attack();
@@ -200,7 +201,7 @@ void KnightBase::UltimateSkill()
 
 void KnightBase::Death()
 {
-
+	m_modelRender.SetPosition(m_respawnPos[0]);
 }
 
 void KnightBase::PlayAnimation()
@@ -248,10 +249,10 @@ void KnightBase::OnProcessCommonStateTransition()
 	
 	
 	//Aボタン押されたらレベル上がる
-	if (g_pad[0]->IsTrigger(enButtonA))
+	/*if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		LevelUp(LvUpStatus, status);
-	}
+	}*/
 
 	//Bボタン押されたら
 	if (g_pad[0]->IsTrigger(enButtonB))

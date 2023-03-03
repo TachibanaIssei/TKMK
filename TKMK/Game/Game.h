@@ -31,6 +31,7 @@ private:
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
+	Level3DRender m_respawnLevel;
 	FontRender m_fontRender;
 
 	Quaternion m_rotation = Quaternion::Identity;

@@ -25,18 +25,17 @@ void Actor::COOlTIME(float SkillCooltimer, bool skillstate)
 	//スキルが使用されたら
 	if (skillstate)
 	{
-		timer += g_gameTime->GetFrameDeltaTime();
+		m_timer += g_gameTime->GetFrameDeltaTime();
 		//timerがスキルのクールタイムより大きくなったら。
-		if (timer >= SkillCooltimer)
+		if (m_timer >= SkillCooltimer)
 		{
 			//スキル使用可能
 			skillstate = false;
-			timer = SkillCooltimer;
+			m_timer = SkillCooltimer;
 		}
 	}
 	
 }
-
 
 
 

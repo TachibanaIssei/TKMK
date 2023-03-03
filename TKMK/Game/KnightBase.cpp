@@ -13,7 +13,7 @@ KnightBase::KnightBase()
 	Point=0;                 //敵を倒して手に入れたポイント
 	GetExp=0;                //中立の敵を倒したときの経験値
 	ExpTable=10;              //経験値テーブル
-
+	respawnNumber = 0;        //リスポーンする座標の番号
 }
 
 KnightBase::~KnightBase()
@@ -97,6 +97,7 @@ void KnightBase::Update()
 		m_animState = enKnightState_SecondAtk;
 	}*/
 	//
+
 	Move();
 	Attack();
 	//回転処理
@@ -105,6 +106,12 @@ void KnightBase::Update()
 	ManageState();
 	//アニメーションの再生
 	PlayAnimation();
+
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		Death();
+	}
+
 	//モデルを動かす
 	m_modelRender.SetPosition(m_position);
 	//モデルのアプデ
@@ -200,7 +207,9 @@ void KnightBase::UltimateSkill()
 
 void KnightBase::Death()
 {
-
+	GetRespawnPos();
+	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
+	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 }
 
 void KnightBase::PlayAnimation()
@@ -217,7 +226,7 @@ void KnightBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_FirstAtk, 0.1f);
 		break;
 	case enKnightState_SecondAtk:
-		m_modelRender.PlayAnimation(enAnimationClip_SecondAtk);
+		m_modelRender.PlayAnimation(enAnimationClip_SecondAtk,0.1f);
 		break;
 	default:
 		break;
@@ -245,13 +254,11 @@ void KnightBase::ManageState()
 }
 void KnightBase::OnProcessCommonStateTransition()
 {
-	
-	
-	//Aボタン押されたらレベル上がる
-	if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		LevelUp(LvUpStatus, status);
-	}
+	////Aボタン押されたらレベル上がる
+	//if (g_pad[0]->IsTrigger(enButtonA))
+	//{
+	//	LevelUp(LvUpStatus, status);
+	//}
 
 	//Bボタン押されたら
 	if (g_pad[0]->IsTrigger(enButtonB))

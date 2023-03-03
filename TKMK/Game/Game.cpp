@@ -5,6 +5,7 @@
 #include "Rezult.h"
 #include "GameCamera.h"
 #include "KnightBase.h"
+#include "Actor.h"
 
 Game::Game()
 {
@@ -50,7 +51,6 @@ bool Game::Start()
 	m_gamecamera->SetKnight(m_knightbase);
 
 	
-
 	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
 	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
 	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);

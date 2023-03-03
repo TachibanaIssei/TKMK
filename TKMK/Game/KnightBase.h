@@ -3,7 +3,7 @@
 #include "Actor.h"
 class Game;
 
-class KnightBase:public Actor,public IGameObject
+class KnightBase:public Actor//,public IGameObject
 {
 public:
 	KnightBase();

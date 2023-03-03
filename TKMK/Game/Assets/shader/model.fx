@@ -18,9 +18,11 @@ cbuffer DirectionLightCB : register(b1)
     float3	lightDirection;	//ライトの方向
     float3	lightColor;		//ライトの色
     float3	CameraEyePos;	//カメラの座標を追加
-    float3	ptPosition;		//ポイントライトの位置
-    float3	ptColor;		//ポイントライトの色
-    float   ptRange;        //ポイントライトの影響範囲
+    float3  ambient;
+    
+    //float3	ptPosition;		//ポイントライトの位置
+    //float3	ptColor;		//ポイントライトの色
+    //float   ptRange;        //ポイントライトの影響範囲
 }
 
 ////////////////////////////////////////////////
@@ -142,44 +144,44 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	
     //ポイントライト
     //ポイントライトの光の向き
-    float3 ligDir = psIn.worldPos - ptPosition;
-    ligDir = normalize(ligDir);
-    //拡散反射光
-    float3 diffPoint = CalcLambertDiffuse(
-        ligDir,
-        ptColor,
-        psIn.normal
-    );
-    //鏡面反射光
-    float3 specPoint = CalcPhongSpecular(
-        ligDir,
-        ptColor,
-        psIn.worldPos,
-        psIn.normal
-    );
-    //ポイントライトとの距離計算
-    float3 distance = length(psIn.worldPos - ptPosition);
-    //影響率は距離に比例して小さくなる
-    float affect = 1.0f - 1.0f / ptRange * distance;
-    //影響力がマイナスにならないようにする
-    affect = max(0.0f, affect);
-    //影響を指数関数的にする
-    affect = pow(affect, 3.0f);
-    //減衰率を乗算して影響を弱める
-    diffPoint *= affect;
-    specPoint *= affect;
+    //float3 ligDir = psIn.worldPos - ptPosition;
+    //ligDir = normalize(ligDir);
+    ////拡散反射光
+    //float3 diffPoint = CalcLambertDiffuse(
+    //    ligDir,
+    //    ptColor,
+    //    psIn.normal
+    //);
+    ////鏡面反射光
+    //float3 specPoint = CalcPhongSpecular(
+    //    ligDir,
+    //    ptColor,
+    //    psIn.worldPos,
+    //    psIn.normal
+    //);
+    ////ポイントライトとの距離計算
+    //float3 distance = length(psIn.worldPos - ptPosition);
+    ////影響率は距離に比例して小さくなる
+    //float affect = 1.0f - 1.0f / ptRange * distance;
+    ////影響力がマイナスにならないようにする
+    //affect = max(0.0f, affect);
+    ////影響を指数関数的にする
+    //affect = pow(affect, 3.0f);
+    ////減衰率を乗算して影響を弱める
+    //diffPoint *= affect;
+    //specPoint *= affect;
     
-    //2つの反射光を合算して最終的な反射光を求める
-    float3 diffuseLight = diffPoint + diffDirection;
-    float3 specularLight = specPoint + specDirection;
+    ////2つの反射光を合算して最終的な反射光を求める
+    //float3 diffuseLight = diffPoint + diffDirection;
+    //float3 specularLight = specPoint + specDirection;
     
 	//拡散反射光と鏡面反射光を合成する
-    float3 light = diffuseLight + specularLight;
+    float3 light = diffDirection + specDirection + ambient;
 	
 	//環境光
-    light.x += 0.6f;
-    light.y += 0.6f;
-    light.z += 0.6f;
+    //light.x += 0.6f;
+    //light.y += 0.6f;
+    //light.z += 0.6f;
 	
     albedoColor.xyz *= light;
 	

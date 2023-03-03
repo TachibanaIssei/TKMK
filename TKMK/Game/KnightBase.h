@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Actor.h"
+//#include "Actor.h"
 class Game;
 
 class KnightBase:public Actor

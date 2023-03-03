@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "KnightBase.h"
+#include "Actor.h"
 
 
 KnightBase::KnightBase()

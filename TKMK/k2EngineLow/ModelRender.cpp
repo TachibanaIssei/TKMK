@@ -19,6 +19,8 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	{
 		//スケルトンを指定する
 		m_modelInitData.m_skeleton = &m_skeleton;
+
+		m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 	}
 	
 	//ディレクションライトの情報を作成

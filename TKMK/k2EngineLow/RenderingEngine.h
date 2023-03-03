@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Light.h"
+
 namespace nsK2EngineLow {
 	class ModelRender;
 	class SpriteRender;
 	class FontRender;
 	class RenderContext;
-	class Light;
 
 	class RenderingEngine
 	{
@@ -59,16 +60,36 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
-		Light* GetLight()
+		SceneLight& GetSceneLight()
 		{
-			return m_light;
+			return m_sceneLight;
+		}
+
+		/// <summary>
+		/// ディレクションライトを設定
+		/// </summary>
+		/// <param name="lightNo">ライト番号</param>
+		/// <param name="direction">ライト方向</param>
+		/// <param name="color">ライト色</param>
+		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
+		{
+			m_sceneLight.SetDirectionLight(lightNo, direction, color);
+		}
+
+		/// <summary>
+		/// 環境光を設定
+		/// </summary>
+		/// <param name="ambient">環境光</param>
+		void SetAmbient(Vector3 ambient)
+		{
+			m_sceneLight.SetAmbient(ambient);
 		}
 
 	private:
-		std::vector<ModelRender*>	m_modelList;											//モデルクラスのリスト
-		std::vector<SpriteRender*>	m_spriteList;											//スプライトクラスのリスト
-		std::vector<FontRender*>	m_fontList;												//フォントクラスのリスト
+		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
+		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
+		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
 
-		Light*						m_light			= nullptr;								//ライトクラス
+		SceneLight					m_sceneLight;				//シーンライト
 	};
 }

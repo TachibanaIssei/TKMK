@@ -1,13 +1,15 @@
 #pragma once
 namespace nsK2EngineLow {
+	const int MAX_DIRECTIONAL_LIGHT = 4;	//ディレクションライトの最大数
+
 	/// <summary>
 	/// ディレクションライト構造体
 	/// </summary>
 	struct DirectionalLight
 	{
-		Vector3 lightDirection;	//ライトの方向
-		Vector3 ligColor;		//ライトのカラー
-		Vector3 CameraEyePos;	//カメラ座標
+		Vector3 direction;	//ライトの方向
+		float pad0;
+		Vector3 color;		//ライトのカラー
 	};
 
 	/// <summary>
@@ -20,48 +22,32 @@ namespace nsK2EngineLow {
 		float	ptRange;		//影響範囲
 	};
 
-	class Light
+	struct Light
 	{
+		DirectionalLight directionalLight;	//ディレクションライトの配列
+		float pad0;
+		Vector3 cameraEyePos;	//カメラ座標
+		float pad1;
+		Vector3 ambientLight;	//環境光
+	};
+
+	class SceneLight {
 	public:
 		void Init();
-
-		/// <summary>
-		/// ディレクションライトを取得する
-		/// </summary>
-		/// <returns>ディレクションライト</returns>
-		DirectionalLight& GetDirectionalLight()
+		Light& GetSceneLight()
 		{
-			return m_directionLight;
+			return m_light;
 		}
-
-		/// <summary>
-		/// ディレクションライトを設定する
-		/// </summary>
-		/// <param name="dir">ライトの方向</param>
-		/// <param name="color">ライトの色</param>
-		void SetDirectionLight(Vector3 dir, Vector3 color = { 0.5f,0.5f,0.5f })
+		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
 		{
-			//ライトの方向
-			m_directionLight.lightDirection = dir;
-			//ライトの色
-			m_directionLight.ligColor = color;
-			//視点の位置を設定
-			m_directionLight.CameraEyePos = g_camera3D->GetPosition();
+			m_light.directionalLight.direction = direction;
+			m_light.directionalLight.color = color;
 		}
-		
-		void SetPointLight(Vector3 pos, Vector3 color = { 0.5f,0.5f,0.5 }, float range = 100.0f)
+		void SetAmbient(Vector3 ambient)
 		{
-			//ライトの位置
-			m_pointLight.ptPosition = pos;
-			//ライトの影響範囲
-			m_pointLight.ptRange = range;
-			//ライトの色
-			m_pointLight.ptColor = color;
-			
+			m_light.ambientLight = ambient;
 		}
-
 	private:
-		DirectionalLight			m_directionLight;		//ディレクションライト
-		PointLight					m_pointLight;			//ポイントライト
+		Light m_light;
 	};
 }

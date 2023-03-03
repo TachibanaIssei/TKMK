@@ -19,8 +19,8 @@ cbuffer DirectionLightCB : register(b1)
     float3	lightColor;		//ライトの色
     float3	CameraEyePos;	//カメラの座標を追加
     float3	ptPosition;		//ポイントライトの位置
-    float	ptRange;		//ポイントライトの影響範囲
     float3	ptColor;		//ポイントライトの色
+    float   ptRange;        //ポイントライトの影響範囲
 }
 
 ////////////////////////////////////////////////

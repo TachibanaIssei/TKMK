@@ -283,7 +283,7 @@ void KnightBase::Death()
 	//死亡ステート
 	m_animState = enKnightState_Death;
 	levelDown(LvUpStatus, status, Lv);
-	
+	status.Hp = status.MaxHp;
 }
 //アニメーション再生の処理
 void KnightBase::PlayAnimation()
@@ -340,20 +340,6 @@ void KnightBase::ManageState()
 //歩きアニメーションが再生されているなら。
 void KnightBase::OnProcessCommonStateTransition()
 {
-	////スティックの入力量があったら
-	//if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
-	//{
-	//	//走りステート
-	//	m_animState = enKnightState_Run;
-	//	return;
-	//}
-	//else
-	//{
-	//	//なかったら待機ステート
-	//	m_animState = enKnightState_Idle;
-	//
-	//}
-
 	//Bボタン押されたら攻撃する
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{

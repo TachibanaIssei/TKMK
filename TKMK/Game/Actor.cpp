@@ -50,6 +50,7 @@ void Actor::GetRespawnPos()
 /// <param name="Level">現在のレベル</param>
 void Actor::LevelUp(LvUpStatus& lus,Status& nowStatus,int& Level)
 {
+	nowStatus.MaxHp+= lus.LvHp;
 	nowStatus.Hp += lus.LvHp;
 	nowStatus.Atk += lus.LvAtk;
 	nowStatus.Speed += lus.LvSpeed;
@@ -64,12 +65,17 @@ void Actor::LevelUp(LvUpStatus& lus,Status& nowStatus,int& Level)
 /// <param name="Level">現在のレベル</param>
 void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level)
 {
+	//もしレベルが0なら1にする
+	if (Level == 0) {
+		Level = 1; 
+		return;
+	}
+
+	nowStatus.MaxHp-= lus.LvHp;
 	nowStatus.Hp -= lus.LvHp;
 	nowStatus.Atk -= lus.LvAtk;
 	nowStatus.Speed -= lus.LvSpeed;
 	Level--;
-	//もしレベルが0なら1にする
-	if (Level == 0) { Level = 1; }
 }
 
 void Actor::COOlTIME(float SkillCooltimer, bool skillstate)

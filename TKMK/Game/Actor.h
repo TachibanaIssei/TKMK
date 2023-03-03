@@ -14,11 +14,11 @@ protected:
 	/// 初期ステータス
 	/// </summary>
 	struct Status {
+		int MaxHp;                 //最大ヒットポイント
 		int Hp;                    //ヒットポイント(体力)
 		int Atk;                   //攻撃力
 		float Speed;               //移動速度
 	};
-
 
 	/// <summary>
 	/// レベルアップ時に増加するステータス

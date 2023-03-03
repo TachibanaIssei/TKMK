@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Actor.h"
+
+
+
 class Game;
 
 class KnightBase:public Actor
@@ -90,7 +93,7 @@ private:
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
 	//初期ステータス
-	Status status = { 150,35,150.0f };
+	Status status = { 150,150,35,150.0f };
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
 	AnimationState m_animState = enKnightState_Idle;

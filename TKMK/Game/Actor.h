@@ -35,6 +35,8 @@ public:
 	/// </summary>
 	void GetRespawnPos();
 
+	virtual void SetRespawn() = 0;
+
 	/// <summary>
 	/// 攻撃の処理,純粋仮想関数なので派生クラスで実装
 	/// </summary>
@@ -74,7 +76,16 @@ public:
 	/// </summary>
 	/// <param name="lus">レベルアップ時に増加するステータス</param>
 	/// <param name="nowStatus">現在のステータス</param>
-	void LevelUp(LvUpStatus& lus, Status& nowStatus);
+	/// <param name="Level">現在のレベル</param>
+	void LevelUp(LvUpStatus& lus, Status& nowStatus,int& Level);
+
+	/// <summary>
+	/// レベルダウンの処理
+	/// </summary>
+	/// /// <param name="lus">レベルアップ時に増加するステータス</param>
+	/// <param name="nowStatus">現在のステータス</param>
+	/// <param name="Level">現在のレベル</param>
+	void levelDown(LvUpStatus& lus, Status& nowStatus, int& Level);
 
 	/// <summary>
 	/// 死んだときの処理

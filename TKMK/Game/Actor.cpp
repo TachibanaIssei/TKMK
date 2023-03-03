@@ -42,14 +42,34 @@ void Actor::GetRespawnPos()
 		});
 }
 
-//レベルアップ時に増加するステータス
-//現在のステータス
-void Actor::LevelUp(LvUpStatus& lus,Status& nowStatus)
+/// <summary>
+/// レベルアップの処理
+/// </summary>
+/// <param name="lus">レベルアップ時に増加するステータス</param>
+/// <param name="nowStatus">現在のステータス</param>
+/// <param name="Level">現在のレベル</param>
+void Actor::LevelUp(LvUpStatus& lus,Status& nowStatus,int& Level)
 {
-
 	nowStatus.Hp += lus.LvHp;
 	nowStatus.Atk += lus.LvAtk;
 	nowStatus.Speed += lus.LvSpeed;
+	Level++;
+}
+
+/// <summary>
+/// レベルダウンの処理
+/// </summary>
+/// /// <param name="lus">レベルアップ時に増加するステータス</param>
+/// <param name="nowStatus">現在のステータス</param>
+/// <param name="Level">現在のレベル</param>
+void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level)
+{
+	nowStatus.Hp -= lus.LvHp;
+	nowStatus.Atk -= lus.LvAtk;
+	nowStatus.Speed -= lus.LvSpeed;
+	Level--;
+	//もしレベルが0なら1にする
+	if (Level == 0) { Level = 1; }
 }
 
 void Actor::COOlTIME(float SkillCooltimer, bool skillstate)

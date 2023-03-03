@@ -18,6 +18,7 @@
     <ClCompile Include="Rezult.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="KnightBase.cpp" />
+    <ClCompile Include="GameUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -31,5 +32,6 @@
     <ClInclude Include="Rezult.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="KnightBase.h" />
+    <ClInclude Include="GameUI.h" />
   </ItemGroup>
 </Project>

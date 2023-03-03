@@ -132,7 +132,7 @@ void KnightBase::ExpProcess(int Exp)
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
 	GetExp += Exp;
 	//手に入れた経験値より経験値テーブルのほうが大きかったら
-	if (GetExp <= ExpTable) { return; }      //抜け出す
+	if (GetExp < ExpTable) { return; }      //抜け出す
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
@@ -282,8 +282,8 @@ void KnightBase::Death()
 {
 	//死亡ステート
 	m_animState = enKnightState_Death;
-	//hpをmaxにする
 	levelDown(LvUpStatus, status, Lv);
+	
 }
 //アニメーション再生の処理
 void KnightBase::PlayAnimation()

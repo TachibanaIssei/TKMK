@@ -1,30 +1,6 @@
 /*!
  * @brief	シンプルなモデルシェーダー。
  */
-
-
-////////////////////////////////////////////////
-// 定数バッファ。
-////////////////////////////////////////////////
-//モデル用の定数バッファ
-cbuffer ModelCb : register(b0){
-	float4x4 mWorld;
-	float4x4 mView;
-	float4x4 mProj;
-};
-
-cbuffer DirectionLightCB : register(b1)
-{
-    float3	lightDirection;	//ライトの方向
-    float3	lightColor;		//ライトの色
-    float3	CameraEyePos;	//カメラの座標を追加
-    float3  ambient;
-    
-    //float3	ptPosition;		//ポイントライトの位置
-    //float3	ptColor;		//ポイントライトの色
-    //float   ptRange;        //ポイントライトの影響範囲
-}
-
 ////////////////////////////////////////////////
 // 関数宣言
 ////////////////////////////////////////////////
@@ -54,6 +30,40 @@ struct SPSIn{
     float3 worldPos		: TEXCOORD1;	//ワールド座標
 	
 };
+
+//ディレクションライト構造体
+struct DirectionLight
+{
+    float3 direction;   //ライトの方向
+    float3 color;       //ライトの色
+};
+
+struct PointLight
+{
+    float3  position;   //ライトの座標
+    int     isUse;      //ライトが使用中?
+    float3  color;      //ライトの色
+    float3  range;      //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
+};
+
+////////////////////////////////////////////////
+// 定数バッファ。
+////////////////////////////////////////////////
+//モデル用の定数バッファ
+cbuffer ModelCb : register(b0)
+{
+    float4x4 mWorld;
+    float4x4 mView;
+    float4x4 mProj;
+};
+
+cbuffer DirectionLightCB : register(b1)
+{
+    DirectionLight  directionLight;
+    PointLight      pointLight;
+    float3          CameraEyePos;   //カメラの座標
+    float3          ambient;        //環境光
+}
 
 ////////////////////////////////////////////////
 // グローバル変数。
@@ -125,64 +135,65 @@ SPSIn VSSkinMain( SVSIn vsIn )
 /// ピクセルシェーダーのエントリー関数。
 /// </summary>
 float4 PSMain( SPSIn psIn ) : SV_Target0
-{
-	float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
-	
+{	
 	//ディレクションライトの拡散反射光
     float3 diffDirection = CalcLambertDiffuse(
-        lightDirection,
-        lightColor,
+        directionLight.direction,
+        directionLight.color,
         psIn.normal);
 	
+    float3 diffuseLight = diffDirection;
+    
 	//ディレクションライトの鏡面反射光
     float3 specDirection = CalcPhongSpecular(
-        lightDirection,
-        lightColor,
+        directionLight.direction,
+        directionLight.color,
         psIn.worldPos,
         psIn.normal
         );
+    
+    float3 specularLight = specDirection;
 	
     //ポイントライト
-    //ポイントライトの光の向き
-    //float3 ligDir = psIn.worldPos - ptPosition;
-    //ligDir = normalize(ligDir);
-    ////拡散反射光
-    //float3 diffPoint = CalcLambertDiffuse(
-    //    ligDir,
-    //    ptColor,
-    //    psIn.normal
-    //);
-    ////鏡面反射光
-    //float3 specPoint = CalcPhongSpecular(
-    //    ligDir,
-    //    ptColor,
-    //    psIn.worldPos,
-    //    psIn.normal
-    //);
-    ////ポイントライトとの距離計算
-    //float3 distance = length(psIn.worldPos - ptPosition);
-    ////影響率は距離に比例して小さくなる
-    //float affect = 1.0f - 1.0f / ptRange * distance;
-    ////影響力がマイナスにならないようにする
-    //affect = max(0.0f, affect);
-    ////影響を指数関数的にする
-    //affect = pow(affect, 3.0f);
-    ////減衰率を乗算して影響を弱める
-    //diffPoint *= affect;
-    //specPoint *= affect;
+    if (pointLight.isUse)
+    {
+        //ポイントライトの光の向き
+        float3 ligDir = psIn.worldPos - pointLight.position;
+        ligDir = normalize(ligDir);
+        //拡散反射光
+        float3 diffPoint = CalcLambertDiffuse(
+        ligDir,
+        pointLight.color,
+        psIn.normal
+        );
+        //鏡面反射光
+        float3 specPoint = CalcPhongSpecular(
+        ligDir,
+        pointLight.color,
+        psIn.worldPos,
+        psIn.normal
+        );
+        //ポイントライトとの距離計算
+        float3 distance = length(psIn.worldPos - pointLight.position);
+        //影響率は距離に比例して小さくなる
+        float affect = 1.0f - 1.0f / pointLight.range.x * distance;
+        //影響力がマイナスにならないようにする
+        affect = max(0.0f, affect);
+        //影響を指数関数的にする
+        affect = pow(affect, pointLight.range.y);
+        //減衰率を乗算して影響を弱める
+        diffPoint *= affect;
+        specPoint *= affect;
     
-    ////2つの反射光を合算して最終的な反射光を求める
-    //float3 diffuseLight = diffPoint + diffDirection;
-    //float3 specularLight = specPoint + specDirection;
+        //2つの反射光を合算して最終的な反射光を求める
+        diffuseLight += diffPoint;
+        specularLight += specPoint;
+    }
     
 	//拡散反射光と鏡面反射光を合成する
-    float3 light = diffDirection + specDirection + ambient;
+    float3 light = diffuseLight + specularLight + ambient;
 	
-	//環境光
-    //light.x += 0.6f;
-    //light.y += 0.6f;
-    //light.z += 0.6f;
-	
+    float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
     albedoColor.xyz *= light;
 	
 	return albedoColor;

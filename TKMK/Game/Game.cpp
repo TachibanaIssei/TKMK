@@ -6,6 +6,7 @@
 #include "GameCamera.h"
 #include "KnightBase.h"
 #include "Actor.h"
+//#include "GameUI.h"
 
 Game::Game()
 {
@@ -50,6 +51,8 @@ bool Game::Start()
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	m_gamecamera->SetKnight(m_knightbase);
 
+	//GameUIÇÃê∂ê¨
+	//m_gameUI = NewGO<GameUI>(0, "gameUI");
 	
 	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
 	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
@@ -58,11 +61,11 @@ bool Game::Start()
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
 
-	m_fontRender.SetText(L"hello");
+	/*m_fontRender.SetText(L"hello");
 	m_fontRender.SetPosition(-500.0f, 200.0f);
 	m_fontRender.SetScale(3.0f);
 	m_fontRender.SetRotation(90.0f);
-	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);
+	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);*/
 
 
 	//ìñÇΩÇËîªíËÇóLå¯âªÇ∑ÇÈÅB

@@ -6,6 +6,7 @@ class BackGround;
 class Rezult;
 class GameCamera;
 class KnightBase;
+//class GameUI;
 
 class Game : public IGameObject
 {
@@ -40,6 +41,7 @@ private:
 	Rezult* m_rezult=nullptr;
 	GameCamera* m_gamecamera = nullptr;
 	KnightBase* m_knightbase = nullptr;
+	//GameUI* m_gameUI = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

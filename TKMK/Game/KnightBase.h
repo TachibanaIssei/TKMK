@@ -56,6 +56,11 @@ public:
 	void Rotation();
 
 	/// <summary>
+	/// 当たり判定の処理
+	/// </summary>
+	void Collisiton();
+
+	/// <summary>
 	/// アニメーションのステートの管理
 	/// </summary>
 	void ManageState();
@@ -104,7 +109,10 @@ public:
 	/// 現在のレベルをint型の変数に代入する
 	/// </summary>
 	/// <param name="level"></param>
-	inline void SetLevel(int& level) { level = Lv; }
+	int SetLevel(int& level){
+		level = Lv;
+		return level;
+	}
 
 
 private:
@@ -132,6 +140,7 @@ private:
 		enKnightState_Damege,
 		enKnightState_Death,
 		enKnightState_Skill,
+		enKnightState_UltimateSkill,
 	};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -140,6 +149,8 @@ private:
 		enAnimationClip_SecondAtk,
 		enAnimationClip_Damege,
 		enAnimationClip_Death,
+		/*enAnimationClip_Skill,
+		enAnimationClip_UltimateSkill,*/
 		enAnimationClip_Num,
 	};
 	Game* m_game;

@@ -15,6 +15,13 @@ GameUI::~GameUI()
 
 bool GameUI::Start()
 {
+	m_knightbase = FindGO<KnightBase>("m_knightbase");
+
+	m_LevelFont.SetPosition(400.0f, 500.0f, 0.0f);
+	m_LevelFont.SetScale(6.0f);
+	m_LevelFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//m_LevelFont.SetRotation(0.0f);
+
 	return true;
 }
 

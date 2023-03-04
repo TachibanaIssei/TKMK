@@ -316,7 +316,6 @@ void KnightBase::Death()
 	ExpReset(Lv,GetExp);
 	//一つ下のレベルの経験値テーブルにする
 	ExpTableChamge(Lv,ExpTable);
-	int a = 0;
 }
 //アニメーション再生の処理
 void KnightBase::PlayAnimation()

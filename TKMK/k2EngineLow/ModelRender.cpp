@@ -48,8 +48,8 @@ void nsK2EngineLow::ModelRender::Update()
 
 void nsK2EngineLow::ModelRender::MakeDirectionData()
 {
-	m_modelInitData.m_expandConstantBuffer = g_renderingEngine->GetLight();
-	m_modelInitData.m_expandConstantBufferSize = sizeof(*g_renderingEngine->GetLight());
+	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
+	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
 }
 
 void nsK2EngineLow::ModelRender::InitSkeleton(const char* filePath)

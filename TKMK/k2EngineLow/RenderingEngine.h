@@ -85,6 +85,21 @@ namespace nsK2EngineLow {
 			m_sceneLight.SetAmbient(ambient);
 		}
 
+		/// <summary>
+		/// ポイントライトを設定する
+		/// </summary>
+		/// <param name="pos">ライトの位置</param>
+		/// <param name="color">ライトの色</param>
+		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
+		void SetPointLight(Vector3 pos, Vector3 color, Vector3 range)
+		{
+			m_sceneLight.SetPointLight(pos, color, range);
+		}
+		void SetPointLightPosition(Vector3 pos)
+		{
+			m_sceneLight.SetPointLightPosition(pos);
+		}
+
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト

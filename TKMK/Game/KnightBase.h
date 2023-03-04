@@ -58,7 +58,7 @@ public:
 	/// <summary>
 	/// 当たり判定の処理
 	/// </summary>
-	void Collisiton();
+	void AtkCollisiton();
 
 	/// <summary>
 	/// アニメーションのステートの管理
@@ -162,7 +162,6 @@ private:
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
-
 	//初期ステータス 最大HP、HP、攻撃力、スピード
 	Status status = { 150,150,35,150.0f };
 	//レベルアップ時に増加するステータス

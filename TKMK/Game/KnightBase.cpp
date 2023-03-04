@@ -9,7 +9,7 @@ KnightBase::KnightBase()
 	Cooltime=5;            //スキルのクールタイム
 	Point=0;                 //敵を倒して手に入れたポイント
 	GetExp=0;                //中立の敵を倒したときの経験値
-	ExpTable=10;              //経験値テーブル
+	ExpTable=5;              //経験値テーブル
 	respawnNumber = 0;        //リスポーンする座標の番号
 }
 
@@ -132,7 +132,7 @@ void KnightBase::ExpProcess(int Exp)
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
 	GetExp += Exp;
 	//手に入れた経験値より経験値テーブルのほうが大きかったら
-	if (GetExp < ExpTable) { return; }      //抜け出す
+	if (GetExp < ExpTable) return;      //抜け出す
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
@@ -239,6 +239,24 @@ void KnightBase::Attack()
 }
 
 /// <summary>
+/// 攻撃時の当たり判定の処理
+/// </summary>
+void KnightBase::AtkCollisiton()
+{
+	////コリジョンオブジェクトを作成する。
+	//auto collisionObject = NewGO<CollisionObject>(0);
+	//Vector3 collisionPosition = m_position;
+	////座標をプレイヤーの少し前に設定する。
+	//collisionPosition += m_forward * 50.0f;
+	////ボックス状のコリジョンを作成する。
+	//collisionObject->CreateBox(collisionPosition, //座標。
+	//	Quaternion::Identity, //回転。
+	//	Vector3(110.0f, 15.0f, 15.0f) //大きさ。
+	//);
+	//collisionObject->SetName("player_attack");
+}
+
+/// <summary>
 /// ダメージを受けたときの処理
 /// </summary>
 /// <param name="damege">敵のダメージ</param>
@@ -266,6 +284,8 @@ void KnightBase::Skill()
 //必殺技を使用したときの処理
 void KnightBase::UltimateSkill()
 {
+	//レベルを3下げる
+	levelDown(LvUpStatus, status, Lv, 3);
 
 }
 
@@ -281,13 +301,22 @@ void KnightBase::SetRespawn()
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 }
 
-//自身が倒されたときの処理
+/// <summary>
+/// 自身が倒されたときの処理
+/// </summary>
 void KnightBase::Death()
 {
 	//死亡ステート
 	m_animState = enKnightState_Death;
-	levelDown(LvUpStatus, status, Lv);
+	//レベルを１下げる
+	levelDown(LvUpStatus, status, Lv,1);
+	//HPを最大にする
 	status.Hp = status.MaxHp;
+	//経験値をリセット
+	ExpReset(Lv,GetExp);
+	//一つ下のレベルの経験値テーブルにする
+	ExpTableChamge(Lv,ExpTable);
+	int a = 0;
 }
 //アニメーション再生の処理
 void KnightBase::PlayAnimation()

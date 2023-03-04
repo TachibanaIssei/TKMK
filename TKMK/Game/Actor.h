@@ -82,10 +82,24 @@ public:
 	/// <summary>
 	/// レベルダウンの処理
 	/// </summary>
-	/// /// <param name="lus">レベルアップ時に増加するステータス</param>
+	/// <param name="lus">レベルアップ時に増加するステータス</param>
 	/// <param name="nowStatus">現在のステータス</param>
 	/// <param name="Level">現在のレベル</param>
-	void levelDown(LvUpStatus& lus, Status& nowStatus, int& Level);
+	void levelDown(LvUpStatus& lus, Status& nowStatus, int& Level,int downLevel);
+
+	/// <summary>
+    /// リスポーンしたときのレベルによって経験値を変更する
+    /// </summary>
+    /// <param name="Lv">現在のレベル</param>
+	/// <param name="getExp">経験値</param>
+	void ExpReset(int& Lv, int& getExp);
+
+	/// <summary>
+    /// 経験値テーブルを変更する
+    /// </summary>
+    /// <param name="Lv">現在のレベル</param>
+    /// <param name="expTable">経験値テーブル</param>
+	void ExpTableChamge(int& Lv,int& expTable);
 
 	/// <summary>
 	/// 死んだときの処理
@@ -116,6 +130,7 @@ protected:
 	int ExpTable;              //経験値テーブル
 	int respawnNumber;         //リスポーンする座標の番号
 	bool isDeath = false;      //死んだかどうかの判定
+	
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 
 

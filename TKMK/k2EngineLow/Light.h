@@ -17,11 +17,24 @@ namespace nsK2EngineLow {
 	/// </summary>
 	struct PointLight
 	{
-		Vector3 ptPosition;		//位置
+		Vector3 position;		//位置
 		int isUse = false;		//使用中フラグ
-		Vector3 ptColor;		//カラー
+		Vector3 color;			//カラー
 		float pad1;
-		Vector3	ptRange;		//xに影響範囲,yに影響率に累乗するパラメータ
+		Vector3	range;			//xに影響範囲,yに影響率に累乗するパラメータ
+	};
+
+	struct SpotLight 
+	{
+		Vector3 position;	//位置
+		float pad0;
+		Vector3 angle;		//xに照射角度,yに影響に累乗するパラメータ
+		float pad1;
+		Vector3 color;		//色
+		int isUse = false;	//使用中フラグ
+		Vector3 range;		//xに影響範囲,yに影響率に累乗するパラメータ
+		float pad2;
+		Vector3 direction;	//照射方向
 	};
 
 	/// <summary>
@@ -31,10 +44,12 @@ namespace nsK2EngineLow {
 	{
 		DirectionalLight directionalLight;	//ディレクションライトの配列
 		float pad0;
-		PointLight pointLight;
+		PointLight pointLight;	//ポイントライト
 		float pad1;
-		Vector3 cameraEyePos;	//カメラ座標
+		SpotLight spotLight;	//スポットライト
 		float pad2;
+		Vector3 cameraEyePos;	//カメラ座標
+		float pad3;
 		Vector3 ambientLight;	//環境光
 	};
 
@@ -72,9 +87,9 @@ namespace nsK2EngineLow {
 		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
 		void SetPointLight(Vector3 pos, Vector3 color,Vector3 range)
 		{
-			m_light.pointLight.ptPosition = pos;
-			m_light.pointLight.ptColor = color;
-			m_light.pointLight.ptRange = range;
+			m_light.pointLight.position = pos;
+			m_light.pointLight.color = color;
+			m_light.pointLight.range = range;
 			m_light.pointLight.isUse = true;
 		}
 		/// <summary>
@@ -83,7 +98,25 @@ namespace nsK2EngineLow {
 		/// <param name="pos"></param>
 		void SetPointLightPosition(Vector3 pos)
 		{
-			m_light.pointLight.ptPosition = pos;
+			m_light.pointLight.position = pos;
+		}
+
+		/// <summary>
+		/// スポットライトを設定する
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="color"></param>
+		/// <param name="range"></param>
+		/// <param name="direction"></param>
+		/// <param name="angle"></param>
+		void SetSpotLight(Vector3 pos, Vector3 color, Vector3 range, Vector3 direction, Vector3 angle)
+		{
+			m_light.spotLight.position = pos;
+			m_light.spotLight.color = color;
+			m_light.spotLight.range = range;
+			m_light.spotLight.direction = direction;
+			m_light.spotLight.angle = angle;
+			m_light.spotLight.isUse = true;
 		}
 	private:
 		Light m_light;

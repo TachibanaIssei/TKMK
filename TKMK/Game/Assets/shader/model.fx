@@ -35,9 +35,19 @@ struct DirectionLight
 struct PointLight
 {
     float3  position;   //ライトの座標
-    int     isUse;      //ライトが使用中?
+    int     isUse;      //使用中フラグ
     float3  color;      //ライトの色
     float3  range;      //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
+};
+
+struct SpotLight
+{
+    float3  position;    //ライトの座標
+    float3  angle;       //照射角度
+    float3  color;       //色
+    int     isUse;       //使用中フラグ
+    float3  range;       //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
+    float3  direction;   //照射方向
 };
 
 ////////////////////////////////////////////////
@@ -55,6 +65,7 @@ cbuffer LightCB : register(b1)
 {
     DirectionLight  directionLight;
     PointLight      pointLight;
+    SpotLight       spotLight;
     float3          CameraEyePos;   //カメラの座標
     float3          ambient;        //環境光
 }
@@ -148,9 +159,48 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
         pointLig = CalcLigFromPointLight(psIn);
     }
     
+    //スポットライトによるライティングの計算
+    //サーフェイスによる入射するスポットライトの光の向き
+    float3 ligDir = psIn.worldPos - spotLight.position;
+    ligDir = normalize(ligDir);
+    //減衰なしのLambert拡散反射光を計算
+    float3 diffSpotLight = CalcLambertDiffuse(
+        ligDir,
+        spotLight.color,
+        psIn.normal
+    );
+    //減衰なしのPhong鏡面反射光を計算
+    float3 specSpotLight = CalcPhongSpecular(
+        ligDir,
+        spotLight.color,
+        psIn.worldPos,
+        psIn.normal
+    );
+    //距離による影響率を計算する
+    float3 distance = length(psIn.worldPos - spotLight.position);
+    float affect = 1.0f - 1.0f / spotLight.range.x * distance;
+    if(affect < 0.0f)
+    {
+        affect = 0.0f;
+    }
+    affect = pow(affect, spotLight.range.y);
+    diffSpotLight *= affect;
+    specSpotLight *= affect;
+    
+    float angle = dot(ligDir, spotLight.direction);
+    angle = abs(acos(angle));
+    affect = 1.0f - 1.0 / spotLight.angle.x * angle;
+    if(affect < 0.0f)
+    {
+        affect = 0.0f;
+    }
+    affect = pow(affect, spotLight.angle.y);
+    diffSpotLight *= affect;
+    specSpotLight *= affect;
+    
 	//拡散反射光と鏡面反射光を合成する
     float3 light = directionLig + pointLig + ambient;
-	
+    light += diffSpotLight + specSpotLight;
     float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
     albedoColor.xyz *= light;
 	

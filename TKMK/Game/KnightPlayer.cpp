@@ -24,11 +24,10 @@ void KnightPlayer::Update()
 	Move();
 
 	//Bボタンが押されたら。
-	/*if (g_pad[0]->IsTrigger(enButtonB))
+	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		if(ComboState==0)
-		FirstAtkState = true;
-	}*/
+		AtkState =true;
+	}
 	
 	//攻撃処理
 	Attack();
@@ -36,18 +35,36 @@ void KnightPlayer::Update()
 	//回転処理
 	Rotation();
 
+	//クールタイムの処理
+	COOlTIME(Cooltime, SkillState);
+
+	//スキルを発動する処理
+	//Bボタンが押されたら
+	if (SkillState==false&&g_pad[0]->IsTrigger(enButtonB))
+	{
+		Skill();
+		SkillState = true;
+	}
+
+	//必殺技を発動する処理
+	//Xボタンが押されたら
+	if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	{
+		UltimateSkill();
+	}
+
 	//レベルアップする
-	if (g_pad[0]->IsTrigger(enButtonA))
+	/*if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		if(Lv!=5)
 		ExpProcess(exp);
-	}
+	}*/
 
 	//ダメージを受ける
-	if (g_pad[0]->IsTrigger(enButtonX))
+	/*if (g_pad[0]->IsTrigger(enButtonX))
 	{
 		Dameged(dddd);
-	}
+	}*/
 
 	//ステート
 	ManageState();

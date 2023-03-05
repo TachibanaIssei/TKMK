@@ -134,16 +134,15 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 }
 
 /// <summary>
-/// 
+/// スキルを使用した後のクールタイムの処理
 /// </summary>
-/// <param name="SkillCooltimer"></param>
-/// <param name="skillstate"></param>
-void Actor::COOlTIME(float SkillCooltimer, bool skillstate)
+/// <param name="SkillCooltimer">スキルのクールタイム</param>
+/// <param name="skillstate">スキルを使用したかの判定</param>
+void Actor::COOlTIME(float SkillCooltimer, bool& skillstate)
 {
 	//スキルが使用されたら
-	if (skillstate)
+	if (skillstate==true)
 	{
-		timer += g_gameTime->GetFrameDeltaTime();
 		//timerがスキルのクールタイムより大きくなったら。
 		if (timer >= SkillCooltimer)
 		{
@@ -151,6 +150,7 @@ void Actor::COOlTIME(float SkillCooltimer, bool skillstate)
 			skillstate = false;
 			timer = SkillCooltimer;
 		}
+		else timer += g_gameTime->GetFrameDeltaTime();
 	}
 	
 }

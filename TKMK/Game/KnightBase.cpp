@@ -185,20 +185,83 @@ void KnightBase::Rotation()
 /// </summary>
 void KnightBase::Attack()
 {
+	if (AtkState == true) {
+
+		//1段目のアタック
+		if (ComboState == 0) {
+			m_animState = enKnightState_FirstAtk;
+			//コンボを1増やす
+			ComboState++;
+			//FirstAtkState = false;
+			return;
+		}
+
+		ComboTimer += g_gameTime->GetFrameDeltaTime();
+
+		//2段目のアタック
+		if (ComboState == 1) {
+			if (ComboTimer >= 2.0f && ComboTimer <= 4.0f) {
+				m_animState = enKnightState_SecondAtk;
+				ComboState = 2;
+				/*ComboState = 0;
+				ComboTimer = 0;*/
+				return;
+			}
+		}
+		
+		//
+		if (ComboTimer > 4.0f) {
+			AtkState = false;
+			ComboState = 0;
+			ComboTimer = 0;
+		}
+	}
+
 	//switch (ComboState)
 	//{
-	//case 0:
+	//case 1:
 	//	//Bボタン押されたら攻撃する
-	//	if (FirstAtkState == true)
-	//	{
+	//	/*if (FirstAtkState == true)
+	//	{*/
 	//		m_animState = enKnightState_FirstAtk;
 	//		//コンボを1増やす
-	//		ComboState = 1;
+	//		//ComboState = 1;
 	//		FirstAtkState = false;
+	//	//}
+	//	break;
+
+	//case 2:
+	//	ComboTimer += g_gameTime->GetFrameDeltaTime();
+
+	//	//一段目のアタックのアニメーションが再生されてから1秒～3秒の間なら
+	//	if (ComboTimer >= 2.0f && ComboTimer <= 4.0f)
+	//	{
+	//		/*if (ComboState == 1 && g_pad[0]->IsTrigger(enButtonB))
+	//		{*/
+	//			m_animState = enKnightState_SecondAtk;
+	//			ComboState = 0;
+	//			ComboTimer = 0;
+	//		//}
+	//	}
+	//	else if(ComboTimer > 4.0f)
+	//	{
+	//		ComboState = 0;
+	//		ComboTimer = 0;
 	//	}
 	//	break;
 
-	//case 1:
+	//default:
+	//	break;
+	//}
+
+	//一段目のアタックのアニメーションが再生されていないなら。
+	//if (m_animState != enKnightState_FirstAtk)
+	//{
+	//	//抜け出す。
+	//	return;
+	//}
+	//else
+	//{
 	//	ComboTimer += g_gameTime->GetFrameDeltaTime();
 
 	//	//一段目のアタックのアニメーションが再生されてから1秒～3秒の間なら
@@ -211,36 +274,8 @@ void KnightBase::Attack()
 	//			ComboTimer = 0;
 	//		}
 	//	}
-	//	else if(ComboTimer > 6.0f)
-	//	{
-	//		ComboState = 0;
-	//		ComboTimer = 0;
-	//	}
-	//	break;
+
 	//}
-
-	//一段目のアタックのアニメーションが再生されていないなら。
-	if (m_animState != enKnightState_FirstAtk)
-	{
-		//抜け出す。
-		return;
-	}
-	else
-	{
-		ComboTimer += g_gameTime->GetFrameDeltaTime();
-
-		//一段目のアタックのアニメーションが再生されてから1秒～3秒の間なら
-		if (ComboTimer >= 4.0f && ComboTimer <= 6.0f)
-		{
-			if (ComboState == 1 && g_pad[0]->IsTrigger(enButtonB))
-			{
-				m_animState = enKnightState_SecondAtk;
-				ComboState = 0;
-				ComboTimer = 0;
-			}
-		}
-
-	}
 	
 }
 
@@ -284,19 +319,19 @@ void KnightBase::Dameged(int damege)
 /// </summary>
 void KnightBase::Skill()
 {
-	m_animState = enKnightState_Skill;
-
+	//m_animState = enKnightState_Skill;
+	m_animState = enKnightState_SecondAtk;
 	//当たり判定作成
 }
 
 /// <summary>
-/// 必殺技を使用したときの処理
+/// レベル4で必殺技を使用したときの処理
 /// </summary>
 void KnightBase::UltimateSkill()
 {
 	//レベルを3下げる
 	levelDown(LvUpStatus, status, Lv, 3);
-
+	m_animState = enKnightState_SecondAtk;
 }
 
 /// <summary>
@@ -393,15 +428,15 @@ void KnightBase::ManageState()
 /// </summary>
 void KnightBase::OnProcessCommonStateTransition()
 {
-		//Bボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonB))
-		{
-			m_animState = enKnightState_FirstAtk;
-			//コンボを1増やす
-			ComboState = 1;
-			//FirstAtkState = false;
-			return;
-		}
+		////Bボタン押されたら攻撃する
+		//if (g_pad[0]->IsTrigger(enButtonB))
+		//{
+		//	m_animState = enKnightState_FirstAtk;
+		//	//コンボを1増やす
+		//	ComboState = 1;
+		//	//FirstAtkState = false;
+		//	return;
+		//}
 
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)

@@ -181,7 +181,8 @@ protected:
 	//コンボが継続する時間を記録する
 	float ComboTimer = 0;
 	//一段目のアタックをしたかの判定
-	bool FirstAtkState = false;
+	bool AtkState = false;
+
 
 	//獲得した経験値仮
 	int exp=5;

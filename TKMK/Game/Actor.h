@@ -63,7 +63,7 @@ public:
 	/// </summary>
 	/// <param name="SkillCooltimer">スキルのクールタイム</param>
 	/// <param name="skillstate">スキルを使用したかの判定</param>
-	void COOlTIME(float SkillCooltimer,bool skillstate);
+	void COOlTIME(float SkillCooltimer,bool& skillstate);
 	
 	/// <summary>
 	/// 現在のレベルを取得する関数

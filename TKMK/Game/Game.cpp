@@ -7,6 +7,7 @@
 #include "KnightBase.h"
 #include "Actor.h"
 //#include "GameUI.h"
+#include "KnightPlayer.h"
 
 Game::Game()
 {
@@ -21,7 +22,7 @@ Game::~Game()
 	}
 
 	DeleteGO(m_gamecamera);
-	DeleteGO(m_knightbase);
+	DeleteGO(m_knightplayer);
 }
 
 bool Game::Start()
@@ -45,11 +46,14 @@ bool Game::Start()
 		return false;
 	});
 	//Œ•m‚Ìì¬
-	m_knightbase = NewGO<KnightBase>(0, "knightbase");
-	m_knightbase->SetSGame(this);
+	/*m_knightbase = NewGO<KnightBase>(0, "knightbase");
+	m_knightbase->SetSGame(this);*/
+	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
+	m_knightplayer->SetSGame(this);
+
 	//ƒQ[ƒ€ƒJƒƒ‰‚Ì¶¬
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
-	m_gamecamera->SetKnight(m_knightbase);
+	m_gamecamera->SetKnight(m_knightplayer);
 
 	//GameUI‚Ì¶¬
 	//m_gameUI = NewGO<GameUI>(0, "gameUI");

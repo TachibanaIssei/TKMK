@@ -18,7 +18,7 @@ KnightBase::~KnightBase()
 
 }
 
-bool KnightBase::Start()
+void KnightBase::SetModel()
 {
 	//プレイヤー
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Knight/Knight_idle.tka");
@@ -54,74 +54,40 @@ bool KnightBase::Start()
 		35.0f,
 		m_position
 	);
-
-	return true;
 }
 
-void KnightBase::Update()
-{
-
-	
-	/*if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		m_modelRender.PlayAnimation(enAnimationClip_Idle);
-	}*/
-	//重力
-	//m_moveSpeed.y -= 980.0f * 1.0f / 60.0f;
-
-	//if (g_pad[0]->IsTrigger(enButtonA))
-	//{
-	//	m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.1f);
-
-	//	//ジャンプさせる
-	//	m_moveSpeed.y += 500.0f;
-
-	//}
-	//if (g_pad[0]->IsTrigger(enButtonB))
-	//{
-	//	m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
-	//}
-	//if (g_pad[0]->IsTrigger(enButtonX))
-	//{
-	//	m_modelRender.PlayAnimation(enAnimationClip_Jump, 0.1f);
-	//}
-
-	//レベルアップの処理
-	////Aボタン押されたらレベル上がる
-	//if (g_pad[0]->IsTrigger(enButtonA))
-	//{
-	//	LevelUp(LvUpStatus, status);
-	//}
-	//移動処理
-	Move();
-	//攻撃処理
-	Attack();
-	//回転処理
-	Rotation();
-	//
-	//レベルアップする
-	if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		if(Lv!=5)
-		ExpProcess(exp);
-	}
-
-
-	//ダメージを受ける
-	if (g_pad[0]->IsTrigger(enButtonX))
-	{
-		Dameged(dddd);
-	}
-	//ステート
-	ManageState();
-	//アニメーションの再生
-	PlayAnimation();
-
-	//モデルを動かす
-	m_modelRender.SetPosition(m_position);
-	//モデルのアプデ
-	m_modelRender.Update();
-}
+//void KnightBase::Update()
+//{
+//	//移動処理
+//	Move();
+//	//攻撃処理
+//	Attack();
+//	//回転処理
+//	Rotation();
+//	//
+//	//レベルアップする
+//	if (g_pad[0]->IsTrigger(enButtonA))
+//	{
+//		if(Lv!=5)
+//		ExpProcess(exp);
+//	}
+//
+//
+//	//ダメージを受ける
+//	if (g_pad[0]->IsTrigger(enButtonX))
+//	{
+//		Dameged(dddd);
+//	}
+//	//ステート
+//	ManageState();
+//	//アニメーションの再生
+//	PlayAnimation();
+//
+//	//モデルを動かす
+//	m_modelRender.SetPosition(m_position);
+//	//モデルのアプデ
+//	m_modelRender.Update();
+//}
 
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
@@ -156,7 +122,9 @@ void KnightBase::ExpProcess(int Exp)
 	}
 }
 
-//移動の処理
+/// <summary>
+/// 移動処理
+/// </summary>
 void KnightBase::Move()
 {
 	//攻撃、ダメージ、死亡アニメーションが再生中なら
@@ -197,7 +165,9 @@ void KnightBase::Move()
 	}
 }
 
-//剣士の回転処理
+/// <summary>
+/// 回転処理
+/// </summary>
 void KnightBase::Rotation()
 {
 	//xかzの移動速度があったら(スティックの入力があったら)。
@@ -210,9 +180,45 @@ void KnightBase::Rotation()
 	}
 }
 
-//攻撃の処理
+/// <summary>
+/// 攻撃処理
+/// </summary>
 void KnightBase::Attack()
 {
+	//switch (ComboState)
+	//{
+	//case 0:
+	//	//Bボタン押されたら攻撃する
+	//	if (FirstAtkState == true)
+	//	{
+	//		m_animState = enKnightState_FirstAtk;
+	//		//コンボを1増やす
+	//		ComboState = 1;
+	//		FirstAtkState = false;
+	//	}
+	//	break;
+
+	//case 1:
+	//	ComboTimer += g_gameTime->GetFrameDeltaTime();
+
+	//	//一段目のアタックのアニメーションが再生されてから1秒～3秒の間なら
+	//	if (ComboTimer >= 4.0f && ComboTimer <= 6.0f)
+	//	{
+	//		if (ComboState == 1 && g_pad[0]->IsTrigger(enButtonB))
+	//		{
+	//			m_animState = enKnightState_SecondAtk;
+	//			ComboState = 0;
+	//			ComboTimer = 0;
+	//		}
+	//	}
+	//	else if(ComboTimer > 6.0f)
+	//	{
+	//		ComboState = 0;
+	//		ComboTimer = 0;
+	//	}
+	//	break;
+	//}
+
 	//一段目のアタックのアニメーションが再生されていないなら。
 	if (m_animState != enKnightState_FirstAtk)
 	{
@@ -273,7 +279,9 @@ void KnightBase::Dameged(int damege)
 	}
 }
 
-//スキルを使用したときの処理
+/// <summary>
+/// スキルを使用したときの処理
+/// </summary>
 void KnightBase::Skill()
 {
 	m_animState = enKnightState_Skill;
@@ -281,7 +289,9 @@ void KnightBase::Skill()
 	//当たり判定作成
 }
 
-//必殺技を使用したときの処理
+/// <summary>
+/// 必殺技を使用したときの処理
+/// </summary>
 void KnightBase::UltimateSkill()
 {
 	//レベルを3下げる
@@ -289,7 +299,9 @@ void KnightBase::UltimateSkill()
 
 }
 
-//
+/// <summary>
+/// リスポーンする座標のセット
+/// </summary>
 void KnightBase::SetRespawn()
 {
 	//リスポーンする座標0番の取得
@@ -317,7 +329,10 @@ void KnightBase::Death()
 	//一つ下のレベルの経験値テーブルにする
 	ExpTableChamge(Lv,ExpTable);
 }
-//アニメーション再生の処理
+
+/// <summary>
+/// アニメーション再生の処理
+/// </summary>
 void KnightBase::PlayAnimation()
 {
 	switch (m_animState)
@@ -343,7 +358,10 @@ void KnightBase::PlayAnimation()
 		break;
 	}
 }
-//アニメーションのステートの処理
+
+/// <summary>
+/// アニメーションのステートの処理
+/// </summary>
 void KnightBase::ManageState()
 {
 	switch (m_animState)
@@ -369,17 +387,21 @@ void KnightBase::ManageState()
 
 	}
 }
-//歩きアニメーションが再生されているなら。
+
+/// <summary>
+/// 歩きアニメーションが再生されているなら。
+/// </summary>
 void KnightBase::OnProcessCommonStateTransition()
 {
-	//Bボタン押されたら攻撃する
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		m_animState = enKnightState_FirstAtk;
-		//コンボを1増やす
-		ComboState = 1;
-		return;
-	}
+		//Bボタン押されたら攻撃する
+		if (g_pad[0]->IsTrigger(enButtonB))
+		{
+			m_animState = enKnightState_FirstAtk;
+			//コンボを1増やす
+			ComboState = 1;
+			//FirstAtkState = false;
+			return;
+		}
 
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
@@ -396,17 +418,26 @@ void KnightBase::OnProcessCommonStateTransition()
 	}
 	
 }
-//Idleアニメーションが再生されているときの処理
+
+/// <summary>
+/// Idleアニメーションが再生されているときの処理
+/// </summary>
 void KnightBase::OnProcessIdleStateTransition()
 {
 	OnProcessCommonStateTransition();
 }
-//Runアニメーションが再生されているときの処理
+
+/// <summary>
+/// Runアニメーションが再生されているときの処理
+/// </summary>
 void KnightBase::OnProcessRunStateTransition()
 {
 	OnProcessCommonStateTransition();
 }
-//FirstAtkアニメーションが再生されているときの処理
+
+/// <summary>
+/// FirstAtkアニメーションが再生されているときの処理
+/// </summary>
 void KnightBase::OnProcessFirstAtkStateTransition()
 {
 	//一段目のアタックのアニメーション再生が終わったら。
@@ -417,7 +448,10 @@ void KnightBase::OnProcessFirstAtkStateTransition()
 		OnProcessCommonStateTransition();
 	}
 }
-//SecondAtkアニメーションが再生されているときの処理
+
+/// <summary>
+/// SecondAtkアニメーションが再生されているときの処理
+/// </summary>
 void KnightBase::OnProcessSecondAtkStateTransition()
 {
 	//2段目のアタックのアニメーション再生が終わったら。
@@ -428,7 +462,10 @@ void KnightBase::OnProcessSecondAtkStateTransition()
 		OnProcessCommonStateTransition();
 	}
 }
-//Damegeアニメーションが再生されているときの処理
+
+/// <summary>
+/// Damegeアニメーションが再生されているときの処理
+/// </summary>
 void KnightBase::OnProcessDamegeStateTransition()
 {
 	//ダメージを受けたときのアニメーション再生が終わったら。
@@ -439,7 +476,10 @@ void KnightBase::OnProcessDamegeStateTransition()
 		OnProcessCommonStateTransition();
 	}
 }
-//Deathアニメーションが再生されているときの処理
+
+/// <summary>
+/// Deathアニメーションが再生されているときの処理
+/// </summary>
 void KnightBase::OnProcessDeathStateTransition()
 {
 	//ダメージを受けたときのアニメーション再生が終わったら。
@@ -452,7 +492,12 @@ void KnightBase::OnProcessDeathStateTransition()
 		OnProcessCommonStateTransition();
 	}
 }
-//
+
+/// <summary>
+/// アニメーションイベントの再生
+/// </summary>
+/// <param name="clipName"></param>
+/// <param name="eventName"></param>
 void KnightBase::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	if (wcscmp(eventName, L"Jump") == 0)
@@ -461,7 +506,7 @@ void KnightBase::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventN
 	}
 }
 
-void KnightBase::Render(RenderContext& rc)
-{
-	m_modelRender.Draw(rc);
-}
+//void KnightBase::Render(RenderContext& rc)
+//{
+//	m_modelRender.Draw(rc);
+//}

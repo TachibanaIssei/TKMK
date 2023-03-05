@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "KnightBase.h"
+#include "KnightPlayer.h"
 
 GameCamera::GameCamera()
 {
@@ -28,8 +29,10 @@ bool GameCamera::Start()
 void GameCamera::Update()
 {
 	Vector3 TargetPos;
-
-	TargetPos = m_knightbase->GetPosition();
+	/// <summary>
+	/// ////////////////////
+	/// </summary>
+	TargetPos = m_knightplayer->GetPosition();
 	TargetPos.y += 80.0f;
 
 

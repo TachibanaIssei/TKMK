@@ -10,11 +10,19 @@ class KnightBase:public Actor
 {
 public:
 	KnightBase();
-	~KnightBase();
-	bool Start();
-	void Update();
+	virtual ~KnightBase();
+
+	/// <summary>
+	/// モデルのInit、キャラコンの初期化
+	/// </summary>
+	/// <param name="Model"></param>
+	/// <param name="charCon"></param>
+	/// bool Start()
+	void SetModel();
+
+	//void Update();
 	void Move();
-	void Render(RenderContext& rc);
+	//void Render(RenderContext& rc);
 
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
@@ -82,7 +90,8 @@ public:
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	inline Vector3 GetPosition() { return m_position; }
+	//inline Vector3 GetPosition() { return m_position; }
+	virtual Vector3 GetPosition() = 0;
 
 	void SetSGame(Game* Cgame)
 	{
@@ -115,7 +124,7 @@ public:
 	}
 
 
-private:
+protected:
 	void PlayAnimation();
 	//共通のステートの遷移処理
 	void OnProcessCommonStateTransition();
@@ -171,7 +180,8 @@ private:
 	int ComboState = 0;
 	//コンボが継続する時間を記録する
 	float ComboTimer = 0;
-
+	//一段目のアタックをしたかの判定
+	bool FirstAtkState = false;
 
 	//獲得した経験値仮
 	int exp=5;

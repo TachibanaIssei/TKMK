@@ -6,6 +6,7 @@ class BackGround;
 class Rezult;
 class GameCamera;
 class KnightBase;
+class KnightPlayer;
 //class GameUI;
 
 class Game : public IGameObject
@@ -42,6 +43,7 @@ private:
 	GameCamera* m_gamecamera = nullptr;
 	KnightBase* m_knightbase = nullptr;
 	//GameUI* m_gameUI = nullptr;
+	KnightPlayer* m_knightplayer = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

@@ -2,6 +2,7 @@
 
 class Game;
 class KnightBase;
+class KnightPlayer;
 
 class GameCamera:public IGameObject
 {
@@ -18,18 +19,21 @@ public:
 	{
 		return m_game;
 	}
-	void SetKnight(KnightBase* knightbase)
+
+	void SetKnight(KnightPlayer* knightplayer)
 	{
-		m_knightbase = knightbase;
+		m_knightplayer = knightplayer;
 	}
-	KnightBase* GetKnight()
+
+	KnightPlayer* GetKnight()
 	{
-		return m_knightbase;
+		return m_knightplayer;
 	}
 
 
 	Game* m_game = nullptr;
 	KnightBase* m_knightbase = nullptr;
+	KnightPlayer* m_knightplayer = nullptr;
 	Vector3 m_toCameraPos = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Quaternion m_rotation = Quaternion::Identity;

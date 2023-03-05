@@ -3,7 +3,6 @@
 
 KnightPlayer::KnightPlayer()
 {
-	//恐らくキャラコンのエラー
 	SetModel();
 }
 
@@ -70,22 +69,6 @@ void KnightPlayer::Update()
 	ManageState();
 	//アニメーションの再生
 	PlayAnimation();
-
-	//
-	//OnProcessCommonStateTransition();
-	////待機のステートの遷移処理
-	//OnProcessIdleStateTransition();
-	////歩きのステートの遷移処理
-	//OnProcessRunStateTransition();
-	////一段目のアタックのステートの遷移処理
-	//OnProcessFirstAtkStateTransition();
-	////二段目のアタックのステートの遷移処理
-	//OnProcessSecondAtkStateTransition();
-	////ダメージを受けたときのステートの遷移処理
-	//OnProcessDamegeStateTransition();
-	////HPが0になったときのステートの遷移処理
-	//OnProcessDeathStateTransition();
-
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();

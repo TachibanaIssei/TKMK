@@ -10,7 +10,6 @@ public:
 	KnightPlayer();
 	~KnightPlayer();
 
-	//bool Start();
 	void Update();
 	inline Vector3 GetPosition() { return m_position; }
 

@@ -20,17 +20,31 @@ public:
 	/// bool Start()
 	void SetModel();
 
-	//void Update();
+	/// <summary>
+	/// 移動処理
+	/// </summary>
 	void Move();
-	//void Render(RenderContext& rc);
-
+	
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
 	/// </summary>
 	/// <param name="GetExp">中立の敵の経験値</param>
 	void ExpProcess(int Exp);
 
+	/// <summary>
+	/// 
+	/// </summary>
 	void Attack();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void SecondAtk();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void LastAtk();
 
 	/// <summary>
 	/// ダメージを受けたときの処理
@@ -44,22 +58,17 @@ public:
 	void Skill();
 
 	/// <summary>
-	/// 
+	/// 必殺技を発動したときの処理
 	/// </summary>
 	void UltimateSkill();
 
 	/// <summary>
-	/// 
+	/// リスポーンする座標のセット
 	/// </summary>
 	void SetRespawn();
 
 	/// <summary>
-	/// 
-	/// </summary>
-	void Death();
-
-	/// <summary>
-	/// 
+	/// 自身が倒されたときの処理
 	/// </summary>
 	void Rotation();
 
@@ -81,16 +90,14 @@ public:
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	/// <summary>
-	/// 
+	/// 座標のセット
 	/// </summary>
 	/// <param name="PS"></param>
 	inline void SetPosition(Vector3 PS) { m_position = PS; }
 
 	/// <summary>
-	/// 
+	/// 剣士の座標を返り値として返す
 	/// </summary>
-	/// <returns></returns>
-	//inline Vector3 GetPosition() { return m_position; }
 	virtual Vector3 GetPosition() = 0;
 
 	void SetSGame(Game* Cgame)

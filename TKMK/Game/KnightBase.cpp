@@ -279,6 +279,16 @@ void KnightBase::Attack()
 	
 }
 
+void KnightBase::SecondAtk()
+{
+
+}
+
+void KnightBase::LastAtk()
+{
+
+}
+
 /// <summary>
 /// UŒ‚‚Ì“–‚½‚è”»’è‚Ìˆ—
 /// </summary>

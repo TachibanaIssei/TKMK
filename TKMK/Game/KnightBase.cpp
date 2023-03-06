@@ -11,6 +11,8 @@ KnightBase::KnightBase()
 	GetExp=0;                //中立の敵を倒したときの経験値
 	ExpTable=5;              //経験値テーブル
 	respawnNumber = 0;        //リスポーンする座標の番号
+
+	
 }
 
 KnightBase::~KnightBase()
@@ -27,7 +29,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_FirstAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
 	m_animationClips[enAnimationClip_FirstAtk].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_Attack_second.tka");
+	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_SecondAtk.tka");
 	m_animationClips[enAnimationClip_SecondAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
@@ -37,6 +39,11 @@ void KnightBase::SetModel()
 	//剣士モデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 
+	//「mixamorig:RightHand」(右手)ボーンのID(番号)を取得する。
+	m_swordBoneId = m_modelRender.FindBoneID(L"mixamorig:RightHand");
+	//攻撃時のアニメーションイベント剣士の座標のID(番号)を取得する。
+	AtkEndPosID = m_modelRender.FindBoneID(L"movePos");
+
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);
 	//m_modelRender.SetScale(Vector3(0.1f, 0.1f, 0.1f));
@@ -44,50 +51,12 @@ void KnightBase::SetModel()
 	m_rot.SetRotationY(0.0f);
 	m_modelRender.SetRotation(m_rot);
 
-	/*m_modelRender.AddAnimationEvent([&](const wchar_t* clipName,
-		const wchar_t* eventName) {
-			OnAnimationEvent(clipName, eventName);
-		});*/
-
 	m_charCon.Init(
 		15.0f,
 		35.0f,
 		m_position
 	);
 }
-
-//void KnightBase::Update()
-//{
-//	//移動処理
-//	Move();
-//	//攻撃処理
-//	Attack();
-//	//回転処理
-//	Rotation();
-//	//
-//	//レベルアップする
-//	if (g_pad[0]->IsTrigger(enButtonA))
-//	{
-//		if(Lv!=5)
-//		ExpProcess(exp);
-//	}
-//
-//
-//	//ダメージを受ける
-//	if (g_pad[0]->IsTrigger(enButtonX))
-//	{
-//		Dameged(dddd);
-//	}
-//	//ステート
-//	ManageState();
-//	//アニメーションの再生
-//	PlayAnimation();
-//
-//	//モデルを動かす
-//	m_modelRender.SetPosition(m_position);
-//	//モデルのアプデ
-//	m_modelRender.Update();
-//}
 
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
@@ -185,17 +154,24 @@ void KnightBase::Rotation()
 /// </summary>
 void KnightBase::AtkCollisiton()
 {
-	////コリジョンオブジェクトを作成する。
-	//auto collisionObject = NewGO<CollisionObject>(0);
-	//Vector3 collisionPosition = m_position;
-	////座標をプレイヤーの少し前に設定する。
-	//collisionPosition += m_forward * 50.0f;
-	////ボックス状のコリジョンを作成する。
-	//collisionObject->CreateBox(collisionPosition, //座標。
-	//	Quaternion::Identity, //回転。
-	//	Vector3(110.0f, 15.0f, 15.0f) //大きさ。
-	//);
-	//collisionObject->SetName("player_attack");
+	//コリジョンオブジェクトを作成する。
+	auto collisionObject = NewGO<CollisionObject>(0);
+	Vector3 collisionPosition = m_position;
+	//座標をプレイヤーの少し前に設定する。
+	//collisionPosition += forward * 50.0f;
+	//ボックス状のコリジョンを作成する。
+	collisionObject->CreateBox(collisionPosition, //座標。
+		Quaternion::Identity, //回転。
+		Vector3(110.0f, 15.0f, 15.0f) //大きさ。
+	);
+	collisionObject->SetName("player_attack");
+
+	//「Sword」ボーンのワールド行列を取得する。
+	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+
+	//matrix.MakeRotationZ(90.0f);
+	//「Sword」ボーンのワールド行列をコリジョンに適用する。
+	collisionObject->SetWorldMatrix(matrix);
 }
 
 /// <summary>

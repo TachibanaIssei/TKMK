@@ -81,7 +81,7 @@ void KnightPlayer::Attack()
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_animState = enKnightState_FirstAtk;
-
+			
 			//FirstAtkFlag = true;
 			//コンボを1増やす
 			ComboState++;
@@ -106,39 +106,7 @@ void KnightPlayer::Attack()
 	}
 
 
-	////一段目のアタックのアニメーションが再生されていないなら。
-	//if (ComboState<1/*m_animState != enKnightState_FirstAtk*/)
-	//{
-	//	//抜け出す。
-	//	return;
-	//}
-	//
-	//{
-	//	ComboTimer += g_gameTime->GetFrameDeltaTime();
-
-	//	//一段目のアタックのアニメーションが再生されてから1秒～3秒の間なら
-	//	if (ComboTimer >= 1.5f && ComboTimer <= 3.0f)
-	//	{
-
-	//		if (g_pad[0]->IsTrigger(enButtonA))
-	//		{
-	//			SecondAtkState = true;
-	//			/*m_animState = enKnightState_SecondAtk;
-	//			ComboState = 0;
-	//			ComboTimer = 0;*/
-	//		}
-	//	}
-	//	else if(ComboTimer > 3.0f) {
-	//	/*	ComboState = 0;
-	//		ComboTimer = 0;
-	//		AtkState = false;*/
-	//		/*if (m_modelRender.IsPlayingAnimation())
-	//		{
-	//			m_modelRender.PlayAnimation();
-	//		}*/
-	//	}
-
-	//}
+	if(AtkCollistionFlag ==true)AtkCollisiton();
 }
 
 /// <summary>
@@ -151,17 +119,25 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	if (wcscmp(eventName, L"FirstAttack_Start") == 0)
 	{
 		FirstAtkFlag = true;
+		AtkCollistionFlag = true;
 	}
 
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
 	{
 		SecondAtkStartFlag = true;
+		AtkCollistionFlag = true;
+	}
+
+	if (wcscmp(eventName, L"LastAttack_Start") == 0)
+	{
+		AtkCollistionFlag = true;
 	}
 
 		if (wcscmp(eventName, L"FirstAttack_End") == 0)
 		{
 			FirstAtkFlag = false;
 			AtkState = false;
+			AtkCollistionFlag = false;
 			//ボタンが押されていなかったら
 				if (SecondAtkFlag == false)
 				{
@@ -174,6 +150,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			SecondAtkFlag = false;
 			SecondAtkStartFlag = false;
 			AtkState = false;
+			AtkCollistionFlag = false;
 			//ボタンが押されていなかったら
 			if (LastAtkFlag == false)
 			{
@@ -185,6 +162,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		{
 			LastAtkFlag = false;
 			AtkState = false;
+			AtkCollistionFlag = false;
 		}
 
 }

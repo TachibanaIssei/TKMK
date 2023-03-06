@@ -11,6 +11,11 @@ public:
 	~KnightPlayer();
 
 	void Update();
+
+	void Attack();
+
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
 	inline Vector3 GetPosition() { return m_position; }
 
 	void SetSGame(Game* Cgame)
@@ -26,8 +31,10 @@ public:
 private:
 	Game* m_game;
 
-	//bool FirstAtkState = false;
-
+	bool FirstAtkFlag = false;
+	bool SecondAtkFlag = false;
+	bool SecondAtkStartFlag = false;
+	bool LastAtkFlag = false;
 
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード

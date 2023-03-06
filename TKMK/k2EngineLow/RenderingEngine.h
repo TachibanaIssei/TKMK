@@ -75,6 +75,14 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight.SetDirectionLight(lightNo, direction, color);
 		}
+		/// <summary>
+		/// ディレクションライトの光の方向を取得する
+		/// </summary>
+		/// <returns>光の方向</returns>
+		Vector3& GetDirLigDirection()
+		{
+			return m_sceneLight.GetDirLigDirection();
+		}
 
 		/// <summary>
 		/// 環境光を設定

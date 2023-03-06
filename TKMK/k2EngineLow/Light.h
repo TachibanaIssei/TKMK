@@ -72,6 +72,15 @@ namespace nsK2EngineLow {
 			m_light.directionalLight.color = color;
 		}
 		/// <summary>
+		/// ディレクションライトの光の方向を取得する
+		/// </summary>
+		/// <returns>光の方向</returns>
+		Vector3& GetDirLigDirection()
+		{
+			return m_light.directionalLight.direction;
+		}
+
+		/// <summary>
 		/// 環境光を設定する
 		/// </summary>
 		/// <param name="ambient">環境光の強さ</param>

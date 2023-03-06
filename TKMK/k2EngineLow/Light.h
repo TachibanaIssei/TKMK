@@ -118,6 +118,14 @@ namespace nsK2EngineLow {
 			m_light.spotLight.angle = angle;
 			m_light.spotLight.isUse = true;
 		}
+		void SetSpotLightPosition(Vector3 pos)
+		{
+			m_light.spotLight.position = pos;
+		}
+		Vector3& GetSpotLightDirection()
+		{
+			return m_light.spotLight.direction;
+		}
 	private:
 		Light m_light;
 	};

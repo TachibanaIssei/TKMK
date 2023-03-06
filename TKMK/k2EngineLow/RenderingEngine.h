@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Light.h"
+
 namespace nsK2EngineLow {
 	class ModelRender;
 	class SpriteRender;
 	class FontRender;
 	class RenderContext;
-	class Light;
 
 	class RenderingEngine
 	{
@@ -59,16 +60,70 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
-		Light* GetLight()
+		SceneLight& GetSceneLight()
 		{
-			return m_light;
+			return m_sceneLight;
 		}
 
-	private:
-		std::vector<ModelRender*>	m_modelList;											//モデルクラスのリスト
-		std::vector<SpriteRender*>	m_spriteList;											//スプライトクラスのリスト
-		std::vector<FontRender*>	m_fontList;												//フォントクラスのリスト
+		/// <summary>
+		/// ディレクションライトを設定
+		/// </summary>
+		/// <param name="lightNo">ライト番号</param>
+		/// <param name="direction">ライト方向</param>
+		/// <param name="color">ライト色</param>
+		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
+		{
+			m_sceneLight.SetDirectionLight(lightNo, direction, color);
+		}
 
-		Light*						m_light			= nullptr;								//ライトクラス
+		/// <summary>
+		/// 環境光を設定
+		/// </summary>
+		/// <param name="ambient">環境光</param>
+		void SetAmbient(Vector3 ambient)
+		{
+			m_sceneLight.SetAmbient(ambient);
+		}
+
+		/// <summary>
+		/// ポイントライトを設定する
+		/// </summary>
+		/// <param name="pos">ライトの位置</param>
+		/// <param name="color">ライトの色</param>
+		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
+		void SetPointLight(Vector3 pos, Vector3 color, Vector3 range)
+		{
+			m_sceneLight.SetPointLight(pos, color, range);
+		}
+		void SetPointLightPosition(Vector3 pos)
+		{
+			m_sceneLight.SetPointLightPosition(pos);
+		}
+		/// <summary>
+		/// スポットライトを設定する
+		/// </summary>
+		/// <param name="pos">位置</param>
+		/// <param name="color">色</param>
+		/// <param name="range">xに影響範囲,yに影響範囲に累乗するパラメータ</param>
+		/// <param name="direction">照射方向</param>
+		/// <param name="angle">xは照射角度,ｙは影響に累乗するパラメータ</param>
+		void SetSpotLight(Vector3 pos, Vector3 color, Vector3 range, Vector3 direction, Vector3 angle)
+		{
+			m_sceneLight.SetSpotLight(pos, color, range, direction, angle);
+		}
+		void SetSpotLightPosition(Vector3 pos)
+		{
+			m_sceneLight.SetSpotLightPosition(pos);
+		}
+		Vector3& GetSpotLightDirection()
+		{
+			return m_sceneLight.GetSpotLightDirection();
+		}
+	private:
+		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
+		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
+		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
+
+		SceneLight					m_sceneLight;				//シーンライト
 	};
 }

@@ -3,9 +3,7 @@
 
 void nsK2EngineLow::RenderingEngine::Init()
 {
-	//ライトクラスのインスタンスを作成
-	m_light = new Light;
-	m_light->Init();
+	m_sceneLight.Init();
 }
 
 void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)

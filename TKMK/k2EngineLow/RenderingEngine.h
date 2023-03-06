@@ -111,6 +111,14 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight.SetSpotLight(pos, color, range, direction, angle);
 		}
+		void SetSpotLightPosition(Vector3 pos)
+		{
+			m_sceneLight.SetSpotLightPosition(pos);
+		}
+		Vector3& GetSpotLightDirection()
+		{
+			return m_sceneLight.GetSpotLightDirection();
+		}
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト

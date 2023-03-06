@@ -33,6 +33,7 @@ struct DirectionLight
     float3 color;       //ライトの色
 };
 
+//ポイントライト構造体
 struct PointLight
 {
     float3  position;   //ライトの座標
@@ -41,6 +42,7 @@ struct PointLight
     float3  range;      //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
 };
 
+//スポットライト構造体
 struct SpotLight
 {
     float3  position;    //ライトの座標
@@ -51,6 +53,14 @@ struct SpotLight
     float3  direction;   //照射方向
 };
 
+//半球ライト構造体
+struct  HemisphereLight
+{
+    float3 groundColor;     //照り返しのライト
+    int isUse;
+    float3 skyColor;        //天球ライト
+    float3 groundNormal;    //地面の法線
+};
 ////////////////////////////////////////////////
 // 定数バッファ。
 ////////////////////////////////////////////////
@@ -67,6 +77,7 @@ cbuffer LightCB : register(b1)
     DirectionLight  directionLight;
     PointLight      pointLight;
     SpotLight       spotLight;
+    HemisphereLight hemisphereLight;
     float3          CameraEyePos;   //カメラの座標
     float3          ambient;        //環境光
 }
@@ -86,6 +97,7 @@ float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldP
 float3 CalcLigFromDirectionLight(SPSIn psIn);
 float3 CalcLigFromPointLight(SPSIn psIn);
 float3 CalcLigFromSpotLight(SPSIn psIn);
+float3 CalcLigFromHemisphereLight(SPSIn psIn);
 
 ////////////////////////////////////////////////
 // 関数定義。
@@ -170,8 +182,14 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
         spotLig = CalcLigFromSpotLight(psIn);
     }
     
+    float3 hemiLight = { 0.0f, 0.0f, 0.0f };
+    if (hemisphereLight.isUse)
+    {
+        hemiLight = CalcLigFromHemisphereLight(psIn);
+    }
+    
 	//拡散反射光と鏡面反射光を合成する
-    float3 light = directionLig + pointLig + spotLig + ambient;
+    float3 light = directionLig + pointLig + spotLig + hemiLight + ambient;
     
     float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
     albedoColor.xyz *= light;
@@ -324,4 +342,12 @@ float3 CalcLigFromSpotLight(SPSIn psIn)
     specSpotLight *= affect;
     
     return diffSpotLight + specSpotLight;
+}
+
+float3 CalcLigFromHemisphereLight(SPSIn psIn)
+{
+    float t = dot(psIn.normal, hemisphereLight.groundNormal);
+    t = (t + 1.0f) / 2.0f;
+    float3 hemiLight = lerp(hemisphereLight.groundColor, hemisphereLight.skyColor, t);
+    return hemiLight;
 }

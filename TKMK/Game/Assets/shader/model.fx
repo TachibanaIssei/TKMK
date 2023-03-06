@@ -84,6 +84,7 @@ float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 norma
 float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal);
 float3 CalcLigFromDirectionLight(SPSIn psIn);
 float3 CalcLigFromPointLight(SPSIn psIn);
+float3 CalcLigFromSpotLight(SPSIn psIn);
 
 ////////////////////////////////////////////////
 // 関数定義。
@@ -160,47 +161,15 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
     }
     
     //スポットライトによるライティングの計算
-    //サーフェイスによる入射するスポットライトの光の向き
-    float3 ligDir = psIn.worldPos - spotLight.position;
-    ligDir = normalize(ligDir);
-    //減衰なしのLambert拡散反射光を計算
-    float3 diffSpotLight = CalcLambertDiffuse(
-        ligDir,
-        spotLight.color,
-        psIn.normal
-    );
-    //減衰なしのPhong鏡面反射光を計算
-    float3 specSpotLight = CalcPhongSpecular(
-        ligDir,
-        spotLight.color,
-        psIn.worldPos,
-        psIn.normal
-    );
-    //距離による影響率を計算する
-    float3 distance = length(psIn.worldPos - spotLight.position);
-    float affect = 1.0f - 1.0f / spotLight.range.x * distance;
-    if(affect < 0.0f)
+    float3 spotLig = { 0.0f, 0.0f, 0.0f };
+    if (spotLight.isUse)
     {
-        affect = 0.0f;
+        spotLig = CalcLigFromSpotLight(psIn);
     }
-    affect = pow(affect, spotLight.range.y);
-    diffSpotLight *= affect;
-    specSpotLight *= affect;
-    
-    float angle = dot(ligDir, spotLight.direction);
-    angle = abs(acos(angle));
-    affect = 1.0f - 1.0 / spotLight.angle.x * angle;
-    if(affect < 0.0f)
-    {
-        affect = 0.0f;
-    }
-    affect = pow(affect, spotLight.angle.y);
-    diffSpotLight *= affect;
-    specSpotLight *= affect;
     
 	//拡散反射光と鏡面反射光を合成する
-    float3 light = directionLig + pointLig + ambient;
-    light += diffSpotLight + specSpotLight;
+    float3 light = directionLig + pointLig + spotLig + ambient;
+    
     float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
     albedoColor.xyz *= light;
 	
@@ -299,4 +268,47 @@ float3 CalcLigFromPointLight(SPSIn psIn)
     specPoint *= affect;
 
     return diffPoint + specPoint;
+}
+
+float3 CalcLigFromSpotLight(SPSIn psIn)
+{
+    //サーフェイスによる入射するスポットライトの光の向き
+    float3 ligDir = psIn.worldPos - spotLight.position;
+    ligDir = normalize(ligDir);
+    //減衰なしのLambert拡散反射光を計算
+    float3 diffSpotLight = CalcLambertDiffuse(
+        ligDir,
+        spotLight.color,
+        psIn.normal
+    );
+    //減衰なしのPhong鏡面反射光を計算
+    float3 specSpotLight = CalcPhongSpecular(
+        ligDir,
+        spotLight.color,
+        psIn.worldPos,
+        psIn.normal
+    );
+    //距離による影響率を計算する
+    float3 distance = length(psIn.worldPos - spotLight.position);
+    float affect = 1.0f - 1.0f / spotLight.range.x * distance;
+    if (affect < 0.0f)
+    {
+        affect = 0.0f;
+    }
+    affect = pow(affect, spotLight.range.y);
+    diffSpotLight *= affect;
+    specSpotLight *= affect;
+    
+    float angle = dot(ligDir, spotLight.direction);
+    angle = abs(acos(angle));
+    affect = 1.0f - 1.0 / spotLight.angle.x * angle;
+    if (affect < 0.0f)
+    {
+        affect = 0.0f;
+    }
+    affect = pow(affect, spotLight.angle.y);
+    diffSpotLight *= affect;
+    specSpotLight *= affect;
+    
+    return diffSpotLight + specSpotLight;
 }

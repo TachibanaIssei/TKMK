@@ -45,10 +45,10 @@ void KnightPlayer::Update()
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	/*if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		UltimateSkill();
-	}
+	}*/
 
 	//レベルアップする
 	/*if (g_pad[0]->IsTrigger(enButtonA))
@@ -58,10 +58,10 @@ void KnightPlayer::Update()
 	}*/
 
 	//ダメージを受ける
-	/*if (g_pad[0]->IsTrigger(enButtonX))
+	if (g_pad[0]->IsTrigger(enButtonX))
 	{
 		Dameged(dddd);
-	}*/
+	}
 
 	//ステート
 	ManageState();

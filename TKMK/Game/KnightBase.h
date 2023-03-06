@@ -110,7 +110,7 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return /*m_animState != enKnightState_FirstAtk &&*/
+		return m_animState != enKnightState_FirstAtk &&
 			m_animState != enKnightState_SecondAtk&&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;

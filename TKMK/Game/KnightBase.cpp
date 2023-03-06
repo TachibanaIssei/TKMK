@@ -27,7 +27,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_FirstAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
 	m_animationClips[enAnimationClip_FirstAtk].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_Attack_second.tka");
+	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_SecondAtk.tka");
 	m_animationClips[enAnimationClip_SecondAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);

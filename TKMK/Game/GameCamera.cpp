@@ -71,7 +71,7 @@ void GameCamera::Update()
 	pos = TargetPos + m_toCameraPos;
 	g_camera3D->SetTarget(TargetPos);
 	g_camera3D->SetPosition(pos);
-	g_camera3D->SetPosition(m_toCameraPos);
+	//g_camera3D->SetPosition(m_toCameraPos);
 
 	//カメラの更新。
 	g_camera3D->Update();

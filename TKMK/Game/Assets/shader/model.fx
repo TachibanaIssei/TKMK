@@ -22,6 +22,7 @@ struct SPSIn{
 	float2 uv 			: TEXCOORD0;	//uv座標。
     float3 normal		: NORMAL;
     float3 worldPos		: TEXCOORD1;	//ワールド座標
+    float3 normalInView : TEXCOORD2;    //カメラ空間の法線
 	
 };
 
@@ -128,6 +129,8 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 
 	psIn.uv = vsIn.uv;
 
+    psIn.normalInView = mul(mView, psIn.normal);
+    
 	return psIn;
 }
 
@@ -224,7 +227,17 @@ float3 CalcLigFromDirectionLight(SPSIn psIn)
     // ディレクションライトによるPhong鏡面反射光を計算する
     float3 specDirection = CalcPhongSpecular(
             directionLight.direction, directionLight.color, psIn.worldPos, psIn.normal);
-    return diffDirection + specDirection;
+    
+    //サーフェイスの法線と光の入射方向に依存するリムの強さ
+    float power1 = 1.0f - max(0.0f, dot(directionLight.direction, psIn.normal));
+    //サーフェイスの法線と視線の方向に依存するリムの強さ
+    float power2 = 1.0f - max(0.0f, psIn.normalInView.z * -1.0f);
+    //最終的なリムの強さ
+    float limPower = power1 * power2;
+    //指数関数的にする
+    limPower = pow(limPower, 1.3f);
+    
+    return diffDirection + specDirection + limPower;
 }
 
 float3 CalcLigFromPointLight(SPSIn psIn)

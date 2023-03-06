@@ -3,63 +3,59 @@
 
 void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis)
 {
-	//tkmƒtƒ@ƒCƒ‹ƒpƒX‚ğİ’è
+	//tkmãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’è¨­å®š
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
-	//ƒVƒF[ƒ_[ƒtƒ@ƒCƒ‹ƒpƒX‚ğİ’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚’è¨­å®š
 	m_modelInitData.m_fxFilePath = "Assets/shader/model.fx";
-	//ƒ‚ƒfƒ‹‚Ìã•ûŒü‚ğİ’è
+	//ãƒ¢ãƒ‡ãƒ«ã®ä¸Šæ–¹å‘ã‚’è¨­å®š
 	m_modelInitData.m_modelUpAxis = enModelUpAxis;
 
-	// ƒXƒPƒ‹ƒgƒ“‚ğ‰Šú‰»B
+	// ã‚¹ã‚±ãƒ«ãƒˆãƒ³ã‚’åˆæœŸåŒ–ã€‚
 	InitSkeleton(tkmFilepath);
-	// ƒAƒjƒ[ƒVƒ‡ƒ“‚ğ‰Šú‰»B
+	// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’åˆæœŸåŒ–ã€‚
 	InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ªİ’è‚³‚ê‚Ä‚¢‚½‚çB
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒè¨­å®šã•ã‚Œã¦ã„ãŸã‚‰ã€‚
 	if (m_animationClips != nullptr)
 	{
-		//ƒXƒPƒ‹ƒgƒ“‚ğw’è‚·‚é
+		//ã‚¹ã‚±ãƒ«ãƒˆãƒ³ã‚’æŒ‡å®šã™ã‚‹
 		m_modelInitData.m_skeleton = &m_skeleton;
-		//ƒXƒLƒ“‚ª‚ ‚é—p‚Ì’¸“_ƒVƒF[ƒ_[‚ğİ’è‚·‚éB
+		//ã‚¹ã‚­ãƒ³ãŒã‚ã‚‹ç”¨ã®é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’è¨­å®šã™ã‚‹ã€‚
 		m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 	}
 	
-	//ƒfƒBƒŒƒNƒVƒ‡ƒ“ƒ‰ƒCƒg‚Ìî•ñ‚ğì¬
+	//ãƒ‡ã‚£ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ãƒ©ã‚¤ãƒˆã®æƒ…å ±ã‚’ä½œæˆ
 	MakeDirectionData();
 
-	//ƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì‰Šú‰»
+	//ãƒ¢ãƒ‡ãƒ«ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–
 	m_model.Init(m_modelInitData);
 }
 
 void nsK2EngineLow::ModelRender::Update()
 {
-	//ƒ[ƒ‹ƒhs—ñ‚ÌXV(À•WA‰ñ“]A‘å‚«‚³)
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®æ›´æ–°(åº§æ¨™ã€å›è»¢ã€å¤§ãã•)
 	m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 
-	//ƒXƒPƒ‹ƒgƒ“‚ª‰Šú‰»‚³‚ê‚Ä‚¢‚½‚ç
+	//ã‚¹ã‚±ãƒ«ãƒˆãƒ³ãŒåˆæœŸåŒ–ã•ã‚Œã¦ã„ãŸã‚‰
 	if (m_skeleton.IsInited())
 	{
-		//ƒXƒPƒ‹ƒgƒ“‚ğXV‚·‚é
+		//ã‚¹ã‚±ãƒ«ãƒˆãƒ³ã‚’æ›´æ–°ã™ã‚‹
 		m_skeleton.Update(m_model.GetWorldMatrix());
 	}
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ği‚ß‚é
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é€²ã‚ã‚‹
 	m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
 }
 
 void nsK2EngineLow::ModelRender::MakeDirectionData()
 {
-	m_directionLight = g_renderingEngine->GetDirectionalLight();
-
-	g_renderingEngine->MakeDirectionLight();
-
-	m_modelInitData.m_expandConstantBuffer = m_directionLight;
-	m_modelInitData.m_expandConstantBufferSize = sizeof(*m_directionLight);
+	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
+	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
 }
 
 void nsK2EngineLow::ModelRender::InitSkeleton(const char* filePath)
 {
-	//ƒXƒPƒ‹ƒgƒ“‚Ìƒf[ƒ^‚ğ“Ç‚İ‚İB
+	//ã‚¹ã‚±ãƒ«ãƒˆãƒ³ã®ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã¿ã€‚
 	std::string skeletonFilePath = filePath;
 	int pos = (int)skeletonFilePath.find(".tkm");
 	skeletonFilePath.replace(pos, 4, ".tks");
@@ -72,7 +68,7 @@ void nsK2EngineLow::ModelRender::InitAnimation(AnimationClip* animationClips, in
 	m_numAnimationClips = numAnimationClips;
 
 	if (m_animationClips != nullptr) {
-		//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì‰Šú‰»
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åˆæœŸåŒ–
 		m_animation.Init(
 			m_skeleton,
 			m_animationClips,

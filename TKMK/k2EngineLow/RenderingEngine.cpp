@@ -1,6 +1,11 @@
 #include "k2EngineLowPreCompile.h"
 #include "RenderingEngine.h"
 
+void nsK2EngineLow::RenderingEngine::Init()
+{
+	m_sceneLight.Init();
+}
+
 void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
 {
 	for (auto& modelObj : m_modelList) {
@@ -33,16 +38,4 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	m_modelList.clear();
 	m_spriteList.clear();
 	m_fontList.clear();
-}
-
-void nsK2EngineLow::RenderingEngine::MakeDirectionLight()
-{
-	//ライトの方向
-	m_directionLight.lightDirection = m_directionLightDir;
-	//正規化する
-	m_directionLight.lightDirection.Normalize();
-	//ライトの色
-	m_directionLight.ligColor = m_directionLightColor;
-	//視点の位置を設定
-	m_directionLight.CameraEyePos = g_camera3D->GetPosition();
 }

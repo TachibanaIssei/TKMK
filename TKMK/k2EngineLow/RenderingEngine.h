@@ -1,23 +1,18 @@
 #pragma once
 
+#include "Light.h"
+
 namespace nsK2EngineLow {
 	class ModelRender;
 	class SpriteRender;
 	class FontRender;
 	class RenderContext;
 
-	struct DirectionalLight
-	{
-		Vector3 lightDirection;	//ライトの方向
-		float pad0;
-		Vector3 ligColor;		//ライトのカラー
-		float pad1;
-		Vector3 CameraEyePos;	//カメラ座標
-	};
-
 	class RenderingEngine
 	{
 	public:
+		void Init();
+
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
 		/// </summary>
@@ -65,37 +60,70 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
-		/// <summary>
-		/// ディレクションライトを取得する
-		/// </summary>
-		/// <returns>ディレクションライト</returns>
-		DirectionalLight* GetDirectionalLight()
+		SceneLight& GetSceneLight()
 		{
-			return &m_directionLight;
+			return m_sceneLight;
 		}
 
 		/// <summary>
-		/// ディレクションライトを設定する
+		/// ディレクションライトを設定
 		/// </summary>
-		/// <param name="dir">ライトの方向</param>
+		/// <param name="lightNo">ライト番号</param>
+		/// <param name="direction">ライト方向</param>
+		/// <param name="color">ライト色</param>
+		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
+		{
+			m_sceneLight.SetDirectionLight(lightNo, direction, color);
+		}
+
+		/// <summary>
+		/// 環境光を設定
+		/// </summary>
+		/// <param name="ambient">環境光</param>
+		void SetAmbient(Vector3 ambient)
+		{
+			m_sceneLight.SetAmbient(ambient);
+		}
+
+		/// <summary>
+		/// ポイントライトを設定する
+		/// </summary>
+		/// <param name="pos">ライトの位置</param>
 		/// <param name="color">ライトの色</param>
-		void SetDirectionLight(Vector3 dir,Vector3 color = {0.5f,0.5f,0.5f})
+		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
+		void SetPointLight(Vector3 pos, Vector3 color, Vector3 range)
 		{
-			m_directionLightDir = dir;
-			
-			m_directionLightColor = color;
+			m_sceneLight.SetPointLight(pos, color, range);
 		}
-		
-
-		void MakeDirectionLight();
-
+		void SetPointLightPosition(Vector3 pos)
+		{
+			m_sceneLight.SetPointLightPosition(pos);
+		}
+		/// <summary>
+		/// スポットライトを設定する
+		/// </summary>
+		/// <param name="pos">位置</param>
+		/// <param name="color">色</param>
+		/// <param name="range">xに影響範囲,yに影響範囲に累乗するパラメータ</param>
+		/// <param name="direction">照射方向</param>
+		/// <param name="angle">xは照射角度,ｙは影響に累乗するパラメータ</param>
+		void SetSpotLight(Vector3 pos, Vector3 color, Vector3 range, Vector3 direction, Vector3 angle)
+		{
+			m_sceneLight.SetSpotLight(pos, color, range, direction, angle);
+		}
+		void SetSpotLightPosition(Vector3 pos)
+		{
+			m_sceneLight.SetSpotLightPosition(pos);
+		}
+		Vector3& GetSpotLightDirection()
+		{
+			return m_sceneLight.GetSpotLightDirection();
+		}
 	private:
-		std::vector<ModelRender*>	m_modelList;											//モデルクラスのリスト
-		std::vector<SpriteRender*>	m_spriteList;											//スプライトクラスのリスト
-		std::vector<FontRender*>	m_fontList;												//フォントクラスのリスト
+		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
+		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
+		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
 
-		DirectionalLight			m_directionLight;										//ディレクションライト
-		Vector3						m_directionLightDir		= Vector3{ 1.0f,-1.0f,-1.0f };	//ディレクションライトの方向
-		Vector3						m_directionLightColor	= Vector3{0.5f,0.5f,0.5f};		//ディレクションライトの色
+		SceneLight					m_sceneLight;				//シーンライト
 	};
 }

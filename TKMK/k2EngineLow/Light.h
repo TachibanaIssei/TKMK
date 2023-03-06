@@ -24,6 +24,9 @@ namespace nsK2EngineLow {
 		Vector3	range;			//xに影響範囲,yに影響率に累乗するパラメータ
 	};
 
+	/// <summary>
+	/// スポットライト構造体
+	/// </summary>
 	struct SpotLight 
 	{
 		Vector3 position;	//位置
@@ -38,6 +41,18 @@ namespace nsK2EngineLow {
 	};
 
 	/// <summary>
+	/// 半球ライト
+	/// </summary>
+	struct HemisphereLight
+	{
+		Vector3 groundColor;	//地面色
+		int		isUse = false;	//使用フラグ
+		Vector3 skyColor;		//天球色
+		float pad1;
+		Vector3 groundNormal;	//地面法線
+	};
+
+	/// <summary>
 	/// ライト構造体
 	/// </summary>
 	struct Light
@@ -48,8 +63,10 @@ namespace nsK2EngineLow {
 		float pad1;
 		SpotLight spotLight;	//スポットライト
 		float pad2;
-		Vector3 cameraEyePos;	//カメラ座標
+		HemisphereLight hemisphereLight;
 		float pad3;
+		Vector3 cameraEyePos;	//カメラ座標
+		float pad4;
 		Vector3 ambientLight;	//環境光
 	};
 
@@ -60,6 +77,10 @@ namespace nsK2EngineLow {
 		{
 			return m_light;
 		}
+
+		////////////////////////////////////////////////////////////////////////////////////////
+		///ディレクションライトの関数
+		////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>
 		/// ディレクションを設定する
 		/// </summary>
@@ -80,6 +101,9 @@ namespace nsK2EngineLow {
 			return m_light.directionalLight.direction;
 		}
 
+		////////////////////////////////////////////////////////////////////////////////////////
+		///環境光の関数
+		////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>
 		/// 環境光を設定する
 		/// </summary>
@@ -88,6 +112,10 @@ namespace nsK2EngineLow {
 		{
 			m_light.ambientLight = ambient;
 		}
+
+		////////////////////////////////////////////////////////////////////////////////////////
+		///ポイントライトの関数
+		////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>
 		/// ポイントライトを設定する
 		/// </summary>
@@ -110,6 +138,9 @@ namespace nsK2EngineLow {
 			m_light.pointLight.position = pos;
 		}
 
+		////////////////////////////////////////////////////////////////////////////////////////
+		///スポットライトの関数
+		////////////////////////////////////////////////////////////////////////////////////////
 		/// <summary>
 		/// スポットライトを設定する
 		/// </summary>
@@ -127,14 +158,78 @@ namespace nsK2EngineLow {
 			m_light.spotLight.angle = angle;
 			m_light.spotLight.isUse = true;
 		}
+		/// <summary>
+		/// スポットライトの位置を設定
+		/// </summary>
+		/// <param name="pos">座標</param>
 		void SetSpotLightPosition(Vector3 pos)
 		{
 			m_light.spotLight.position = pos;
 		}
+		/// <summary>
+		/// スポットライトの光の方向を取得
+		/// </summary>
+		/// <returns>光の方向</returns>
 		Vector3& GetSpotLightDirection()
 		{
 			return m_light.spotLight.direction;
 		}
+
+		////////////////////////////////////////////////////////////////////////////////////////
+		///半球ライトの関数
+		////////////////////////////////////////////////////////////////////////////////////////
+		/// <summary>
+		/// 半球ライトを設定する
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		/// <param name="skyColor">天球色</param>
+		/// <param name="groundNormal">地面の法線</param>
+		void SetHemiLight(Vector3 groundColor, Vector3 skyColor, Vector3 groundNormal)
+		{
+			SetHemiLightGroundColor(groundColor);
+			SetHemiLightSkyColor(skyColor);
+			SetHemiLightGroundNormal(groundNormal);
+			UseHemiLight();
+		}
+		/// <summary>
+		/// 半球ライトの地面色を設定
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		void SetHemiLightGroundColor(Vector3 groundColor)
+		{
+			m_light.hemisphereLight.groundColor = groundColor;
+		}
+		/// <summary>
+		/// 半球ライトの天球色を設定
+		/// </summary>
+		/// <param name="skyColor">天球色</param>
+		void SetHemiLightSkyColor(Vector3 skyColor)
+		{
+			m_light.hemisphereLight.skyColor = skyColor;
+		}
+		/// <summary>
+		/// 半球ライトの地面の法線
+		/// </summary>
+		/// <param name="normal">地面の法線</param>
+		void SetHemiLightGroundNormal(Vector3 normal)
+		{
+			m_light.hemisphereLight.groundNormal = normal;
+		}
+		/// <summary>
+		/// 半球ライトを使用する
+		/// </summary>
+		void UseHemiLight()
+		{
+			m_light.hemisphereLight.isUse = true;
+		}
+		/// <summary>
+		/// 半球ライトを使用しない
+		/// </summary>
+		void UnUseHemiLight()
+		{
+			m_light.hemisphereLight.isUse = false;
+		}
+
 	private:
 		Light m_light;
 	};

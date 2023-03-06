@@ -127,6 +127,59 @@ namespace nsK2EngineLow {
 		{
 			return m_sceneLight.GetSpotLightDirection();
 		}
+
+		/// <summary>
+		/// 半球ライトを設定する
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		/// <param name="skyColor">天球色</param>
+		/// <param name="groundNormal">地面の法線</param>
+		void SetHemiLight(Vector3 groundColor, Vector3 skyColor, Vector3 groundNormal)
+		{
+			SetHemiLightGroundColor(groundColor);
+			SetHemiLightSkyColor(skyColor);
+			SetHemiLightGroundNormal(groundNormal);
+			UseHemiLight();
+		}
+		/// <summary>
+		/// 半球ライトの地面色を設定
+		/// </summary>
+		/// <param name="groundColor">地面色</param>
+		void SetHemiLightGroundColor(Vector3 groundColor)
+		{
+			m_sceneLight.SetHemiLightGroundColor(groundColor);
+		}
+		/// <summary>
+		/// 半球ライトの天球色を設定
+		/// </summary>
+		/// <param name="skyColor">天球色</param>
+		void SetHemiLightSkyColor(Vector3 skyColor)
+		{
+			m_sceneLight.SetHemiLightSkyColor(skyColor);
+		}
+		/// <summary>
+		/// 半球ライトの地面の法線
+		/// </summary>
+		/// <param name="normal">地面の法線</param>
+		void SetHemiLightGroundNormal(Vector3 normal)
+		{
+			m_sceneLight.SetHemiLightGroundNormal(normal);
+		}
+		/// <summary>
+		/// 半球ライトを使用する
+		/// </summary>
+		void UseHemiLight()
+		{
+			m_sceneLight.UseHemiLight();
+		}
+		/// <summary>
+		/// 半球ライトを使用しない
+		/// </summary>
+		void UnUseHemiLight()
+		{
+			m_sceneLight.UnUseHemiLight();
+		}
+
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト

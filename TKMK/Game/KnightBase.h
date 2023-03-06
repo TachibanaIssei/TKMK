@@ -34,23 +34,18 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	void Attack();
-
-	/// <summary>
-	/// 
-	/// </summary>
-	void SecondAtk();
-
-	/// <summary>
-	/// 
-	/// </summary>
-	void LastAtk();
+	virtual void Attack()=0;
 
 	/// <summary>
 	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
 	void Dameged(int damege);
+
+	/// <summary>
+	/// 自身が倒されたときの処理
+	/// </summary>
+	void Death();
 
 	/// <summary>
 	/// スキルを使用したときの処理
@@ -87,7 +82,7 @@ public:
 	/// </summary>
 	/// <param name="clipName"></param>
 	/// <param name="eventName"></param>
-	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)=0;
 
 	/// <summary>
 	/// 座標のセット
@@ -115,7 +110,7 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_animState != enKnightState_FirstAtk &&
+		return /*m_animState != enKnightState_FirstAtk &&*/
 			m_animState != enKnightState_SecondAtk&&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;

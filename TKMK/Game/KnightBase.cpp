@@ -25,9 +25,9 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_FirstAtk].Load("Assets/animData/Knight/Knight_FirstAtk.tka");
+	m_animationClips[enAnimationClip_FirstAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
 	m_animationClips[enAnimationClip_FirstAtk].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_SecondAtk.tka");
+	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_Attack_second.tka");
 	m_animationClips[enAnimationClip_SecondAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
@@ -35,7 +35,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 
 	//剣士モデルを読み込み
-	m_modelRender.Init("Assets/modelData/character/Knight/Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);
@@ -178,115 +178,6 @@ void KnightBase::Rotation()
 		//絵描きさんに回転を教える。
 		m_modelRender.SetRotation(m_rot);
 	}
-}
-
-/// <summary>
-/// 攻撃処理
-/// </summary>
-void KnightBase::Attack()
-{
-	if (AtkState == true) {
-
-		//1段目のアタック
-		if (ComboState == 0) {
-			m_animState = enKnightState_FirstAtk;
-			//コンボを1増やす
-			ComboState++;
-			//FirstAtkState = false;
-			return;
-		}
-
-		ComboTimer += g_gameTime->GetFrameDeltaTime();
-
-		//2段目のアタック
-		if (ComboState == 1) {
-			if (ComboTimer >= 2.0f && ComboTimer <= 4.0f) {
-				m_animState = enKnightState_SecondAtk;
-				ComboState = 2;
-				/*ComboState = 0;
-				ComboTimer = 0;*/
-				return;
-			}
-		}
-		
-		//
-		if (ComboTimer > 4.0f) {
-			AtkState = false;
-			ComboState = 0;
-			ComboTimer = 0;
-		}
-	}
-
-	//switch (ComboState)
-	//{
-	//case 1:
-	//	//Bボタン押されたら攻撃する
-	//	/*if (FirstAtkState == true)
-	//	{*/
-	//		m_animState = enKnightState_FirstAtk;
-	//		//コンボを1増やす
-	//		//ComboState = 1;
-	//		FirstAtkState = false;
-	//	//}
-	//	break;
-
-	//case 2:
-	//	ComboTimer += g_gameTime->GetFrameDeltaTime();
-
-	//	//一段目のアタックのアニメーションが再生されてから1秒～3秒の間なら
-	//	if (ComboTimer >= 2.0f && ComboTimer <= 4.0f)
-	//	{
-	//		/*if (ComboState == 1 && g_pad[0]->IsTrigger(enButtonB))
-	//		{*/
-	//			m_animState = enKnightState_SecondAtk;
-	//			ComboState = 0;
-	//			ComboTimer = 0;
-	//		//}
-	//	}
-	//	else if(ComboTimer > 4.0f)
-	//	{
-	//		ComboState = 0;
-	//		ComboTimer = 0;
-	//	}
-	//	break;
-
-	//default:
-	//	break;
-	//}
-
-	//一段目のアタックのアニメーションが再生されていないなら。
-	//if (m_animState != enKnightState_FirstAtk)
-	//{
-	//	//抜け出す。
-	//	return;
-	//}
-	//else
-	//{
-	//	ComboTimer += g_gameTime->GetFrameDeltaTime();
-
-	//	//一段目のアタックのアニメーションが再生されてから1秒～3秒の間なら
-	//	if (ComboTimer >= 4.0f && ComboTimer <= 6.0f)
-	//	{
-	//		if (ComboState == 1 && g_pad[0]->IsTrigger(enButtonB))
-	//		{
-	//			m_animState = enKnightState_SecondAtk;
-	//			ComboState = 0;
-	//			ComboTimer = 0;
-	//		}
-	//	}
-
-	//}
-	
-}
-
-void KnightBase::SecondAtk()
-{
-
-}
-
-void KnightBase::LastAtk()
-{
-
 }
 
 /// <summary>
@@ -438,16 +329,6 @@ void KnightBase::ManageState()
 /// </summary>
 void KnightBase::OnProcessCommonStateTransition()
 {
-		////Bボタン押されたら攻撃する
-		//if (g_pad[0]->IsTrigger(enButtonB))
-		//{
-		//	m_animState = enKnightState_FirstAtk;
-		//	//コンボを1増やす
-		//	ComboState = 1;
-		//	//FirstAtkState = false;
-		//	return;
-		//}
-
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
@@ -502,6 +383,7 @@ void KnightBase::OnProcessSecondAtkStateTransition()
 	//2段目のアタックのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		AtkState = false;
 		//待機ステート
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
@@ -538,18 +420,18 @@ void KnightBase::OnProcessDeathStateTransition()
 	}
 }
 
-/// <summary>
-/// アニメーションイベントの再生
-/// </summary>
-/// <param name="clipName"></param>
-/// <param name="eventName"></param>
-void KnightBase::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
-{
-	if (wcscmp(eventName, L"Jump") == 0)
-	{
-		m_moveSpeed.y += 500.0f;
-	}
-}
+///// <summary>
+///// アニメーションイベントの再生
+///// </summary>
+///// <param name="clipName"></param>
+///// <param name="eventName"></param>
+//void KnightBase::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+//{
+//	if (wcscmp(eventName, L"Jump") == 0)
+//	{
+//		m_moveSpeed.y += 500.0f;
+//	}
+//}
 
 //void KnightBase::Render(RenderContext& rc)
 //{

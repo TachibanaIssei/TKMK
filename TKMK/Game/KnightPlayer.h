@@ -37,6 +37,16 @@ private:
 	float UltimateSkillTimer = 0;
 
 	//—ñ‹“Œ^‚Ì‚·‚é
+	enum AtkTimingState
+	{
+		FirstAtk_State,
+		SecondAtk_State,
+		SecondAtkStart_State,
+		LastAtk_State,
+		Num_State,
+
+	};
+	AtkTimingState m_AtkTmingState = Num_State;
 
 	bool FirstAtkFlag = false;
 	bool SecondAtkFlag = false;

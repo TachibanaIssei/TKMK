@@ -52,6 +52,7 @@ bool Game::Start()
 	m_knightbase->SetSGame(this);*/
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
+	
 
 	//ƒQ[ƒ€ƒJƒƒ‰‚Ì¶¬
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");

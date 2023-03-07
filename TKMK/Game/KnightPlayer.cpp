@@ -8,6 +8,13 @@ KnightPlayer::KnightPlayer()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+	//リスポーンする座標0番の取得
+	GetRespawnPos();
+	//リスポーンする座標のセット
+	//キャラコン
+	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
+	//剣士
+	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 }
 
 KnightPlayer::~KnightPlayer()
@@ -115,7 +122,25 @@ void KnightPlayer::Attack()
 		}
 	}
 	
-	if (FirstAtkFlag == true)
+
+	if (m_AtkTmingState == FirstAtk_State)
+	{
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_AtkTmingState = SecondAtk_State;
+		}
+	}
+
+	if (m_AtkTmingState == SecondAtkStart_State)
+	{
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_AtkTmingState = LastAtk_State;
+		}
+	}
+
+
+	/*if (FirstAtkFlag == true)
 	{
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
@@ -129,7 +154,7 @@ void KnightPlayer::Attack()
 		{
 			LastAtkFlag = true;
 		}
-	}
+	}*/
 
 
 	if(AtkCollistionFlag ==true)AtkCollisiton();
@@ -142,73 +167,144 @@ void KnightPlayer::Attack()
 /// <param name="eventName"></param>
 void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//一段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"FirstAttack_Start") == 0)
 	{
-		FirstAtkFlag = true;
+		m_AtkTmingState =FirstAtk_State;
+		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 	}
-
+	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
 	{
-		SecondAtkStartFlag = true;
+		m_AtkTmingState = SecondAtkStart_State;
+		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 	}
-
+	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
 	{
+		m_AtkTmingState = LastAtk_State;
+		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 	}
-
-		if (wcscmp(eventName, L"FirstAttack_End") == 0)
+	//////////////////////////////////////////////////////////////////////////
+	//一段目のアタックのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"FirstAttack_End") == 0)
+	{
+		
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+	}
+	///一段目のアタックのアニメーションが終わったら
+	if (wcscmp(eventName, L"FirstToIdle") == 0)
+	{
+		//ボタンが押されていなかったら
+		if (m_AtkTmingState != SecondAtk_State)
 		{
-			FirstAtkFlag = false;
 			AtkState = false;
-			AtkCollistionFlag = false;
-			////ボタンが押されていなかったら
-			//	if (SecondAtkFlag == false)
-			//	{
-			//		m_animState = enKnightState_Idle;
-			//		//座標
-			//	}
-		}
-
-		if (wcscmp(eventName, L"FirstToIdle") == 0)
-		{
-			//ボタンが押されていなかったら
-			if (SecondAtkFlag == false)
-			{
-				AtkState = false;
-				m_animState = enKnightState_Idle;
-				//座標
-			}
-		}
-
-		if (wcscmp(eventName, L"SecondAttack_End") == 0)
-		{
-			SecondAtkFlag = false;
-			SecondAtkStartFlag = false;
-			AtkState = false;
-			AtkCollistionFlag = false;
-			//ボタンが押されていなかったら
-			if (LastAtkFlag == false)
-			{
-				m_animState = enKnightState_Idle;
-			}
-		}
-
-		if (wcscmp(eventName, L"LastAttack_End") == 0)
-		{
-			LastAtkFlag = false;
-			AtkState = false;
-			AtkCollistionFlag = false;
-			//座標
-
-		}
-		//アニメーションの再生が終わったら
-		if (m_modelRender.IsPlayingAnimation() == false) {
 			m_animState = enKnightState_Idle;
-			AtkState = false;
+			m_AtkTmingState = Num_State;
 		}
+	}
+
+	//二段目のアタックのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"SecondAttack_End") == 0)
+	{
+		
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+		//ボタンが押されていなかったら
+		if (m_AtkTmingState != LastAtk_State)
+		{
+			AtkState = false;
+			m_animState = enKnightState_Idle;
+			m_AtkTmingState = Num_State;
+		}
+	}
+	//三段目のアタックのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"LastAttack_End") == 0)
+	{
+		m_AtkTmingState = Num_State;
+		AtkState = false;
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+	}
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false) {
+		m_animState = enKnightState_Idle;
+		AtkState = false;
+	}
+
+
+	///////////////////////////////////////////////////////////////////////
+	//if (wcscmp(eventName, L"FirstAttack_Start") == 0)
+	//{
+	//	FirstAtkFlag = true;
+	//	AtkCollistionFlag = true;
+	//}
+
+	//if (wcscmp(eventName, L"SecondAttack_Start") == 0)
+	//{
+	//	SecondAtkStartFlag = true;
+	//	AtkCollistionFlag = true;
+	//}
+
+	//if (wcscmp(eventName, L"LastAttack_Start") == 0)
+	//{
+	//	AtkCollistionFlag = true;
+	//}
+
+	//	if (wcscmp(eventName, L"FirstAttack_End") == 0)
+	//	{
+	//		FirstAtkFlag = false;
+	//		AtkState = false;
+	//		AtkCollistionFlag = false;
+	//		////ボタンが押されていなかったら
+	//		//	if (SecondAtkFlag == false)
+	//		//	{
+	//		//		m_animState = enKnightState_Idle;
+	//		//		//座標
+	//		//	}
+	//	}
+
+	//	if (wcscmp(eventName, L"FirstToIdle") == 0)
+	//	{
+	//		//ボタンが押されていなかったら
+	//		if (SecondAtkFlag == false)
+	//		{
+	//			AtkState = false;
+	//			m_animState = enKnightState_Idle;
+	//			//座標
+	//		}
+	//	}
+
+	//	if (wcscmp(eventName, L"SecondAttack_End") == 0)
+	//	{
+	//		SecondAtkFlag = false;
+	//		SecondAtkStartFlag = false;
+	//		AtkState = false;
+	//		AtkCollistionFlag = false;
+	//		//ボタンが押されていなかったら
+	//		if (LastAtkFlag == false)
+	//		{
+	//			m_animState = enKnightState_Idle;
+	//		}
+	//	}
+
+	//	if (wcscmp(eventName, L"LastAttack_End") == 0)
+	//	{
+	//		LastAtkFlag = false;
+	//		AtkState = false;
+	//		AtkCollistionFlag = false;
+	//		//座標
+
+	//	}
+	//	//アニメーションの再生が終わったら
+	//	if (m_modelRender.IsPlayingAnimation() == false) {
+	//		m_animState = enKnightState_Idle;
+	//		AtkState = false;
+	//	}
 
 }
 

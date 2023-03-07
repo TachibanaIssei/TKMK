@@ -68,14 +68,14 @@ public:
 	void Rotation();
 
 	/// <summary>
-	/// 当たり判定の処理
+	/// 通常攻撃の当たり判定の処理
 	/// </summary>
 	void AtkCollisiton();
 
 	/// <summary>
-	/// 必殺技の
+	/// 必殺技の当たり判定の処理
 	/// </summary>
-	void UltimateSkillCollistion();
+	void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
 
 	/// <summary>
 	/// アニメーションのステートの管理
@@ -169,11 +169,15 @@ protected:
 		enAnimationClip_UltimateSkill,*/
 		enAnimationClip_Num,
 	};
-	Game* m_game;
+	Game* m_game=nullptr;
 	Vector3 firstposition;                                //最初の座標
+	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	Vector3 m_position = Vector3::Zero;                   //座標
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 m_moveSpeed;                                  //移動速度
+	Vector3 collisionRot= Vector3::Zero;
+	CollisionObject* collisionObject;
+	Vector3 UltCollisionPos= Vector3::Zero;
 	CharacterController m_charCon;                        //キャラクターコントロール
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
@@ -198,6 +202,8 @@ protected:
 	int exp=5;
 	//受けたダメージ仮
 	int dddd = 50;
+
+	bool UltCollisionSetFlag = false;
 
 };
 

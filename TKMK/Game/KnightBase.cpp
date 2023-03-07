@@ -175,6 +175,63 @@ void KnightBase::AtkCollisiton()
 }
 
 /// <summary>
+/// 必殺技発動時の当たり判定の処理
+/// </summary>
+/// <param name="oldpostion">前フレームの座標</param>
+/// <param name="position">現在の座標</param>
+void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
+{	
+	//コリジョン生成していないなら
+	if (UltCollisionSetFlag == false)
+	{
+		//コリジョンの座標をプレイヤーと同じに設定
+		UltCollisionPos = position;
+		UltCollisionPos.y += 50.0f;
+
+		//前フレームの座標を代入
+		Vector3 oldPosition = oldpostion;
+		//前フレームの座標から現在のフレームに向かうベクトルを計算する
+		collisionRot = position - oldPosition;
+
+		//Y方向のベクトルを0.0fにする
+		collisionRot.y = 0.0f;
+
+		//正規化
+		collisionRot.Normalize();
+
+		Quaternion rot;
+		//Y軸回りの回転クォータニオンを作成
+		rot.SetRotationYFromDirectionXZ(collisionRot);
+		//ベクトルにクォータニオンを適応
+		rot.Apply(oldpostion);
+
+		//コリジョンオブジェクトを作成する。
+		collisionObject = NewGO<CollisionObject>(0);
+		Vector3 collitionPosition = position;
+		collitionPosition.y += 50.0f;
+		//collisionPosition.y += 50.0f;
+		//ボックス状のコリジョンを作成する。
+		collisionObject->CreateBox(collitionPosition, //座標。
+			Quaternion(rot), //回転。
+			Vector3(300.0f, 50.0f, 15.0f) //大きさ。
+		);
+		collisionObject->SetIsEnableAutoDelete(false);
+		collisionObject->SetName("player_UltimateSkill");
+
+		UltCollisionSetFlag = true;
+	}
+	else
+	{
+		//移動速度設定
+		UltCollisionPos += collisionRot * 10.0f;
+		//座標を設定
+		collisionObject->SetPosition(UltCollisionPos);
+	}
+	
+
+}
+
+/// <summary>
 /// ダメージを受けたときの処理
 /// </summary>
 /// <param name="damege">敵のダメージ</param>
@@ -248,25 +305,27 @@ void KnightBase::Death()
 /// </summary>
 void KnightBase::PlayAnimation()
 {
+	m_modelRender.SetAnimationSpeed(1.0f);
+
 	switch (m_animState)
 	{
 	case enKnightState_Idle:
-		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
 		break;
 	case enKnightState_Run:
-		m_modelRender.PlayAnimation(enAnimationClip_Run);
+		m_modelRender.PlayAnimation(enAnimationClip_Run,0.4f);
 		break;
 	case enKnightState_FirstAtk:
-		m_modelRender.PlayAnimation(enAnimationClip_FirstAtk, 0.1f);
+		m_modelRender.PlayAnimation(enAnimationClip_FirstAtk, 0.3f);
 		break;
 	case enKnightState_SecondAtk:
 		m_modelRender.PlayAnimation(enAnimationClip_SecondAtk,0.1f);
 		break;
 	case enAnimationClip_Damege:
-		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.1f);
+		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
 		break;
 	case enAnimationClip_Death:
-		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.1f);
+		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.4f);
 	default:
 		break;
 	}

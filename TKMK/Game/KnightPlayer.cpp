@@ -15,14 +15,12 @@ KnightPlayer::~KnightPlayer()
 
 }
 
-//bool KnightPlayer::Start()
-//{
-//
-//	return true;
-//}
 
 void KnightPlayer::Update()
 {
+	//前フレームの座標を取得
+	OldPosition = m_position;
+
 	//移動処理
 	Move();
 	
@@ -45,11 +43,37 @@ void KnightPlayer::Update()
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	/*if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
+		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
-	}*/
+		//必殺技発動フラグをセット
+		UltimateSkillFlag = true;
+	}
 
+	//必殺技発動フラグがセットされているなら
+	if (UltimateSkillFlag == true)
+	{
+		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
+		//必殺技タイマーが3.0fまでの間
+		if (UltimateSkillTimer <= 3.0f)
+		{
+			//コリジョンの作成、移動処理
+			UltimateSkillCollistion(OldPosition, m_position);
+		}
+		else
+		{
+			//攻撃が有効な時間をリセット
+			UltimateSkillTimer = 0;
+			//必殺技発動フラグをリセット
+			UltimateSkillFlag = false;
+			//コリジョン削除
+			DeleteGO(collisionObject);
+			//コリジョン作成フラグをリセット
+			UltCollisionSetFlag = false;
+		}
+	}
+	
 	//レベルアップする
 	/*if (g_pad[0]->IsTrigger(enButtonA))
 	{
@@ -58,10 +82,10 @@ void KnightPlayer::Update()
 	}*/
 
 	//ダメージを受ける
-	if (g_pad[0]->IsTrigger(enButtonX))
+	/*if (g_pad[0]->IsTrigger(enButtonX))
 	{
 		Dameged(dddd);
-	}
+	}*/
 
 	//ステート
 	ManageState();
@@ -157,8 +181,8 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			{
 				m_animState = enKnightState_Idle;
 				//座標
-				AnimEndPos= m_modelRender.GetBone(AtkEndPosId)->GetPosition();
-				int a = 0;
+				//AnimEndPos= m_modelRender.GetBone(AtkEndPosId)->GetPosition();
+				//int a = 0;
 			}
 		}
 
@@ -170,6 +194,8 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//座標
 
 		}
+		//アニメーションの再生が終わったら
+		if(m_modelRender.IsPlayingAnimation()==false)m_animState = enKnightState_Idle;
 
 }
 

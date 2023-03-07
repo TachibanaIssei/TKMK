@@ -29,9 +29,12 @@ public:
 	void Render(RenderContext& rc);
 
 private:
-	Game* m_game;
-
+	Game* m_game=nullptr;
+	
 	Vector3 AnimEndPos = Vector3::Zero;
+	Vector3 OldPos = Vector3::Zero;
+	Vector3 UltPos = Vector3::Zero;
+	float UltimateSkillTimer = 0;
 
 	bool FirstAtkFlag = false;
 	bool SecondAtkFlag = false;
@@ -39,6 +42,8 @@ private:
 	bool LastAtkFlag = false;
 
 	bool AtkCollistionFlag = false;
+
+	bool UltimateSkillFlag = false;
 
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード

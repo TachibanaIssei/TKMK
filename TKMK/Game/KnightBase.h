@@ -73,6 +73,11 @@ public:
 	void AtkCollisiton();
 
 	/// <summary>
+	/// 必殺技の
+	/// </summary>
+	void UltimateSkillCollistion();
+
+	/// <summary>
 	/// アニメーションのステートの管理
 	/// </summary>
 	void ManageState();

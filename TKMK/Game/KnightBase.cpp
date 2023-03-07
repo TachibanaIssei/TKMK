@@ -209,6 +209,7 @@ void KnightBase::UltimateSkill()
 	//ƒŒƒxƒ‹‚ð3‰º‚°‚é
 	levelDown(LvUpStatus, status, Lv, 3);
 	m_animState = enKnightState_SecondAtk;
+
 }
 
 /// <summary>

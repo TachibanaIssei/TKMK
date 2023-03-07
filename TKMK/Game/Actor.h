@@ -7,7 +7,7 @@ class Actor:public IGameObject
 public:
 	Actor();
 	virtual ~Actor();
-
+	
 protected:
 
 	/// <summary>

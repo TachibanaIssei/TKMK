@@ -345,10 +345,10 @@ void KnightBase::ManageState()
 		OnProcessRunStateTransition();
 		break;
 	case enKnightState_ChainAtk:
-		OnProcessFirstAtkStateTransition();
+		OnProcessChainAtkStateTransition();
 		break;
 	case enKnightState_UltimateSkill:
-		OnProcessSecondAtkStateTransition();
+		OnProcessUltimateSkillAtkStateTransition();
 		break;
 	case enAnimationClip_Damege:
 		OnProcessDamegeStateTransition();
@@ -400,12 +400,14 @@ void KnightBase::OnProcessRunStateTransition()
 /// <summary>
 /// FirstAtkアニメーションが再生されているときの処理
 /// </summary>
-void KnightBase::OnProcessFirstAtkStateTransition()
+void KnightBase::OnProcessChainAtkStateTransition()
 {
-	//一段目のアタックのアニメーション再生が終わったら。
+	//チェインアタックのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//待機ステート
+		//攻撃を始めたかの判定をfalseにする
+		AtkState = false;
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
@@ -414,7 +416,7 @@ void KnightBase::OnProcessFirstAtkStateTransition()
 /// <summary>
 /// SecondAtkアニメーションが再生されているときの処理
 /// </summary>
-void KnightBase::OnProcessSecondAtkStateTransition()
+void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 {
 	//2段目のアタックのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
@@ -455,21 +457,3 @@ void KnightBase::OnProcessDeathStateTransition()
 		OnProcessCommonStateTransition();
 	}
 }
-
-///// <summary>
-///// アニメーションイベントの再生
-///// </summary>
-///// <param name="clipName"></param>
-///// <param name="eventName"></param>
-//void KnightBase::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
-//{
-//	if (wcscmp(eventName, L"Jump") == 0)
-//	{
-//		m_moveSpeed.y += 500.0f;
-//	}
-//}
-
-//void KnightBase::Render(RenderContext& rc)
-//{
-//	m_modelRender.Draw(rc);
-//}

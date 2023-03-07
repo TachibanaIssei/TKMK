@@ -140,9 +140,9 @@ protected:
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
 	//一段目のアタックのステートの遷移処理
-	void OnProcessFirstAtkStateTransition();
+	void OnProcessChainAtkStateTransition();
 	//二段目のアタックのステートの遷移処理
-	void OnProcessSecondAtkStateTransition();
+	void OnProcessUltimateSkillAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
 	void OnProcessDamegeStateTransition();
 	//HPが0になったときのステートの遷移処理

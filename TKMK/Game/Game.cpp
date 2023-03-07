@@ -2,7 +2,7 @@
 #include "Game.h"
 
 #include "BackGround.h"
-#include "Rezult.h"
+#include "Result.h"
 #include "GameCamera.h"
 #include "KnightBase.h"
 #include "Actor.h"
@@ -84,7 +84,7 @@ void Game::Update()
 {
 	if (g_pad[0]->IsTrigger(enButtonY))
 	{
-		Rezult* rezult = NewGO<Rezult>(0, "rezult");
+		Result* result =NewGO<Result>(0, "Result");
 		DeleteGO(this);
 	}
 

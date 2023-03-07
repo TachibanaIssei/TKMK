@@ -20,6 +20,7 @@
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="KnightPlayer.cpp" />
+    <ClCompile Include="Neutral_Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -35,5 +36,6 @@
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="KnightPlayer.h" />
+    <ClInclude Include="Neutral_Enemy.h" />
   </ItemGroup>
 </Project>

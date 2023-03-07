@@ -231,6 +231,7 @@
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightPlayer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Neutral_Enemy.cpp" />
     <ClCompile Include="Rezult.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -248,6 +249,7 @@
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="KnightPlayer.h" />
+    <ClInclude Include="Neutral_Enemy.h" />
     <ClInclude Include="Rezult.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />

@@ -18,15 +18,16 @@ Neutral_Enemy::~Neutral_Enemy()
 bool Neutral_Enemy::Start()
 {
 	//アニメーションを読み込む。
-	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Neutral_Enemy/Idle.tka");
-	m_animationClips[enAnimationClip_Attack].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Neutral_Enemy/Move.tka");
-	m_animationClips[enAnimationClip_Attack].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Neutral_Enemy/Idle.tka");
+	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Neutral_Enemy/Run.tka");
+	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Neutral_Enemy/Attack.tka");
 	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Neutral_Enemy/Death.tka");
-	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
-
+	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Neutral_Enemy/Death.tka");
+	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
+	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 	//モデルを読み込む。
 	m_modelRender.Init("Assets/modelData/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
 	//座標を設定
@@ -185,9 +186,32 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 		DeleteGO(this);
 	}
 }
+
 void Neutral_Enemy::ManageState()
 {
-
+	switch (m_NEState)
+	{
+		//待機ステート
+	case enNEState_Idle:
+		ProcessIdleStateTransition();
+		break;
+		//追跡ステート
+	case enNEState_Chase:
+		ProcessChaseStateTransition();
+		break;
+		//攻撃ステート
+	case enNEState_Attack:
+		ProcessAttackStateTransition();
+		break;
+		//被ダメージステート
+	case enNEState_ReceiveDamage:
+		ProcessReceiveDamageStateTransition();
+		break;
+		//死亡ステート
+	case enNEState_Death:
+		ProcessDeathStateTransition();
+		break;
+	}
 }
 
 void Neutral_Enemy::PlayAnimation()
@@ -198,14 +222,23 @@ void Neutral_Enemy::PlayAnimation()
 		//待機ステート
 	case enNEState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.5f);
+		break;
 		//追跡ステート
 	case enNEState_Chase:
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.5f);
+		break;
 		//攻撃ステート
 	case enNEState_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
-		//
-
+		break;
+		//被ダメージステート
+	case enNEState_ReceiveDamage:
+		m_modelRender.PlayAnimation(enNEState_ReceiveDamage, 0.5f);
+		break;
+		//死亡ステート
+	case enNEState_Death:
+		m_modelRender.PlayAnimation(enNEState_Death, 0.5f);
+		break;
 	}
 }
 

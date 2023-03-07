@@ -110,7 +110,7 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return /*m_animState != enKnightState_FirstAtk &&*/
+		return m_animState != enKnightState_FirstAtk &&
 			m_animState != enKnightState_SecondAtk&&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;
@@ -184,7 +184,10 @@ protected:
 	float ComboTimer = 0;
 	//一段目のアタックをしたかの判定
 	bool AtkState = false;
-
+	//「」ボーンのID
+	int m_swordBoneId = -1;
+	//攻撃アニメーションイベント再生時の剣士の座標を取得する
+	int AtkEndPosID= -1;
 
 	//獲得した経験値仮
 	int exp=5;

@@ -30,6 +30,12 @@ public:
 		return m_knightplayer;
 	}
 
+	Vector3& GetPosition()
+	{
+
+		return m_toCameraPos;
+	}
+
 
 	Game* m_game = nullptr;
 	KnightBase* m_knightbase = nullptr;

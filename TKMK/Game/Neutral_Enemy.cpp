@@ -100,11 +100,28 @@ void Neutral_Enemy::Chase()
 
 void Neutral_Enemy::Collision()
 {
+	if (m_NEState == enNEState_ReceiveDamage || m_NEState == enNEState_Death)
+	{
+		return;
+	}
+	//敵の攻撃用のコリジョンを取得する
+	//const auto& collisions = g_collisionObjectManager->FindCollisionObject();
 
 }
 
 void Neutral_Enemy::Attack()
 {
+	//攻撃ステートではなかったら
+	if (m_NEState != enNEState_Attack)
+	{
+		return;
+	}
+	//攻撃判定中であれば
+	if (m_UnderAttack = true)
+	{
+		//攻撃用のコリジョンを作成
+		MakeAttackCollision();
+	}
 
 }
 
@@ -122,19 +139,51 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//各タイマーを初期化。
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
-	////敵を見つかったら攻撃
-	//if ()
-	//{
+	//敵を見つかったら攻撃
+	if (SearchEnemy()==true)
+	{
 
-	//}
-	////敵を見つけられなければ。
-	//else
-	//{
-	//	//待機ステートに移行する。
-	//	m_NEState = enNEState_Idle;
-	//	return;
+		Vector3 diff = m_KB->GetPosition() - m_position;
+		diff.Normalize();
+		m_moveSpeed = diff;
+		m_NEState = enNEState_Chase;
+		//攻撃できる距離なら
+		if (CanAttack() == true)
+		{
+			int ram = rand() % 100;
+			if (ram > 70)
+			{
+				//攻撃ステートに移行する
+				m_NEState = enNEState_Attack;
+				m_UnderAttack = false;
+				return;
+			}
+			else
+			{
+				m_NEState = enNEState_Idle;
+				return;
+			}
+		}
+		else
+		{
+			//乱数によって、追跡させる
+			int ram = rand() % 100;
+			if (ram > 30)
+			{
+				m_NEState = enNEState_Chase;
+				return;
+			}
+		}
 
-	//}
+	}
+	//敵を見つけられなければ。
+	else
+	{
+		//待機ステートに移行する。
+		m_NEState = enNEState_Idle;
+		return;
+
+	}
 }
 
 void Neutral_Enemy::ProcessIdleStateTransition()
@@ -189,10 +238,10 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	{
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
 		m_NEState = enNEState_Chase;
-		//Vector3 diff = m_player->GetPosition() - m_position;
-		//diff.Normalize();
+		Vector3 diff = m_KB->GetPosition() - m_position;
+		diff.Normalize();
 		//移動速度を設定する。
-		//m_moveSpeed = diff * 100.0f;
+		m_moveSpeed = diff * 100.0f;
 	}
 }
 
@@ -264,12 +313,40 @@ void Neutral_Enemy::PlayAnimation()
 
 void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	(void)clipName;
+	//キーの名前がAttack_startの時
+	if (wcscmp(eventName, L"Attack_start") == 0) {
+		//攻撃中の判定をtrueにする
+		m_UnderAttack = true;
+		//攻撃エフェクトを発生させる
 
+
+		//大きさを設定する。
+
+		//座標を調整
+
+		//エフェクト再生
+
+		//効果音を再生する
+
+	}
+	//キーの名前がattack_endの時
+	else if (wcscmp(eventName,L"Attack_end")==0){
+		m_UnderAttack = false;
+	
+	}
 }
 
 const bool Neutral_Enemy::CanAttack()const
 {
-	return true;
+	Vector3 diff = m_KB->GetPosition() - m_position;
+	if (diff.LengthSq() <= 100.0f * 100.0f)
+	{
+		//攻撃できる
+		return true;
+	}
+	//攻撃できない
+	return false;
 }
 
 void Neutral_Enemy::Render(RenderContext& rc)

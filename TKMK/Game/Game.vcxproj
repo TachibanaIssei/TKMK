@@ -232,7 +232,7 @@
     <ClCompile Include="KnightPlayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Neutral_Enemy.cpp" />
-    <ClCompile Include="Rezult.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -250,7 +250,7 @@
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="KnightPlayer.h" />
     <ClInclude Include="Neutral_Enemy.h" />
-    <ClInclude Include="Rezult.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Tittle.h" />

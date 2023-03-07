@@ -2,11 +2,11 @@
 
 class Tittle;
 
-class Rezult:public IGameObject
+class Result:public IGameObject
 {
 public:
-	Rezult();
-	~Rezult();
+	Result();
+	~Result();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);

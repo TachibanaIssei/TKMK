@@ -15,7 +15,7 @@
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="Tittle.cpp" />
     <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="Rezult.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="GameUI.cpp" />
@@ -31,7 +31,7 @@
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="Tittle.h" />
     <ClInclude Include="Actor.h" />
-    <ClInclude Include="Rezult.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="GameUI.h" />

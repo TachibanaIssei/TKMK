@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "Rezult.h"
+#include "Result.h"
 
 #include "Tittle.h"
 
-Rezult::Rezult()
+Result::Result()
 {
 
 }
 
-Rezult::~Rezult()
+Result::~Result()
 {
 
 }
 
-bool Rezult::Start()
+bool Result::Start()
 {
-	//rezultの初期化
+	//Resultの初期化
 	m_spriteRender.Init("Assets/sprite/result.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
 	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);
@@ -26,7 +26,7 @@ bool Rezult::Start()
 	return true;
 }
 
-void Rezult::Update()
+void Result::Update()
 {
 	//リザルト画面からタイトル画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonA))
@@ -36,7 +36,7 @@ void Rezult::Update()
 	}
 }
 
-void Rezult::Render(RenderContext& rc)
+void Result::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
 }

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Neutral_Enemy.h"
 #include "Game.h"
-#include "KnightBase.h"
 #include <time.h>
 #include <stdlib.h>
+#include"KnightPlayer.h"
 
 Neutral_Enemy::Neutral_Enemy()
 {
@@ -29,7 +29,9 @@ bool Neutral_Enemy::Start()
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 	//モデルを読み込む。
-	m_modelRender.Init("Assets/modelData/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
+	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
+
+	m_scale = Vector3(0.3f,0.3f, 0.3f);
 	//座標を設定
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
@@ -44,7 +46,7 @@ bool Neutral_Enemy::Start()
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
-
+	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 	return true;
 }
 
@@ -143,7 +145,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	if (SearchEnemy()==true)
 	{
 
-		Vector3 diff = m_KB->GetPosition() - m_position;
+		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 		diff.Normalize();
 		m_moveSpeed = diff;
 		m_NEState = enNEState_Chase;
@@ -238,7 +240,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	{
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
 		m_NEState = enNEState_Chase;
-		Vector3 diff = m_KB->GetPosition() - m_position;
+		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff * 100.0f;
@@ -339,7 +341,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 
 const bool Neutral_Enemy::CanAttack()const
 {
-	Vector3 diff = m_KB->GetPosition() - m_position;
+	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 	if (diff.LengthSq() <= 100.0f * 100.0f)
 	{
 		//攻撃できる

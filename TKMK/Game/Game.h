@@ -7,6 +7,7 @@ class Result;
 class GameCamera;
 class KnightBase;
 class KnightPlayer;
+class Neutral_Enemy;
 //class GameUI;
 
 class Game : public IGameObject
@@ -44,6 +45,7 @@ private:
 	KnightBase* m_knightbase = nullptr;
 	//GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
+	Neutral_Enemy* m_NE = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

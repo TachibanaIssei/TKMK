@@ -142,6 +142,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 				if (SecondAtkFlag == false)
 				{
 					m_animState = enKnightState_Idle;
+					//ç¿ïW
 				}
 		}
 
@@ -155,6 +156,9 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			if (LastAtkFlag == false)
 			{
 				m_animState = enKnightState_Idle;
+				//ç¿ïW
+				AnimEndPos= m_modelRender.GetBone(AtkEndPosId)->GetPosition();
+				int a = 0;
 			}
 		}
 
@@ -163,6 +167,8 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			LastAtkFlag = false;
 			AtkState = false;
 			AtkCollistionFlag = false;
+			//ç¿ïW
+
 		}
 
 }

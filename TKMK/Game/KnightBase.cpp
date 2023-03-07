@@ -42,7 +42,7 @@ void KnightBase::SetModel()
 	//「mixamorig:RightHand」(右手)ボーンのID(番号)を取得する。
 	m_swordBoneId = m_modelRender.FindBoneID(L"mixamorig:RightHand");
 	//攻撃時のアニメーションイベント剣士の座標のID(番号)を取得する。
-	AtkEndPosID = m_modelRender.FindBoneID(L"movePos");
+	AtkEndPosId = m_modelRender.FindBoneID(L"movePos");
 
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);

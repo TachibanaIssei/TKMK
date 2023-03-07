@@ -31,6 +31,8 @@ public:
 private:
 	Game* m_game;
 
+	Vector3 AnimEndPos = Vector3::Zero;
+
 	bool FirstAtkFlag = false;
 	bool SecondAtkFlag = false;
 	bool SecondAtkStartFlag = false;

@@ -192,7 +192,7 @@ protected:
 	//「」ボーンのID
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
-	int AtkEndPosID= -1;
+	int AtkEndPosId= -1;
 
 	//獲得した経験値仮
 	int exp=5;

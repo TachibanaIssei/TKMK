@@ -115,8 +115,8 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_animState != enKnightState_FirstAtk &&
-			m_animState != enKnightState_SecondAtk&&
+		return m_animState != enKnightState_ChainAtk &&
+			m_animState != enKnightState_UltimateSkill &&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;
 	}
@@ -151,8 +151,7 @@ protected:
 	enum PlayerState {
 		enKnightState_Idle,
 		enKnightState_Run,
-		enKnightState_FirstAtk,
-		enKnightState_SecondAtk,
+		enKnightState_ChainAtk,
 		enKnightState_Damege,
 		enKnightState_Death,
 		enKnightState_Skill,
@@ -161,12 +160,11 @@ protected:
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
 		enAnimationClip_Run,
-		enAnimationClip_FirstAtk,
-		enAnimationClip_SecondAtk,
+		enAnimationClip_ChainAtk,
 		enAnimationClip_Damege,
 		enAnimationClip_Death,
-		/*enAnimationClip_Skill,
-		enAnimationClip_UltimateSkill,*/
+		enAnimationClip_Skill,
+		enAnimationClip_UltimateSkill,
 		enAnimationClip_Num,
 	};
 	Game* m_game=nullptr;

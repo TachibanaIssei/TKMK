@@ -36,6 +36,8 @@ private:
 	Vector3 UltPos = Vector3::Zero;
 	float UltimateSkillTimer = 0;
 
+	//—ñ‹“Œ^‚Ì‚·‚é
+
 	bool FirstAtkFlag = false;
 	bool SecondAtkFlag = false;
 	bool SecondAtkStartFlag = false;

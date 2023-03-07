@@ -27,10 +27,10 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_FirstAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
-	m_animationClips[enAnimationClip_FirstAtk].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_SecondAtk.tka");
-	m_animationClips[enAnimationClip_SecondAtk].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
+	m_animationClips[enAnimationClip_ChainAtk].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_UltimateAttack.tka");
+	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Knight/Knight_Death.tka");
@@ -223,7 +223,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 	else
 	{
 		//à⁄ìÆë¨ìxê›íË
-		UltCollisionPos += collisionRot * 10.0f;
+		UltCollisionPos += collisionRot * 4.0f;
 		//ç¿ïWÇê›íË
 		collisionObject->SetPosition(UltCollisionPos);
 	}
@@ -254,7 +254,7 @@ void KnightBase::Dameged(int damege)
 void KnightBase::Skill()
 {
 	//m_animState = enKnightState_Skill;
-	m_animState = enKnightState_SecondAtk;
+	m_animState = enKnightState_UltimateSkill;
 	//ìñÇΩÇËîªíËçÏê¨
 }
 
@@ -265,7 +265,7 @@ void KnightBase::UltimateSkill()
 {
 	//ÉåÉxÉãÇ3â∫Ç∞ÇÈ
 	levelDown(LvUpStatus, status, Lv, 3);
-	m_animState = enKnightState_SecondAtk;
+	m_animState = enKnightState_UltimateSkill;
 
 }
 
@@ -315,11 +315,11 @@ void KnightBase::PlayAnimation()
 	case enKnightState_Run:
 		m_modelRender.PlayAnimation(enAnimationClip_Run,0.4f);
 		break;
-	case enKnightState_FirstAtk:
-		m_modelRender.PlayAnimation(enAnimationClip_FirstAtk, 0.3f);
+	case enKnightState_ChainAtk:
+		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
 		break;
-	case enKnightState_SecondAtk:
-		m_modelRender.PlayAnimation(enAnimationClip_SecondAtk,0.1f);
+	case enKnightState_UltimateSkill:
+		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1f);
 		break;
 	case enAnimationClip_Damege:
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
@@ -344,10 +344,10 @@ void KnightBase::ManageState()
 	case enKnightState_Run:
 		OnProcessRunStateTransition();
 		break;
-	case enKnightState_FirstAtk:
+	case enKnightState_ChainAtk:
 		OnProcessFirstAtkStateTransition();
 		break;
-	case enKnightState_SecondAtk:
+	case enKnightState_UltimateSkill:
 		OnProcessSecondAtkStateTransition();
 		break;
 	case enAnimationClip_Damege:

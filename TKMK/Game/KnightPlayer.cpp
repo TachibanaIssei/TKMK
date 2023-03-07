@@ -98,17 +98,19 @@ void KnightPlayer::Update()
 
 void KnightPlayer::Attack()
 {
+	//連打で攻撃できなくなる
+
 	//一段目のアタックをしていないなら
 	if (AtkState == false)
 	{
 		//Bボタン押されたら攻撃する
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			m_animState = enKnightState_FirstAtk;
+			m_animState = enKnightState_ChainAtk;
 			
 			//FirstAtkFlag = true;
 			//コンボを1増やす
-			ComboState++;
+			//ComboState++;
 			AtkState = true;
 		}
 	}
@@ -162,12 +164,23 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			FirstAtkFlag = false;
 			AtkState = false;
 			AtkCollistionFlag = false;
+			////ボタンが押されていなかったら
+			//	if (SecondAtkFlag == false)
+			//	{
+			//		m_animState = enKnightState_Idle;
+			//		//座標
+			//	}
+		}
+
+		if (wcscmp(eventName, L"FirstToIdle") == 0)
+		{
 			//ボタンが押されていなかったら
-				if (SecondAtkFlag == false)
-				{
-					m_animState = enKnightState_Idle;
-					//座標
-				}
+			if (SecondAtkFlag == false)
+			{
+				AtkState = false;
+				m_animState = enKnightState_Idle;
+				//座標
+			}
 		}
 
 		if (wcscmp(eventName, L"SecondAttack_End") == 0)
@@ -180,9 +193,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			if (LastAtkFlag == false)
 			{
 				m_animState = enKnightState_Idle;
-				//座標
-				//AnimEndPos= m_modelRender.GetBone(AtkEndPosId)->GetPosition();
-				//int a = 0;
 			}
 		}
 
@@ -195,7 +205,10 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 
 		}
 		//アニメーションの再生が終わったら
-		if(m_modelRender.IsPlayingAnimation()==false)m_animState = enKnightState_Idle;
+		if (m_modelRender.IsPlayingAnimation() == false) {
+			m_animState = enKnightState_Idle;
+			AtkState = false;
+		}
 
 }
 

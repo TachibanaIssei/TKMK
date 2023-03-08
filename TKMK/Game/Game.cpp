@@ -23,7 +23,7 @@ Game::~Game()
 
 	DeleteGO(m_gamecamera);
 	DeleteGO(m_knightplayer);
-	DeleteGO(m_NE);
+	DeleteGO(m_Neutral_Enemy);
 }
 
 bool Game::Start()
@@ -60,8 +60,8 @@ bool Game::Start()
 	m_gamecamera->SetKnight(m_knightplayer);
 
 	//中立の敵の生成
-	m_NE = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-	m_NE->SetNEGame(this);
+	m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+	m_Neutral_Enemy->SetNeutral_EnemyGame(this);
 
 	//GameUI�̐���
 	//m_gameUI = NewGO<GameUI>(0, "gameUI");

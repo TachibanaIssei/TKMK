@@ -139,9 +139,11 @@ protected:
 	void OnProcessIdleStateTransition();
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
-	//一段目のアタックのステートの遷移処理
+	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
-	//二段目のアタックのステートの遷移処理
+	//
+	void OnProcessSkillAtkStateTransition();
+	//必殺技のステートの遷移処理
 	void OnProcessUltimateSkillAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
 	void OnProcessDamegeStateTransition();
@@ -171,7 +173,7 @@ protected:
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	Vector3 m_position = Vector3::Zero;                   //座標
-	float m_position_YUp = 50.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
+	float m_position_YUp = 36.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 m_moveSpeed;                                  //移動速度
 	Vector3 collisionRot= Vector3::Zero;
@@ -203,6 +205,8 @@ protected:
 	int dddd = 50;
 
 	bool UltCollisionSetFlag = false;
+
+	bool AtkCollistionFlag = false;
 
 };
 

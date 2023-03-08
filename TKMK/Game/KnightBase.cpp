@@ -29,6 +29,8 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
 	m_animationClips[enAnimationClip_ChainAtk].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Knight/Knight_Skill.tka");
+	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_UltimateAttack.tka");
 	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
@@ -162,7 +164,7 @@ void KnightBase::AtkCollisiton()
 	//ボックス状のコリジョンを作成する。
 	collisionObject->CreateBox(collisionPosition, //座標。
 		Quaternion::Identity, //回転。
-		Vector3(110.0f, 15.0f, 15.0f) //大きさ。
+		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
 	);
 	collisionObject->SetName("player_attack");
 
@@ -253,9 +255,10 @@ void KnightBase::Dameged(int damege)
 /// </summary>
 void KnightBase::Skill()
 {
-	//m_animState = enKnightState_Skill;
-	m_animState = enKnightState_UltimateSkill;
+	m_animState = enKnightState_Skill;
 	//当たり判定作成
+	SkillState = true;
+	
 }
 
 /// <summary>
@@ -318,6 +321,9 @@ void KnightBase::PlayAnimation()
 	case enKnightState_ChainAtk:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
 		break;
+	case enKnightState_Skill:
+		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
+		break;
 	case enKnightState_UltimateSkill:
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1f);
 		break;
@@ -346,6 +352,9 @@ void KnightBase::ManageState()
 		break;
 	case enKnightState_ChainAtk:
 		OnProcessChainAtkStateTransition();
+		break;
+	case enKnightState_Skill:
+		OnProcessSkillAtkStateTransition();
 		break;
 	case enKnightState_UltimateSkill:
 		OnProcessUltimateSkillAtkStateTransition();
@@ -408,6 +417,20 @@ void KnightBase::OnProcessChainAtkStateTransition()
 		//待機ステート
 		//攻撃を始めたかの判定をfalseにする
 		AtkState = false;
+		m_animState = enKnightState_Idle;
+		OnProcessCommonStateTransition();
+	}
+}
+
+void KnightBase::OnProcessSkillAtkStateTransition()
+{
+	//スキルのアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		AtkState = false;
+		//AtkCollistionFlag = false;
+		status.Speed -= 120.0f;
+		//待機ステート
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}

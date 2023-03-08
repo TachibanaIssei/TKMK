@@ -10,13 +10,14 @@ KnightPlayer::KnightPlayer()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-
-	m_position.y += m_position_YUp;
+	m_respawnPos[respawnNumber].y += m_position_YUp;
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+
+	
 }
 
 KnightPlayer::~KnightPlayer()
@@ -42,12 +43,116 @@ void KnightPlayer::Update()
 	//クールタイムの処理
 	COOlTIME(Cooltime, SkillState);
 
+	////スキルを発動する処理
+	////Bボタンが押されたら
+	//if (SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	//{
+	//	status.Speed += 120.0f;
+	//	Skill();
+	//	AtkCollistionFlag = true;
+	//}
+
+	////必殺技を発動する処理
+	////Xボタンが押されたら
+	//if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	//{
+	//	//アニメーション再生、レベルを３下げる
+	//	UltimateSkill();
+	//	//必殺技発動フラグをセット
+	//	UltimateSkillFlag = true;
+	//}
+
+	////必殺技発動フラグがセットされているなら
+	//if (UltimateSkillFlag == true)
+	//{
+	//	UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
+	//	//必殺技タイマーが3.0fまでの間
+	//	if (UltimateSkillTimer <= 3.0f)
+	//	{
+	//		//コリジョンの作成、移動処理
+	//		UltimateSkillCollistion(OldPosition, m_position);
+	//	}
+	//	else
+	//	{
+	//		//攻撃が有効な時間をリセット
+	//		UltimateSkillTimer = 0;
+	//		//必殺技発動フラグをリセット
+	//		UltimateSkillFlag = false;
+	//		//コリジョン削除
+	//		DeleteGO(collisionObject);
+	//		//コリジョン作成フラグをリセット
+	//		UltCollisionSetFlag = false;
+	//	}
+	//}
+	
+	//レベルアップする
+	/*if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		if(Lv!=5)
+		ExpProcess(exp);
+	}*/
+
+	//ダメージを受ける
+	/*if (g_pad[0]->IsTrigger(enButtonX))
+	{
+		Dameged(dddd);
+	}*/
+
+	//ステート
+	ManageState();
+	//アニメーションの再生
+	PlayAnimation();
+
+	//剣士のY座標が腰なのでY座標を上げる
+	m_position.y = m_position_YUp;
+
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.Update();
+}
+
+void KnightPlayer::Attack()
+{
+	//連打で攻撃できなくなる
+
+	//一段目のアタックをしていないなら
+	if (AtkState == false)
+	{
+		//Bボタン押されたら攻撃する
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_animState = enKnightState_ChainAtk;
+			
+			//FirstAtkFlag = true;
+			//コンボを1増やす
+			//ComboState++;
+			AtkState = true;
+		}
+	}
+	
+	if (m_AtkTmingState == FirstAtk_State)
+	{
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_AtkTmingState = SecondAtk_State;
+		}
+	}
+
+	if (m_AtkTmingState == SecondAtkStart_State)
+	{
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_AtkTmingState = LastAtk_State;
+		}
+	}
+
+
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (SkillState==false&&g_pad[0]->IsTrigger(enButtonB))
+	if (SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
+		status.Speed += 120.0f;
 		Skill();
-		SkillState = true;
+		AtkCollistionFlag = true;
 	}
 
 	//必殺技を発動する処理
@@ -82,85 +187,9 @@ void KnightPlayer::Update()
 			UltCollisionSetFlag = false;
 		}
 	}
-	
-	//レベルアップする
-	/*if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		if(Lv!=5)
-		ExpProcess(exp);
-	}*/
 
-	//ダメージを受ける
-	/*if (g_pad[0]->IsTrigger(enButtonX))
-	{
-		Dameged(dddd);
-	}*/
-
-	//ステート
-	ManageState();
-	//アニメーションの再生
-	PlayAnimation();
-
-	m_position.y += m_position_YUp;
-
-	m_modelRender.SetPosition(m_position);
-	m_modelRender.Update();
-}
-
-void KnightPlayer::Attack()
-{
-	//連打で攻撃できなくなる
-
-	//一段目のアタックをしていないなら
-	if (AtkState == false)
-	{
-		//Bボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_animState = enKnightState_ChainAtk;
-			
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
-			AtkState = true;
-		}
-	}
-	
-
-	if (m_AtkTmingState == FirstAtk_State)
-	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_AtkTmingState = SecondAtk_State;
-		}
-	}
-
-	if (m_AtkTmingState == SecondAtkStart_State)
-	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_AtkTmingState = LastAtk_State;
-		}
-	}
-
-
-	/*if (FirstAtkFlag == true)
-	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			SecondAtkFlag = true;
-		}
-	}
-
-	if (SecondAtkStartFlag == true)
-	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			LastAtkFlag = true;
-		}
-	}*/
-
-
+	//攻撃かスキルを使用しているなら
+	//コリジョン作成
 	if(AtkCollistionFlag ==true)AtkCollisiton();
 }
 
@@ -239,76 +268,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_animState = enKnightState_Idle;
 		AtkState = false;
 	}
-
-
-	///////////////////////////////////////////////////////////////////////
-	//if (wcscmp(eventName, L"FirstAttack_Start") == 0)
-	//{
-	//	FirstAtkFlag = true;
-	//	AtkCollistionFlag = true;
-	//}
-
-	//if (wcscmp(eventName, L"SecondAttack_Start") == 0)
-	//{
-	//	SecondAtkStartFlag = true;
-	//	AtkCollistionFlag = true;
-	//}
-
-	//if (wcscmp(eventName, L"LastAttack_Start") == 0)
-	//{
-	//	AtkCollistionFlag = true;
-	//}
-
-	//	if (wcscmp(eventName, L"FirstAttack_End") == 0)
-	//	{
-	//		FirstAtkFlag = false;
-	//		AtkState = false;
-	//		AtkCollistionFlag = false;
-	//		////ボタンが押されていなかったら
-	//		//	if (SecondAtkFlag == false)
-	//		//	{
-	//		//		m_animState = enKnightState_Idle;
-	//		//		//座標
-	//		//	}
-	//	}
-
-	//	if (wcscmp(eventName, L"FirstToIdle") == 0)
-	//	{
-	//		//ボタンが押されていなかったら
-	//		if (SecondAtkFlag == false)
-	//		{
-	//			AtkState = false;
-	//			m_animState = enKnightState_Idle;
-	//			//座標
-	//		}
-	//	}
-
-	//	if (wcscmp(eventName, L"SecondAttack_End") == 0)
-	//	{
-	//		SecondAtkFlag = false;
-	//		SecondAtkStartFlag = false;
-	//		AtkState = false;
-	//		AtkCollistionFlag = false;
-	//		//ボタンが押されていなかったら
-	//		if (LastAtkFlag == false)
-	//		{
-	//			m_animState = enKnightState_Idle;
-	//		}
-	//	}
-
-	//	if (wcscmp(eventName, L"LastAttack_End") == 0)
-	//	{
-	//		LastAtkFlag = false;
-	//		AtkState = false;
-	//		AtkCollistionFlag = false;
-	//		//座標
-
-	//	}
-	//	//アニメーションの再生が終わったら
-	//	if (m_modelRender.IsPlayingAnimation() == false) {
-	//		m_animState = enKnightState_Idle;
-	//		AtkState = false;
-	//	}
 
 }
 

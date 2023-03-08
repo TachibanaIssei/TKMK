@@ -39,6 +39,10 @@ bool Neutral_Enemy::Start()
 	m_modelRender.SetScale(m_scale);
 	//大きさ調整
 	
+	//ナビメッシュを構築
+	//m_nvmMesh.Init("Assets/nvm/nv.tkn");
+
+
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
 		10.0f,			//半径。

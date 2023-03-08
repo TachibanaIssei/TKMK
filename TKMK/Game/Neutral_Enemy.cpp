@@ -58,6 +58,11 @@ bool Neutral_Enemy::Start()
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
+
+	m_Status.LoadCSV("Enemy");
+
+
+
 	return true;
 }
 
@@ -154,16 +159,16 @@ void Neutral_Enemy::Collision()
 		{
 			//hpを減らす
 
-			if (m_hp == 0)
-			{
-				//死亡ステートに遷移する。
-				m_Neutral_EnemyState = enNeutral_Enemy_Death;
-			}
-			else {
-				//被ダメージステートに遷移する。
-				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
-			}
+			//if (m_hp == 0)
+			//{
+			//	//死亡ステートに遷移する。
+			//	m_Neutral_EnemyState = enNeutral_Enemy_Death;
+			//}
+			//else {
+			//	//被ダメージステートに遷移する。
+			//	m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
+			//	//効果音再生
+			//}
 		}
 	}
 

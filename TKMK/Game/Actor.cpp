@@ -148,7 +148,7 @@ void Actor::COOlTIME(float SkillCooltimer, bool& skillstate)
 		{
 			//スキル使用可能
 			skillstate = false;
-			timer = SkillCooltimer;
+			timer = 0;
 		}
 		else timer += g_gameTime->GetFrameDeltaTime();
 	}

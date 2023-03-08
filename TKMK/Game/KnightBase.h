@@ -68,9 +68,14 @@ public:
 	void Rotation();
 
 	/// <summary>
-	/// 当たり判定の処理
+	/// 通常攻撃の当たり判定の処理
 	/// </summary>
 	void AtkCollisiton();
+
+	/// <summary>
+	/// 必殺技の当たり判定の処理
+	/// </summary>
+	void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
 
 	/// <summary>
 	/// アニメーションのステートの管理
@@ -110,8 +115,8 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_animState != enKnightState_FirstAtk &&
-			m_animState != enKnightState_SecondAtk&&
+		return m_animState != enKnightState_ChainAtk &&
+			m_animState != enKnightState_UltimateSkill &&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;
 	}
@@ -135,9 +140,9 @@ protected:
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
 	//一段目のアタックのステートの遷移処理
-	void OnProcessFirstAtkStateTransition();
+	void OnProcessChainAtkStateTransition();
 	//二段目のアタックのステートの遷移処理
-	void OnProcessSecondAtkStateTransition();
+	void OnProcessUltimateSkillAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
 	void OnProcessDamegeStateTransition();
 	//HPが0になったときのステートの遷移処理
@@ -146,8 +151,7 @@ protected:
 	enum PlayerState {
 		enKnightState_Idle,
 		enKnightState_Run,
-		enKnightState_FirstAtk,
-		enKnightState_SecondAtk,
+		enKnightState_ChainAtk,
 		enKnightState_Damege,
 		enKnightState_Death,
 		enKnightState_Skill,
@@ -156,19 +160,23 @@ protected:
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
 		enAnimationClip_Run,
-		enAnimationClip_FirstAtk,
-		enAnimationClip_SecondAtk,
+		enAnimationClip_ChainAtk,
 		enAnimationClip_Damege,
 		enAnimationClip_Death,
-		/*enAnimationClip_Skill,
-		enAnimationClip_UltimateSkill,*/
+		enAnimationClip_Skill,
+		enAnimationClip_UltimateSkill,
 		enAnimationClip_Num,
 	};
-	Game* m_game;
+	Game* m_game=nullptr;
 	Vector3 firstposition;                                //最初の座標
+	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	Vector3 m_position = Vector3::Zero;                   //座標
+	float m_position_YUp = 50.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 m_moveSpeed;                                  //移動速度
+	Vector3 collisionRot= Vector3::Zero;
+	CollisionObject* collisionObject;
+	Vector3 UltCollisionPos= Vector3::Zero;
 	CharacterController m_charCon;                        //キャラクターコントロール
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
@@ -187,12 +195,14 @@ protected:
 	//「」ボーンのID
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
-	int AtkEndPosID= -1;
+	int AtkEndPosId= -1;
 
 	//獲得した経験値仮
 	int exp=5;
 	//受けたダメージ仮
 	int dddd = 50;
+
+	bool UltCollisionSetFlag = false;
 
 };
 

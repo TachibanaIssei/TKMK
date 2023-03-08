@@ -10,13 +10,14 @@ KnightPlayer::KnightPlayer()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-
-	m_position.y += m_position_YUp;
+	m_respawnPos[respawnNumber].y += m_position_YUp;
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+
+	
 }
 
 KnightPlayer::~KnightPlayer()
@@ -101,7 +102,8 @@ void KnightPlayer::Update()
 	//アニメーションの再生
 	PlayAnimation();
 
-	m_position.y += m_position_YUp;
+	//剣士のY座標が腰なのでY座標を上げる
+	m_position.y = m_position_YUp;
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();

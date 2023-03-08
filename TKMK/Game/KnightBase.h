@@ -171,7 +171,7 @@ protected:
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	Vector3 m_position = Vector3::Zero;                   //座標
-	float m_position_YUp = 50.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
+	float m_position_YUp = 36.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 m_moveSpeed;                                  //移動速度
 	Vector3 collisionRot= Vector3::Zero;

@@ -37,6 +37,11 @@ public:
 	virtual void Attack()=0;
 
 	/// <summary>
+	/// 自身の当たり判定
+	/// </summary>
+	void Collition();
+
+	/// <summary>
 	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>

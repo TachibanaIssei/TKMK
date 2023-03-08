@@ -115,6 +115,7 @@ namespace nsK2EngineLow {
 		{
 			return m_boneName.c_str();
 		}
+
 		/*!
 		*@brief	このボーンのワールド空間での位置と回転とスケールを計算する。
 		*@param[out]	trans		平行移動量の格納先。
@@ -122,6 +123,16 @@ namespace nsK2EngineLow {
 		*@param[out]	scale		拡大率の格納先。
 		*/
 		void CalcWorldTRS(Vector3& trans, Quaternion& rot, Vector3& scale);
+
+		/// <summary>
+		/// 座標を取得する
+		/// </summary>
+		/// <returns>ボーンの座標</returns>
+		Vector3& GetPosition()
+		{
+
+			return m_positoin;
+		}
 
 	private:
 

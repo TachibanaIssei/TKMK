@@ -52,6 +52,7 @@ bool Game::Start()
 	m_knightbase->SetSGame(this);*/
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
+	
 
 	//ゲームカメラの生成
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
@@ -75,7 +76,7 @@ bool Game::Start()
 
 
 	//当たり判定を有効化する。
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

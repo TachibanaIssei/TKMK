@@ -27,10 +27,10 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_FirstAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
-	m_animationClips[enAnimationClip_FirstAtk].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/Knight_SecondAtk.tka");
-	m_animationClips[enAnimationClip_SecondAtk].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
+	m_animationClips[enAnimationClip_ChainAtk].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_UltimateAttack.tka");
+	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Knight/Knight_Death.tka");
@@ -42,7 +42,7 @@ void KnightBase::SetModel()
 	//「mixamorig:RightHand」(右手)ボーンのID(番号)を取得する。
 	m_swordBoneId = m_modelRender.FindBoneID(L"mixamorig:RightHand");
 	//攻撃時のアニメーションイベント剣士の座標のID(番号)を取得する。
-	AtkEndPosID = m_modelRender.FindBoneID(L"movePos");
+	AtkEndPosId = m_modelRender.FindBoneID(L"movePos");
 
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);
@@ -175,6 +175,63 @@ void KnightBase::AtkCollisiton()
 }
 
 /// <summary>
+/// 必殺技発動時の当たり判定の処理
+/// </summary>
+/// <param name="oldpostion">前フレームの座標</param>
+/// <param name="position">現在の座標</param>
+void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
+{	
+	//コリジョン生成していないなら
+	if (UltCollisionSetFlag == false)
+	{
+		//コリジョンの座標をプレイヤーと同じに設定
+		UltCollisionPos = position;
+		UltCollisionPos.y += 50.0f;
+
+		//前フレームの座標を代入
+		Vector3 oldPosition = oldpostion;
+		//前フレームの座標から現在のフレームに向かうベクトルを計算する
+		collisionRot = position - oldPosition;
+
+		//Y方向のベクトルを0.0fにする
+		collisionRot.y = 0.0f;
+
+		//正規化
+		collisionRot.Normalize();
+
+		Quaternion rot;
+		//Y軸回りの回転クォータニオンを作成
+		rot.SetRotationYFromDirectionXZ(collisionRot);
+		//ベクトルにクォータニオンを適応
+		rot.Apply(oldpostion);
+
+		//コリジョンオブジェクトを作成する。
+		collisionObject = NewGO<CollisionObject>(0);
+		Vector3 collitionPosition = position;
+		collitionPosition.y += 50.0f;
+		//collisionPosition.y += 50.0f;
+		//ボックス状のコリジョンを作成する。
+		collisionObject->CreateBox(collitionPosition, //座標。
+			Quaternion(rot), //回転。
+			Vector3(300.0f, 50.0f, 15.0f) //大きさ。
+		);
+		collisionObject->SetIsEnableAutoDelete(false);
+		collisionObject->SetName("player_UltimateSkill");
+
+		UltCollisionSetFlag = true;
+	}
+	else
+	{
+		//移動速度設定
+		UltCollisionPos += collisionRot * 4.0f;
+		//座標を設定
+		collisionObject->SetPosition(UltCollisionPos);
+	}
+	
+
+}
+
+/// <summary>
 /// ダメージを受けたときの処理
 /// </summary>
 /// <param name="damege">敵のダメージ</param>
@@ -197,7 +254,7 @@ void KnightBase::Dameged(int damege)
 void KnightBase::Skill()
 {
 	//m_animState = enKnightState_Skill;
-	m_animState = enKnightState_SecondAtk;
+	m_animState = enKnightState_UltimateSkill;
 	//当たり判定作成
 }
 
@@ -208,7 +265,8 @@ void KnightBase::UltimateSkill()
 {
 	//レベルを3下げる
 	levelDown(LvUpStatus, status, Lv, 3);
-	m_animState = enKnightState_SecondAtk;
+	m_animState = enKnightState_UltimateSkill;
+
 }
 
 /// <summary>
@@ -247,25 +305,27 @@ void KnightBase::Death()
 /// </summary>
 void KnightBase::PlayAnimation()
 {
+	m_modelRender.SetAnimationSpeed(1.0f);
+
 	switch (m_animState)
 	{
 	case enKnightState_Idle:
-		m_modelRender.PlayAnimation(enAnimationClip_Idle);
+		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
 		break;
 	case enKnightState_Run:
-		m_modelRender.PlayAnimation(enAnimationClip_Run);
+		m_modelRender.PlayAnimation(enAnimationClip_Run,0.4f);
 		break;
-	case enKnightState_FirstAtk:
-		m_modelRender.PlayAnimation(enAnimationClip_FirstAtk, 0.1f);
+	case enKnightState_ChainAtk:
+		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
 		break;
-	case enKnightState_SecondAtk:
-		m_modelRender.PlayAnimation(enAnimationClip_SecondAtk,0.1f);
+	case enKnightState_UltimateSkill:
+		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1f);
 		break;
 	case enAnimationClip_Damege:
-		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.1f);
+		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
 		break;
 	case enAnimationClip_Death:
-		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.1f);
+		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.4f);
 	default:
 		break;
 	}
@@ -284,11 +344,11 @@ void KnightBase::ManageState()
 	case enKnightState_Run:
 		OnProcessRunStateTransition();
 		break;
-	case enKnightState_FirstAtk:
-		OnProcessFirstAtkStateTransition();
+	case enKnightState_ChainAtk:
+		OnProcessChainAtkStateTransition();
 		break;
-	case enKnightState_SecondAtk:
-		OnProcessSecondAtkStateTransition();
+	case enKnightState_UltimateSkill:
+		OnProcessUltimateSkillAtkStateTransition();
 		break;
 	case enAnimationClip_Damege:
 		OnProcessDamegeStateTransition();
@@ -340,12 +400,14 @@ void KnightBase::OnProcessRunStateTransition()
 /// <summary>
 /// FirstAtkアニメーションが再生されているときの処理
 /// </summary>
-void KnightBase::OnProcessFirstAtkStateTransition()
+void KnightBase::OnProcessChainAtkStateTransition()
 {
-	//一段目のアタックのアニメーション再生が終わったら。
+	//チェインアタックのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//待機ステート
+		//攻撃を始めたかの判定をfalseにする
+		AtkState = false;
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
@@ -354,7 +416,7 @@ void KnightBase::OnProcessFirstAtkStateTransition()
 /// <summary>
 /// SecondAtkアニメーションが再生されているときの処理
 /// </summary>
-void KnightBase::OnProcessSecondAtkStateTransition()
+void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 {
 	//2段目のアタックのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
@@ -395,21 +457,3 @@ void KnightBase::OnProcessDeathStateTransition()
 		OnProcessCommonStateTransition();
 	}
 }
-
-///// <summary>
-///// アニメーションイベントの再生
-///// </summary>
-///// <param name="clipName"></param>
-///// <param name="eventName"></param>
-//void KnightBase::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
-//{
-//	if (wcscmp(eventName, L"Jump") == 0)
-//	{
-//		m_moveSpeed.y += 500.0f;
-//	}
-//}
-
-//void KnightBase::Render(RenderContext& rc)
-//{
-//	m_modelRender.Draw(rc);
-//}

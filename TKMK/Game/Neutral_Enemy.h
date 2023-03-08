@@ -1,4 +1,8 @@
 #pragma once
+#include "tkFile/TknFile.h"
+#include "AI/PathFinding/NaviMesh.h"
+#include "AI/PathFinding/Path.h"
+#include "AI/PathFinding/PathFinding.h"
 //クラス宣言
 class KnightPlayer;
 class Game;
@@ -118,7 +122,7 @@ private:
 	Vector3 m_moveSpeed;                      //移動速度
 	Vector3 m_forward = Vector3::AxisZ;      //正面のベクトル
 	Quaternion m_rot;                        //クォータニオン
-	Vector3 m_scale = Vector3::One;          //大きさ
+	Vector3 m_scale = Vector3{0.2f,0.2f,0.2f};          //大きさ
 	CharacterController m_charaCon;          //キャラコン
 	EnNEState m_NEState = enNEState_Idle;    //中立の敵のステート。
 	bool m_UnderAttack = false;              //攻撃判定
@@ -129,5 +133,12 @@ private:
 	float					m_chaseTimer = 0.0f;						//追跡タイマー。
 	float					m_idleTimer = 0.0f;		                    //待機タイマー。
 
+	//ナビゲーションメッシュ
+	TknFile m_tknFile;
+	PhysicsStaticObject m_bgObject;
+	nsAI::NaviMesh m_nvmMesh;
+	nsAI::Path m_path;
+	nsAI::PathFinding m_pathFiding;
+	Vector3 m_targetPointPosition;
 };
 

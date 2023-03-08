@@ -37,11 +37,12 @@ bool Neutral_Enemy::Start()
 	m_modelRender.SetRotation(m_rot);
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
-
+	//大きさ調整
+	
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
-		20.0f,			//半径。
-		100.0f,			//高さ。
+		10.0f,			//半径。
+		10.2f,			//高さ。
 		m_position		//座標。
 	);
 	//剣のボーンのIDを取得する
@@ -51,11 +52,12 @@ bool Neutral_Enemy::Start()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
+
 	//乱数を初期化。
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
-	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 	return true;
 }
 
@@ -111,16 +113,29 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-
-	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-	if (m_charaCon.IsOnGround()) {
-		//地面についた。
-		m_moveSpeed.y = 0.0f;
-	}
-	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる。
-	modelPosition.y += 2.5f;
-	m_modelRender.SetPosition(modelPosition);
+	//m_targetPointPosition = m_knightPlayer->GetPosition();
+	//bool isEnd;
+	////if(){
+	//	// パス検索
+	//m_pathFiding.Execute(
+	//	m_path,							// 構築されたパスの格納先
+	//	m_nvmMesh,						// ナビメッシュ
+	//	m_position,						// 開始座標
+	//	m_targetPointPosition,			// 移動目標座標
+	//	PhysicsWorld::GetInstance(),	// 物理エンジン	
+	//	20.0f,							// AIエージェントの半径
+	//	50.0f							// AIエージェントの高さ。
+	//);
+	////}
+	//// パス上を移動する。
+	//m_position = m_path.Move(
+	//	m_position,
+	//	3.0f,
+	//	isEnd
+	//);
+	Vector3 pos = m_position;
+	m_charaCon.SetPosition(pos);
+	m_modelRender.SetPosition(pos);
 }
 
 void Neutral_Enemy::Collision()
@@ -129,8 +144,28 @@ void Neutral_Enemy::Collision()
 	{
 		return;
 	}
+
 	//敵の攻撃用のコリジョンを取得する
-	const auto& collisions = g_collisionObjectManager->FindCollisionObject();
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//子リジョンの配列をfor文で回す
+	for (auto collision : collisions)
+	{
+		if (collision->IsHit(m_charaCon))
+		{
+			//hpを減らす
+
+			if (m_hp == 0)
+			{
+				//死亡ステートに遷移する。
+				m_NEState = enNEState_Death;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_NEState = enNEState_ReceiveDamage;
+				//効果音再生
+			}
+		}
+	}
 
 }
 
@@ -152,12 +187,39 @@ void Neutral_Enemy::Attack()
 
 const bool Neutral_Enemy::SearchEnemy()const
 {
-	return true;
+	//剣士からエネミーに向かうベクトルを計算する。
+	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	//ボスとプレイヤーの距離がある程度近かったら。
+	if (diff.LengthSq() <= 100.0 * 100.0f)
+	{
+		//エネミーからプレイヤーに向かうベクトルを正規化する。
+		diff.Normalize();
+		//エネミーの正面のベクトルと、エネミーからプレイヤーに向かうベクトルの。
+		//内積(cosθ)を求める。
+		float cos = m_forward.Dot(diff);
+		//内積(cosθ)から角度(θ)を求める。
+		float angle = acosf(cos);
+		//角度(θ)が180°より小さければ。
+		if (angle <= (Math::PI / 180.0f) * 180.0f)
+		{
+			//プレイヤーを見つけた！
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Neutral_Enemy::MakeAttackCollision()
 {
-
+	//攻撃判定用のコリジョンオブジェクトを作成する。
+	auto collisionObject = NewGO<CollisionObject>(0);
+	//頭のボーンのワールド行列を取得する。
+	Matrix matrix = m_modelRender.GetBone(m_AttackBoneId)->GetWorldMatrix();
+	//ボックス状のコリジョンを作成する。
+	collisionObject->CreateSphere(m_position, Quaternion::Identity,20.0f);
+	collisionObject->SetWorldMatrix(matrix);
+	collisionObject->SetName("enemy_attack");
 }
 void Neutral_Enemy::ProcessCommonStateTransition()
 {
@@ -165,43 +227,47 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
 	//敵を見つかったら攻撃
-	if (SearchEnemy()==true)
+	//プレイヤーを見つけたら。
+	if (SearchEnemy() == true)
 	{
-
 		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 		diff.Normalize();
-		m_moveSpeed = diff;
-		m_NEState = enNEState_Chase;
-		//攻撃できる距離なら
+		//移動速度を設定する。
+		m_moveSpeed = diff * 320.0f;
+		//攻撃できる距離なら。
 		if (CanAttack() == true)
 		{
+			//乱数によって、攻撃するか待機させるかを決定する。	
 			int ram = rand() % 100;
-			if (ram > 70)
+			if (ram > 30)
 			{
-				//攻撃ステートに移行する
+				//攻撃ステートに移行する。
 				m_NEState = enNEState_Attack;
 				m_UnderAttack = false;
 				return;
 			}
 			else
 			{
+				//待機ステートに移行する。
 				m_NEState = enNEState_Idle;
 				return;
 			}
+
 		}
+		//攻撃できない距離なら。
 		else
 		{
 			//乱数によって、追跡させる
 			int ram = rand() % 100;
-			if (ram > 30)
+			if (ram > 40)
 			{
+				//追跡ステートに移行する。
 				m_NEState = enNEState_Chase;
 				return;
 			}
 		}
-
 	}
-	//敵を見つけられなければ。
+	//プレイヤーを見つけられなければ。
 	else
 	{
 		//待機ステートに移行する。
@@ -367,7 +433,7 @@ const bool Neutral_Enemy::CanAttack()const
 	//中立の敵からプレイヤーに向かうベクトルを計算する
 	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 	//距離が近かったら
-	if (diff.LengthSq() <= 100.0f * 100.0f)
+	if (diff.LengthSq() <= 75.0f * 75.0f)
 	{
 		//攻撃できる
 		return true;

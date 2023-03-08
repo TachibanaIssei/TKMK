@@ -81,7 +81,7 @@ bool Game::Start()
 
 
 	//“–‚½‚è”»’è‚ð—LŒø‰»‚·‚éB
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

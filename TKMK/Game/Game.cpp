@@ -28,14 +28,14 @@ Game::~Game()
 
 bool Game::Start()
 {
-	//�f�B���N�V�������C�g�̐ݒ�
+	//ディレクションライトの設定
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = Vector3{ 1.0f,1.0f,1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
 	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f });
 
-	//���x��
+	//スタジアムのレベルの設定
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium03") == true) {
@@ -48,18 +48,18 @@ bool Game::Start()
 		}
 		return false;
 	});
-	//���m�̍쐬
+	//剣士の生成
 	/*m_knightbase = NewGO<KnightBase>(0, "knightbase");
 	m_knightbase->SetSGame(this);*/
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
 	
 
-	//�Q�[���J�����̐���
+	//ゲームカメラの生成
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	m_gamecamera->SetKnight(m_knightplayer);
 
-	//�����̓G�̍쐬
+	//中立の敵の生成
 	m_NE = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 	m_NE->SetNEGame(this);
 
@@ -80,7 +80,7 @@ bool Game::Start()
 	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);*/
 
 
-	//�����蔻���L��������B
+	//当たり判定の可視化
 	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;

@@ -48,12 +48,7 @@ private:
 	};
 	AtkTimingState m_AtkTmingState = Num_State;
 
-	bool FirstAtkFlag = false;
-	bool SecondAtkFlag = false;
-	bool SecondAtkStartFlag = false;
-	bool LastAtkFlag = false;
-
-	bool AtkCollistionFlag = false;
+	//bool AtkCollistionFlag = false;
 
 	bool UltimateSkillFlag = false;
 

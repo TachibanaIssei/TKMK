@@ -18,7 +18,7 @@ GameCamera::~GameCamera()
 bool GameCamera::Start()
 {
 
-	//注視点から視点までのベクトルを設定。
+	//注視点から視点までのベクトルを設定。80-160
 	m_toCameraPos.Set(0.0f, 80.0f, -160.0f);
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
@@ -57,14 +57,14 @@ void GameCamera::Update()
 	//大きさが１になるということは、ベクトルから強さがなくなり、方向のみの情報となるということ。
 	Vector3 toPosDir = m_toCameraPos;
 	toPosDir.Normalize();
-	if (toPosDir.y < -0.3f) {
-		//カメラが上向きすぎ。
-		m_toCameraPos = toCameraPosOld;
-	}
-	else if (toPosDir.y > 0.9f) {
-		//カメラが下向きすぎ。
-		m_toCameraPos = toCameraPosOld;
-	}
+	//if (toPosDir.y < -0.3f) {
+	//	//カメラが上向きすぎ。
+	//	m_toCameraPos = toCameraPosOld;
+	//}
+	//else if (toPosDir.y > 0.9f) {
+	//	//カメラが下向きすぎ。
+	//	m_toCameraPos = toCameraPosOld;
+	//}
 
 	Vector3 pos;
 	//視点と注視点を足す

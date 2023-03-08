@@ -31,13 +31,22 @@ bool Neutral_Enemy::Start()
 	//モデルを読み込む。
 	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
 
-	m_scale = Vector3(0.3f,0.3f, 0.3f);
 	//座標を設定
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
 	m_modelRender.SetRotation(m_rot);
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
+
+	//キャラクターコントローラーを初期化。
+	m_charaCon.Init(
+		20.0f,			//半径。
+		100.0f,			//高さ。
+		m_position		//座標。
+	);
+	//剣のボーンのIDを取得する
+	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
+
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -97,7 +106,21 @@ void Neutral_Enemy::Rotation()
 
 void Neutral_Enemy::Chase()
 {
+	//追跡ステートでないなら、追跡処理はしない。
+	if (m_NEState != enNEState_Chase)
+	{
+		return;
+	}
 
+	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charaCon.IsOnGround()) {
+		//地面についた。
+		m_moveSpeed.y = 0.0f;
+	}
+	Vector3 modelPosition = m_position;
+	//ちょっとだけモデルの座標を挙げる。
+	modelPosition.y += 2.5f;
+	m_modelRender.SetPosition(modelPosition);
 }
 
 void Neutral_Enemy::Collision()
@@ -107,7 +130,7 @@ void Neutral_Enemy::Collision()
 		return;
 	}
 	//敵の攻撃用のコリジョンを取得する
-	//const auto& collisions = g_collisionObjectManager->FindCollisionObject();
+	const auto& collisions = g_collisionObjectManager->FindCollisionObject();
 
 }
 
@@ -341,7 +364,9 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 
 const bool Neutral_Enemy::CanAttack()const
 {
+	//中立の敵からプレイヤーに向かうベクトルを計算する
 	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	//距離が近かったら
 	if (diff.LengthSq() <= 100.0f * 100.0f)
 	{
 		//攻撃できる
@@ -353,5 +378,6 @@ const bool Neutral_Enemy::CanAttack()const
 
 void Neutral_Enemy::Render(RenderContext& rc)
 {
+	//モデルを描画する。
 	m_modelRender.Draw(rc);
 }

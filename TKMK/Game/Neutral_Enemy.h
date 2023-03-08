@@ -119,10 +119,11 @@ private:
 	Vector3 m_forward = Vector3::AxisZ;      //正面のベクトル
 	Quaternion m_rot;                        //クォータニオン
 	Vector3 m_scale = Vector3::One;          //大きさ
-	//CharacterController m_charaCon;          //キャラコン
+	CharacterController m_charaCon;          //キャラコン
 	EnNEState m_NEState = enNEState_Idle;    //中立の敵のステート。
 	bool m_UnderAttack = false;              //攻撃判定
 	int m_hp = 0;                            //HP
+	int m_AttackBoneId = 1;                  //頭のボーンのID
 	Game* m_game = nullptr;                  //ゲーム
 	KnightPlayer* m_knightPlayer;                        //剣士
 	float					m_chaseTimer = 0.0f;						//追跡タイマー。

@@ -15,7 +15,7 @@ bool BackGround::Start()
 	
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rotation);
-	m_modelRender.SetScale(m_scale);
+	m_modelRender.SetScale(1.3f,1.0f,1.3f);
 
 	m_modelRender.Update();
 

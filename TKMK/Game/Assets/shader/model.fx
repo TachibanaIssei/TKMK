@@ -93,8 +93,9 @@ cbuffer LightCB : register(b1)
 ////////////////////////////////////////////////
 Texture2D<float4> g_albedo : register(t0);				//アルベドマップ
 Texture2D<float4> g_normalMap : register(t1);           //法線マップ
+Texture2D<float4> g_specularMap : register(t2);         //スペキュラマップ
 StructuredBuffer<float4x4> g_boneMatrix : register(t3);	//ボーン行列。
-sampler g_sampler : register(s0);	//サンプラステート。
+sampler g_sampler : register(s0);	                    //サンプラステート。
 
 ////////////////////////////////////////////////
 // 関数宣言
@@ -176,6 +177,7 @@ SPSIn VSSkinMain( SVSIn vsIn )
 /// </summary>
 float4 PSMain( SPSIn psIn ) : SV_Target0
 {	
+    //法線を計算
     float3 normal = CalcNormalMap(psIn);
     
 	//ディレクションライトによるライティングの計算
@@ -210,9 +212,9 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	return albedoColor;
 }
 
-/// <summary>
-/// Lambert拡散反射光を計算する
-/// </summary>
+/////////////////////////////////////////////////////////////////////////
+//  Lambert拡散反射を計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 normal)
 {
     // ピクセルの法線とライトの方向の内積を計算する
@@ -225,9 +227,9 @@ float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 norma
     return lightColor * t;
 }
 
-/// <summary>
-/// Phong鏡面反射光を計算する
-/// </summary>
+/////////////////////////////////////////////////////////////////////////
+//  Phong鏡面反射を計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal)
 {
     // 反射ベクトルを求める
@@ -240,16 +242,19 @@ float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldP
     // 鏡面反射の強さを求める
     float t = dot(refVec, toEye);
 
-    // 鏡面反射の強さを0以上の数値にする
-    t = max(0.0f, t);
+    // 鏡面反射の強さを0～1の数値にする
+    t = saturate(t);
 
     // 鏡面反射の強さを絞る
     t = pow(t, 6.0f);
-
+      
     // 鏡面反射光を求める
     return lightColor * t;
 }
 
+/////////////////////////////////////////////////////////////////////////
+//  ディレクションライトを計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
 {
     // ディレクションライトによるLambert拡散反射光を計算する
@@ -258,6 +263,9 @@ float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
     // ディレクションライトによるPhong鏡面反射光を計算する
     float3 specDirection = CalcPhongSpecular(
             directionLight.direction, directionLight.color, psIn.worldPos, normal);
+    //スペキュラマップからスペキュラ反射の強さをサンプリング
+    float specPower = g_specularMap.Sample(g_sampler, psIn.uv).r;
+    specDirection *= specPower;
     
     //サーフェイスの法線と光の入射方向に依存するリムの強さ
     float power1 = 1.0f - max(0.0f, dot(directionLight.direction, psIn.normal));
@@ -271,6 +279,9 @@ float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
     return diffDirection + specDirection + limPower;
 }
 
+/////////////////////////////////////////////////////////////////////////
+//  ポイントライトを計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
 {
     // このサーフェイスに入射しているポイントライトの光の向きを計算する
@@ -293,6 +304,9 @@ float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
         psIn.worldPos,      // サーフェイスのワールド座標
         normal              // サーフェイスの法線
     );
+    //スペキュラマップからスペキュラ反射の強さをサンプリング
+    float specPower = g_specularMap.Sample(g_sampler, psIn.uv).r;
+    specPoint *= specPower;
 
     // 距離による影響率を計算する
     // ポイントライトとの距離を計算する
@@ -314,6 +328,9 @@ float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
     return diffPoint + specPoint;
 }
 
+/////////////////////////////////////////////////////////////////////////
+//  スポットライトを計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcLigFromSpotLight(SPSIn psIn, float3 normal)
 {
     //サーフェイスによる入射するスポットライトの光の向き
@@ -332,6 +349,10 @@ float3 CalcLigFromSpotLight(SPSIn psIn, float3 normal)
         psIn.worldPos,
         normal
     );
+    //スペキュラマップからスペキュラ反射の強さをサンプリング
+    float specPower = g_specularMap.Sample(g_sampler, psIn.uv).r;
+    specSpotLight *= specPower;
+    
     //距離による影響率を計算する
     float3 distance = length(psIn.worldPos - spotLight.position);
     float affect = 1.0f - 1.0f / spotLight.range.x * distance;
@@ -357,6 +378,9 @@ float3 CalcLigFromSpotLight(SPSIn psIn, float3 normal)
     return diffSpotLight + specSpotLight;
 }
 
+/////////////////////////////////////////////////////////////////////////
+// 半球ライトを計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcLigFromHemisphereLight(SPSIn psIn)
 {
     float t = dot(psIn.normal, hemisphereLight.groundNormal);
@@ -365,6 +389,9 @@ float3 CalcLigFromHemisphereLight(SPSIn psIn)
     return hemiLight;
 }
 
+/////////////////////////////////////////////////////////////////////////
+//  法線を計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcNormalMap(SPSIn psIn)
 {
     float3 normal = psIn.normal;
@@ -374,5 +401,6 @@ float3 CalcNormalMap(SPSIn psIn)
     localNormal = (localNormal - 0.5f) * 2.0f;
     //タンジェントスペースの法線をワールドスペースに変換
     normal = psIn.tangent * localNormal.x + psIn.biNormal * localNormal.y + normal * localNormal.z;
+    
     return normal;
 }

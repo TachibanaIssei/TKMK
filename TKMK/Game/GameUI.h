@@ -1,6 +1,6 @@
 #pragma once
 
-class KnightBase;
+class KnightPlayer;
 
 class GameUI:public IGameObject
 {
@@ -14,11 +14,16 @@ public:
 
 private:
 	FontRender m_LevelFont;
+	FontRender m_LevelNameFont;
+
 	FontRender m_HpFont;
+	FontRender m_HpNameFont;
+
 	FontRender m_AtkFont;
 	FontRender m_SpeedFont;
-	KnightBase* m_knightbase=nullptr;
 
-	int LEVEL;
+	KnightPlayer* m_knightplayer=nullptr;
+
+	//int LEVEL;
 };
 

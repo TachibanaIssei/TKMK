@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Game.h"
-
 #include "BackGround.h"
 #include "Result.h"
 #include "GameCamera.h"
@@ -8,6 +7,7 @@
 #include "Actor.h"
 //#include "GameUI.h"
 #include "KnightPlayer.h"
+#include "Neutral_Enemy.h"
 
 Game::Game()
 {
@@ -23,6 +23,7 @@ Game::~Game()
 
 	DeleteGO(m_gamecamera);
 	DeleteGO(m_knightplayer);
+	DeleteGO(m_NE);
 }
 
 bool Game::Start()
@@ -37,7 +38,7 @@ bool Game::Start()
 	//ÉåÉxÉã
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.EqualObjectName(L"stadium02") == true) {
+		if (objData.EqualObjectName(L"Neutral_Enemy") == true) {
 			m_backGround = NewGO<BackGround>(0, "backGround");
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);
@@ -58,6 +59,10 @@ bool Game::Start()
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	m_gamecamera->SetKnight(m_knightplayer);
 
+	//íÜóßÇÃìGÇÃçÏê¨
+	m_NE = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+	m_NE->SetNEGame(this);
+
 	//GameUIÇÃê∂ê¨
 	//m_gameUI = NewGO<GameUI>(0, "gameUI");
 	
@@ -76,7 +81,7 @@ bool Game::Start()
 
 
 	//ìñÇΩÇËîªíËÇóLå¯âªÇ∑ÇÈÅB
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

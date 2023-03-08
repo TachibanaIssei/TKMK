@@ -1,8 +1,10 @@
 #pragma once
-
-
+#include "tkFile/TknFile.h"
+#include "AI/PathFinding/NaviMesh.h"
+#include "AI/PathFinding/Path.h"
+#include "AI/PathFinding/PathFinding.h"
 //クラス宣言
-class KnightBase;
+class KnightPlayer;
 class Game;
 /// <summary>
 /// 中立の敵
@@ -24,6 +26,14 @@ public:
 		enNEState_ReceiveDamage,			//被ダメージ。
 		enNEState_Death,					//ダウン。
 	};
+	void SetNEGame(Game* NEgame)
+	{
+		m_game = NEgame;
+	}
+	Game* GetNEGame()
+	{
+		return m_game;
+	}
 private:
 	/// <summary>
 	/// 追跡
@@ -95,6 +105,8 @@ private:
 	/// <returns></returns>
 	const bool CanAttack() const;
 
+	
+
 	enum EnAnimationClip {                      //アニメーション。
 		enAnimationClip_Idle,					//待機アニメーション。
 		enAnimationClip_Run,					//走りアニメーション。
@@ -105,20 +117,28 @@ private:
 	};
 
 	AnimationClip m_animationClips[enAnimationClip_Num];//アニメーションクリップ
-	ModelRender   m_modelRender;//モデルレンダー
-	Vector3 m_position;//座標
-	Vector3 m_moveSpeed;//移動速度
-	Vector3 m_forward = Vector3::AxisZ; //正面のベクトル
-	Quaternion m_rot; //クォータニオン
-	Vector3 m_scale = Vector3::One;//大きさ
-	CharacterController m_charaCon;//キャラコン
-	EnNEState m_NEState = enNEState_Idle;//中立の敵のステート。
-	bool m_UnderAttack = false;//攻撃判定
-	int m_hp = 0;//HP
-	Game* m_game = nullptr;//ゲーム
-	KnightBase* m_KB;//剣士
+	ModelRender   m_modelRender;              //モデルレンダー
+	Vector3 m_position;                       //座標
+	Vector3 m_moveSpeed;                      //移動速度
+	Vector3 m_forward = Vector3::AxisZ;      //正面のベクトル
+	Quaternion m_rot;                        //クォータニオン
+	Vector3 m_scale = Vector3{0.2f,0.2f,0.2f};          //大きさ
+	CharacterController m_charaCon;          //キャラコン
+	EnNEState m_NEState = enNEState_Idle;    //中立の敵のステート。
+	bool m_UnderAttack = false;              //攻撃判定
+	int m_hp = 0;                            //HP
+	int m_AttackBoneId = 1;                  //頭のボーンのID
+	Game* m_game = nullptr;                  //ゲーム
+	KnightPlayer* m_knightPlayer;                        //剣士
 	float					m_chaseTimer = 0.0f;						//追跡タイマー。
 	float					m_idleTimer = 0.0f;		                    //待機タイマー。
 
+	//ナビゲーションメッシュ
+	TknFile m_tknFile;
+	PhysicsStaticObject m_bgObject;
+	nsAI::NaviMesh m_nvmMesh;
+	nsAI::Path m_path;
+	nsAI::PathFinding m_pathFiding;
+	Vector3 m_targetPointPosition;
 };
 

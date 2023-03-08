@@ -10,17 +10,23 @@ struct SSkinVSIn{
     float4 Weights  : BLENDWEIGHT0;
 };
 //頂点シェーダーへの入力。
-struct SVSIn{
-	float4 pos 		: POSITION;		//モデルの頂点座標。
-	float2 uv 		: TEXCOORD0;	//UV座標。
-    float3 normal	: NORMAL;
+struct SVSIn
+{
+    float4 pos      : POSITION;     //モデルの頂点座標。
+    float2 uv       : TEXCOORD0;    //UV座標。
+    float3 normal   : NORMAL;
+    float3 tangent  : TANGENT;      //接ベクトル
+    float3 biNormal : BINORMAL;     //従ベクトル
+    
 	SSkinVSIn skinVert;				//スキン用のデータ。
 };
 //ピクセルシェーダーへの入力。
 struct SPSIn{
 	float4 pos 			: SV_POSITION;	//スクリーン空間でのピクセルの座標。
 	float2 uv 			: TEXCOORD0;	//uv座標。
-    float3 normal		: NORMAL;
+    float3 normal		: NORMAL;       //法線
+    float3 tangent      : TANGENT;      //接ベクトル
+    float3 biNormal     : BINORMAL;     //従ベクトル
     float3 worldPos		: TEXCOORD1;	//ワールド座標
     float3 normalInView : TEXCOORD2;    //カメラ空間の法線
 	
@@ -86,18 +92,21 @@ cbuffer LightCB : register(b1)
 // グローバル変数。
 ////////////////////////////////////////////////
 Texture2D<float4> g_albedo : register(t0);				//アルベドマップ
+Texture2D<float4> g_normalMap : register(t1);           //法線マップ
+Texture2D<float4> g_specularMap : register(t2);         //スペキュラマップ
 StructuredBuffer<float4x4> g_boneMatrix : register(t3);	//ボーン行列。
-sampler g_sampler : register(s0);	//サンプラステート。
+sampler g_sampler : register(s0);	                    //サンプラステート。
 
 ////////////////////////////////////////////////
 // 関数宣言
 ////////////////////////////////////////////////
 float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 normal);
-float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal);
-float3 CalcLigFromDirectionLight(SPSIn psIn);
-float3 CalcLigFromPointLight(SPSIn psIn);
-float3 CalcLigFromSpotLight(SPSIn psIn);
+float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal,float2 uv);
+float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal);
+float3 CalcLigFromPointLight(SPSIn psIn,float3 normal);
+float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromHemisphereLight(SPSIn psIn);
+float3 CalcNormalMap(SPSIn psIn);
 
 ////////////////////////////////////////////////
 // 関数定義。
@@ -139,6 +148,9 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 	psIn.pos = mul(mView, psIn.pos);
 	psIn.pos = mul(mProj, psIn.pos);
 
+    psIn.tangent = normalize(mul(mWorld, vsIn.tangent));
+    psIn.biNormal = normalize(mul(mWorld, vsIn.biNormal));
+    
 	psIn.uv = vsIn.uv;
 
     psIn.normalInView = mul(mView, psIn.normal);
@@ -165,21 +177,24 @@ SPSIn VSSkinMain( SVSIn vsIn )
 /// </summary>
 float4 PSMain( SPSIn psIn ) : SV_Target0
 {	
+    //法線を計算
+    float3 normal = CalcNormalMap(psIn);
+    
 	//ディレクションライトによるライティングの計算
-    float3 directionLig = CalcLigFromDirectionLight(psIn);
+    float3 directionLig = CalcLigFromDirectionLight(psIn,normal);
 	
     //ポイントライトによるライティングの計算
     float3 pointLig = { 0.0f, 0.0f, 0.0f };
     if (pointLight.isUse)
     {
-        pointLig = CalcLigFromPointLight(psIn);
+        pointLig = CalcLigFromPointLight(psIn,normal);
     }
     
     //スポットライトによるライティングの計算
     float3 spotLig = { 0.0f, 0.0f, 0.0f };
     if (spotLight.isUse)
     {
-        spotLig = CalcLigFromSpotLight(psIn);
+        spotLig = CalcLigFromSpotLight(psIn,normal);
     }
     
     float3 hemiLight = { 0.0f, 0.0f, 0.0f };
@@ -188,7 +203,7 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
         hemiLight = CalcLigFromHemisphereLight(psIn);
     }
     
-	//拡散反射光と鏡面反射光を合成する
+	//光を合成する
     float3 light = directionLig + pointLig + spotLig + hemiLight + ambient;
     
     float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
@@ -197,9 +212,9 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	return albedoColor;
 }
 
-/// <summary>
-/// Lambert拡散反射光を計算する
-/// </summary>
+/////////////////////////////////////////////////////////////////////////
+//  Lambert拡散反射を計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 normal)
 {
     // ピクセルの法線とライトの方向の内積を計算する
@@ -212,10 +227,10 @@ float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 norma
     return lightColor * t;
 }
 
-/// <summary>
-/// Phong鏡面反射光を計算する
-/// </summary>
-float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal)
+/////////////////////////////////////////////////////////////////////////
+//  Phong鏡面反射を計算
+/////////////////////////////////////////////////////////////////////////
+float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal,float2 uv)
 {
     // 反射ベクトルを求める
     float3 refVec = reflect(lightDirection, normal);
@@ -227,24 +242,33 @@ float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldP
     // 鏡面反射の強さを求める
     float t = dot(refVec, toEye);
 
-    // 鏡面反射の強さを0以上の数値にする
-    t = max(0.0f, t);
+    // 鏡面反射の強さを0～1の数値にする
+    t = saturate(t);
 
     // 鏡面反射の強さを絞る
     t = pow(t, 6.0f);
-
+      
     // 鏡面反射光を求める
-    return lightColor * t;
+    float specularLig = lightColor * t;
+    
+    //スペキュラマップからスペキュラ反射の強さをサンプリング
+    float specPower = g_specularMap.Sample(g_sampler, uv).r;
+    specularLig *= specPower * 2.0f;
+    
+    return specularLig;
 }
 
-float3 CalcLigFromDirectionLight(SPSIn psIn)
+/////////////////////////////////////////////////////////////////////////
+//  ディレクションライトを計算
+/////////////////////////////////////////////////////////////////////////
+float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
 {
     // ディレクションライトによるLambert拡散反射光を計算する
-    float3 diffDirection = CalcLambertDiffuse(directionLight.direction, directionLight.color, psIn.normal);
+    float3 diffDirection = CalcLambertDiffuse(directionLight.direction, directionLight.color, normal);
 
     // ディレクションライトによるPhong鏡面反射光を計算する
     float3 specDirection = CalcPhongSpecular(
-            directionLight.direction, directionLight.color, psIn.worldPos, psIn.normal);
+            directionLight.direction, directionLight.color, psIn.worldPos, normal,psIn.uv);
     
     //サーフェイスの法線と光の入射方向に依存するリムの強さ
     float power1 = 1.0f - max(0.0f, dot(directionLight.direction, psIn.normal));
@@ -258,7 +282,10 @@ float3 CalcLigFromDirectionLight(SPSIn psIn)
     return diffDirection + specDirection + limPower;
 }
 
-float3 CalcLigFromPointLight(SPSIn psIn)
+/////////////////////////////////////////////////////////////////////////
+//  ポイントライトを計算
+/////////////////////////////////////////////////////////////////////////
+float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
 {
     // このサーフェイスに入射しているポイントライトの光の向きを計算する
     float3 ligDir = psIn.worldPos - pointLight.position;
@@ -270,15 +297,16 @@ float3 CalcLigFromPointLight(SPSIn psIn)
     float3 diffPoint = CalcLambertDiffuse(
         ligDir,             // ライトの方向
         pointLight.color,   // ライトのカラー
-        psIn.normal         // サーフェイスの法線
+        normal              // サーフェイスの法線
     );
 
     // 減衰なしのPhong鏡面反射光を計算する
     float3 specPoint = CalcPhongSpecular(
         ligDir,             // ライトの方向
         pointLight.color,   // ライトのカラー
-        psIn.worldPos,      // サーフェイズのワールド座標
-        psIn.normal         // サーフェイズの法線
+        psIn.worldPos,      // サーフェイスのワールド座標
+        normal,             // サーフェイスの法線
+        psIn.uv
     );
 
     // 距離による影響率を計算する
@@ -301,7 +329,10 @@ float3 CalcLigFromPointLight(SPSIn psIn)
     return diffPoint + specPoint;
 }
 
-float3 CalcLigFromSpotLight(SPSIn psIn)
+/////////////////////////////////////////////////////////////////////////
+//  スポットライトを計算
+/////////////////////////////////////////////////////////////////////////
+float3 CalcLigFromSpotLight(SPSIn psIn, float3 normal)
 {
     //サーフェイスによる入射するスポットライトの光の向き
     float3 ligDir = psIn.worldPos - spotLight.position;
@@ -310,15 +341,17 @@ float3 CalcLigFromSpotLight(SPSIn psIn)
     float3 diffSpotLight = CalcLambertDiffuse(
         ligDir,
         spotLight.color,
-        psIn.normal
+        normal
     );
     //減衰なしのPhong鏡面反射光を計算
     float3 specSpotLight = CalcPhongSpecular(
         ligDir,
         spotLight.color,
         psIn.worldPos,
-        psIn.normal
+        normal,
+        psIn.uv
     );
+    
     //距離による影響率を計算する
     float3 distance = length(psIn.worldPos - spotLight.position);
     float affect = 1.0f - 1.0f / spotLight.range.x * distance;
@@ -344,10 +377,29 @@ float3 CalcLigFromSpotLight(SPSIn psIn)
     return diffSpotLight + specSpotLight;
 }
 
+/////////////////////////////////////////////////////////////////////////
+// 半球ライトを計算
+/////////////////////////////////////////////////////////////////////////
 float3 CalcLigFromHemisphereLight(SPSIn psIn)
 {
     float t = dot(psIn.normal, hemisphereLight.groundNormal);
     t = (t + 1.0f) / 2.0f;
     float3 hemiLight = lerp(hemisphereLight.groundColor, hemisphereLight.skyColor, t);
     return hemiLight;
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  法線を計算
+/////////////////////////////////////////////////////////////////////////
+float3 CalcNormalMap(SPSIn psIn)
+{
+    float3 normal = psIn.normal;
+    //法線マップからタンジェントスペースの法線をサンプリング
+    float3 localNormal = g_normalMap.Sample(g_sampler, psIn.uv).xyz;
+    //タンジェントスペースの法線を0～1の範囲から-1～1の範囲に復元
+    localNormal = (localNormal - 0.5f) * 2.0f;
+    //タンジェントスペースの法線をワールドスペースに変換
+    normal = psIn.tangent * localNormal.x + psIn.biNormal * localNormal.y + normal * localNormal.z;
+    
+    return normal;
 }

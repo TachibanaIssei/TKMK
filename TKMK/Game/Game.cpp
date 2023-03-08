@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Game.h"
-
 #include "BackGround.h"
 #include "Result.h"
 #include "GameCamera.h"
@@ -8,6 +7,7 @@
 #include "Actor.h"
 //#include "GameUI.h"
 #include "KnightPlayer.h"
+#include "Neutral_Enemy.h"
 
 Game::Game()
 {
@@ -23,18 +23,19 @@ Game::~Game()
 
 	DeleteGO(m_gamecamera);
 	DeleteGO(m_knightplayer);
+	DeleteGO(m_NE);
 }
 
 bool Game::Start()
 {
-	//ƒfƒBƒŒƒNƒVƒ‡ƒ“ƒ‰ƒCƒg‚Ìİ’è
+	//ï¿½fï¿½Bï¿½ï¿½ï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½gï¿½Ìİ’ï¿½
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = Vector3{ 1.0f,1.0f,1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
 	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f });
 
-	//ƒŒƒxƒ‹
+	//ï¿½ï¿½ï¿½xï¿½ï¿½
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium03") == true) {
@@ -47,18 +48,22 @@ bool Game::Start()
 		}
 		return false;
 	});
-	//Œ•m‚Ìì¬
+	//ï¿½ï¿½ï¿½mï¿½Ìì¬
 	/*m_knightbase = NewGO<KnightBase>(0, "knightbase");
 	m_knightbase->SetSGame(this);*/
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
 	
 
-	//ƒQ[ƒ€ƒJƒƒ‰‚Ì¶¬
+	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	m_gamecamera->SetKnight(m_knightplayer);
 
-	//GameUI‚Ì¶¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½Ìì¬
+	m_NE = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+	m_NE->SetNEGame(this);
+
+	//GameUIï¿½Ìï¿½ï¿½ï¿½
 	//m_gameUI = NewGO<GameUI>(0, "gameUI");
 	
 	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
@@ -75,8 +80,8 @@ bool Game::Start()
 	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);*/
 
 
-	//“–‚½‚è”»’è‚ğ—LŒø‰»‚·‚éB
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

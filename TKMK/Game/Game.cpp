@@ -23,7 +23,7 @@ Game::~Game()
 
 	DeleteGO(m_gamecamera);
 	DeleteGO(m_knightplayer);
-	DeleteGO(m_NE);
+	DeleteGO(m_Neutral_Enemy);
 }
 
 bool Game::Start()
@@ -43,9 +43,18 @@ bool Game::Start()
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);
 			m_backGround->SetScale(objData.scale);
-
 			return true;
 		}
+	//名前がNeutral_Enemyだったら
+		else if (objData.EqualObjectName(L"Neutral_Enemy") == true) {
+			m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "neutral_Enemy");
+			m_Neutral_Enemy->SetNeutral_EnemyGame(this);
+
+			m_Neutral_Enemy->SetPosition(objData.position);
+			m_Neutral_Enemy->SetRotation(objData.rotation);
+			return true;
+		}
+
 		return false;
 	});
 	//���m�̍쐬
@@ -60,8 +69,8 @@ bool Game::Start()
 	m_gamecamera->SetKnight(m_knightplayer);
 
 	//�����̓G�̍쐬
-	m_NE = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-	m_NE->SetNEGame(this);
+	//m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+	//m_Neutral_Enemy->SetNeutral_EnemyGame(this);
 
 	//GameUI�̐���
 	//m_gameUI = NewGO<GameUI>(0, "gameUI");

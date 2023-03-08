@@ -20,19 +20,55 @@ public:
 	void Render(RenderContext& rc);
 	//中立の敵のステート
 	enum EnNEState {
-		enNEState_Idle,					//待機。
-		enNEState_Chase,					//追跡。
-		enNEState_Attack,			    //攻撃
-		enNEState_ReceiveDamage,			//被ダメージ。
-		enNEState_Death,					//ダウン。
+		enNeutral_EnemyState_Idle,					//待機。
+		enNeutral_EnemyState_Chase,					//追跡。
+		enNeutral_EnemyState_Attack,			    //攻撃
+		enNeutral_EnemyState_ReceiveDamage,			//被ダメージ。
+		enNeutral_EnemyState_Death,					//ダウン。
 	};
-	void SetNEGame(Game* NEgame)
+	/// <summary>
+	/// ゲームを設定
+	/// </summary>
+	/// <param name="NEgame"></param>
+	void SetNeutral_EnemyGame(Game* NEgame)
 	{
 		m_game = NEgame;
 	}
-	Game* GetNEGame()
+	Game* GetNeutral_EnemyGame()
 	{
 		return m_game;
+	}
+	/// <summary>
+	/// 座標を設定する。
+	/// </summary>
+	/// <param name="position">座標。</param>
+	void SetPosition(const Vector3& position)
+	{
+		m_position = position;
+	}
+	/// <summary>
+	/// 座標を取得する。
+	/// </summary>
+	/// <returns>座標。</returns>
+	const Vector3& GetPosition() const
+	{
+		return m_position;
+	}
+	/// <summary>
+	/// 回転を設定する。
+	/// </summary>
+	/// <param name="rotation">回転。</param>
+	void SetRotation(const Quaternion& rotation)
+	{
+		m_rot = rotation;
+	}
+	/// <summary>
+	/// 大きさを設定する。
+	/// </summary>
+	/// <param name="scale">大きさ。</param>
+	void SetScale(const Vector3& scale)
+	{
+		m_scale = scale;
 	}
 private:
 	/// <summary>
@@ -124,7 +160,7 @@ private:
 	Quaternion m_rot;                        //クォータニオン
 	Vector3 m_scale = Vector3{0.2f,0.2f,0.2f};          //大きさ
 	CharacterController m_charaCon;          //キャラコン
-	EnNEState m_NEState = enNEState_Idle;    //中立の敵のステート。
+	EnNEState m_Neutral_EnemyState = enNeutral_EnemyState_Idle;    //中立の敵のステート。
 	bool m_UnderAttack = false;              //攻撃判定
 	int m_hp = 0;                            //HP
 	int m_AttackBoneId = 1;                  //頭のボーンのID

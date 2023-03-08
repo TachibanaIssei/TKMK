@@ -139,9 +139,11 @@ protected:
 	void OnProcessIdleStateTransition();
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
-	//一段目のアタックのステートの遷移処理
+	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
-	//二段目のアタックのステートの遷移処理
+	//
+	void OnProcessSkillAtkStateTransition();
+	//必殺技のステートの遷移処理
 	void OnProcessUltimateSkillAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
 	void OnProcessDamegeStateTransition();
@@ -203,6 +205,8 @@ protected:
 	int dddd = 50;
 
 	bool UltCollisionSetFlag = false;
+
+	bool AtkCollistionFlag = false;
 
 };
 

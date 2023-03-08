@@ -36,7 +36,6 @@ private:
 	Vector3 UltPos = Vector3::Zero;
 	float UltimateSkillTimer = 0;
 
-	//—ñ‹“Œ^‚Ì‚·‚é
 	enum AtkTimingState
 	{
 		FirstAtk_State,

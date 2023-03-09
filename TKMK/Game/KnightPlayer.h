@@ -2,6 +2,8 @@
 
 #include "KnightBase.h"
 
+
+
 class Game;
 
 class KnightPlayer:public KnightBase

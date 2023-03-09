@@ -23,7 +23,7 @@ public:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	void Move();
+	//void Move();
 	
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
@@ -55,7 +55,7 @@ public:
 	/// <summary>
 	/// スキルを使用したときの処理
 	/// </summary>
-	void Skill();
+	void Skill(Vector3& right,Vector3& forward);
 
 	/// <summary>
 	/// 必殺技を発動したときの処理
@@ -122,6 +122,7 @@ public:
 	{
 		return m_animState != enKnightState_ChainAtk &&
 			m_animState != enKnightState_UltimateSkill &&
+			m_animState != enKnightState_Skill &&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;
 	}
@@ -187,10 +188,11 @@ protected:
 	Vector3 m_position = Vector3::Zero;                   //座標
 	float m_position_YUp = 36.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
-	Vector3 m_moveSpeed;                                  //移動速度
-	Vector3 collisionRot= Vector3::Zero;
-	CollisionObject* collisionObject;
-	Vector3 UltCollisionPos= Vector3::Zero;
+	Vector3 collisionRot= Vector3::Zero;                  //必殺技
+	CollisionObject* collisionObject;                     //コリジョン
+	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
+	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
+	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
 	CharacterController m_charCon;                        //キャラクターコントロール
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
@@ -206,6 +208,8 @@ protected:
 	float ComboTimer = 0;
 	//一段目のアタックをしたかの判定
 	bool AtkState = false;
+	//スキルのアニメーション再生が終わったかの判定
+	bool SkillEndFlag = false;
 	//「」ボーンのID
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
@@ -215,9 +219,9 @@ protected:
 	int exp=5;
 	//受けたダメージ仮
 	int dddd = 50;
-
+	//必殺技使用のフラグ
 	bool UltCollisionSetFlag = false;
-
+	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
 
 };

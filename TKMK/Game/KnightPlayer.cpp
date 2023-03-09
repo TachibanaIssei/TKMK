@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
 
+
 KnightPlayer::KnightPlayer()
 {
 	SetModel();
@@ -28,71 +29,34 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
-	
-
 	//前フレームの座標を取得
 	OldPosition = m_position;
 
 	//移動処理
-	Move();
+	Move(m_position, m_charCon, status);
 	
 	//攻撃処理
 	Attack();
+
+	//スキルステートがtureの間
+	if (SkillState == true) {
+		//移動処理を行う(スキル使用中は直線移動のみ)。
+		Skill(m_Skill_Right, m_Skill_Forward);
+	}
 
 	//回転処理
 	Rotation();
 
 	//クールタイムの処理
-	COOlTIME(Cooltime, SkillState);
+	COOlTIME(Cooltime, SkillEndFlag);
 
-	////スキルを発動する処理
-	////Bボタンが押されたら
-	//if (SkillState == false && g_pad[0]->IsTrigger(enButtonB))
-	//{
-	//	status.Speed += 120.0f;
-	//	Skill();
-	//	AtkCollistionFlag = true;
-	//}
-
-	////必殺技を発動する処理
-	////Xボタンが押されたら
-	//if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
-	//{
-	//	//アニメーション再生、レベルを３下げる
-	//	UltimateSkill();
-	//	//必殺技発動フラグをセット
-	//	UltimateSkillFlag = true;
-	//}
-
-	////必殺技発動フラグがセットされているなら
-	//if (UltimateSkillFlag == true)
-	//{
-	//	UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-	//	//必殺技タイマーが3.0fまでの間
-	//	if (UltimateSkillTimer <= 3.0f)
-	//	{
-	//		//コリジョンの作成、移動処理
-	//		UltimateSkillCollistion(OldPosition, m_position);
-	//	}
-	//	else
-	//	{
-	//		//攻撃が有効な時間をリセット
-	//		UltimateSkillTimer = 0;
-	//		//必殺技発動フラグをリセット
-	//		UltimateSkillFlag = false;
-	//		//コリジョン削除
-	//		DeleteGO(collisionObject);
-	//		//コリジョン作成フラグをリセット
-	//		UltCollisionSetFlag = false;
-	//	}
-	//}
 	
 	//レベルアップする
-	/*if (g_pad[0]->IsTrigger(enButtonA))
+	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		if(Lv!=5)
 		ExpProcess(exp);
-	}*/
+	}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -120,19 +84,19 @@ void KnightPlayer::Attack()
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	if (AtkState == false)
-	{
-		//Bボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_animState = enKnightState_ChainAtk;
-			
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
-			AtkState = true;
-		}
-	}
+	//if (AtkState == false)
+	//{
+	//	//Bボタン押されたら攻撃する
+	//	if (g_pad[0]->IsTrigger(enButtonA))
+	//	{
+	//		m_animState = enKnightState_ChainAtk;
+	//		
+	//		//FirstAtkFlag = true;
+	//		//コンボを1増やす
+	//		//ComboState++;
+	//		AtkState = true;
+	//	}
+	//}
 	
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -153,10 +117,34 @@ void KnightPlayer::Attack()
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	if (SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
 		status.Speed += 120.0f;
-		Skill();
+		m_moveSpeed.x = 0.0f;
+		m_moveSpeed.z = 0.0f;
+
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+
+		m_Skill_Forward = Vector3::Zero;
+		m_Skill_Right = Vector3::Zero;
+
+		//カメラの前方向と右方向のベクトルを持ってくる。
+		m_Skill_Forward = g_camera3D->GetForward();
+		m_Skill_Right = g_camera3D->GetRight();
+		//y方向には移動させない。
+		m_Skill_Forward.y = 0.0f;
+		m_Skill_Right.y = 0.0f;
+
+		//左スティックの入力量とstatusのスピードを乗算。
+		m_Skill_Right *= stickL.x * status.Speed;
+		m_Skill_Forward *= stickL.y * status.Speed;
+
+
+		SkillState = true;
+		//スキルステートがtureの間
+		//Skill(m_Skill_Right, m_Skill_Forward);
 		//AtkCollistionFlag = true;
 	}
 
@@ -229,7 +217,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
-		m_AtkTmingState = LastAtk_State;
+		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 	}
@@ -286,6 +274,8 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	{
 		m_AtkTmingState = Num_State;
 		AtkState = false;
+		//スキルの移動処理をしないようにする
+		SkillState = false;
 		status.Speed -= 120.0f;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;

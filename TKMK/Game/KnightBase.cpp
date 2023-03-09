@@ -96,45 +96,45 @@ void KnightBase::ExpProcess(int Exp)
 /// <summary>
 /// 移動処理
 /// </summary>
-void KnightBase::Move()
-{
-	//攻撃、ダメージ、死亡アニメーションが再生中なら
-	if (IsEnableMove() == false)
-	{
-		//抜け出す
-		return;
-	}
-
-	m_moveSpeed.x = 0.0f;
-	m_moveSpeed.z = 0.0f;
-
-	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
-
-	//カメラの前方向と右方向のベクトルを持ってくる。
-	Vector3 forward = g_camera3D->GetForward();
-	Vector3 right = g_camera3D->GetRight();
-	//y方向には移動させない。
-	forward.y = 0.0f;
-	right.y = 0.0f;
-
-	//左スティックの入力量とstatusのスピードを乗算。
-	right *= stickL.x * status.Speed;
-	forward *= stickL.y * status.Speed;
-
-	//移動速度にスティックの入力量を加算する。
-	m_moveSpeed += right + forward;
-	//キャラクターコントローラーを使って座標を移動させる。
-	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	//キャラコンを動かす
-	//m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-
-	/*if (m_charCon.IsOnGround())
-	{
-		m_moveSpeed.y = 0.0f;
-	}*/
-}
+//void KnightBase::Move()
+//{
+//	//攻撃、ダメージ、死亡アニメーションが再生中なら
+//	if (IsEnableMove() == false)
+//	{
+//		//抜け出す　移動処理を行わない
+//		return;
+//	}
+//
+//	m_moveSpeed.x = 0.0f;
+//	m_moveSpeed.z = 0.0f;
+//
+//	Vector3 stickL;
+//	stickL.x = g_pad[0]->GetLStickXF();
+//	stickL.y = g_pad[0]->GetLStickYF();
+//
+//	//カメラの前方向と右方向のベクトルを持ってくる。
+//	Vector3 forward = g_camera3D->GetForward();
+//	Vector3 right = g_camera3D->GetRight();
+//	//y方向には移動させない。
+//	forward.y = 0.0f;
+//	right.y = 0.0f;
+//
+//	//左スティックの入力量とstatusのスピードを乗算。
+//	right *= stickL.x * status.Speed;
+//	forward *= stickL.y * status.Speed;
+//
+//	//移動速度にスティックの入力量を加算する。
+//	m_moveSpeed += right + forward;
+//	//キャラクターコントローラーを使って座標を移動させる。
+//	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+//	//キャラコンを動かす
+//	//m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+//
+//	/*if (m_charCon.IsOnGround())
+//	{
+//		m_moveSpeed.y = 0.0f;
+//	}*/
+//}
 
 /// <summary>
 /// 回転処理
@@ -270,9 +270,15 @@ void KnightBase::Dameged(int damege)
 	//自身のHPが0以下なら
 	if (status.Hp <= 0) {
 		//倒されたときの処理に遷移
-		Death();
+		//死亡ステート
+		m_animState = enKnightState_Death;
+		status.Hp = 0;
+		//Death();
+		//SetRespawn();
+
 	}
 	else {
+		//ダメージステート
 		m_animState = enKnightState_Damege;
 	}
 }
@@ -280,11 +286,20 @@ void KnightBase::Dameged(int damege)
 /// <summary>
 /// スキルを使用したときの処理
 /// </summary>
-void KnightBase::Skill()
+void KnightBase::Skill(Vector3& right, Vector3& forward)
 {
+	//スキルステート
 	m_animState = enKnightState_Skill;
+
+	//移動処理
+	//移動速度にスティックの入力量を加算する。
+	//Vector3 m_SkillSpeed; 
+	m_moveSpeed = right + forward;
+	//キャラクターコントローラーを使って座標を移動させる。
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+
 	//当たり判定作成
-	SkillState = true;
+	//SkillState = true;
 	
 }
 
@@ -318,8 +333,8 @@ void KnightBase::SetRespawn()
 /// </summary>
 void KnightBase::Death()
 {
-	//死亡ステート
-	m_animState = enKnightState_Death;
+	////死亡ステート
+	//m_animState = enKnightState_Death;
 	//レベルを１下げる
 	levelDown(LvUpStatus, status, Lv,1);
 	//HPを最大にする
@@ -343,7 +358,7 @@ void KnightBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
 		break;
 	case enKnightState_Run:
-		m_modelRender.PlayAnimation(enAnimationClip_Run,0.4f);
+		m_modelRender.PlayAnimation(enAnimationClip_Run,0.2f);
 		break;
 	case enKnightState_ChainAtk:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
@@ -404,7 +419,7 @@ void KnightBase::OnProcessCommonStateTransition()
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		//走りステート
+			//走りステート
 		m_animState = enKnightState_Run;
 		return;
 	}
@@ -414,7 +429,6 @@ void KnightBase::OnProcessCommonStateTransition()
 		m_animState = enKnightState_Idle;
 		return;
 	}
-	
 }
 
 /// <summary>
@@ -449,12 +463,16 @@ void KnightBase::OnProcessChainAtkStateTransition()
 	}
 }
 
+/// <summary>
+/// スキルのアニメーション再生されているときの処理
+/// </summary>
 void KnightBase::OnProcessSkillAtkStateTransition()
 {
 	//スキルのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		AtkState = false;
+		SkillEndFlag = true;
 		//AtkCollistionFlag = false;
 		/*status.Speed -= 120.0f;*/
 		//待機ステート
@@ -502,6 +520,7 @@ void KnightBase::OnProcessDeathStateTransition()
 	{
 		//リスポーンする座標に自身の座標をセット
 		SetRespawn();
+		Death();
 		//待機ステート
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();

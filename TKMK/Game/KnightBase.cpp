@@ -130,10 +130,10 @@ void KnightBase::Move()
 	//キャラコンを動かす
 	//m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 
-	if (m_charCon.IsOnGround())
+	/*if (m_charCon.IsOnGround())
 	{
 		m_moveSpeed.y = 0.0f;
-	}
+	}*/
 }
 
 /// <summary>
@@ -229,8 +229,35 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 		//座標を設定
 		collisionObject->SetPosition(UltCollisionPos);
 	}
-	
+}
 
+void KnightBase::Collition()
+{
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_animState == enKnightState_Damege || 
+		m_animState == enKnightState_Death ||
+		m_animState == enKnightState_UltimateSkill ||
+		m_animState == enKnightState_ChainAtk ||
+		m_animState == enKnightState_Skill)
+	{
+		return;
+	}
+	else
+	{
+		//敵の攻撃用のコリジョンを取得する名前一緒にする
+		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
+		//コリジョンの配列をfor文で回す
+		for (auto collision : collisions)
+		{
+			//コリジョンが自身のキャラコンに当たったら
+			if (collision->IsHit(m_charCon))
+			{
+				//hpを減らす
+				Dameged(dddd);
+			}
+		}
+	}
+	
 }
 
 /// <summary>
@@ -429,7 +456,7 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 	{
 		AtkState = false;
 		//AtkCollistionFlag = false;
-		status.Speed -= 120.0f;
+		/*status.Speed -= 120.0f;*/
 		//待機ステート
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();

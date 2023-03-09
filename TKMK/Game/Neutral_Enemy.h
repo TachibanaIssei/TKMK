@@ -7,6 +7,7 @@
 //クラス宣言
 class KnightPlayer;
 class Game;
+class GameCamera;
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -19,6 +20,7 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void HPBar();
 	//中立の敵のステート
 	enum EnNEState {
 		enNeutral_Enemy_Idle,					//待機。
@@ -106,6 +108,18 @@ private:
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttack() const;
+	/// <summary>
+	/// ゲージを左寄せする処理
+	/// </summary>
+	/// <param name="size">画像の元の大きさ</param>
+	/// <param name="scale">現在のスケール倍率</param>
+	/// <returns>変換前と変換後の差</returns>
+	Vector3 HPBerSend(Vector3 size, Vector3 scale);
+	/// <summary>
+	/// HPゲージの描画フラグ
+	/// </summary>
+	/// <returns>描画できる範囲にあるときtrue</returns>
+	bool DrawHP();
 
 	
 
@@ -120,6 +134,9 @@ private:
 
 	AnimationClip m_animationClips[enAnimationClip_Num];//アニメーションクリップ
 	ModelRender   m_modelRender;              //モデルレンダー
+	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
+	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
+	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
 	Vector3 m_position;                       //座標
 	Vector3 m_moveSpeed;                      //移動速度
 	Vector3 m_forward = Vector3::AxisZ;      //正面のベクトル
@@ -133,7 +150,12 @@ private:
 	KnightPlayer* m_knightPlayer;                        //剣士
 	float					m_chaseTimer = 0.0f;						//追跡タイマー。
 	float					m_idleTimer = 0.0f;		                    //待機タイマー。
+	GameCamera* m_gameCamera = nullptr;
 	Status m_Status;                           //ステータス
+	SpriteRender		m_HPBar;		//HPバー画像
+	SpriteRender		m_HPFrame;		//HP枠画像
+	SpriteRender		m_HPBack;		//HP背景画像
+
 	//ナビゲーションメッシュ
 	TknFile m_tknFile;
 	PhysicsStaticObject m_bgObject;

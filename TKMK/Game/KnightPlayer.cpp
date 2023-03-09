@@ -29,6 +29,7 @@ bool KnightPlayer::Start()
 {
 	m_Status.Init("Knight");
 	
+	return true;
 }
 void KnightPlayer::Update()
 {
@@ -159,7 +160,7 @@ void KnightPlayer::Attack()
 	//Bボタンが押されたら
 	if (SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
-		status.Speed += 120.0f;
+		m_status.Speed += 120.0f;
 		Skill();
 		//AtkCollistionFlag = true;
 	}
@@ -290,7 +291,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	{
 		m_AtkTmingState = Num_State;
 		AtkState = false;
-		status.Speed -= 120.0f;
+		m_status.Speed -= 120.0f;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}

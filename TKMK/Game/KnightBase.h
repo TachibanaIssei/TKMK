@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Actor.h"
-
+#include "Status.h"
 
 
 class Game;
@@ -139,7 +139,7 @@ public:
 	/// </summary>
 	/// <returns>現在のHP</returns>
 	int& SetHp() {
-		return status.Hp;
+		return m_status.Hp;
 	}
 
 
@@ -196,7 +196,7 @@ protected:
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	//初期ステータス 最大HP、HP、攻撃力、スピード
-	Status status = { 150,150,35,150.0f };
+	Status m_status;
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
 	PlayerState m_animState = enKnightState_Idle;

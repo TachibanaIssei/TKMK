@@ -4,6 +4,7 @@
 
 KnightBase::KnightBase()
 {
+	m_Status.Init("Knight");
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 	Cooltime=5;            //スキルのクールタイム
@@ -73,7 +74,7 @@ void KnightBase::ExpProcess(int Exp)
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
-		LevelUp(LvUpStatus,status,Lv);
+		LevelUp(LvUpStatus,m_status,Lv);
 
 		switch (Lv)
 		{
@@ -120,8 +121,8 @@ void KnightBase::Move()
 	right.y = 0.0f;
 
 	//左スティックの入力量とstatusのスピードを乗算。
-	right *= stickL.x * status.Speed;
-	forward *= stickL.y * status.Speed;
+	right *= stickL.x * m_status.Speed;
+	forward *= stickL.y * m_status.Speed;
 
 	//移動速度にスティックの入力量を加算する。
 	m_moveSpeed += right + forward;
@@ -266,9 +267,9 @@ void KnightBase::Collition()
 /// <param name="damege">敵のダメージ</param>
 void KnightBase::Dameged(int damege)
 {
-	status.Hp -= damege;
+	m_status.Hp -= damege;
 	//自身のHPが0以下なら
-	if (status.Hp <= 0) {
+	if (m_status.Hp <= 0) {
 		//倒されたときの処理に遷移
 		Death();
 	}
@@ -294,7 +295,7 @@ void KnightBase::Skill()
 void KnightBase::UltimateSkill()
 {
 	//レベルを3下げる
-	levelDown(LvUpStatus, status, Lv, 3);
+	levelDown(LvUpStatus, m_status, Lv, 3);
 	m_animState = enKnightState_UltimateSkill;
 
 }
@@ -321,9 +322,9 @@ void KnightBase::Death()
 	//死亡ステート
 	m_animState = enKnightState_Death;
 	//レベルを１下げる
-	levelDown(LvUpStatus, status, Lv,1);
+	levelDown(LvUpStatus, m_status, Lv,1);
 	//HPを最大にする
-	status.Hp = status.MaxHp;
+	m_status.Hp = m_status.MaxHp;
 	//経験値をリセット
 	ExpReset(Lv,GetExp);
 	//一つ下のレベルの経験値テーブルにする

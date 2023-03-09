@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Status.h"
 #include "Level3DRender.h"
 
 class Actor:public IGameObject
@@ -13,12 +13,12 @@ protected:
 	/// <summary>
 	/// 初期ステータス
 	/// </summary>
-	struct Status {
-		int MaxHp;                 //最大ヒットポイント
-		int Hp;                    //ヒットポイント(体力)
-		int Atk;                   //攻撃力
-		float Speed;               //移動速度
-	};
+	//struct Status {
+	//	int MaxHp;                 //最大ヒットポイント
+	//	int Hp;                    //ヒットポイント(体力)
+	//	int Atk;                   //攻撃力
+	//	float Speed;               //移動速度
+	//};
 
 	/// <summary>
 	/// レベルアップ時に増加するステータス
@@ -130,7 +130,7 @@ protected:
 	int ExpTable;              //経験値テーブル
 	int respawnNumber;         //リスポーンする座標の番号
 	bool isDeath = false;      //死んだかどうかの判定
-	
+	Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 
 

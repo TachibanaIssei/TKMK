@@ -7,7 +7,6 @@ const std::string Status::csvFilePath = "Status.csv";
 std::unordered_map<std::string, Status> Status::StatusDataMAP = {};
 bool Status::IsLoadedCSVFile = false;
 
-
 void Status::Init(const std::string& name)
 {
 	if (IsLoadedCSVFile == false) {

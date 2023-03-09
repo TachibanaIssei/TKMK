@@ -58,6 +58,11 @@ bool Neutral_Enemy::Start()
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
+
+	m_Status.LoadCSV("Enemy");
+
+
+
 	return true;
 }
 
@@ -109,7 +114,7 @@ void Neutral_Enemy::Rotation()
 void Neutral_Enemy::Chase()
 {
 	//追跡ステートでないなら、追跡処理はしない。
-	if (m_NEState != enNEState_Chase)
+	if (m_Neutral_EnemyState != enNeutral_Enemy_Chase)
 	{
 		return;
 	}
@@ -140,7 +145,7 @@ void Neutral_Enemy::Chase()
 
 void Neutral_Enemy::Collision()
 {
-	if (m_NEState == enNEState_ReceiveDamage || m_NEState == enNEState_Death)
+	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
@@ -154,16 +159,16 @@ void Neutral_Enemy::Collision()
 		{
 			//hpを減らす
 
-			if (m_hp == 0)
-			{
-				//死亡ステートに遷移する。
-				m_NEState = enNEState_Death;
-			}
-			else {
-				//被ダメージステートに遷移する。
-				m_NEState = enNEState_ReceiveDamage;
-				//効果音再生
-			}
+			//if (m_hp == 0)
+			//{
+			//	//死亡ステートに遷移する。
+			//	m_Neutral_EnemyState = enNeutral_Enemy_Death;
+			//}
+			//else {
+			//	//被ダメージステートに遷移する。
+			//	m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
+			//	//効果音再生
+			//}
 		}
 	}
 
@@ -172,7 +177,7 @@ void Neutral_Enemy::Collision()
 void Neutral_Enemy::Attack()
 {
 	//攻撃ステートではなかったら
-	if (m_NEState != enNEState_Attack)
+	if (m_Neutral_EnemyState != enNeutral_Enemy_Attack)
 	{
 		return;
 	}
@@ -242,14 +247,14 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 			if (ram > 30)
 			{
 				//攻撃ステートに移行する。
-				m_NEState = enNEState_Attack;
+				m_Neutral_EnemyState = enNeutral_Enemy_Attack;
 				m_UnderAttack = false;
 				return;
 			}
 			else
 			{
 				//待機ステートに移行する。
-				m_NEState = enNEState_Idle;
+				m_Neutral_EnemyState = enNeutral_Enemy_Idle;
 				return;
 			}
 
@@ -262,7 +267,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 			if (ram > 40)
 			{
 				//追跡ステートに移行する。
-				m_NEState = enNEState_Chase;
+				m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 				return;
 			}
 		}
@@ -271,7 +276,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	else
 	{
 		//待機ステートに移行する。
-		m_NEState = enNEState_Idle;
+		m_Neutral_EnemyState = enNeutral_Enemy_Idle;
 		return;
 
 	}
@@ -328,7 +333,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
-		m_NEState = enNEState_Chase;
+		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
@@ -349,26 +354,26 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 
 void Neutral_Enemy::ManageState()
 {
-	switch (m_NEState)
+	switch (m_Neutral_EnemyState)
 	{
 		//待機ステート
-	case enNEState_Idle:
+	case enNeutral_Enemy_Idle:
 		ProcessIdleStateTransition();
 		break;
 		//追跡ステート
-	case enNEState_Chase:
+	case enNeutral_Enemy_Chase:
 		ProcessChaseStateTransition();
 		break;
 		//攻撃ステート
-	case enNEState_Attack:
+	case enNeutral_Enemy_Attack:
 		ProcessAttackStateTransition();
 		break;
 		//被ダメージステート
-	case enNEState_ReceiveDamage:
+	case enNeutral_Enemy_ReceiveDamage:
 		ProcessReceiveDamageStateTransition();
 		break;
 		//死亡ステート
-	case enNEState_Death:
+	case enNeutral_Enemy_Death:
 		ProcessDeathStateTransition();
 		break;
 	}
@@ -377,27 +382,27 @@ void Neutral_Enemy::ManageState()
 void Neutral_Enemy::PlayAnimation()
 {
 	m_modelRender.SetAnimationSpeed(1.5f);
-	switch(m_NEState)
+	switch(m_Neutral_EnemyState)
 	{
 		//待機ステート
-	case enNEState_Idle:
+	case enNeutral_Enemy_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.5f);
 		break;
 		//追跡ステート
-	case enNEState_Chase:
+	case enNeutral_Enemy_Chase:
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.5f);
 		break;
 		//攻撃ステート
-	case enNEState_Attack:
+	case enNeutral_Enemy_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
 		break;
 		//被ダメージステート
-	case enNEState_ReceiveDamage:
-		m_modelRender.PlayAnimation(enNEState_ReceiveDamage, 0.5f);
+	case enNeutral_Enemy_ReceiveDamage:
+		m_modelRender.PlayAnimation(enNeutral_Enemy_ReceiveDamage, 0.5f);
 		break;
 		//死亡ステート
-	case enNEState_Death:
-		m_modelRender.PlayAnimation(enNEState_Death, 0.5f);
+	case enNeutral_Enemy_Death:
+		m_modelRender.PlayAnimation(enNeutral_Enemy_Death, 0.5f);
 		break;
 	}
 }

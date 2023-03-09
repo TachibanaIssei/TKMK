@@ -1,8 +1,12 @@
 #pragma once
+#include <string>
+#include <fstream>
+#include <sstream>
 #include "tkFile/TknFile.h"
 #include "AI/PathFinding/NaviMesh.h"
 #include "AI/PathFinding/Path.h"
 #include "AI/PathFinding/PathFinding.h"
+#include "Status.h"
 //クラス宣言
 class KnightPlayer;
 class Game;
@@ -20,17 +24,18 @@ public:
 	void Render(RenderContext& rc);
 	//中立の敵のステート
 	enum EnNEState {
-		enNEState_Idle,					//待機。
-		enNEState_Chase,					//追跡。
-		enNEState_Attack,			    //攻撃
-		enNEState_ReceiveDamage,			//被ダメージ。
-		enNEState_Death,					//ダウン。
+		enNeutral_Enemy_Idle,					//待機。
+		enNeutral_Enemy_Chase,					//追跡。
+		enNeutral_Enemy_Attack,			    //攻撃
+		enNeutral_Enemy_ReceiveDamage,			//被ダメージ。
+		enNeutral_Enemy_Death,					//ダウン。
 	};
-	void SetNEGame(Game* NEgame)
+
+	void SetNeutral_EnemyGame(Game* NEgame)
 	{
 		m_game = NEgame;
 	}
-	Game* GetNEGame()
+	Game* GetNeutral_EnemyGame()
 	{
 		return m_game;
 	}
@@ -124,15 +129,14 @@ private:
 	Quaternion m_rot;                        //クォータニオン
 	Vector3 m_scale = Vector3{0.2f,0.2f,0.2f};          //大きさ
 	CharacterController m_charaCon;          //キャラコン
-	EnNEState m_NEState = enNEState_Idle;    //中立の敵のステート。
+	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;    //中立の敵のステート。
 	bool m_UnderAttack = false;              //攻撃判定
-	int m_hp = 0;                            //HP
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	Game* m_game = nullptr;                  //ゲーム
 	KnightPlayer* m_knightPlayer;                        //剣士
 	float					m_chaseTimer = 0.0f;						//追跡タイマー。
 	float					m_idleTimer = 0.0f;		                    //待機タイマー。
-
+	Status m_Status;
 	//ナビゲーションメッシュ
 	TknFile m_tknFile;
 	PhysicsStaticObject m_bgObject;

@@ -11,6 +11,39 @@ Actor::~Actor()
 
 }
 
+void Actor::Move(Vector3& position, CharacterController& charcon,Status& status)
+{
+	//特定のアニメーションが再生中なら
+	if (IsEnableMove() == false)
+	{
+		//抜け出す　移動処理を行わない
+		return;
+	}
+
+	m_moveSpeed.x = 0.0f;
+	m_moveSpeed.z = 0.0f;
+
+	Vector3 stickL;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+
+	//カメラの前方向と右方向のベクトルを持ってくる。
+	Vector3 forward = g_camera3D->GetForward();
+	Vector3 right = g_camera3D->GetRight();
+	//y方向には移動させない。
+	forward.y = 0.0f;
+	right.y = 0.0f;
+
+	//左スティックの入力量とstatusのスピードを乗算。
+	right *= stickL.x * status.Speed;
+	forward *= stickL.y * status.Speed;
+
+	//移動速度にスティックの入力量を加算する。
+	m_moveSpeed += right + forward;
+	//キャラクターコントローラーを使って座標を移動させる。
+	position = charcon.Execute(m_moveSpeed, 1.0f / 60.0f);
+}
+
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
@@ -140,7 +173,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 /// <param name="skillstate">スキルを使用したかの判定</param>
 void Actor::COOlTIME(float SkillCooltimer, bool& skillstate)
 {
-	//スキルが使用されたら
+	//スキルのアニメーション再生が終わったら
 	if (skillstate==true)
 	{
 		//timerがスキルのクールタイムより大きくなったら。
@@ -150,7 +183,7 @@ void Actor::COOlTIME(float SkillCooltimer, bool& skillstate)
 			skillstate = false;
 			timer = 0;
 		}
-		else timer += g_gameTime->GetFrameDeltaTime();
+		else timer += g_gameTime->GetFrameDeltaTime();   //timerを進める
 	}
 	
 }

@@ -30,6 +30,21 @@ protected:
 	};
 
 public:
+
+	/// <summary>
+	/// 移動処理
+	/// </summary>
+	/// <param name="position">キャラクターの現在の座標</param>
+	/// <param name="charcon">キャラコン</param>
+	/// /// <param name="status">キャラのステータス</param>
+	void Move(Vector3& position,CharacterController& charcon, Status& status);
+
+	/// <summary>
+	/// 移動処理したくないアニメーションのステートを書く
+	/// </summary>
+	/// <returns>移動処理しないアニメーションのステート</returns>
+	virtual bool IsEnableMove()const = 0;
+
 	/// <summary>
 	/// リスポーンする座標を取得する
 	/// </summary>
@@ -49,11 +64,6 @@ public:
 	virtual void Dameged(int damege) = 0;
 
 	/// <summary>
-	/// スキルを打つ処理
-	/// </summary>
-	virtual void Skill() = 0;
-
-	/// <summary>
 	/// 必殺技を打つ処理
 	/// </summary>
 	virtual void UltimateSkill() = 0;
@@ -66,7 +76,7 @@ public:
 	void COOlTIME(float SkillCooltimer,bool& skillstate);
 	
 	/// <summary>
-	/// 現在のレベルを取得する関数
+	/// 現在のレベルを返す　KnightBaseのを持ってくるto do
 	/// </summary>
 	/// <returns></returns>
 	inline int GetLevel() { return Lv; }
@@ -107,10 +117,10 @@ public:
 	virtual void Death() = 0;
 
 	/// <summary>
-		/// リスポーンする座標を設定する
-		/// </summary>
-		/// <param name="pos">リスポーンする座標</param>
-		/// <param name="number">座標をセットする番号</param>
+	/// リスポーンする座標を設定する
+	/// </summary>
+	/// <param name="pos">リスポーンする座標</param>
+	/// <param name="number">座標をセットする番号</param>
 	void SetRespawnPos(Vector3 pos, int number) {
 		m_respawnPos[number] = pos;
 	};
@@ -132,6 +142,7 @@ protected:
 	bool isDeath = false;      //死んだかどうかの判定
 	
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
+	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 
 
 };

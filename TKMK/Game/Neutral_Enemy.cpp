@@ -48,8 +48,8 @@ bool Neutral_Enemy::Start()
 	
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
-		10.0f,			//半径。
-		10.2f,			//高さ。
+		25.0f,			//半径。
+		50.0f,			//高さ。
 		m_position		//座標。
 	);
 	//剣のボーンのIDを取得する
@@ -94,7 +94,7 @@ void Neutral_Enemy::Update()
 	PlayAnimation();
 	//ステートの遷移処理。
 	ManageState();
-
+	HPBar();
 	//モデルの更新。
 	m_modelRender.Update();
 }
@@ -171,17 +171,17 @@ void Neutral_Enemy::Collision()
 		if (collision->IsHit(m_charaCon))
 		{
 			//hpを減らす
-
-			//if (m_hp == 0)
-			//{
-			//	//死亡ステートに遷移する。
-			//	m_Neutral_EnemyState = enNeutral_Enemy_Death;
-			//}
-			//else {
-			//	//被ダメージステートに遷移する。
-			//	m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-			//	//効果音再生
-			//}
+			m_Status.Hp -= 50;
+			if (m_Status.Hp < 0)
+			{
+				//死亡ステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
+				//効果音再生
+			}
 		}
 	}
 
@@ -431,7 +431,7 @@ void Neutral_Enemy::HPBar()
 	m_HPBar.SetScale(scale);
 
 	Vector3 BerPosition = m_position;
-	BerPosition.y += 130.0f;
+	BerPosition.y += 75.0f;
 	//座標を変換する
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBerPos, BerPosition);
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindowPos, BerPosition);

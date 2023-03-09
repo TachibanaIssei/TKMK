@@ -46,7 +46,7 @@ private:
 	AtkTimingState m_AtkTmingState = Num_State;
 
 	//bool AtkCollistionFlag = false;
-
+	
 	bool UltimateSkillFlag = false;
 
 	Status m_Status;                           //ステータス

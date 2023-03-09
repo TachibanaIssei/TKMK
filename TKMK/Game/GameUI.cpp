@@ -85,10 +85,6 @@ void GameUI::Update()
 	swprintf_s(Lv, 255, L"%d", LEVEL);
 	m_LevelFont.SetText(Lv);
 
-	int HP = m_knightplayer->SetHp();
-	wchar_t hp[255];
-	swprintf_s(hp, 255, L"%d", HP);
-	m_HpFont.SetText(hp);
 
 	wchar_t wcsbuf[256];
 	swprintf_s(wcsbuf, 256, L"Žc‚èŽžŠÔ%d", int(m_timer));
@@ -111,7 +107,6 @@ void GameUI::Render(RenderContext& rc)
 {
 	m_LevelFont.Draw(rc);
 	m_LevelNameFont.Draw(rc);
-	m_HpFont.Draw(rc);
 	m_HpNameFont.Draw(rc);
 	m_time_left.Draw(rc);
 

@@ -50,8 +50,6 @@ void KnightBase::SetModel()
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);
 	//m_modelRender.SetScale(Vector3(0.1f, 0.1f, 0.1f));
-	//ステータス
-	m_Status.Init("Knight");
 
 	m_rot.SetRotationY(0.0f);
 	m_modelRender.SetRotation(m_rot);

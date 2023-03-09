@@ -37,6 +37,11 @@ public:
 	virtual void Attack()=0;
 
 	/// <summary>
+	/// 自身の当たり判定
+	/// </summary>
+	void Collition();
+
+	/// <summary>
 	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
@@ -122,12 +127,19 @@ public:
 	}
 
 	/// <summary>
-	/// 現在のレベルをint型の変数に代入する
+	/// 現在のレベルを返す
 	/// </summary>
-	/// <param name="level"></param>
-	int SetLevel(int& level){
-		level = Lv;
-		return level;
+	/// <returns>現在のレベル</returns>
+	int& SetLevel(){
+		return Lv;
+	}
+
+	/// <summary>
+	/// 現在のヒットポイントを返す
+	/// </summary>
+	/// <returns>現在のHP</returns>
+	int& SetHp() {
+		return status.Hp;
 	}
 
 

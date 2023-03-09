@@ -139,7 +139,7 @@ public:
 	/// </summary>
 	/// <returns>現在のHP</returns>
 	int& SetHp() {
-		return m_status.Hp;
+		return m_Status.Hp;
 	}
 
 
@@ -196,7 +196,7 @@ protected:
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	//初期ステータス 最大HP、HP、攻撃力、スピード
-	Status m_status;
+	Status m_Status;
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
 	PlayerState m_animState = enKnightState_Idle;

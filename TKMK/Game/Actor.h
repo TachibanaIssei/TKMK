@@ -73,7 +73,8 @@ public:
 	/// </summary>
 	/// <param name="SkillCooltimer">スキルのクールタイム</param>
 	/// <param name="skillstate">スキルを使用したかの判定</param>
-	void COOlTIME(float SkillCooltimer,bool& skillstate);
+	/// <param name="timer">クールタイムを計算する変数</param>
+	void COOlTIME(float SkillCooltimer,bool& skillstate,float& timer);
 	
 	/// <summary>
 	/// 現在のレベルを返す　KnightBaseのを持ってくるto do
@@ -128,19 +129,20 @@ public:
 private:
     Level3DRender m_respawnLevel;
 
-	float timer = 0.0f;
+	
 
 protected:
 	int Lv;                    //レベル
 	int AtkSpeed;              //攻撃速度
 	float Cooltime;            //スキルのクールタイム
+	float AvoidanceCoolTime;    //回避のクールタイム
 	bool SkillState = false;     //スキルが使用可能かどうかの判定
 	int Point;                 //敵を倒して手に入れたポイント
 	int GetExp;                //中立の敵を倒したときの経験値
 	int ExpTable;              //経験値テーブル
 	int respawnNumber;         //リスポーンする座標の番号
 	bool isDeath = false;      //死んだかどうかの判定
-	
+	//float timer = 0.0f;
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 

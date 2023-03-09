@@ -58,11 +58,8 @@ bool Neutral_Enemy::Start()
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
-
-	m_Status.LoadCSV("Enemy");
-
-
-
+	//ステータスを読み込む
+	m_Status.Init("Enemy");
 	return true;
 }
 

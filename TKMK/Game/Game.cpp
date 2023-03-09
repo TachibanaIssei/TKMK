@@ -5,7 +5,7 @@
 #include "GameCamera.h"
 #include "KnightBase.h"
 #include "Actor.h"
-//#include "GameUI.h"
+#include "GameUI.h"
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
 
@@ -24,6 +24,7 @@ Game::~Game()
 	DeleteGO(m_gamecamera);
 	DeleteGO(m_knightplayer);
 	DeleteGO(m_NE);
+	DeleteGO(m_gameUI);
 }
 
 bool Game::Start()
@@ -63,8 +64,8 @@ bool Game::Start()
 	m_NE = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 	m_NE->SetNEGame(this);
 
-	//GameUI�̐���
-	//m_gameUI = NewGO<GameUI>(0, "gameUI");
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "gameUI");
 	
 	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
 	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
@@ -81,7 +82,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

@@ -8,7 +8,7 @@ class GameCamera;
 class KnightBase;
 class KnightPlayer;
 class Neutral_Enemy;
-//class GameUI;
+class GameUI;
 
 class Game : public IGameObject
 {
@@ -43,7 +43,7 @@ private:
 	Result* m_rezult=nullptr;
 	GameCamera* m_gamecamera = nullptr;
 	KnightBase* m_knightbase = nullptr;
-	//GameUI* m_gameUI = nullptr;
+	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	Neutral_Enemy* m_NE = nullptr;
 

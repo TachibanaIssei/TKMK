@@ -28,6 +28,8 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
+	
+
 	//前フレームの座標を取得
 	OldPosition = m_position;
 
@@ -98,6 +100,9 @@ void KnightPlayer::Update()
 		Dameged(dddd);
 	}*/
 
+	//当たり判定
+	Collition();
+
 	//ステート
 	ManageState();
 	//アニメーションの再生
@@ -152,7 +157,7 @@ void KnightPlayer::Attack()
 	{
 		status.Speed += 120.0f;
 		Skill();
-		AtkCollistionFlag = true;
+		//AtkCollistionFlag = true;
 	}
 
 	//必殺技を発動する処理
@@ -221,6 +226,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 	}
+	//スキルのアニメーションが始まったら
+	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
+	{
+		m_AtkTmingState = LastAtk_State;
+		//剣のコリジョンを生成
+		AtkCollistionFlag = true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"FirstAttack_End") == 0)
@@ -269,6 +281,15 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 	}
 
+	//三段目のアタックのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"SkillAttack_End") == 0)
+	{
+		m_AtkTmingState = Num_State;
+		AtkState = false;
+		status.Speed -= 120.0f;
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+	}
 }
 
 void KnightPlayer::Render(RenderContext& rc)

@@ -88,11 +88,11 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	/*if (g_pad[0]->IsTrigger(enButtonA))
+	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		if(Lv!=5)
 		ExpProcess(exp);
-	}*/
+	}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -117,25 +117,26 @@ void KnightPlayer::Update()
 	m_modelRender.Update();
 }
 
+//攻撃処理
 void KnightPlayer::Attack()
 {
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	if (pushFlag==false&&AtkState == false)
-	{
-		//Bボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_animState = enKnightState_ChainAtk;
-			
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
-			pushFlag = true;
-			AtkState = true;
-		}
-	}
+	//if (pushFlag==false&&AtkState == false)
+	//{
+	//	//Bボタン押されたら攻撃する
+	//	if (g_pad[0]->IsTrigger(enButtonA))
+	//	{
+	//		m_animState = enKnightState_ChainAtk;
+	//		
+	//		//FirstAtkFlag = true;
+	//		//コンボを1増やす
+	//		//ComboState++;
+	//		pushFlag = true;
+	//		AtkState = true;
+	//	}
+	//}
 	
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -209,7 +210,7 @@ void KnightPlayer::Attack()
 }
 
 /// <summary>
-/// 
+/// 回避処理
 /// </summary>
 void KnightPlayer::Avoidance()
 {
@@ -273,6 +274,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//ボタンが押されていなかったら
 		if (m_AtkTmingState != SecondAtk_State)
 		{
+			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
 			m_animState = enKnightState_Idle;
@@ -289,6 +291,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//ボタンが押されていなかったら
 		if (m_AtkTmingState != LastAtk_State)
 		{
+			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
 			m_animState = enKnightState_Idle;
@@ -307,6 +310,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	if (m_modelRender.IsPlayingAnimation() == false) {
 		m_animState = enKnightState_Idle;
 		AtkState = false;
+		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 	}
 

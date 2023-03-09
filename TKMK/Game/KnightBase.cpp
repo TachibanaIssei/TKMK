@@ -314,6 +314,10 @@ void KnightBase::UltimateSkill()
 {
 	//レベルを3下げる
 	levelDown(LvUpStatus, status, Lv, 3);
+	//経験値をリセット
+	ExpReset(Lv, GetExp);
+	//一つ下のレベルの経験値テーブルにする
+	ExpTableChamge(Lv, ExpTable);
 	m_animState = enKnightState_UltimateSkill;
 
 }
@@ -506,6 +510,7 @@ void KnightBase::OnProcessChainAtkStateTransition()
 		//待機ステート
 		//攻撃を始めたかの判定をfalseにする
 		AtkState = false;
+		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
@@ -522,6 +527,7 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 	{
 		AtkState = false;
 		SkillEndFlag = true;
+		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
 		m_animState = enKnightState_Idle;
@@ -538,6 +544,7 @@ void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		AtkState = false;
+		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
 		m_animState = enKnightState_Idle;
@@ -553,6 +560,7 @@ void KnightBase::OnProcessAvoidanceStateTransition()
 	{
 		AvoidanceFlag = false;
 		AvoidanceEndFlag = true;
+		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
 		m_animState = enKnightState_Idle;

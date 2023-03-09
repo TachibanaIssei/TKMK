@@ -16,6 +16,8 @@ public:
 
 	void Attack();
 
+	void Avoidance();
+
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	inline Vector3 GetPosition() { return m_position; }
@@ -52,6 +54,9 @@ private:
 	//bool AtkCollistionFlag = false;
 
 	bool UltimateSkillFlag = false;
+
+	FontRender Skillfont;
+	FontRender Avoidancefont;
 
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード

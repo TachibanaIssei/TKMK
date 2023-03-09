@@ -7,6 +7,7 @@ KnightBase::KnightBase()
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 	Cooltime=5;            //スキルのクールタイム
+	AvoidanceCoolTime = 2;     ///回避のクールタイム
 	Point=0;                 //敵を倒して手に入れたポイント
 	GetExp=0;                //中立の敵を倒したときの経験値
 	ExpTable=5;              //経験値テーブル
@@ -37,6 +38,8 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Knight/Knight_Death.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Avoidance].Load("Assets/animData/Knight/Knight_Avoidance.tka");
+	m_animationClips[enAnimationClip_Avoidance].SetLoopFlag(false);
 
 	//剣士モデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -238,7 +241,8 @@ void KnightBase::Collition()
 		m_animState == enKnightState_Death ||
 		m_animState == enKnightState_UltimateSkill ||
 		m_animState == enKnightState_ChainAtk ||
-		m_animState == enKnightState_Skill)
+		m_animState == enKnightState_Skill ||
+		m_animState == enKnightState_Avoidance)
 	{
 		return;
 	}
@@ -286,22 +290,22 @@ void KnightBase::Dameged(int damege)
 /// <summary>
 /// スキルを使用したときの処理
 /// </summary>
-void KnightBase::Skill(Vector3& right, Vector3& forward)
-{
-	//スキルステート
-	m_animState = enKnightState_Skill;
-
-	//移動処理
-	//移動速度にスティックの入力量を加算する。
-	//Vector3 m_SkillSpeed; 
-	m_moveSpeed = right + forward;
-	//キャラクターコントローラーを使って座標を移動させる。
-	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	//当たり判定作成
-	//SkillState = true;
-	
-}
+//void KnightBase::Skill(Vector3& right, Vector3& forward)
+//{
+//	//スキルステート
+//	m_animState = enKnightState_Skill;
+//
+//	//移動処理
+//	//移動速度にスティックの入力量を加算する。
+//	//Vector3 m_SkillSpeed; 
+//	m_moveSpeed = right + forward;
+//	//キャラクターコントローラーを使って座標を移動させる。
+//	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+//
+//	//当たり判定作成
+//	//SkillState = true;
+//	
+//}
 
 /// <summary>
 /// レベル4で必殺技を使用したときの処理
@@ -346,6 +350,44 @@ void KnightBase::Death()
 }
 
 /// <summary>
+/// アニメーション再生時に直線移動させる方向の決定
+/// </summary>
+void KnightBase::AnimationMove()
+{
+	m_moveSpeed.x = 0.0f;
+	m_moveSpeed.z = 0.0f;
+
+	Vector3 stickL;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+
+	m_Skill_Forward = Vector3::Zero;
+	m_Skill_Right = Vector3::Zero;
+
+	//カメラの前方向と右方向のベクトルを持ってくる。
+	m_Skill_Forward = g_camera3D->GetForward();
+	m_Skill_Right = g_camera3D->GetRight();
+	//y方向には移動させない。
+	m_Skill_Forward.y = 0.0f;
+	m_Skill_Right.y = 0.0f;
+
+	//左スティックの入力量とstatusのスピードを乗算。
+	m_Skill_Right *= stickL.x * status.Speed;
+	m_Skill_Forward *= stickL.y * status.Speed;
+}
+
+//直線移動させる
+void KnightBase::MoveStraight(Vector3& right, Vector3& forward)
+{
+	//移動処理
+	//移動速度にスティックの入力量を加算する。
+	//Vector3 m_SkillSpeed; 
+	m_moveSpeed = right + forward;
+	//キャラクターコントローラーを使って座標を移動させる。
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+}
+
+/// <summary>
 /// アニメーション再生の処理
 /// </summary>
 void KnightBase::PlayAnimation()
@@ -368,6 +410,9 @@ void KnightBase::PlayAnimation()
 		break;
 	case enKnightState_UltimateSkill:
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1f);
+		break;
+	case enKnightState_Avoidance:
+		m_modelRender.PlayAnimation(enAnimationClip_Avoidance, 0.1f);
 		break;
 	case enAnimationClip_Damege:
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
@@ -400,6 +445,9 @@ void KnightBase::ManageState()
 		break;
 	case enKnightState_UltimateSkill:
 		OnProcessUltimateSkillAtkStateTransition();
+		break;
+	case enKnightState_Avoidance:
+		OnProcessAvoidanceStateTransition();
 		break;
 	case enAnimationClip_Damege:
 		OnProcessDamegeStateTransition();
@@ -458,6 +506,7 @@ void KnightBase::OnProcessChainAtkStateTransition()
 		//待機ステート
 		//攻撃を始めたかの判定をfalseにする
 		AtkState = false;
+		pushFlag = false;
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
@@ -473,8 +522,7 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 	{
 		AtkState = false;
 		SkillEndFlag = true;
-		//AtkCollistionFlag = false;
-		/*status.Speed -= 120.0f;*/
+		pushFlag = false;
 		//待機ステート
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
@@ -482,14 +530,30 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 }
 
 /// <summary>
-/// SecondAtkアニメーションが再生されているときの処理
+/// 必殺技アニメーションが再生されているときの処理
 /// </summary>
 void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 {
-	//2段目のアタックのアニメーション再生が終わったら。
+	//必殺技アニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		AtkState = false;
+		pushFlag = false;
+		//待機ステート
+		m_animState = enKnightState_Idle;
+		OnProcessCommonStateTransition();
+	}
+}
+
+//回避のアニメーションが再生されているときの処理
+void KnightBase::OnProcessAvoidanceStateTransition()
+{
+	//回避のアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		AvoidanceFlag = false;
+		AvoidanceEndFlag = true;
+		pushFlag = false;
 		//待機ステート
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();

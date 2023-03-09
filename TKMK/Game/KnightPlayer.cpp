@@ -19,6 +19,12 @@ KnightPlayer::KnightPlayer()
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 
 	
+	Skillfont.SetPosition(800.0f, -200.0f, 0.0f);
+	Skillfont.SetScale(2.0f);
+	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	Skillfont.SetRotation(0.0f);
+	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
+
 }
 
 KnightPlayer::~KnightPlayer()
@@ -29,34 +35,64 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
+
+	int SkillCoolTime = SkillTimer;
+	wchar_t Skill[255];
+	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+	Skillfont.SetText(Skill);
+
+
 	//前フレームの座標を取得
 	OldPosition = m_position;
 
 	//移動処理
 	Move(m_position, m_charCon, status);
 	
+	////RBボタンが押されたら。
+	////回避
+	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
+	//	//回避ステート
+	//	//m_animState = enKnightState_Avoidance;
+	//	AnimationMove();
+	//	AvoidanceFlag = true;
+	//}
+	
+	//回避中なら
+	if (AvoidanceFlag == true) {
+		m_animState = enKnightState_Avoidance;
+		//移動処理を行う(直線移動のみ)。
+		MoveStraight(m_Skill_Right, m_Skill_Forward);
+	}
+
 	//攻撃処理
 	Attack();
 
-	//スキルステートがtureの間
+	//回避処理
+	Avoidance();
+
+	//スキル使用中なら
 	if (SkillState == true) {
-		//移動処理を行う(スキル使用中は直線移動のみ)。
-		Skill(m_Skill_Right, m_Skill_Forward);
+		//スキルステート
+		m_animState = enKnightState_Skill;
+		//移動処理を行う(直線移動のみ)。
+		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
 	//回転処理
 	Rotation();
 
-	//クールタイムの処理
-	COOlTIME(Cooltime, SkillEndFlag);
+	//スキルクールタイムの処理
+	COOlTIME(Cooltime, SkillEndFlag,SkillTimer);
 
-	
+	//回避クールタイムの処理
+	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
 	//レベルアップする
-	if (g_pad[0]->IsTrigger(enButtonA))
+	/*if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		if(Lv!=5)
 		ExpProcess(exp);
-	}
+	}*/
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -72,6 +108,8 @@ void KnightPlayer::Update()
 	//アニメーションの再生
 	PlayAnimation();
 
+
+
 	//剣士のY座標が腰なのでY座標を上げる
 	m_position.y = m_position_YUp;
 
@@ -84,19 +122,20 @@ void KnightPlayer::Attack()
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	//if (AtkState == false)
-	//{
-	//	//Bボタン押されたら攻撃する
-	//	if (g_pad[0]->IsTrigger(enButtonA))
-	//	{
-	//		m_animState = enKnightState_ChainAtk;
-	//		
-	//		//FirstAtkFlag = true;
-	//		//コンボを1増やす
-	//		//ComboState++;
-	//		AtkState = true;
-	//	}
-	//}
+	if (pushFlag==false&&AtkState == false)
+	{
+		//Bボタン押されたら攻撃する
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_animState = enKnightState_ChainAtk;
+			
+			//FirstAtkFlag = true;
+			//コンボを1増やす
+			//ComboState++;
+			pushFlag = true;
+			AtkState = true;
+		}
+	}
 	
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -117,31 +156,13 @@ void KnightPlayer::Attack()
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
+		//移動速度を上げる
 		status.Speed += 120.0f;
-		m_moveSpeed.x = 0.0f;
-		m_moveSpeed.z = 0.0f;
-
-		Vector3 stickL;
-		stickL.x = g_pad[0]->GetLStickXF();
-		stickL.y = g_pad[0]->GetLStickYF();
-
-		m_Skill_Forward = Vector3::Zero;
-		m_Skill_Right = Vector3::Zero;
-
-		//カメラの前方向と右方向のベクトルを持ってくる。
-		m_Skill_Forward = g_camera3D->GetForward();
-		m_Skill_Right = g_camera3D->GetRight();
-		//y方向には移動させない。
-		m_Skill_Forward.y = 0.0f;
-		m_Skill_Right.y = 0.0f;
-
-		//左スティックの入力量とstatusのスピードを乗算。
-		m_Skill_Right *= stickL.x * status.Speed;
-		m_Skill_Forward *= stickL.y * status.Speed;
-
-
+		
+		AnimationMove();
+		pushFlag = true;
 		SkillState = true;
 		//スキルステートがtureの間
 		//Skill(m_Skill_Right, m_Skill_Forward);
@@ -150,8 +171,9 @@ void KnightPlayer::Attack()
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	if (Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
+		pushFlag = true;
 		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
 		//必殺技発動フラグをセット
@@ -184,6 +206,22 @@ void KnightPlayer::Attack()
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
 	if(AtkCollistionFlag ==true)AtkCollisiton();
+}
+
+/// <summary>
+/// 
+/// </summary>
+void KnightPlayer::Avoidance()
+{
+	//RBボタンが押されたら。
+	//回避
+	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
+		//回避ステート
+		//m_animState = enKnightState_Avoidance;
+		AnimationMove();
+		pushFlag = true;
+		AvoidanceFlag = true;
+	}
 }
 
 /// <summary>
@@ -235,6 +273,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//ボタンが押されていなかったら
 		if (m_AtkTmingState != SecondAtk_State)
 		{
+			pushFlag = false;
 			AtkState = false;
 			m_animState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
@@ -250,6 +289,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//ボタンが押されていなかったら
 		if (m_AtkTmingState != LastAtk_State)
 		{
+			pushFlag = false;
 			AtkState = false;
 			m_animState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
@@ -267,9 +307,10 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	if (m_modelRender.IsPlayingAnimation() == false) {
 		m_animState = enKnightState_Idle;
 		AtkState = false;
+		pushFlag = false;
 	}
 
-	//三段目のアタックのアニメーションで剣を振り終わったら
+	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
 		m_AtkTmingState = Num_State;
@@ -280,9 +321,19 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}
+	//回避アニメーションが終わったら
+	if (wcscmp(eventName, L"Avoidance_End") == 0)
+	{
+		//移動処理をしないようにする
+
+		AvoidanceFlag = false;
+		//m_AtkTmingState = Num_State;
+	
+	}
 }
 
 void KnightPlayer::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+	Skillfont.Draw(rc);
 }

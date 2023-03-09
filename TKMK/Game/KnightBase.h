@@ -21,11 +21,6 @@ public:
 	void SetModel();
 
 	/// <summary>
-	/// 移動処理
-	/// </summary>
-	//void Move();
-	
-	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
 	/// </summary>
 	/// <param name="GetExp">中立の敵の経験値</param>
@@ -55,7 +50,7 @@ public:
 	/// <summary>
 	/// スキルを使用したときの処理
 	/// </summary>
-	void Skill(Vector3& right,Vector3& forward);
+	//void Skill(Vector3& right,Vector3& forward);
 
 	/// <summary>
 	/// 必殺技を発動したときの処理
@@ -90,6 +85,18 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
+	void AnimationMove();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="right"></param>
+	/// <param name="forward"></param>
+	void MoveStraight(Vector3& right, Vector3& forward);
+
+	/// <summary>
+	/// アニメーションイベント
+	/// </summary>
 	/// <param name="clipName"></param>
 	/// <param name="eventName"></param>
 	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)=0;
@@ -123,6 +130,7 @@ public:
 		return m_animState != enKnightState_ChainAtk &&
 			m_animState != enKnightState_UltimateSkill &&
 			m_animState != enKnightState_Skill &&
+			m_animState != enKnightState_Avoidance &&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;
 	}
@@ -154,8 +162,10 @@ protected:
 	void OnProcessRunStateTransition();
 	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
-	//
+	//スキルのステートの遷移処理
 	void OnProcessSkillAtkStateTransition();
+	//回避のステートの遷移処理
+	void OnProcessAvoidanceStateTransition();
 	//必殺技のステートの遷移処理
 	void OnProcessUltimateSkillAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
@@ -171,6 +181,7 @@ protected:
 		enKnightState_Death,
 		enKnightState_Skill,
 		enKnightState_UltimateSkill,
+		enKnightState_Avoidance,
 	};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -180,6 +191,7 @@ protected:
 		enAnimationClip_Death,
 		enAnimationClip_Skill,
 		enAnimationClip_UltimateSkill,
+		enAnimationClip_Avoidance,
 		enAnimationClip_Num,
 	};
 	Game* m_game=nullptr;
@@ -206,14 +218,24 @@ protected:
 	int ComboState = 0;
 	//コンボが継続する時間を記録する
 	float ComboTimer = 0;
+	//ボタンが押されたかの判定
+	bool pushFlag = false;
 	//一段目のアタックをしたかの判定
 	bool AtkState = false;
 	//スキルのアニメーション再生が終わったかの判定
 	bool SkillEndFlag = false;
+	//回避アニメーションを再生したかの判定
+	bool AvoidanceFlag = false;
+	//
+	bool AvoidanceEndFlag = false;
 	//「」ボーンのID
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
 	int AtkEndPosId= -1;
+
+	float SkillTimer = 0;
+
+	float AvoidanceTimer = 0;
 
 	//獲得した経験値仮
 	int exp=5;

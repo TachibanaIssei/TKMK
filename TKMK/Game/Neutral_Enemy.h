@@ -1,7 +1,4 @@
 #pragma once
-#include <string>
-#include <fstream>
-#include <sstream>
 #include "tkFile/TknFile.h"
 #include "AI/PathFinding/NaviMesh.h"
 #include "AI/PathFinding/Path.h"
@@ -26,7 +23,7 @@ public:
 	enum EnNEState {
 		enNeutral_Enemy_Idle,					//待機。
 		enNeutral_Enemy_Chase,					//追跡。
-		enNeutral_Enemy_Attack,			    //攻撃
+		enNeutral_Enemy_Attack,			        //攻撃
 		enNeutral_Enemy_ReceiveDamage,			//被ダメージ。
 		enNeutral_Enemy_Death,					//ダウン。
 	};
@@ -136,7 +133,7 @@ private:
 	KnightPlayer* m_knightPlayer;                        //剣士
 	float					m_chaseTimer = 0.0f;						//追跡タイマー。
 	float					m_idleTimer = 0.0f;		                    //待機タイマー。
-	Status m_Status;
+	Status m_Status;                           //ステータス
 	//ナビゲーションメッシュ
 	TknFile m_tknFile;
 	PhysicsStaticObject m_bgObject;

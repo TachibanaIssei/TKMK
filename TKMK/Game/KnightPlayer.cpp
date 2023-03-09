@@ -25,7 +25,11 @@ KnightPlayer::~KnightPlayer()
 
 }
 
-
+bool KnightPlayer::Start()
+{
+	m_Status.Init("Knight");
+	
+}
 void KnightPlayer::Update()
 {
 	

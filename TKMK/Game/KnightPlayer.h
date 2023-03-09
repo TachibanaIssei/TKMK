@@ -1,7 +1,6 @@
 #pragma once
-
 #include "KnightBase.h"
-
+#include "Status.h"
 class Game;
 
 class KnightPlayer:public KnightBase
@@ -9,7 +8,7 @@ class KnightPlayer:public KnightBase
 public:
 	KnightPlayer();
 	~KnightPlayer();
-
+	bool Start();
 	void Update();
 
 	void Attack();
@@ -51,6 +50,8 @@ private:
 
 	bool UltimateSkillFlag = false;
 
+	Status m_Status;                           //ステータス
+												//プレイヤーの顔
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード
 	//Status status = { 150,150,35,150.0f };

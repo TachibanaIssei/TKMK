@@ -36,18 +36,18 @@ bool Game::Start()
 	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f });
 
 	//�X�^�W�A���̃��x���̐ݒ�
-	//m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
+	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
-	//	if (objData.EqualObjectName(L"stadium03") == true) {
-	//		m_backGround = NewGO<BackGround>(0, "backGround");
-	//		m_backGround->SetPosition(objData.position);
-	//		m_backGround->SetRotation(objData.rotation);
-	//		m_backGround->SetScale(objData.scale);
+		if (objData.EqualObjectName(L"stadium03") == true) {
+			m_backGround = NewGO<BackGround>(0, "backGround");
+			m_backGround->SetPosition(objData.position);
+			m_backGround->SetRotation(objData.rotation);
+			m_backGround->SetScale(objData.scale);
 
-	//		return true;
-	//	}
-	//	return false;
-	//});
+			return true;
+		}
+		return false;
+	});
 	//���m�̐���
 	/*m_knightbase = NewGO<KnightBase>(0, "knightbase");
 	m_knightbase->SetSGame(this);*/
@@ -80,7 +80,7 @@ bool Game::Start()
 	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);*/
 
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

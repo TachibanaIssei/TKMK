@@ -18,7 +18,7 @@ GameCamera::~GameCamera()
 bool GameCamera::Start()
 {
 
-	//注視点から視点までのベクトルを設定。80-160
+	//�����_���王�_�܂ł̃x�N�g����ݒ�B80-160
 	m_toCameraPos.Set(0.0f, 80.0f, -160.0f);
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
@@ -38,42 +38,42 @@ void GameCamera::Update()
 
 
 	Vector3 toCameraPosOld = m_toCameraPos;
-	//パッドの入力を使ってカメラを回す。
+	//�p�b�h�̓��͂��g���ăJ�������񂷁B
 	float x = g_pad[0]->GetRStickXF();
 	float y = g_pad[0]->GetRStickYF();
-	//Y軸周りの回転
+	//Y������̉�]
 	Quaternion qRot;
 	qRot.SetRotationDeg(Vector3::AxisY, 1.3f * x);
 	qRot.Apply(m_toCameraPos);
-	//X軸周りの回転。
+	//X������̉�]�B
 	Vector3 axisX;
 	axisX.Cross(Vector3::AxisY, m_toCameraPos);
 	axisX.Normalize();
 	qRot.SetRotationDeg(axisX, 1.3f * y);
 	qRot.Apply(m_toCameraPos);
-	//カメラの回転の上限をチェックする。
-	//注視点から視点までのベクトルを正規化する。
-	//正規化すると、ベクトルの大きさが１になる。
-	//大きさが１になるということは、ベクトルから強さがなくなり、方向のみの情報となるということ。
+	//�J�����̉�]�̏�����`�F�b�N����B
+	//�����_���王�_�܂ł̃x�N�g���𐳋K������B
+	//���K������ƁA�x�N�g���̑傫�����P�ɂȂ�B
+	//�傫�����P�ɂȂ�Ƃ������Ƃ́A�x�N�g�����狭�����Ȃ��Ȃ�A�����݂̂̏��ƂȂ�Ƃ������ƁB
 	Vector3 toPosDir = m_toCameraPos;
 	toPosDir.Normalize();
 	//if (toPosDir.y < -0.3f) {
-	//	//カメラが上向きすぎ。
+	//	//�J����������������B
 	//	m_toCameraPos = toCameraPosOld;
 	//}
 	//else if (toPosDir.y > 0.9f) {
-	//	//カメラが下向きすぎ。
+	//	//�J�����������������B
 	//	m_toCameraPos = toCameraPosOld;
 	//}
 
 	Vector3 pos;
-	//視点と注視点を足す
+	//���_�ƒ����_�𑫂�
 	pos = TargetPos + m_toCameraPos;
 	g_camera3D->SetTarget(TargetPos);
 	g_camera3D->SetPosition(pos);
 	//g_camera3D->SetPosition(m_toCameraPos);
 
-	//カメラの更新。
+	//�J�����̍X�V�B
 	g_camera3D->Update();
 }
 

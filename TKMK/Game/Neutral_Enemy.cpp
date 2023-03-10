@@ -4,7 +4,14 @@
 #include <time.h>
 #include <stdlib.h>
 #include"KnightPlayer.h"
-
+#include "GameCamera.h"
+namespace {
+	const float HP_WINDOW_WIDTH = 1152.0f;
+	const float HP_WINDOW_HEIGHT = 648.0f;
+	const float HP_BER_WIDTH = 178.0f;
+	const float HP_BER_HEIGHT = 22.0f;
+	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
+}
 Neutral_Enemy::Neutral_Enemy()
 {
 
@@ -41,12 +48,21 @@ bool Neutral_Enemy::Start()
 	
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
-		10.0f,			//半径。
-		10.2f,			//高さ。
+		25.0f,			//半径。
+		50.0f,			//高さ。
 		m_position		//座標。
 	);
 	//剣のボーンのIDを取得する
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
+
+	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
+	//m_HPBar.SetPivot(PIVOT);
+
+	m_HPBack.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
+
+	m_HPFrame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
+
+
 
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -58,6 +74,8 @@ bool Neutral_Enemy::Start()
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
+	//ステータスを読み込む
+	m_Status.Init("Enemy");
 	return true;
 }
 
@@ -76,7 +94,7 @@ void Neutral_Enemy::Update()
 	PlayAnimation();
 	//ステートの遷移処理。
 	ManageState();
-
+	HPBar();
 	//モデルの更新。
 	m_modelRender.Update();
 }
@@ -109,7 +127,7 @@ void Neutral_Enemy::Rotation()
 void Neutral_Enemy::Chase()
 {
 	//追跡ステートでないなら、追跡処理はしない。
-	if (m_NEState != enNEState_Chase)
+	if (m_Neutral_EnemyState != enNeutral_Enemy_Chase)
 	{
 		return;
 	}
@@ -140,7 +158,7 @@ void Neutral_Enemy::Chase()
 
 void Neutral_Enemy::Collision()
 {
-	if (m_NEState == enNEState_ReceiveDamage || m_NEState == enNEState_Death)
+	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
@@ -153,15 +171,15 @@ void Neutral_Enemy::Collision()
 		if (collision->IsHit(m_charaCon))
 		{
 			//hpを減らす
-
-			if (m_hp == 0)
+			m_Status.Hp -= 50;
+			if (m_Status.Hp < 0)
 			{
 				//死亡ステートに遷移する。
-				m_NEState = enNEState_Death;
+				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
 			else {
 				//被ダメージステートに遷移する。
-				m_NEState = enNEState_ReceiveDamage;
+				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
 				//効果音再生
 			}
 		}
@@ -172,7 +190,7 @@ void Neutral_Enemy::Collision()
 void Neutral_Enemy::Attack()
 {
 	//攻撃ステートではなかったら
-	if (m_NEState != enNEState_Attack)
+	if (m_Neutral_EnemyState != enNeutral_Enemy_Attack)
 	{
 		return;
 	}
@@ -242,14 +260,14 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 			if (ram > 30)
 			{
 				//攻撃ステートに移行する。
-				m_NEState = enNEState_Attack;
+				m_Neutral_EnemyState = enNeutral_Enemy_Attack;
 				m_UnderAttack = false;
 				return;
 			}
 			else
 			{
 				//待機ステートに移行する。
-				m_NEState = enNEState_Idle;
+				m_Neutral_EnemyState = enNeutral_Enemy_Idle;
 				return;
 			}
 
@@ -262,7 +280,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 			if (ram > 40)
 			{
 				//追跡ステートに移行する。
-				m_NEState = enNEState_Chase;
+				m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 				return;
 			}
 		}
@@ -271,7 +289,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	else
 	{
 		//待機ステートに移行する。
-		m_NEState = enNEState_Idle;
+		m_Neutral_EnemyState = enNeutral_Enemy_Idle;
 		return;
 
 	}
@@ -328,7 +346,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
-		m_NEState = enNEState_Chase;
+		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
@@ -349,26 +367,26 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 
 void Neutral_Enemy::ManageState()
 {
-	switch (m_NEState)
+	switch (m_Neutral_EnemyState)
 	{
 		//待機ステート
-	case enNEState_Idle:
+	case enNeutral_Enemy_Idle:
 		ProcessIdleStateTransition();
 		break;
 		//追跡ステート
-	case enNEState_Chase:
+	case enNeutral_Enemy_Chase:
 		ProcessChaseStateTransition();
 		break;
 		//攻撃ステート
-	case enNEState_Attack:
+	case enNeutral_Enemy_Attack:
 		ProcessAttackStateTransition();
 		break;
 		//被ダメージステート
-	case enNEState_ReceiveDamage:
+	case enNeutral_Enemy_ReceiveDamage:
 		ProcessReceiveDamageStateTransition();
 		break;
 		//死亡ステート
-	case enNEState_Death:
+	case enNeutral_Enemy_Death:
 		ProcessDeathStateTransition();
 		break;
 	}
@@ -377,31 +395,93 @@ void Neutral_Enemy::ManageState()
 void Neutral_Enemy::PlayAnimation()
 {
 	m_modelRender.SetAnimationSpeed(1.5f);
-	switch(m_NEState)
+	switch(m_Neutral_EnemyState)
 	{
 		//待機ステート
-	case enNEState_Idle:
+	case enNeutral_Enemy_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.5f);
 		break;
 		//追跡ステート
-	case enNEState_Chase:
+	case enNeutral_Enemy_Chase:
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.5f);
 		break;
 		//攻撃ステート
-	case enNEState_Attack:
+	case enNeutral_Enemy_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
 		break;
 		//被ダメージステート
-	case enNEState_ReceiveDamage:
-		m_modelRender.PlayAnimation(enNEState_ReceiveDamage, 0.5f);
+	case enNeutral_Enemy_ReceiveDamage:
+		m_modelRender.PlayAnimation(enNeutral_Enemy_ReceiveDamage, 0.5f);
 		break;
 		//死亡ステート
-	case enNEState_Death:
-		m_modelRender.PlayAnimation(enNEState_Death, 0.5f);
+	case enNeutral_Enemy_Death:
+		m_modelRender.PlayAnimation(enNeutral_Enemy_Death, 0.5f);
 		break;
 	}
 }
+void Neutral_Enemy::HPBar()
+{
+	if (m_Status.Hp < 0)
+	{
+		m_Status.Hp = 0;
+	}
 
+	Vector3 scale = Vector3::One;
+	scale.x = float(m_Status.Hp) / float(m_Status.MaxHp);
+	m_HPBar.SetScale(scale);
+
+	Vector3 BerPosition = m_position;
+	BerPosition.y += 75.0f;
+	//座標を変換する
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBerPos, BerPosition);
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindowPos, BerPosition);
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBackPos, BerPosition);
+
+	//HPバー画像を左寄せに表示する
+	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
+	m_HPBerPos.x -= BerSizeSubtraction.x;
+
+	m_HPBar.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
+	m_HPFrame.SetPosition(Vector3(m_HPWindowPos.x, m_HPWindowPos.y, 0.0f));
+	m_HPBack.SetPosition(Vector3(m_HPBackPos.x, m_HPBackPos.y, 0.0f));
+
+	m_HPBar.Update();
+	m_HPFrame.Update();
+	m_HPBack.Update();
+}
+Vector3 Neutral_Enemy::HPBerSend(Vector3 size, Vector3 scale)
+{
+	Vector3 hpBerSize = size;								//画像の元の大きさ
+	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
+	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
+
+	changeBerSize.x = hpBerSize.x * scale.x;
+	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
+	BerSizeSubtraction.x /= 2.0f;
+
+	return BerSizeSubtraction;
+}
+bool Neutral_Enemy::DrawHP()
+{
+	Vector3 toCameraTarget = m_gameCamera->GetTarget() - m_gameCamera->GetPosition();
+	Vector3 toMush = m_position - m_gameCamera->GetPosition();
+	toCameraTarget.y = 0.0f;
+	toMush.y = 0.0f;
+	toCameraTarget.Normalize();
+	toMush.Normalize();
+
+	float cos = Dot(toCameraTarget, toMush);
+	float angle = acos(cos);
+
+	if (fabsf(angle) < Math::DegToRad(45.0f))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	(void)clipName;
@@ -446,4 +526,7 @@ void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
+	m_HPBack.Draw(rc);
+	m_HPBar.Draw(rc);
+	m_HPFrame.Draw(rc);
 }

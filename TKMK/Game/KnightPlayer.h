@@ -1,8 +1,7 @@
 #pragma once
-
 #include "KnightBase.h"
 
-
+#include "Status.h"
 
 class Game;
 
@@ -11,7 +10,6 @@ class KnightPlayer:public KnightBase
 public:
 	KnightPlayer();
 	~KnightPlayer();
-
 	void Update();
 
 	void Attack();
@@ -52,16 +50,18 @@ private:
 	AtkTimingState m_AtkTmingState = Num_State;
 
 	//bool AtkCollistionFlag = false;
-
+	
 	bool UltimateSkillFlag = false;
 
 	FontRender Skillfont;
 	FontRender Avoidancefont;
 
+	Status m_Status;                           //ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+
 	//Vector3 m_position = Vector3::Zero;
-	////‰ŠúƒXƒe[ƒ^ƒX Å‘åHPAHPAUŒ‚—ÍAƒXƒs[ƒh
+	////åˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ æœ€å¤§HPã€HPã€æ”»æ’ƒåŠ›ã€ã‚¹ãƒ”ãƒ¼ãƒ‰
 	//Status status = { 150,150,35,150.0f };
-	////ƒŒƒxƒ‹ƒAƒbƒv‚É‘‰Á‚·‚éƒXƒe[ƒ^ƒX
+	////ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 	//LvUpStatus LvUpStatus = { 30,10,30.0f };
 };
 

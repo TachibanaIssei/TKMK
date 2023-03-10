@@ -5,17 +5,17 @@
 KnightPlayer::KnightPlayer()
 {
 	SetModel();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg—p‚ÌŠÖ”‚ğİ’è‚·‚éB
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆç”¨ã®é–¢æ•°ã‚’è¨­å®šã™ã‚‹ã€‚
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W0”Ô‚Ìæ“¾
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™0ç•ªã®å–å¾—
 	GetRespawnPos();
 	m_respawnPos[respawnNumber].y += m_position_YUp;
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
-	//ƒLƒƒƒ‰ƒRƒ“
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
+	//ã‚­ãƒ£ãƒ©ã‚³ãƒ³
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	//Œ•m
+	//å‰£å£«
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 
 	
@@ -32,7 +32,6 @@ KnightPlayer::~KnightPlayer()
 
 }
 
-
 void KnightPlayer::Update()
 {
 
@@ -42,107 +41,107 @@ void KnightPlayer::Update()
 	Skillfont.SetText(Skill);
 
 
-	//‘OƒtƒŒ[ƒ€‚ÌÀ•W‚ğæ“¾
+	//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®åº§æ¨™ã‚’å–å¾—
 	OldPosition = m_position;
 
-	//ˆÚ“®ˆ—
+	//ç§»å‹•å‡¦ç†
 	Move(m_position, m_charCon, status);
 	
-	////RBƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çB
-	////‰ñ”ğ
+	////RBãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰ã€‚
+	////å›é¿
 	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
-	//	//‰ñ”ğƒXƒe[ƒg
+	//	//å›é¿ã‚¹ãƒ†ãƒ¼ãƒˆ
 	//	//m_animState = enKnightState_Avoidance;
 	//	AnimationMove();
 	//	AvoidanceFlag = true;
 	//}
 	
-	//‰ñ”ğ’†‚È‚ç
+	//å›é¿ä¸­ãªã‚‰
 	if (AvoidanceFlag == true) {
 		m_animState = enKnightState_Avoidance;
-		//ˆÚ“®ˆ—‚ğs‚¤(’¼üˆÚ“®‚Ì‚İ)B
+		//ç§»å‹•å‡¦ç†ã‚’è¡Œã†(ç›´ç·šç§»å‹•ã®ã¿)ã€‚
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
-	//UŒ‚ˆ—
+	//æ”»æ’ƒå‡¦ç†
 	Attack();
 
-	//‰ñ”ğˆ—
+	//å›é¿å‡¦ç†
 	Avoidance();
 
-	//ƒXƒLƒ‹g—p’†‚È‚ç
+	//ã‚¹ã‚­ãƒ«ä½¿ç”¨ä¸­ãªã‚‰
 	if (SkillState == true) {
-		//ƒXƒLƒ‹ƒXƒe[ƒg
+		//ã‚¹ã‚­ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_animState = enKnightState_Skill;
-		//ˆÚ“®ˆ—‚ğs‚¤(’¼üˆÚ“®‚Ì‚İ)B
+		//ç§»å‹•å‡¦ç†ã‚’è¡Œã†(ç›´ç·šç§»å‹•ã®ã¿)ã€‚
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
-	//‰ñ“]ˆ—
+	//å›è»¢å‡¦ç†
 	Rotation();
 
-	//ƒXƒLƒ‹ƒN[ƒ‹ƒ^ƒCƒ€‚Ìˆ—
+	//ã‚¹ã‚­ãƒ«ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®å‡¦ç†
 	COOlTIME(Cooltime, SkillEndFlag,SkillTimer);
 
-	//‰ñ”ğƒN[ƒ‹ƒ^ƒCƒ€‚Ìˆ—
+	//å›é¿ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®å‡¦ç†
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
-	//ƒŒƒxƒ‹ƒAƒbƒv‚·‚é
+	//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã™ã‚‹
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		if(Lv!=5)
 		ExpProcess(exp);
 	}
 
-	//ƒ_ƒ[ƒW‚ğó‚¯‚é
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹
 	/*if (g_pad[0]->IsTrigger(enButtonX))
 	{
 		Dameged(dddd);
 	}*/
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	Collition();
 
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	ManageState();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿ
 	PlayAnimation();
 
 
 
-	//Œ•m‚ÌYÀ•W‚ª˜‚È‚Ì‚ÅYÀ•W‚ğã‚°‚é
+	//å‰£å£«ã®Yåº§æ¨™ãŒè…°ãªã®ã§Yåº§æ¨™ã‚’ä¸Šã’ã‚‹
 	m_position.y = m_position_YUp;
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 }
 
-//UŒ‚ˆ—
+//æ”»æ’ƒå‡¦ç†
 void KnightPlayer::Attack()
 {
-	//˜A‘Å‚ÅUŒ‚‚Å‚«‚È‚­‚È‚é
+	//é€£æ‰“ã§æ”»æ’ƒã§ããªããªã‚‹
 
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ğ‚µ‚Ä‚¢‚È‚¢‚È‚ç
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã‚’ã—ã¦ã„ãªã„ãªã‚‰
 	//if (pushFlag==false&&AtkState == false)
 	//{
-	//	//Bƒ{ƒ^ƒ“‰Ÿ‚³‚ê‚½‚çUŒ‚‚·‚é
+	//	//Bãƒœã‚¿ãƒ³æŠ¼ã•ã‚ŒãŸã‚‰æ”»æ’ƒã™ã‚‹
 	//	if (g_pad[0]->IsTrigger(enButtonA))
 	//	{
 	//		m_animState = enKnightState_ChainAtk;
 	//		
 	//		//FirstAtkFlag = true;
-	//		//ƒRƒ“ƒ{‚ğ1‘‚â‚·
+	//		//ã‚³ãƒ³ãƒœã‚’1å¢—ã‚„ã™
 	//		//ComboState++;
 	//		pushFlag = true;
 	//		AtkState = true;
 	//	}
 	//}
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªƒXƒ^[ƒg‚µ‚½‚È‚ç
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒã‚¹ã‚¿ãƒ¼ãƒˆã—ãŸãªã‚‰
 	if (m_AtkTmingState == FirstAtk_State)
 	{
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			//ƒXƒe[ƒg‚ğ“ñ’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒ^[ƒgƒXƒe[ƒg‚É‚·‚é
+			//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’äºŒæ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ã‚¿ãƒ¼ãƒˆã‚¹ãƒ†ãƒ¼ãƒˆã«ã™ã‚‹
 			m_AtkTmingState = SecondAtk_State;
 		}
 	}
@@ -151,72 +150,73 @@ void KnightPlayer::Attack()
 	{
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			//ƒXƒe[ƒg‚ğO’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒ^[ƒgƒXƒe[ƒg‚É‚·‚é
+			//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ä¸‰æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ã‚¿ãƒ¼ãƒˆã‚¹ãƒ†ãƒ¼ãƒˆã«ã™ã‚‹
 			m_AtkTmingState = LastAtk_State;
 		}
 	}
 
 
-	//ƒXƒLƒ‹‚ğ”­“®‚·‚éˆ—
-	//Bƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+	//ã‚¹ã‚­ãƒ«ã‚’ç™ºå‹•ã™ã‚‹å‡¦ç†
+	//Bãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
 	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
-		//ˆÚ“®‘¬“x‚ğã‚°‚é
-		status.Speed += 120.0f;
+		//ç§»å‹•é€Ÿåº¦ã‚’ä¸Šã’ã‚‹
+		m_Status.Speed += 120.0f;
 		
 		AnimationMove();
 		pushFlag = true;
 		SkillState = true;
+		//AtkCollistionFlag = true;
 	}
 
-	//•KE‹Z‚ğ”­“®‚·‚éˆ—
-	//Xƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+	//å¿…æ®ºæŠ€ã‚’ç™ºå‹•ã™ã‚‹å‡¦ç†
+	//Xãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶AƒŒƒxƒ‹‚ğ‚R‰º‚°‚é
+		//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿã€ãƒ¬ãƒ™ãƒ«ã‚’ï¼“ä¸‹ã’ã‚‹
 		UltimateSkill();
-		//•KE‹Z”­“®ƒtƒ‰ƒO‚ğƒZƒbƒg
+		//å¿…æ®ºæŠ€ç™ºå‹•ãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ
 		UltimateSkillFlag = true;
 	}
 
-	//•KE‹Z”­“®ƒtƒ‰ƒO‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚é‚È‚ç
+	//å¿…æ®ºæŠ€ç™ºå‹•ãƒ•ãƒ©ã‚°ãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã‚‹ãªã‚‰
 	if (UltimateSkillFlag == true)
 	{
 		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-		//•KE‹Zƒ^ƒCƒ}[‚ª3.0f‚Ü‚Å‚ÌŠÔ
+		//å¿…æ®ºæŠ€ã‚¿ã‚¤ãƒãƒ¼ãŒ3.0fã¾ã§ã®é–“
 		if (UltimateSkillTimer <= 3.0f)
 		{
-			//ƒRƒŠƒWƒ‡ƒ“‚Ìì¬AˆÚ“®ˆ—
+			//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®ä½œæˆã€ç§»å‹•å‡¦ç†
 			UltimateSkillCollistion(OldPosition, m_position);
 		}
 		else
 		{
-			//UŒ‚‚ª—LŒø‚ÈŠÔ‚ğƒŠƒZƒbƒg
+			//æ”»æ’ƒãŒæœ‰åŠ¹ãªæ™‚é–“ã‚’ãƒªã‚»ãƒƒãƒˆ
 			UltimateSkillTimer = 0;
-			//•KE‹Z”­“®ƒtƒ‰ƒO‚ğƒŠƒZƒbƒg
+			//å¿…æ®ºæŠ€ç™ºå‹•ãƒ•ãƒ©ã‚°ã‚’ãƒªã‚»ãƒƒãƒˆ
 			UltimateSkillFlag = false;
-			//ƒRƒŠƒWƒ‡ƒ“íœ
+			//ã‚³ãƒªã‚¸ãƒ§ãƒ³å‰Šé™¤
 			DeleteGO(collisionObject);
-			//ƒRƒŠƒWƒ‡ƒ“ì¬ƒtƒ‰ƒO‚ğƒŠƒZƒbƒg
+			//ã‚³ãƒªã‚¸ãƒ§ãƒ³ä½œæˆãƒ•ãƒ©ã‚°ã‚’ãƒªã‚»ãƒƒãƒˆ
 			UltCollisionSetFlag = false;
 		}
 	}
 
-	//UŒ‚‚©ƒXƒLƒ‹‚ğg—p‚µ‚Ä‚¢‚é‚È‚ç
-	//ƒRƒŠƒWƒ‡ƒ“ì¬
+	//æ”»æ’ƒã‹ã‚¹ã‚­ãƒ«ã‚’ä½¿ç”¨ã—ã¦ã„ã‚‹ãªã‚‰
+	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ä½œæˆ
 	if(AtkCollistionFlag ==true)AtkCollisiton();
 }
 
 /// <summary>
-/// ‰ñ”ğˆ—
+/// å›é¿å‡¦ç†
 /// </summary>
 void KnightPlayer::Avoidance()
 {
-	//RBƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çB
-	//‰ñ”ğ
+	//RBãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰ã€‚
+	//å›é¿
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
-		//‰ñ”ğƒXƒe[ƒg
+		//å›é¿ã‚¹ãƒ†ãƒ¼ãƒˆ
 		//m_animState = enKnightState_Avoidance;
 		AnimationMove();
 		pushFlag = true;
@@ -225,55 +225,55 @@ void KnightPlayer::Avoidance()
 }
 
 /// <summary>
-/// ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg‚ÌÄ¶
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆã®å†ç”Ÿ
 /// </summary>
 /// <param name="clipName"></param>
 /// <param name="eventName"></param>
 void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"FirstAttack_Start") == 0)
 	{
 		m_AtkTmingState =FirstAtk_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
 	}
-	//“ñ’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//äºŒæ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
 	{
 		m_AtkTmingState = SecondAtkStart_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
 	}
-	//O’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//ä¸‰æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
 	{
 		m_AtkTmingState = LastAtk_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
 	}
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
 		//m_AtkTmingState = LastAtk_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"FirstAttack_End") == 0)
 	{
 		
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
 	}
-	///ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚ç
+	///ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"FirstToIdle") == 0)
 	{
-		//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚©‚Á‚½‚ç
+		//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ãªã‹ã£ãŸã‚‰
 		if (m_AtkTmingState != SecondAtk_State)
 		{
-			//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+			//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 			pushFlag = false;
 			AtkState = false;
 			m_animState = enKnightState_Idle;
@@ -281,53 +281,53 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		}
 	}
 
-	//“ñ’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//äºŒæ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SecondAttack_End") == 0)
 	{
 		
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
-		//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚©‚Á‚½‚ç
+		//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ãªã‹ã£ãŸã‚‰
 		if (m_AtkTmingState != LastAtk_State)
 		{
-			//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+			//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 			pushFlag = false;
 			AtkState = false;
 			m_animState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
-	//O’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//ä¸‰æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"LastAttack_End") == 0)
 	{
 		m_AtkTmingState = Num_State;
 		AtkState = false;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
 	}
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶‚ªI‚í‚Á‚½‚ç
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰
 	if (m_modelRender.IsPlayingAnimation() == false) {
 		m_animState = enKnightState_Idle;
 		AtkState = false;
-		//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 		pushFlag = false;
 	}
 
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
 		m_AtkTmingState = Num_State;
 		AtkState = false;
-		//ƒXƒLƒ‹‚ÌˆÚ“®ˆ—‚ğ‚µ‚È‚¢‚æ‚¤‚É‚·‚é
+		//ã‚¹ã‚­ãƒ«ã®ç§»å‹•å‡¦ç†ã‚’ã—ãªã„ã‚ˆã†ã«ã™ã‚‹
 		SkillState = false;
-		status.Speed -= 120.0f;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		m_Status.Speed -= 120.0f;
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
 	}
-	//‰ñ”ğƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚ç
+	//å›é¿ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"Avoidance_End") == 0)
 	{
-		//ˆÚ“®ˆ—‚ğ‚µ‚È‚¢‚æ‚¤‚É‚·‚é
+		//ç§»å‹•å‡¦ç†ã‚’ã—ãªã„ã‚ˆã†ã«ã™ã‚‹
 
 		AvoidanceFlag = false;
 		//m_AtkTmingState = Num_State;

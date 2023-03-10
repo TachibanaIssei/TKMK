@@ -20,23 +20,22 @@ Game::~Game()
 	{
 		DeleteGO(m_backGround);
 	}
-
 	DeleteGO(m_gamecamera);
 	DeleteGO(m_knightplayer);
-	DeleteGO(m_NE);
+	DeleteGO(m_Neutral_Enemy);
 	DeleteGO(m_gameUI);
 }
 
 bool Game::Start()
 {
-	//ディレクションライトの設定
+	//�f�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = Vector3{ 1.0f,1.0f,1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
 	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f });
 
-	//スタジアムのレベルの設定
+	//�X�^�W�A���̃��x���̐ݒ�
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium03") == true) {
@@ -49,20 +48,20 @@ bool Game::Start()
 		}
 		return false;
 	});
-	//剣士の生成
+	//���m�̐���
 	/*m_knightbase = NewGO<KnightBase>(0, "knightbase");
 	m_knightbase->SetSGame(this);*/
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
 	
 
-	//ゲームカメラの生成
+	//�Q�[���J�����̐���
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	m_gamecamera->SetKnight(m_knightplayer);
 
-	//中立の敵の生成
-	m_NE = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-	m_NE->SetNEGame(this);
+	//�����̓G�̐���
+	m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+	m_Neutral_Enemy->SetNeutral_EnemyGame(this);
 
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
@@ -79,7 +78,6 @@ bool Game::Start()
 	m_fontRender.SetScale(3.0f);
 	m_fontRender.SetRotation(90.0f);
 	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);*/
-
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();

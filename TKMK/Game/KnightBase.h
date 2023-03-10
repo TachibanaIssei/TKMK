@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Actor.h"
-#include "Status.h"
 
 
+//class Status;
 class Game;
 
 class KnightBase:public Actor
@@ -20,11 +20,6 @@ public:
 	/// bool Start()
 	void SetModel();
 
-	/// <summary>
-	/// 移動処理
-	/// </summary>
-	void Move();
-	
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
 	/// </summary>
@@ -55,7 +50,7 @@ public:
 	/// <summary>
 	/// スキルを使用したときの処理
 	/// </summary>
-	void Skill();
+	//void Skill(Vector3& right,Vector3& forward);
 
 	/// <summary>
 	/// 必殺技を発動したときの処理
@@ -90,6 +85,18 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
+	void AnimationMove();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="right"></param>
+	/// <param name="forward"></param>
+	void MoveStraight(Vector3& right, Vector3& forward);
+
+	/// <summary>
+	/// アニメーションイベント
+	/// </summary>
 	/// <param name="clipName"></param>
 	/// <param name="eventName"></param>
 	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)=0;
@@ -122,6 +129,8 @@ public:
 	{
 		return m_animState != enKnightState_ChainAtk &&
 			m_animState != enKnightState_UltimateSkill &&
+			m_animState != enKnightState_Skill &&
+			m_animState != enKnightState_Avoidance &&
 			m_animState!= enKnightState_Damege&&
 			m_animState != enKnightState_Death;
 	}
@@ -153,8 +162,10 @@ protected:
 	void OnProcessRunStateTransition();
 	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
-	//
+	//スキルのステートの遷移処理
 	void OnProcessSkillAtkStateTransition();
+	//回避のステートの遷移処理
+	void OnProcessAvoidanceStateTransition();
 	//必殺技のステートの遷移処理
 	void OnProcessUltimateSkillAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
@@ -170,6 +181,7 @@ protected:
 		enKnightState_Death,
 		enKnightState_Skill,
 		enKnightState_UltimateSkill,
+		enKnightState_Avoidance,
 	};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -179,24 +191,30 @@ protected:
 		enAnimationClip_Death,
 		enAnimationClip_Skill,
 		enAnimationClip_UltimateSkill,
+		enAnimationClip_Avoidance,
 		enAnimationClip_Num,
 	};
+
 	Game* m_game=nullptr;
+
+	//初期ステータス 最大HP、HP、攻撃力、スピード
+	Status m_Status;
+
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	Vector3 m_position = Vector3::Zero;                   //座標
 	float m_position_YUp = 36.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
-	Vector3 m_moveSpeed;                                  //移動速度
-	Vector3 collisionRot= Vector3::Zero;
-	CollisionObject* collisionObject;
-	Vector3 UltCollisionPos= Vector3::Zero;
+	Vector3 collisionRot= Vector3::Zero;                  //必殺技
+	CollisionObject* collisionObject;                     //コリジョン
+	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
+	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
+	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
 	CharacterController m_charCon;                        //キャラクターコントロール
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
-	//初期ステータス 最大HP、HP、攻撃力、スピード
-	Status m_Status;
+	
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
 	PlayerState m_animState = enKnightState_Idle;
@@ -204,20 +222,32 @@ protected:
 	int ComboState = 0;
 	//コンボが継続する時間を記録する
 	float ComboTimer = 0;
+	//ボタンが押されたかの判定
+	bool pushFlag = false;
 	//一段目のアタックをしたかの判定
 	bool AtkState = false;
+	//スキルのアニメーション再生が終わったかの判定
+	bool SkillEndFlag = false;
+	//回避アニメーションを再生したかの判定
+	bool AvoidanceFlag = false;
+	//
+	bool AvoidanceEndFlag = false;
 	//「」ボーンのID
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
 	int AtkEndPosId= -1;
 
+	float SkillTimer = 0;
+
+	float AvoidanceTimer = 0;
+
 	//獲得した経験値仮
 	int exp=5;
 	//受けたダメージ仮
 	int dddd = 50;
-
+	//必殺技使用のフラグ
 	bool UltCollisionSetFlag = false;
-
+	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
 
 };

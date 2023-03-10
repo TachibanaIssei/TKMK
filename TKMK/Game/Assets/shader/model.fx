@@ -245,7 +245,8 @@ float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldP
     float t = dot(refVec, toEye);
 
     // 鏡面反射の強さを0～1の数値にする
-    t = saturate(t);
+    //t = saturate(t);
+    t = max(0.0f, t);
 
     // 鏡面反射の強さを絞る
     t = pow(t, 5.0f);

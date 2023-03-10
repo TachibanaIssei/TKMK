@@ -8,7 +8,6 @@ class KnightPlayer:public KnightBase
 public:
 	KnightPlayer();
 	~KnightPlayer();
-	bool Start();
 	void Update();
 
 	void Attack();
@@ -47,7 +46,7 @@ private:
 	AtkTimingState m_AtkTmingState = Num_State;
 
 	//bool AtkCollistionFlag = false;
-
+	
 	bool UltimateSkillFlag = false;
 
 	Status m_Status;                           //ステータス

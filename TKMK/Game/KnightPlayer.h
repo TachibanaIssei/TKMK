@@ -28,8 +28,14 @@ public:
 	{
 		return m_game;
 	}
-	void Render(RenderContext& rc);
-
+	/// <summary>
+	/// �摜�\���t���O��擾����
+	/// </summary>
+	/// <returns>false�Ȃ�\�����Ȃ�</returns>
+	const bool GetSpriteFlag() const
+	{
+		return m_spriteFlag;
+	}
 private:
 	Game* m_game=nullptr;
 	
@@ -52,11 +58,10 @@ private:
 	//bool AtkCollistionFlag = false;
 	
 	bool UltimateSkillFlag = false;
-
 	FontRender Skillfont;
 	FontRender Avoidancefont;
 
-	Status m_Status;                           //ステータス
+	//Status m_Status;                           //ステータス
 
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード

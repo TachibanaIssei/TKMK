@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "KnightBase.h"
-
+#include "Status.h"
 
 KnightBase::KnightBase()
 {
+	//ステータスを読み込む
 	m_Status.Init("Knight");
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
@@ -246,6 +247,8 @@ void KnightBase::Dameged(int damege)
 	else {
 		//ダメージステート
 		m_animState = enKnightState_Damege;
+		//無敵時間フラグ
+		//invincibleFlag = true;
 	}
 }
 
@@ -541,6 +544,8 @@ void KnightBase::OnProcessDamegeStateTransition()
 	{
 		//待機ステート
 		m_animState = enKnightState_Idle;
+		//無敵時間ステート
+		//invincibleFlag = false;
 		OnProcessCommonStateTransition();
 	}
 }

@@ -316,7 +316,7 @@ void KnightBase::UltimateSkill()
 	levelDown(LvUpStatus, status, Lv, 3);
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
-	//一つ下のレベルの経験値テーブルにする
+	//レベルの経験値テーブルにする
 	ExpTableChamge(Lv, ExpTable);
 	m_animState = enKnightState_UltimateSkill;
 

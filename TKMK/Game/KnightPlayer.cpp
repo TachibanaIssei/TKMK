@@ -137,11 +137,12 @@ void KnightPlayer::Attack()
 	//		AtkState = true;
 	//	}
 	//}
-	
+	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
+			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
 		}
 	}
@@ -150,6 +151,7 @@ void KnightPlayer::Attack()
 	{
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
+			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
 		}
 	}
@@ -165,9 +167,6 @@ void KnightPlayer::Attack()
 		AnimationMove();
 		pushFlag = true;
 		SkillState = true;
-		//スキルステートがtureの間
-		//Skill(m_Skill_Right, m_Skill_Forward);
-		//AtkCollistionFlag = true;
 	}
 
 	//必殺技を発動する処理

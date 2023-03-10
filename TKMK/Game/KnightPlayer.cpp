@@ -20,7 +20,7 @@ KnightPlayer::KnightPlayer()
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 
 	
-	Skillfont.SetPosition(800.0f, -200.0f, 0.0f);
+	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);

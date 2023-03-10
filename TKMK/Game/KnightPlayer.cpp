@@ -88,11 +88,11 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	/*if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		if(Lv!=5)
-		ExpProcess(exp);
-	}*/
+	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+	//{
+	//	if(Lv!=5)
+	//	ExpProcess(exp);
+	//}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))

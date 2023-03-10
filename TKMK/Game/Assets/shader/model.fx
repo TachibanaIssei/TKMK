@@ -145,6 +145,8 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 	psIn.pos = mul(m, vsIn.pos);
     psIn.worldPos = psIn.pos;
     psIn.normal = mul(m, vsIn.normal);
+    psIn.normal = normalize(psIn.normal);
+    
 	psIn.pos = mul(mView, psIn.pos);
 	psIn.pos = mul(mProj, psIn.pos);
 
@@ -279,7 +281,7 @@ float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
     //指数関数的にする
     limPower = pow(limPower, 1.3f);
     
-    return diffDirection + specDirection + limPower;
+    return diffDirection + specDirection; // +limPower;
 }
 
 /////////////////////////////////////////////////////////////////////////

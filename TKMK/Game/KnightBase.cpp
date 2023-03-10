@@ -238,7 +238,7 @@ void KnightBase::Dameged(int damege)
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_animState = enKnightState_Death;
-		status.Hp = 0;
+		m_Status.Hp = 0;
 		//Death();
 		//SetRespawn();
 
@@ -339,8 +339,8 @@ void KnightBase::AnimationMove()
 	m_Skill_Right.y = 0.0f;
 
 	//左スティックの入力量とstatusのスピードを乗算。
-	m_Skill_Right *= stickL.x * status.Speed;
-	m_Skill_Forward *= stickL.y * status.Speed;
+	m_Skill_Right *= stickL.x * m_Status.Speed;
+	m_Skill_Forward *= stickL.y * m_Status.Speed;
 }
 
 //直線移動させる

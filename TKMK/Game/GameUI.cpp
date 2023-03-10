@@ -9,6 +9,9 @@ namespace
 	const Vector3 STATUS_BAR_POS = Vector3(-400.0f, -450.0f, 0.0f);	//ステータスバーポジション
 	const Vector3 PLAYER_FACE_BAR_POS = Vector3(-557.0,-400.0f, 0.0f);	//プレイヤーの顔の枠のポジション
 	const Vector3 HP_BAR_POS = Vector3(-450.0f, -420.0f, 0.0f);	//HPバーポジション
+	const Vector3 Skill_Pos = Vector3(700.0f, -225.0f, 0.0f);   //スキルアイコンのポジション
+	const Vector3 Ult_Pos = Vector3(700.0f, -370.0f, 0.0f);     //必殺技のアイコンのポジション
+
 }
 GameUI::GameUI()
 {
@@ -54,15 +57,22 @@ bool GameUI::Start()
 	m_statusBar.Init("Assets/sprite/HP_gauge.DDS", 631, 207);
 	m_statusBar.SetPosition(STATUS_BAR_POS);
 	m_statusBar.SetScale(0.87,0.87,1.0);
-
+	//顔アイコンの外枠
 	m_playerFaceFrame.Init("Assets/sprite/HP_window.DDS", 602, 197);
 	m_playerFaceFrame.SetPosition(PLAYER_FACE_BAR_POS);
 	m_playerFaceFrame.SetScale(0.8,0.8,1.0);
-
+	//顔のアイコン
 	m_playerFaceBack.Init("Assets/sprite/HP_windowBack.DDS", 615, 201);
 	m_playerFaceBack.SetPosition(PLAYER_FACE_BAR_POS);
 	m_playerFaceBack.SetScale(0.82,0.82,1.0);
-
+	//スキルアイコン
+	m_SkillRender.Init("Assets/sprite/skill_flame.DDS", 162, 162);
+	m_SkillRender.SetPosition(Skill_Pos);
+	m_SkillRender.SetScale(1, 1);
+    //必殺技アイコン
+	m_UltRender.Init("Assets/sprite/ult_flame.DDs", 162, 162);
+	m_UltRender.SetPosition(Ult_Pos);
+	m_UltRender.SetScale(1, 1);
 	//HPゲージの画像読み込み
 	m_hpBar.Init("Assets/sprite/uf_bar_b_health.DDS", 492.0f, 40.0f);
 	//ピボットを設定する
@@ -74,8 +84,10 @@ bool GameUI::Start()
 	//m_hp = PLAYER_MAXHP;
 	m_playerFaceFrame.Update();
 	m_playerFaceBack.Update();
+	m_SkillRender.Update();
+	m_UltRender.Update();
 
-	return true;
+    return true;
 }
 
 void GameUI::Update()
@@ -116,4 +128,7 @@ void GameUI::Render(RenderContext& rc)
 	m_hpBar.Draw(rc);
 	m_playerFaceBack.Draw(rc);
 	m_playerFaceFrame.Draw(rc);
+	m_SkillRender.Draw(rc);
+	m_UltRender.Draw(rc);
+
 }

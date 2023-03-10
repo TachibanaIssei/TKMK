@@ -4,6 +4,7 @@
 
 KnightPlayer::KnightPlayer()
 {
+	
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -19,7 +20,7 @@ KnightPlayer::KnightPlayer()
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 
 	
-	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
+	Skillfont.SetPosition(800.0f, -200.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);
@@ -44,7 +45,7 @@ void KnightPlayer::Update()
 	//前フレームの座標を取得
 	OldPosition = m_position;
 
-	//移動処理
+	//移動処理ステータスの値が入っていない
 	Move(m_position, m_charCon, m_Status);
 	
 	////RBボタンが押されたら。
@@ -87,11 +88,11 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	if (g_pad[0]->IsTrigger(enButtonA))
+	/*if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		if(Lv!=5)
 		ExpProcess(exp);
-	}
+	}*/
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -122,20 +123,20 @@ void KnightPlayer::Attack()
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	//if (pushFlag==false&&AtkState == false)
-	//{
-	//	//Bボタン押されたら攻撃する
-	//	if (g_pad[0]->IsTrigger(enButtonA))
-	//	{
-	//		m_animState = enKnightState_ChainAtk;
-	//		
-	//		//FirstAtkFlag = true;
-	//		//コンボを1増やす
-	//		//ComboState++;
-	//		pushFlag = true;
-	//		AtkState = true;
-	//	}
-	//}
+	if (pushFlag==false&&AtkState == false)
+	{
+		//Bボタン押されたら攻撃する
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_animState = enKnightState_ChainAtk;
+			
+			//FirstAtkFlag = true;
+			//コンボを1増やす
+			//ComboState++;
+			pushFlag = true;
+			AtkState = true;
+		}
+	}
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -255,6 +256,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
+		m_Status.Atk += 20;
 		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
@@ -316,6 +318,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
+		m_Status.Atk -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする

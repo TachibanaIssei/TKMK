@@ -219,8 +219,10 @@ void KnightBase::Collition()
 			//コリジョンが自身のキャラコンに当たったら
 			if (collision->IsHit(m_charCon))
 			{
-				//hpを減らす
-				Dameged(dddd);
+				//エネミーの攻撃力を取ってくる
+
+				//hpを10減らす
+				Dameged(Enemy_atk);
 			}
 		}
 	}

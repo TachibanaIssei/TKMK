@@ -6,6 +6,7 @@ struct Status
 	int Hp;                    //ヒットポイント(体力)
 	int Atk;                   //攻撃力
 	float Speed;               //移動速度
+	int GetExp;                //キャラ-＞獲得した経験値、中立の敵-＞キャラに与える経験値の量
 	std::string name;          //名前
 
 

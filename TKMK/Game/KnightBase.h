@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Actor.h"
-#include "Status.h"
 
 
+//class Status;
 class Game;
 
 class KnightBase:public Actor
@@ -194,7 +194,12 @@ protected:
 		enAnimationClip_Avoidance,
 		enAnimationClip_Num,
 	};
+
 	Game* m_game=nullptr;
+
+	//初期ステータス 最大HP、HP、攻撃力、スピード
+	Status m_Status;
+
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	Vector3 m_position = Vector3::Zero;                   //座標
@@ -209,8 +214,7 @@ protected:
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
-	//初期ステータス 最大HP、HP、攻撃力、スピード
-	Status m_Status;
+	
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
 	PlayerState m_animState = enKnightState_Idle;

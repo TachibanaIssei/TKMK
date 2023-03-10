@@ -151,6 +151,13 @@ public:
 		return m_Status.Hp;
 	}
 
+	/// <summary>
+	/// 現在のマックスヒットポイントを返す
+	/// </summary>
+	/// <returns></returns>
+	int& SetMaxHp() {
+		return m_Status.MaxHp;
+	}
 
 protected:
 	void PlayAnimation();

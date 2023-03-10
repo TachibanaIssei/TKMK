@@ -15,7 +15,7 @@ public:
 	void Attack();
 
 	void Avoidance();
-
+	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	inline Vector3 GetPosition() { return m_position; }
@@ -61,6 +61,7 @@ private:
 	FontRender Skillfont;
 	FontRender Avoidancefont;
 
+	bool m_spriteFlag = true;
 	//Status m_Status;                           //ステータス
 
 	//Vector3 m_position = Vector3::Zero;

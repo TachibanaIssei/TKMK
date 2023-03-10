@@ -51,6 +51,7 @@ private:
 	SpriteRender			m_playerFaceBack;		//プレイヤーの顔画像の背景
 	SpriteRender            m_SkillRender;          //スキルアイコン
 	SpriteRender            m_UltRender;            //必殺アイコン
+	SpriteRender            m_TimeAndPointRender;   //制限時間と獲得ポイント
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション

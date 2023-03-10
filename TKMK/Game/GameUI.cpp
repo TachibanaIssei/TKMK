@@ -7,7 +7,7 @@ namespace
 	const Vector2 GAUGE_PIVOT = Vector2(0.5f, 0.5f);				//ゲージのピボット
 	const Vector2 HPGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//HPゲージのピボット
 	const Vector3 STATUS_BAR_POS = Vector3(-400.0f, -420.0f, 0.0f);	//ステータスバーポジション
-	const Vector3 PLAYER_FACE_BAR_POS = Vector3(-557.0,-400.0f, 0.0f);	//プレイヤーの顔の枠のポジション
+	const Vector3 TIME_AND_POINT = Vector3(-550.0,-350.0f, 0.0f);	//プレイヤーの顔の枠のポジション
 	const Vector3 HP_BAR_POS = Vector3(-400.0f, -420.0f, 0.0f);	//HPバーポジション
 
 	const float HP_BAR_WIDTH = 1400.0f;     //HPバーの長さ
@@ -69,10 +69,11 @@ bool GameUI::Start()
 	m_playerFaceFrame.Init("Assets/sprite/HP_flame.DDS", 600.0f, 85.0f);
 	m_playerFaceFrame.SetPosition(HP_BAR_POS);
 	m_playerFaceFrame.SetScale(1.0, 1.0, 1.0);
-	//プレイヤーのアイコン
-	/*m_playerFaceBack.Init("Assets/sprite/HP_windowBack.DDS", 615, 201);
-	m_playerFaceBack.SetPosition(PLAYER_FACE_BAR_POS);
-	m_playerFaceBack.SetScale(0.82,0.82,1.0);*/
+
+	////制限時間と獲得ポイント
+	m_TimeAndPointRender.Init("Assets/sprite/time_point.DDS", 600.0f, 140.0f);
+	m_TimeAndPointRender.SetPosition(TIME_AND_POINT);
+	m_TimeAndPointRender.SetScale(0.8,0.7,1.0);
 
 	//スキルのアイコン
 	m_SkillRender.Init("Assets/sprite/skill_flame.DDS", 162, 162);
@@ -94,7 +95,7 @@ bool GameUI::Start()
 	m_hpBar.Update();
 	//m_hp = PLAYER_MAXHP;
 	m_playerFaceFrame.Update();
-	//m_playerFaceBack.Update();
+	m_TimeAndPointRender.Update();
 	m_SkillRender.Update();
 	m_UltRender.Update();
 
@@ -108,30 +109,35 @@ void GameUI::Update()
 	swprintf_s(Lv, 255, L"%d", LEVEL);
 	m_LevelFont.SetText(Lv);
 
-
+	//0分でないなら
 	if (MinutesTimer != 0) {
 		SecondsTimer -= g_gameTime->GetFrameDeltaTime();
+		//0秒以下なら
 		if (SecondsTimer <= 0) {
+			//1分減らす
 			MinutesTimer--;
+			//60秒に戻す
 			SecondsTimer = 60.0f;
 		}
 	}
-	
+	//制限時間の表示
 	wchar_t wcsbuf[256];
 	swprintf_s(wcsbuf, 256, L"%d:%d", int(MinutesTimer),int(SecondsTimer));
 	
 	//表示するテキストを設定。
 	m_time_left.SetText(wcsbuf);
 	//フォントの設定。
-	m_time_left.SetPosition(Vector3(-750.0f, -400.0f, 0.0f));
+	m_time_left.SetPosition(Vector3(-880.0f, -390.0f, 0.0f));
 	//フォントの大きさを設定。
 	m_time_left.SetScale(1.5f);
 	//フォントの色を設定。
-	m_time_left.SetColor({ 0.0f,0.0f,0.0f,1.0f });
+	m_time_left.SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	m_time_left.SetShadowParam(true, 2.0f, g_vec4Black);
+
 
 	HPBar();
 	
-
+	//回避バー
 	
 }
 
@@ -158,6 +164,9 @@ void GameUI::Render(RenderContext& rc)
 	m_LevelFont.Draw(rc);
 	m_LevelNameFont.Draw(rc);
 	m_HpNameFont.Draw(rc);
+
+	m_TimeAndPointRender.Draw(rc);
+
 	m_time_left.Draw(rc);
 
 	/*m_AtkFont.Draw(rc);

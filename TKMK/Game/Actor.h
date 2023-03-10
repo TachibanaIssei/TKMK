@@ -142,8 +142,9 @@ protected:
 	int ExpTable;              //経験値テーブル
 	int respawnNumber;         //リスポーンする座標の番号
 	bool isDeath = false;      //死んだかどうかの判定
+	bool invincibleFlag = false;     //無敵時間フラグ
 	//float timer = 0.0f;
-	Status m_Status;           //ステータス
+	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 

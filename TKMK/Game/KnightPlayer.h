@@ -56,7 +56,7 @@ private:
 	FontRender Skillfont;
 	FontRender Avoidancefont;
 
-	Status m_Status;                           //ステータス
+	//Status m_Status;                           //ステータス
 
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード

@@ -57,14 +57,14 @@ void GameCamera::Update()
 	//大きさが１になるということは、ベクトルから強さがなくなり、方向のみの情報となるということ。
 	Vector3 toPosDir = m_toCameraPos;
 	toPosDir.Normalize();
-	//if (toPosDir.y < -0.3f) {
-	//	//カメラが上向きすぎ。
-	//	m_toCameraPos = toCameraPosOld;
-	//}
-	//else if (toPosDir.y > 0.9f) {
-	//	//カメラが下向きすぎ。
-	//	m_toCameraPos = toCameraPosOld;
-	//}
+	if (toPosDir.y < -0.3f) {
+		//カメラが上向きすぎ。
+		m_toCameraPos = toCameraPosOld;
+	}
+	else if (toPosDir.y > 0.9f) {
+		//カメラが下向きすぎ。
+		m_toCameraPos = toCameraPosOld;
+	}
 
 	Vector3 pos;
 	//視点と注視点を足す

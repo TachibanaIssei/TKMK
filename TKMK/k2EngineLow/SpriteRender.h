@@ -65,7 +65,7 @@ namespace nsK2EngineLow {
 		/// 大きさを取得する
 		/// </summary>
 		/// <returns>大きさ</returns>
-		const Vector3& GetScale()
+		const Vector3& GetScale() const
 		{
 			return m_scale;
 		}
@@ -82,7 +82,7 @@ namespace nsK2EngineLow {
 		/// 回転を取得する
 		/// </summary>
 		/// <returns>回転</returns>
-		const Quaternion& GetRotation()
+		const Quaternion& GetRotation() const
 		{
 			return m_rotation;
 		}
@@ -134,8 +134,16 @@ namespace nsK2EngineLow {
 			);
 		}
 
+		/// <summary>
+		/// 描画処理
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
 		void Draw(RenderContext& rc);
 
+		/// <summary>
+		/// RenderingEngineで描画するときに呼び出す
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
 		void OnRenderSprite(RenderContext& rc)
 		{
 			m_sprite.Draw(rc);

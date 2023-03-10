@@ -1,16 +1,19 @@
 #include "stdafx.h"
 #include "KnightBase.h"
-
+#include "Status.h"
 
 KnightBase::KnightBase()
 {
-	Lv=1;                    //ƒŒƒxƒ‹
-	AtkSpeed=20;              //UŒ‚‘¬“x
-	Cooltime=5;            //ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€
-	Point=0;                 //“G‚ğ“|‚µ‚Äè‚É“ü‚ê‚½ƒ|ƒCƒ“ƒg
-	GetExp=0;                //’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l
-	ExpTable=5;              //ŒoŒ±’lƒe[ƒuƒ‹
-	respawnNumber = 0;        //ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’èª­ã¿è¾¼ã‚€
+	m_Status.Init("Knight");
+	Lv=1;                    //ãƒ¬ãƒ™ãƒ«
+	AtkSpeed=20;              //æ”»æ’ƒé€Ÿåº¦
+	Cooltime=5;            //ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+	AvoidanceCoolTime = 2;     ///å›é¿ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+	Point=0;                 //æ•µã‚’å€’ã—ã¦æ‰‹ã«å…¥ã‚ŒãŸãƒã‚¤ãƒ³ãƒˆ
+	GetExp=0;                //ä¸­ç«‹ã®æ•µã‚’å€’ã—ãŸã¨ãã®çµŒé¨“å€¤
+	ExpTable=5;              //çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«
+	respawnNumber = 0;        //ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ç•ªå·
 
 	
 }
@@ -22,7 +25,7 @@ KnightBase::~KnightBase()
 
 void KnightBase::SetModel()
 {
-	//ƒvƒŒƒCƒ„[
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Knight/Knight_idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
@@ -37,13 +40,15 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Knight/Knight_Death.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Avoidance].Load("Assets/animData/Knight/Knight_Avoidance.tka");
+	m_animationClips[enAnimationClip_Avoidance].SetLoopFlag(false);
 
-	//Œ•mƒ‚ƒfƒ‹‚ğ“Ç‚İ‚İ
+	//å‰£å£«ãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã¿
 	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 
-	//umixamorig:RightHandv(‰Eè)ƒ{[ƒ“‚ÌID(”Ô†)‚ğæ“¾‚·‚éB
+	//ã€Œmixamorig:RightHandã€(å³æ‰‹)ãƒœãƒ¼ãƒ³ã®ID(ç•ªå·)ã‚’å–å¾—ã™ã‚‹ã€‚
 	m_swordBoneId = m_modelRender.FindBoneID(L"mixamorig:RightHand");
-	//UŒ‚‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒgŒ•m‚ÌÀ•W‚ÌID(”Ô†)‚ğæ“¾‚·‚éB
+	//æ”»æ’ƒæ™‚ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆå‰£å£«ã®åº§æ¨™ã®ID(ç•ªå·)ã‚’å–å¾—ã™ã‚‹ã€‚
 	AtkEndPosId = m_modelRender.FindBoneID(L"movePos");
 
 	m_position = { 0.0f,0.0f,0.0f };
@@ -61,19 +66,19 @@ void KnightBase::SetModel()
 }
 
 /// <summary>
-/// ’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l‚Ìˆ—
+/// ä¸­ç«‹ã®æ•µã‚’å€’ã—ãŸã¨ãã®çµŒé¨“å€¤ã®å‡¦ç†
 /// </summary>
-/// <param name="GetExp">’†—§‚Ì“G‚ÌŒoŒ±’l</param>
+/// <param name="GetExp">ä¸­ç«‹ã®æ•µã®çµŒé¨“å€¤</param>
 void KnightBase::ExpProcess(int Exp)
 {
-	//©g‚ÌŒoŒ±’l‚É“G‚ğ“|‚µ‚½‚Æ‚«‚Éè‚É“ü‚ê‚éŒoŒ±’l‚ğ‘«‚·
+	//è‡ªèº«ã®çµŒé¨“å€¤ã«æ•µã‚’å€’ã—ãŸã¨ãã«æ‰‹ã«å…¥ã‚Œã‚‹çµŒé¨“å€¤ã‚’è¶³ã™
 	GetExp += Exp;
-	//è‚É“ü‚ê‚½ŒoŒ±’l‚æ‚èŒoŒ±’lƒe[ƒuƒ‹‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚ç
-	if (GetExp < ExpTable) return;      //”²‚¯o‚·
+	//æ‰‹ã«å…¥ã‚ŒãŸçµŒé¨“å€¤ã‚ˆã‚ŠçµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã®ã»ã†ãŒå¤§ãã‹ã£ãŸã‚‰
+	if (GetExp < ExpTable) return;      //æŠœã‘å‡ºã™
 	else {
-		//ŒoŒ±’lƒe[ƒuƒ‹‚æ‚èè‚É“ü‚ê‚½ŒoŒ±’l‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚ç
-		//ƒŒƒxƒ‹ƒAƒbƒv
-		LevelUp(LvUpStatus,status,Lv);
+		//çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã‚ˆã‚Šæ‰‹ã«å…¥ã‚ŒãŸçµŒé¨“å€¤ã®ã»ã†ãŒå¤§ãã‹ã£ãŸã‚‰
+		//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—
+		LevelUp(LvUpStatus,m_Status,Lv);
 
 		switch (Lv)
 		{
@@ -94,128 +99,89 @@ void KnightBase::ExpProcess(int Exp)
 }
 
 /// <summary>
-/// ˆÚ“®ˆ—
+/// ç§»å‹•å‡¦ç†
 /// </summary>
-void KnightBase::Move()
-{
-	//UŒ‚Aƒ_ƒ[ƒWA€–SƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶’†‚È‚ç
-	if (IsEnableMove() == false)
-	{
-		//”²‚¯o‚·
-		return;
-	}
-
-	m_moveSpeed.x = 0.0f;
-	m_moveSpeed.z = 0.0f;
-
-	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
-
-	//ƒJƒƒ‰‚Ì‘O•ûŒü‚Æ‰E•ûŒü‚ÌƒxƒNƒgƒ‹‚ğ‚Á‚Ä‚­‚éB
-	Vector3 forward = g_camera3D->GetForward();
-	Vector3 right = g_camera3D->GetRight();
-	//y•ûŒü‚É‚ÍˆÚ“®‚³‚¹‚È‚¢B
-	forward.y = 0.0f;
-	right.y = 0.0f;
-
-	//¶ƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚Æstatus‚ÌƒXƒs[ƒh‚ğæZB
-	right *= stickL.x * status.Speed;
-	forward *= stickL.y * status.Speed;
-
-	//ˆÚ“®‘¬“x‚ÉƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚ğ‰ÁZ‚·‚éB
-	m_moveSpeed += right + forward;
-	//ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚ğg‚Á‚ÄÀ•W‚ğˆÚ“®‚³‚¹‚éB
-	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	//ƒLƒƒƒ‰ƒRƒ“‚ğ“®‚©‚·
-	//m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-
-	/*if (m_charCon.IsOnGround())
-	{
-		m_moveSpeed.y = 0.0f;
-	}*/
-}
 
 /// <summary>
-/// ‰ñ“]ˆ—
+/// å›è»¢å‡¦ç†
 /// </summary>
 void KnightBase::Rotation()
 {
-	//x‚©z‚ÌˆÚ“®‘¬“x‚ª‚ ‚Á‚½‚ç(ƒXƒeƒBƒbƒN‚Ì“ü—Í‚ª‚ ‚Á‚½‚ç)B
+	//xã‹zã®ç§»å‹•é€Ÿåº¦ãŒã‚ã£ãŸã‚‰(ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›ãŒã‚ã£ãŸã‚‰)ã€‚
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		//ƒLƒƒƒ‰ƒNƒ^[‚Ì•ûŒü‚ğ•Ï‚¦‚éB
+		//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ–¹å‘ã‚’å¤‰ãˆã‚‹ã€‚
 		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
-		//ŠG•`‚«‚³‚ñ‚É‰ñ“]‚ğ‹³‚¦‚éB
+		//çµµæãã•ã‚“ã«å›è»¢ã‚’æ•™ãˆã‚‹ã€‚
 		m_modelRender.SetRotation(m_rot);
 	}
 }
 
 /// <summary>
-/// UŒ‚‚Ì“–‚½‚è”»’è‚Ìˆ—
+/// æ”»æ’ƒæ™‚ã®å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†
 /// </summary>
 void KnightBase::AtkCollisiton()
 {
-	//ƒRƒŠƒWƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚éB
+	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ã€‚
 	auto collisionObject = NewGO<CollisionObject>(0);
 	Vector3 collisionPosition = m_position;
-	//À•W‚ğƒvƒŒƒCƒ„[‚Ì­‚µ‘O‚Éİ’è‚·‚éB
+	//åº§æ¨™ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å°‘ã—å‰ã«è¨­å®šã™ã‚‹ã€‚
 	//collisionPosition += forward * 50.0f;
-	//ƒ{ƒbƒNƒXó‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì¬‚·‚éB
-	collisionObject->CreateBox(collisionPosition, //À•WB
-		Quaternion::Identity, //‰ñ“]B
-		Vector3(70.0f, 15.0f, 15.0f) //‘å‚«‚³B
+	//ãƒœãƒƒã‚¯ã‚¹çŠ¶ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œæˆã™ã‚‹ã€‚
+	collisionObject->CreateBox(collisionPosition, //åº§æ¨™ã€‚
+		Quaternion::Identity, //å›è»¢ã€‚
+		Vector3(70.0f, 15.0f, 15.0f) //å¤§ãã•ã€‚
 	);
 	collisionObject->SetName("player_attack");
 
-	//uSwordvƒ{[ƒ“‚Ìƒ[ƒ‹ƒhs—ñ‚ğæ“¾‚·‚éB
+	//ã€ŒSwordã€ãƒœãƒ¼ãƒ³ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’å–å¾—ã™ã‚‹ã€‚
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
 
 	//matrix.MakeRotationZ(90.0f);
-	//uSwordvƒ{[ƒ“‚Ìƒ[ƒ‹ƒhs—ñ‚ğƒRƒŠƒWƒ‡ƒ“‚É“K—p‚·‚éB
+	//ã€ŒSwordã€ãƒœãƒ¼ãƒ³ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’ã‚³ãƒªã‚¸ãƒ§ãƒ³ã«é©ç”¨ã™ã‚‹ã€‚
 	collisionObject->SetWorldMatrix(matrix);
 }
 
 /// <summary>
-/// •KE‹Z”­“®‚Ì“–‚½‚è”»’è‚Ìˆ—
+/// å¿…æ®ºæŠ€ç™ºå‹•æ™‚ã®å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†
 /// </summary>
-/// <param name="oldpostion">‘OƒtƒŒ[ƒ€‚ÌÀ•W</param>
-/// <param name="position">Œ»İ‚ÌÀ•W</param>
+/// <param name="oldpostion">å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®åº§æ¨™</param>
+/// <param name="position">ç¾åœ¨ã®åº§æ¨™</param>
 void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 {	
-	//ƒRƒŠƒWƒ‡ƒ“¶¬‚µ‚Ä‚¢‚È‚¢‚È‚ç
+	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ç”Ÿæˆã—ã¦ã„ãªã„ãªã‚‰
 	if (UltCollisionSetFlag == false)
 	{
-		//ƒRƒŠƒWƒ‡ƒ“‚ÌÀ•W‚ğƒvƒŒƒCƒ„[‚Æ“¯‚¶‚Éİ’è
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®åº§æ¨™ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨åŒã˜ã«è¨­å®š
 		UltCollisionPos = position;
 		UltCollisionPos.y += 50.0f;
 
-		//‘OƒtƒŒ[ƒ€‚ÌÀ•W‚ğ‘ã“ü
+		//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®åº§æ¨™ã‚’ä»£å…¥
 		Vector3 oldPosition = oldpostion;
-		//‘OƒtƒŒ[ƒ€‚ÌÀ•W‚©‚çŒ»İ‚ÌƒtƒŒ[ƒ€‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ‚·‚é
+		//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®åº§æ¨™ã‹ã‚‰ç¾åœ¨ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹
 		collisionRot = position - oldPosition;
 
-		//Y•ûŒü‚ÌƒxƒNƒgƒ‹‚ğ0.0f‚É‚·‚é
+		//Yæ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’0.0fã«ã™ã‚‹
 		collisionRot.y = 0.0f;
 
-		//³‹K‰»
+		//æ­£è¦åŒ–
 		collisionRot.Normalize();
 
 		Quaternion rot;
-		//Y²‰ñ‚è‚Ì‰ñ“]ƒNƒH[ƒ^ƒjƒIƒ“‚ğì¬
+		//Yè»¸å›ã‚Šã®å›è»¢ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’ä½œæˆ
 		rot.SetRotationYFromDirectionXZ(collisionRot);
-		//ƒxƒNƒgƒ‹‚ÉƒNƒH[ƒ^ƒjƒIƒ“‚ğ“K‰
+		//ãƒ™ã‚¯ãƒˆãƒ«ã«ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³ã‚’é©å¿œ
 		rot.Apply(oldpostion);
 
-		//ƒRƒŠƒWƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚éB
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ã€‚
 		collisionObject = NewGO<CollisionObject>(0);
 		Vector3 collitionPosition = position;
 		collitionPosition.y += 50.0f;
 		//collisionPosition.y += 50.0f;
-		//ƒ{ƒbƒNƒXó‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì¬‚·‚éB
-		collisionObject->CreateBox(collitionPosition, //À•WB
-			Quaternion(rot), //‰ñ“]B
-			Vector3(300.0f, 50.0f, 15.0f) //‘å‚«‚³B
+		//ãƒœãƒƒã‚¯ã‚¹çŠ¶ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œæˆã™ã‚‹ã€‚
+		collisionObject->CreateBox(collitionPosition, //åº§æ¨™ã€‚
+			Quaternion(rot), //å›è»¢ã€‚
+			Vector3(300.0f, 50.0f, 15.0f) //å¤§ãã•ã€‚
 		);
 		collisionObject->SetIsEnableAutoDelete(false);
 		collisionObject->SetName("player_UltimateSkill");
@@ -224,35 +190,36 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 	}
 	else
 	{
-		//ˆÚ“®‘¬“xİ’è
+		//ç§»å‹•é€Ÿåº¦è¨­å®š
 		UltCollisionPos += collisionRot * 4.0f;
-		//À•W‚ğİ’è
+		//åº§æ¨™ã‚’è¨­å®š
 		collisionObject->SetPosition(UltCollisionPos);
 	}
 }
 
 void KnightBase::Collition()
 {
-	//”íƒ_ƒ[ƒWAƒ_ƒEƒ“’†A•KE‹ZA’ÊíUŒ‚‚Íƒ_ƒ[ƒW”»’è‚ğ‚µ‚È‚¢B
+	//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã€ãƒ€ã‚¦ãƒ³ä¸­ã€å¿…æ®ºæŠ€ã€é€šå¸¸æ”»æ’ƒæ™‚ã¯ãƒ€ãƒ¡ãƒ¼ã‚¸åˆ¤å®šã‚’ã—ãªã„ã€‚
 	if (m_animState == enKnightState_Damege || 
 		m_animState == enKnightState_Death ||
 		m_animState == enKnightState_UltimateSkill ||
 		m_animState == enKnightState_ChainAtk ||
-		m_animState == enKnightState_Skill)
+		m_animState == enKnightState_Skill ||
+		m_animState == enKnightState_Avoidance)
 	{
 		return;
 	}
 	else
 	{
-		//“G‚ÌUŒ‚—p‚ÌƒRƒŠƒWƒ‡ƒ“‚ğæ“¾‚·‚é–¼‘Oˆê‚É‚·‚é
+		//æ•µã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹åå‰ä¸€ç·’ã«ã™ã‚‹
 		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
-		//ƒRƒŠƒWƒ‡ƒ“‚Ì”z—ñ‚ğfor•¶‚Å‰ñ‚·
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
 		for (auto collision : collisions)
 		{
-			//ƒRƒŠƒWƒ‡ƒ“‚ª©g‚ÌƒLƒƒƒ‰ƒRƒ“‚É“–‚½‚Á‚½‚ç
+			//ã‚³ãƒªã‚¸ãƒ§ãƒ³ãŒè‡ªèº«ã®ã‚­ãƒ£ãƒ©ã‚³ãƒ³ã«å½“ãŸã£ãŸã‚‰
 			if (collision->IsHit(m_charCon))
 			{
-				//hp‚ğŒ¸‚ç‚·
+				//hpã‚’æ¸›ã‚‰ã™
 				Dameged(dddd);
 			}
 		}
@@ -261,77 +228,137 @@ void KnightBase::Collition()
 }
 
 /// <summary>
-/// ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚Ìˆ—
+/// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®å‡¦ç†
 /// </summary>
-/// <param name="damege">“G‚Ìƒ_ƒ[ƒW</param>
+/// <param name="damege">æ•µã®ãƒ€ãƒ¡ãƒ¼ã‚¸</param>
 void KnightBase::Dameged(int damege)
 {
-	status.Hp -= damege;
-	//©g‚ÌHP‚ª0ˆÈ‰º‚È‚ç
-	if (status.Hp <= 0) {
-		//“|‚³‚ê‚½‚Æ‚«‚Ìˆ—‚É‘JˆÚ
-		Death();
+	m_Status.Hp -= damege;
+	//è‡ªèº«ã®HPãŒ0ä»¥ä¸‹ãªã‚‰
+	if (m_Status.Hp <= 0) {
+		//å€’ã•ã‚ŒãŸã¨ãã®å‡¦ç†ã«é·ç§»
+		//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆ
+		m_animState = enKnightState_Death;
+		m_Status.Hp = 0;
+		//Death();
+		//SetRespawn();
+
 	}
 	else {
+		//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_animState = enKnightState_Damege;
+		//ç„¡æ•µæ™‚é–“ãƒ•ãƒ©ã‚°
+		//invincibleFlag = true;
 	}
 }
 
 /// <summary>
-/// ƒXƒLƒ‹‚ğg—p‚µ‚½‚Æ‚«‚Ìˆ—
+/// ã‚¹ã‚­ãƒ«ã‚’ä½¿ç”¨ã—ãŸã¨ãã®å‡¦ç†
 /// </summary>
-void KnightBase::Skill()
-{
-	m_animState = enKnightState_Skill;
-	//“–‚½‚è”»’èì¬
-	SkillState = true;
-	
-}
+//void KnightBase::Skill(Vector3& right, Vector3& forward)
+//{
+//	//ã‚¹ã‚­ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆ
+//	m_animState = enKnightState_Skill;
+//
+//	//ç§»å‹•å‡¦ç†
+//	//ç§»å‹•é€Ÿåº¦ã«ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ã‚’åŠ ç®—ã™ã‚‹ã€‚
+//	//Vector3 m_SkillSpeed; 
+//	m_moveSpeed = right + forward;
+//	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’ä½¿ã£ã¦åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹ã€‚
+//	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+//
+//	//å½“ãŸã‚Šåˆ¤å®šä½œæˆ
+//	//SkillState = true;
+//	
+//}
 
 /// <summary>
-/// ƒŒƒxƒ‹4‚Å•KE‹Z‚ğg—p‚µ‚½‚Æ‚«‚Ìˆ—
+/// ãƒ¬ãƒ™ãƒ«4ã§å¿…æ®ºæŠ€ã‚’ä½¿ç”¨ã—ãŸã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::UltimateSkill()
 {
-	//ƒŒƒxƒ‹‚ğ3‰º‚°‚é
-	levelDown(LvUpStatus, status, Lv, 3);
+	//ãƒ¬ãƒ™ãƒ«ã‚’3ä¸‹ã’ã‚‹
+levelDown(LvUpStatus, m_Status, Lv, 3);
+	//çµŒé¨“å€¤ã‚’ãƒªã‚»ãƒƒãƒˆ
+	ExpReset(Lv, GetExp);
+	//ãƒ¬ãƒ™ãƒ«ã®çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã™ã‚‹
+	ExpTableChamge(Lv, ExpTable);
+
 	m_animState = enKnightState_UltimateSkill;
 
 }
 
 /// <summary>
-/// ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
+/// ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
 /// </summary>
 void KnightBase::SetRespawn()
 {
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W0”Ô‚Ìæ“¾
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™0ç•ªã®å–å¾—
 	GetRespawnPos();
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
-	//ƒLƒƒƒ‰ƒRƒ“
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
+	//ã‚­ãƒ£ãƒ©ã‚³ãƒ³
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	//Œ•m
+	//å‰£å£«
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 }
 
 /// <summary>
-/// ©g‚ª“|‚³‚ê‚½‚Æ‚«‚Ìˆ—
+/// è‡ªèº«ãŒå€’ã•ã‚ŒãŸã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::Death()
 {
-	//€–SƒXƒe[ƒg
-	m_animState = enKnightState_Death;
-	//ƒŒƒxƒ‹‚ğ‚P‰º‚°‚é
-	levelDown(LvUpStatus, status, Lv,1);
-	//HP‚ğÅ‘å‚É‚·‚é
-	status.Hp = status.MaxHp;
-	//ŒoŒ±’l‚ğƒŠƒZƒbƒg
+	////æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆ
+	//m_animState = enKnightState_Death;
+	//ãƒ¬ãƒ™ãƒ«ã‚’ï¼‘ä¸‹ã’ã‚‹
+	levelDown(LvUpStatus, m_Status, Lv,1);
+	//HPã‚’æœ€å¤§ã«ã™ã‚‹
+	m_Status.Hp = m_Status.MaxHp;
+	//çµŒé¨“å€¤ã‚’ãƒªã‚»ãƒƒãƒˆ
 	ExpReset(Lv,GetExp);
-	//ˆê‚Â‰º‚ÌƒŒƒxƒ‹‚ÌŒoŒ±’lƒe[ƒuƒ‹‚É‚·‚é
+	//ä¸€ã¤ä¸‹ã®ãƒ¬ãƒ™ãƒ«ã®çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã™ã‚‹
 	ExpTableChamge(Lv,ExpTable);
 }
 
 /// <summary>
-/// ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚Ìˆ—
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿæ™‚ã«ç›´ç·šç§»å‹•ã•ã›ã‚‹æ–¹å‘ã®æ±ºå®š
+/// </summary>
+void KnightBase::AnimationMove()
+{
+	m_moveSpeed.x = 0.0f;
+	m_moveSpeed.z = 0.0f;
+
+	Vector3 stickL;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+
+	m_Skill_Forward = Vector3::Zero;
+	m_Skill_Right = Vector3::Zero;
+
+	//ã‚«ãƒ¡ãƒ©ã®å‰æ–¹å‘ã¨å³æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒã£ã¦ãã‚‹ã€‚
+	m_Skill_Forward = g_camera3D->GetForward();
+	m_Skill_Right = g_camera3D->GetRight();
+	//yæ–¹å‘ã«ã¯ç§»å‹•ã•ã›ãªã„ã€‚
+	m_Skill_Forward.y = 0.0f;
+	m_Skill_Right.y = 0.0f;
+
+	//å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ã¨statusã®ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ä¹—ç®—ã€‚
+	m_Skill_Right *= stickL.x * m_Status.Speed;
+	m_Skill_Forward *= stickL.y * m_Status.Speed;
+}
+
+//ç›´ç·šç§»å‹•ã•ã›ã‚‹
+void KnightBase::MoveStraight(Vector3& right, Vector3& forward)
+{
+	//ç§»å‹•å‡¦ç†
+	//ç§»å‹•é€Ÿåº¦ã«ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ã‚’åŠ ç®—ã™ã‚‹ã€‚
+	//Vector3 m_SkillSpeed; 
+	m_moveSpeed = right + forward;
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’ä½¿ã£ã¦åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹ã€‚
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+}
+
+/// <summary>
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿã®å‡¦ç†
 /// </summary>
 void KnightBase::PlayAnimation()
 {
@@ -343,7 +370,7 @@ void KnightBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
 		break;
 	case enKnightState_Run:
-		m_modelRender.PlayAnimation(enAnimationClip_Run,0.4f);
+		m_modelRender.PlayAnimation(enAnimationClip_Run,0.2f);
 		break;
 	case enKnightState_ChainAtk:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
@@ -353,6 +380,9 @@ void KnightBase::PlayAnimation()
 		break;
 	case enKnightState_UltimateSkill:
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1f);
+		break;
+	case enKnightState_Avoidance:
+		m_modelRender.PlayAnimation(enAnimationClip_Avoidance, 0.1f);
 		break;
 	case enAnimationClip_Damege:
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
@@ -365,7 +395,7 @@ void KnightBase::PlayAnimation()
 }
 
 /// <summary>
-/// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒXƒe[ƒg‚Ìˆ—
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®å‡¦ç†
 /// </summary>
 void KnightBase::ManageState()
 {
@@ -386,6 +416,9 @@ void KnightBase::ManageState()
 	case enKnightState_UltimateSkill:
 		OnProcessUltimateSkillAtkStateTransition();
 		break;
+	case enKnightState_Avoidance:
+		OnProcessAvoidanceStateTransition();
+		break;
 	case enAnimationClip_Damege:
 		OnProcessDamegeStateTransition();
 		break;
@@ -397,28 +430,27 @@ void KnightBase::ManageState()
 }
 
 /// <summary>
-/// •à‚«ƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚È‚çB
+/// æ­©ãã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ãªã‚‰ã€‚
 /// </summary>
 void KnightBase::OnProcessCommonStateTransition()
 {
-	//ƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚ª‚ ‚Á‚½‚ç
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ãŒã‚ã£ãŸã‚‰
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		//‘–‚èƒXƒe[ƒg
+			//èµ°ã‚Šã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_animState = enKnightState_Run;
 		return;
 	}
 	else
 	{
-		//‚È‚©‚Á‚½‚ç‘Ò‹@ƒXƒe[ƒg
+		//ãªã‹ã£ãŸã‚‰å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_animState = enKnightState_Idle;
 		return;
 	}
-	
 }
 
 /// <summary>
-/// IdleƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ìˆ—
+/// Idleã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::OnProcessIdleStateTransition()
 {
@@ -426,7 +458,7 @@ void KnightBase::OnProcessIdleStateTransition()
 }
 
 /// <summary>
-/// RunƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ìˆ—
+/// Runã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::OnProcessRunStateTransition()
 {
@@ -434,75 +466,102 @@ void KnightBase::OnProcessRunStateTransition()
 }
 
 /// <summary>
-/// FirstAtkƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ìˆ—
+/// FirstAtkã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::OnProcessChainAtkStateTransition()
 {
-	//ƒ`ƒFƒCƒ“ƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//ãƒã‚§ã‚¤ãƒ³ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//‘Ò‹@ƒXƒe[ƒg
-		//UŒ‚‚ğn‚ß‚½‚©‚Ì”»’è‚ğfalse‚É‚·‚é
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
+		//æ”»æ’ƒã‚’å§‹ã‚ãŸã‹ã®åˆ¤å®šã‚’falseã«ã™ã‚‹
 		AtkState = false;
-		m_animState = enKnightState_Idle;
-		OnProcessCommonStateTransition();
-	}
-}
-
-void KnightBase::OnProcessSkillAtkStateTransition()
-{
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
-	if (m_modelRender.IsPlayingAnimation() == false)
-	{
-		AtkState = false;
-		//AtkCollistionFlag = false;
-		/*status.Speed -= 120.0f;*/
-		//‘Ò‹@ƒXƒe[ƒg
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+		pushFlag = false;
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
 
 /// <summary>
-/// SecondAtkƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ìˆ—
+/// ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
+/// </summary>
+void KnightBase::OnProcessSkillAtkStateTransition()
+{
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		AtkState = false;
+		SkillEndFlag = true;
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+		pushFlag = false;
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
+		m_animState = enKnightState_Idle;
+		OnProcessCommonStateTransition();
+	}
+}
+
+/// <summary>
+/// å¿…æ®ºæŠ€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 {
-	//2’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//å¿…æ®ºæŠ€ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		AtkState = false;
-		//‘Ò‹@ƒXƒe[ƒg
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+		pushFlag = false;
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
+		m_animState = enKnightState_Idle;
+		OnProcessCommonStateTransition();
+	}
+}
+
+//å›é¿ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
+void KnightBase::OnProcessAvoidanceStateTransition()
+{
+	//å›é¿ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		AvoidanceFlag = false;
+		AvoidanceEndFlag = true;
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
+		pushFlag = false;
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
 
 /// <summary>
-/// DamegeƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ìˆ—
+/// Damegeã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::OnProcessDamegeStateTransition()
 {
-	//ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//‘Ò‹@ƒXƒe[ƒg
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_animState = enKnightState_Idle;
+		//ç„¡æ•µæ™‚é–“ã‚¹ãƒ†ãƒ¼ãƒˆ
+		//invincibleFlag = false;
 		OnProcessCommonStateTransition();
 	}
 }
 
 /// <summary>
-/// DeathƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ìˆ—
+/// Deathã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ã¨ãã®å‡¦ç†
 /// </summary>
 void KnightBase::OnProcessDeathStateTransition()
 {
-	//ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚É©g‚ÌÀ•W‚ğƒZƒbƒg
+		//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã«è‡ªèº«ã®åº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
 		SetRespawn();
-		//‘Ò‹@ƒXƒe[ƒg
+		Death();
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_animState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}

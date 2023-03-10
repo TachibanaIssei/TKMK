@@ -1,0 +1,9 @@
+8
+7,minimap,36,../../Game/Assets/sprite/minimap.png,765.0,204.99999999999994,358,358,10,0.7,0.7,0.5,0.5,11,minimap.dds
+10,boss_image,39,../../Game/Assets/sprite/boss_image.png,338.46153846153857,219.23076923076923,78,86,10,1.0,1.0,0.5,0.5,14,boss_image.dds
+14,mushroom_image,43,../../Game/Assets/sprite/mushroom_image.png,705.7692307692307,246.15384615384613,52,60,10,0.13,0.13,0.5,0.5,18,mushroom_image.dds
+18,stonemonster_image,47,../../Game/Assets/sprite/stonemonster_image.png,805.7692307692307,246.15384615384613,57,61,10,0.538,0.538,0.5,0.5,22,stonemonster_image.dds
+14,minimap_window,43,../../Game/Assets/sprite/minimap_window.png,765.0,204.99999999999994,370,370,10,0.98,0.98,0.5,0.5,18,minimap_window.dds
+17,fire_gimmic_image,46,../../Game/Assets/sprite/fire_gimmic_image.png,463.46153846153857,217.30769230769232,49,63,10,0.1,0.1,0.5,0.5,21,fire_gimmic_image.dds
+12,map_iceFloor,41,../../Game/Assets/sprite/map_iceFloor.png,717.3076923076924,138.46153846153845,57,38,10,0.6,0.6,0.5,0.5,16,map_iceFloor.dds
+13,Map_moveFloor,42,../../Game/Assets/sprite/Map_moveFloor.png,815.3846153846155,132.69230769230768,49,49,10,0.4,0.4,0.5,0.5,17,Map_moveFloor.dds

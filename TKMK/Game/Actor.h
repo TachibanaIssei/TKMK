@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Status.h"
 #include "Level3DRender.h"
 
 class Actor:public IGameObject
@@ -11,106 +11,117 @@ public:
 protected:
 
 	/// <summary>
-	/// ‰ŠúƒXƒe[ƒ^ƒX
+	/// åˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 	/// </summary>
-	struct Status {
-		int MaxHp;                 //Å‘åƒqƒbƒgƒ|ƒCƒ“ƒg
-		int Hp;                    //ƒqƒbƒgƒ|ƒCƒ“ƒg(‘Ì—Í)
-		int Atk;                   //UŒ‚—Í
-		float Speed;               //ˆÚ“®‘¬“x
-	};
+	//struct Status {
+	//	int MaxHp;                 //æœ€å¤§ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆ
+	//	int Hp;                    //ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆ(ä½“åŠ›)
+	//	int Atk;                   //æ”»æ’ƒåŠ›
+	//	float Speed;               //ç§»å‹•é€Ÿåº¦
+	//};
 
 	/// <summary>
-	/// ƒŒƒxƒ‹ƒAƒbƒv‚É‘‰Á‚·‚éƒXƒe[ƒ^ƒX
+	/// ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 	/// </summary>
 	struct LvUpStatus {
-		int LvHp;                  //ƒŒƒxƒ‹ƒAƒbƒv‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg
-		int LvAtk;                 //ƒŒƒxƒ‹ƒAƒbƒv‚ÌUŒ‚—Í
-		float LvSpeed;             //ƒŒƒxƒ‹ƒAƒbƒv‚ÌˆÚ“®‘¬“x
+		int LvHp;                  //ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆ
+		int LvAtk;                 //ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã®æ”»æ’ƒåŠ›
+		float LvSpeed;             //ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã®ç§»å‹•é€Ÿåº¦
 	};
 
 public:
+
 	/// <summary>
-	/// ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ğæ“¾‚·‚é
+	/// ç§»å‹•å‡¦ç†
+	/// </summary>
+	/// <param name="position">ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®ç¾åœ¨ã®åº§æ¨™</param>
+	/// <param name="charcon">ã‚­ãƒ£ãƒ©ã‚³ãƒ³</param>
+	/// /// <param name="status">ã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+	void Move(Vector3& position,CharacterController& charcon, Status& status);
+
+	/// <summary>
+	/// ç§»å‹•å‡¦ç†ã—ãŸããªã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æ›¸ã
+	/// </summary>
+	/// <returns>ç§»å‹•å‡¦ç†ã—ãªã„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¹ãƒ†ãƒ¼ãƒˆ</returns>
+	virtual bool IsEnableMove()const = 0;
+
+	/// <summary>
+	/// ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã‚’å–å¾—ã™ã‚‹
 	/// </summary>
 	void GetRespawnPos();
 
 	virtual void SetRespawn() = 0;
 
 	/// <summary>
-	/// UŒ‚‚Ìˆ—,ƒˆ‰¼‘zŠÖ”‚È‚Ì‚Å”h¶ƒNƒ‰ƒX‚ÅÀ‘•
+	/// æ”»æ’ƒã®å‡¦ç†,ç´”ç²‹ä»®æƒ³é–¢æ•°ãªã®ã§æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã§å®Ÿè£…
 	/// </summary>
 	virtual void Attack() = 0;
 
 	/// <summary>
-	/// UŒ‚‚ğó‚¯‚½‚Æ‚«‚Ìˆ—
+	/// æ”»æ’ƒã‚’å—ã‘ãŸã¨ãã®å‡¦ç†
 	/// </summary>
-	/// <param name="damege">“G‚ÌUŒ‚—Í</param>
+	/// <param name="damege">æ•µã®æ”»æ’ƒåŠ›</param>
 	virtual void Dameged(int damege) = 0;
 
 	/// <summary>
-	/// ƒXƒLƒ‹‚ğ‘Å‚Âˆ—
-	/// </summary>
-	virtual void Skill() = 0;
-
-	/// <summary>
-	/// •KE‹Z‚ğ‘Å‚Âˆ—
+	/// å¿…æ®ºæŠ€ã‚’æ‰“ã¤å‡¦ç†
 	/// </summary>
 	virtual void UltimateSkill() = 0;
 
 	/// <summary>
-	/// ƒXƒLƒ‹‚ªg—p‚³‚ê‚½Œã‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚Ìˆ—
+	/// ã‚¹ã‚­ãƒ«ãŒä½¿ç”¨ã•ã‚ŒãŸå¾Œã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®å‡¦ç†
 	/// </summary>
-	/// <param name="SkillCooltimer">ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€</param>
-	/// <param name="skillstate">ƒXƒLƒ‹‚ğg—p‚µ‚½‚©‚Ì”»’è</param>
-	void COOlTIME(float SkillCooltimer,bool& skillstate);
+	/// <param name="SkillCooltimer">ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ </param>
+	/// <param name="skillstate">ã‚¹ã‚­ãƒ«ã‚’ä½¿ç”¨ã—ãŸã‹ã®åˆ¤å®š</param>
+	/// <param name="timer">ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’è¨ˆç®—ã™ã‚‹å¤‰æ•°</param>
+	void COOlTIME(float SkillCooltimer,bool& skillstate,float& timer);
 	
 	/// <summary>
-	/// Œ»İ‚ÌƒŒƒxƒ‹‚ğæ“¾‚·‚éŠÖ”
+	/// ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™ã€€KnightBaseã®ã‚’æŒã£ã¦ãã‚‹to do
 	/// </summary>
 	/// <returns></returns>
 	inline int GetLevel() { return Lv; }
 
 	/// <summary>
-	/// ƒŒƒxƒ‹ƒAƒbƒv‚Ìˆ—
+	/// ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã®å‡¦ç†
 	/// </summary>
-	/// <param name="lus">ƒŒƒxƒ‹ƒAƒbƒv‚É‘‰Á‚·‚éƒXƒe[ƒ^ƒX</param>
-	/// <param name="nowStatus">Œ»İ‚ÌƒXƒe[ƒ^ƒX</param>
-	/// <param name="Level">Œ»İ‚ÌƒŒƒxƒ‹</param>
+	/// <param name="lus">ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+	/// <param name="nowStatus">ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+	/// <param name="Level">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
 	void LevelUp(LvUpStatus& lus, Status& nowStatus,int& Level);
 
 	/// <summary>
-	/// ƒŒƒxƒ‹ƒ_ƒEƒ“‚Ìˆ—
+	/// ãƒ¬ãƒ™ãƒ«ãƒ€ã‚¦ãƒ³ã®å‡¦ç†
 	/// </summary>
-	/// <param name="lus">ƒŒƒxƒ‹ƒAƒbƒv‚É‘‰Á‚·‚éƒXƒe[ƒ^ƒX</param>
-	/// <param name="nowStatus">Œ»İ‚ÌƒXƒe[ƒ^ƒX</param>
-	/// <param name="Level">Œ»İ‚ÌƒŒƒxƒ‹</param>
+	/// <param name="lus">ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+	/// <param name="nowStatus">ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+	/// <param name="Level">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
 	void levelDown(LvUpStatus& lus, Status& nowStatus, int& Level,int downLevel);
 
 	/// <summary>
-    /// ƒŠƒXƒ|[ƒ“‚µ‚½‚Æ‚«‚ÌƒŒƒxƒ‹‚É‚æ‚Á‚ÄŒoŒ±’l‚ğ•ÏX‚·‚é
+    /// ãƒªã‚¹ãƒãƒ¼ãƒ³ã—ãŸã¨ãã®ãƒ¬ãƒ™ãƒ«ã«ã‚ˆã£ã¦çµŒé¨“å€¤ã‚’å¤‰æ›´ã™ã‚‹
     /// </summary>
-    /// <param name="Lv">Œ»İ‚ÌƒŒƒxƒ‹</param>
-	/// <param name="getExp">ŒoŒ±’l</param>
+    /// <param name="Lv">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
+	/// <param name="getExp">çµŒé¨“å€¤</param>
 	void ExpReset(int& Lv, int& getExp);
 
 	/// <summary>
-    /// ŒoŒ±’lƒe[ƒuƒ‹‚ğ•ÏX‚·‚é
+    /// çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å¤‰æ›´ã™ã‚‹
     /// </summary>
-    /// <param name="Lv">Œ»İ‚ÌƒŒƒxƒ‹</param>
-    /// <param name="expTable">ŒoŒ±’lƒe[ƒuƒ‹</param>
+    /// <param name="Lv">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
+    /// <param name="expTable">çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«</param>
 	void ExpTableChamge(int& Lv,int& expTable);
 
 	/// <summary>
-	/// €‚ñ‚¾‚Æ‚«‚Ìˆ—
+	/// æ­»ã‚“ã ã¨ãã®å‡¦ç†
 	/// </summary>
 	virtual void Death() = 0;
 
 	/// <summary>
-		/// ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ğİ’è‚·‚é
-		/// </summary>
-		/// <param name="pos">ƒŠƒXƒ|[ƒ“‚·‚éÀ•W</param>
-		/// <param name="number">À•W‚ğƒZƒbƒg‚·‚é”Ô†</param>
+	/// ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã‚’è¨­å®šã™ã‚‹
+	/// </summary>
+	/// <param name="pos">ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™</param>
+	/// <param name="number">åº§æ¨™ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ç•ªå·</param>
 	void SetRespawnPos(Vector3 pos, int number) {
 		m_respawnPos[number] = pos;
 	};
@@ -118,20 +129,24 @@ public:
 private:
     Level3DRender m_respawnLevel;
 
-	float timer = 0.0f;
+	
 
 protected:
-	int Lv;                    //ƒŒƒxƒ‹
-	int AtkSpeed;              //UŒ‚‘¬“x
-	float Cooltime;            //ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€
-	bool SkillState = false;     //ƒXƒLƒ‹‚ªg—p‰Â”\‚©‚Ç‚¤‚©‚Ì”»’è
-	int Point;                 //“G‚ğ“|‚µ‚Äè‚É“ü‚ê‚½ƒ|ƒCƒ“ƒg
-	int GetExp;                //’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l
-	int ExpTable;              //ŒoŒ±’lƒe[ƒuƒ‹
-	int respawnNumber;         //ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†
-	bool isDeath = false;      //€‚ñ‚¾‚©‚Ç‚¤‚©‚Ì”»’è
-	
-	Vector3 m_respawnPos[4];    //ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”z—ñ
+	int Lv;                    //ãƒ¬ãƒ™ãƒ«
+	int AtkSpeed;              //æ”»æ’ƒé€Ÿåº¦
+	float Cooltime;            //ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+	float AvoidanceCoolTime;    //å›é¿ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+	bool SkillState = false;     //ã‚¹ã‚­ãƒ«ãŒä½¿ç”¨å¯èƒ½ã‹ã©ã†ã‹ã®åˆ¤å®š
+	int Point;                 //æ•µã‚’å€’ã—ã¦æ‰‹ã«å…¥ã‚ŒãŸãƒã‚¤ãƒ³ãƒˆ
+	int GetExp;                //ä¸­ç«‹ã®æ•µã‚’å€’ã—ãŸã¨ãã®çµŒé¨“å€¤
+	int ExpTable;              //çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«
+	int respawnNumber;         //ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ç•ªå·
+	bool isDeath = false;      //æ­»ã‚“ã ã‹ã©ã†ã‹ã®åˆ¤å®š
+	bool invincibleFlag = false;     //ç„¡æ•µæ™‚é–“ãƒ•ãƒ©ã‚°
+	//float timer = 0.0f;
+	//Status m_Status;           //ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+	Vector3 m_respawnPos[4];    //ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®é…åˆ—
+	Vector3 m_moveSpeed = Vector3::Zero;      //ç§»å‹•é‡
 
 
 };

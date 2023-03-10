@@ -65,7 +65,7 @@ namespace nsK2EngineLow {
 		/// ‘å‚«‚³‚ðŽæ“¾‚·‚é
 		/// </summary>
 		/// <returns>‘å‚«‚³</returns>
-		const Vector3& GetScale()
+		const Vector3& GetScale() const
 		{
 			return m_scale;
 		}
@@ -82,7 +82,7 @@ namespace nsK2EngineLow {
 		/// ‰ñ“]‚ðŽæ“¾‚·‚é
 		/// </summary>
 		/// <returns>‰ñ“]</returns>
-		const Quaternion& GetRotation()
+		const Quaternion& GetRotation() const
 		{
 			return m_rotation;
 		}

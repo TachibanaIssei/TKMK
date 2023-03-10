@@ -134,8 +134,16 @@ namespace nsK2EngineLow {
 			);
 		}
 
+		/// <summary>
+		/// 描画処理
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
 		void Draw(RenderContext& rc);
 
+		/// <summary>
+		/// RenderingEngineで描画するときに呼び出す
+		/// </summary>
+		/// <param name="rc">レンダリングコンテキスト</param>
 		void OnRenderSprite(RenderContext& rc)
 		{
 			m_sprite.Draw(rc);

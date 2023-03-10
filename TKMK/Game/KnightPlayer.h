@@ -64,6 +64,7 @@ private:
 	bool m_spriteFlag = true;
 	//Status m_Status;                           //ステータス
 
+	bool m_spriteFlag = true;
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード
 	//Status status = { 150,150,35,150.0f };

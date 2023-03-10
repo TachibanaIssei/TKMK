@@ -30,9 +30,6 @@ private:
 	SpriteRender			m_statusBar;													//ステータスの画像
 	SpriteRender			m_playerFaceFrame;												//プレイヤーの顔画像の枠
 	SpriteRender			m_playerFaceBack;												//プレイヤーの顔画像の背景
-	SpriteRender            m_SkillRender;                                                  //スキルのアイコン
-	SpriteRender            m_UltRender;                                                    //必殺のアイコン
-
 	FontRender m_time_left;
 	float m_timer = 300.0f;
 	//int LEVEL;

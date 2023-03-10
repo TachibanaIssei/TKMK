@@ -118,4 +118,5 @@ void Game::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 	//m_spriteRender.Draw(rc);
 	//m_fontRender.Draw(rc);
+	
 }

@@ -463,8 +463,8 @@ Vector3 Neutral_Enemy::HPBerSend(Vector3 size, Vector3 scale)
 }
 bool Neutral_Enemy::DrawHP()
 {
-	Vector3 toCameraTarget = m_gameCamera->GetTarget() - m_gameCamera->GetPosition();
-	Vector3 toMush = m_position - m_gameCamera->GetPosition();
+	Vector3 toCameraTarget = g_camera3D->GetTarget() - g_camera3D->GetPosition();
+	Vector3 toMush = m_position - g_camera3D->GetPosition();
 	toCameraTarget.y = 0.0f;
 	toMush.y = 0.0f;
 	toCameraTarget.Normalize();
@@ -526,7 +526,14 @@ void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//ƒ‚ƒfƒ‹‚ð•`‰æ‚·‚éB
 	m_modelRender.Draw(rc);
-	m_HPBack.Draw(rc);
-	m_HPBar.Draw(rc);
-	m_HPFrame.Draw(rc);
+	if (m_knightPlayer->GetSpriteFlag())
+	{
+		if (DrawHP())
+		{
+			m_HPBack.Draw(rc);
+			m_HPBar.Draw(rc);
+			m_HPFrame.Draw(rc);
+		}
+	}
+	
 }

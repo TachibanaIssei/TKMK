@@ -11,7 +11,7 @@ public:
 	void Update();
 
 	void Attack();
-
+	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	inline Vector3 GetPosition() { return m_position; }
@@ -24,8 +24,14 @@ public:
 	{
 		return m_game;
 	}
-	void Render(RenderContext& rc);
-
+	/// <summary>
+	/// 画像表示フラグを取得する
+	/// </summary>
+	/// <returns>falseなら表示しない</returns>
+	const bool GetSpriteFlag() const
+	{
+		return m_spriteFlag;
+	}
 private:
 	Game* m_game=nullptr;
 	
@@ -50,7 +56,7 @@ private:
 	bool UltimateSkillFlag = false;
 
 	Status m_Status;                           //ステータス
-												//プレイヤーの顔
+	bool m_spriteFlag = true;					//クリアしたらfalse
 	//Vector3 m_position = Vector3::Zero;
 	////初期ステータス 最大HP、HP、攻撃力、スピード
 	//Status status = { 150,150,35,150.0f };

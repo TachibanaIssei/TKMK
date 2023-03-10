@@ -243,8 +243,8 @@ protected:
 
 	//獲得した経験値仮
 	int exp=5;
-	//受けたダメージ仮
-	int dddd = 50;
+	//Newtral_Enemyの攻撃力
+	int Enemy_atk = 10;
 	//必殺技使用のフラグ
 	bool UltCollisionSetFlag = false;
 	//攻撃時の剣のコリジョンを表示するかのフラグ

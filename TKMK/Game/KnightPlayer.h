@@ -28,8 +28,14 @@ public:
 	{
 		return m_game;
 	}
-	void Render(RenderContext& rc);
-
+	/// <summary>
+	/// �摜�\���t���O��擾����
+	/// </summary>
+	/// <returns>false�Ȃ�\�����Ȃ�</returns>
+	const bool GetSpriteFlag() const
+	{
+		return m_spriteFlag;
+	}
 private:
 	Game* m_game=nullptr;
 	
@@ -52,7 +58,6 @@ private:
 	//bool AtkCollistionFlag = false;
 	
 	bool UltimateSkillFlag = false;
-
 	FontRender Skillfont;
 	FontRender Avoidancefont;
 

@@ -145,6 +145,8 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 	psIn.pos = mul(m, vsIn.pos);
     psIn.worldPos = psIn.pos;
     psIn.normal = mul(m, vsIn.normal);
+    psIn.normal = normalize(psIn.normal);
+    
 	psIn.pos = mul(mView, psIn.pos);
 	psIn.pos = mul(mProj, psIn.pos);
 
@@ -246,7 +248,7 @@ float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldP
     t = saturate(t);
 
     // 鏡面反射の強さを絞る
-    t = pow(t, 6.0f);
+    t = pow(t, 5.0f);
       
     // 鏡面反射光を求める
     float specularLig = lightColor * t;
@@ -279,7 +281,7 @@ float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
     //指数関数的にする
     limPower = pow(limPower, 1.3f);
     
-    return diffDirection + specDirection + limPower;
+    return diffDirection + specDirection; //+limPower;
 }
 
 /////////////////////////////////////////////////////////////////////////

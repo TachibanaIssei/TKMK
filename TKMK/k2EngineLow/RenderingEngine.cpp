@@ -31,6 +31,8 @@ void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc)
 
 void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
+	SetEyePos(g_camera3D->GetPosition());
+
 	ModelRendering(rc);
 	SpriteRendering(rc);
 	FontRendering(rc);

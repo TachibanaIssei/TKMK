@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
 
+namespace {
+	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
+	const Vector3 AVOIDANCE_BAR_POS = Vector3(98.0f, -397.0f, 0.0f);
+
+	const Vector3 AVOIDANCE_FLAME_POS = Vector3(0.0f, -410.0f, 0.0f);
+}
 
 KnightPlayer::KnightPlayer()
 {
@@ -19,12 +25,21 @@ KnightPlayer::KnightPlayer()
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 
-	
+	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);
 	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
+
+	//回避のフレームの設定
+	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
+	m_Avoidance_flameRender.SetPosition(AVOIDANCE_FLAME_POS);
+	//回避のバーの設定
+	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
+	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
+	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
 
 }
 
@@ -108,7 +123,12 @@ void KnightPlayer::Update()
 	//アニメーションの再生
 	PlayAnimation();
 
-
+	if (AvoidanceTimer != AvoidanceCoolTime)
+	{
+		//回避のスプライトの表示の処理
+		AvoidanceSprite();
+	}
+	
 
 	//剣士のY座標が腰なのでY座標を上げる
 	m_position.y = m_position_YUp;
@@ -338,10 +358,28 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 }
 
+void KnightPlayer::AvoidanceSprite()
+{
+	Vector3 AvoidanceScale = Vector3::One;
+	//HPバーの減っていく割合。
+	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
+	m_Avoidance_barRender.SetScale(AvoidanceScale);
+
+	m_Avoidance_flameRender.Update();
+	m_Avoidance_barRender.Update();
+}
+
 void KnightPlayer::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-
+	//スキルのクールタイムとタイマーが違う時だけ表示
 	if(SkillTimer!=Cooltime)
 	Skillfont.Draw(rc);
+	//回避のクールタイムとタイマーが違う時だけ表示
+	if (AvoidanceTimer != AvoidanceCoolTime)
+	{
+		m_Avoidance_flameRender.Draw(rc);
+		m_Avoidance_barRender.Draw(rc);
+	}
+	
 }

@@ -243,9 +243,9 @@ protected:
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
 	int AtkEndPosId= -1;
-
+	//スキルのクールタイムを計算するタイマー
 	float SkillTimer = 0;
-
+	//回避のクールタイムを計算するタイマー
 	float AvoidanceTimer = 0;
 
 	//獲得した経験値仮

@@ -8,8 +8,13 @@ KnightBase::KnightBase()
 	m_Status.Init("Knight");
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
+
 	Cooltime=5;            //スキルのクールタイム
+	SkillTimer = Cooltime;
+
 	AvoidanceCoolTime = 2;     ///回避のクールタイム
+	AvoidanceTimer = AvoidanceCoolTime;
+
 	Point=0;                 //敵を倒して手に入れたポイント
 	GetExp=0;                //中立の敵を倒したときの経験値
 	ExpTable=5;              //経験値テーブル

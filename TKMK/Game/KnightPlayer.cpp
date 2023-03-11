@@ -341,5 +341,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 void KnightPlayer::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+
+	if(SkillTimer!=Cooltime)
 	Skillfont.Draw(rc);
 }

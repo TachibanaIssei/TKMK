@@ -50,6 +50,8 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
+	//todo
+	//gameクラスのポーズのフラグが立っている間処理を行わない
 
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];

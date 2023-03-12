@@ -69,12 +69,19 @@ bool Game::Start()
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
 	
-	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
-	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
-	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);
-	m_sRotation.SetRotationZ(0.0f);
-	m_spriteRender.SetRotation(m_sRotation);
-	m_spriteRender.Update();
+	//ポーズ画面の背景の設定
+	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
+	m_Pause_Back.SetPosition(g_vec3Zero);
+	m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
+	m_Pause_Back.SetRotation(m_sRotation);
+	m_Pause_Back.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
+	m_Pause_Back.Update();
+
+	m_Pause_Front.Init("Assets/sprite/pause.DDS", 1920.0f, 1080.0f);
+	m_Pause_Front.SetPosition(g_vec3Zero);
+	m_Pause_Front.SetScale(1.0f, 1.0f, 1.0f);
+	m_Pause_Front.SetRotation(m_sRotation);
+	m_Pause_Front.Update();
 
 	/*m_fontRender.SetText(L"hello");
 	m_fontRender.SetPosition(-500.0f, 200.0f);
@@ -90,20 +97,27 @@ bool Game::Start()
 
 void Game::Update()
 {
+	//リザルト画面への遷移
+	//Yボタンが押されたら。
 	if (g_pad[0]->IsTrigger(enButtonY))
 	{
 		Result* result =NewGO<Result>(0, "Result");
 		DeleteGO(this);
 	}
+	//ポーズ画面への遷移
+	//スタートボタンが押されたら。
+	if (g_pad[0]->IsTrigger(enButtonStart)) {
+		PauseFlag = true;
+	}
 
 
-	TestPlayer();
+	//if(PauseFlag==true)TestPlayer();
 
-	m_spriteAlpha += g_gameTime->GetFrameDeltaTime() * 1.2f;
-	m_spriteRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0, fabsf(sinf(m_spriteAlpha))));
+	//m_spriteAlpha += g_gameTime->GetFrameDeltaTime() * 1.2f;
+	//m_spriteRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0, fabsf(sinf(m_spriteAlpha))));
 
 	m_modelRender.Update();
-	m_spriteRender.Update();
+	//m_Pause_Back.Update();
 }
 
 void Game::TestPlayer()
@@ -119,7 +133,12 @@ void Game::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 void Game::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	//m_spriteRender.Draw(rc);
+
+	if (PauseFlag == true)
+	{
+		m_Pause_Back.Draw(rc);
+		m_Pause_Front.Draw(rc);
+	}
 	//m_fontRender.Draw(rc);
 	
 }

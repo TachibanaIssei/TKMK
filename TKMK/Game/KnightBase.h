@@ -24,11 +24,11 @@ public:
 		enKnightState_UltimateSkill,
 		enKnightState_Avoidance,
 		enKnightState_Num,
-		enKnightState_Pause,        //ƒQ[ƒ€‚Ìó‘Ô‚ğó‚¯æ‚é
+		enKnightState_Pause,        //ã‚²ãƒ¼ãƒ ã®çŠ¶æ…‹ã‚’å—ã‘å–ã‚‹
 	};
 
 	/// <summary>
-	/// ƒ‚ƒfƒ‹‚ÌInitAƒLƒƒƒ‰ƒRƒ“‚Ì‰Šú‰»
+	/// ãƒ¢ãƒ‡ãƒ«ã®Initã€ã‚­ãƒ£ãƒ©ã‚³ãƒ³ã®åˆæœŸåŒ–
 	/// </summary>
 	/// <param name="Model"></param>
 	/// <param name="charCon"></param>
@@ -36,9 +36,9 @@ public:
 	void SetModel();
 
 	/// <summary>
-	/// ’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l‚Ìˆ—
+	/// ä¸­ç«‹ã®æ•µã‚’å€’ã—ãŸã¨ãã®çµŒé¨“å€¤ã®å‡¦ç†
 	/// </summary>
-	/// <param name="GetExp">’†—§‚Ì“G‚ÌŒoŒ±’l</param>
+	/// <param name="GetExp">ä¸­ç«‹ã®æ•µã®çµŒé¨“å€¤</param>
 	void ExpProcess(int Exp);
 
 	/// <summary>
@@ -47,53 +47,53 @@ public:
 	virtual void Attack()=0;
 
 	/// <summary>
-	/// ©g‚Ì“–‚½‚è”»’è
+	/// è‡ªèº«ã®å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	void Collition();
 
 	/// <summary>
-	/// ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚Ìˆ—
+	/// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®å‡¦ç†
 	/// </summary>
-	/// <param name="damege">“G‚ÌUŒ‚—Í</param>
+	/// <param name="damege">æ•µã®æ”»æ’ƒåŠ›</param>
 	void Dameged(int damege);
 
 	/// <summary>
-	/// ©g‚ª“|‚³‚ê‚½‚Æ‚«‚Ìˆ—
+	/// è‡ªèº«ãŒå€’ã•ã‚ŒãŸã¨ãã®å‡¦ç†
 	/// </summary>
 	void Death();
 
 	/// <summary>
-	/// ƒXƒLƒ‹‚ğg—p‚µ‚½‚Æ‚«‚Ìˆ—
+	/// ã‚¹ã‚­ãƒ«ã‚’ä½¿ç”¨ã—ãŸã¨ãã®å‡¦ç†
 	/// </summary>
 	//void Skill(Vector3& right,Vector3& forward);
 
 	/// <summary>
-	/// •KE‹Z‚ğ”­“®‚µ‚½‚Æ‚«‚Ìˆ—
+	/// å¿…æ®ºæŠ€ã‚’ç™ºå‹•ã—ãŸã¨ãã®å‡¦ç†
 	/// </summary>
 	void UltimateSkill();
 
 	/// <summary>
-	/// ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
+	/// ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
 	/// </summary>
 	void SetRespawn();
 
 	/// <summary>
-	/// ‰ñ“]ˆ—
+	/// å›è»¢å‡¦ç†
 	/// </summary>
 	void Rotation();
 
 	/// <summary>
-	/// ’ÊíUŒ‚‚Ì“–‚½‚è”»’è‚Ìˆ—
+	/// é€šå¸¸æ”»æ’ƒã®å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†
 	/// </summary>
 	void AtkCollisiton();
 
 	/// <summary>
-	/// •KE‹Z‚Ì“–‚½‚è”»’è‚Ìˆ—
+	/// å¿…æ®ºæŠ€ã®å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†
 	/// </summary>
 	void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
 
 	/// <summary>
-	/// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒXƒe[ƒg‚ÌŠÇ—
+	/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®ç®¡ç†
 	/// </summary>
 	void ManageState();
 
@@ -110,20 +110,20 @@ public:
 	void MoveStraight(Vector3& right, Vector3& forward);
 
 	/// <summary>
-	/// ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg
+	/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆ
 	/// </summary>
 	/// <param name="clipName"></param>
 	/// <param name="eventName"></param>
 	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)=0;
 
 	/// <summary>
-	/// À•W‚ÌƒZƒbƒg
+	/// åº§æ¨™ã®ã‚»ãƒƒãƒˆ
 	/// </summary>
 	/// <param name="PS"></param>
 	inline void SetPosition(Vector3 PS) { m_position = PS; }
 
 	/// <summary>
-	/// Œ•m‚ÌÀ•W‚ğ•Ô‚è’l‚Æ‚µ‚Ä•Ô‚·
+	/// å‰£å£«ã®åº§æ¨™ã‚’è¿”ã‚Šå€¤ã¨ã—ã¦è¿”ã™
 	/// </summary>
 	virtual Vector3 GetPosition() = 0;
 
@@ -146,7 +146,7 @@ public:
 	}
 
 	/// <summary>
-	/// “Á’è‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶’†‚È‚çfalse‚ğ•Ô‚·
+	/// ç‰¹å®šã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿä¸­ãªã‚‰falseã‚’è¿”ã™
 	/// </summary>
 	/// <returns></returns>
 	bool IsEnableMove() const
@@ -160,23 +160,36 @@ public:
 	}
 
 	/// <summary>
-	/// Œ»İ‚ÌƒŒƒxƒ‹‚ğ•Ô‚·
+	/// ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™
 	/// </summary>
-	/// <returns>Œ»İ‚ÌƒŒƒxƒ‹</returns>
+	/// <returns>ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</returns>
 	int& SetLevel(){
 		return Lv;
 	}
 
 	/// <summary>
-	/// Œ»İ‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·
+	/// ç¾åœ¨ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
 	/// </summary>
-	/// <returns>Œ»İ‚ÌHP</returns>
+	/// <returns>ç¾åœ¨ã®HP</returns>
 	int& SetHp() {
 		return m_Status.Hp;
 	}
 
 	/// <summary>
-	/// Œ»İ‚Ìƒ}ƒbƒNƒXƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·
+		/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰æ–¹å‘ã‚’å–å¾—ã€‚
+		/// </summary>
+	const Vector3& GetForward() const
+	{
+		return m_forward;
+	}
+	Quaternion& GetRot()
+	{
+		return m_rot;
+  }
+
+
+	/// <summary>
+	/// ç¾åœ¨ã®ãƒãƒƒã‚¯ã‚¹ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
 	/// </summary>
 	/// <returns></returns>
 	int& SetMaxHp() {
@@ -184,32 +197,33 @@ public:
 	}
 
 	/// <summary>
-	/// ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg‚ğ•ÏX
+	/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´
 	/// </summary>
-	/// <param name="gamescene">•ÏX‚µ‚½‚¢ƒXƒe[ƒg‚Ì–¼‘O</param>
+	/// <param name="gamescene">å¤‰æ›´ã—ãŸã„ã‚¹ãƒ†ãƒ¼ãƒˆã®åå‰</param>
 	void SetPlayerState(PlayerState gamescene) {
 		m_playerState = gamescene;
+
 	}
 
 protected:
 	void PlayAnimation();
-	//‹¤’Ê‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//å…±é€šã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessCommonStateTransition();
-	//‘Ò‹@‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//å¾…æ©Ÿã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessIdleStateTransition();
-	//•à‚«‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//æ­©ãã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessRunStateTransition();
-	//ƒ`ƒFƒCƒ“ƒAƒ^ƒbƒN‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//ãƒã‚§ã‚¤ãƒ³ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessChainAtkStateTransition();
-	//ƒXƒLƒ‹‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//ã‚¹ã‚­ãƒ«ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessSkillAtkStateTransition();
-	//‰ñ”ğ‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//å›é¿ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessAvoidanceStateTransition();
-	//•KE‹Z‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//å¿…æ®ºæŠ€ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessUltimateSkillAtkStateTransition();
-	//ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessDamegeStateTransition();
-	//HP‚ª0‚É‚È‚Á‚½‚Æ‚«‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
+	//HPãŒ0ã«ãªã£ãŸã¨ãã®ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
 	void OnProcessDeathStateTransition();
 
 	//enum PlayerState {
@@ -222,7 +236,7 @@ protected:
 	//	enKnightState_UltimateSkill,
 	//	enKnightState_Avoidance,
 	//	enKnightState_Num,
-	//	enKnightState_GameScene,        //ƒQ[ƒ€‚Ìó‘Ô‚ğó‚¯æ‚é
+	//	enKnightState_GameScene,        //ã‚²ãƒ¼ãƒ ã®çŠ¶æ…‹ã‚’å—ã‘å–ã‚‹
 	//};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -240,58 +254,58 @@ protected:
 	Game* m_game=nullptr;
 	GameUI* m_gameUI = nullptr;
 
-	//‰ŠúƒXƒe[ƒ^ƒX Å‘åHPAHPAUŒ‚—ÍAƒXƒs[ƒh
+	//åˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ æœ€å¤§HPã€HPã€æ”»æ’ƒåŠ›ã€ã‚¹ãƒ”ãƒ¼ãƒ‰
 	Status m_Status;
 
-	Vector3 firstposition;                                //Å‰‚ÌÀ•W
-	Vector3 OldPosition = Vector3::Zero;                  //‘O‚ÌƒtƒŒ[ƒ€‚ÌÀ•W
-	Vector3 m_position = Vector3::Zero;                   //À•W
-	float m_position_YUp = 36.0f;                         //ƒ‚ƒfƒ‹‚Ì²‚ª˜‚É‚ ‚é‚Ì‚ÅYÀ•W‚ğ50.0fã‚°‚é
-	Vector3 m_forward = Vector3::AxisZ;                   //³–ÊƒxƒNƒgƒ‹
-	Vector3 collisionRot= Vector3::Zero;                  //•KE‹Z
-	CollisionObject* collisionObject;                     //ƒRƒŠƒWƒ‡ƒ“
-	Vector3 UltCollisionPos= Vector3::Zero;               //•KE‹Z‚Ì“–‚½‚è”»’è‚ÌÀ•W
-	Vector3 m_Skill_Right = Vector3::Zero;                 //ƒJƒƒ‰‚Ì‰E•ûŒü
-	Vector3 m_Skill_Forward = Vector3::Zero;               //ƒJƒƒ‰‚Ì‘O•ûŒü
-	CharacterController m_charCon;                        //ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‹
-	Quaternion m_rot = Quaternion::Identity;              //ƒNƒH[ƒ^ƒjƒIƒ“
-	ModelRender m_modelRender;                            //ƒ‚ƒfƒ‹ƒŒƒ“ƒ_[
-	AnimationClip m_animationClips[enAnimationClip_Num]; //ƒAƒjƒ[ƒVƒ‡ƒ“ƒNƒŠƒbƒv
+	Vector3 firstposition;                                //æœ€åˆã®åº§æ¨™
+	Vector3 OldPosition = Vector3::Zero;                  //å‰ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®åº§æ¨™
+	Vector3 m_position = Vector3::Zero;                   //åº§æ¨™
+	float m_position_YUp = 36.0f;                         //ãƒ¢ãƒ‡ãƒ«ã®è»¸ãŒè…°ã«ã‚ã‚‹ã®ã§Yåº§æ¨™ã‚’50.0fä¸Šã’ã‚‹
+	Vector3 m_forward = Vector3::AxisZ;                   //æ­£é¢ãƒ™ã‚¯ãƒˆãƒ«
+	Vector3 collisionRot= Vector3::Zero;                  //å¿…æ®ºæŠ€
+	CollisionObject* collisionObject;                     //ã‚³ãƒªã‚¸ãƒ§ãƒ³
+	Vector3 UltCollisionPos= Vector3::Zero;               //å¿…æ®ºæŠ€ã®å½“ãŸã‚Šåˆ¤å®šã®åº§æ¨™
+	Vector3 m_Skill_Right = Vector3::Zero;                 //ã‚«ãƒ¡ãƒ©ã®å³æ–¹å‘
+	Vector3 m_Skill_Forward = Vector3::Zero;               //ã‚«ãƒ¡ãƒ©ã®å‰æ–¹å‘
+	CharacterController m_charCon;                        //ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«
+	Quaternion m_rot = Quaternion::Identity;              //å›è»¢
+	ModelRender m_modelRender;                            //ãƒ¢ãƒ‡ãƒ«ãƒ¬ãƒ³ãƒ€ãƒ¼
+	AnimationClip m_animationClips[enAnimationClip_Num]; //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¯ãƒªãƒƒãƒ—
 	PlayerState m_playerState/* = enKnightState_Num*/;
 	
-	//ƒŒƒxƒ‹ƒAƒbƒv‚É‘‰Á‚·‚éƒXƒe[ƒ^ƒX
+	//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
 	PlayerState m_animState = enKnightState_Idle;
-	//Œ»İ‚ÌƒRƒ“ƒ{
+	//ç¾åœ¨ã®ã‚³ãƒ³ãƒœ
 	int ComboState = 0;
-	//ƒRƒ“ƒ{‚ªŒp‘±‚·‚éŠÔ‚ğ‹L˜^‚·‚é
+	//ã‚³ãƒ³ãƒœãŒç¶™ç¶šã™ã‚‹æ™‚é–“ã‚’è¨˜éŒ²ã™ã‚‹
 	float ComboTimer = 0;
-	//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚©‚Ì”»’è
+	//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‹ã®åˆ¤å®š
 	bool pushFlag = false;
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ğ‚µ‚½‚©‚Ì”»’è
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã‚’ã—ãŸã‹ã®åˆ¤å®š
 	bool AtkState = false;
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚©‚Ì”»’è
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‹ã®åˆ¤å®š
 	bool SkillEndFlag = false;
-	//‰ñ”ğƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶‚µ‚½‚©‚Ì”»’è
+	//å›é¿ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿã—ãŸã‹ã®åˆ¤å®š
 	bool AvoidanceFlag = false;
 	//
 	bool AvoidanceEndFlag = false;
-	//uvƒ{[ƒ“‚ÌID
+	//ã€Œã€ãƒœãƒ¼ãƒ³ã®ID
 	int m_swordBoneId = -1;
-	//UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒgÄ¶‚ÌŒ•m‚ÌÀ•W‚ğæ“¾‚·‚é
+	//æ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆå†ç”Ÿæ™‚ã®å‰£å£«ã®åº§æ¨™ã‚’å–å¾—ã™ã‚‹
 	int AtkEndPosId= -1;
-	//ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚ğŒvZ‚·‚éƒ^ƒCƒ}[
+	//ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’è¨ˆç®—ã™ã‚‹ã‚¿ã‚¤ãƒãƒ¼
 	float SkillTimer = 0;
-	//‰ñ”ğ‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚ğŒvZ‚·‚éƒ^ƒCƒ}[
+	//å›é¿ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’è¨ˆç®—ã™ã‚‹ã‚¿ã‚¤ãƒãƒ¼
 	float AvoidanceTimer = 0;
 
-	//Šl“¾‚µ‚½ŒoŒ±’l‰¼
+	//ç²å¾—ã—ãŸçµŒé¨“å€¤ä»®
 	int exp=5;
-	//Newtral_Enemy‚ÌUŒ‚—Í
+	//Newtral_Enemyã®æ”»æ’ƒåŠ›
 	int Enemy_atk = 10;
-	//•KE‹Zg—p‚Ìƒtƒ‰ƒO
+	//å¿…æ®ºæŠ€ä½¿ç”¨ã®ãƒ•ãƒ©ã‚°
 	bool UltCollisionSetFlag = false;
-	//UŒ‚‚ÌŒ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ•\¦‚·‚é‚©‚Ìƒtƒ‰ƒO
+	//æ”»æ’ƒæ™‚ã®å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’è¡¨ç¤ºã™ã‚‹ã‹ã®ãƒ•ãƒ©ã‚°
 	bool AtkCollistionFlag = false;
 
 };

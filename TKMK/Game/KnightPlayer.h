@@ -92,6 +92,8 @@ private:
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
 
+	bool m_spriteFlag = true;
+
 	//Status m_Status;                           //ステータス
 
 	//Vector3 m_position = Vector3::Zero;

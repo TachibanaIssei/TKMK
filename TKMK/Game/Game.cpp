@@ -36,9 +36,9 @@ bool Game::Start()
 	//�f�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
-	Vector3 directionLightColor = Vector3{ 1.0f,1.0f,1.0f };
+	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f });
+	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f,1.0f });
 
 	//�X�^�W�A���̃��x���̐ݒ�
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {

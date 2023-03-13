@@ -18,7 +18,7 @@ namespace
 	const Vector3 Skill_Pos = Vector3(700.0f, -370.0f, 0.0f);   //スキルアイコンポジション
 	const Vector3 Ult_Pos = Vector3(700.0f, -225.0f, 0.0f);     //必殺技アイコンポジション
 
-
+	const Vector3 LvPos = Vector3(-720.0f, -420.0f, 0.0f);
 }
 GameUI::GameUI()
 {
@@ -32,6 +32,7 @@ GameUI::~GameUI()
 
 bool GameUI::Start()
 {
+	//m_knightplayer->SetGameUI(this);
 	m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
 
 	//m_game = FindGO<Game>("m_game");
@@ -62,6 +63,10 @@ bool GameUI::Start()
 	m_HpNameFont.SetRotation(0.0f);
 	m_HpNameFont.SetShadowParam(true, 2.0f, g_vec4Black);*/
 
+	//Lv1の画像を読み込む
+	m_Lv.Init("Assets/sprite/Lv1.DDS", 320.0f, 150.0f);
+	m_Lv.SetPosition(LvPos);
+	m_Lv.SetScale(0.4, 0.4, 1.0);
 
 	//HPゲージ裏の画像を読み込む
 	m_statusBar.Init("Assets/sprite/HP_bar_ura.DDS", 600.0f, 85.0f);
@@ -101,6 +106,7 @@ bool GameUI::Start()
 	m_TimeAndPointRender.Update();
 	m_SkillRender.Update();
 	m_UltRender.Update();
+	m_Lv.Update();
 
 	return true;
 }
@@ -113,10 +119,10 @@ void GameUI::Update()
 	}*/
 
 	//レベルの表示
-	int LEVEL=m_knightplayer->SetLevel();
-	wchar_t Lv[255];
-	swprintf_s(Lv, 255, L"%d", LEVEL);
-	m_LevelFont.SetText(Lv);
+	//int LEVEL=m_knightplayer->SetLevel();
+	//wchar_t Lv[255];
+	//swprintf_s(Lv, 255, L"%d", LEVEL);
+	//m_LevelFont.SetText(Lv);
 
 	//0分でないなら
 	if (MinutesTimer != 0) {
@@ -166,8 +172,8 @@ void GameUI::HPBar()
 }
 void GameUI::Render(RenderContext& rc)
 {
-	m_LevelFont.Draw(rc);
-	m_LevelNameFont.Draw(rc);
+	/*m_LevelFont.Draw(rc);
+	m_LevelNameFont.Draw(rc);*/
 	m_HpNameFont.Draw(rc);
 
 	m_TimeAndPointRender.Draw(rc);
@@ -184,4 +190,6 @@ void GameUI::Render(RenderContext& rc)
 	m_UltRender.Draw(rc);
 
 	m_HpFont.Draw(rc);
+
+	m_Lv.Draw(rc);
 }

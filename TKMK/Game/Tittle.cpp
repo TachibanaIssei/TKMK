@@ -16,7 +16,7 @@ Tittle::~Tittle()
 bool Tittle::Start()
 {
 	//tittle‚Ì‰Šú‰»
-	m_spriteRender.Init("Assets/sprite/tittle.DDS",1920.0f,1080.0f);
+	m_spriteRender.Init("Assets/sprite/tittle.DDS",1600.0f,900.0f);
 	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
 	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);
 	m_sRotation.SetRotationZ(0.0f);

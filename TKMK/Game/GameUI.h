@@ -17,6 +17,39 @@ public:
 		m_game = Cgame;
 	}
 
+	/// <summary>
+	/// プレイヤーのレベルに合わせてレベルの画像を変更する
+	/// </summary>
+	/// <param name="lv">プレイヤーの現在のレベル</param>
+	void LevelFontChange(int lv)
+	{
+		switch (lv)
+		{
+		case 1:
+			m_Lv.Init("Assets/sprite/Lv1.DDS", 320.0f, 150.0f);
+
+			break;
+		case 2:
+			m_Lv.Init("Assets/sprite/Lv2.DDS", 320.0f, 150.0f);
+
+			break;
+		case 3:
+			m_Lv.Init("Assets/sprite/Lv3.DDS", 320.0f, 150.0f);
+
+			break;
+		case 4:
+			m_Lv.Init("Assets/sprite/Lv4.DDS", 320.0f, 150.0f);
+
+			break;
+		case 5:
+			m_Lv.Init("Assets/sprite/Lv5.DDS", 320.0f, 150.0f);
+
+			break;
+		default:
+			break;
+		}
+	}
+
 	void Render(RenderContext& rc);
 	/// HPバーの表示
 /// </summary>
@@ -28,18 +61,18 @@ public:
 	/// <param name="size">画像の元の大きさ</param>
 	/// <param name="scale">現在のスケール倍率</param>
 	/// <returns>変換前と変換後の差</returns>
-	Vector3 HPBerSend(Vector3 size, Vector3 scale)
-	{
-		Vector3 hpBerSize = size;								//画像の元の大きさ
-		Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
-		Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
+	//Vector3 HPBerSend(Vector3 size, Vector3 scale)
+	//{
+	//	Vector3 hpBerSize = size;								//画像の元の大きさ
+	//	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
+	//	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
 
-		changeBerSize.x = hpBerSize.x * scale.x;
-		BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
-		BerSizeSubtraction.x /= 2.0f;
+	//	changeBerSize.x = hpBerSize.x * scale.x;
+	//	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
+	//	BerSizeSubtraction.x /= 2.0f;
 
-		return BerSizeSubtraction;
-	}
+	//	return BerSizeSubtraction;
+	//}
 private:
 	FontRender m_LevelFont;
 	FontRender m_LevelNameFont;
@@ -60,6 +93,7 @@ private:
 	SpriteRender            m_SkillRender;          //スキルアイコン
 	SpriteRender            m_UltRender;            //必殺アイコン
 	SpriteRender            m_TimeAndPointRender;   //制限時間と獲得ポイント
+	SpriteRender            m_Lv;
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション

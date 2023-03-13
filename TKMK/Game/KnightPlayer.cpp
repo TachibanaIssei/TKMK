@@ -1,10 +1,19 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
+#include "Game.h"
+//#include "GameUI.h"
 
+namespace {
+	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
+	const Vector3 AVOIDANCE_BAR_POS = Vector3(98.0f, -397.0f, 0.0f);
+
+	const Vector3 AVOIDANCE_FLAME_POS = Vector3(0.0f, -410.0f, 0.0f);
+}
 
 KnightPlayer::KnightPlayer()
 {
-	
+	//m_gameUI = FindGO<GameUI>("m_gameUI");
+
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -19,12 +28,21 @@ KnightPlayer::KnightPlayer()
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 
-	
+	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);
 	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
+
+	//回避のフレームの設定
+	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
+	m_Avoidance_flameRender.SetPosition(AVOIDANCE_FLAME_POS);
+	//回避のバーの設定
+	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
+	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
+	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
 
 }
 
@@ -35,6 +53,11 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
+	//todo
+	//gameクラスのポーズのフラグが立っている間処理を行わない
+	if (m_playerState == enKnightState_Pause) {
+		return;
+	}
 
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];
@@ -52,14 +75,14 @@ void KnightPlayer::Update()
 	////回避
 	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 	//	//回避ステート
-	//	//m_animState = enKnightState_Avoidance;
+	//	//m_playerState = enKnightState_Avoidance;
 	//	AnimationMove();
 	//	AvoidanceFlag = true;
 	//}
 	
 	//回避中なら
 	if (AvoidanceFlag == true) {
-		m_animState = enKnightState_Avoidance;
+		m_playerState = enKnightState_Avoidance;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
@@ -73,7 +96,7 @@ void KnightPlayer::Update()
 	//スキル使用中なら
 	if (SkillState == true) {
 		//スキルステート
-		m_animState = enKnightState_Skill;
+		m_playerState = enKnightState_Skill;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
@@ -88,11 +111,12 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	/*if (g_pad[0]->IsTrigger(enButtonA))
+	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
 	{
 		if(Lv!=5)
 		ExpProcess(exp);
-	}*/
+		//m_gameUI->LevelFontChange(Lv);
+	}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -108,7 +132,12 @@ void KnightPlayer::Update()
 	//アニメーションの再生
 	PlayAnimation();
 
-
+	if (AvoidanceTimer != AvoidanceCoolTime)
+	{
+		//回避のスプライトの表示の処理
+		AvoidanceSprite();
+	}
+	
 
 	//剣士のY座標が腰なのでY座標を上げる
 	m_position.y = m_position_YUp;
@@ -123,20 +152,20 @@ void KnightPlayer::Attack()
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	if (pushFlag==false&&AtkState == false)
-	{
-		//Bボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_animState = enKnightState_ChainAtk;
-			
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
-			pushFlag = true;
-			AtkState = true;
-		}
-	}
+	//if (pushFlag==false&&AtkState == false)
+	//{
+	//	//Bボタン押されたら攻撃する
+	//	if (g_pad[0]->IsTrigger(enButtonA))
+	//	{
+	//		m_playerState = enKnightState_ChainAtk;
+	//		
+	//		//FirstAtkFlag = true;
+	//		//コンボを1増やす
+	//		//ComboState++;
+	//		pushFlag = true;
+	//		AtkState = true;
+	//	}
+	//}
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -218,7 +247,7 @@ void KnightPlayer::Avoidance()
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
-		//m_animState = enKnightState_Avoidance;
+		//m_playerState = enKnightState_Avoidance;
 		AnimationMove();
 		pushFlag = true;
 		AvoidanceFlag = true;
@@ -278,7 +307,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_animState = enKnightState_Idle;
+			m_playerState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -295,7 +324,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_animState = enKnightState_Idle;
+			m_playerState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -309,7 +338,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
@@ -338,8 +367,28 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 }
 
+void KnightPlayer::AvoidanceSprite()
+{
+	Vector3 AvoidanceScale = Vector3::One;
+	//HPバーの減っていく割合。
+	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
+	m_Avoidance_barRender.SetScale(AvoidanceScale);
+
+	m_Avoidance_flameRender.Update();
+	m_Avoidance_barRender.Update();
+}
+
 void KnightPlayer::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+	//スキルのクールタイムとタイマーが違う時だけ表示
+	if(SkillTimer!=Cooltime)
 	Skillfont.Draw(rc);
+	//回避のクールタイムとタイマーが違う時だけ表示
+	if (AvoidanceTimer != AvoidanceCoolTime)
+	{
+		m_Avoidance_flameRender.Draw(rc);
+		m_Avoidance_barRender.Draw(rc);
+	}
+	
 }

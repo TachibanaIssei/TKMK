@@ -4,6 +4,7 @@
 #include "Status.h"
 
 class Game;
+//class GameUI;
 
 class KnightPlayer:public KnightBase
 {
@@ -20,14 +21,19 @@ public:
 
 	inline Vector3 GetPosition() { return m_position; }
 
-	void SetSGame(Game* Cgame)
+	void AvoidanceSprite();
+
+	/*void SetSGame(Game* Cgame)
 	{
 		m_game = Cgame;
-	}
-	Game* GetSGame()
+	}*/
+	/*Game* GetSGame()
 	{
 		return m_game;
-	}
+	}*/
+
+	
+
 	/// <summary>
 	/// �摜�\���t���O��擾����
 	/// </summary>
@@ -36,6 +42,7 @@ public:
 	{
 		return m_spriteFlag;
 	}
+
 	/// <summary>
 	/// 座標を設定
 	/// </summary>
@@ -53,12 +60,18 @@ public:
 	{
 		return m_position;
 	}
+
 private:
 	Game* m_game=nullptr;
+	//GameUI* m_gameUI = nullptr;
 	
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
+
+	Vector2 Avoidance_FlamePos = Vector2::Zero;
+	Vector2 Avoidance_BarPos = Vector2::Zero;
+
 	float UltimateSkillTimer = 0;
 
 	enum AtkTimingState
@@ -76,7 +89,8 @@ private:
 	
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
-	FontRender Avoidancefont;
+	SpriteRender m_Avoidance_flameRender;
+	SpriteRender m_Avoidance_barRender;
 
 	//Status m_Status;                           //ステータス
 

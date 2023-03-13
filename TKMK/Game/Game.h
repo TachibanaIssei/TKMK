@@ -17,21 +17,27 @@ public:
 	~Game();
 	bool Start();
 	void Update();
+	void Pause();
+	void GameState();
 
-	void TestPlayer();
-	void OnAnimationEvent(const wchar_t* clipName,const wchar_t* eventName);
+	
 
 	void Render(RenderContext& rc);
 
-private:
-	enum EnGameClip {
-		enGameClip_Start,
-		enGameClip_Battle,
-		enGameClip_Pause,
-		enGameclip_Rezult,
-		enAnimationClip_Num,
+	enum EnGameState {
+		enGameState_Start,
+		enGameState_Battle,
+		enGameState_Pause,
+		enGamestate_End,
+		enGameState_Rezult,
+		enGameState_Num,
 	};
-	EnGameClip m_GameClip = enAnimationClip_Num;
+	
+
+private:
+	
+
+	EnGameState m_GameState = enGameState_Start;
 
 
 	//AnimationClip m_animationClips[enAnimationClip_Num];

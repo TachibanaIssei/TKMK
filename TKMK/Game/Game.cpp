@@ -68,6 +68,7 @@ bool Game::Start()
 
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
+	m_gameUI->SetSGame(this);
 	
 	//ポーズ画面の背景の設定
 	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
@@ -83,11 +84,7 @@ bool Game::Start()
 	m_Pause_Front.SetRotation(m_sRotation);
 	m_Pause_Front.Update();
 
-	/*m_fontRender.SetText(L"hello");
-	m_fontRender.SetPosition(-500.0f, 200.0f);
-	m_fontRender.SetScale(3.0f);
-	m_fontRender.SetRotation(90.0f);
-	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);*/
+	m_GameState = enGameState_Battle;
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -97,26 +94,35 @@ bool Game::Start()
 
 void Game::Update()
 {
-	//リザルト画面への遷移
-	//Yボタンが押されたら。
-	if (g_pad[0]->IsTrigger(enButtonY))
-	{
-		Result* result =NewGO<Result>(0, "Result");
-		DeleteGO(this);
+	if (m_GameState == enGameState_Battle) {
+		//リザルト画面への遷移
+	    //Yボタンが押されたら。
+		if (g_pad[0]->IsTrigger(enButtonY))
+		{
+			m_GameState = enGameState_Rezult;
+		}
 	}
+	
+
 	//ポーズ画面への遷移
 	//スタートボタンが押されたら。
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
 
-		bool temp;
+		if (m_GameState == enGameState_Battle)
+			m_GameState = enGameState_Pause;
+
+		else if (m_GameState == enGameState_Pause)
+			m_GameState = enGameState_Battle;
+
+
+		/*bool temp;
 		temp = PauseOpenFlag;
 		PauseOpenFlag = PauseCloseFlag;
-		PauseCloseFlag = temp;
+		PauseCloseFlag = temp;*/
 	}
 
-
-	//if(PauseFlag==true)TestPlayer();
-
+	GameState();
+	
 	//m_spriteAlpha += g_gameTime->GetFrameDeltaTime() * 1.2f;
 	//m_spriteRender.SetMulColor(Vector4(1.0f, 1.0f, 1.0, fabsf(sinf(m_spriteAlpha))));
 
@@ -124,21 +130,49 @@ void Game::Update()
 	//m_Pause_Back.Update();
 }
 
-void Game::TestPlayer()
+//ポーズ画面の処理
+void Game::Pause()
 {
-	
+
 }
 
-void Game::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+//ゲームステートの管理
+void Game::GameState()
 {
-	
+	switch (m_GameState)
+	{
+	case enGameState_Start:
+
+		break;
+
+	case enGameState_Battle:
+
+		break;
+
+	case enGameState_Pause:
+		Pause();
+		break;
+
+	case enGamestate_End:
+
+		break;
+
+	case enGameState_Rezult:
+		//リザルト画面の生成、ゲームの削除
+		Result* result = NewGO<Result>(0, "Result");
+		DeleteGO(this);
+		break;
+
+	/*default:
+		break;*/
+	}
 }
 
 void Game::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 
-	if (PauseOpenFlag == true)
+	if (m_GameState == enGameState_Pause)
 	{
 		m_Pause_Back.Draw(rc);
 		m_Pause_Front.Draw(rc);

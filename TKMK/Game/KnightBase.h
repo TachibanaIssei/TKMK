@@ -5,6 +5,7 @@
 
 //class Status;
 class Game;
+class GameUI;
 
 class KnightBase:public Actor
 {
@@ -120,6 +121,15 @@ public:
 	{
 		return m_game;
 	}
+	//
+	void SetGameUI(GameUI* gameUI)
+	{
+		m_gameUI = gameUI;
+	}
+	GameUI* GetSGameUI()
+	{
+		return m_gameUI;
+	}
 
 	/// <summary>
 	/// “Á’è‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶’†‚È‚çfalse‚ğ•Ô‚·
@@ -157,6 +167,14 @@ public:
 	/// <returns></returns>
 	int& SetMaxHp() {
 		return m_Status.MaxHp;
+	}
+
+	/// <summary>
+	/// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½ÏX
+	/// </summary>
+	/// <param name="gamescene">ï¿½ÏXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½Ì–ï¿½ï¿½O</param>
+	void SetPlayerState(PlayerState gamescene) {
+		m_playerState = gamescene;
 	}
 
 protected:
@@ -205,6 +223,7 @@ protected:
 	};
 
 	Game* m_game=nullptr;
+	GameUI* m_gameUI = nullptr;
 
 	//‰ŠúƒXƒe[ƒ^ƒX Å‘åHPAHPAUŒ‚—ÍAƒXƒs[ƒh
 	Status m_Status;

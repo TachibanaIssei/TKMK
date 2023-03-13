@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "BackGround.h"
 #include "Result.h"
+#include "Tittle.h"
 #include "GameCamera.h"
 #include "KnightBase.h"
 #include "Actor.h"
@@ -51,11 +52,15 @@ bool Game::Start()
 		}
 		return false;
 	});
+
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
+	m_gameUI->SetSGame(this);
+
 	//���m�̐���
-	/*m_knightbase = NewGO<KnightBase>(0, "knightbase");
-	m_knightbase->SetSGame(this);*/
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
+	m_knightplayer->SetGameUI(m_gameUI);
 	
 
 	//�Q�[���J�����̐���
@@ -66,9 +71,7 @@ bool Game::Start()
 	m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 	m_Neutral_Enemy->SetNeutral_EnemyGame(this);
 
-	//GameUIの生成
-	m_gameUI = NewGO<GameUI>(0, "gameUI");
-	m_gameUI->SetSGame(this);
+	
 	
 	//ポーズ画面の背景の設定
 	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
@@ -107,18 +110,19 @@ void Game::Update()
 	//ポーズ画面への遷移
 	//スタートボタンが押されたら。
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
-
-		if (m_GameState == enGameState_Battle)
+		//ゲーム画面からポーズ画面に遷移する時の処理
+		if (m_GameState == enGameState_Battle) {
 			m_GameState = enGameState_Pause;
-
-		else if (m_GameState == enGameState_Pause)
+			//プレイヤーのステートをポーズ画面用のステートに変更
+			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Pause);
+		}
+			
+		//ポーズ画面からゲーム画面に戻る時の処理
+		else if (m_GameState == enGameState_Pause) {
 			m_GameState = enGameState_Battle;
-
-
-		/*bool temp;
-		temp = PauseOpenFlag;
-		PauseOpenFlag = PauseCloseFlag;
-		PauseCloseFlag = temp;*/
+			//プレイヤーのステートをポーズ画面用のステートではないようにする
+			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Idle);
+		}
 	}
 
 	GameState();
@@ -133,7 +137,13 @@ void Game::Update()
 //ポーズ画面の処理
 void Game::Pause()
 {
-
+	//タイトル画面への遷移
+	//Aボタンを押したら
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		Tittle*m_tittle = NewGO<Tittle>(0,"m_tittle");
+		DeleteGO(this);
+	}
 }
 
 //ゲームステートの管理

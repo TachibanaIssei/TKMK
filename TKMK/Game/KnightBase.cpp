@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KnightBase.h"
 #include "Status.h"
+#include "GameUI.h"
 
 KnightBase::KnightBase()
 {
@@ -84,7 +85,8 @@ void KnightBase::ExpProcess(int Exp)
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
 		LevelUp(LvUpStatus,m_Status,Lv);
-
+		//レベルに合わせてレベルの画像を変更する
+		m_gameUI->LevelFontChange(Lv);
 		switch (Lv)
 		{
 		case 2:
@@ -291,6 +293,9 @@ levelDown(LvUpStatus, m_Status, Lv, 3);
 	//レベルの経験値テーブルにする
 	ExpTableChamge(Lv, ExpTable);
 
+	//レベルに合わせてレベルの画像を変更する
+	m_gameUI->LevelFontChange(Lv);
+
 	m_playerState = enKnightState_UltimateSkill;
 
 }
@@ -324,6 +329,9 @@ void KnightBase::Death()
 	ExpReset(Lv,GetExp);
 	//一つ下のレベルの経験値テーブルにする
 	ExpTableChamge(Lv,ExpTable);
+
+	//レベルに合わせてレベルの画像を変更する
+	m_gameUI->LevelFontChange(Lv);
 }
 
 /// <summary>

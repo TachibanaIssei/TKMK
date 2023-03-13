@@ -8,6 +8,7 @@
 class KnightPlayer;
 class Game;
 class GameCamera;
+class Neutral_Enemy;
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -37,6 +38,23 @@ public:
 	Game* GetNeutral_EnemyGame()
 	{
 		return m_game;
+	}
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(const Vector3& position)
+	{
+		m_position = position;
+	}
+
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
+	const Vector3& GetPosition() const
+	{
+		return m_position;
 	}
 private:
 	/// <summary>
@@ -148,6 +166,7 @@ private:
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	Game* m_game = nullptr;                  //ゲーム
 	KnightPlayer* m_knightPlayer;                        //剣士
+	Neutral_Enemy* m_Neutral_Enemy;                  //中立の敵
 	float					m_chaseTimer = 0.0f;						//追跡タイマー。
 	float					m_idleTimer = 0.0f;		                    //待機タイマー。
 	GameCamera* m_gameCamera = nullptr;

@@ -174,17 +174,27 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 /// <param name="timer">クールタイムを計算する変数</param>
 void Actor::COOlTIME(float SkillCooltimer, bool& skillstate,float& timer)
 {
+
 	//スキルのアニメーション再生が終わったら
 	if (skillstate==true)
 	{
-		//timerがスキルのクールタイムより大きくなったら。
-		if (timer >= SkillCooltimer)
+		if (timer <= 0)
 		{
 			//スキル使用可能
 			skillstate = false;
-			timer = 0;
+			timer = SkillCooltimer;
+
 		}
-		else timer += g_gameTime->GetFrameDeltaTime();   //timerを進める
+		else timer -= g_gameTime->GetFrameDeltaTime();   //timerを進める
+
+		//timerがスキルのクールタイムより大きくなったら。
+		//if (timer >= SkillCooltimer)
+		//{
+		//	//スキル使用可能
+		//	skillstate = false;
+		//	timer = 0;
+		//}
+		//else timer += g_gameTime->GetFrameDeltaTime();   //timerを進める
 	}
 	
 }

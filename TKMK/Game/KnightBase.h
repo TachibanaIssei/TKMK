@@ -150,7 +150,17 @@ public:
 	int& SetHp() {
 		return m_Status.Hp;
 	}
-
+	/// <summary>
+		/// プレイヤーの前方向を取得。
+		/// </summary>
+	const Vector3& GetForward() const
+	{
+		return m_forward;
+	}
+	Quaternion& GetRot()
+	{
+		return m_rot;
+	}
 
 protected:
 	void PlayAnimation();
@@ -211,7 +221,7 @@ protected:
 	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
 	CharacterController m_charCon;                        //キャラクターコントロール
-	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
+	Quaternion m_rot = Quaternion::Identity;              //回転
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	

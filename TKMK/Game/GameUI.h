@@ -1,6 +1,7 @@
 #pragma once
 
 class KnightPlayer;
+class Game;
 
 class GameUI:public IGameObject
 {
@@ -10,6 +11,12 @@ public:
 
 	bool Start();
 	void Update();
+
+	void SetSGame(Game* Cgame)
+	{
+		m_game = Cgame;
+	}
+
 	void Render(RenderContext& rc);
 	/// HPバーの表示
 /// </summary>
@@ -44,6 +51,7 @@ private:
 	FontRender m_SpeedFont;
 
 	KnightPlayer* m_knightplayer=nullptr;
+	Game* m_game = nullptr;
 	//UI
 	SpriteRender			m_hpBar;				//HPバーの画像
 	SpriteRender			m_statusBar;			//ステータスの画像

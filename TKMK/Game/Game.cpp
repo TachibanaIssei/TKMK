@@ -76,12 +76,6 @@ bool Game::Start()
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
 	m_Map = NewGO<Map>(2, "map");
-	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
-	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
-	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);
-	m_sRotation.SetRotationZ(0.0f);
-	m_spriteRender.SetRotation(m_sRotation);
-	m_spriteRender.Update();
 
 	/*m_fontRender.SetText(L"hello");
 	m_fontRender.SetPosition(-500.0f, 200.0f);

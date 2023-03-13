@@ -68,6 +68,7 @@ private:
 	Vector3 m_moveSpeed = Vector3::Zero;
 	float m_spriteAlpha = 0.0f;
 
+
 	//リザルト画面かのフラグ
 	bool RezultFlag = false;
 	//ポーズ画面かのフラグ

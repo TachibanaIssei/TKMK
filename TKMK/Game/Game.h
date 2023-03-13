@@ -24,14 +24,17 @@ public:
 	void Render(RenderContext& rc);
 
 private:
-	/*enum EnAnimationClip {
-		enAnimationClip_Idle,
-		enAnimationClip_Walk,
-		enAnimationClip_Jump,
+	enum EnGameClip {
+		enGameClip_Start,
+		enGameClip_Battle,
+		enGameClip_Pause,
+		enGameclip_Rezult,
 		enAnimationClip_Num,
 	};
+	EnGameClip m_GameClip = enAnimationClip_Num;
 
-	AnimationClip m_animationClips[enAnimationClip_Num];*/
+
+	//AnimationClip m_animationClips[enAnimationClip_Num];
 	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
 	FontRender m_fontRender;
@@ -58,6 +61,7 @@ private:
 	//リザルト画面かのフラグ
 	bool RezultFlag = false;
 	//ポーズ画面かのフラグ
-	bool PauseFlag = false;
+	bool PauseOpenFlag = false;
+	bool PauseCloseFlag = true;
 };
 

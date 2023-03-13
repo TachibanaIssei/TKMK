@@ -107,7 +107,11 @@ void Game::Update()
 	//ポーズ画面への遷移
 	//スタートボタンが押されたら。
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
-		PauseFlag = true;
+
+		bool temp;
+		temp = PauseOpenFlag;
+		PauseOpenFlag = PauseCloseFlag;
+		PauseCloseFlag = temp;
 	}
 
 
@@ -134,7 +138,7 @@ void Game::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 
-	if (PauseFlag == true)
+	if (PauseOpenFlag == true)
 	{
 		m_Pause_Back.Draw(rc);
 		m_Pause_Front.Draw(rc);

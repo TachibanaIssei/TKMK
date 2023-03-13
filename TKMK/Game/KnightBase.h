@@ -5,12 +5,27 @@
 
 //class Status;
 class Game;
+class GameUI;
 
 class KnightBase:public Actor
 {
 public:
 	KnightBase();
 	virtual ~KnightBase();
+
+	enum PlayerState {
+		enKnightState_Idle,
+		enKnightState_Walk,
+		enKnightState_Run,
+		enKnightState_ChainAtk,
+		enKnightState_Damege,
+		enKnightState_Death,
+		enKnightState_Skill,
+		enKnightState_UltimateSkill,
+		enKnightState_Avoidance,
+		enKnightState_Num,
+		enKnightState_Pause,        //ゲームの状態を受け取る
+	};
 
 	/// <summary>
 	/// モデルのInit、キャラコンの初期化
@@ -63,7 +78,7 @@ public:
 	void SetRespawn();
 
 	/// <summary>
-	/// 自身が倒されたときの処理
+	/// 回転処理
 	/// </summary>
 	void Rotation();
 
@@ -120,6 +135,15 @@ public:
 	{
 		return m_game;
 	}
+	//
+	void SetGameUI(GameUI* gameUI)
+	{
+		m_gameUI = gameUI;
+	}
+	GameUI* GetSGameUI()
+	{
+		return m_gameUI;
+	}
 
 	/// <summary>
 	/// 特定のアニメーションが再生中ならfalseを返す
@@ -127,12 +151,12 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_animState != enKnightState_ChainAtk &&
-			m_animState != enKnightState_UltimateSkill &&
-			m_animState != enKnightState_Skill &&
-			m_animState != enKnightState_Avoidance &&
-			m_animState!= enKnightState_Damege&&
-			m_animState != enKnightState_Death;
+		return m_playerState != enKnightState_ChainAtk &&
+			m_playerState != enKnightState_UltimateSkill &&
+			m_playerState != enKnightState_Skill &&
+			m_playerState != enKnightState_Avoidance &&
+			m_playerState != enKnightState_Damege&&
+			m_playerState != enKnightState_Death;
 	}
 
 	/// <summary>
@@ -151,6 +175,21 @@ public:
 		return m_Status.Hp;
 	}
 
+	/// <summary>
+	/// 現在のマックスヒットポイントを返す
+	/// </summary>
+	/// <returns></returns>
+	int& SetMaxHp() {
+		return m_Status.MaxHp;
+	}
+
+	/// <summary>
+	/// プレイヤーのステートを変更
+	/// </summary>
+	/// <param name="gamescene">変更したいステートの名前</param>
+	void SetPlayerState(PlayerState gamescene) {
+		m_playerState = gamescene;
+	}
 
 protected:
 	void PlayAnimation();
@@ -173,18 +212,21 @@ protected:
 	//HPが0になったときのステートの遷移処理
 	void OnProcessDeathStateTransition();
 
-	enum PlayerState {
-		enKnightState_Idle,
-		enKnightState_Run,
-		enKnightState_ChainAtk,
-		enKnightState_Damege,
-		enKnightState_Death,
-		enKnightState_Skill,
-		enKnightState_UltimateSkill,
-		enKnightState_Avoidance,
-	};
+	//enum PlayerState {
+	//	enKnightState_Idle,
+	//	enKnightState_Run,
+	//	enKnightState_ChainAtk,
+	//	enKnightState_Damege,
+	//	enKnightState_Death,
+	//	enKnightState_Skill,
+	//	enKnightState_UltimateSkill,
+	//	enKnightState_Avoidance,
+	//	enKnightState_Num,
+	//	enKnightState_GameScene,        //ゲームの状態を受け取る
+	//};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
+		enAnimationClip_Walk,
 		enAnimationClip_Run,
 		enAnimationClip_ChainAtk,
 		enAnimationClip_Damege,
@@ -196,6 +238,7 @@ protected:
 	};
 
 	Game* m_game=nullptr;
+	GameUI* m_gameUI = nullptr;
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
 	Status m_Status;
@@ -214,6 +257,7 @@ protected:
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
+	PlayerState m_playerState/* = enKnightState_Num*/;
 	
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };
@@ -236,9 +280,9 @@ protected:
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
 	int AtkEndPosId= -1;
-
+	//スキルのクールタイムを計算するタイマー
 	float SkillTimer = 0;
-
+	//回避のクールタイムを計算するタイマー
 	float AvoidanceTimer = 0;
 
 	//獲得した経験値仮

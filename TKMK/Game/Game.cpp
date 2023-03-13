@@ -8,6 +8,7 @@
 #include "GameUI.h"
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
+#include "Map.h"
 
 Game::Game()
 {
@@ -24,10 +25,13 @@ Game::~Game()
 	DeleteGO(m_knightplayer);
 	DeleteGO(m_Neutral_Enemy);
 	DeleteGO(m_gameUI);
+	DeleteGO(m_Map);
 }
 
 bool Game::Start()
 {
+
+	
 	//�f�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
@@ -65,7 +69,7 @@ bool Game::Start()
 
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "gameUI");
-	
+	m_Map = NewGO<Map>(2, "map");
 	m_spriteRender.Init("Assets/sprite/magicball.DDS", 256.0f, 256.0f);
 	m_spriteRender.SetPosition(100.0f, 100.0f, 0.0f);
 	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);

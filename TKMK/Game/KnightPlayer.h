@@ -30,6 +30,11 @@ public:
 	{
 		return m_game;
 	}
+
+	void GetGameState(PlayerState gamescene) {
+		m_animState = gamescene;
+	}
+
 	/// <summary>
 	/// �摜�\���t���O��擾����
 	/// </summary>

@@ -127,12 +127,12 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_animState != enKnightState_ChainAtk &&
-			m_animState != enKnightState_UltimateSkill &&
-			m_animState != enKnightState_Skill &&
-			m_animState != enKnightState_Avoidance &&
-			m_animState!= enKnightState_Damege&&
-			m_animState != enKnightState_Death;
+		return m_playerState != enKnightState_ChainAtk &&
+			m_playerState != enKnightState_UltimateSkill &&
+			m_playerState != enKnightState_Skill &&
+			m_playerState != enKnightState_Avoidance &&
+			m_playerState != enKnightState_Damege&&
+			m_playerState != enKnightState_Death;
 	}
 
 	/// <summary>
@@ -189,6 +189,8 @@ protected:
 		enKnightState_Skill,
 		enKnightState_UltimateSkill,
 		enKnightState_Avoidance,
+		enKnightState_Num,
+		enKnightState_GameScene,        //ゲームの状態を受け取る
 	};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -221,6 +223,7 @@ protected:
 	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
 	ModelRender m_modelRender;                            //モデルレンダー
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
+	PlayerState m_playerState/* = enKnightState_Num*/;
 	
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,10,30.0f };

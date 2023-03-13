@@ -205,12 +205,12 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 void KnightBase::Collition()
 {
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_animState == enKnightState_Damege || 
-		m_animState == enKnightState_Death ||
-		m_animState == enKnightState_UltimateSkill ||
-		m_animState == enKnightState_ChainAtk ||
-		m_animState == enKnightState_Skill ||
-		m_animState == enKnightState_Avoidance)
+	if (m_playerState == enKnightState_Damege || 
+		m_playerState == enKnightState_Death ||
+		m_playerState == enKnightState_UltimateSkill ||
+		m_playerState == enKnightState_ChainAtk ||
+		m_playerState == enKnightState_Skill ||
+		m_playerState == enKnightState_Avoidance)
 	{
 		return;
 	}
@@ -245,7 +245,7 @@ void KnightBase::Dameged(int damege)
 	if (m_Status.Hp <= 0) {
 		//倒されたときの処理に遷移
 		//死亡ステート
-		m_animState = enKnightState_Death;
+		m_playerState = enKnightState_Death;
 		m_Status.Hp = 0;
 		//Death();
 		//SetRespawn();
@@ -253,7 +253,7 @@ void KnightBase::Dameged(int damege)
 	}
 	else {
 		//ダメージステート
-		m_animState = enKnightState_Damege;
+		m_playerState = enKnightState_Damege;
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}
@@ -265,7 +265,7 @@ void KnightBase::Dameged(int damege)
 //void KnightBase::Skill(Vector3& right, Vector3& forward)
 //{
 //	//スキルステート
-//	m_animState = enKnightState_Skill;
+//	m_playerState = enKnightState_Skill;
 //
 //	//移動処理
 //	//移動速度にスティックの入力量を加算する。
@@ -291,7 +291,7 @@ levelDown(LvUpStatus, m_Status, Lv, 3);
 	//レベルの経験値テーブルにする
 	ExpTableChamge(Lv, ExpTable);
 
-	m_animState = enKnightState_UltimateSkill;
+	m_playerState = enKnightState_UltimateSkill;
 
 }
 
@@ -315,7 +315,7 @@ void KnightBase::SetRespawn()
 void KnightBase::Death()
 {
 	////死亡ステート
-	//m_animState = enKnightState_Death;
+	//m_playerState = enKnightState_Death;
 	//レベルを１下げる
 	levelDown(LvUpStatus, m_Status, Lv,1);
 	//HPを最大にする
@@ -377,7 +377,7 @@ void KnightBase::PlayAnimation()
 {
 	m_modelRender.SetAnimationSpeed(1.0f);
 
-	switch (m_animState)
+	switch (m_playerState)
 	{
 	case enKnightState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
@@ -397,10 +397,10 @@ void KnightBase::PlayAnimation()
 	case enKnightState_Avoidance:
 		m_modelRender.PlayAnimation(enAnimationClip_Avoidance, 0.1f);
 		break;
-	case enAnimationClip_Damege:
+	case enKnightState_Damege:
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
 		break;
-	case enAnimationClip_Death:
+	case enKnightState_Death:
 		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.4f);
 	default:
 		break;
@@ -412,7 +412,7 @@ void KnightBase::PlayAnimation()
 /// </summary>
 void KnightBase::ManageState()
 {
-	switch (m_animState)
+	switch (m_playerState)
 	{
 	case enKnightState_Idle:
 		OnProcessIdleStateTransition();
@@ -432,10 +432,10 @@ void KnightBase::ManageState()
 	case enKnightState_Avoidance:
 		OnProcessAvoidanceStateTransition();
 		break;
-	case enAnimationClip_Damege:
+	case enKnightState_Damege:
 		OnProcessDamegeStateTransition();
 		break;
-	case enAnimationClip_Death:
+	case enKnightState_Death:
 		OnProcessDeathStateTransition();
 		break;
 
@@ -451,13 +451,13 @@ void KnightBase::OnProcessCommonStateTransition()
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 			//走りステート
-		m_animState = enKnightState_Run;
+		m_playerState = enKnightState_Run;
 		return;
 	}
 	else
 	{
 		//なかったら待機ステート
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		return;
 	}
 }
@@ -491,7 +491,7 @@ void KnightBase::OnProcessChainAtkStateTransition()
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -509,7 +509,7 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -526,7 +526,7 @@ void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -542,7 +542,7 @@ void KnightBase::OnProcessAvoidanceStateTransition()
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -556,7 +556,7 @@ void KnightBase::OnProcessDamegeStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//待機ステート
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		//無敵時間ステート
 		//invincibleFlag = false;
 		OnProcessCommonStateTransition();
@@ -575,7 +575,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		SetRespawn();
 		Death();
 		//待機ステート
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }

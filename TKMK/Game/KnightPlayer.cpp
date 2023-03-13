@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
+#include "Game.h"
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -10,7 +11,8 @@ namespace {
 
 KnightPlayer::KnightPlayer()
 {
-	
+	//m_game = FindGO<Game>("m_game");
+
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -52,6 +54,9 @@ void KnightPlayer::Update()
 {
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
+	/*if (m_game->m_GameState == enGameState_Pause) {
+		return;
+	}*/
 
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];
@@ -69,14 +74,14 @@ void KnightPlayer::Update()
 	////回避
 	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 	//	//回避ステート
-	//	//m_animState = enKnightState_Avoidance;
+	//	//m_playerState = enKnightState_Avoidance;
 	//	AnimationMove();
 	//	AvoidanceFlag = true;
 	//}
 	
 	//回避中なら
 	if (AvoidanceFlag == true) {
-		m_animState = enKnightState_Avoidance;
+		m_playerState = enKnightState_Avoidance;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
@@ -90,7 +95,7 @@ void KnightPlayer::Update()
 	//スキル使用中なら
 	if (SkillState == true) {
 		//スキルステート
-		m_animState = enKnightState_Skill;
+		m_playerState = enKnightState_Skill;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
@@ -150,7 +155,7 @@ void KnightPlayer::Attack()
 		//Bボタン押されたら攻撃する
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			m_animState = enKnightState_ChainAtk;
+			m_playerState = enKnightState_ChainAtk;
 			
 			//FirstAtkFlag = true;
 			//コンボを1増やす
@@ -240,7 +245,7 @@ void KnightPlayer::Avoidance()
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
-		//m_animState = enKnightState_Avoidance;
+		//m_playerState = enKnightState_Avoidance;
 		AnimationMove();
 		pushFlag = true;
 		AvoidanceFlag = true;
@@ -300,7 +305,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_animState = enKnightState_Idle;
+			m_playerState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -317,7 +322,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_animState = enKnightState_Idle;
+			m_playerState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -331,7 +336,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_animState = enKnightState_Idle;
+		m_playerState = enKnightState_Idle;
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;

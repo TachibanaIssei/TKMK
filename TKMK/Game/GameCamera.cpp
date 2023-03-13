@@ -17,8 +17,9 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
+	m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
 
-	//’Ž‹“_‚©‚çŽ‹“_‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ðÝ’èB80-160
+	//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½çŽ‹ï¿½_ï¿½Ü‚Å‚Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½Ý’ï¿½B80-160
 	m_toCameraPos.Set(0.0f, 80.0f, -160.0f);
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
@@ -38,42 +39,42 @@ void GameCamera::Update()
 
 
 	Vector3 toCameraPosOld = m_toCameraPos;
-	//ƒpƒbƒh‚Ì“ü—Í‚ðŽg‚Á‚ÄƒJƒƒ‰‚ð‰ñ‚·B
+	//ï¿½pï¿½bï¿½hï¿½Ì“ï¿½ï¿½Í‚ï¿½gï¿½ï¿½ï¿½ÄƒJï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ‚·B
 	float x = g_pad[0]->GetRStickXF();
 	float y = g_pad[0]->GetRStickYF();
-	//YŽ²Žü‚è‚Ì‰ñ“]
+	//Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‰ï¿½]
 	Quaternion qRot;
 	qRot.SetRotationDeg(Vector3::AxisY, 1.3f * x);
 	qRot.Apply(m_toCameraPos);
-	//XŽ²Žü‚è‚Ì‰ñ“]B
+	//Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‰ï¿½]ï¿½B
 	Vector3 axisX;
 	axisX.Cross(Vector3::AxisY, m_toCameraPos);
 	axisX.Normalize();
 	qRot.SetRotationDeg(axisX, 1.3f * y);
 	qRot.Apply(m_toCameraPos);
-	//ƒJƒƒ‰‚Ì‰ñ“]‚ÌãŒÀ‚ðƒ`ƒFƒbƒN‚·‚éB
-	//’Ž‹“_‚©‚çŽ‹“_‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ð³‹K‰»‚·‚éB
-	//³‹K‰»‚·‚é‚ÆAƒxƒNƒgƒ‹‚Ì‘å‚«‚³‚ª‚P‚É‚È‚éB
-	//‘å‚«‚³‚ª‚P‚É‚È‚é‚Æ‚¢‚¤‚±‚Æ‚ÍAƒxƒNƒgƒ‹‚©‚ç‹­‚³‚ª‚È‚­‚È‚èA•ûŒü‚Ì‚Ý‚Ìî•ñ‚Æ‚È‚é‚Æ‚¢‚¤‚±‚ÆB
+	//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ì‰ï¿½]ï¿½Ìï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½B
+	//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½çŽ‹ï¿½_ï¿½Ü‚Å‚Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½ð³‹Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+	//ï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆAï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ì‘å‚«ï¿½ï¿½ï¿½ï¿½ï¿½Pï¿½É‚È‚ï¿½B
+	//ï¿½å‚«ï¿½ï¿½ï¿½ï¿½ï¿½Pï¿½É‚È‚ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ÍAï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ç‹­ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½È‚ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Ý‚Ìï¿½ï¿½Æ‚È‚ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆB
 	Vector3 toPosDir = m_toCameraPos;
 	toPosDir.Normalize();
 	if (toPosDir.y < -0.3f) {
-		//ƒJƒƒ‰‚ªãŒü‚«‚·‚¬B
+		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 		m_toCameraPos = toCameraPosOld;
 	}
 	else if (toPosDir.y > 0.9f) {
-		//ƒJƒƒ‰‚ª‰ºŒü‚«‚·‚¬B
+		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 		m_toCameraPos = toCameraPosOld;
 	}
 
 	Vector3 pos;
-	//Ž‹“_‚Æ’Ž‹“_‚ð‘«‚·
+	//ï¿½ï¿½ï¿½_ï¿½Æ’ï¿½ï¿½ï¿½ï¿½_ï¿½ð‘«‚ï¿½
 	pos = TargetPos + m_toCameraPos;
 	g_camera3D->SetTarget(TargetPos);
 	g_camera3D->SetPosition(pos);
 	//g_camera3D->SetPosition(m_toCameraPos);
 
-	//ƒJƒƒ‰‚ÌXVB
+	//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌXï¿½Vï¿½B
 	g_camera3D->Update();
 }
 

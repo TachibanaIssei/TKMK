@@ -19,6 +19,10 @@ public:
 	void Update();
 
 	void TestPlayer();
+
+	void UpdateLight();
+	void InitLight();
+
 	void OnAnimationEvent(const wchar_t* clipName,const wchar_t* eventName);
 
 	void Render(RenderContext& rc);
@@ -32,7 +36,10 @@ private:
 	};
 
 	AnimationClip m_animationClips[enAnimationClip_Num];
+	
 	ModelRender m_modelRender;
+	ModelRender m_playerModel;
+
 	Level3DRender m_level3DRender;
 	FontRender m_fontRender;
 
@@ -50,5 +57,7 @@ private:
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	float m_spriteAlpha = 0.0f;
-};
 
+	Vector3 m_lightPos = Vector3::Zero;
+	Vector3 m_spotPosition = Vector3::Zero;
+};

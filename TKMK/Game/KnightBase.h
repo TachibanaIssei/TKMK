@@ -13,6 +13,20 @@ public:
 	KnightBase();
 	virtual ~KnightBase();
 
+	enum PlayerState {
+		enKnightState_Idle,
+		enKnightState_Walk,
+		enKnightState_Run,
+		enKnightState_ChainAtk,
+		enKnightState_Damege,
+		enKnightState_Death,
+		enKnightState_Skill,
+		enKnightState_UltimateSkill,
+		enKnightState_Avoidance,
+		enKnightState_Num,
+		enKnightState_Pause,        //ƒQ[ƒ€‚Ìó‘Ô‚ğó‚¯æ‚é
+	};
+
 	/// <summary>
 	/// ƒ‚ƒfƒ‹‚ÌInitAƒLƒƒƒ‰ƒRƒ“‚Ì‰Šú‰»
 	/// </summary>
@@ -64,7 +78,7 @@ public:
 	void SetRespawn();
 
 	/// <summary>
-	/// ©g‚ª“|‚³‚ê‚½‚Æ‚«‚Ìˆ—
+	/// ‰ñ“]ˆ—
 	/// </summary>
 	void Rotation();
 
@@ -170,9 +184,9 @@ public:
 	}
 
 	/// <summary>
-	/// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½ÏX
+	/// ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg‚ğ•ÏX
 	/// </summary>
-	/// <param name="gamescene">ï¿½ÏXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½Ì–ï¿½ï¿½O</param>
+	/// <param name="gamescene">•ÏX‚µ‚½‚¢ƒXƒe[ƒg‚Ì–¼‘O</param>
 	void SetPlayerState(PlayerState gamescene) {
 		m_playerState = gamescene;
 	}
@@ -198,20 +212,21 @@ protected:
 	//HP‚ª0‚É‚È‚Á‚½‚Æ‚«‚ÌƒXƒe[ƒg‚Ì‘JˆÚˆ—
 	void OnProcessDeathStateTransition();
 
-	enum PlayerState {
-		enKnightState_Idle,
-		enKnightState_Run,
-		enKnightState_ChainAtk,
-		enKnightState_Damege,
-		enKnightState_Death,
-		enKnightState_Skill,
-		enKnightState_UltimateSkill,
-		enKnightState_Avoidance,
-		enKnightState_Num,
-		enKnightState_GameScene,        //ƒQ[ƒ€‚Ìó‘Ô‚ğó‚¯æ‚é
-	};
+	//enum PlayerState {
+	//	enKnightState_Idle,
+	//	enKnightState_Run,
+	//	enKnightState_ChainAtk,
+	//	enKnightState_Damege,
+	//	enKnightState_Death,
+	//	enKnightState_Skill,
+	//	enKnightState_UltimateSkill,
+	//	enKnightState_Avoidance,
+	//	enKnightState_Num,
+	//	enKnightState_GameScene,        //ƒQ[ƒ€‚Ìó‘Ô‚ğó‚¯æ‚é
+	//};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
+		enAnimationClip_Walk,
 		enAnimationClip_Run,
 		enAnimationClip_ChainAtk,
 		enAnimationClip_Damege,

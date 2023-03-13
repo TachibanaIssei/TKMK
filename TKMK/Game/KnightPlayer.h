@@ -4,6 +4,7 @@
 #include "Status.h"
 
 class Game;
+//class GameUI;
 
 class KnightPlayer:public KnightBase
 {
@@ -22,18 +23,16 @@ public:
 
 	void AvoidanceSprite();
 
-	void SetSGame(Game* Cgame)
+	/*void SetSGame(Game* Cgame)
 	{
 		m_game = Cgame;
-	}
-	Game* GetSGame()
+	}*/
+	/*Game* GetSGame()
 	{
 		return m_game;
-	}
+	}*/
 
-	void GetGameState(PlayerState gamescene) {
-		m_animState = gamescene;
-	}
+	
 
 	/// <summary>
 	/// �摜�\���t���O��擾����
@@ -48,6 +47,7 @@ public:
 
 private:
 	Game* m_game=nullptr;
+	//GameUI* m_gameUI = nullptr;
 	
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;

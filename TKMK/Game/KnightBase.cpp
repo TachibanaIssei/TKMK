@@ -337,6 +337,12 @@ void KnightBase::AnimationMove()
 	Vector3 stickL;
 	stickL.x = g_pad[0]->GetLStickXF();
 	stickL.y = g_pad[0]->GetLStickYF();
+	//移動の入力量がないなら
+	if (g_pad[0]->GetLStickXF() == 0.0f&&g_pad[0]->GetLStickYF() == 0.0f) {
+		//前に移動
+		stickL.x = 0.0f;
+		stickL.y = 1.0f;
+	}
 
 	m_Skill_Forward = Vector3::Zero;
 	m_Skill_Right = Vector3::Zero;

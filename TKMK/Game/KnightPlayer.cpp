@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
 #include "Game.h"
+//#include "GameUI.h"
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -11,7 +12,7 @@ namespace {
 
 KnightPlayer::KnightPlayer()
 {
-	//m_game = FindGO<Game>("m_game");
+	//m_gameUI = FindGO<GameUI>("m_gameUI");
 
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
@@ -54,9 +55,9 @@ void KnightPlayer::Update()
 {
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	/*if (m_game->m_GameState == enGameState_Pause) {
+	if (m_playerState == enKnightState_Pause) {
 		return;
-	}*/
+	}
 
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];
@@ -110,11 +111,12 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-	//{
-	//	if(Lv!=5)
-	//	ExpProcess(exp);
-	//}
+	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+	{
+		if(Lv!=5)
+		ExpProcess(exp);
+		//m_gameUI->LevelFontChange(Lv);
+	}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -150,20 +152,20 @@ void KnightPlayer::Attack()
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	if (pushFlag==false&&AtkState == false)
-	{
-		//Bボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_playerState = enKnightState_ChainAtk;
-			
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
-			pushFlag = true;
-			AtkState = true;
-		}
-	}
+	//if (pushFlag==false&&AtkState == false)
+	//{
+	//	//Bボタン押されたら攻撃する
+	//	if (g_pad[0]->IsTrigger(enButtonA))
+	//	{
+	//		m_playerState = enKnightState_ChainAtk;
+	//		
+	//		//FirstAtkFlag = true;
+	//		//コンボを1増やす
+	//		//ComboState++;
+	//		pushFlag = true;
+	//		AtkState = true;
+	//	}
+	//}
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{

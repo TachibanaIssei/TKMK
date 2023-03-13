@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KnightBase.h"
 #include "Status.h"
+#include "GameUI.h"
 
 KnightBase::KnightBase()
 {
@@ -33,6 +34,8 @@ void KnightBase::SetModel()
 	//プレイヤー
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Knight/Knight_idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Knight/Knight_Walk.tka");
+	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
@@ -84,7 +87,8 @@ void KnightBase::ExpProcess(int Exp)
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
 		LevelUp(LvUpStatus,m_Status,Lv);
-
+		//レベルに合わせてレベルの画像を変更する
+		m_gameUI->LevelFontChange(Lv);
 		switch (Lv)
 		{
 		case 2:
@@ -291,6 +295,9 @@ levelDown(LvUpStatus, m_Status, Lv, 3);
 	//レベルの経験値テーブルにする
 	ExpTableChamge(Lv, ExpTable);
 
+	//レベルに合わせてレベルの画像を変更する
+	m_gameUI->LevelFontChange(Lv);
+
 	m_playerState = enKnightState_UltimateSkill;
 
 }
@@ -324,6 +331,9 @@ void KnightBase::Death()
 	ExpReset(Lv,GetExp);
 	//一つ下のレベルの経験値テーブルにする
 	ExpTableChamge(Lv,ExpTable);
+
+	//レベルに合わせてレベルの画像を変更する
+	m_gameUI->LevelFontChange(Lv);
 }
 
 /// <summary>
@@ -382,6 +392,9 @@ void KnightBase::PlayAnimation()
 	case enKnightState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
 		break;
+	case enKnightState_Walk:
+		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
+		break;
 	case enKnightState_Run:
 		m_modelRender.PlayAnimation(enAnimationClip_Run,0.2f);
 		break;
@@ -417,6 +430,9 @@ void KnightBase::ManageState()
 	case enKnightState_Idle:
 		OnProcessIdleStateTransition();
 		break;
+	case enKnightState_Walk:
+		OnProcessIdleStateTransition();
+		break;
 	case enKnightState_Run:
 		OnProcessRunStateTransition();
 		break;
@@ -450,8 +466,13 @@ void KnightBase::OnProcessCommonStateTransition()
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
+		if (Lv < 2) {
+			m_playerState = enKnightState_Walk;
+		}
+		else
 			//走りステート
 		m_playerState = enKnightState_Run;
+
 		return;
 	}
 	else

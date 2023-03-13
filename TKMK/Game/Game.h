@@ -4,6 +4,7 @@
 
 class BackGround;
 class Result;
+class Tittle;
 class GameCamera;
 class KnightBase;
 class KnightPlayer;
@@ -54,6 +55,7 @@ private:
 
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
+	Tittle* m_tittle = nullptr;
 	GameCamera* m_gamecamera = nullptr;
 	KnightBase* m_knightbase = nullptr;
 	GameUI* m_gameUI = nullptr;

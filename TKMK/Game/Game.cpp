@@ -29,7 +29,6 @@ Game::~Game()
 
 bool Game::Start()
 {
-	//
 	g_renderingEngine->UnUseHemiLight();
 
 	//�f�B���N�V�������C�g�̐ݒ�

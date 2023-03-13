@@ -74,7 +74,6 @@ bool Game::Start()
 
 
 	//GameUIの生成
-	m_gameUI = NewGO<GameUI>(0, "gameUI");
 	m_Map = NewGO<Map>(2, "map");
 
 	/*m_fontRender.SetText(L"hello");

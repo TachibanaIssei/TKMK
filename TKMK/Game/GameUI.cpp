@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameUI.h"
+#include "Game.h"
 
 #include "KnightPlayer.h"
 namespace
@@ -32,6 +33,8 @@ GameUI::~GameUI()
 bool GameUI::Start()
 {
 	m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
+
+	//m_game = FindGO<Game>("m_game");
 
 	//Level
 	m_LevelFont.SetPosition(-850.0f, -460.0f, 0.0f);
@@ -104,6 +107,12 @@ bool GameUI::Start()
 
 void GameUI::Update()
 {
+	//gameクラスのポーズのフラグが立っている間処理を行わない
+	/*if (m_game->m_GameState == 2) {
+		return;
+	}*/
+
+	//レベルの表示
 	int LEVEL=m_knightplayer->SetLevel();
 	wchar_t Lv[255];
 	swprintf_s(Lv, 255, L"%d", LEVEL);

@@ -98,9 +98,10 @@ public:
 	void ManageState();
 
 	/// <summary>
-	/// 
+	/// アニメーション再生時の移動方向、移動速度を決める
 	/// </summary>
-	void AnimationMove();
+	/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
+	void AnimationMove(float moveSpeed);
 
 	/// <summary>
 	/// 

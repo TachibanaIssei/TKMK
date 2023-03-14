@@ -6,7 +6,7 @@
 
 namespace
 {
-	Vector3 MAP_CENTER_POSITION = Vector3(-630.0f, 290.0f, 0.0f);
+	Vector3 MAP_CENTER_POSITION = Vector3(-800.0f, 380.0f, 0.0f);
 
 	float MAP_RADIUS = 160.0f;
 	float LIMITED_RANGE_IMAGE = 600.0f;

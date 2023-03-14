@@ -124,6 +124,8 @@ void Game::Update()
 			m_GameState = enGameState_Pause;
 			//プレイヤーのステートをポーズ画面用のステートに変更
 			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Pause);
+			//UIのステートをポーズ画面用のステートに変更
+			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 		}
 			
 		//ポーズ画面からゲーム画面に戻る時の処理
@@ -131,6 +133,8 @@ void Game::Update()
 			m_GameState = enGameState_Battle;
 			//プレイヤーのステートをポーズ画面用のステートではないようにする
 			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Idle);
+			//UIのステートをゲームのステートに変更
+			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 		}
 	}
 

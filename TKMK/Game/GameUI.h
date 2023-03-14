@@ -9,6 +9,14 @@ public:
 	GameUI();
 	~GameUI();
 
+	enum GameUIState
+	{
+		m_GameState,
+		m_PauseState,
+		m_BattleEndState,
+	};
+	GameUIState m_GameUIState;
+
 	bool Start();
 	void Update();
 
@@ -26,23 +34,23 @@ public:
 		switch (lv)
 		{
 		case 1:
-			m_Lv.Init("Assets/sprite/Lv1.DDS", 320.0f, 150.0f);
+			m_LvNumber.Init("Assets/sprite/Lv1.DDS", 320.0f, 150.0f);
 
 			break;
 		case 2:
-			m_Lv.Init("Assets/sprite/Lv2.DDS", 320.0f, 150.0f);
+			m_LvNumber.Init("Assets/sprite/Lv2.DDS", 320.0f, 150.0f);
 
 			break;
 		case 3:
-			m_Lv.Init("Assets/sprite/Lv3.DDS", 320.0f, 150.0f);
+			m_LvNumber.Init("Assets/sprite/Lv3.DDS", 320.0f, 150.0f);
 
 			break;
 		case 4:
-			m_Lv.Init("Assets/sprite/Lv4.DDS", 320.0f, 150.0f);
+			m_LvNumber.Init("Assets/sprite/Lv4.DDS", 320.0f, 150.0f);
 
 			break;
 		case 5:
-			m_Lv.Init("Assets/sprite/Lv5.DDS", 320.0f, 150.0f);
+			m_LvNumber.Init("Assets/sprite/Lv5.DDS", 320.0f, 150.0f);
 
 			break;
 		default:
@@ -51,9 +59,19 @@ public:
 	}
 
 	void Render(RenderContext& rc);
+
 	/// HPバーの表示
-/// </summary>
+    /// </summary>
 	void HPBar();
+
+	/// <summary>
+	/// GamwUIのステートを変更
+	/// </summary>
+	/// <param name="gamescene">変更したいステートの名前</param>
+	void SetGameUIState(GameUIState gamescene) {
+		m_GameUIState = gamescene;
+
+	}
 
 	/// <summary>
 	/// ゲージを左寄せする処理
@@ -94,6 +112,8 @@ private:
 	SpriteRender            m_UltRender;            //必殺アイコン
 	SpriteRender            m_TimeAndPointRender;   //制限時間と獲得ポイント
 	SpriteRender            m_Lv;
+	SpriteRender            m_LvNumber;
+	SpriteRender            m_Flame;                //制限時間と獲得ポイントやHPバーの画像を
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション

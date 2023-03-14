@@ -37,9 +37,9 @@ bool Game::Start()
 	//�f�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
-	Vector3 directionLightColor = Vector3{ 1.0f,1.0f,1.0f };
+	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f });
+	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f,1.0f });
 
 	//�X�^�W�A���̃��x���̐ݒ�
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
@@ -126,6 +126,8 @@ void Game::Update()
 			m_GameState = enGameState_Pause;
 			//プレイヤーのステートをポーズ画面用のステートに変更
 			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Pause);
+			//UIのステートをポーズ画面用のステートに変更
+			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 		}
 			
 		//ポーズ画面からゲーム画面に戻る時の処理
@@ -133,6 +135,8 @@ void Game::Update()
 			m_GameState = enGameState_Battle;
 			//プレイヤーのステートをポーズ画面用のステートではないようにする
 			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Idle);
+			//UIのステートをゲームのステートに変更
+			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 		}
 	}
 

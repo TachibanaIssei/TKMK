@@ -193,7 +193,7 @@ void KnightPlayer::Attack()
 		//移動速度を上げる
 		m_Status.Speed += 120.0f;
 		
-		AnimationMove();
+		AnimationMove(SkillSpeed);
 		pushFlag = true;
 		SkillState = true;
 		//AtkCollistionFlag = true;
@@ -248,7 +248,7 @@ void KnightPlayer::Avoidance()
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
 		//m_playerState = enKnightState_Avoidance;
-		AnimationMove();
+		AnimationMove(AvoidanceSpeed);
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}

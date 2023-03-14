@@ -10,6 +10,7 @@
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
 #include "Map.h"
+#include "KnightAI.h"
 
 Game::Game()
 {
@@ -72,7 +73,8 @@ bool Game::Start()
 	m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 	m_Neutral_Enemy->SetNeutral_EnemyGame(this);
 
-
+	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+	m_KnightAI->SetGame(this);
 	//GameUIの生成
 	m_Map = NewGO<Map>(2, "map");
 

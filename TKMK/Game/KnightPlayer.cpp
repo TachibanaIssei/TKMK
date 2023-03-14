@@ -21,6 +21,7 @@ KnightPlayer::KnightPlayer()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
+	respawnNumber = 0;        //リスポーンする座標の番号
 	m_respawnPos[respawnNumber].y += m_position_YUp;
 	//リスポーンする座標のセット
 	//キャラコン

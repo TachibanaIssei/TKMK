@@ -11,6 +11,7 @@ class KnightPlayer;
 class Neutral_Enemy;
 class GameUI;
 class Map;
+class KnightAI;
 
 class Game : public IGameObject
 {
@@ -50,8 +51,8 @@ private:
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
 
-	SpriteRender m_Pause_Front;
-	SpriteRender m_Pause_Back;
+	SpriteRender m_Pause_Front;    //ポーズ画面
+	SpriteRender m_Pause_Back;     //ポーズの裏画面
 
 
 	BackGround* m_backGround = nullptr;
@@ -61,6 +62,7 @@ private:
 	KnightBase* m_knightbase = nullptr;
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
+	KnightAI* m_KnightAI = nullptr;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
 

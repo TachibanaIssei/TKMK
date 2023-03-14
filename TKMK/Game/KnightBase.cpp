@@ -19,7 +19,7 @@ KnightBase::KnightBase()
 	Point=0;                 //敵を倒して手に入れたポイント
 	GetExp=0;                //中立の敵を倒したときの経験値
 	ExpTable=5;              //経験値テーブル
-	respawnNumber = 0;        //リスポーンする座標の番号
+	//respawnNumber = 0;        //リスポーンする座標の番号
 
 	
 }

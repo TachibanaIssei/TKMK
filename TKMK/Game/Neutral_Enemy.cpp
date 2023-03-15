@@ -68,7 +68,8 @@ bool Neutral_Enemy::Start()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
+
+	//m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
 
 	//乱数を初期化。
 	srand((unsigned)time(NULL));
@@ -81,6 +82,15 @@ bool Neutral_Enemy::Start()
 
 void Neutral_Enemy::Update()
 {
+	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
+		return;
+	}
+
+	//リスポーンする処理
+	/*if (Deathflag == true)
+	{
+		Respawn();
+	}*/
 
 	//追跡処理。
 	Chase();
@@ -158,6 +168,7 @@ void Neutral_Enemy::Chase()
 
 void Neutral_Enemy::Collision()
 {
+	//攻撃中、デス中は当たり判定の処理を行わない
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
@@ -170,10 +181,18 @@ void Neutral_Enemy::Collision()
 	{
 		if (collision->IsHit(m_charaCon))
 		{
-			//hpを減らす
-			m_Status.Hp -= 50;
-			if (m_Status.Hp < 0)
+			//プレイヤーの攻撃力を取得
+			//何故かm_knightplayerがnull
+			//HPを減らす
+			m_Status.Hp -= m_knightplayer->SetKnightAtk();
+
+			
+			//HPが0になったら
+			if (m_Status.Hp <= 0)
 			{
+				//剣士に経験値を渡す
+				m_knightplayer->ExpProcess(Exp);
+				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
@@ -186,6 +205,11 @@ void Neutral_Enemy::Collision()
 	}
 
 }
+
+//void Neutral_Enemy::Respawn()
+//{
+//	g_gameTime->GetFrameDeltaTime();
+//}
 
 void Neutral_Enemy::Attack()
 {
@@ -206,7 +230,7 @@ void Neutral_Enemy::Attack()
 const bool Neutral_Enemy::SearchEnemy()const
 {
 	//剣士からエネミーに向かうベクトルを計算する。
-	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	Vector3 diff = m_knightplayer->GetPosition() - m_position;
 	//ボスとプレイヤーの距離がある程度近かったら。
 	if (diff.LengthSq() <= 100.0 * 100.0f)
 	{
@@ -248,7 +272,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//プレイヤーを見つけたら。
 	if (SearchEnemy() == true)
 	{
-		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+		Vector3 diff = m_knightplayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff * 320.0f;
@@ -347,7 +371,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	{
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
-		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+		Vector3 diff = m_knightplayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff * 100.0f;
@@ -419,6 +443,8 @@ void Neutral_Enemy::PlayAnimation()
 		break;
 	}
 }
+
+//
 void Neutral_Enemy::HPBar()
 {
 	if (m_Status.Hp < 0)
@@ -473,7 +499,14 @@ bool Neutral_Enemy::DrawHP()
 	float cos = Dot(toCameraTarget, toMush);
 	float angle = acos(cos);
 
-	if (fabsf(angle) < Math::DegToRad(45.0f))
+
+	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+
+	//プレイヤーに向かう距離を計算する
+	float playerdistance = diff.Length();
+
+
+	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<1000.0f)
 	{
 		return true;
 	}
@@ -511,7 +544,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 const bool Neutral_Enemy::CanAttack()const
 {
 	//中立の敵からプレイヤーに向かうベクトルを計算する
-	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	Vector3 diff = m_knightplayer->GetPosition() - m_position;
 	//距離が近かったら
 	if (diff.LengthSq() <= 75.0f * 75.0f)
 	{
@@ -526,7 +559,7 @@ void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
-	if (m_knightPlayer->GetSpriteFlag())
+	if (m_knightplayer->GetSpriteFlag())
 	{
 		if (DrawHP())
 		{

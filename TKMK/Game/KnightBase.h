@@ -275,7 +275,8 @@ protected:
 	PlayerState m_playerState/* = enKnightState_Num*/;
 	
 	//レベルアップ時に増加するステータス
-	LvUpStatus LvUpStatus = { 30,10,30.0f };
+	LvUpStatus LvUpStatus = { 30,5,10.0f };
+
 	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ
 	int ComboState = 0;

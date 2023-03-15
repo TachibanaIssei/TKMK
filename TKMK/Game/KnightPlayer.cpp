@@ -113,7 +113,7 @@ void KnightPlayer::Update()
 	//レベルアップする
 	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
 	{
-		if(Lv!=5)
+		if(Lv!=10)
 		ExpProcess(exp);
 		//m_gameUI->LevelFontChange(Lv);
 	}

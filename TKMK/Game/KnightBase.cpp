@@ -100,7 +100,21 @@ void KnightBase::ExpProcess(int Exp)
 		case 4:
 			ExpTable = 30;
 			break;
-
+		case 5:
+			ExpTable = 40;
+			break;
+		case 6:
+			ExpTable = 50;
+			break;
+		case 7:
+			ExpTable = 60;
+			break;
+		case 8:
+			ExpTable = 70;
+			break;
+		case 9:
+			ExpTable = 80;
+			break;
 		default:
 			break;
 		}

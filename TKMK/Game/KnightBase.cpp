@@ -100,7 +100,21 @@ void KnightBase::ExpProcess(int Exp)
 		case 4:
 			ExpTable = 30;
 			break;
-
+		case 5:
+			ExpTable = 40;
+			break;
+		case 6:
+			ExpTable = 50;
+			break;
+		case 7:
+			ExpTable = 60;
+			break;
+		case 8:
+			ExpTable = 70;
+			break;
+		case 9:
+			ExpTable = 80;
+			break;
 		default:
 			break;
 		}
@@ -339,7 +353,7 @@ void KnightBase::Death()
 /// <summary>
 /// アニメーション再生時に直線移動させる方向の決定
 /// </summary>
-void KnightBase::AnimationMove()
+void KnightBase::AnimationMove(float moveSpeed)
 {
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
@@ -365,8 +379,8 @@ void KnightBase::AnimationMove()
 	m_Skill_Right.y = 0.0f;
 
 	//左スティックの入力量とstatusのスピードを乗算。
-	m_Skill_Right *= stickL.x * m_Status.Speed;
-	m_Skill_Forward *= stickL.y * m_Status.Speed;
+	m_Skill_Right *= stickL.x * moveSpeed;
+	m_Skill_Forward *= stickL.y * moveSpeed;
 }
 
 //直線移動させる

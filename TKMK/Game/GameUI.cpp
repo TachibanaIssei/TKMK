@@ -41,13 +41,13 @@ bool GameUI::Start()
 	//m_game = FindGO<Game>("m_game");
 
 	//Level
-	/*m_LevelFont.SetPosition(-850.0f, -460.0f, 0.0f);
+	m_LevelFont.SetPosition(-850.0f, -460.0f, 0.0f);
 	m_LevelFont.SetScale(2.0f);
 	m_LevelFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_LevelFont.SetRotation(0.0f);
 	m_LevelFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
-	m_LevelNameFont.SetText(L"Lv");
+	/*m_LevelNameFont.SetText(L"Lv");
 	m_LevelNameFont.SetPosition(-950.0f, -460.0f,0.0f);
 	m_LevelNameFont.SetScale(2.0f);
 	m_LevelNameFont.SetRotation(0.0f);
@@ -137,25 +137,21 @@ void GameUI::Update()
 	}
 
 	//ƒŒƒxƒ‹‚Ì•\Ž¦
-	//int LEVEL=m_knightplayer->SetLevel();
-	//wchar_t Lv[255];
-	//swprintf_s(Lv, 255, L"%d", LEVEL);
-	//m_LevelFont.SetText(Lv);
+	int LEVEL=m_knightplayer->SetLevel();
+	wchar_t Lv[255];
+	swprintf_s(Lv, 255, L"%d", LEVEL);
+	m_LevelFont.SetText(Lv);
 
-	//0•ª‚Å‚È‚¢‚È‚ç
-	if (MinutesTimer != 0) {
-		SecondsTimer -= g_gameTime->GetFrameDeltaTime();
-		//0•bˆÈ‰º‚È‚ç
-		if (SecondsTimer <= 0) {
-			//1•ªŒ¸‚ç‚·
-			MinutesTimer--;
-			//60•b‚É–ß‚·
-			SecondsTimer = 60.0f;
-		}
+
+	
+
+	if (GameEndFlag == false) {
+		Timer();
 	}
+
 	//§ŒÀŽžŠÔ‚Ì•\Ž¦
 	wchar_t wcsbuf[256];
-	swprintf_s(wcsbuf, 256, L"%d:%d", int(MinutesTimer),int(SecondsTimer));
+	swprintf_s(wcsbuf, 256, L"%d:%02d", int(MinutesTimer),int(SecondsTimer));
 	
 	//•\Ž¦‚·‚éƒeƒLƒXƒg‚ðÝ’èB
 	m_time_left.SetText(wcsbuf);
@@ -188,11 +184,33 @@ void GameUI::HPBar()
 
 	m_hpBar.Update();
 }
+
+void GameUI::Timer()
+{
+	//0•ª‚Å‚È‚¢‚È‚ç
+
+		//0•bˆÈ‰º‚È‚ç
+		if (SecondsTimer <= 0) {
+			//1•ªŒ¸‚ç‚·
+			MinutesTimer--;
+			//‚à‚µ0•ª‚È‚çA•b‚à0‚É‚·‚é
+			if (MinutesTimer < 0) {
+				SecondsTimer = 0.0f;
+				MinutesTimer = 0.0f;
+				GameEndFlag = true;
+			}
+			//60•b‚É–ß‚·
+			else SecondsTimer = 60.0f;
+		}
+		else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
+	
+}
+
 void GameUI::Render(RenderContext& rc)
 {
 	//m_Flame.Draw(rc);
-	/*m_LevelFont.Draw(rc);
-	m_LevelNameFont.Draw(rc);*/
+	
+	//m_LevelNameFont.Draw(rc);
 	m_HpNameFont.Draw(rc);
 
 	m_TimeAndPointRender.Draw(rc);
@@ -211,4 +229,5 @@ void GameUI::Render(RenderContext& rc)
 	m_HpFont.Draw(rc);
 	m_Lv.Draw(rc);
 	m_LvNumber.Draw(rc);
+	m_LevelFont.Draw(rc);
 }

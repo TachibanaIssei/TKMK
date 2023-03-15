@@ -73,6 +73,8 @@ public:
 
 	}
 
+	void Timer();
+
 	/// <summary>
 	/// ゲージを左寄せする処理
 	/// </summary>
@@ -127,6 +129,8 @@ private:
 	//分を計るタイマー
 	float MinutesTimer=5.0f;
 	float m_timer = 300.0f;
+
+	bool GameEndFlag=false;
 	//int LEVEL;
 };
 

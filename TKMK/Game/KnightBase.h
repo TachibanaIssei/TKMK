@@ -98,9 +98,10 @@ public:
 	void ManageState();
 
 	/// <summary>
-	/// 
+	/// アニメーション再生時の移動方向、移動速度を決める
 	/// </summary>
-	void AnimationMove();
+	/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
+	void AnimationMove(float moveSpeed);
 
 	/// <summary>
 	/// 
@@ -274,7 +275,8 @@ protected:
 	PlayerState m_playerState/* = enKnightState_Num*/;
 	
 	//レベルアップ時に増加するステータス
-	LvUpStatus LvUpStatus = { 30,10,30.0f };
+	LvUpStatus LvUpStatus = { 30,5,10.0f };
+
 	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ
 	int ComboState = 0;

@@ -107,7 +107,11 @@ void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level, int downLe
 	}
 
 	nowStatus.MaxHp-= downLevel*lus.LvHp;
-	nowStatus.Hp -= downLevel*lus.LvHp;
+	//‚à‚µHP‚ªMaxHp‚ðã‰ñ‚é‚È‚ç
+	if (nowStatus.Hp > nowStatus.MaxHp)
+		//HP‚ÆMaxHp‚ð“¯‚¶‚É‚·‚é
+		nowStatus.Hp = nowStatus.MaxHp;
+
 	nowStatus.Atk -= downLevel*lus.LvAtk;
 	nowStatus.Speed -= downLevel*lus.LvSpeed;
 }

@@ -29,7 +29,11 @@ public:
 		enNeutral_Enemy_Attack,			        //攻撃
 		enNeutral_Enemy_ReceiveDamage,			//被ダメージ。
 		enNeutral_Enemy_Death,					//ダウン。
+		
 	};
+
+		
+
 
 	void SetNeutral_EnemyGame(Game* NEgame)
 	{
@@ -57,6 +61,7 @@ public:
 		return m_position;
 	}
 private:
+	void Move();
 	/// <summary>
 	/// 追跡
 	/// </summary>
@@ -163,6 +168,7 @@ private:
 	CharacterController m_charaCon;          //キャラコン
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;    //中立の敵のステート。
 	bool m_UnderAttack = false;              //攻撃判定
+	bool Patrol = true;                     //巡回
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	Game* m_game = nullptr;                  //ゲーム
 	KnightPlayer* m_knightPlayer;                        //剣士
@@ -182,5 +188,8 @@ private:
 	nsAI::Path m_path;
 	nsAI::PathFinding m_pathFiding;
 	Vector3 m_targetPointPosition;
+
+
+	int f = 0;
 };
 

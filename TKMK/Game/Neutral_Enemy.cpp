@@ -45,13 +45,17 @@ bool Neutral_Enemy::Start()
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
 	//大きさ調整
-	
+	// ナビメッシュを構築。
+	m_nvmMesh.Init("Assets/nvm/nvm1.tkn");
+
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
 		25.0f,			//半径。
 		50.0f,			//高さ。
 		m_position		//座標。
 	);
+
+	
 	//剣のボーンのIDを取得する
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 
@@ -98,9 +102,18 @@ void Neutral_Enemy::Update()
 	//モデルの更新。
 	m_modelRender.Update();
 }
+void Neutral_Enemy::Move()
+{
+	m_forward.Normalize();
+	Vector3 moveSpeed = m_forward * m_Status.Speed;
+	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
+	m_modelRender.SetPosition(m_position);
 
+}
 void Neutral_Enemy::Rotation()
 {
+	//m_moveSpeed.x +=10.0f;
+	//m_moveSpeed.z +=10.0f;
 	if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
@@ -131,29 +144,34 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-	//m_targetPointPosition = m_knightPlayer->GetPosition();
-	//bool isEnd;
-	////if(){
-	//	// パス検索
-	//m_pathFiding.Execute(
-	//	m_path,							// 構築されたパスの格納先
-	//	m_nvmMesh,						// ナビメッシュ
-	//	m_position,						// 開始座標
-	//	m_targetPointPosition,			// 移動目標座標
-	//	PhysicsWorld::GetInstance(),	// 物理エンジン	
-	//	20.0f,							// AIエージェントの半径
-	//	50.0f							// AIエージェントの高さ。
-	//);
-	////}
-	//// パス上を移動する。
-	//m_position = m_path.Move(
-	//	m_position,
-	//	3.0f,
-	//	isEnd
-	//);
-	Vector3 pos = m_position;
-	m_charaCon.SetPosition(pos);
-	m_modelRender.SetPosition(pos);
+		m_targetPointPosition = m_knightPlayer->GetPosition();
+		bool isEnd;
+		//if(){
+			// パス検索
+		m_pathFiding.Execute(
+			m_path,							// 構築されたパスの格納先
+			m_nvmMesh,						// ナビメッシュ
+			m_position,						// 開始座標
+			m_targetPointPosition,			// 移動目標座標
+			PhysicsWorld::GetInstance(),	// 物理エンジン	
+			20.0f,							// AIエージェントの半径
+			50.0f							// AIエージェントの高さ。
+		);
+		//}
+		// パス上を移動する。
+		m_position = m_path.Move(
+			m_position,
+			m_Status.Speed,
+			isEnd
+		);
+
+		Vector3 pos = m_position;
+		m_charaCon.SetPosition(pos);
+		Vector3 zero = Vector3::Zero;
+		m_charaCon.Execute(zero, 0.0f);
+		m_modelRender.SetPosition(pos);
+		
+	
 }
 
 void Neutral_Enemy::Collision()
@@ -208,7 +226,7 @@ const bool Neutral_Enemy::SearchEnemy()const
 	//剣士からエネミーに向かうベクトルを計算する。
 	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 	//ボスとプレイヤーの距離がある程度近かったら。
-	if (diff.LengthSq() <= 100.0 * 100.0f)
+	if (diff.LengthSq() <= 700.0 * 700.0f)
 	{
 		//エネミーからプレイヤーに向かうベクトルを正規化する。
 		diff.Normalize();
@@ -252,6 +270,8 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff * 320.0f;
+		/*m_Neutral_EnemyState = enNeutral_Enemy_Chase;*/
+
 		//攻撃できる距離なら。
 		if (CanAttack() == true)
 		{
@@ -298,12 +318,62 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 void Neutral_Enemy::ProcessIdleStateTransition()
 {
 	m_idleTimer += g_gameTime->GetFrameDeltaTime();
+
 	//待機時間がある程度経過したら。
 	if (m_idleTimer >= 0.5f)
 	{
 		//他のステートへ遷移する。
 		ProcessCommonStateTransition();
+
 	}
+	//Vector3 position1;
+	//position1 = { 50,0,-150 };
+
+	//Vector3 position2;
+	//position2 = { 50,0,50 };
+	//if (Patrol)
+	//{
+	//	if (f == 0)
+	//	{
+	//		//position1に向かうコード
+	//		//もしもposition1に到着したらf=1;
+	//		//patrol=true;
+	//		Vector3 newForward = position1-m_position;
+	//		Vector3 distance = newForward;
+	//		newForward.Normalize();
+	//		m_forward = newForward;
+	//		Move();
+	//		if (distance.Length() <= 10.0f)
+	//		{
+	//			//Patrol = false;
+	//			f = 1;
+	//		}
+
+	//		
+	//	}
+	//	else if (f == 1)
+	//	{
+	//		//position2に向かうコード
+	//		//もしもposition2に到着したらf=0;
+	//		//patrol=true;
+	//		Vector3 newForward2 =  position2- m_position;
+	//		Vector3 distance2 = newForward2;
+	//		newForward2.Normalize();
+	//		m_forward = newForward2;
+	//		Move();
+	//		if (distance2.Length()<=10.0f)
+	//		{
+	//			//Patrol = false;
+	//			f = 0;
+	//		}
+	//		
+	//	}
+	//}
+	//else
+	//{
+	//	//g_gametime patrolwaitTimerに加算して一定以上になったらpatrolをtrueにするコード
+
+	//}
 
 }
 void Neutral_Enemy::ProcessRunStateTransition()

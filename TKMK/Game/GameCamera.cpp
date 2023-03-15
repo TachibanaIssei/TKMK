@@ -33,7 +33,7 @@ void GameCamera::Update()
 	/// ////////////////////
 	/// </summary>
 	TargetPos = m_knightplayer->GetPosition();
-	TargetPos.y += 80.0f;
+	TargetPos.y += 40.0f;
 
 
 

@@ -92,6 +92,11 @@ private:
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
 
+	//スキルを使った時の移動速度
+	float SkillSpeed = 270.0f;
+	//回避を使った時の移動速度
+	float AvoidanceSpeed = 170.0f;
+
 	bool m_spriteFlag = true;
 
 	bool m_spriteFlag = true;

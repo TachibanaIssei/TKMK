@@ -74,7 +74,7 @@ namespace nsK2EngineLow {
 		/// <param name="lightNo">ライト番号</param>
 		/// <param name="direction">ライト方向</param>
 		/// <param name="color">ライト色</param>
-		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
+		void SetDirectionLight(int lightNo, Vector3 direction, Vector4 color)
 		{
 			m_sceneLight.SetDirectionLight(lightNo, direction, color);
 		}
@@ -90,7 +90,7 @@ namespace nsK2EngineLow {
 		/// ディレクションライトの光の色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetDirLightColor(Vector3 color)
+		void SetDirLightColor(Vector4 color)
 		{
 			m_sceneLight.SetDirLightColor(color);
 		}
@@ -107,7 +107,7 @@ namespace nsK2EngineLow {
 		/// ディレクションライトの光の色を取得する
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetDirLigColor() const
+		const Vector4& GetDirLigColor() const
 		{
 			return m_sceneLight.GetDirLigColor();
 		}
@@ -119,7 +119,7 @@ namespace nsK2EngineLow {
 		/// 環境光を設定
 		/// </summary>
 		/// <param name="ambient">環境光</param>
-		void SetAmbient(Vector3 ambient)
+		void SetAmbient(Vector4 ambient)
 		{
 			m_sceneLight.SetAmbient(ambient);
 		}
@@ -145,7 +145,7 @@ namespace nsK2EngineLow {
 		/// <param name="pos">ライトの位置</param>
 		/// <param name="color">ライトの色</param>
 		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
-		void SetPointLight(Vector3 pos, Vector3 color, Vector3 range)
+		void SetPointLight(Vector3 pos, Vector4 color, Vector3 range)
 		{
 			m_sceneLight.SetPointLight(pos, color, range);
 		}
@@ -161,7 +161,7 @@ namespace nsK2EngineLow {
 		/// ポイントライトの色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetPointLightColor(Vector3 color)
+		void SetPointLightColor(Vector4 color)
 		{
 			m_sceneLight.SetPointLightColor(color);
 		}
@@ -200,7 +200,7 @@ namespace nsK2EngineLow {
 		/// ポイントライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetPointLightColor() const
+		const Vector4& GetPointLightColor() const
 		{
 			return m_sceneLight.GetPointLightColor();
 		}
@@ -232,7 +232,7 @@ namespace nsK2EngineLow {
 		/// <param name="range">xに影響範囲,yに影響範囲に累乗するパラメータ</param>
 		/// <param name="direction">照射方向</param>
 		/// <param name="angle">xは照射角度,ｙは影響に累乗するパラメータ</param>
-		void SetSpotLight(Vector3 pos, Vector3 color, Vector3 attn, Vector3 direction, Vector3 angle)
+		void SetSpotLight(Vector3 pos, Vector4 color, Vector3 attn, Vector3 direction, Vector3 angle)
 		{
 			m_sceneLight.SetSpotLight(pos, color, attn, direction, angle);
 		}
@@ -248,7 +248,7 @@ namespace nsK2EngineLow {
 		/// スポットライトのライト色の設定
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetSpotLightColor(Vector3 color)
+		void SetSpotLightColor(Vector4 color)
 		{
 			m_sceneLight.SetSpotLightColor(color);
 		}
@@ -303,7 +303,7 @@ namespace nsK2EngineLow {
 		/// スポットライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetSpotLightColor() const
+		const Vector4& GetSpotLightColor() const
 		{
 			return m_sceneLight.GetSpotLightColor();
 		}

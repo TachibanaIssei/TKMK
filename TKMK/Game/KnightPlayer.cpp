@@ -21,6 +21,7 @@ KnightPlayer::KnightPlayer()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
+	respawnNumber = 0;        //リスポーンする座標の番号
 	m_respawnPos[respawnNumber].y += m_position_YUp;
 	//リスポーンする座標のセット
 	//キャラコン
@@ -111,12 +112,12 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-	//{
-	//	if(Lv!=5)
-	//	ExpProcess(exp);
-	//	//m_gameUI->LevelFontChange(Lv);
-	//}
+	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+	{
+		if(Lv!=10)
+		ExpProcess(exp);
+		//m_gameUI->LevelFontChange(Lv);
+	}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -152,20 +153,20 @@ void KnightPlayer::Attack()
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	if (pushFlag==false&&AtkState == false)
-	{
-		//Bボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			m_playerState = enKnightState_ChainAtk;
-			
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
-			pushFlag = true;
-			AtkState = true;
-		}
-	}
+	//if (pushFlag==false&&AtkState == false)
+	//{
+	//	//Bボタン押されたら攻撃する
+	//	if (g_pad[0]->IsTrigger(enButtonA))
+	//	{
+	//		m_playerState = enKnightState_ChainAtk;
+	//		
+	//		//FirstAtkFlag = true;
+	//		//コンボを1増やす
+	//		//ComboState++;
+	//		pushFlag = true;
+	//		AtkState = true;
+	//	}
+	//}
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -193,7 +194,7 @@ void KnightPlayer::Attack()
 		//移動速度を上げる
 		m_Status.Speed += 120.0f;
 		
-		AnimationMove();
+		AnimationMove(SkillSpeed);
 		pushFlag = true;
 		SkillState = true;
 		//AtkCollistionFlag = true;
@@ -248,7 +249,7 @@ void KnightPlayer::Avoidance()
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
 		//m_playerState = enKnightState_Avoidance;
-		AnimationMove();
+		AnimationMove(AvoidanceSpeed);
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}

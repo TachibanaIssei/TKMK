@@ -99,7 +99,6 @@ private:
 
 	bool m_spriteFlag = true;
 
-	bool m_spriteFlag = true;
 	//Status m_Status;                           //ステータス
 
 	//Vector3 m_position = Vector3::Zero;

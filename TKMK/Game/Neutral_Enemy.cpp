@@ -101,6 +101,8 @@ void Neutral_Enemy::Update()
 
 void Neutral_Enemy::Rotation()
 {
+	m_moveSpeed.x = m_Status.Speed;
+	m_moveSpeed.z = m_Status.Speed;
 	if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
@@ -131,29 +133,31 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-	//m_targetPointPosition = m_knightPlayer->GetPosition();
-	//bool isEnd;
-	////if(){
-	//	// パス検索
-	//m_pathFiding.Execute(
-	//	m_path,							// 構築されたパスの格納先
-	//	m_nvmMesh,						// ナビメッシュ
-	//	m_position,						// 開始座標
-	//	m_targetPointPosition,			// 移動目標座標
-	//	PhysicsWorld::GetInstance(),	// 物理エンジン	
-	//	20.0f,							// AIエージェントの半径
-	//	50.0f							// AIエージェントの高さ。
-	//);
-	////}
-	//// パス上を移動する。
-	//m_position = m_path.Move(
-	//	m_position,
-	//	3.0f,
-	//	isEnd
-	//);
-	Vector3 pos = m_position;
-	m_charaCon.SetPosition(pos);
-	m_modelRender.SetPosition(pos);
+		//m_targetPointPosition = m_knightPlayer->GetPosition();
+		//bool isEnd;
+		////if(){
+		//	// パス検索
+		//m_pathFiding.Execute(
+		//	m_path,							// 構築されたパスの格納先
+		//	m_nvmMesh,						// ナビメッシュ
+		//	m_position,						// 開始座標
+		//	m_targetPointPosition,			// 移動目標座標
+		//	PhysicsWorld::GetInstance(),	// 物理エンジン	
+		//	20.0f,							// AIエージェントの半径
+		//	50.0f							// AIエージェントの高さ。
+		//);
+		////}
+		//// パス上を移動する。
+		//m_position = m_path.Move(
+		//	m_position,
+		//	m_Status.Speed,
+		//	isEnd
+		//);
+
+		Vector3 pos = m_position;
+		m_charaCon.SetPosition(pos);
+		m_modelRender.SetPosition(pos);
+	
 }
 
 void Neutral_Enemy::Collision()
@@ -248,10 +252,12 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//プレイヤーを見つけたら。
 	if (SearchEnemy() == true)
 	{
-		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
-		diff.Normalize();
-		//移動速度を設定する。
-		m_moveSpeed = diff * 320.0f;
+		//Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+		//diff.Normalize();
+		////移動速度を設定する。
+		//m_moveSpeed = diff * 320.0f;
+		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
+
 		//攻撃できる距離なら。
 		if (CanAttack() == true)
 		{

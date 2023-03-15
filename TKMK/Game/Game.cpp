@@ -27,6 +27,7 @@ Game::~Game()
 	DeleteGO(m_Neutral_Enemy);
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
+	DeleteGO(m_KnightAI);
 }
 
 bool Game::Start()

@@ -17,12 +17,13 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="GameCamera.cpp" />
-    <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="KnightPlayer.cpp" />
     <ClCompile Include="Neutral_Enemy.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="KnightBase.cpp" />
+    <ClCompile Include="KnightAI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -41,5 +42,6 @@
     <ClInclude Include="Neutral_Enemy.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="KnightAI.h" />
   </ItemGroup>
 </Project>

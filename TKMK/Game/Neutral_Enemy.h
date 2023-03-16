@@ -29,6 +29,7 @@ public:
 		enNeutral_Enemy_Attack,			        //攻撃
 		enNeutral_Enemy_ReceiveDamage,			//被ダメージ。
 		enNeutral_Enemy_Death,					//ダウン。
+		enNEutral_Enemy_Patrol,                 //巡回
 		
 	};
 
@@ -126,6 +127,10 @@ private:
 	/// ダウンステートの遷移処理。
 	/// </summary>
 	void ProcessDeathStateTransition();
+	/// <summary>
+	/// 巡回ステートの遷移処理
+	/// </summary>
+	void ProcessPatrolStateTransition();
 	/// <summary>
 	/// 攻撃できるならtrue
 	/// </summary>

@@ -104,6 +104,10 @@ void Neutral_Enemy::Update()
 }
 void Neutral_Enemy::Move()
 {
+	Vector3 diff = m_forward;
+	diff.Normalize();
+	//移動速度を設定する。
+	m_moveSpeed = diff * 320.0f;
 	m_forward.Normalize();
 	Vector3 moveSpeed = m_forward * 50.0f;
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
@@ -112,7 +116,7 @@ void Neutral_Enemy::Move()
 }
 void Neutral_Enemy::Rotation()
 {
-
+	
 	if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
@@ -170,7 +174,6 @@ void Neutral_Enemy::Chase()
 	Vector3 zero = Vector3::Zero;
 	m_charaCon.Execute(zero, 0.0f);
 	m_modelRender.SetPosition(pos);
-	
 }
 
 void Neutral_Enemy::Collision()
@@ -224,6 +227,7 @@ const bool Neutral_Enemy::SearchEnemy()const
 {
 	//剣士からエネミーに向かうベクトルを計算する。
 	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+		float oti = diff.LengthSq();
 	//ボスとプレイヤーの距離がある程度近かったら。
 	if (diff.LengthSq() <= 300.0 * 300.0)
 	{
@@ -237,7 +241,6 @@ const bool Neutral_Enemy::SearchEnemy()const
 		//角度(θ)が180°より小さければ。
 		if (angle <= (Math::PI / 180.0f) * 180.0f)
 		{
-
 			//プレイヤーを見つけた！
 			return true;
 
@@ -261,6 +264,7 @@ void Neutral_Enemy::MakeAttackCollision()
 }
 void Neutral_Enemy::ProcessCommonStateTransition()
 {
+	
 	//各タイマーを初期化。
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
@@ -271,9 +275,9 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
-		m_moveSpeed = diff * 320.0f;
-		/*m_Neutral_EnemyState = enNeutral_Enemy_Chase;*/
-		Chase();
+		m_moveSpeed = diff;
+		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
+		
 		//攻撃できる距離なら。
 		if (CanAttack() == true)
 		{
@@ -310,10 +314,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//プレイヤーを見つけられなければ。
 	else
 	{
-		//待機ステートに移行する。
-		m_Neutral_EnemyState = enNeutral_Enemy_Idle;
-		return;
-
+		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
 	}
 }
 
@@ -327,54 +328,6 @@ void Neutral_Enemy::ProcessIdleStateTransition()
 		//他のステートへ遷移する。
 		ProcessCommonStateTransition();
 
-	}
-	Vector3 position1;
-	position1 = { 50,0,-150 };
-
-	Vector3 position2;
-	position2 = { 50,0,50 };
-	if (Patrol)
-	{
-		if (f == 0)
-		{
-			//position1に向かうコード
-			//もしもposition1に到着したらf=1;
-			//patrol=true;
-			Vector3 newForward = position1-m_position;
-			Vector3 distance = newForward;
-			newForward.Normalize();
-			m_forward = newForward;
-			Move();
-			if (distance.Length() <= 10.0f)
-			{
-				//Patrol = false;
-				f = 1;
-			}
-
-			
-		}
-		else if (f == 1)
-		{
-			//position2に向かうコード
-			//もしもposition2に到着したらf=0;
-			//patrol=true;
-			Vector3 newForward2 =  position2- m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length()<=10.0f)
-			{
-				//Patrol = false;
-				f = 0;
-			}
-			
-		}
-	}
-	else
-	{
-		//g_gametime patrolwaitTimerに加算して一定以上になったらpatrolをtrueにするコード
-		
 	}
 
 }
@@ -436,7 +389,59 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 		DeleteGO(this);
 	}
 }
+void Neutral_Enemy::ProcessPatrolStateTransition()
+{
+	Vector3 position1;
+	position1 = { 50,0,-150 };
 
+	Vector3 position2;
+	position2 = { 50,0,50 };
+	
+	if (Patrol)
+	{
+		if (f == 0)
+		{
+			//position1に向かうコード
+			//もしもposition1に到着したらf=1;
+			//patrol=true;
+			Vector3 newForward = position1 - m_position;
+			Vector3 distance = newForward;
+			newForward.Normalize();
+			m_forward = newForward;
+			Move();
+			if (distance.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 1;
+			}
+
+
+		}
+		else if (f == 1)
+		{
+			//position2に向かうコード
+			//もしもposition2に到着したらf=0;
+			//patrol=true;
+			Vector3 newForward2 = position2 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 0;
+			}
+
+		}
+	}
+	else
+	{
+		//g_gametime patrolwaitTimerに加算して一定以上になったらpatrolをtrueにするコード
+		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
+	}
+	ProcessCommonStateTransition();
+}
 void Neutral_Enemy::ManageState()
 {
 	switch (m_Neutral_EnemyState)
@@ -460,6 +465,9 @@ void Neutral_Enemy::ManageState()
 		//死亡ステート
 	case enNeutral_Enemy_Death:
 		ProcessDeathStateTransition();
+		break;
+	case enNEutral_Enemy_Patrol:
+		ProcessPatrolStateTransition();
 		break;
 	}
 }
@@ -488,6 +496,9 @@ void Neutral_Enemy::PlayAnimation()
 		//死亡ステート
 	case enNeutral_Enemy_Death:
 		m_modelRender.PlayAnimation(enNeutral_Enemy_Death, 0.5f);
+		break;
+	case enNEutral_Enemy_Patrol:
+		m_modelRender.PlayAnimation(enNEutral_Enemy_Patrol, 0.5f);
 		break;
 	}
 }
@@ -585,7 +596,7 @@ const bool Neutral_Enemy::CanAttack()const
 	//中立の敵からプレイヤーに向かうベクトルを計算する
 	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 	//距離が近かったら
-	if (diff.LengthSq() <= 75.0f * 75.0f)
+	if (diff.LengthSq() <= 50.0f * 50.0f)
 	{
 		//攻撃できる
 		return true;

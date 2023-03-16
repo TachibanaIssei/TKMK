@@ -42,6 +42,8 @@ public:
 		return m_game;
 	}
 
+
+
 	/// <summary>
 	/// 座標を設定
 	/// </summary>
@@ -228,6 +230,8 @@ private:
 	//中立の敵
 	float	m_chaseTimer = 0.0f;			//追跡タイマー。
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
+
+	
 	
 	Status m_Status;                    //ステータス
 	SpriteRender		m_HPBar;		//HPバー画像
@@ -240,6 +244,8 @@ private:
 	bool Deathflag = false;
 
 	int Exp = 5;
+
+	//std::vector<Neutral_Enemy*>::iterator m_number;
 
 	//ナビゲーションメッシュ
 	TknFile m_tknFile;

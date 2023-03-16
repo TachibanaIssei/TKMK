@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include"KnightPlayer.h"
 #include "GameCamera.h"
+//#include <vector>
+//#include <algorithm>
+
 namespace {
 	const float HP_WINDOW_WIDTH = 1152.0f;
 	const float HP_WINDOW_HEIGHT = 648.0f;
@@ -20,6 +23,10 @@ Neutral_Enemy::Neutral_Enemy()
 Neutral_Enemy::~Neutral_Enemy()
 {
 
+
+
+
+	
 }
 
 bool Neutral_Enemy::Start()
@@ -383,7 +390,9 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 	//ダウンアニメーションの再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		
+		//m_game->GetNeutral_EnemyContaier().erase(std::remove(m_game->GetNeutral_EnemyContaier().begin(),
+		//	m_game->GetNeutral_EnemyContaier().end(), this), m_game->GetNeutral_EnemyContaier().end()/*std::cend(m_game->GetNeutral_EnemyContaier()*/);
+		m_game->GetNeutral_EnemyContaier();
 		//自身を削除する。
 		DeleteGO(this);
 	}

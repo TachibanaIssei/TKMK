@@ -65,6 +65,7 @@ private:
 	KnightAI* m_KnightAI = nullptr;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
+	SoundSource* m_bgm = nullptr;	//
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

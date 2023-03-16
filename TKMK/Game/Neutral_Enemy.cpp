@@ -80,12 +80,16 @@ bool Neutral_Enemy::Start()
 	m_rot.Apply(m_forward);
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
+
+	//se読み込み
+	//enemyの音
+	g_soundEngine->ResistWaveFileBank(21,"Assets/sound/enemySE/enemyKoe.wav");
+
 	return true;
 }
 
 void Neutral_Enemy::Update()
 {
-
 	//追跡処理。
 	Chase();
 	//回転処理。
@@ -256,7 +260,9 @@ void Neutral_Enemy::MakeAttackCollision()
 	collisionObject->CreateSphere(m_position, Quaternion::Identity,20.0f);
 	collisionObject->SetWorldMatrix(matrix);
 	collisionObject->SetName("enemy_attack");
+
 }
+
 void Neutral_Enemy::ProcessCommonStateTransition()
 {
 	//各タイマーを初期化。
@@ -569,7 +575,11 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//エフェクト再生
 
 		//効果音を再生する
-
+		//攻撃音を発生
+		m_se = NewGO<SoundSource>(0);
+		m_se->Init(21);
+		m_se->Play(false);
+		m_se->SetVolume(0.5f);
 	}
 	//キーの名前がattack_endの時
 	else if (wcscmp(eventName,L"Attack_end")==0){

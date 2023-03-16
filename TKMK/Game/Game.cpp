@@ -14,7 +14,11 @@
 
 Game::Game()
 {
-	
+	//sound設定
+	//1-5 Title/Game中BGM
+	//6-10 選択音
+	//11-20 playerのスキルなどの音
+	//21-30 enemyの音
 }
 
 Game::~Game()
@@ -29,6 +33,7 @@ Game::~Game()
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	DeleteGO(m_KnightAI);
+	DeleteGO(m_bgm);
 }
 
 bool Game::Start()
@@ -100,6 +105,16 @@ bool Game::Start()
 	m_Pause_Front.Update();
 
 	m_GameState = enGameState_Battle;
+
+	//BGMの設定
+	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
+	
+	m_bgm = NewGO<SoundSource>(0);
+	m_bgm->Init(2);
+	m_bgm->Play(true);
+	m_bgm->SetVolume(0.3f);
+
+
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();

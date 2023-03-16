@@ -769,7 +769,7 @@ bool Neutral_Enemy::DrawHP()
 	float playerdistance = diff.Length();
 
 
-	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<1000.0f)
+	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<800.0f)
 	{
 		return true;
 	}

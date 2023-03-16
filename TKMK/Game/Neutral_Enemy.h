@@ -263,10 +263,10 @@ private:
 
 	
 	
-	Status m_Status;                    //ステータス
-	SpriteRender		m_HPBar;		//HPバー画像
-	SpriteRender		m_HPFrame;		//HP枠画像
-	SpriteRender		m_HPBack;		//HP背景画像
+	//Status m_Status;                    //ステータス
+	//SpriteRender		m_HPBar;		//HPバー画像
+	//SpriteRender		m_HPFrame;		//HP枠画像
+	//SpriteRender		m_HPBack;		//HP背景画像
 
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;

@@ -74,6 +74,10 @@ public:
 	{
 		return m_position;
 	}
+
+
+
+
 	void Move();
 	/// <summary>
 	/// 追跡
@@ -95,6 +99,11 @@ public:
 	/// </summary>
 	void Collision();
 
+	/// <summary>
+	/// プレイヤーが見つかったら
+	/// </summary>
+	void SearchEnemy();
+
 	void SetKnightPlayer(KnightPlayer* knightPlayer)
 	{
 		m_knightplayer = knightPlayer;
@@ -103,15 +112,6 @@ public:
 	{
 		return m_knightplayer;
 	}
-
-	/// <summary>
-	/// プレイヤーが見つかったら
-	/// </summary>
-
-	void SearchEnemy();
-
-	const bool SearchEnemy()const;
-
 
 	/// <summary>
 	/// 攻撃用の当たり判定
@@ -231,42 +231,30 @@ private:
 	CharacterController m_charaCon;                            //キャラコン
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //中立の敵のステート。
 	
+	SoundSource* m_se = nullptr;
+	KnightPlayer* m_knightplayer = nullptr;
 	Game* m_game = nullptr;                               
-	Neutral_Enemy* m_Neutral_Enemy; 
+	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
 	GameCamera* m_gameCamera = nullptr;
 
-	Status m_Status;                           //�X�e�[�^�X
-	SpriteRender		m_HPBar;		//HP�o�[�摜
-	SpriteRender		m_HPFrame;		//HP�g�摜
-	SpriteRender		m_HPBack;		//HP�w�i�摜
-	bool					m_isSearchPlayer = false;
+	Status m_Status;                    //ステータス
+	SpriteRender		m_HPBar;		//HPバー画像
+	SpriteRender		m_HPFrame;		//HP枠画像
+	SpriteRender		m_HPBack;		//HP背景画像	
+	
 	FontRender				m_fontRender;
-	SphereCollider			m_sphereCollider;							//�R���C�_�[�B
-	RigidBody				m_rigidBody;						//���́B		
+	SphereCollider			m_sphereCollider;
+	RigidBody				m_rigidBody;
 	Vector3                 m_inRespawnPosition[12];
+	
 
-
-	SoundSource* m_se = nullptr;
-	Status m_Status;                           //�X�e�[�^�X
-	SpriteRender		m_HPBar;		//HP�o�[�摜
-	SpriteRender		m_HPFrame;		//HP�g�摜
-	SpriteRender		m_HPBack;		//HP�w�i�摜
-
-	KnightPlayer* m_knightplayer = nullptr;
-
+	bool					m_isSearchPlayer = false;
 	bool m_UnderAttack = false;              //攻撃判定
 	bool Patrol = true;                     //巡回
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	//中立の敵
 	float	m_chaseTimer = 0.0f;			//追跡タイマー。
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
-
-	
-	
-	//Status m_Status;                    //ステータス
-	//SpriteRender		m_HPBar;		//HPバー画像
-	//SpriteRender		m_HPFrame;		//HP枠画像
-	//SpriteRender		m_HPBack;		//HP背景画像
 
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;
@@ -276,8 +264,6 @@ private:
 	int Exp = 5;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
-
-
 
 	int f = 0;
 };

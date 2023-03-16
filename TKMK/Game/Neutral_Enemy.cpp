@@ -62,6 +62,8 @@ bool Neutral_Enemy::Start()
 		m_position		//座標。
 	);
 
+	//�X�t�B�A�R���C�_�[���B
+	m_sphereCollider.Create(1.0f);
 	
 	//剣のボーンのIDを取得する
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
@@ -98,7 +100,9 @@ bool Neutral_Enemy::Start()
 
 void Neutral_Enemy::Update()
 {
-	//�ǐՏ����B
+
+	SearchEnemy();
+
 
 	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
 		return;
@@ -164,7 +168,25 @@ void Neutral_Enemy::Rotation()
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
+//�Փ˂����Ƃ��ɌĂ΂��֐��I�u�W�F�N�g(�Ǘp)
+struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//�Փ˃t���O�B
 
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//�ǂƂԂ���ĂȂ������B
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
+			//�Փ˂����͕̂ǂł͂Ȃ��B
+			return 0.0f;
+		}
+
+		//�ǂƂԂ������B
+		//�t���O��true�ɁB
+		isHit = true;
+		return 0.0f;
+	}
+};
 void Neutral_Enemy::Chase()
 {
 	//追跡ステートでないなら、追跡処理はしない。
@@ -174,6 +196,22 @@ void Neutral_Enemy::Chase()
 	}
 
 	m_targetPointPosition = m_knightplayer->GetPosition();
+	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	diff.Normalize();
+	//�ړ����x��ݒ肷��B
+	m_moveSpeed = diff * 100.0f;
+	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charaCon.IsOnGround()) {
+		//�n�ʂɂ����B
+		m_moveSpeed.y = 0.0f;
+	}
+	Vector3 modelPosition = m_position;
+	//�����Ƃ������f���̍�W�����B
+	modelPosition.y += 2.5f;
+	m_modelRender.SetPosition(modelPosition);
+
+
+	m_targetPointPosition = m_knightPlayer->GetPosition();
 	bool isEnd;
 	//if(){
 		// パス検索
@@ -199,7 +237,8 @@ void Neutral_Enemy::Chase()
 	Vector3 zero = Vector3::Zero;
 	m_charaCon.Execute(zero, 0.0f);
 	m_modelRender.SetPosition(pos);
-}
+
+
 
 void Neutral_Enemy::Collision()
 {
@@ -262,8 +301,11 @@ void Neutral_Enemy::Attack()
 
 }
 
-const bool Neutral_Enemy::SearchEnemy()const
+void Neutral_Enemy::SearchEnemy()
 {
+
+	m_isSearchPlayer = false;
+
 	//剣士からエネミーに向かうベクトルを計算する。
 	Vector3 diff = m_knightplayer->GetPosition() - m_position;
 		float oti = diff.LengthSq();
@@ -283,11 +325,41 @@ const bool Neutral_Enemy::SearchEnemy()const
 			//プレイヤーを見つけた！
 			return true;
 
-		}
 
+
+	Vector3 playerPosition = m_knightPlayer->GetPosition();
+	Vector3 diff = playerPosition - m_position;
+	diff.Normalize();
+	float angle = acosf(diff.Dot(m_forward));
+	//�v���C���[�����E��ɋ��Ȃ������B
+	if (Math::PI * 0.35f <= fabsf(angle))
+	{
+		//�v���C���[�͌�����Ă��Ȃ��B
+		return;
 	}
 
-	return false;
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//�n�_�̓G�l�~�[�̍�W�B
+	start.setOrigin(btVector3(m_position.x,50.0f, m_position.z));
+	//�I�_�̓v���C���[�̍�W�B
+	end.setOrigin(btVector3(playerPosition.x,50.0f, playerPosition.z));
+
+	SweepResultWall callback;
+	//�R���C�_�[��n�_����I�_�܂œ������āB
+	//�Փ˂��邩�ǂ����𒲂ׂ�B
+	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+	//�ǂƏՓ˂����I
+	if (callback.isHit == true)
+	{
+		//�v���C���[�͌�����Ă��Ȃ��B
+		return;
+	}
+
+	//�ǂƏՓ˂��ĂȂ��I�I
+	//�v���C���[�������t���O��true�ɁB
+	m_isSearchPlayer = true;
 }
 
 void Neutral_Enemy::MakeAttackCollision()
@@ -309,6 +381,10 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//各タイマーを初期化。
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
+	//�G��������U��
+	//�v���C���[�������B
+	if (m_isSearchPlayer == true)
+
 	//敵を見つかったら攻撃
 	//プレイヤーを見つけたら。
 	if (SearchEnemy() == true)

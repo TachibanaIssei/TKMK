@@ -82,7 +82,7 @@ private:
 	/// <summary>
 	/// プレイヤーが見つかったら
 	/// </summary>
-	const bool SearchEnemy()const;
+	void SearchEnemy();
 	/// <summary>
 	/// 攻撃用の当たり判定
 	/// </summary>
@@ -185,7 +185,11 @@ private:
 	SpriteRender		m_HPBar;		//HPバー画像
 	SpriteRender		m_HPFrame;		//HP枠画像
 	SpriteRender		m_HPBack;		//HP背景画像
-
+	bool					m_isSearchPlayer = false;
+	FontRender				m_fontRender;
+	SphereCollider			m_sphereCollider;							//コライダー。
+	RigidBody				m_rigidBody;						//剛体。		
+	Vector3                 m_inRespawnPosition[12];
 	//ナビゲーションメッシュ
 	TknFile m_tknFile;
 	PhysicsStaticObject m_bgObject;

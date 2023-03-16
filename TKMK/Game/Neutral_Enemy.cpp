@@ -55,6 +55,8 @@ bool Neutral_Enemy::Start()
 		m_position		//座標。
 	);
 
+	//スフィアコライダーを初期化。
+	m_sphereCollider.Create(1.0f);
 	
 	//剣のボーンのIDを取得する
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
@@ -85,7 +87,8 @@ bool Neutral_Enemy::Start()
 
 void Neutral_Enemy::Update()
 {
-
+	//敵サーチ
+	SearchEnemy();
 	//追跡処理。
 	Chase();
 	//回転処理。
@@ -139,7 +142,25 @@ void Neutral_Enemy::Rotation()
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
+//衝突したときに呼ばれる関数オブジェクト(壁用)
+struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
 
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//壁とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
+			//衝突したのは壁ではない。
+			return 0.0f;
+		}
+
+		//壁とぶつかったら。
+		//フラグをtrueに。
+		isHit = true;
+		return 0.0f;
+	}
+};
 void Neutral_Enemy::Chase()
 {
 	//追跡ステートでないなら、追跡処理はしない。
@@ -147,34 +168,21 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-
-	m_targetPointPosition = m_knightPlayer->GetPosition();
-	bool isEnd;
-	//if(){
-		// パス検索
-	m_pathFiding.Execute(
-		m_path,							// 構築されたパスの格納先
-		m_nvmMesh,						// ナビメッシュ
-		m_position,						// 開始座標
-		m_targetPointPosition,			// 移動目標座標
-		PhysicsWorld::GetInstance(),	// 物理エンジン	
-		20.0f,							// AIエージェントの半径
-		50.0f							// AIエージェントの高さ。
-	);
-	//}
-	// パス上を移動する。
-	m_position = m_path.Move(
-		m_position,
-		m_Status.Speed,
-		isEnd
-	);
-
-	Vector3 pos = m_position;
-	m_charaCon.SetPosition(pos);
-	Vector3 zero = Vector3::Zero;
-	m_charaCon.Execute(zero, 0.0f);
-	m_modelRender.SetPosition(pos);
+	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	diff.Normalize();
+	//移動速度を設定する。
+	m_moveSpeed = diff * 100.0f;
+	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charaCon.IsOnGround()) {
+		//地面についた。
+		m_moveSpeed.y = 0.0f;
+	}
+	Vector3 modelPosition = m_position;
+	//ちょっとだけモデルの座標を挙げる。
+	modelPosition.y += 2.5f;
+	m_modelRender.SetPosition(modelPosition);
 }
+
 
 void Neutral_Enemy::Collision()
 {
@@ -223,32 +231,44 @@ void Neutral_Enemy::Attack()
 
 }
 
-const bool Neutral_Enemy::SearchEnemy()const
+void Neutral_Enemy::SearchEnemy()
 {
-	//剣士からエネミーに向かうベクトルを計算する。
-	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
-		float oti = diff.LengthSq();
-	//ボスとプレイヤーの距離がある程度近かったら。
-	if (diff.LengthSq() <= 300.0 * 300.0)
+	m_isSearchPlayer = false;
+
+
+	Vector3 playerPosition = m_knightPlayer->GetPosition();
+	Vector3 diff = playerPosition - m_position;
+	diff.Normalize();
+	float angle = acosf(diff.Dot(m_forward));
+	//プレイヤーが視界内に居なかったら。
+	if (Math::PI * 0.35f <= fabsf(angle))
 	{
-		//エネミーからプレイヤーに向かうベクトルを正規化する。
-		diff.Normalize();
-		//エネミーの正面のベクトルと、エネミーからプレイヤーに向かうベクトルの。
-		//内積(cosθ)を求める。
-		float cos = m_forward.Dot(diff);
-		//内積(cosθ)から角度(θ)を求める。
-		float angle = acosf(cos);
-		//角度(θ)が180°より小さければ。
-		if (angle <= (Math::PI / 180.0f) * 180.0f)
-		{
-			//プレイヤーを見つけた！
-			return true;
-
-		}
-
+		//プレイヤーは見つかっていない。
+		return;
 	}
 
-	return false;
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(m_position.x,50.0f, m_position.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(playerPosition.x,50.0f, playerPosition.z));
+
+	SweepResultWall callback;
+	//コライダーを始点から終点まで動かして。
+	//衝突するかどうかを調べる。
+	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+	//壁と衝突した！
+	if (callback.isHit == true)
+	{
+		//プレイヤーは見つかっていない。
+		return;
+	}
+
+	//壁と衝突してない！！
+	//プレイヤー見つけたフラグをtrueに。
+	m_isSearchPlayer = true;
 }
 
 void Neutral_Enemy::MakeAttackCollision()
@@ -270,7 +290,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	m_chaseTimer = 0.0f;
 	//敵を見つかったら攻撃
 	//プレイヤーを見つけたら。
-	if (SearchEnemy() == true)
+	if (m_isSearchPlayer == true)
 	{
 		Vector3 diff = m_knightPlayer->GetPosition() - m_position;
 		diff.Normalize();

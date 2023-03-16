@@ -20,6 +20,7 @@ bool BackGround::Start()
 	m_modelRender.Update();
 
 	m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
+	m_physicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Wall);
 
 	return true;
 }

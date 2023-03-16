@@ -39,7 +39,14 @@ bool Map::Start()
 	m_MapEnemy.SetPosition(MAP_CENTER_POSITION);
 
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
-	m_Neutral_Enemy = FindGO<Neutral_Enemy>("Neutral_Enemy");
+	//m_Neutral_Enemy = FindGO<Neutral_Enemy>("Neutral_Enemy");
+
+	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	////配列のサイズを調べてfor文で回す
+	//for (auto seutral_Enemy : seutral_Enemys)
+	//{
+	//	DeleteGO(seutral_Enemy);
+	//}
 	return true;
 }
 void Map::Update()
@@ -102,16 +109,31 @@ void Map::PlayerMap()
 	m_MapPlayer.Update();
 }
 
+//エネミーのマップの移動処理
 void Map::EnemyMap()
 {
-	Vector3 enemyPosition = m_Neutral_Enemy->GetPosition();
+	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	for (auto seutral_Enemy : seutral_Enemys)
+	{
+		Vector3 enemyPosition = seutral_Enemy->GetPosition();
+		Vector3 mapPosition;
+
+		if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
+		{
+			m_MapEnemy.SetPosition(mapPosition + MAP_CENTER_POSITION);
+
+		}
+	}
+
+
+	/*Vector3 enemyPosition = m_Neutral_Enemy->GetPosition();
 	Vector3 mapPosition;
 
 	if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
 	{
 		m_MapEnemy.SetPosition(mapPosition + MAP_CENTER_POSITION);
 
-	}
+	}*/
 	m_MapEnemy.Update();
 }
 void Map::Render(RenderContext& rc) 

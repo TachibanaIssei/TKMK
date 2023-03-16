@@ -29,6 +29,10 @@ public:
 		return m_enemyCounter;
 	}*/
 
+	/// <summary>
+	/// エネミーの数を減らす処理
+	/// </summary>
+	/// <returns>エネミーの数</returns>
 	int GetNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}

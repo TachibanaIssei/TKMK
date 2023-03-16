@@ -254,6 +254,7 @@
     <ClCompile Include="AI\PathFinding\NaviMesh.cpp" />
     <ClCompile Include="AI\PathFinding\Path.cpp" />
     <ClCompile Include="AI\PathFinding\PathFinding.cpp" />
+    <ClCompile Include="CameraCollisionSolver.cpp" />
     <ClCompile Include="CollisionObject.cpp" />
     <ClCompile Include="FontRender.cpp" />
     <ClCompile Include="gameObject\Gameobjectmanager.cpp" />
@@ -343,6 +344,7 @@
     <ClInclude Include="AI\PathFinding\NaviMesh.h" />
     <ClInclude Include="AI\PathFinding\Path.h" />
     <ClInclude Include="AI\PathFinding\PathFinding.h" />
+    <ClInclude Include="CameraCollisionSolver.h" />
     <ClInclude Include="CollisionObject.h" />
     <ClInclude Include="dbg\MyAssert.h" />
     <ClInclude Include="dbg\MyLog.h" />

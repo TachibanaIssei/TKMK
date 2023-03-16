@@ -173,7 +173,7 @@ void Neutral_Enemy::Chase()
 		return;
 	}
 
-	m_targetPointPosition = m_knightPlayer->GetPosition();
+	m_targetPointPosition = m_knightplayer->GetPosition();
 	bool isEnd;
 	//if(){
 		// パス検索
@@ -265,7 +265,7 @@ void Neutral_Enemy::Attack()
 const bool Neutral_Enemy::SearchEnemy()const
 {
 	//剣士からエネミーに向かうベクトルを計算する。
-	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	Vector3 diff = m_knightplayer->GetPosition() - m_position;
 		float oti = diff.LengthSq();
 	//ボスとプレイヤーの距離がある程度近かったら。
 	if (diff.LengthSq() <= 300.0 * 300.0)

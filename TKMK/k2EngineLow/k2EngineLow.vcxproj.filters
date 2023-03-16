@@ -232,6 +232,7 @@
     <ClCompile Include="k2EngineLow.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="CollisionObject.cpp" />
+    <ClCompile Include="CameraCollisionSolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -513,6 +514,7 @@
     <ClInclude Include="RenderingEngine.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="CollisionObject.h" />
+    <ClInclude Include="CameraCollisionSolver.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

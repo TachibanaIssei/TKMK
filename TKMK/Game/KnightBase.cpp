@@ -246,6 +246,7 @@ void KnightBase::Collition()
 
 				//hpを10減らす
 				Dameged(Enemy_atk);
+
 			}
 		}
 	}

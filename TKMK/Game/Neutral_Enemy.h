@@ -230,6 +230,13 @@ private:
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy; 
 	GameCamera* m_gameCamera = nullptr;
+
+	SoundSource* m_se = nullptr;
+	Status m_Status;                           //�X�e�[�^�X
+	SpriteRender		m_HPBar;		//HP�o�[�摜
+	SpriteRender		m_HPFrame;		//HP�g�摜
+	SpriteRender		m_HPBack;		//HP�w�i�摜
+
 	KnightPlayer* m_knightplayer = nullptr;
 
 	bool m_UnderAttack = false;              //攻撃判定
@@ -254,6 +261,7 @@ private:
 	int Exp = 5;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
+
 
 	//ナビゲーションメッシュ
 	TknFile m_tknFile;

@@ -78,6 +78,7 @@ private:
 	KnightAI* m_KnightAI = nullptr;
 	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
+	SoundSource* m_bgm = nullptr;	//
 
 	//std::vector<Neutral_Enemy*> m_enemyCounter;
 

@@ -73,7 +73,8 @@ public:
 private:
 	Game* m_game=nullptr;
 	//GameUI* m_gameUI = nullptr;
-	
+	SoundSource* m_se = nullptr;	//
+
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;

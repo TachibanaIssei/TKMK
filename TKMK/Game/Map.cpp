@@ -34,14 +34,21 @@ bool Map::Start()
 	m_MapPlayer.Init("Assets/sprite/minimap_player.DDS", 35, 35);
 	//座標設定
 	m_MapPlayer.SetPosition(MAP_CENTER_POSITION);
-	//マップでエネミーの表示画像読み込み
-	m_MapEnemy.Init("Assets/sprite/minimap_enemy.DDS", 35, 35);
-	m_MapEnemy.SetPosition(MAP_CENTER_POSITION);
+
+	for (int amount = 0; amount < enemys; amount++) {
+		//マップでエネミーの表示画像読み込み
+		m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy.DDS", 35, 35);
+		m_MapEnemy[amount].SetPosition(MAP_CENTER_POSITION);
+	}
+	
 
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 	//m_Neutral_Enemy = FindGO<Neutral_Enemy>("Neutral_Enemy");
 
-	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+
+
+
 	////配列のサイズを調べてfor文で回す
 	//for (auto seutral_Enemy : seutral_Enemys)
 	//{
@@ -112,16 +119,17 @@ void Map::PlayerMap()
 //エネミーのマップの移動処理
 void Map::EnemyMap()
 {
-	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	for (auto seutral_Enemy : seutral_Enemys)
+	
+	//m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	for (int amount=0;amount< m_neutral_Enemys.size();amount++)
 	{
-		Vector3 enemyPosition = seutral_Enemy->GetPosition();
+		Vector3 enemyPosition = m_neutral_Enemys[amount]->GetPosition();
 		Vector3 mapPosition;
 
 		if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
 		{
-			m_MapEnemy.SetPosition(mapPosition + MAP_CENTER_POSITION);
-
+			m_MapEnemy[amount].SetPosition(mapPosition + MAP_CENTER_POSITION);
+			m_MapEnemy[amount].Update();
 		}
 	}
 
@@ -134,7 +142,7 @@ void Map::EnemyMap()
 		m_MapEnemy.SetPosition(mapPosition + MAP_CENTER_POSITION);
 
 	}*/
-	m_MapEnemy.Update();
+	//m_MapEnemy.Update();
 }
 void Map::Render(RenderContext& rc) 
 {
@@ -143,5 +151,6 @@ void Map::Render(RenderContext& rc)
 	m_Map.Draw(rc);
 	m_MapFrame.Draw(rc);
 	m_MapPlayer.Draw(rc);
-	m_MapEnemy.Draw(rc);
+	for(int amount=0;amount< m_neutral_Enemys.size();amount++)
+	m_MapEnemy[amount].Draw(rc);
 }

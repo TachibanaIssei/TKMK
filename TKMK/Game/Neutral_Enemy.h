@@ -107,7 +107,11 @@ public:
 	/// <summary>
 	/// プレイヤーが見つかったら
 	/// </summary>
+
+	void SearchEnemy();
+
 	const bool SearchEnemy()const;
+
 
 	/// <summary>
 	/// 攻撃用の当たり判定
@@ -231,6 +235,17 @@ private:
 	Neutral_Enemy* m_Neutral_Enemy; 
 	GameCamera* m_gameCamera = nullptr;
 
+	Status m_Status;                           //�X�e�[�^�X
+	SpriteRender		m_HPBar;		//HP�o�[�摜
+	SpriteRender		m_HPFrame;		//HP�g�摜
+	SpriteRender		m_HPBack;		//HP�w�i�摜
+	bool					m_isSearchPlayer = false;
+	FontRender				m_fontRender;
+	SphereCollider			m_sphereCollider;							//�R���C�_�[�B
+	RigidBody				m_rigidBody;						//���́B		
+	Vector3                 m_inRespawnPosition[12];
+
+
 	SoundSource* m_se = nullptr;
 	Status m_Status;                           //�X�e�[�^�X
 	SpriteRender		m_HPBar;		//HP�o�[�摜
@@ -262,14 +277,6 @@ private:
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
 
-
-	//ナビゲーションメッシュ
-	TknFile m_tknFile;
-	PhysicsStaticObject m_bgObject;
-	nsAI::NaviMesh m_nvmMesh;
-	nsAI::Path m_path;
-	nsAI::PathFinding m_pathFiding;
-	Vector3 m_targetPointPosition;
 
 
 	int f = 0;

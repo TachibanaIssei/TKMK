@@ -22,8 +22,20 @@ public:
 	void Update();
 	void Pause();
 	void GameState();
-
 	
+	void Respawn();
+
+	/*std::vector<Neutral_Enemy*> GetNeutral_EnemyContaier() {
+		return m_enemyCounter;
+	}*/
+
+	/// <summary>
+	/// エネミーの数を減らす処理
+	/// </summary>
+	/// <returns>エネミーの数</returns>
+	int GetNeutral_EnemyContaier() {
+		return enemyNumber--;
+	}
 
 	void Render(RenderContext& rc);
 
@@ -46,6 +58,7 @@ private:
 	//AnimationClip m_animationClips[enAnimationClip_Num];
 	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
+	Level3DRender m_Enemylevel;
 	FontRender m_fontRender;
 
 	Quaternion m_rotation = Quaternion::Identity;
@@ -63,13 +76,20 @@ private:
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	KnightAI* m_KnightAI = nullptr;
-	Neutral_Enemy* m_Neutral_Enemy = nullptr;
+	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
+
+	//std::vector<Neutral_Enemy*> m_enemyCounter;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	float m_spriteAlpha = 0.0f;
 
+	int enemyNumber = 0;
+
+	bool RespawnNumberBox[50];
+
+	float m_Timer = 0.0f;
 
 	//リザルト画面かのフラグ
 	bool RezultFlag = false;

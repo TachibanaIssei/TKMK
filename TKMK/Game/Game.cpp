@@ -300,6 +300,9 @@ void Game::Respawn()
 		}
 	}
 
+	//マップのFindGO関数を呼び出しエネミーの数を把握する
+	m_Map->FindEnemys();
+
 	//Neutral_Enemyを配列で消す
 	//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 	//存在するエネミーの数がスタジアムのエネミーの総数より小さいなら

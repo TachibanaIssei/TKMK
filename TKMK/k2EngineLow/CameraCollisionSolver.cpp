@@ -14,6 +14,7 @@ namespace nsK2EngineLow {
 			Vector3 normal = Vector3(convexResult.m_hitNormalLocal.x(), convexResult.m_hitNormalLocal.y(), convexResult.m_hitNormalLocal.z());
 
 			if (convexResult.m_hitCollisionObject->getUserIndex() == enCollisionAttr_Character
+				|| convexResult.m_hitCollisionObject->getUserIndex() == enCollisionAttr_EnemyCharacter
 				|| convexResult.m_hitCollisionObject->getInternalType() == btCollisionObject::CO_GHOST_OBJECT) {
 				return 1.0f;
 			}

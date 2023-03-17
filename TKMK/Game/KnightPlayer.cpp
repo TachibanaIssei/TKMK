@@ -4,6 +4,7 @@
 //#include "GameUI.h"
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
 //for文、findGO使う
+//HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -94,11 +95,14 @@ void KnightPlayer::Update()
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
-	//攻撃処理
-	Attack();
-
-	//回避処理
-	Avoidance();
+	//ステートがデスのときボタンを押せないようにする
+	if (m_playerState != enKnightState_Death) {
+		//攻撃処理
+		Attack();
+		//回避処理
+		Avoidance();
+	}
+	
 
 	//スキル使用中なら
 	if (SkillState == true) {

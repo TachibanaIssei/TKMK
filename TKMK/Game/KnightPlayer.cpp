@@ -2,6 +2,8 @@
 #include "KnightPlayer.h"
 #include "Game.h"
 //#include "GameUI.h"
+//スキル使ったときに範囲内に敵がいたらその方向に向かっていく
+//for文、findGO使う
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);

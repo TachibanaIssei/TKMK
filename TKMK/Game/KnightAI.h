@@ -2,6 +2,7 @@
 #include "KnightBase.h"
 #include "Status.h"
 class Game;
+class KnightPlayer;
 
 class KnightAI:public KnightBase
 {
@@ -26,5 +27,15 @@ public:
 
 private:
 	Game* m_game;//ゲーム
+	KnightPlayer* m_knightPlayer;//剣士プレイヤーvoid Rotation();
+	void SearchPlayer();
+	void Rotation();
+	Quaternion				m_rotation;
+	Vector3					m_position;
+	Vector3					m_forward;
+	bool					m_isSearchPlayer = false;
+	FontRender				m_fontRender;
+	SphereCollider			m_sphereCollider;							//コライダー。
+	RigidBody				m_rigidBody;						//剛体。	
 };
 

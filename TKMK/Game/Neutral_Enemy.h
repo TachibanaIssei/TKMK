@@ -4,11 +4,13 @@
 #include "AI/PathFinding/Path.h"
 #include "AI/PathFinding/PathFinding.h"
 #include "Status.h"
+#include "Level3DRender.h"
 //クラス宣言
 class KnightPlayer;
 class Game;
 class GameCamera;
 class Neutral_Enemy;
+class Patrolnumb;
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -74,6 +76,9 @@ public:
 	{
 		return m_position;
 	}
+	
+
+
 	void Move();
 	/// <summary>
 	/// 追跡
@@ -95,6 +100,11 @@ public:
 	/// </summary>
 	void Collision();
 
+	/// <summary>
+	/// プレイヤーが見つかったら
+	/// </summary>
+	void SearchEnemy();
+
 	void SetKnightPlayer(KnightPlayer* knightPlayer)
 	{
 		m_knightplayer = knightPlayer;
@@ -103,11 +113,6 @@ public:
 	{
 		return m_knightplayer;
 	}
-
-	/// <summary>
-	/// プレイヤーが見つかったら
-	/// </summary>
-	const bool SearchEnemy()const;
 
 	/// <summary>
 	/// 攻撃用の当たり判定
@@ -202,7 +207,14 @@ public:
 	void SetNeutral_EnemyState(EnNEState gamescene) {
 		m_Neutral_EnemyState = gamescene;
 	}
-
+	/// <summary>
+	/// 巡回する座標を設定する
+	/// </summary>
+	/// <param name="pos">巡回する座標</param>
+	/// <param name="number">座標をセットする番号</param>
+	void SetPatrolPos(Vector3 pos, int number) {
+		m_patrolPos[number] = pos;
+	};
 
 	enum EnAnimationClip {                      //アニメーション。
 		enAnimationClip_Idle,					//待機アニメーション。
@@ -227,31 +239,43 @@ private:
 	CharacterController m_charaCon;                            //キャラコン
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //中立の敵のステート。
 	
-	Game* m_game = nullptr;                               
-	Neutral_Enemy* m_Neutral_Enemy; 
-	GameCamera* m_gameCamera = nullptr;
-
 	SoundSource* m_se = nullptr;
-	//Status m_Status;                           //�X�e�[�^�X
-	//SpriteRender		m_HPBar;		//HP�o�[�摜
-	//SpriteRender		m_HPFrame;		//HP�g�摜
-	//SpriteRender		m_HPBack;		//HP�w�i�摜
 
 	KnightPlayer* m_knightplayer = nullptr;
+	Game* m_game = nullptr;                               
+	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
+	GameCamera* m_gameCamera = nullptr;
+	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
+	Status m_Status;                    //ステータス
+	SpriteRender		m_HPBar;		//HPバー画像
+	SpriteRender		m_HPFrame;		//HP枠画像
+	SpriteRender		m_HPBack;		//HP背景画像	
+	
+	FontRender				m_fontRender;
+	SphereCollider			m_sphereCollider;
+	RigidBody				m_rigidBody;
+	Vector3                 m_inRespawnPosition[12];
+	Vector3 m_patrolPos[11];
+	Vector3 position1;
+	Vector3 position2;
+	Vector3 position3;
+	Vector3 position4;
+	Vector3 position5;
+	Vector3 position6;
+	Vector3 position7;
+	Vector3 position8;
+	Vector3 position9;
+	Vector3 position10;
+	Vector3 position11;
 
+
+	bool					m_isSearchPlayer = false;
 	bool m_UnderAttack = false;              //攻撃判定
 	bool Patrol = true;                     //巡回
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	//中立の敵
 	float	m_chaseTimer = 0.0f;			//追跡タイマー。
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
-
-	
-	
-	Status m_Status;                    //ステータス
-	SpriteRender		m_HPBar;		//HPバー画像
-	SpriteRender		m_HPFrame;		//HP枠画像
-	SpriteRender		m_HPBack;		//HP背景画像
 
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;
@@ -261,17 +285,7 @@ private:
 	int Exp = 5;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
-
-
-	//ナビゲーションメッシュ
-	TknFile m_tknFile;
-	PhysicsStaticObject m_bgObject;
-	nsAI::NaviMesh m_nvmMesh;
-	nsAI::Path m_path;
-	nsAI::PathFinding m_pathFiding;
-	Vector3 m_targetPointPosition;
-
-
-	int f = 0;
+	int P = 0;
+	
 };
 

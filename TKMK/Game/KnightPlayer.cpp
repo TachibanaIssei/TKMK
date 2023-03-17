@@ -25,12 +25,21 @@ KnightPlayer::KnightPlayer()
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	respawnNumber = 0;        //リスポーンする座標の番号
-	m_respawnPos[respawnNumber].y += m_position_YUp;
+	m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
+
+	//m_position=
+
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+
+
+	//m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	
+
+	//m_modelRender.SetPosition(m_position);
 
 	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);

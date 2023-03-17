@@ -61,10 +61,20 @@ public:
 		return m_position;
 	}
 
+	/// <summary>
+	/// 引数に攻撃力を代入させる
+	/// </summary>
+	/// <param name="attack">剣士の攻撃力を代入したい変数</param>
+	/// <returns></returns>
+	int SetKnightAtk(/*int& attack*/) {
+		return m_Status.Atk;
+	}
+
 private:
 	Game* m_game=nullptr;
 	//GameUI* m_gameUI = nullptr;
-	
+	SoundSource* m_se = nullptr;	//
+
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;

@@ -79,6 +79,8 @@ void KnightBase::SetModel()
 /// <param name="GetExp">中立の敵の経験値</param>
 void KnightBase::ExpProcess(int Exp)
 {
+	//もしレベルが10(Max)なら
+	if (Lv == 10)return;
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
 	GetExp += Exp;
 	//手に入れた経験値より経験値テーブルのほうが大きかったら
@@ -246,6 +248,7 @@ void KnightBase::Collition()
 
 				//hpを10減らす
 				Dameged(Enemy_atk);
+
 			}
 		}
 	}
@@ -275,7 +278,7 @@ void KnightBase::Dameged(int damege)
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}
-}
+}///////////////////////m_Status.getExp
 
 /// <summary>
 /// スキルを使用したときの処理
@@ -342,7 +345,7 @@ void KnightBase::Death()
 	//HPを最大にする
 	m_Status.Hp = m_Status.MaxHp;
 	//経験値をリセット
-	ExpReset(Lv,GetExp);
+	ExpReset(Lv, GetExp);
 	//一つ下のレベルの経験値テーブルにする
 	ExpTableChamge(Lv,ExpTable);
 
@@ -424,7 +427,7 @@ void KnightBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1);
 		break;
 	case enKnightState_Avoidance:
-		//m_modelRender.SetAnimationSpeed(1.5f);
+		m_modelRender.SetAnimationSpeed(1.5f);
 		m_modelRender.PlayAnimation(enAnimationClip_Avoidance, 0.1f);
 		break;
 	case enKnightState_Damege:

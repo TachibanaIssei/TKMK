@@ -44,7 +44,11 @@ KnightPlayer::KnightPlayer()
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 
-
+	//se読み込み
+	//剣
+	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
+	//ダメージくらったときの悲鳴
+	g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/scream1.wav");
 }
 
 KnightPlayer::~KnightPlayer()
@@ -69,7 +73,7 @@ void KnightPlayer::Update()
 	//前フレームの座標を取得
 	OldPosition = m_position;
 
-	//移動処理ステータスの値が入っていない
+	//移動処理
 	Move(m_position, m_charCon, m_Status);
 	
 	////RBボタンが押されたら。
@@ -112,12 +116,13 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-	{
-		if(Lv!=10)
-		ExpProcess(exp);
-		//m_gameUI->LevelFontChange(Lv);
-	}
+	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+	//{
+	//	if(Lv!=10)
+	//	ExpProcess(exp);
+	//	//m_Status.GetExp += 5;
+	//	//m_gameUI->LevelFontChange(Lv);
+	//}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -127,6 +132,8 @@ void KnightPlayer::Update()
 
 	//当たり判定
 	Collition();
+
+	
 
 	//ステート
 	ManageState();
@@ -145,28 +152,31 @@ void KnightPlayer::Update()
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
+
+	
 }
 
 //攻撃処理
 void KnightPlayer::Attack()
 {
+	
 	//連打で攻撃できなくなる
 
 	//一段目のアタックをしていないなら
-	//if (pushFlag==false&&AtkState == false)
-	//{
-	//	//Bボタン押されたら攻撃する
-	//	if (g_pad[0]->IsTrigger(enButtonA))
-	//	{
-	//		m_playerState = enKnightState_ChainAtk;
-	//		
-	//		//FirstAtkFlag = true;
-	//		//コンボを1増やす
-	//		//ComboState++;
-	//		pushFlag = true;
-	//		AtkState = true;
-	//	}
-	//}
+	if (pushFlag==false&&AtkState == false)
+	{
+		//Bボタン押されたら攻撃する
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_playerState = enKnightState_ChainAtk;
+			
+			//FirstAtkFlag = true;
+			//コンボを1増やす
+			//ComboState++;
+			pushFlag = true;
+			AtkState = true;
+		}
+	}
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -191,6 +201,7 @@ void KnightPlayer::Attack()
 	//Bボタンが押されたら
 	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
+
 		//移動速度を上げる
 		m_Status.Speed += 120.0f;
 		
@@ -236,7 +247,8 @@ void KnightPlayer::Attack()
 
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
-	if(AtkCollistionFlag ==true)AtkCollisiton();
+	if (AtkCollistionFlag == true) AtkCollisiton();
+	
 }
 
 /// <summary>
@@ -290,6 +302,12 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+
+		//スキル音を発生
+		m_se = NewGO<SoundSource>(0);
+		m_se->Init(11);
+		m_se->Play(false);
+		m_se->SetVolume(0.3f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら
@@ -374,6 +392,8 @@ void KnightPlayer::AvoidanceSprite()
 	//HPバーの減っていく割合。
 	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
 	m_Avoidance_barRender.SetScale(AvoidanceScale);
+	
+	
 
 	m_Avoidance_flameRender.Update();
 	m_Avoidance_barRender.Update();

@@ -310,5 +310,7 @@ protected:
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
 
+
+
 };
 

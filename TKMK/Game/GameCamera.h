@@ -1,8 +1,6 @@
 #pragma once
-//#include "camera/SpringCamera.h"
+#include "CameraCollisionSolver.h"
 
-class Game;
-class KnightBase;
 class KnightPlayer;
 
 class GameCamera:public IGameObject
@@ -12,42 +10,19 @@ public:
 	~GameCamera();
 	bool Start();
 	void Update();
-	void SetSGame(Game* Cgame)
-	{
-		m_game = Cgame;
-	}
-	Game* GetSGame()
-	{
-		return m_game;
-	}
 
 	void SetKnight(KnightPlayer* knightplayer)
 	{
 		m_knightplayer = knightplayer;
 	}
 
-	KnightPlayer* GetKnight()
-	{
-		return m_knightplayer;
-	}
+	CameraCollisionSolver	m_cameraCollisionSolver;
 
-	Vector3& GetPosition()
-	{
+	KnightPlayer*			m_knightplayer	= nullptr;
 
-		return m_toCameraPos;
-	}
-	//中立の敵ので使う
-	const Vector3& GetTarget() const
-	{
-		return m_target;
-	}
-
-	Game* m_game = nullptr;
-	KnightBase* m_knightbase = nullptr;
-	KnightPlayer* m_knightplayer = nullptr;
-	Vector3 m_toCameraPos = Vector3::Zero;
-	Vector3 m_moveSpeed = Vector3::Zero;
-	Vector3 m_target = Vector3::Zero;
-	Quaternion m_rotation = Quaternion::Identity;
+	Vector3					m_toCameraPos			= Vector3::Zero;		//カメラ位置から注視点に向かうベクトル
+	Vector3					m_position				= Vector3::Zero;		//カメラ座標
+	Vector3					m_target				= Vector3::Zero;		//カメラ注視点
+	Quaternion				m_rotation				= Quaternion::Identity;	//回転
 };
 

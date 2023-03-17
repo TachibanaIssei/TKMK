@@ -232,6 +232,9 @@
     <ClCompile Include="k2EngineLow.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="CollisionObject.cpp" />
+    <ClCompile Include="CameraCollisionSolver.cpp" />
+    <ClCompile Include="PostEffect.cpp" />
+    <ClCompile Include="Bloom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -513,6 +516,9 @@
     <ClInclude Include="RenderingEngine.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="CollisionObject.h" />
+    <ClInclude Include="CameraCollisionSolver.h" />
+    <ClInclude Include="PostEffect.h" />
+    <ClInclude Include="Bloom.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

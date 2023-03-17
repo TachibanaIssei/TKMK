@@ -213,11 +213,15 @@ void KnightPlayer::Attack()
 		pushFlag = true;
 		//アニメーション再生、レベルを３
 		UltimateSkill();
+
+
+
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);
 		se->Play(false);
 		se->SetVolume(0.3f);
+
 		//必殺技発動フラグをセット
 		UltimateSkillFlag = true;
 	}

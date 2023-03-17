@@ -55,7 +55,7 @@ bool Game::Start()
 {
 	g_renderingEngine->UnUseHemiLight();
 
-	//�f�B���N�V�������C�g�̐ݒ�
+	//�P�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };
@@ -73,7 +73,9 @@ bool Game::Start()
 
 			return true;
 		}
+	
 		return false;
+
 	});
 
 	//GameUIの生成
@@ -174,14 +176,10 @@ bool Game::Start()
 
 	//m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
 	//m_KnightAI->SetGame(this);
+	
 	//GameUIの生成
 	m_Map = NewGO<Map>(2, "map");
 
-	/*m_fontRender.SetText(L"hello");
-	m_fontRender.SetPosition(-500.0f, 200.0f);
-	m_fontRender.SetScale(3.0f);
-	m_fontRender.SetRotation(90.0f);
-	m_fontRender.SetShadowParam(true, 2.0f, g_vec4Black);*/
 	
 	//ポーズ画面の背景の設定
 	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
@@ -239,7 +237,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }
@@ -333,6 +331,9 @@ void Game::Respawn()
 			neutral_Enemy->SetKnightPlayer(m_knightplayer);
 		}
 	}
+
+	//マップのFindGO関数を呼び出しエネミーの数を把握する
+	m_Map->FindEnemys();
 
 	//Neutral_Enemyを配列で消す
 	//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");

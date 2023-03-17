@@ -79,6 +79,8 @@ void KnightBase::SetModel()
 /// <param name="GetExp">中立の敵の経験値</param>
 void KnightBase::ExpProcess(int Exp)
 {
+	//もしレベルが10(Max)なら
+	if (Lv == 10)return;
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
 	GetExp += Exp;
 	//手に入れた経験値より経験値テーブルのほうが大きかったら

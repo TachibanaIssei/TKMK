@@ -33,9 +33,19 @@ public:
 	/// エネミーの数を減らす処理
 	/// </summary>
 	/// <returns>エネミーの数</returns>
-	int GetNeutral_EnemyContaier() {
+	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
+
+	/// <summary>
+	/// エネミーの数を減らす処理
+	/// </summary>
+	/// <returns>エネミーの数</returns>
+	int GetNeutral_EnemyContaier() {
+		return enemyNumber;
+	}
+
+
 
 	void Render(RenderContext& rc);
 

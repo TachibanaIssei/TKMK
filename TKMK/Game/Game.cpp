@@ -55,7 +55,7 @@ bool Game::Start()
 {
 	g_renderingEngine->UnUseHemiLight();
 
-	//�f�B���N�V�������C�g�̐ݒ�
+	//�P�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };
@@ -73,7 +73,9 @@ bool Game::Start()
 
 			return true;
 		}
+	
 		return false;
+
 	});
 
 	//GameUIの生成
@@ -206,7 +208,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

@@ -1,3 +1,4 @@
 name,hp,attack,Speed,GetExp
-Enemy,60,10,100,5
-Knight,150,35,1000,0
+Enemy,60,10,1,5
+Knight,150,35,100,0
+

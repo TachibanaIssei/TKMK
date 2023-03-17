@@ -21,7 +21,7 @@ namespace {
 Game::Game()
 {
 	//sound設定
-	//1-5 Title/Game/ResultのBGM
+	//1-5 Title/Game中BGM
 	//6-10 選択音
 	//11-20 playerのスキルなどの音
 	//21-30 enemyの音
@@ -198,15 +198,7 @@ bool Game::Start()
 	m_GameState = enGameState_Battle;
 
 	//BGMの設定
-	//戦闘BGM
 	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
-	//リザルトBGM
-	//１位
-	g_soundEngine->ResistWaveFileBank(3, "Assets/sound/result/result1.wav");
-	//２位
-	g_soundEngine->ResistWaveFileBank(4, "Assets/sound/result/result2.wav");
-	//それ以下の順位
-	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/result/result3.wav");
 	//se
 	//player
 	//剣スキル
@@ -224,10 +216,6 @@ bool Game::Start()
 	//enemy
 	//攻撃の声
 	g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
-	//ダメージを食らったときの悲鳴
-	g_soundEngine->ResistWaveFileBank(22, "Assets/sound/enemySE/enemyDamage3.wav");
-	//死亡したとき
-	g_soundEngine->ResistWaveFileBank(23, "Assets/sound/enemySE/enemyDie.wav");
 	
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(2);
@@ -271,7 +259,7 @@ void Game::Update()
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
 			}
-			m_bgm->SetVolume(0.05f);
+
 			
 		}
 			
@@ -289,7 +277,6 @@ void Game::Update()
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
 			}
-			m_bgm->SetVolume(0.1f);
 		}
 	}
 

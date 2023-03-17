@@ -15,6 +15,7 @@ public:
 	SpriteRender m_spriteRender;
 	Game* game=nullptr;
 	SoundSource* m_bgm = nullptr;
+	SoundSource* m_se = nullptr;
 
 };
 

@@ -87,6 +87,7 @@ bool Neutral_Enemy::Start()
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
 
+
 	m_EnemyPoslevel.Init("Assets/level3D/enemyPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
@@ -243,20 +244,7 @@ void Neutral_Enemy::Chase()
 		return;
 	}
 
-	//m_targetPointPosition = m_knightplayer->GetPosition();
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
-	diff.Normalize();
-	//移動速度を設定する。
-	m_moveSpeed = diff * m_Status.Speed;
-	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-	if (m_charaCon.IsOnGround()) {
-		//地面についた。
-		m_moveSpeed.y = 0.0f;
-	}
-	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる。
-	modelPosition.y += 2.5f;
-	m_modelRender.SetPosition(modelPosition);
+
 }
 
 
@@ -844,12 +832,12 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//エフェクト再生
 
 
-		//��ʉ���Đ�����
-		//�U�����𔭐�
-		m_se = NewGO<SoundSource>(0);
-		m_se->Init(21);
-		m_se->Play(false);
-		m_se->SetVolume(0.5f);
+		//効果音再生
+		//攻撃の声
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(21);
+		se->Play(false);
+		se->SetVolume(0.5f);
 
 		//効果音を再生する
 

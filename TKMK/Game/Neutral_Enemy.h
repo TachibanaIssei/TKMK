@@ -240,6 +240,7 @@ private:
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //中立の敵のステート。
 	
 	SoundSource* m_se = nullptr;
+
 	KnightPlayer* m_knightplayer = nullptr;
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 

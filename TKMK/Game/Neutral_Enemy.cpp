@@ -54,9 +54,10 @@ bool Neutral_Enemy::Start()
 	//大きさ調整
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
-		10.0f,			//半径。
-		25.0f,			//高さ。
-		m_position		//座標。
+		25.0f,			//半径。
+		50.0f,			//高さ。
+		m_position,		//座標。
+		true
 	);
 
 	//スフィアコライダーを初期化。

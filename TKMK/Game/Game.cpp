@@ -297,6 +297,7 @@ void Game::Respawn()
 			neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
 			//neutral_Enemy->SetRotation(objData.rotation);
 			neutral_Enemy->SetKnightPlayer(m_knightplayer);
+
 		}
 	}
 

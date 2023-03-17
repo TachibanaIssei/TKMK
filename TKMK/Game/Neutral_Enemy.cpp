@@ -87,6 +87,7 @@ bool Neutral_Enemy::Start()
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
 
+	
 
 	g_soundEngine->ResistWaveFileBank(21,"Assets/sound/enemySE/enemyKoe.wav");
 
@@ -432,7 +433,7 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 	{
 		//m_game->GetNeutral_EnemyContaier().erase(std::remove(m_game->GetNeutral_EnemyContaier().begin(),
 		//	m_game->GetNeutral_EnemyContaier().end(), this), m_game->GetNeutral_EnemyContaier().end()/*std::cend(m_game->GetNeutral_EnemyContaier()*/);
-		m_game->GetNeutral_EnemyContaier();
+		m_game->SubNeutral_EnemyContaier();
 		//自身を削除する。
 		DeleteGO(this);
 	}

@@ -80,7 +80,7 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//���m�̐���
+	//knightの作成
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
 	m_knightplayer->SetGameUI(m_gameUI);
@@ -201,11 +201,28 @@ bool Game::Start()
 
 	//BGMの設定
 	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
+	//se
+	//player
+	//剣スキル
+	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
+	//ダメージくらったときの悲鳴
+	g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
+	//剣通常攻撃
+	g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
+	g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
+	g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
+	//アルティメット
+	g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
+	//死亡したとき
+	g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
+	//enemy
+	//攻撃の声
+	g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
 	
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(2);
 	m_bgm->Play(true);
-	m_bgm->SetVolume(0.3f);
+	m_bgm->SetVolume(0.1f);
 
 
 

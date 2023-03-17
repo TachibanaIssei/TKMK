@@ -89,10 +89,6 @@ bool Neutral_Enemy::Start()
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
 
-	//se�ǂݍ���
-	//enemy�̉�
-	g_soundEngine->ResistWaveFileBank(21,"Assets/sound/enemySE/enemyKoe.wav");
-
 	return true;
 }
 
@@ -173,7 +169,7 @@ void Neutral_Enemy::Chase()
 		return;
 	}
 
-	m_targetPointPosition = m_knightPlayer->GetPosition();
+	m_targetPointPosition = m_knightplayer->GetPosition();
 	bool isEnd;
 	//if(){
 		// パス検索
@@ -265,7 +261,7 @@ void Neutral_Enemy::Attack()
 const bool Neutral_Enemy::SearchEnemy()const
 {
 	//剣士からエネミーに向かうベクトルを計算する。
-	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	Vector3 diff = m_knightplayer->GetPosition() - m_position;
 		float oti = diff.LengthSq();
 	//ボスとプレイヤーの距離がある程度近かったら。
 	if (diff.LengthSq() <= 300.0 * 300.0)
@@ -634,12 +630,12 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//エフェクト再生
 
 
-		//��ʉ���Đ�����
-		//�U�����𔭐�
-		m_se = NewGO<SoundSource>(0);
-		m_se->Init(21);
-		m_se->Play(false);
-		m_se->SetVolume(0.5f);
+		//効果音再生
+		//攻撃の声
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(21);
+		se->Play(false);
+		se->SetVolume(0.5f);
 
 		//効果音を再生する
 

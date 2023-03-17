@@ -13,10 +13,12 @@ namespace
 }
 Map::Map()
 {
+
 }
 
 Map::~Map()
 {
+
 }
 
 bool Map::Start()

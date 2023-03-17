@@ -232,10 +232,10 @@ private:
 	GameCamera* m_gameCamera = nullptr;
 
 	SoundSource* m_se = nullptr;
-	Status m_Status;                           //�X�e�[�^�X
-	SpriteRender		m_HPBar;		//HP�o�[�摜
-	SpriteRender		m_HPFrame;		//HP�g�摜
-	SpriteRender		m_HPBack;		//HP�w�i�摜
+	//Status m_Status;                           //�X�e�[�^�X
+	//SpriteRender		m_HPBar;		//HP�o�[�摜
+	//SpriteRender		m_HPFrame;		//HP�g�摜
+	//SpriteRender		m_HPBack;		//HP�w�i�摜
 
 	KnightPlayer* m_knightplayer = nullptr;
 

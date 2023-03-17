@@ -244,19 +244,19 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-	//Vector3 diff = m_knightplayer->GetPosition() - m_position;
-	//diff.Normalize();
-	////移動速度を設定する。
-	//m_moveSpeed = diff * m_Status.Speed;
-	//m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-	//if (m_charaCon.IsOnGround()) {
-	//	//地面についた。
-	//	m_moveSpeed.y = 0.0f;
-	//}
-	//Vector3 modelPosition = m_position;
-	////ちょっとだけモデルの座標を挙げる。
-	//modelPosition.y += 2.5f;
-	//m_modelRender.SetPosition(modelPosition);
+	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+	diff.Normalize();
+	//移動速度を設定する。
+	m_moveSpeed = diff * m_Status.Speed;
+	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charaCon.IsOnGround()) {
+		//地面についた。
+		m_moveSpeed.y = 0.0f;
+	}
+	Vector3 modelPosition = m_position;
+	//ちょっとだけモデルの座標を挙げる。
+	modelPosition.y += 2.5f;
+	m_modelRender.SetPosition(modelPosition);
 
 
 }
@@ -342,39 +342,39 @@ void Neutral_Enemy::Attack()
 void Neutral_Enemy::SearchEnemy()
 {
 
-	//Vector3 playerPosition = m_knightplayer->GetPosition();
-	//Vector3 diff = playerPosition - m_position;
-	//diff.Normalize();
-	//float angle = acosf(diff.Dot(m_forward));
-	////プレイヤーが視界内に居なかったら。
-	//if (Math::PI * 0.1f <= fabsf(angle))
-	//{
-	//	//プレイヤーは見つかっていない。
-	//	return;
-	//}
+	Vector3 playerPosition = m_knightplayer->GetPosition();
+	Vector3 diff = playerPosition - m_position;
+	diff.Normalize();
+	float angle = acosf(diff.Dot(m_forward));
+	//プレイヤーが視界内に居なかったら。
+	if (Math::PI * 0.1f <= fabsf(angle))
+	{
+		//プレイヤーは見つかっていない。
+		return;
+	}
 
-	//btTransform start, end;
-	//start.setIdentity();
-	//end.setIdentity();
-	////始点はエネミーの座標。
-	//start.setOrigin(btVector3(m_position.x, 50.0f, m_position.z));
-	////終点はプレイヤーの座標。
-	//end.setOrigin(btVector3(playerPosition.x, 50.0f, playerPosition.z));
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(m_position.x, 50.0f, m_position.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(playerPosition.x, 50.0f, playerPosition.z));
 
-	//SweepResultWall callback;
-	////コライダーを始点から終点まで動かして。
-	////衝突するかどうかを調べる。
-	//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-	////壁と衝突した！
-	//if (callback.isHit == true)
-	//{
-	//	//プレイヤーは見つかっていない。
-	//	return;
-	//}
+	SweepResultWall callback;
+	//コライダーを始点から終点まで動かして。
+	//衝突するかどうかを調べる。
+	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+	//壁と衝突した！
+	if (callback.isHit == true)
+	{
+		//プレイヤーは見つかっていない。
+		return;
+	}
 
-	////壁と衝突してない！！
-	////プレイヤー見つけたフラグをtrueに。
-	//m_isSearchPlayer = true;
+	//壁と衝突してない！！
+	//プレイヤー見つけたフラグをtrueに。
+	m_isSearchPlayer = true;
 	
 }
 
@@ -410,15 +410,16 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 		//攻撃できる距離なら。
 		if (CanAttack() == true)
 		{
-		
+			//乱数によって、攻撃するか待機させるかを決定する。	
 			{
-				//攻撃ステートに移行する。
-				m_Neutral_EnemyState = enNeutral_Enemy_Attack;
+				//乱数によって、攻撃するか待機させるかを決定する。	
+				int ram = rand() % 100;
+				if (ram > 30)
+					//攻撃ステートに移行する。
+					m_Neutral_EnemyState = enNeutral_Enemy_Attack;
 				m_UnderAttack = false;
 				return;
 			}
-			
-
 		}
 		//攻撃できない距離なら。
 		else

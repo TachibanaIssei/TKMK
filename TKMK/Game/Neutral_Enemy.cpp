@@ -22,10 +22,6 @@ Neutral_Enemy::Neutral_Enemy()
 
 Neutral_Enemy::~Neutral_Enemy()
 {
-
-
-
-
 	
 }
 
@@ -43,6 +39,7 @@ bool Neutral_Enemy::Start()
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 	//モデルを読み込む。
+	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
 	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
 
 	//座標を設定
@@ -226,11 +223,21 @@ void Neutral_Enemy::Collision()
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+				//死亡したときの声
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(23);
+				se->Play(false);
+				se->SetVolume(0.5f);
 			}
 			else {
 				//被ダメージステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
 				//効果音再生
+				//ダメージを食らったときの声
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(22);
+				se->Play(false);
+				se->SetVolume(0.5f);
 			}
 		}
 	}

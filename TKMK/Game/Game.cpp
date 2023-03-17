@@ -53,7 +53,9 @@ bool Game::Start()
 
 			return true;
 		}
+	
 		return false;
+
 	});
 
 	//GameUIの生成
@@ -102,7 +104,7 @@ bool Game::Start()
 	m_GameState = enGameState_Battle;
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

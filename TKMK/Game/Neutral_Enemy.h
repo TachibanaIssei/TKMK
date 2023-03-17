@@ -9,6 +9,7 @@ class KnightPlayer;
 class Game;
 class GameCamera;
 class Neutral_Enemy;
+class Patrolnumb;
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -61,6 +62,8 @@ public:
 	{
 		return m_position;
 	}
+	
+
 private:
 	void Move();
 	/// <summary>
@@ -189,15 +192,7 @@ private:
 	FontRender				m_fontRender;
 	SphereCollider			m_sphereCollider;							//コライダー。
 	RigidBody				m_rigidBody;						//剛体。		
-	Vector3                 m_inRespawnPosition[12];
-	//ナビゲーションメッシュ
-	TknFile m_tknFile;
-	PhysicsStaticObject m_bgObject;
-	nsAI::NaviMesh m_nvmMesh;
-	nsAI::Path m_path;
-	nsAI::PathFinding m_pathFiding;
-	Vector3 m_targetPointPosition;
-
+	Vector3                 m_PatrolPosition;
 
 	int f = 0;
 };

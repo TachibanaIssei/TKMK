@@ -45,8 +45,7 @@ bool Neutral_Enemy::Start()
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
 	//大きさ調整
-	// ナビメッシュを構築。
-	m_nvmMesh.Init("Assets/nvm/nvm1.tkn");
+
 
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
@@ -200,6 +199,27 @@ void Neutral_Enemy::Collision()
 		{
 			//hpを減らす
 			m_Status.Hp -= 50;
+			if (m_Status.Hp < 0)
+			{
+				//死亡ステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
+				//効果音再生
+			}
+		}
+	}
+	//敵の攻撃用のコリジョンを取得する
+	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
+	//子リジョンの配列をfor文で回す
+	for (auto collision : Ultcollisions)
+	{
+		if (collision->IsHit(m_charaCon))
+		{
+			//hpを減らす
+			m_Status.Hp -= 100;
 			if (m_Status.Hp < 0)
 			{
 				//死亡ステートに遷移する。
@@ -412,11 +432,29 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
 	Vector3 position1;
-	position1 = { 50,0,-150 };
+	position1 = { 0,0,0 };
 
 	Vector3 position2;
-	position2 = { 50,0,50 };
-	
+	position2 = { -550,0,15 };
+	Vector3 position3;
+	position3 = { -450,0,350 };
+	Vector3 position4;
+	position4 = { -250,0,520 };
+	Vector3 position5;
+	position5 = { 100,0,530 };
+	Vector3 position6;
+	position6 = { 400,0,350 };
+	Vector3 position7;
+	position7 = { 500,0,15 };
+	Vector3 position8;
+	position8 = { 400,0,-350 };
+	Vector3 position9;
+	position9 = { 100,0,-500 };
+	Vector3 position10;
+	position10 = { -250,0,-500 };
+	Vector3 position11;
+	position11 = { -500,0,-350 };
+
 	if (Patrol)
 	{
 		if (f == 0)
@@ -450,9 +488,140 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 0;
+				f = 2;
 			}
 
+		}
+		else if (f == 2)
+		{
+			Vector3 newForward2 = position2 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 3;
+			}
+
+		}
+		else if (f == 3)
+		{
+			Vector3 newForward2 = position3 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 4;
+			}
+		}
+		else if (f == 4)
+		{
+			Vector3 newForward2 = position4 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 5;
+			}
+		}
+		else if (f == 5)
+		{
+			Vector3 newForward2 = position5 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 5;
+			}
+		}
+		else if (f == 6)
+		{
+			Vector3 newForward2 = position6 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 6;
+			}
+		}
+		else if (f == 7)
+		{
+			Vector3 newForward2 = position7 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 7;
+			}
+		}
+		else if (f == 8)
+		{
+			Vector3 newForward2 = position8 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 8;
+			}
+		}
+		else if (f == 9)
+		{
+			Vector3 newForward2 = position9 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 9;
+			}
+		}
+		else if (f == 10)
+		{
+			Vector3 newForward2 = position10 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 10;
+			}
+		}
+		else if (f == 11)
+		{
+			Vector3 newForward2 = position11 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 0;
+			}
 		}
 	}
 	else

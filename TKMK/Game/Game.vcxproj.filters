@@ -24,6 +24,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightAI.cpp" />
+    <ClCompile Include="Patrolnumb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -43,5 +44,6 @@
     <ClInclude Include="Status.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="KnightAI.h" />
+    <ClInclude Include="Patrolnumb.h" />
   </ItemGroup>
 </Project>

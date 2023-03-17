@@ -72,6 +72,8 @@ namespace nsK2EngineLow {
 			{
 				if (convexResult.m_hitCollisionObject == me
 					|| convexResult.m_hitCollisionObject->getInternalType() == btCollisionObject::CO_GHOST_OBJECT
+					|| (me->getUserIndex() == enCollisionAttr_EnemyCharacter
+						&& convexResult.m_hitCollisionObject->getUserIndex() == enCollisionAttr_EnemyCharacter)
 					) {
 					//自分に衝突した。or 地面に衝突した。
 					return 0.0f;
@@ -107,7 +109,7 @@ namespace nsK2EngineLow {
 	}
 
 
-	void CharacterController::Init(float radius, float height, const Vector3& position)
+	void CharacterController::Init(float radius, float height, const Vector3& position, bool enemyFlag)
 	{
 		m_position = position;
 		//コリジョン作成。
@@ -124,7 +126,13 @@ namespace nsK2EngineLow {
 		//剛体の位置を更新。
 		trans.setOrigin(btVector3(position.x, position.y + m_height * 0.5f + m_radius, position.z));
 		//@todo 未対応。trans.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z));
-		m_rigidBody.GetBody()->setUserIndex(enCollisionAttr_Character);
+		if (!enemyFlag)
+		{
+			m_rigidBody.GetBody()->setUserIndex(enCollisionAttr_Character);
+		}
+		else {
+			m_rigidBody.GetBody()->setUserIndex(enCollisionAttr_EnemyCharacter);
+		}
 		m_rigidBody.GetBody()->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
 		m_isInited = true;

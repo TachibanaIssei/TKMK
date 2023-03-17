@@ -218,6 +218,7 @@ void KnightPlayer::Attack()
 		pushFlag = true;
 		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
+
 		//必殺技発動フラグをセット
 		UltimateSkillFlag = true;
 	}

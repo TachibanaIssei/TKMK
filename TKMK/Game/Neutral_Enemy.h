@@ -255,18 +255,6 @@ private:
 	RigidBody				m_rigidBody;
 	Vector3                 m_inRespawnPosition[12];
 	Vector3 m_patrolPos[11];
-	Vector3 position1;
-	Vector3 position2;
-	Vector3 position3;
-	Vector3 position4;
-	Vector3 position5;
-	Vector3 position6;
-	Vector3 position7;
-	Vector3 position8;
-	Vector3 position9;
-	Vector3 position10;
-	Vector3 position11;
-
 
 	bool					m_isSearchPlayer = false;
 	bool m_UnderAttack = false;              //攻撃判定

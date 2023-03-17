@@ -55,7 +55,7 @@ bool Game::Start()
 {
 	g_renderingEngine->UnUseHemiLight();
 
-	//�f�B���N�V�������C�g�̐ݒ�
+	//�P�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };

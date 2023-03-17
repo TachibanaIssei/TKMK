@@ -87,9 +87,68 @@ bool Neutral_Enemy::Start()
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
 
+	m_EnemyPoslevel.Init("Assets/level3D/enemyPos.tkl", [&](LevelObjectData& objData) {
 
-	g_soundEngine->ResistWaveFileBank(21,"Assets/sound/enemySE/enemyKoe.wav");
-
+		if (objData.ForwardMatchName(L"Pos") == true) {
+			//左上の座標
+			if (objData.number == 0) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 0;
+				return true;
+			}
+			if (objData.number == 1) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 1;
+				return true;
+				
+			}
+			if (objData.number == 2) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 2;
+				return true;
+			}
+			if (objData.number == 3) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 3;
+				return true;
+			}
+			if (objData.number == 4) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 4;
+				return true;
+			}
+			if (objData.number == 5) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 5;
+				return true;
+			}
+			if (objData.number == 6) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 6;
+				return true;
+			}
+			if (objData.number == 7) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 7;
+				return true;
+			}
+			if (objData.number == 8) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 8;
+				return true;
+			}
+			if (objData.number == 9) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 9;
+				return true;
+			}
+			if (objData.number == 10) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 10;
+				return true;
+			}
+		}
+	});
 	return true;
 }
 
@@ -460,38 +519,14 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 }
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
-	Vector3 position1;
-	position1 = { 0,0,0 };
-
-	Vector3 position2;
-	position2 = { -550,0,15 };
-	Vector3 position3;
-	position3 = { -450,0,350 };
-	Vector3 position4;
-	position4 = { -250,0,520 };
-	Vector3 position5;
-	position5 = { 100,0,530 };
-	Vector3 position6;
-	position6 = { 400,0,350 };
-	Vector3 position7;
-	position7 = { 500,0,15 };
-	Vector3 position8;
-	position8 = { 400,0,-350 };
-	Vector3 position9;
-	position9 = { 100,0,-500 };
-	Vector3 position10;
-	position10 = { -250,0,-500 };
-	Vector3 position11;
-	position11 = { -500,0,-350 };
-
 	if (Patrol)
 	{
-		if (f == 0)
+		if (P == 0)
 		{
 			//position1に向かうコード
-			//もしもposition1に到着したらf=1;
+			//もしもposition1に到着したらP=1;
 			//patrol=true;
-			Vector3 newForward = position1 - m_position;
+			Vector3 newForward = m_patrolPos[0] - m_position;
 			Vector3 distance = newForward;
 			newForward.Normalize();
 			m_forward = newForward;
@@ -499,17 +534,17 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 1;
+				P = 1;
 			}
 
 
 		}
-		else if (f == 1)
+		else if (P == 1)
 		{
 			//position2に向かうコード
-			//もしもposition2に到着したらf=0;
+			//もしもposition2に到着したらP=0;
 			//patrol=true;
-			Vector3 newForward2 = position2 - m_position;
+			Vector3 newForward2 = m_patrolPos[1] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -517,13 +552,13 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 2;
+				P = 2;
 			}
 
 		}
-		else if (f == 2)
+		else if (P== 2)
 		{
-			Vector3 newForward2 = position2 - m_position;
+			Vector3 newForward2 = m_patrolPos[2] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -531,13 +566,13 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 3;
+				P = 3;
 			}
 
 		}
-		else if (f == 3)
+		else if (P == 3)
 		{
-			Vector3 newForward2 = position3 - m_position;
+			Vector3 newForward2 = m_patrolPos[3] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -545,12 +580,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 4;
+				P = 4;
 			}
 		}
-		else if (f == 4)
+		else if (P == 4)
 		{
-			Vector3 newForward2 = position4 - m_position;
+			Vector3 newForward2 = m_patrolPos[4] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -558,12 +593,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 5;
+				P = 5;
 			}
 		}
-		else if (f == 5)
+		else if (P == 5)
 		{
-			Vector3 newForward2 = position5 - m_position;
+			Vector3 newForward2 = m_patrolPos[5] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -571,12 +606,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 5;
+				P = 5;
 			}
 		}
-		else if (f == 6)
+		else if (P == 6)
 		{
-			Vector3 newForward2 = position6 - m_position;
+			Vector3 newForward2 = m_patrolPos[6] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -584,12 +619,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 6;
+				P = 6;
 			}
 		}
-		else if (f == 7)
+		else if (P == 7)
 		{
-			Vector3 newForward2 = position7 - m_position;
+			Vector3 newForward2 = m_patrolPos[7] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -597,12 +632,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 7;
+				P = 7;
 			}
 		}
-		else if (f == 8)
+		else if (P == 8)
 		{
-			Vector3 newForward2 = position8 - m_position;
+			Vector3 newForward2 = m_patrolPos[8] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -610,12 +645,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 8;
+				P = 8;
 			}
 		}
-		else if (f == 9)
+		else if (P == 9)
 		{
-			Vector3 newForward2 = position9 - m_position;
+			Vector3 newForward2 = m_patrolPos[9] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -623,12 +658,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 9;
+				P = 9;
 			}
 		}
-		else if (f == 10)
+		else if (P == 10)
 		{
-			Vector3 newForward2 = position10 - m_position;
+			Vector3 newForward2 = m_patrolPos[10] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -636,12 +671,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 10;
+				P = 10;
 			}
 		}
-		else if (f == 11)
+		else if (P == 11)
 		{
-			Vector3 newForward2 = position11 - m_position;
+			Vector3 newForward2 = m_patrolPos[11] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
@@ -649,7 +684,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 0;
+				P = 0;
 			}
 		}
 	}

@@ -45,13 +45,17 @@ void nsK2EngineLow::Bloom::InitLuminanceSprite(RenderTarget& mainRenderTarget)
 void nsK2EngineLow::Bloom::InitFinalSprite(RenderTarget& mainRenderTarget)
 {
 	SpriteInitData finalSpriteInitData;
-	finalSpriteInitData.m_textures[0] = &m_gaussianBlur.GetBokeTexture();
+	finalSpriteInitData.m_textures[0] = &m_gaussianBlur[0].GetBokeTexture();
+	finalSpriteInitData.m_textures[1] = &m_gaussianBlur[1].GetBokeTexture();
+	finalSpriteInitData.m_textures[2] = &m_gaussianBlur[2].GetBokeTexture();
+	finalSpriteInitData.m_textures[3] = &m_gaussianBlur[3].GetBokeTexture();
 
 	//mainRenderTargetとおなじ幅と高さ
 	finalSpriteInitData.m_width = mainRenderTarget.GetWidth();
 	finalSpriteInitData.m_height = mainRenderTarget.GetHeight();
 
-	finalSpriteInitData.m_fxFilePath = "Assets/shader/sprite.fx";
+	finalSpriteInitData.m_fxFilePath = "Assets/shader/postEffect/postEffect.fx";
+	finalSpriteInitData.m_psEntryPoinFunc = "PSBloomFinal";
 
 	//加算合成で描画するのでブレンディングモードを加算にする
 	finalSpriteInitData.m_alphaBlendMode = AlphaBlendMode_Add;
@@ -64,7 +68,14 @@ void nsK2EngineLow::Bloom::InitFinalSprite(RenderTarget& mainRenderTarget)
 
 void nsK2EngineLow::Bloom::InitGaussianBlur()
 {
-	m_gaussianBlur.Init(&m_luminnceRenderTarget.GetRenderTargetTexture());
+	//[0]は輝度テクスチャにガウシアンブラーをかける
+	m_gaussianBlur[0].Init(&m_luminnceRenderTarget.GetRenderTargetTexture());
+	//[1]は[0]のテクスチャにガウシアンブラーをかける
+	m_gaussianBlur[1].Init(&m_gaussianBlur[0].GetBokeTexture());
+	//[2]は[1]のテクスチャにガウシアンブラーをかける
+	m_gaussianBlur[2].Init(&m_gaussianBlur[1].GetBokeTexture());
+	//[3]は[2]のテクスチャにガウシアンブラーをかける
+	m_gaussianBlur[3].Init(&m_gaussianBlur[2].GetBokeTexture());
 }
 
 void nsK2EngineLow::Bloom::OnRender(RenderContext& rc, RenderTarget& mainRenderTarget)
@@ -81,7 +92,10 @@ void nsK2EngineLow::Bloom::OnRender(RenderContext& rc, RenderTarget& mainRenderT
 	rc.WaitUntilFinishDrawingToRenderTarget(m_luminnceRenderTarget);
 
 	//ガウシアンブラーを実行する
-	m_gaussianBlur.ExecuteOnGPU(rc, 20);
+	m_gaussianBlur[0].ExecuteOnGPU(rc, 10);
+	m_gaussianBlur[1].ExecuteOnGPU(rc, 10);
+	m_gaussianBlur[2].ExecuteOnGPU(rc, 10);
+	m_gaussianBlur[3].ExecuteOnGPU(rc, 10);
 
 	//ボケ画像をメインレンダリングターゲットに加算合成
 	rc.WaitUntilToPossibleSetRenderTarget(mainRenderTarget);

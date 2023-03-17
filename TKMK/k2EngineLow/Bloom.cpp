@@ -25,7 +25,7 @@ void nsK2EngineLow::Bloom::InitRenderTarget(RenderTarget& mainRenderTarget)
 void nsK2EngineLow::Bloom::InitLuminanceSprite(RenderTarget& mainRenderTarget)
 {
 	SpriteInitData luminanceSpriteInitData;
-	luminanceSpriteInitData.m_fxFilePath = "Assets/shader/postEffect.fx";
+	luminanceSpriteInitData.m_fxFilePath = "Assets/shader/postEffect/postEffect.fx";
 	luminanceSpriteInitData.m_vsEntryPointFunc = "VSMain";
 	luminanceSpriteInitData.m_psEntryPoinFunc = "PSSamplingLuminance";
 

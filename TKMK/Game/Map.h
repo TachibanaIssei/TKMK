@@ -10,6 +10,11 @@ public:
 	~Map();
 	bool Start();
 	void Update();
+
+	void FindEnemys() {
+		m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	}
+
 	void Render(RenderContext& rc);
 	
 	/// <summary>
@@ -23,12 +28,16 @@ public:
 private:
 	void PlayerMap();
 	void EnemyMap();
+
+	static const int enemys = 10;
+
 	SpriteRender m_Map;                  //マップ画像
 	SpriteRender m_MapFrame;             //マップの外枠の画像
 	SpriteRender m_MapPlayer;            //マップで映すプレイヤーの画像
-	SpriteRender m_MapEnemy;                //マップで映す敵の画像
+	SpriteRender m_MapEnemy[enemys];                //マップで映す敵の画像
 	Quaternion rot;
 
+	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 	KnightPlayer* m_knightPlayer=nullptr;        //剣士プレイヤー

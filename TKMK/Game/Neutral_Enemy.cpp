@@ -52,9 +52,6 @@ bool Neutral_Enemy::Start()
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
 	//大きさ調整
-	// ナビメッシュを構築。
-	m_nvmMesh.Init("Assets/nvm/nvm1.tkn");
-
 	//キャラクターコントローラーを初期化。
 	m_charaCon.Init(
 		25.0f,			//半径。
@@ -62,9 +59,9 @@ bool Neutral_Enemy::Start()
 		m_position		//座標。
 	);
 
-	//�X�t�B�A�R���C�_�[���B
+	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
-	
+
 	//剣のボーンのIDを取得する
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 
@@ -81,8 +78,7 @@ bool Neutral_Enemy::Start()
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-
-	//m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
+	m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
 
 	//乱数を初期化。
 	srand((unsigned)time(NULL));
@@ -91,8 +87,7 @@ bool Neutral_Enemy::Start()
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
 
-	//se�ǂݍ���
-	//enemy�̉�
+
 	g_soundEngine->ResistWaveFileBank(21,"Assets/sound/enemySE/enemyKoe.wav");
 
 	return true;
@@ -108,14 +103,7 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
-	//リスポーンする処理
-	/*if (Deathflag == true)
-	{
-		Respawn();
-	}*/
-
 	//追跡処理。
-
 	Chase();
 	//回転処理。
 	Rotation();
@@ -136,7 +124,7 @@ void Neutral_Enemy::Move()
 	Vector3 diff = m_forward;
 	diff.Normalize();
 	//移動速度を設定する。
-	m_moveSpeed = diff * 320.0f;
+	m_moveSpeed = diff * m_Status.Speed;
 	m_forward.Normalize();
 	Vector3 moveSpeed = m_forward * 50.0f;
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
@@ -168,25 +156,26 @@ void Neutral_Enemy::Rotation()
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
-//�Փ˂����Ƃ��ɌĂ΂��֐��I�u�W�F�N�g(�Ǘp)
+//衝突したときに呼ばれる関数オブジェクト(壁用)
 struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 {
-	bool isHit = false;						//�Փ˃t���O�B
+	bool isHit = false;						//衝突フラグ。
 
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
-		//�ǂƂԂ���ĂȂ������B
+		//壁とぶつかってなかったら。
 		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-			//�Փ˂����͕̂ǂł͂Ȃ��B
+			//衝突したのは壁ではない。
 			return 0.0f;
 		}
 
-		//�ǂƂԂ������B
-		//�t���O��true�ɁB
+		//壁とぶつかったら。
+		//フラグをtrueに。
 		isHit = true;
 		return 0.0f;
 	}
 };
+
 void Neutral_Enemy::Chase()
 {
 	//追跡ステートでないなら、追跡処理はしない。
@@ -195,49 +184,21 @@ void Neutral_Enemy::Chase()
 		return;
 	}
 
-	m_targetPointPosition = m_knightplayer->GetPosition();
-	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
+	//m_targetPointPosition = m_knightplayer->GetPosition();
+	Vector3 diff = m_knightplayer->GetPosition() - m_position;
 	diff.Normalize();
-	//�ړ����x��ݒ肷��B
-	m_moveSpeed = diff * 100.0f;
+	//移動速度を設定する。
+	m_moveSpeed = diff * m_Status.Speed;
 	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
-		//�n�ʂɂ����B
+		//地面についた。
 		m_moveSpeed.y = 0.0f;
 	}
 	Vector3 modelPosition = m_position;
-	//�����Ƃ������f���̍�W�����B
+	//ちょっとだけモデルの座標を挙げる。
 	modelPosition.y += 2.5f;
 	m_modelRender.SetPosition(modelPosition);
-
-
-	m_targetPointPosition = m_knightPlayer->GetPosition();
-	bool isEnd;
-	//if(){
-		// パス検索
-	m_pathFiding.Execute(
-		m_path,							// 構築されたパスの格納先
-		m_nvmMesh,						// ナビメッシュ
-		m_position,						// 開始座標
-		m_targetPointPosition,			// 移動目標座標
-		PhysicsWorld::GetInstance(),	// 物理エンジン	
-		20.0f,							// AIエージェントの半径
-		50.0f							// AIエージェントの高さ。
-	);
-	//}
-	// パス上を移動する。
-	m_position = m_path.Move(
-		m_position,
-		m_Status.Speed,
-		isEnd
-	);
-
-	Vector3 pos = m_position;
-	m_charaCon.SetPosition(pos);
-	Vector3 zero = Vector3::Zero;
-	m_charaCon.Execute(zero, 0.0f);
-	m_modelRender.SetPosition(pos);
-
+}
 
 
 void Neutral_Enemy::Collision()
@@ -280,11 +241,6 @@ void Neutral_Enemy::Collision()
 
 }
 
-//void Neutral_Enemy::Respawn()
-//{
-//	g_gameTime->GetFrameDeltaTime();
-//}
-
 void Neutral_Enemy::Attack()
 {
 	//攻撃ステートではなかったら
@@ -304,61 +260,38 @@ void Neutral_Enemy::Attack()
 void Neutral_Enemy::SearchEnemy()
 {
 
-	m_isSearchPlayer = false;
-
-	//剣士からエネミーに向かうベクトルを計算する。
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
-		float oti = diff.LengthSq();
-	//ボスとプレイヤーの距離がある程度近かったら。
-	if (diff.LengthSq() <= 300.0 * 300.0)
-	{
-		//エネミーからプレイヤーに向かうベクトルを正規化する。
-		diff.Normalize();
-		//エネミーの正面のベクトルと、エネミーからプレイヤーに向かうベクトルの。
-		//内積(cosθ)を求める。
-		float cos = m_forward.Dot(diff);
-		//内積(cosθ)から角度(θ)を求める。
-		float angle = acosf(cos);
-		//角度(θ)が180°より小さければ。
-		if (angle <= (Math::PI / 180.0f) * 180.0f)
-		{
-			//プレイヤーを見つけた！
-			return true;
-
-
-
-	Vector3 playerPosition = m_knightPlayer->GetPosition();
+	Vector3 playerPosition = m_knightplayer->GetPosition();
 	Vector3 diff = playerPosition - m_position;
 	diff.Normalize();
 	float angle = acosf(diff.Dot(m_forward));
-	//�v���C���[�����E��ɋ��Ȃ������B
+	//プレイヤーが視界内に居なかったら。
 	if (Math::PI * 0.35f <= fabsf(angle))
 	{
-		//�v���C���[�͌�����Ă��Ȃ��B
+		//プレイヤーは見つかっていない。
 		return;
 	}
 
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();
-	//�n�_�̓G�l�~�[�̍�W�B
-	start.setOrigin(btVector3(m_position.x,50.0f, m_position.z));
-	//�I�_�̓v���C���[�̍�W�B
-	end.setOrigin(btVector3(playerPosition.x,50.0f, playerPosition.z));
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(m_position.x, 50.0f, m_position.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(playerPosition.x, 50.0f, playerPosition.z));
 
 	SweepResultWall callback;
-	//�R���C�_�[��n�_����I�_�܂œ������āB
-	//�Փ˂��邩�ǂ����𒲂ׂ�B
+	//コライダーを始点から終点まで動かして。
+	//衝突するかどうかを調べる。
 	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-	//�ǂƏՓ˂����I
+	//壁と衝突した！
 	if (callback.isHit == true)
 	{
-		//�v���C���[�͌�����Ă��Ȃ��B
+		//プレイヤーは見つかっていない。
 		return;
 	}
 
-	//�ǂƏՓ˂��ĂȂ��I�I
-	//�v���C���[�������t���O��true�ɁB
+	//壁と衝突してない！！
+	//プレイヤー見つけたフラグをtrueに。
 	m_isSearchPlayer = true;
 }
 
@@ -381,20 +314,16 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//各タイマーを初期化。
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
-	//�G��������U��
-	//�v���C���[�������B
-	if (m_isSearchPlayer == true)
-
 	//敵を見つかったら攻撃
 	//プレイヤーを見つけたら。
-	if (SearchEnemy() == true)
+	if (m_isSearchPlayer == true)
 	{
 		Vector3 diff = m_knightplayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff;
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
-		
+
 		//攻撃できる距離なら。
 		if (CanAttack() == true)
 		{
@@ -492,7 +421,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 		Vector3 diff = m_knightplayer->GetPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
-		m_moveSpeed = diff * 100.0f;
+		m_moveSpeed = diff * m_Status.Speed;
 	}
 }
 
@@ -511,11 +440,29 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
 	Vector3 position1;
-	position1 = { 50,0,-150 };
+	position1 = { 0,0,0 };
 
 	Vector3 position2;
-	position2 = { 50,0,50 };
-	
+	position2 = { -550,0,15 };
+	Vector3 position3;
+	position3 = { -450,0,350 };
+	Vector3 position4;
+	position4 = { -250,0,520 };
+	Vector3 position5;
+	position5 = { 100,0,530 };
+	Vector3 position6;
+	position6 = { 400,0,350 };
+	Vector3 position7;
+	position7 = { 500,0,15 };
+	Vector3 position8;
+	position8 = { 400,0,-350 };
+	Vector3 position9;
+	position9 = { 100,0,-500 };
+	Vector3 position10;
+	position10 = { -250,0,-500 };
+	Vector3 position11;
+	position11 = { -500,0,-350 };
+
 	if (Patrol)
 	{
 		if (f == 0)
@@ -549,9 +496,140 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				f = 0;
+				f = 2;
 			}
 
+		}
+		else if (f == 2)
+		{
+			Vector3 newForward2 = position2 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 3;
+			}
+
+		}
+		else if (f == 3)
+		{
+			Vector3 newForward2 = position3 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 4;
+			}
+		}
+		else if (f == 4)
+		{
+			Vector3 newForward2 = position4 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 5;
+			}
+		}
+		else if (f == 5)
+		{
+			Vector3 newForward2 = position5 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 5;
+			}
+		}
+		else if (f == 6)
+		{
+			Vector3 newForward2 = position6 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 6;
+			}
+		}
+		else if (f == 7)
+		{
+			Vector3 newForward2 = position7 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 7;
+			}
+		}
+		else if (f == 8)
+		{
+			Vector3 newForward2 = position8 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 8;
+			}
+		}
+		else if (f == 9)
+		{
+			Vector3 newForward2 = position9 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 9;
+			}
+		}
+		else if (f == 10)
+		{
+			Vector3 newForward2 = position10 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 10;
+			}
+		}
+		else if (f == 11)
+		{
+			Vector3 newForward2 = position11 - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			if (distance2.Length() <= 10.0f)
+			{
+				//Patrol = false;
+				f = 0;
+			}
 		}
 	}
 	else
@@ -684,7 +762,7 @@ bool Neutral_Enemy::DrawHP()
 	float playerdistance = diff.Length();
 
 
-	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<1000.0f)
+	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<800.0f)
 	{
 		return true;
 	}

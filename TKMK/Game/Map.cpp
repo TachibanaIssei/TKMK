@@ -119,15 +119,19 @@ void Map::PlayerMap()
 //エネミーのマップの移動処理
 void Map::EnemyMap()
 {
-	
+	//謎のエラー
+	// レベル上限
 	//m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	//enemyの数だけ繰り返す
 	for (int amount=0;amount< m_neutral_Enemys.size();amount++)
 	{
+		//エネミーの座標を取得
 		Vector3 enemyPosition = m_neutral_Enemys[amount]->GetPosition();
 		Vector3 mapPosition;
-
+		//ワールド座標をマップ座標に変換する
 		if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
 		{
+			//座標を設定
 			m_MapEnemy[amount].SetPosition(mapPosition + MAP_CENTER_POSITION);
 			m_MapEnemy[amount].Update();
 		}

@@ -103,14 +103,7 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
-	//リスポーンする処理
-	/*if (Deathflag == true)
-	{
-		Respawn();
-	}*/
-
 	//追跡処理。
-
 	Chase();
 	//回転処理。
 	Rotation();

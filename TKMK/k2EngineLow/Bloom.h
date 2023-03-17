@@ -34,6 +34,6 @@ namespace nsK2EngineLow {
 		Sprite						m_luminanceSprite;
 		Sprite						m_finalSprite;
 
-		GaussianBlur				m_gaussianBlur;
+		GaussianBlur				m_gaussianBlur[4];
 	};
 }

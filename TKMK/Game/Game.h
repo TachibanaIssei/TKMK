@@ -33,9 +33,19 @@ public:
 	/// エネミーの数を減らす処理
 	/// </summary>
 	/// <returns>エネミーの数</returns>
-	int GetNeutral_EnemyContaier() {
+	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
+
+	/// <summary>
+	/// エネミーの数を減らす処理
+	/// </summary>
+	/// <returns>エネミーの数</returns>
+	int GetNeutral_EnemyContaier() {
+		return enemyNumber;
+	}
+
+
 
 	void Render(RenderContext& rc);
 
@@ -88,7 +98,7 @@ private:
 
 	int enemyNumber = 0;
 
-	bool RespawnNumberBox[50];
+	//bool RespawnNumberBox[50];
 
 	float m_Timer = 0.0f;
 

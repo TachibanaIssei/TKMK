@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "KnightBase.h"
 #include "KnightPlayer.h"
+#include "Game.h"
 
 namespace
 {
@@ -23,6 +24,8 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
+	//ゲームのインスタンスを探す
+	game = FindGO<Game>("game");
 
 	//注視点から視点までのベクトルを設定。80-160
 	m_toCameraPos.Set(0.0f, 80.0f, -160.0f);
@@ -31,11 +34,18 @@ bool GameCamera::Start()
 
 	m_cameraCollisionSolver.Init(1.0f);
 
+	m_cameraState = enGameState;
+
 	return true;
 }
 
 void GameCamera::Update()
 {
+	//ポーズステートのときは処理をしない
+	if (m_cameraState == enPauseState) {
+		return;
+	}
+
 	//注視点の計算
 	Vector3 TargetPos;
 	TargetPos = m_knightplayer->GetPosition();

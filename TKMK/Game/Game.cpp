@@ -62,7 +62,7 @@ bool Game::Start()
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
 	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f,1.0f });
 
-	//�X�^�W�A���̃��x���̐ݒ�
+	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium04") == true) {
@@ -80,18 +80,17 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//���m�̐���
+	//剣士プレイヤーを生成
 	m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 	m_knightplayer->SetSGame(this);
 	m_knightplayer->SetGameUI(m_gameUI);
 	
 
-	//�Q�[���J�����̐���
+	//ゲームカメラの生成
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	m_gamecamera->SetKnight(m_knightplayer);
 
-	//�����̓G�̐���
-
+	//中立の敵の生成
 	m_Enemylevel.Init("Assets/level3D/enemy_respawnLevel.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Neutral_Enemy") == true) {
@@ -233,6 +232,8 @@ void Game::Update()
 			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Pause);
 			//UIのステートをポーズ画面用のステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
+			//カメラのステートをポーズ画面用のステートに変更
+			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
 			//中立の敵をポーズ画面用のステートに変更
 			auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 			//配列のサイズを調べてfor文で回す
@@ -251,6 +252,8 @@ void Game::Update()
 			m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Idle);
 			//UIのステートをゲームのステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
+			//カメラのステートをゲームのステートに変更
+			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
 			//中立の敵をポーズ画面用のステートに変更
 			auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 			//配列のサイズを調べてfor文で回す

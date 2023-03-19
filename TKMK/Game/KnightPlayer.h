@@ -27,27 +27,27 @@ public:
 	/// <summary>
 	/// スキルを発動したときに範囲内で一番近い敵をねらう処理
 	/// </summary>
-	void SkillTarget()
-	{
-		m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	//void SkillTarget()
+	//{
+	//	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
-		Vector3 nearPos = Vector3::Zero;
-		//一番近い距離
-		float Near = nearPos.Length();
-		for (auto enemy : m_neutral_Enemys)
-		{
-			Vector3 toEnemy = enemy->GetPosition() - m_position;
-			//エネミーとの距離を計算する
-			float newNear = toEnemy.Length();
-			//計算した距離が一番近い距離より小さいなら上書き
-			if (Near > newNear) {
-				Near = newNear;
-			}
-		}
-		if (Near < 300) {
+	//	Vector3 nearPos = Vector3::Zero;
+	//	//一番近い距離
+	//	float Near = nearPos.Length();
+	//	for (auto enemy : m_neutral_Enemys)
+	//	{
+	//		Vector3 toEnemy = enemy->GetPosition() - m_position;
+	//		//エネミーとの距離を計算する
+	//		float newNear = toEnemy.Length();
+	//		//計算した距離が一番近い距離より小さいなら上書き
+	//		if (Near > newNear) {
+	//			Near = newNear;
+	//		}
+	//	}
+	//	if (Near < 300) {
 
-		}
-	}
+	//	}
+	//}
 
 	/// <summary>
 	/// �摜�\���t���O��擾����
@@ -125,7 +125,7 @@ private:
 
 	bool m_spriteFlag = true;
 
-	std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 };
 

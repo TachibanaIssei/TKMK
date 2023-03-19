@@ -25,6 +25,7 @@
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightAI.cpp" />
     <ClCompile Include="Enemy_Respawn.cpp" />
+    <ClCompile Include="WizardBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -45,5 +46,6 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="KnightAI.h" />
     <ClInclude Include="Enemy_Respawn.h" />
+    <ClInclude Include="WizardBase.h" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
 #include "Game.h"
+#include "Neutral_Enemy.h"
 //#include "GameUI.h"
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
 //for文、findGO使う
@@ -25,7 +26,7 @@ KnightPlayer::KnightPlayer()
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	respawnNumber = 0;        //リスポーンする座標の番号
-	m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
+	//m_respawnPos[respawnNumber].y += m_position_YUp;
 
 	//m_position=
 
@@ -35,11 +36,15 @@ KnightPlayer::KnightPlayer()
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 
+	//m_position=m_respawnPos[respawnNumber];
 
-	//m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	
+	//剣士のY座標が腰なのでY座標を上げる
+	//m_position.y = m_position_YUp;
 
-	//m_modelRender.SetPosition(m_position);
+	m_modelRender.SetPosition(m_position);
+	//m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);

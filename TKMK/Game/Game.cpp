@@ -200,7 +200,7 @@ bool Game::Start()
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(2);
 	m_bgm->Play(true);
-	m_bgm->SetVolume(0.3f);
+	m_bgm->SetVolume(musicVolume);
 
 
 
@@ -279,6 +279,23 @@ void Game::Update()
 //ポーズ画面の処理
 void Game::Pause()
 {
+	//音量を上げる
+	if (g_pad[0]->IsTrigger(enButtonRight)) {
+		if(musicVolume<4.0f)
+		musicVolume += 0.1f;
+		//音量調整
+		m_bgm->SetVolume(musicVolume);
+	}
+	//音量を下げる
+	if (g_pad[0]->IsTrigger(enButtonLeft)) {
+		if(musicVolume>0)
+		musicVolume -= 0.1f;
+		//音量調整
+		m_bgm->SetVolume(musicVolume);
+	}
+	
+
+
 	//タイトル画面への遷移
 	//Aボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonA))

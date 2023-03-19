@@ -102,6 +102,9 @@ private:
 
 	float m_Timer = 0.0f;
 
+	//BGMの音量調整に使用する変数
+	float musicVolume = 1.0f;
+
 	//リザルト画面かのフラグ
 	bool RezultFlag = false;
 	//ポーズ画面かのフラグ

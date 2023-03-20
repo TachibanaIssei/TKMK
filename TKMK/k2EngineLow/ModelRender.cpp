@@ -1,7 +1,7 @@
 #include "k2EngineLowPreCompile.h"
 #include "ModelRender.h"
 
-void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis)
+void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow)
 {
 	//tkmファイルパスを設定
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
@@ -29,6 +29,15 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 
 	//モデルクラスの初期化
 	m_model.Init(m_modelInitData);
+
+	//シャドウマップ描画用のモデルの初期化
+	if (shadow)
+	{
+		m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
+
+		m_shadowModel.Init(m_modelInitData);
+	}
+
 }
 
 void nsK2EngineLow::ModelRender::Update()
@@ -41,6 +50,12 @@ void nsK2EngineLow::ModelRender::Update()
 	{
 		//スケルトンを更新する
 		m_skeleton.Update(m_model.GetWorldMatrix());
+	}
+
+	//シャドウモデルが初期化されていたら
+	if (m_shadowModel.IsInited())
+	{
+		m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 	}
 
 	//アニメーションを進める

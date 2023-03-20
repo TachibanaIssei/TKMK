@@ -16,7 +16,8 @@ namespace nsK2EngineLow {
 			const char* tkmFilepath,
 			AnimationClip* animationClips = nullptr,
 			int numAnimationClips = 0,
-			EnModelUpAxis enModelUpAxis = enModelUpAxisZ
+			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
+			bool shadow = true
 		);
 
 		/// <summary>
@@ -91,9 +92,18 @@ namespace nsK2EngineLow {
 			g_renderingEngine->AddModelList(this);
 		};
 
+		/// <summary>
+		/// モデルを描画する
+		/// </summary>
+		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
 		{
 			m_model.Draw(rc);
+		}
+
+		void OnRenderShadowModel(RenderContext& rc,Camera& camera)
+		{
+			m_shadowModel.Draw(rc,camera);
 		}
 
 		/// <summary>
@@ -152,11 +162,6 @@ namespace nsK2EngineLow {
 			m_animationSpeed = animationSpeed;
 		}
 
-		/// <summary>
-		/// ディレクションライトの情報を作成
-		/// </summary>
-		void MakeDirectionData();	
-
 	private:
 		/// <summary>
 		/// スケルトンの初期化。
@@ -176,6 +181,11 @@ namespace nsK2EngineLow {
 			EnModelUpAxis enModelUpAxis
 		);
 
+		/// <summary>
+		/// ディレクションライトの情報を作成
+		/// </summary>
+		void MakeDirectionData();
+
 	//メンバ変数
 	private:
 		Skeleton					m_skeleton;									//スケルトン
@@ -190,6 +200,8 @@ namespace nsK2EngineLow {
 
 		Model						m_model;									//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
+
+		Model						m_shadowModel;								//シャドウマップ描画用
 	};
 
 }

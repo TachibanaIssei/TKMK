@@ -14,7 +14,7 @@ namespace nsK2EngineLow {
 	public:
 		void Init();
 
-		void InitRenderTarget();
+		void InitRenderTargets();
 		void InitCopyToFrameBufferSprite();
 
 		/// <summary>
@@ -47,6 +47,11 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void ModelRendering(RenderContext& rc);
+		/// <summary>
+		/// シャドウモデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void ShadowModelRendering(RenderContext& rc,Camera& camera);
 		/// <summary>
 		/// スプライトを描画する
 		/// </summary>
@@ -441,6 +446,11 @@ namespace nsK2EngineLow {
 
 		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
+
+		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
+		RenderTarget m_shadowMap;
+		Camera m_lightCamera;
+		Sprite m_shadowSprite;
 
 		PostEffect					m_postEffect;				//ポストエフェクト
 	};

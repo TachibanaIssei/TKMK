@@ -136,14 +136,66 @@ public:
 	}
 
 private:
+	void PlayAnimation();
+	//共通のステートの遷移処理
+	void OnProcessCommonStateTransition();
+	//待機のステートの遷移処理
+	void OnProcessIdleStateTransition();
+	//歩きのステートの遷移処理
+	void OnProcessRunStateTransition();
+	//アタックのステートの遷移処理
+	void OnProcessAttackStateTransition();
+	//スキルのステートの遷移処理
+	void OnProcessSkillAtkStateTransition();
+	//回避のステートの遷移処理
+	void OnProcessAvoidanceStateTransition();
+	//必殺技のステートの遷移処理
+	void OnProcessUltimateSkillAtkStateTransition();
+	//ダメージを受けたときのステートの遷移処理
+	void OnProcessDamegeStateTransition();
+	//HPが0になったときのステートの遷移処理
+	void OnProcessDeathStateTransition();
+
+
+	enum EnAnimationClip {
+		enAnimationClip_Idle,
+		enAnimationClip_Walk,
+		enAnimationClip_Run,
+		enAnimationClip_Atk,
+		enAnimationClip_Damege,
+		enAnimationClip_Death,
+		enAnimationClip_Skill,
+		enAnimationClip_UltimateSkill,
+		enAnimationClip_Avoidance,
+		enAnimationClip_Num,
+	};
+	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
 	Status m_Status;
+	//レベルアップ時に増加するステータス
+	LvUpStatus LvUpStatus = { 30,5,10.0f };
 
+	WizardState m_wizardState=enWizardState_Idle;
 
 	Game* game = nullptr;
 	GameUI* gameUI = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
+	float m_position_YUp = 33.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
+	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
+	Vector3 collisionRot = Vector3::Zero;                  //必殺技
+	CollisionObject* collisionObject;                     //コリジョン
+	Vector3 UltCollisionPos = Vector3::Zero;               //必殺技の当たり判定の座標
+	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
+	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
+	CharacterController m_charCon;                        //キャラクターコントロール
+	Quaternion m_rot = Quaternion::Identity;              //回転
+	ModelRender m_modelRender;                            //モデルレンダー
+
+	//スキルのクールタイムを計算するタイマー
+	float SkillTimer = 0;
+	//回避のクールタイムを計算するタイマー
+	float AvoidanceTimer = 0;
 };
 

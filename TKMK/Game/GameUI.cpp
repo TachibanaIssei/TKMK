@@ -3,6 +3,8 @@
 #include "Game.h"
 
 #include "KnightPlayer.h"
+#include "WizardPlayer.h"
+
 namespace
 {
 	const Vector2 GAUGE_PIVOT = Vector2(0.5f, 0.5f);				//ゲージのピボット

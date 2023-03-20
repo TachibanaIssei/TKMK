@@ -1,6 +1,7 @@
 #pragma once
 
 class KnightPlayer;
+class WizardPlayer;
 class Game;
 
 class GameUI:public IGameObject
@@ -104,6 +105,7 @@ private:
 	FontRender m_SpeedFont;
 
 	KnightPlayer* m_knightplayer=nullptr;
+	WizardPlayer* wizardPlayer = nullptr;
 	Game* m_game = nullptr;
 	//UI
 	SpriteRender			m_hpBar;				//HPÉoÅ[ÇÃâÊëú

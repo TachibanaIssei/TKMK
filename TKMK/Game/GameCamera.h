@@ -2,6 +2,7 @@
 #include "CameraCollisionSolver.h"
 
 class KnightPlayer;
+class WizardPlayer;
 class Game;
 
 class GameCamera:public IGameObject
@@ -39,6 +40,7 @@ public:
 	CameraCollisionSolver	m_cameraCollisionSolver;
 
 	KnightPlayer*			m_knightplayer	= nullptr;
+	WizardPlayer* wizardPlayer = nullptr;
 	Game* game = nullptr;
 
 	Vector3					m_toCameraPos			= Vector3::Zero;		//カメラ位置から注視点に向かうベクトル

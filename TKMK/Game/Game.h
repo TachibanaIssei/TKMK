@@ -12,6 +12,7 @@ class Neutral_Enemy;
 class GameUI;
 class Map;
 class KnightAI;
+class WizardPlayer;
 
 class Game : public IGameObject
 {
@@ -89,6 +90,7 @@ private:
 	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
 	SoundSource* m_bgm = nullptr;	//
+	WizardPlayer* wizardPlayer = nullptr;
 
 	//std::vector<Neutral_Enemy*> m_enemyCounter;
 

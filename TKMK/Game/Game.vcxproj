@@ -245,6 +245,7 @@
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Tittle.cpp" />
     <ClCompile Include="WizardBase.cpp" />
+    <ClCompile Include="WizardPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -264,6 +265,7 @@
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Tittle.h" />
     <ClInclude Include="WizardBase.h" />
+    <ClInclude Include="WizardPlayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -21,6 +21,11 @@ WizardBase::WizardBase()
 	ExpTable = 5;              //経験値テーブル
 }
 
+WizardBase::~WizardBase()
+{
+
+}
+
 /// <summary>
 /// 魔法使いのモデルやアニメーション、キャラコンの初期化
 /// </summary>
@@ -69,6 +74,21 @@ void WizardBase::Rotation()
 		//絵描きさんに回転を教える。
 		m_modelRender.SetRotation(m_rot);
 	}
+}
+
+void WizardBase::Dameged(int damege)
+{
+
+}
+
+void WizardBase::Death()
+{
+
+}
+
+void WizardBase::UltimateSkill()
+{
+
 }
 
 /// <summary>

@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "KnightBase.h"
 #include "KnightPlayer.h"
+#include "WizardPlayer.h"
 #include "Game.h"
 
 namespace
@@ -26,6 +27,8 @@ bool GameCamera::Start()
 {
 	//ゲームのインスタンスを探す
 	game = FindGO<Game>("game");
+	//
+	wizardPlayer = FindGO<WizardPlayer>("wizardPlayer");
 
 	//注視点から視点までのベクトルを設定。80-160
 	m_toCameraPos.Set(0.0f, 80.0f, -160.0f);
@@ -48,7 +51,8 @@ void GameCamera::Update()
 
 	//注視点の計算
 	Vector3 TargetPos;
-	TargetPos = m_knightplayer->GetPosition();
+	/*TargetPos = m_knightplayer->GetPosition();*/
+	TargetPos = wizardPlayer->GetPosition();
 	TargetPos.y += 40.0f;
 
 	Vector3 toCameraPosOld = m_toCameraPos;

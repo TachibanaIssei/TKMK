@@ -21,7 +21,6 @@ public:
 		enWizardState_Skill,
 		enWizardState_UltimateSkill,
 		enWizardState_Avoidance,
-		enWizardState_Run,
 		enWizardState_Pause,
 		enWizardState_Num,
 	};
@@ -68,12 +67,12 @@ public:
 	/// <summary>
 	/// 通常攻撃の当たり判定の処理
 	/// </summary>
-	void AtkCollisiton();
+	//void AtkCollisiton();
 
 	/// <summary>
 	/// 必殺技の当たり判定の処理
 	/// </summary>
-	void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
+	//void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
 
 	/// <summary>
 	/// アニメーションのステートの管理
@@ -104,7 +103,7 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return;
+		return m_wizardState != enWizardState_Death;
 	}
 
 	/// <summary>
@@ -135,7 +134,16 @@ public:
 		return gameUI;
 	}
 
-private:
+	/// <summary>
+	/// 魔法使いのステートを変更
+	/// </summary>
+	/// <param name="gamescene">変更したいステートの名前</param>
+	void SetWizardState(WizardState gamescene) {
+		m_wizardState = gamescene;
+
+	}
+
+protected:
 	void PlayAnimation();
 	//共通のステートの遷移処理
 	void OnProcessCommonStateTransition();

@@ -51,7 +51,7 @@ void WizardBase::SetModel()
 
 	m_charCon.Init(
 		15.0f,
-		35.0f,
+		58.0f,
 		m_position
 	);
 }

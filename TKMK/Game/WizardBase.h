@@ -190,7 +190,7 @@ protected:
 	GameUI* gameUI = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
-	float m_position_YUp = 33.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
+	float m_position_YUp = 47.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 collisionRot = Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン

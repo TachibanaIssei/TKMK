@@ -159,6 +159,34 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ğ•Ô‚·
+	/// </summary>
+	/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ğ•Ô‚·ŠÖ”</returns>
+	Quaternion CharSetRot()const
+	{
+		switch (m_selectCharctar)
+		{
+		case enKnight:
+			return knightPlayer->GetRot();
+			break;
+
+		case enWizard:
+			//return wizardPlayer->GetRot();
+			break;
+
+		case enZombie:
+			break;
+
+		case enMonster:
+			break;
+
+
+		default:
+			break;
+		}
+	}
+
 
 
 

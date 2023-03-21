@@ -4,6 +4,7 @@
 
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
+#include "Player.h"
 
 namespace
 {
@@ -38,7 +39,8 @@ GameUI::~GameUI()
 bool GameUI::Start()
 {
 	//m_knightplayer->SetGameUI(this);
-	m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
+	//m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
+	player = FindGO<Player>("player");
 
 	//m_game = FindGO<Game>("m_game");
 
@@ -139,7 +141,8 @@ void GameUI::Update()
 	}
 
 	//レベルの表示
-	int LEVEL=m_knightplayer->SetLevel();
+	//int LEVEL=m_knightplayer->SetLevel();
+	int LEVEL = player->CharSetLevel();
 	wchar_t Lv[255];
 	swprintf_s(Lv, 255, L"%d", LEVEL);
 	m_LevelFont.SetText(Lv);
@@ -174,14 +177,15 @@ void GameUI::Update()
 
 void GameUI::HPBar()
 {
-	int HP = m_knightplayer->SetHp();
+	//int HP = m_knightplayer->SetHp();
+	int HP = player->CharSetHp();
 	wchar_t hp[255];
 	swprintf_s(hp, 255, L"%d", HP);
 	m_HpFont.SetText(hp);
 
 	Vector3 HpScale = Vector3::One;
 	//HPバーの減っていく割合。
-	HpScale.x = (float)m_knightplayer->SetHp() / (float)m_knightplayer->SetMaxHp();
+	HpScale.x = (float)player->CharSetHp() / (float)player->CharSetMaxHp();
 	m_hpBar.SetScale(HpScale);
 
 	m_hpBar.Update();

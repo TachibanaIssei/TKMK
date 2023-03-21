@@ -43,27 +43,6 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// モデルを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void ModelRendering(RenderContext& rc);
-		/// <summary>
-		/// シャドウモデルを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void ShadowModelRendering(RenderContext& rc,Camera& camera);
-		/// <summary>
-		/// スプライトを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void SpriteRendering(RenderContext& rc);
-		/// <summary>
-		/// フォントを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void FontRendering(RenderContext& rc);
-
-		/// <summary>
 		/// 描画処理を実行
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
@@ -72,6 +51,16 @@ namespace nsK2EngineLow {
 		SceneLight& GetSceneLight()
 		{
 			return m_sceneLight;
+		}
+
+		Texture& GetShadowMapTexture()
+		{
+			return m_shadowMap.GetRenderTargetTexture();
+		}
+
+		Camera& GetLightCamera()
+		{
+			return m_lightCamera;
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -438,6 +427,28 @@ namespace nsK2EngineLow {
 		}
 
 	private:
+		/// <summary>
+		/// モデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void ModelRendering(RenderContext& rc);
+		/// <summary>
+		/// シャドウモデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void ShadowModelRendering(RenderContext& rc, Camera& camera);
+		/// <summary>
+		/// スプライトを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void SpriteRendering(RenderContext& rc);
+		/// <summary>
+		/// フォントを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void FontRendering(RenderContext& rc);
+
+	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
 		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
@@ -448,8 +459,8 @@ namespace nsK2EngineLow {
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 
 		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
-		RenderTarget m_shadowMap;
-		Camera m_lightCamera;
+		RenderTarget m_shadowMap;								//シャドウマップのレンダーターゲット
+		Camera m_lightCamera;									//ライトカメラ
 		Sprite m_shadowSprite;
 
 		PostEffect					m_postEffect;				//ポストエフェクト

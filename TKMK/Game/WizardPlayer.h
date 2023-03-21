@@ -30,7 +30,7 @@ private:
 	Game* m_game = nullptr;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //’†—§‚Ì“G
 
-
+	int exp = 5;
 
 };
 

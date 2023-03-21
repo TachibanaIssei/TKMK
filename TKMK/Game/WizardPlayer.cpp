@@ -50,6 +50,17 @@ void WizardPlayer::Update()
 		return;
 	}
 
+
+	//レベルアップする
+	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+	{
+		if (Lv != 10)
+			ExpProcess(exp);
+		//m_Status.GetExp += 5;
+		//m_gameUI->LevelFontChange(Lv);
+	}
+
+
 	//移動処理
 	Move(m_position, m_charCon, m_Status);
 

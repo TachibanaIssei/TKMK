@@ -40,6 +40,21 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 
 }
 
+void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
+{
+	m_modelInitData.m_tkmFilePath = tkmFilepath;
+	m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
+
+	m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture();
+
+	m_modelInitData.m_expandConstantBuffer =
+		(void*)&g_renderingEngine->GetLightCamera().GetViewProjectionMatrix();
+	m_modelInitData.m_expandConstantBufferSize =
+		sizeof(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+
+	m_model.Init(m_modelInitData);
+}
+
 void nsK2EngineLow::ModelRender::Update()
 {
 	//ワールド行列の更新(座標、回転、大きさ)

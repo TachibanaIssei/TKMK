@@ -21,6 +21,14 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// ‰e‚ğó‚¯‚éƒ‚ƒfƒ‹‚Ì‰Šú‰»
+		/// </summary>
+		/// <param name="tkmFilepath"></param>
+		void InitBackGround(
+			const char* tkmFilepath
+		);
+
+		/// <summary>
 		/// ƒ‚ƒfƒ‹‚ğæ“¾‚·‚é
 		/// </summary>
 		/// <returns>ƒ‚ƒfƒ‹</returns>

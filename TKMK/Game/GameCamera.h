@@ -3,6 +3,7 @@
 
 class KnightPlayer;
 class WizardPlayer;
+class Player;
 class Game;
 
 class GameCamera:public IGameObject
@@ -41,6 +42,7 @@ public:
 
 	KnightPlayer*			m_knightplayer	= nullptr;
 	WizardPlayer* wizardPlayer = nullptr;
+	Player* player = nullptr;
 	Game* game = nullptr;
 
 	Vector3					m_toCameraPos			= Vector3::Zero;		//カメラ位置から注視点に向かうベクトル

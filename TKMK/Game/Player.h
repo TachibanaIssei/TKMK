@@ -91,7 +91,7 @@ public:
 			return knightPlayer->SetLevel();
 			break;
 		case enWizard:
-			//wizardPlayer->Set
+			return wizardPlayer->SetLevel();
 			break;
 		case enZombie:
 			break;
@@ -144,7 +144,7 @@ public:
 			break;
 
 		case enWizard:
-			//return wizardPlayer->SetMaxHp();
+			return wizardPlayer->SetMaxHp();
 			break;
 
 		case enZombie:
@@ -172,7 +172,7 @@ public:
 			break;
 
 		case enWizard:
-			//return wizardPlayer->GetRot();
+			return wizardPlayer->GetRot();
 			break;
 
 		case enZombie:

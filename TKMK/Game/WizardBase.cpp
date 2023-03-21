@@ -56,9 +56,54 @@ void WizardBase::SetModel()
 	);
 }
 
+/// <summary>
+/// 中立の敵を倒したときの経験値の処理
+/// </summary>
+/// <param name="GetExp">中立の敵の経験値</param>
 void WizardBase::ExpProcess(int Exp)
 {
-
+	//もしレベルが10(Max)なら
+	if (Lv == 10)return;
+	//自身の経験値に敵を倒したときに手に入れる経験値を足す
+	GetExp += Exp;
+	//手に入れた経験値より経験値テーブルのほうが大きかったら
+	if (GetExp < ExpTable) return;      //抜け出す
+	else {
+		//経験値テーブルより手に入れた経験値のほうが大きかったら
+		//レベルアップ
+		LevelUp(LvUpStatus, m_Status, Lv);
+		//レベルに合わせてレベルの画像を変更する
+		gameUI->LevelFontChange(Lv);
+		switch (Lv)
+		{
+		case 2:
+			ExpTable = 10;
+			break;
+		case 3:
+			ExpTable = 20;
+			break;
+		case 4:
+			ExpTable = 30;
+			break;
+		case 5:
+			ExpTable = 40;
+			break;
+		case 6:
+			ExpTable = 50;
+			break;
+		case 7:
+			ExpTable = 60;
+			break;
+		case 8:
+			ExpTable = 70;
+			break;
+		case 9:
+			ExpTable = 80;
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 /// <summary>
@@ -130,8 +175,6 @@ void WizardBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
 		break;
 	case enWizardState_UltimateSkill:
-		//ここ調整必要！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-		//m_modelRender.SetAnimationSpeed(1.2f);
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill, 0.1);
 		break;
 	case enWizardState_Avoidance:

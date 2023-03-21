@@ -107,6 +107,14 @@ public:
 	}
 
 	/// <summary>
+	/// 現在のレベルを返す
+	/// </summary>
+	/// <returns>現在のレベル</returns>
+	int& SetLevel() {
+		return Lv;
+	}
+
+	/// <summary>
 	/// 現在のヒットポイントを返す
 	/// </summary>
 	/// <returns>現在のHP</returns>
@@ -114,7 +122,13 @@ public:
 		return m_Status.Hp;
 	}
 
-
+	/// <summary>
+	/// 現在のマックスヒットポイントを返す
+	/// </summary>
+	/// <returns></returns>
+	int& SetMaxHp() {
+		return m_Status.MaxHp;
+	}
 
 	void SetSGame(Game* Cgame)
 	{
@@ -125,13 +139,31 @@ public:
 		return game;
 	}
 	//
-	void SetGameUI(GameUI* gameUI)
+	void SetGameUI(GameUI* mgameUI)
 	{
-		gameUI = gameUI;
+		gameUI = mgameUI;
 	}
 	GameUI* GetSGameUI()
 	{
 		return gameUI;
+	}
+
+	/// <summary>
+	///	プレイヤーの前方向を取得
+	/// </summary>
+	/// <returns></returns>
+	const Vector3& GetForward() const
+	{
+		return m_forward;
+	}
+
+	/// <summary>
+	/// プレイヤーの回転量を取得
+	/// </summary>
+	/// <returns></returns>
+	Quaternion& GetRot()
+	{
+		return m_rot;
 	}
 
 	/// <summary>
@@ -205,5 +237,8 @@ protected:
 	float SkillTimer = 0;
 	//回避のクールタイムを計算するタイマー
 	float AvoidanceTimer = 0;
+
+	//ボタンが押されたかの判定
+	bool pushFlag = false;
 };
 

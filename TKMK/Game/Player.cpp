@@ -20,7 +20,7 @@ bool Player::Start()
 {
 
 	game = FindGO<Game>("game");
-	//gameUI = FindGO<GameUI>("m_gameUI");
+	gameUI = FindGO<GameUI>("m_gameUI");
 
 	//選択されたキャラを生成する
 	switch (m_selectCharctar)
@@ -29,13 +29,14 @@ bool Player::Start()
 		//剣士プレイヤーを生成
 		knightPlayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 		knightPlayer->SetSGame(game);
-		//knightPlayer->SetGameUI(gameUI);
+		knightPlayer->SetGameUI(gameUI);
 		break;
 
 	case enWizard:
 		//魔法使いプレイヤーの生成
 		wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
 		wizardPlayer->SetSGame(game);
+		wizardPlayer->SetGameUI(gameUI);
 		break;
 
 	default:

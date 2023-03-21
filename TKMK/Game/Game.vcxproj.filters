@@ -27,6 +27,7 @@
     <ClCompile Include="Enemy_Respawn.cpp" />
     <ClCompile Include="WizardBase.cpp" />
     <ClCompile Include="WizardPlayer.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -49,5 +50,6 @@
     <ClInclude Include="Enemy_Respawn.h" />
     <ClInclude Include="WizardBase.h" />
     <ClInclude Include="WizardPlayer.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
 </Project>

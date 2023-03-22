@@ -50,19 +50,37 @@ void WizardPlayer::Update()
 		return;
 	}
 
-
-	//レベルアップする
-	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-	{
-		if (Lv != 10)
-			ExpProcess(exp);
-		//m_Status.GetExp += 5;
-		//m_gameUI->LevelFontChange(Lv);
+	//回避中なら
+	if (AvoidanceFlag == true) {
+		m_wizardState = enWizardState_Avoidance;
+		//移動処理を行う(直線移動のみ)。
+		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
 
+
+	Attack();
+	//回避処理
+	Avoidance();
+	//回避クールタイムの処理
+	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
+	//レベルアップする
+	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+	//{
+	//	if (Lv != 10)
+	//		ExpProcess(exp);
+	//	//m_Status.GetExp += 5;
+	//	//m_gameUI->LevelFontChange(Lv);
+	//}
+
+
 	//移動処理
-	Move(m_position, m_charCon, m_Status);
+	//移動処理
+	Vector3 stickL;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+	Move(m_position, m_charCon, m_Status, stickL);
 
 	//回転処理
 	Rotation();
@@ -77,9 +95,37 @@ void WizardPlayer::Update()
 	m_modelRender.Update();
 }
 
+/// <summary>
+/// 攻撃処理
+/// </summary>
 void WizardPlayer::Attack()
 {
+	if (pushFlag==false&&g_pad[0]->IsTrigger(enButtonA))
+	{
+		m_wizardState = enWizardState_Attack;
 
+		//FirstAtkFlag = true;
+		//コンボを1増やす
+		//ComboState++;
+		pushFlag = true;
+	}
+}
+
+/// <summary>
+/// 
+/// </summary>
+void WizardPlayer::Avoidance()
+{
+	//RBボタンが押されたら。
+	//回避
+	if (pushFlag == false && AvoidanceEndFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		AnimationMove(AvoidanceSpeed, stickL);
+		pushFlag = true;
+		AvoidanceFlag = true;
+	}
 }
 
 void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)

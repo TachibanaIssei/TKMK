@@ -102,7 +102,7 @@ private:
 
 	int enemyNumber = 0;
 
-	bool RespawnNumberBox[50];
+	//bool RespawnNumberBox[50];
 
 	float m_Timer = 0.0f;
 
@@ -116,6 +116,6 @@ private:
 	bool PauseCloseFlag = true;
 
 	//ƒLƒƒƒ‰‚Ì”Ô†
-	int SelectCharNumber = 1;
+	int SelectCharNumber = 0;
 };
 

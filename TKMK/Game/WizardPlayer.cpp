@@ -100,15 +100,38 @@ void WizardPlayer::Update()
 /// </summary>
 void WizardPlayer::Attack()
 {
+	//アタック
+	//Aボタンを押したら
 	if (pushFlag==false&&g_pad[0]->IsTrigger(enButtonA))
 	{
 		m_wizardState = enWizardState_Attack;
-
+		//AttackFlag = true;
 		//FirstAtkFlag = true;
 		//コンボを1増やす
 		//ComboState++;
 		pushFlag = true;
 	}
+
+	//if (AttackFlag == true)
+	//{
+	//	AttackTimer += g_gameTime->GetFrameDeltaTime();
+
+	//	if (AttackTimer < 3.0f) {
+	//		/*Vector3 stickL;
+	//		stickL.x = g_pad[0]->GetLStickXF();
+	//		stickL.y = g_pad[0]->GetLStickYF();*/
+	//		AttackCollision(m_position/*, stickL*/);
+	//	}
+	//	else {
+	//		AttackFlag == false;
+	//		AttackTimer = 0.0f;
+	//		AtkCollisionSetFlag = false;
+	//		//コリジョン削除
+	//		DeleteGO(AtkCollision);
+	//	}
+	//	
+
+	//}
 }
 
 /// <summary>

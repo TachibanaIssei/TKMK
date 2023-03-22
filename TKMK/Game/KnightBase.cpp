@@ -219,6 +219,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 		UltCollisionPos += collisionRot * 4.0f;
 		//座標を設定
 		collisionObject->SetPosition(UltCollisionPos);
+
 	}
 }
 
@@ -267,14 +268,23 @@ void KnightBase::Dameged(int damege)
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_playerState = enKnightState_Death;
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(17);
+		se->Play(false);
+		se->SetVolume(0.5f);
 		m_Status.Hp = 0;
 		//Death();
 		//SetRespawn();
+
 
 	}
 	else {
 		//ダメージステート
 		m_playerState = enKnightState_Damege;
+		SoundSource * se = NewGO<SoundSource>(0);
+		se->Init(12);
+		se->Play(false);
+		se->SetVolume(0.5f);
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}

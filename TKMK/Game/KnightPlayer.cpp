@@ -61,11 +61,6 @@ KnightPlayer::KnightPlayer()
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 
-	//se読み込み
-	//剣
-	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
-	//ダメージくらったときの悲鳴
-	g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/scream1.wav");
 }
 
 KnightPlayer::~KnightPlayer()
@@ -241,8 +236,17 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//アニメーション再生、レベルを３下げる
+		//アニメーション再生、レベルを３
 		UltimateSkill();
+
+
+
+		//アルティメットSE
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(16);
+		se->Play(false);
+		se->SetVolume(0.3f);
+
 		//必殺技発動フラグをセット
 		UltimateSkillFlag = true;
 	}
@@ -308,6 +312,11 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState =FirstAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+		//剣１段目音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(13);
+		se->Play(false);
+		se->SetVolume(0.3f);
 	}
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
@@ -315,6 +324,11 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState = SecondAtkStart_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+		//剣２段目音
+		SoundSource* se = NewGO<SoundSource>(0); 
+		se->Init(14);
+		se->Play(false);
+		se->SetVolume(0.3f);
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
@@ -322,6 +336,11 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+		//剣３段目音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(15);
+		se->Play(false);
+		se->SetVolume(0.3f);
 	}
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
@@ -332,10 +351,10 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkCollistionFlag = true;
 
 		//スキル音を発生
-		m_se = NewGO<SoundSource>(0);
-		m_se->Init(11);
-		m_se->Play(false);
-		m_se->SetVolume(0.3f);
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(11);
+		se->Play(false);
+		se->SetVolume(0.3f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら
@@ -420,8 +439,6 @@ void KnightPlayer::AvoidanceSprite()
 	//HPバーの減っていく割合。
 	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
 	m_Avoidance_barRender.SetScale(AvoidanceScale);
-	
-	
 
 	m_Avoidance_flameRender.Update();
 	m_Avoidance_barRender.Update();

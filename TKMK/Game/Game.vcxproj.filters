@@ -1,55 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="system">
-      <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="system\system.cpp">
-      <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="BackGround.cpp" />
-    <ClCompile Include="Tittle.cpp" />
     <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="Result.cpp" />
+    <ClCompile Include="BackGround.cpp" />
+    <ClCompile Include="Enemy_Respawn.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameUI.cpp" />
-    <ClCompile Include="KnightPlayer.cpp" />
-    <ClCompile Include="Neutral_Enemy.cpp" />
-    <ClCompile Include="Status.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightAI.cpp" />
-    <ClCompile Include="Enemy_Respawn.cpp" />
+    <ClCompile Include="KnightBase.cpp" />
+    <ClCompile Include="KnightPlayer.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Neutral_Enemy.cpp" />
+    <ClCompile Include="Result.cpp" />
+    <ClCompile Include="Status.cpp" />
     <ClCompile Include="WizardBase.cpp" />
     <ClCompile Include="WizardPlayer.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="system\system.cpp" />
+    <ClCompile Include="Tittle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="system\system.h">
-      <Filter>system</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="BackGround.h" />
-    <ClInclude Include="Tittle.h" />
     <ClInclude Include="Actor.h" />
-    <ClInclude Include="Result.h" />
-    <ClInclude Include="GameCamera.h" />
-    <ClInclude Include="KnightBase.h" />
-    <ClInclude Include="GameUI.h" />
-    <ClInclude Include="KnightPlayer.h" />
-    <ClInclude Include="Neutral_Enemy.h" />
-    <ClInclude Include="Status.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="KnightAI.h" />
+    <ClInclude Include="BackGround.h" />
     <ClInclude Include="Enemy_Respawn.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameCamera.h" />
+    <ClInclude Include="GameUI.h" />
+    <ClInclude Include="KnightAI.h" />
+    <ClInclude Include="KnightBase.h" />
+    <ClInclude Include="KnightPlayer.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="Neutral_Enemy.h" />
+    <ClInclude Include="Result.h" />
+    <ClInclude Include="Status.h" />
     <ClInclude Include="WizardBase.h" />
     <ClInclude Include="WizardPlayer.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="system\system.h" />
+    <ClInclude Include="Tittle.h" />
   </ItemGroup>
 </Project>

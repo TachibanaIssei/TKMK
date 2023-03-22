@@ -4,11 +4,13 @@
 #include "AI/PathFinding/Path.h"
 #include "AI/PathFinding/PathFinding.h"
 #include "Status.h"
+#include "Level3DRender.h"
 //クラス宣言
 class KnightPlayer;
 class Game;
 class GameCamera;
 class Neutral_Enemy;
+class Patrolnumb;
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -74,8 +76,7 @@ public:
 	{
 		return m_position;
 	}
-
-
+	
 
 
 	void Move();
@@ -206,7 +207,14 @@ public:
 	void SetNeutral_EnemyState(EnNEState gamescene) {
 		m_Neutral_EnemyState = gamescene;
 	}
-
+	/// <summary>
+	/// 巡回する座標を設定する
+	/// </summary>
+	/// <param name="pos">巡回する座標</param>
+	/// <param name="number">座標をセットする番号</param>
+	void SetPatrolPos(Vector3 pos, int number) {
+		m_patrolPos[number] = pos;
+	};
 
 	enum EnAnimationClip {                      //アニメーション。
 		enAnimationClip_Idle,					//待機アニメーション。
@@ -232,11 +240,12 @@ private:
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //中立の敵のステート。
 	
 	SoundSource* m_se = nullptr;
+
 	KnightPlayer* m_knightplayer = nullptr;
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
 	GameCamera* m_gameCamera = nullptr;
-
+	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
 	SpriteRender		m_HPBar;		//HPバー画像
 	SpriteRender		m_HPFrame;		//HP枠画像
@@ -246,7 +255,8 @@ private:
 	SphereCollider			m_sphereCollider;
 	RigidBody				m_rigidBody;
 	Vector3                 m_inRespawnPosition[12];
-	
+	Vector3                 m_patrolPos[9];
+	Vector3 nowPos = Vector3::Zero;
 
 	bool					m_isSearchPlayer = false;
 	bool m_UnderAttack = false;              //攻撃判定
@@ -255,6 +265,7 @@ private:
 	//中立の敵
 	float	m_chaseTimer = 0.0f;			//追跡タイマー。
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
+	float   m_stopTimer = 1.0f;             //止まってしまったタイマー
 
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;
@@ -264,7 +275,7 @@ private:
 	int Exp = 5;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
-
-	int f = 0;
+	int P = 0;
+	
 };
 

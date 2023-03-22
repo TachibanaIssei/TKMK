@@ -8,6 +8,7 @@ namespace nsK2EngineLow {
 	struct DirectionalLight
 	{
 		Vector3 direction;	//ライトの方向
+		float pad0;
 		Vector4 color;		//ライトのカラー
 	};
 
@@ -55,7 +56,6 @@ namespace nsK2EngineLow {
 	struct Light
 	{
 		DirectionalLight directionalLight;	//ディレクションライトの配列
-		float pad0;
 		PointLight pointLight;	//ポイントライト
 		float pad1;
 		SpotLight spotLight;	//スポットライト

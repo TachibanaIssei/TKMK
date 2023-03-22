@@ -59,7 +59,7 @@ bool Game::Start()
 {
 	g_renderingEngine->UnUseHemiLight();
 
-	//�f�B���N�V�������C�g�̐ݒ�
+	//�P�B���N�V�������C�g�̐ݒ�
 	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
 	directionLightDir.Normalize();
 	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };
@@ -77,7 +77,9 @@ bool Game::Start()
 
 			return true;
 		}
+	
 		return false;
+
 	});
 
 	//GameUIの生成
@@ -183,8 +185,8 @@ bool Game::Start()
 	m_Neutral_Enemy->SetNeutral_EnemyGame(this);
 	m_Neutral_Enemy->SetKnightPlayer(m_knightplayer);*/
 
-	//m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-	//m_KnightAI->SetGame(this);
+	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+	m_KnightAI->SetGame(this);
 	
 	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
@@ -208,12 +210,28 @@ bool Game::Start()
 
 	//BGMの設定
 	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
+	//se
+	//player
+	//剣スキル
+	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
+	//ダメージくらったときの悲鳴
+	g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
+	//剣通常攻撃
+	g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
+	g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
+	g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
+	//アルティメット
+	g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
+	//死亡したとき
+	g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
+	//enemy
+	//攻撃の声
+	g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
 	
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(2);
 	m_bgm->Play(true);
 	m_bgm->SetVolume(musicVolume);
-
 
 
 	//当たり判定の可視化
@@ -319,19 +337,19 @@ void Game::Pause()
 
 void Game::Respawn()
 {
-	if (ENEMY_AMOUNT != enemyNumber) {
-		int spawnAmount = ENEMY_AMOUNT - enemyNumber;
-		for (int generate = 0; generate < spawnAmount; generate++) {
-			enemyNumber++;
-			ENEMY_AMOUNT;
-			Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-			neutral_Enemy->SetNeutral_EnemyGame(this);
-			neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
-			//neutral_Enemy->SetRotation(objData.rotation);
-			neutral_Enemy->SetKnightPlayer(m_knightplayer);
+	//if (ENEMY_AMOUNT != enemyNumber) {
+	//	int spawnAmount = ENEMY_AMOUNT - enemyNumber;
+	//	for (int generate = 0; generate < spawnAmount; generate++) {
+	//		enemyNumber++;
+	//		ENEMY_AMOUNT;
+	//		Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+	//		neutral_Enemy->SetNeutral_EnemyGame(this);
+	//		neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
+	//		//neutral_Enemy->SetRotation(objData.rotation);
+	//		neutral_Enemy->SetKnightPlayer(m_knightplayer);
 
-		}
-	}
+	//	}
+	//}
 
 	//マップのFindGO関数を呼び出しエネミーの数を把握する
 	m_Map->FindEnemys();

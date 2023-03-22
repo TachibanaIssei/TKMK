@@ -5,6 +5,7 @@
 
 class Game;
 class Neutral_Enemy;
+class MagicBall;
 
 class WizardPlayer:public WizardBase
 {
@@ -20,6 +21,11 @@ public:
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 	inline Vector3 GetPosition() { return m_position; }
+
+	/// <summary>
+	/// マジックボールの生成
+	/// </summary>
+	void MakeMagicBall();
 
 	/// <summary>
 	/// アタックの当たり判定
@@ -80,6 +86,8 @@ public:
 private:
 	Game* m_game = nullptr;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
+	//MagicBall* magicBall = nullptr;
+
 	CollisionObject* AtkCollision;                   //アタックのコリジョン
 	Vector3 AtkCollisionPos = Vector3::Zero;
 	Vector3 AtkCollisionVec = Vector3::Zero;

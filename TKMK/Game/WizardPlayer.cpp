@@ -2,6 +2,7 @@
 #include "WizardPlayer.h"
 #include "Game.h"
 #include "Neutral_Enemy.h"
+#include "MagicBall.h"
 
 WizardPlayer::WizardPlayer()
 {
@@ -107,8 +108,9 @@ void WizardPlayer::Attack()
 		m_wizardState = enWizardState_Attack;
 		//AttackFlag = true;
 		//FirstAtkFlag = true;
-		//ÉRÉìÉ{Ç1ëùÇ‚Ç∑
-		//ComboState++;
+		
+		MakeMagicBall();
+
 		pushFlag = true;
 	}
 
@@ -154,6 +156,21 @@ void WizardPlayer::Avoidance()
 void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 
+}
+
+/// <summary>
+/// 
+/// </summary>
+void WizardPlayer::MakeMagicBall()
+{
+	MagicBall* magicBall = NewGO<MagicBall>(0, "magicBall");
+
+	Vector3 MagicBallPos = m_position;
+	MagicBallPos.y += 15.0f;
+
+	magicBall->SetPosition(MagicBallPos);
+	magicBall->SetRotation(m_rot);
+	magicBall->SetEnMagician(MagicBall::enMagician_Player);
 }
 
 void WizardPlayer::Render(RenderContext& rc)

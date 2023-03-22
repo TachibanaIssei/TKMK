@@ -26,7 +26,11 @@ public:
 	{
 		return m_game;
 	}
-
+	/// <summary>
+	/// UŒ‚‚Å‚«‚é‚È‚çtrue
+	/// </summary>
+	/// <returns></returns>
+	const bool CanAttack() const;
 private:
 	enum AtkTimingState
 	{

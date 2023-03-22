@@ -28,12 +28,12 @@ KnightAI::KnightAI()
 	m_sphereCollider.Create(1.0f);
 
 	
-	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
+	//m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
 
 	//剣士のY座標が腰なのでY座標を上げる
-	m_position.y = m_position_YUp;
+	//m_position.y = m_position_YUp;
 
-	m_modelRender.SetPosition(m_position);
+	//m_modelRender.SetPosition(m_position);
 }
 KnightAI::~KnightAI()
 {
@@ -42,15 +42,16 @@ KnightAI::~KnightAI()
 void KnightAI::Update()
 {
 	Rotation();
-	SearchPlayer();
-
+	SearchEnemy();
+	ChaseAI();
+	Attack();
 	
 
-	//m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
+	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
 
-	////剣士のY座標が腰なのでY座標を上げる
-	//m_position.y = m_position_YUp;
-	//m_modelRender.SetPosition(m_position);
+	//剣士のY座標が腰なのでY座標を上げる
+	m_position.y = m_position_YUp;
+	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 }
 void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -63,7 +64,21 @@ void KnightAI::AvoidanceSprite()
 }
 void KnightAI::ChaseAI()
 {
-	
+	m_playerState = enKnightState_Walk;
+	m_isSearchEnemy == true;
+	Vector3 diff = m_Neutral_Enemy->GetPosition() - m_position;
+	diff.Normalize();
+	//移動速度を設定する。
+	m_moveSpeed = diff * m_Status.Speed;
+	m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charCon.IsOnGround()) {
+		//地面についた。
+		m_moveSpeed.y = 0.0f;
+	}
+	Vector3 modelPosition = m_position;
+	//ちょっとだけモデルの座標を挙げる。
+	modelPosition.y += 2.5f;
+	m_modelRender.SetPosition(modelPosition);
 }
 void KnightAI::Rotation()
 {
@@ -151,14 +166,28 @@ void KnightAI::SearchEnemy()
 	//プレイヤー見つけたフラグをtrueに。
 	m_isSearchEnemy = true;
 }
+const bool KnightAI ::CanAttack()const
+{
+	//中立の敵からプレイヤーに向かうベクトルを計算する
+	Vector3 diff = m_Neutral_Enemy->GetPosition() - m_position;
+	//距離が近かったら
+	if (diff.LengthSq() <= 50.0f * 50.0f)
+	{
+		//攻撃できる
+		return true;
+	}
+	//攻撃できない
+	return false;
+}
 void KnightAI::Attack()
 {
-	//連打で攻撃できなくなる
+	if (CanAttack() == true) {
+		//連打で攻撃できなくなる
 
-	//一段目のアタックをしていないなら
-	if (pushFlag == false && AtkState == false)
-	{
-		//Bボタン押されたら攻撃する
+		//一段目のアタックをしていないなら
+		if (pushFlag == false && AtkState == false)
+		{
+			//Bボタン押されたら攻撃する
 			m_playerState = enKnightState_ChainAtk;
 
 			//FirstAtkFlag = true;
@@ -166,86 +195,86 @@ void KnightAI::Attack()
 			//ComboState++;
 			pushFlag = true;
 			AtkState = true;
-	}
-	//一段目のアタックのアニメーションがスタートしたなら
-	if (m_AtkTmingState == FirstAtk_State)
-	{
-		
+		}
+		//一段目のアタックのアニメーションがスタートしたなら
+		if (m_AtkTmingState == FirstAtk_State)
+		{
+
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
-		
-	}
 
-	if (m_AtkTmingState == SecondAtkStart_State)
-	{
-	
+		}
+
+		if (m_AtkTmingState == SecondAtkStart_State)
+		{
+
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
-		
-	}
 
-
-	//スキルを発動する処理
-	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
-	{
-
-		//移動速度を上げる
-		m_Status.Speed += 120.0f;
-
-		AnimationMove(SkillSpeed);
-		pushFlag = true;
-		SkillState = true;
-		//AtkCollistionFlag = true;
-	}
-
-	//必殺技を発動する処理
-	//Xボタンが押されたら
-	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
-	{
-		pushFlag = true;
-		//アニメーション再生、レベルを３
-		UltimateSkill();
-
-
-
-		//アルティメットSE
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(16);
-		se->Play(false);
-		se->SetVolume(0.3f);
-
-		//必殺技発動フラグをセット
-		UltimateSkillFlag = true;
-	}
-
-	//必殺技発動フラグがセットされているなら
-	if (UltimateSkillFlag == true)
-	{
-		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-		//必殺技タイマーが3.0fまでの間
-		if (UltimateSkillTimer <= 3.0f)
-		{
-			//コリジョンの作成、移動処理
-			UltimateSkillCollistion(OldPosition, m_position);
 		}
-		else
-		{
-			//攻撃が有効な時間をリセット
-			UltimateSkillTimer = 0;
-			//必殺技発動フラグをリセット
-			UltimateSkillFlag = false;
-			//コリジョン削除
-			DeleteGO(collisionObject);
-			//コリジョン作成フラグをリセット
-			UltCollisionSetFlag = false;
-		}
+
 	}
+		////スキルを発動する処理
+		////Bボタンが押されたら
+		//if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+		//{
 
-	//攻撃かスキルを使用しているなら
-	//コリジョン作成
-	if (AtkCollistionFlag == true) AtkCollisiton();
+		//	//移動速度を上げる
+		//	m_Status.Speed += 120.0f;
 
+		//	AnimationMove(SkillSpeed);
+		//	pushFlag = true;
+		//	SkillState = true;
+		//	//AtkCollistionFlag = true;
+		//}
+
+		////必殺技を発動する処理
+		////Xボタンが押されたら
+		//if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+		//{
+		//	pushFlag = true;
+		//	//アニメーション再生、レベルを３
+		//	UltimateSkill();
+
+
+
+		//	//アルティメットSE
+		//	SoundSource* se = NewGO<SoundSource>(0);
+		//	se->Init(16);
+		//	se->Play(false);
+		//	se->SetVolume(0.3f);
+
+		//	//必殺技発動フラグをセット
+		//	UltimateSkillFlag = true;
+		//}
+
+		//必殺技発動フラグがセットされているなら
+		if (UltimateSkillFlag == true)
+		{
+			UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
+			//必殺技タイマーが3.0fまでの間
+			if (UltimateSkillTimer <= 3.0f)
+			{
+				//コリジョンの作成、移動処理
+				UltimateSkillCollistion(OldPosition, m_position);
+			}
+			else
+			{
+				//攻撃が有効な時間をリセット
+				UltimateSkillTimer = 0;
+				//必殺技発動フラグをリセット
+				UltimateSkillFlag = false;
+				//コリジョン削除
+				DeleteGO(collisionObject);
+				//コリジョン作成フラグをリセット
+				UltCollisionSetFlag = false;
+			}
+		}
+
+		//攻撃かスキルを使用しているなら
+		//コリジョン作成
+		if (AtkCollistionFlag == true) AtkCollisiton();
+	
 }
 
 void KnightAI::Render(RenderContext& rc)

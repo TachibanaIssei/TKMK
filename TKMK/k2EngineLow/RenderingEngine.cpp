@@ -4,7 +4,7 @@
 void nsK2EngineLow::RenderingEngine::Init()
 {
 	InitRenderTargets();
-	m_postEffect.InitBloom(m_mainRenderTarget);
+	m_postEffect.Init(m_mainRenderTarget);
 	InitCopyToFrameBufferSprite();
 
 	m_sceneLight.Init();
@@ -33,8 +33,8 @@ void nsK2EngineLow::RenderingEngine::InitRenderTargets()
 		m_clearColor
 	);
 
-	m_lightCamera.SetPosition(0, 600, 0);
-	m_lightCamera.SetTarget(0, 0, 0);
+	m_lightCamera.SetPosition(600, 600, 0);
+	m_lightCamera.SetTarget(400, 0, 0);
 	m_lightCamera.SetUp(1, 0, 0);
 	m_lightCamera.SetViewAngle(Math::DegToRad(20.0f));
 	m_lightCamera.Update();

@@ -244,7 +244,7 @@ void KnightAI::Attack()
 
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
-	if (AtkCollistionFlag == true) AtkCollisiton();
+	//if (AtkCollistionFlag == true) AtkCollisiton();
 
 }
 

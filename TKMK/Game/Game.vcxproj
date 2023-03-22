@@ -232,6 +232,7 @@
     <ClCompile Include="KnightAI.cpp" />
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightPlayer.cpp" />
+    <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Neutral_Enemy.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="KnightAI.h" />
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="KnightPlayer.h" />
+    <ClInclude Include="MagicBall.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Neutral_Enemy.h" />
     <ClInclude Include="Player.h" />

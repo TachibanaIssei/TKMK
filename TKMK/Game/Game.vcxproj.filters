@@ -21,6 +21,7 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Tittle.cpp" />
+    <ClCompile Include="MagicBall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -42,5 +43,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Tittle.h" />
+    <ClInclude Include="MagicBall.h" />
   </ItemGroup>
 </Project>

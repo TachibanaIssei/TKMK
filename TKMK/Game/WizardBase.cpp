@@ -36,8 +36,12 @@ void WizardBase::SetModel()
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Wizard/Wizard_Walk.tka");
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
-	/*m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
-	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);*/
+	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Wizard/Wizard_Run.tka");
+	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
+	m_animationClips[enWizardState_Attack].Load("Assets/animData/Wizard/Wizard_Attack.tka");
+	m_animationClips[enWizardState_Attack].SetLoopFlag(false);
+	m_animationClips[enWizardState_Avoidance].Load("Assets/animData/Wizard/Wizard_Avoidance.tka");
+	m_animationClips[enWizardState_Avoidance].SetLoopFlag(false);
 
 	//魔法使いのモデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Wizard/Wizard.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -137,6 +141,49 @@ void WizardBase::UltimateSkill()
 }
 
 /// <summary>
+/// アニメーション再生時に直線移動させる方向の決定
+/// </summary>
+/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
+/// <param name="stickL">スティックの移動の入力量</param>
+void WizardBase::AnimationMove(float moveSpeed, Vector3 stickL)
+{
+	m_moveSpeed.x = 0.0f;
+	m_moveSpeed.z = 0.0f;
+
+	//移動の入力量がないなら
+	if (stickL.x == 0.0f && stickL.y == 0.0f) {
+		//前に移動
+		stickL.x = 0.0f;
+		stickL.y = 1.0f;
+	}
+
+	m_Skill_Forward = Vector3::Zero;
+	m_Skill_Right = Vector3::Zero;
+
+	//カメラの前方向と右方向のベクトルを持ってくる。
+	m_Skill_Forward = g_camera3D->GetForward();
+	m_Skill_Right = g_camera3D->GetRight();
+	//y方向には移動させない。
+	m_Skill_Forward.y = 0.0f;
+	m_Skill_Right.y = 0.0f;
+
+	//左スティックの入力量とstatusのスピードを乗算。
+	m_Skill_Right *= stickL.x * moveSpeed;
+	m_Skill_Forward *= stickL.y * moveSpeed;
+}
+
+//直線移動させる
+void WizardBase::MoveStraight(Vector3& right, Vector3& forward)
+{
+	//移動処理
+	//移動速度にスティックの入力量を加算する。
+	//Vector3 m_SkillSpeed; 
+	m_moveSpeed = right + forward;
+	//キャラクターコントローラーを使って座標を移動させる。
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+}
+
+/// <summary>
 /// リスポーンする座標のセット
 /// </summary>
 void WizardBase::SetRespawn()
@@ -166,10 +213,11 @@ void WizardBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	case enWizardState_Run:
+		m_modelRender.SetAnimationSpeed(0.8f);
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.2f);
 		break;
 	case enWizardState_Attack:
-		m_modelRender.PlayAnimation(enAnimationClip_Atk, 0.3f);
+		m_modelRender.PlayAnimation(enAnimationClip_Atk, 0.2f);
 		break;
 	case enWizardState_Skill:
 		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
@@ -237,12 +285,12 @@ void WizardBase::OnProcessCommonStateTransition()
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		//if (Lv < 2) {
+		if (Lv < 4) {
 			m_wizardState = enWizardState_Walk;
-		//}
-		//else
+		}
+		else
 			//走りステート
-			//m_wizardState = enWizardState_Run;
+			m_wizardState = enWizardState_Run;
 
 		return;
 	}
@@ -266,7 +314,17 @@ void WizardBase::OnProcessRunStateTransition()
 
 void WizardBase::OnProcessAttackStateTransition()
 {
-
+	//チェインアタックのアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//待機ステート
+		//攻撃を始めたかの判定をfalseにする
+		//AtkState = false;
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessSkillAtkStateTransition()
@@ -281,7 +339,17 @@ void WizardBase::OnProcessUltimateSkillAtkStateTransition()
 
 void WizardBase::OnProcessAvoidanceStateTransition()
 {
-
+	//回避のアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		AvoidanceFlag = false;
+		AvoidanceEndFlag = true;
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		//待機ステート
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessDamegeStateTransition()

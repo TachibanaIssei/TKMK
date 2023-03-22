@@ -80,6 +80,20 @@ public:
 	void ManageState();
 
 	/// <summary>
+	/// アニメーション再生時の移動方向、移動速度を決める
+	/// </summary>
+	/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
+	/// <param name="stickL">スティックの移動の入力量</param>
+	void AnimationMove(float moveSpeed, Vector3 stickL);
+
+	/// <summary>
+	/// 直線移動
+	/// </summary>
+	/// <param name="right"></param>
+	/// <param name="forward"></param>
+	void MoveStraight(Vector3& right, Vector3& forward);
+
+	/// <summary>
 	/// アニメーションイベント
 	/// </summary>
 	/// <param name="clipName"></param>
@@ -103,7 +117,7 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_wizardState != enWizardState_Death;
+		return m_wizardState != enWizardState_Attack;
 	}
 
 	/// <summary>
@@ -240,5 +254,10 @@ protected:
 
 	//ボタンが押されたかの判定
 	bool pushFlag = false;
+
+	//回避アニメーションを再生したかの判定
+	bool AvoidanceFlag = false;
+	//回避アニメーションが終わったかの判定
+	bool AvoidanceEndFlag = false;
 };
 

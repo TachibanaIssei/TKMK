@@ -93,40 +93,9 @@ bool Neutral_Enemy::Start()
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			//左上の座標
-			if (objData.number == 0) {
+			if (objData.number == 8) {
 				SetPatrolPos(objData.position, objData.number);
-				P = 0;
-				return true;
-			}
-			if (objData.number == 1) {
-				SetPatrolPos(objData.position, objData.number);
-				P = 1;
-				return true;
-				
-			}
-			if (objData.number == 2) {
-				SetPatrolPos(objData.position, objData.number);
-				P = 2;
-				return true;
-			}
-			if (objData.number == 3) {
-				SetPatrolPos(objData.position, objData.number);
-				P = 3;
-				return true;
-			}
-			if (objData.number == 4) {
-				SetPatrolPos(objData.position, objData.number);
-				P = 4;
-				return true;
-			}
-			if (objData.number == 5) {
-				SetPatrolPos(objData.position, objData.number);
-				P = 5;
-				return true;
-			}
-			if (objData.number == 6) {
-				SetPatrolPos(objData.position, objData.number);
-				P = 6;
+				P = 8;
 				return true;
 			}
 			if (objData.number == 7) {
@@ -134,19 +103,40 @@ bool Neutral_Enemy::Start()
 				P = 7;
 				return true;
 			}
-			if (objData.number == 8) {
+			if (objData.number == 6) {
 				SetPatrolPos(objData.position, objData.number);
-				P = 8;
+				P = 6;
 				return true;
 			}
-			if (objData.number == 9) {
+			if (objData.number == 5) {
 				SetPatrolPos(objData.position, objData.number);
-				P = 9;
+				P = 5;
 				return true;
 			}
-			if (objData.number == 10) {
+			if (objData.number == 4) {
 				SetPatrolPos(objData.position, objData.number);
-				P = 10;
+				P = 4;
+				return true;
+			}
+			if (objData.number == 3) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 3;
+				return true;
+			}
+			if (objData.number == 2) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 2;
+				return true;
+			}
+			if (objData.number == 1) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 1;
+				return true;
+
+			}
+			if (objData.number == 0) {
+				SetPatrolPos(objData.position, objData.number);
+				P = 0;
 				return true;
 			}
 		}
@@ -184,10 +174,10 @@ void Neutral_Enemy::Move()
 {
 	Vector3 diff = m_forward;
 	diff.Normalize();
-	//移動速度を設定する。
+	////移動速度を設定する。
 	m_moveSpeed = diff * m_Status.Speed;
 	m_forward.Normalize();
-	Vector3 moveSpeed = m_forward * 50.0f;
+	Vector3 moveSpeed = m_forward * m_Status.Speed;
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 	m_modelRender.SetPosition(m_position);
 
@@ -244,19 +234,19 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
-	diff.Normalize();
-	//移動速度を設定する。
-	m_moveSpeed = diff * m_Status.Speed;
-	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-	if (m_charaCon.IsOnGround()) {
-		//地面についた。
-		m_moveSpeed.y = 0.0f;
-	}
-	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる。
-	modelPosition.y += 2.5f;
-	m_modelRender.SetPosition(modelPosition);
+	//Vector3 diff = m_knightplayer->GetPosition() - m_position;
+	//diff.Normalize();
+	////移動速度を設定する。
+	//m_moveSpeed = diff * m_Status.Speed;
+	//m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	//if (m_charaCon.IsOnGround()) {
+	//	//地面についた。
+	//	m_moveSpeed.y = 0.0f;
+	//}
+	//Vector3 modelPosition = m_position;
+	////ちょっとだけモデルの座標を挙げる。
+	//modelPosition.y += 2.5f;
+	//m_modelRender.SetPosition(modelPosition);
 
 
 }
@@ -342,39 +332,39 @@ void Neutral_Enemy::Attack()
 void Neutral_Enemy::SearchEnemy()
 {
 
-	Vector3 playerPosition = m_knightplayer->GetPosition();
-	Vector3 diff = playerPosition - m_position;
-	diff.Normalize();
-	float angle = acosf(diff.Dot(m_forward));
-	//プレイヤーが視界内に居なかったら。
-	if (Math::PI * 0.1f <= fabsf(angle))
-	{
-		//プレイヤーは見つかっていない。
-		return;
-	}
+	//Vector3 playerPosition = m_knightplayer->GetPosition();
+	//Vector3 diff = playerPosition - m_position;
+	//diff.Normalize();
+	//float angle = acosf(diff.Dot(m_forward));
+	////プレイヤーが視界内に居なかったら。
+	//if (Math::PI * 0.1f <= fabsf(angle))
+	//{
+	//	//プレイヤーは見つかっていない。
+	//	return;
+	//}
 
-	btTransform start, end;
-	start.setIdentity();
-	end.setIdentity();
-	//始点はエネミーの座標。
-	start.setOrigin(btVector3(m_position.x, 50.0f, m_position.z));
-	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(playerPosition.x, 50.0f, playerPosition.z));
+	//btTransform start, end;
+	//start.setIdentity();
+	//end.setIdentity();
+	////始点はエネミーの座標。
+	//start.setOrigin(btVector3(m_position.x, 50.0f, m_position.z));
+	////終点はプレイヤーの座標。
+	//end.setOrigin(btVector3(playerPosition.x, 50.0f, playerPosition.z));
 
-	SweepResultWall callback;
-	//コライダーを始点から終点まで動かして。
-	//衝突するかどうかを調べる。
-	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-	//壁と衝突した！
-	if (callback.isHit == true)
-	{
-		//プレイヤーは見つかっていない。
-		return;
-	}
+	//SweepResultWall callback;
+	////コライダーを始点から終点まで動かして。
+	////衝突するかどうかを調べる。
+	//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+	////壁と衝突した！
+	//if (callback.isHit == true)
+	//{
+	//	//プレイヤーは見つかっていない。
+	//	return;
+	//}
 
-	//壁と衝突してない！！
-	//プレイヤー見つけたフラグをtrueに。
-	m_isSearchPlayer = true;
+	////壁と衝突してない！！
+	////プレイヤー見つけたフラグをtrueに。
+	//m_isSearchPlayer = true;
 	
 }
 
@@ -513,6 +503,7 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 }
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
+
 	if (Patrol)
 	{
 		if (P == 0)
@@ -527,11 +518,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			Move();
 			if (distance.Length() <= 10.0f)
 			{
+				
 				//1からにしかったら+１しろ
 				int ram = rand() % 100 /*+ 1*/;
 				if (ram >= 0)
 				{
-					P = 1;
+					P = 2;
 				}
 				if (ram > 25)
 				{
@@ -545,9 +537,9 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 				{
 					P = 8;
 				}
+				//P = 2;
 			}
-
-
+	
 		}
 		 if (P == 1)
 		{
@@ -562,29 +554,30 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			if (distance2.Length() <= 10.0f)
 			{
 				//Patrol = false；
-				int ram = rand() % 100;
+				/*int ram = rand() % 100;
 				if (ram < 50)
 				{
 					P = 2;
 				}
 				if (ram > 50)
 				{
-					P = 10;
-				}
+					P = 9;
+				}*/
+				P = 2;
 			}
 
 		}
 		 if (P == 2)
 		{
-			Vector3 newForward2 = m_patrolPos[2] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
+			Vector3 newForward3 = m_patrolPos[2] - m_position;
+			Vector3 distance3 = newForward3;
+			newForward3.Normalize();
+			m_forward = newForward3;
 			Move();
-			if (distance2.Length() <= 10.0f)
+			if (distance3.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				int ram = rand() % 100;
+				/*int ram = rand() % 100;
 				if (ram < 50)
 				{
 					P = 1;
@@ -592,191 +585,157 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 				if (ram > 50)
 				{
 					P = 3;
-				} 
+				} */
+				P = 3;
 			}
 
 		}
 		 if (P == 3)
 		{
-			Vector3 newForward2 = m_patrolPos[3] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
+			Vector3 newForward4 = m_patrolPos[3] - m_position;
+			Vector3 distance4 = newForward4;
+			newForward4.Normalize();
+			m_forward = newForward4;
 			Move();
-			if (distance2.Length() <= 10.0f)
+			if (distance4.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 50)
+				/*int ram = rand() % 100;
+				if (ram > 0)
 				{
 					P = 2;
 				}
-				if (ram > 50)
+				if (ram > 33)
+				{
+					P = 0;
+				}
+				if (ram > 66)
 				{
 					P = 4;
-				}
+				}*/
+				P = 4;
 			}
 		}
 		 if (P == 4)
 		{
-			Vector3 newForward2 = m_patrolPos[4] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
+			Vector3 newForward5 = m_patrolPos[4] - m_position;
+			Vector3 distance5 = newForward5;
+			newForward5.Normalize();
+			m_forward = newForward5;
 			Move();
-			if (distance2.Length() <= 10.0f)
+			if (distance5.Length() <= 10.0f)
 			{
 				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 45)
+				/*int ram = rand() % 100;
+				if (ram < 50)
 				{
 					P = 3;
 				}
-				if (ram > 45)
-				{
-					P = 0;
-				}
-				if (ram > 75)
+				if (ram > 50)
 				{
 					P = 5;
-				}
+				}*/
+				P = 5;
 			}
 		}
 		 if (P == 5)
-		{
-			Vector3 newForward2 = m_patrolPos[5] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length() <= 10.0f)
-			{
-				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 50)
-				{
-					P = 4;
-				}
-				if (ram > 50)
-				{
-					P = 6;
-				}
-			}
-		}
-		 if (P == 6)
-		{
-			Vector3 newForward2 = m_patrolPos[6] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length() <= 10.0f)
-			{
-				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 45)
-				{
-					P = 5;
-				}
-				if (ram > 45)
-				{
-					P = 0;
-				}
-				if (ram > 75)
-				{
-					P = 7;
-				}
-			}
-		}
-		else if (P == 7)
-		{
-			Vector3 newForward2 = m_patrolPos[7] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length() <= 10.0f)
-			{
-				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 50)
-				{
-					P = 6;
-				}
-				if (ram > 50)
-				{
-					P = 8;
-				}
-			}
-		}
-		 if (P == 8)
-		{
-			Vector3 newForward2 = m_patrolPos[8] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length() <= 10.0f)
-			{
-				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 45)
-				{
-					P = 7;
-				}
-				if (ram > 45)
-				{
-					P = 0;
-				}
-				if (ram > 75)
-				{
-					P = 9;
-				}
-			}
-		}
-		 if (P == 9)
-		{
-			Vector3 newForward2 = m_patrolPos[9] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length() <= 10.0f)
-			{
-				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 50)
-				{
-					P = 8;
-				}
-				if (ram > 50)
-				{
-					P = 10;
-				}
-			}
-		}
-		 if (P == 10)
-		{
-			Vector3 newForward2 = m_patrolPos[10] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length() <= 10.0f)
-			{
-				//Patrol = false;
-				int ram = rand() % 100;
-				if (ram < 50)
-				{
-					P = 9;
-				}
-				if (ram > 50)
-				{
-					P = 1;
-				}
-			}
+		 {
+			 Vector3 newForward6 = m_patrolPos[5] - m_position;
+			 Vector3 distance6 = newForward6;
+			 newForward6.Normalize();
+			 m_forward = newForward6;
+			 Move();
+			 if (distance6.Length() <= 10.0f)
+			 {
+				 //Patrol = false;
+				/* int ram = rand() % 100;
+				 if (ram > 0)
+				 {
+					 P = 4;
+				 }
+				 if (ram > 33)
+				 {
+					 P = 0;
+				 }
+				 if (ram > 66)
+				 {
+					 P = 6;
+				 }*/
+				 P = 6;
+			 }
+		 }
+			 if (P == 6)
+			 {
+				 Vector3 newForward7 = m_patrolPos[6] - m_position;
+				 Vector3 distance7 = newForward7;
+				 newForward7.Normalize();
+				 m_forward = newForward7;
+				 Move();
+				 if (distance7.Length() <= 10.0f)
+				 {
+					 //Patrol = false;
+					/* int ram = rand() % 100;
+					 if (ram < 50)
+					 {
+						 P = 5;
+					 }
+					 if (ram > 50)
+					 {
+						 P = 7;
+					 }*/
+					 P = 7;
+				 }
+			 }
+			 if (P == 7)
+			 {
+				 Vector3 newForward8 = m_patrolPos[7] - m_position;
+				 Vector3 distance8 = newForward8;
+				 newForward8.Normalize();
+				 m_forward = newForward8;
+				 Move();
+				 if (distance8.Length() <= 10.0f)
+				 {
+					 //Patrol = false;
+					/* int ram = rand() % 100;
+					 if (ram > 0)
+					 {
+						 P = 6;
+					 }
+					 if (ram > 33)
+					 {
+						 P = 0;
+					 }
+					 if (ram > 66)
+					 {
+						 P = 8;
+					 }*/
+					 P = 8;
+				 }
+			 }
+			 if (P == 8)
+			 {
+				 Vector3 newForward9 = m_patrolPos[8] - m_position;
+				 Vector3 distance9 = newForward9;
+				 newForward9.Normalize();
+				 m_forward = newForward9;
+				 Move();
+				 if (distance9.Length() <= 10.0f)
+				 {
+					 //Patrol = false;
+					/* int ram = rand() % 100;
+					 if (ram < 50)
+					 {
+						 P = 7;
+					 }
+					 if (ram > 50)
+					 {
+						 P = 0;
+					 }*/
+					 P = 0;
+				 }
+			 }
+		 
 		
-		}
 	}
 	else
 	{
@@ -784,6 +743,22 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
 	ProcessCommonStateTransition();
+
+	//Vector3 fff = m_position - nowPos;
+	//if (fff.LengthSq() <= 0.0000002f)
+	//{
+	//	m_stopTimer -= g_gameTime->GetFrameDeltaTime();
+	//}
+	//else
+	//{
+	//	m_stopTimer = 1.0f;
+	//}
+	//if (m_stopTimer < 1.0f)
+	//{
+	//	m_position.z += 5.0f;
+	//	//m_moveSpeed.y = 10.0f;
+	//}
+
 }
 void Neutral_Enemy::ManageState()
 {
@@ -971,14 +946,18 @@ void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
-	if (m_knightplayer->GetSpriteFlag())
-	{
-		if (DrawHP())
+
+	//ステートがポーズステートでないなら
+	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
+		//スプライトフラグがtureなら
+		if (m_knightplayer->GetSpriteFlag())
 		{
-			m_HPBack.Draw(rc);
-			m_HPBar.Draw(rc);
-			m_HPFrame.Draw(rc);
+			if (DrawHP())
+			{
+				m_HPBack.Draw(rc);
+				m_HPBar.Draw(rc);
+				m_HPFrame.Draw(rc);
+			}
 		}
 	}
-	
 }

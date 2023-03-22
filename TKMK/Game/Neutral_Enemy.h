@@ -255,7 +255,8 @@ private:
 	SphereCollider			m_sphereCollider;
 	RigidBody				m_rigidBody;
 	Vector3                 m_inRespawnPosition[12];
-	Vector3 m_patrolPos[11];
+	Vector3                 m_patrolPos[9];
+	Vector3 nowPos = Vector3::Zero;
 
 	bool					m_isSearchPlayer = false;
 	bool m_UnderAttack = false;              //攻撃判定
@@ -264,6 +265,7 @@ private:
 	//中立の敵
 	float	m_chaseTimer = 0.0f;			//追跡タイマー。
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
+	float   m_stopTimer = 1.0f;             //止まってしまったタイマー
 
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;

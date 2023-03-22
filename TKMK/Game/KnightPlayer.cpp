@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
 #include "Game.h"
+#include "Neutral_Enemy.h"
 //#include "GameUI.h"
+//スキル使ったときに範囲内に敵がいたらその方向に向かっていく
+//for文、findGO使う
+//HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -22,12 +26,25 @@ KnightPlayer::KnightPlayer()
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	respawnNumber = 0;        //リスポーンする座標の番号
-	m_respawnPos[respawnNumber].y += m_position_YUp;
+	//m_respawnPos[respawnNumber].y += m_position_YUp;
+
+	//m_position=
+
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+
+	//m_position=m_respawnPos[respawnNumber];
+
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	
+	//剣士のY座標が腰なのでY座標を上げる
+	//m_position.y = m_position_YUp;
+
+	m_modelRender.SetPosition(m_position);
+	//m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
@@ -69,7 +86,10 @@ void KnightPlayer::Update()
 	OldPosition = m_position;
 
 	//移動処理
-	Move(m_position, m_charCon, m_Status);
+	Vector3 stickL;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+	Move(m_position, m_charCon, m_Status, stickL);
 	
 	////RBボタンが押されたら。
 	////回避
@@ -87,11 +107,14 @@ void KnightPlayer::Update()
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
-	//攻撃処理
-	Attack();
-
-	//回避処理
-	Avoidance();
+	//ステートがデスのときボタンを押せないようにする
+	if (m_playerState != enKnightState_Death) {
+		//攻撃処理
+		Attack();
+		//回避処理
+		Avoidance();
+	}
+	
 
 	//スキル使用中なら
 	if (SkillState == true) {
@@ -199,8 +222,10 @@ void KnightPlayer::Attack()
 
 		//移動速度を上げる
 		m_Status.Speed += 120.0f;
-		
-		AnimationMove(SkillSpeed);
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		AnimationMove(SkillSpeed, stickL);
 		pushFlag = true;
 		SkillState = true;
 		//AtkCollistionFlag = true;
@@ -213,11 +238,15 @@ void KnightPlayer::Attack()
 		pushFlag = true;
 		//アニメーション再生、レベルを３
 		UltimateSkill();
+
+
+
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);
 		se->Play(false);
 		se->SetVolume(0.3f);
+
 		//必殺技発動フラグをセット
 		UltimateSkillFlag = true;
 	}
@@ -261,7 +290,10 @@ void KnightPlayer::Avoidance()
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
 		//m_playerState = enKnightState_Avoidance;
-		AnimationMove(AvoidanceSpeed);
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		AnimationMove(AvoidanceSpeed, stickL);
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}

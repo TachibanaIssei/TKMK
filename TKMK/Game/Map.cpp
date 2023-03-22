@@ -2,6 +2,8 @@
 #include "Map.h"
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
+#include "Player.h"
+#include "Game.h"
 
 
 namespace
@@ -44,12 +46,13 @@ bool Map::Start()
 	}
 	
 
-	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
+	//m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
+	player = FindGO<Player>("player");
 	//m_Neutral_Enemy = FindGO<Neutral_Enemy>("Neutral_Enemy");
 
 	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
-
+	m_game = FindGO<Game>("game");
 
 	////配列のサイズを調べてfor文で回す
 	//for (auto seutral_Enemy : seutral_Enemys)
@@ -61,7 +64,7 @@ bool Map::Start()
 void Map::Update()
 {
 	PlayerMap();
-	EnemyMap();
+	//EnemyMap();
 	m_Map.Update();
 	m_MapFrame.Update();
 }
@@ -90,10 +93,12 @@ const bool Map::WorldPositionConvertToMapPosition(Vector3 worldCenterPosition, V
 
 void Map::PlayerMap()
 {
-	Vector3 playerPosition = m_knightPlayer->GetPosition();
+	//Vector3 playerPosition = m_knightPlayer->GetPosition();
+	Vector3 playerPosition = player->GetCharPosition();
 
 	//プレイヤーの回転を取得する
-	Quaternion playerIconRot = m_knightPlayer->GetRot();
+	//Quaternion playerIconRot = m_knightPlayer->GetRot();
+	Quaternion playerIconRot = player->CharSetRot();
 	//プレイヤーの前方向
 	Vector3 playerIcon = Vector3::AxisZ;
 	//クォータニオンをベクトルに変える
@@ -121,21 +126,28 @@ void Map::PlayerMap()
 //エネミーのマップの移動処理
 void Map::EnemyMap()
 {
+	if (m_game->GetNeutral_EnemyContaier() == 0)
+	{
+		m_neutral_Enemys.clear();
+		return;
+	}
 	//謎のエラー
 	// レベル上限
 	//m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 	//enemyの数だけ繰り返す
-	for (int amount=0;amount< m_neutral_Enemys.size();amount++)
+	int i = 0;
+	for (auto enemy : m_neutral_Enemys)
 	{
 		//エネミーの座標を取得
-		Vector3 enemyPosition = m_neutral_Enemys[amount]->GetPosition();
+		Vector3 enemyPosition = enemy->GetPosition();
 		Vector3 mapPosition;
 		//ワールド座標をマップ座標に変換する
 		if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
 		{
 			//座標を設定
-			m_MapEnemy[amount].SetPosition(mapPosition + MAP_CENTER_POSITION);
-			m_MapEnemy[amount].Update();
+			m_MapEnemy[i].SetPosition(mapPosition + MAP_CENTER_POSITION);
+			m_MapEnemy[i].Update();
+			i++;
 		}
 	}
 
@@ -157,6 +169,5 @@ void Map::Render(RenderContext& rc)
 	m_Map.Draw(rc);
 	m_MapFrame.Draw(rc);
 	m_MapPlayer.Draw(rc);
-	for(int amount=0;amount< m_neutral_Enemys.size();amount++)
-	m_MapEnemy[amount].Draw(rc);
+	//for(int amount=0;amount< m_neutral_Enemys.size();amount++) m_MapEnemy[amount].Draw(rc);
 }

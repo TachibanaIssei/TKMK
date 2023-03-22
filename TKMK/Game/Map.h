@@ -2,6 +2,8 @@
 
 class KnightPlayer;
 class Neutral_Enemy;
+class Player;
+class Game;
 
 class Map:public IGameObject
 {
@@ -41,5 +43,9 @@ private:
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //’†—§‚Ì“G
 	KnightPlayer* m_knightPlayer=nullptr;        //Œ•mƒvƒŒƒCƒ„[
+	Player* player = nullptr;
+	Game* m_game = nullptr;
+
+
 };
 

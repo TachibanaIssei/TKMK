@@ -36,8 +36,9 @@ public:
 	/// </summary>
 	/// <param name="position">キャラクターの現在の座標</param>
 	/// <param name="charcon">キャラコン</param>
-	/// /// <param name="status">キャラのステータス</param>
-	void Move(Vector3& position,CharacterController& charcon, Status& status);
+	/// <param name="status">キャラのステータス</param>
+	/// <param name="stickL">移動の入力量</param>
+	void Move(Vector3& position,CharacterController& charcon, Status& status,Vector3 stickL);
 
 	/// <summary>
 	/// 移動処理したくないアニメーションのステートを書く

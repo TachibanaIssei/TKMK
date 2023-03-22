@@ -42,7 +42,7 @@ KnightAI::~KnightAI()
 void KnightAI::Update()
 {
 	Rotation();
-	SearchPlayer();
+	//SearchPlayer();
 
 	
 
@@ -193,7 +193,7 @@ void KnightAI::Attack()
 		//ˆÚ“®‘¬“x‚ğã‚°‚é
 		m_Status.Speed += 120.0f;
 
-		AnimationMove(SkillSpeed);
+		//AnimationMove(SkillSpeed);
 		pushFlag = true;
 		SkillState = true;
 		//AtkCollistionFlag = true;

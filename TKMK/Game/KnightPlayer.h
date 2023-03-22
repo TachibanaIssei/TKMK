@@ -4,6 +4,7 @@
 #include "Status.h"
 
 class Game;
+class Neutral_Enemy;
 //class GameUI;
 
 class KnightPlayer:public KnightBase
@@ -23,16 +24,30 @@ public:
 
 	void AvoidanceSprite();
 
-	/*void SetSGame(Game* Cgame)
-	{
-		m_game = Cgame;
-	}*/
-	/*Game* GetSGame()
-	{
-		return m_game;
-	}*/
+	/// <summary>
+	/// スキルを発動したときに範囲内で一番近い敵をねらう処理
+	/// </summary>
+	//void SkillTarget()
+	//{
+	//	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
-	
+	//	Vector3 nearPos = Vector3::Zero;
+	//	//一番近い距離
+	//	float Near = nearPos.Length();
+	//	for (auto enemy : m_neutral_Enemys)
+	//	{
+	//		Vector3 toEnemy = enemy->GetPosition() - m_position;
+	//		//エネミーとの距離を計算する
+	//		float newNear = toEnemy.Length();
+	//		//計算した距離が一番近い距離より小さいなら上書き
+	//		if (Near > newNear) {
+	//			Near = newNear;
+	//		}
+	//	}
+	//	if (Near < 300) {
+
+	//	}
+	//}
 
 	/// <summary>
 	/// �摜�\���t���O��擾����
@@ -69,6 +84,7 @@ public:
 	int SetKnightAtk(/*int& attack*/) {
 		return m_Status.Atk;
 	}
+
 private:
 	Game* m_game=nullptr;
 	//GameUI* m_gameUI = nullptr;
@@ -108,12 +124,7 @@ private:
 
 	bool m_spriteFlag = true;
 
-	//Status m_Status;                           //ステータス
-
-	//Vector3 m_position = Vector3::Zero;
-	////初期ステータス 最大HP、HP、攻撃力、スピード
-	//Status status = { 150,150,35,150.0f };
-	////レベルアップ時に増加するステータス
-	//LvUpStatus LvUpStatus = { 30,10,30.0f };
+	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 };
 

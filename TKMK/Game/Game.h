@@ -12,6 +12,8 @@ class Neutral_Enemy;
 class GameUI;
 class Map;
 class KnightAI;
+class WizardPlayer;
+class Player;
 
 class Game : public IGameObject
 {
@@ -89,6 +91,8 @@ private:
 	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
 	SoundSource* m_bgm = nullptr;	//
+	WizardPlayer* wizardPlayer = nullptr;
+	Player* player = nullptr;
 
 	//std::vector<Neutral_Enemy*> m_enemyCounter;
 
@@ -102,10 +106,16 @@ private:
 
 	float m_Timer = 0.0f;
 
+	//BGMの音量調整に使用する変数
+	float musicVolume = 1.0f;
+
 	//リザルト画面かのフラグ
 	bool RezultFlag = false;
 	//ポーズ画面かのフラグ
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
+
+	//キャラの番号
+	int SelectCharNumber = 0;
 };
 

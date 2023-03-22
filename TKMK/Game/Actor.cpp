@@ -11,7 +11,7 @@ Actor::~Actor()
 
 }
 
-void Actor::Move(Vector3& position, CharacterController& charcon,Status& status)
+void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
 {
 	//特定のアニメーションが再生中なら
 	if (IsEnableMove() == false)
@@ -23,9 +23,9 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status)
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	Vector3 stickL;
+	/*Vector3 stickL;
 	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
+	stickL.y = g_pad[0]->GetLStickYF();*/
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
 	Vector3 forward = g_camera3D->GetForward();

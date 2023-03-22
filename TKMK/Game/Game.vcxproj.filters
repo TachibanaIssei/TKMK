@@ -15,6 +15,9 @@
     <ClCompile Include="Neutral_Enemy.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Status.cpp" />
+    <ClCompile Include="WizardBase.cpp" />
+    <ClCompile Include="WizardPlayer.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Tittle.cpp" />
@@ -33,6 +36,9 @@
     <ClInclude Include="Neutral_Enemy.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Status.h" />
+    <ClInclude Include="WizardBase.h" />
+    <ClInclude Include="WizardPlayer.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Tittle.h" />

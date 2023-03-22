@@ -101,7 +101,8 @@ public:
 	/// アニメーション再生時の移動方向、移動速度を決める
 	/// </summary>
 	/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
-	void AnimationMove(float moveSpeed);
+	/// <param name="stickL">スティックの移動の入力量</param>
+	void AnimationMove(float moveSpeed,Vector3 stickL);
 
 	/// <summary>
 	/// 

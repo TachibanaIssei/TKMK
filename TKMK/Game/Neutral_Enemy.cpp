@@ -946,14 +946,18 @@ void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
-	if (m_knightplayer->GetSpriteFlag())
-	{
-		if (DrawHP())
+
+	//ステートがポーズステートでないなら
+	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
+		//スプライトフラグがtureなら
+		if (m_knightplayer->GetSpriteFlag())
 		{
-			m_HPBack.Draw(rc);
-			m_HPBar.Draw(rc);
-			m_HPFrame.Draw(rc);
+			if (DrawHP())
+			{
+				m_HPBack.Draw(rc);
+				m_HPBar.Draw(rc);
+				m_HPFrame.Draw(rc);
+			}
 		}
 	}
-	
 }

@@ -366,16 +366,15 @@ void KnightBase::Death()
 /// <summary>
 /// アニメーション再生時に直線移動させる方向の決定
 /// </summary>
-void KnightBase::AnimationMove(float moveSpeed)
+/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
+/// <param name="stickL">スティックの移動の入力量</param>
+void KnightBase::AnimationMove(float moveSpeed,Vector3 stickL)
 {
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
 	//移動の入力量がないなら
-	if (g_pad[0]->GetLStickXF() == 0.0f&&g_pad[0]->GetLStickYF() == 0.0f) {
+	if (stickL.x == 0.0f&& stickL.y == 0.0f) {
 		//前に移動
 		stickL.x = 0.0f;
 		stickL.y = 1.0f;

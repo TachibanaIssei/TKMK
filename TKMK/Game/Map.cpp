@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
+#include "Player.h"
 #include "Game.h"
 
 
@@ -45,7 +46,8 @@ bool Map::Start()
 	}
 	
 
-	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
+	//m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
+	player = FindGO<Player>("player");
 	//m_Neutral_Enemy = FindGO<Neutral_Enemy>("Neutral_Enemy");
 
 	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
@@ -62,7 +64,7 @@ bool Map::Start()
 void Map::Update()
 {
 	PlayerMap();
-	EnemyMap();
+	//EnemyMap();
 	m_Map.Update();
 	m_MapFrame.Update();
 }
@@ -91,10 +93,12 @@ const bool Map::WorldPositionConvertToMapPosition(Vector3 worldCenterPosition, V
 
 void Map::PlayerMap()
 {
-	Vector3 playerPosition = m_knightPlayer->GetPosition();
+	//Vector3 playerPosition = m_knightPlayer->GetPosition();
+	Vector3 playerPosition = player->GetCharPosition();
 
 	//プレイヤーの回転を取得する
-	Quaternion playerIconRot = m_knightPlayer->GetRot();
+	//Quaternion playerIconRot = m_knightPlayer->GetRot();
+	Quaternion playerIconRot = player->CharSetRot();
 	//プレイヤーの前方向
 	Vector3 playerIcon = Vector3::AxisZ;
 	//クォータニオンをベクトルに変える
@@ -165,5 +169,5 @@ void Map::Render(RenderContext& rc)
 	m_Map.Draw(rc);
 	m_MapFrame.Draw(rc);
 	m_MapPlayer.Draw(rc);
-	for(int amount=0;amount< m_neutral_Enemys.size();amount++) m_MapEnemy[amount].Draw(rc);
+	//for(int amount=0;amount< m_neutral_Enemys.size();amount++) m_MapEnemy[amount].Draw(rc);
 }

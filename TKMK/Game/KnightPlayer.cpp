@@ -91,7 +91,10 @@ void KnightPlayer::Update()
 	OldPosition = m_position;
 
 	//移動処理
-	Move(m_position, m_charCon, m_Status);
+	Vector3 stickL;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+	Move(m_position, m_charCon, m_Status, stickL);
 	
 	////RBボタンが押されたら。
 	////回避
@@ -224,8 +227,10 @@ void KnightPlayer::Attack()
 
 		//移動速度を上げる
 		m_Status.Speed += 120.0f;
-		
-		AnimationMove(SkillSpeed);
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		AnimationMove(SkillSpeed, stickL);
 		pushFlag = true;
 		SkillState = true;
 		//AtkCollistionFlag = true;
@@ -281,7 +286,10 @@ void KnightPlayer::Avoidance()
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
 		//m_playerState = enKnightState_Avoidance;
-		AnimationMove(AvoidanceSpeed);
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		AnimationMove(AvoidanceSpeed, stickL);
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}

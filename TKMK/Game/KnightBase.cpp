@@ -276,6 +276,7 @@ void KnightBase::Dameged(int damege)
 		//Death();
 		//SetRespawn();
 
+
 	}
 	else {
 		//ダメージステート

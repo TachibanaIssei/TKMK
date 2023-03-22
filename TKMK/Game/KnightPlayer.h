@@ -69,7 +69,6 @@ public:
 	int SetKnightAtk(/*int& attack*/) {
 		return m_Status.Atk;
 	}
-
 private:
 	Game* m_game=nullptr;
 	//GameUI* m_gameUI = nullptr;

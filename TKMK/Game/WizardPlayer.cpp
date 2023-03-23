@@ -109,7 +109,7 @@ void WizardPlayer::Attack()
 		//AttackFlag = true;
 		//FirstAtkFlag = true;
 		
-		MakeMagicBall();
+		
 
 		pushFlag = true;
 	}
@@ -155,11 +155,17 @@ void WizardPlayer::Avoidance()
 
 void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//一段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"Attack_Start") == 0)
+	{
+		//マジックボールを生成する
+		MakeMagicBall();
+	}
 
 }
 
 /// <summary>
-/// 
+/// マジックボールを生成する
 /// </summary>
 void WizardPlayer::MakeMagicBall()
 {

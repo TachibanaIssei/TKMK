@@ -60,9 +60,7 @@ void WizardPlayer::Update()
 
 
 
-	Attack();
-	//回避処理
-	Avoidance();
+	
 	//回避クールタイムの処理
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
@@ -83,6 +81,9 @@ void WizardPlayer::Update()
 	stickL.y = g_pad[0]->GetLStickYF();
 	Move(m_position, m_charCon, m_Status, stickL);
 
+	Attack();
+	//回避処理
+	Avoidance();
 	//回転処理
 	Rotation();
 
@@ -114,26 +115,13 @@ void WizardPlayer::Attack()
 		pushFlag = true;
 	}
 
-	//if (AttackFlag == true)
-	//{
-	//	AttackTimer += g_gameTime->GetFrameDeltaTime();
-
-	//	if (AttackTimer < 3.0f) {
-	//		/*Vector3 stickL;
-	//		stickL.x = g_pad[0]->GetLStickXF();
-	//		stickL.y = g_pad[0]->GetLStickYF();*/
-	//		AttackCollision(m_position/*, stickL*/);
-	//	}
-	//	else {
-	//		AttackFlag == false;
-	//		AttackTimer = 0.0f;
-	//		AtkCollisionSetFlag = false;
-	//		//コリジョン削除
-	//		DeleteGO(AtkCollision);
-	//	}
-	//	
-
-	//}
+	//スキルを発動
+	//Bボタンを押したら
+	if (pushFlag == false && g_pad[0]->IsTrigger(enButtonB))
+	{
+		Skill(m_position,m_rot,m_charCon);
+		m_modelRender.SetPosition(m_position);
+	}
 }
 
 /// <summary>

@@ -70,6 +70,13 @@ public:
 	//void AtkCollisiton();
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="position"></param>
+	/// <returns></returns>
+	void Skill(Vector3& position,Quaternion& rotation,CharacterController& charCon);
+
+	/// <summary>
 	/// 必殺技の当たり判定の処理
 	/// </summary>
 	//void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
@@ -236,7 +243,7 @@ protected:
 	GameUI* gameUI = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
-	float m_position_YUp = 47.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
+	float m_position_YUp = 34.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 collisionRot = Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン

@@ -48,14 +48,14 @@ void WizardBase::SetModel()
 
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);
-	//m_modelRender.SetScale(Vector3(0.1f, 0.1f, 0.1f));
+	m_modelRender.SetScale(Vector3(0.7f, 0.7f, 0.7f));
 
 	m_rot.SetRotationY(0.0f);
 	m_modelRender.SetRotation(m_rot);
 
 	m_charCon.Init(
-		15.0f,
-		58.0f,
+		10.0f,
+		39.0f,
 		m_position
 	);
 }
@@ -132,6 +132,21 @@ void WizardBase::Dameged(int damege)
 
 void WizardBase::Death()
 {
+
+}
+
+void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterController& charCon)
+{
+	m_moveSpeed = Vector3::AxisZ;
+	//回転も
+	rotation.Apply(m_moveSpeed);
+	position += m_moveSpeed * 500.0f;
+	m_moveSpeed *= 1000.0f;
+	rotation.AddRotationDegY(360.0f);
+	//m_moveSpeed *= g_gameTime->GetFrameDeltaTime();
+
+	//キャラクターコントローラーを使って座標を移動させる。
+	position = charCon.Execute(m_moveSpeed, 20.0f / 60.0f);
 
 }
 
@@ -314,7 +329,7 @@ void WizardBase::OnProcessRunStateTransition()
 
 void WizardBase::OnProcessAttackStateTransition()
 {
-	//チェインアタックのアニメーション再生が終わったら。
+	//アタックのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//待機ステート
@@ -329,7 +344,14 @@ void WizardBase::OnProcessAttackStateTransition()
 
 void WizardBase::OnProcessSkillAtkStateTransition()
 {
-
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//待機ステート
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessUltimateSkillAtkStateTransition()

@@ -324,7 +324,7 @@ levelDown(LvUpStatus, m_Status, Lv, 3);
 	ExpTableChamge(Lv, ExpTable);
 
 	//レベルに合わせてレベルの画像を変更する
-	m_gameUI->LevelFontChange(Lv);
+	//m_gameUI->LevelFontChange(Lv);
 
 	m_playerState = enKnightState_UltimateSkill;
 

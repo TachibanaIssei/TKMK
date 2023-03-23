@@ -237,7 +237,7 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//アニメーション再生、レベルを３
+		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
 		//レベルに合わせてレベルの画像を変更する
 		m_gameUI->LevelFontChange(Lv);

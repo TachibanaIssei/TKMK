@@ -458,7 +458,7 @@ namespace nsK2EngineLow {
 		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 
-		float m_clearColor[4] = { 1.0f,0.0f,0.0f,1.0f };
+		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
 		RenderTarget m_shadowMap;								//シャドウマップのレンダーターゲット
 		Camera m_lightCamera;									//ライトカメラ
 		Sprite m_shadowSprite;

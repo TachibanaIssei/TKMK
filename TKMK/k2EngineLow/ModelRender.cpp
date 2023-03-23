@@ -34,6 +34,7 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	if (shadow)
 	{
 		m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
+		m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
 
 		m_shadowModel.Init(m_modelInitData);
 	}

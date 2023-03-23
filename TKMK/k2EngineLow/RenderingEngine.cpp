@@ -28,13 +28,13 @@ void nsK2EngineLow::RenderingEngine::InitRenderTargets()
 		1024,
 		1,
 		1,
-		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_FORMAT_R32_FLOAT,
 		DXGI_FORMAT_D32_FLOAT,
 		m_clearColor
 	);
 
-	m_lightCamera.SetPosition(600, 600, 0);
-	m_lightCamera.SetTarget(400, 0, 0);
+	m_lightCamera.SetPosition(0, 600, 0);
+	m_lightCamera.SetTarget(0, 0, 0);
 	m_lightCamera.SetUp(1, 0, 0);
 	m_lightCamera.SetViewAngle(Math::DegToRad(20.0f));
 	m_lightCamera.Update();

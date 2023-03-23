@@ -30,13 +30,13 @@ bool MagicBall::Start()
 	if (m_enMagician == enMagician_Player)
 	{
 		//名前をplayer_fireballにする。
-		BallCollision->SetName("player_fireball");
+		BallCollision->SetName("player_MagicBall");
 	}
 	//術者が魔法使いだったら。
 	else if (m_enMagician == enMagician_Wizard)
 	{
 		//名前をenemy_fireballにする。
-		BallCollision->SetName("enemy_fireball");
+		BallCollision->SetName("WizardAI_Magicball");
 	}
 
 	//懲り所オブジェクトが自動で削除されないようにする。

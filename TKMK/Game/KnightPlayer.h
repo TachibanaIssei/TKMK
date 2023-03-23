@@ -49,24 +49,6 @@ public:
 		collisionObject->SetWorldMatrix(matrix);
 	}
 
-	/// <summary>
-/// レベル4で必殺技を使用したときの処理
-/// </summary>
-	//void UltimateSkill()
-	//{
-	//	//レベルを3下げる
-	//	levelDown(LvUpStatus, m_Status, Lv, 3);
-	//	//経験値をリセット
-	//	ExpReset(Lv, GetExp);
-	//	//レベルの経験値テーブルにする
-	//	ExpTableChamge(Lv, ExpTable);
-
-	//	////レベルに合わせてレベルの画像を変更する
-	//	//m_gameUI->LevelFontChange(Lv);
-
-	//	m_playerState = enKnightState_UltimateSkill;
-
-	//}
 
 	/// <summary>
 	/// 必殺技の当たり判定生成する

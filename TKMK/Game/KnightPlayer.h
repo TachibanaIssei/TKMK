@@ -5,7 +5,8 @@
 
 class Game;
 class Neutral_Enemy;
-//class GameUI;
+class KnightUlt;
+class GameUI;
 
 class KnightPlayer:public KnightBase
 {
@@ -48,6 +49,29 @@ public:
 		collisionObject->SetWorldMatrix(matrix);
 	}
 
+	/// <summary>
+/// レベル4で必殺技を使用したときの処理
+/// </summary>
+	void UltimateSkill()
+	{
+		//レベルを3下げる
+		levelDown(LvUpStatus, m_Status, Lv, 3);
+		//経験値をリセット
+		ExpReset(Lv, GetExp);
+		//レベルの経験値テーブルにする
+		ExpTableChamge(Lv, ExpTable);
+
+		////レベルに合わせてレベルの画像を変更する
+		//m_gameUI->LevelFontChange(Lv);
+
+		m_playerState = enKnightState_UltimateSkill;
+
+	}
+
+	/// <summary>
+	/// 必殺技の当たり判定生成する
+	/// </summary>
+	void MakeUltSkill();
 
 	/// <summary>
 	/// スキルを発動したときに範囲内で一番近い敵をねらう処理
@@ -112,7 +136,8 @@ public:
 
 private:
 	Game* m_game=nullptr;
-	//GameUI* m_gameUI = nullptr;
+	
+	GameUI* m_gameUI = nullptr;
 	
 	//CollisionObject* collisionObject;                     //コリジョン
 	Vector3 AnimEndPos = Vector3::Zero;

@@ -209,6 +209,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 			Vector3(300.0f, 50.0f, 15.0f) //大きさ。
 		);
 		collisionObject->SetIsEnableAutoDelete(false);
+
 		collisionObject->SetName("player_UltimateSkill");
 
 		UltCollisionSetFlag = true;

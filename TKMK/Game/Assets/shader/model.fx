@@ -219,8 +219,8 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 /// </summary>
 float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
 {
-    // シャドウマップ描画用のピクセルシェーダーを作成する
-    return float4(0.5f,0.5f,0.5f,1.0f);
+    //シャドウマップにZ値を書き込む
+    return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
 }
 
 /////////////////////////////////////////////////////////////////////////

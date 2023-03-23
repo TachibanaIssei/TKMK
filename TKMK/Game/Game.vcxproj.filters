@@ -22,6 +22,7 @@
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Tittle.cpp" />
     <ClCompile Include="MagicBall.cpp" />
+    <ClCompile Include="KnightUlt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -44,5 +45,6 @@
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Tittle.h" />
     <ClInclude Include="MagicBall.h" />
+    <ClInclude Include="KnightUlt.h" />
   </ItemGroup>
 </Project>

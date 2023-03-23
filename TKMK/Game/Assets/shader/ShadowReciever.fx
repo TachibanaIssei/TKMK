@@ -70,23 +70,24 @@ float4 PSMain(SPSIn psIn) : SV_Target0
     float4 color = g_albedo.Sample(g_sampler, psIn.uv);
 
     // ライトビュースクリーン空間からUV空間に座標変換
-    //注目！！ライトビュースクリーン空間からUV座標空間に変換している
     float2 shadowMapUV = psIn.posInLVP.xy / psIn.posInLVP.w;
     shadowMapUV *= float2(0.5f,-0.5f);
     shadowMapUV += 0.5f;
 
-    // UV座標を使ってシャドウマップから影情報をサンプリング
-    float3 shadowMap = 1.0f;
+    //ライトビュースクリーン空間でのZ値を計算する
+    float zInLVP = psIn.posInLVP.z / psIn.posInLVP.w;
+
     if(shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f
         && shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f)
+    {
+        // シャドウマップに描き込まれているZ値と比較する
+        float zInShadowMap = g_shadowMap.Sample(g_sampler,shadowMapUV).r;
+        if(zInLVP > zInShadowMap)
         {
-            shadowMap = g_shadowMap.Sample(g_sampler,shadowMapUV);
+            // 遮蔽されている
+            color.xyz *= 0.5f;
         }
-
-    // サンプリングした影情報をテクスチャカラーに乗算する
-    //テクスチャカラーにシャドウマップからサンプリングした情報を掛け算する
-    //影が書き込まれたら0.5fになるので、色味が落ちて影っぽくなる
-    color.xyz *= shadowMap;
+    }
 
     return color;
 }

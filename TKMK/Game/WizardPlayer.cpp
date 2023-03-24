@@ -73,6 +73,11 @@ void WizardPlayer::Update()
 	//	//m_gameUI->LevelFontChange(Lv);
 	//}
 
+	//ƒ_ƒ[ƒW‚ğó‚¯‚é
+	if (g_pad[0]->IsTrigger(enButtonX))
+	{
+		Dameged(dddd);
+	}
 
 	//ˆÚ“®ˆ—
 	//ˆÚ“®ˆ—

@@ -28,7 +28,22 @@ public:
 	void MakeMagicBall();
 
 	
+	//void Death()
+	//{
+	//	////死亡ステート
+	//	//m_playerState = enKnightState_Death;
+	//	//レベルを１下げる
+	//	levelDown(LvUpStatus, m_Status, Lv, 1);
+	//	//HPを最大にする
+	//	m_Status.Hp = m_Status.MaxHp;
+	//	//経験値をリセット
+	//	ExpReset(Lv, GetExp);
+	//	//一つ下のレベルの経験値テーブルにする
+	//	ExpTableChamge(Lv, ExpTable);
 
+	//	//レベルに合わせてレベルの画像を変更する
+	//	m_gameUI->LevelFontChange(Lv);
+	//}
 
 	//void AvoidanceSprite();
 
@@ -58,6 +73,6 @@ private:
 	bool m_spriteFlag = true;
 
 	int exp = 5;
-
+	int dddd = 10;
 };
 

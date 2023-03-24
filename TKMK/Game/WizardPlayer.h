@@ -27,7 +27,15 @@ public:
 	/// </summary>
 	void MakeMagicBall();
 
-	
+	/// <summary>
+	/// プレイヤーのステートを変更
+	/// </summary>
+	/// <param name="gamescene">変更したいステートの名前</param>
+	void SetPlayerState(WizardState gamescene) {
+		m_wizardState = gamescene;
+
+	}
+
 	//void Death()
 	//{
 	//	////死亡ステート

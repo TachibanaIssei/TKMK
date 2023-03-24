@@ -2,6 +2,7 @@
 
 #include "PostEffect.h"
 #include "Light.h"
+#include "Shadow.h"
 
 namespace nsK2EngineLow {
 	class ModelRender;
@@ -43,24 +44,45 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// シャドウモデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void ShadowModelRendering(RenderContext& rc, Camera& camera);
+
+		/// <summary>
 		/// 描画処理を実行
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
+		/// <summary>
+		/// シーンライトを取得
+		/// </summary>
+		/// <returns>シーンライト</returns>
 		SceneLight& GetSceneLight()
 		{
 			return m_sceneLight;
 		}
 
+	////////////////////////////////////////////////////////////////////////////////
+	///シャドウマップの関数
+	////////////////////////////////////////////////////////////////////////////////
+		/// <summary>
+		/// シャドウマップのテクスチャを取得
+		/// </summary>
+		/// <returns>シャドウマップのテクスチャ</returns>
 		Texture& GetShadowMapTexture()
 		{
-			return m_shadowMap.GetRenderTargetTexture();
+			return m_shadow.GetShadowMapTexture();
 		}
 
+		/// <summary>
+		/// ライトカメラを取得
+		/// </summary>
+		/// <returns>ライトカメラ</returns>
 		Camera& GetLightCamera()
 		{
-			return m_lightCamera;
+			return m_shadow.GetLightCamera();
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -433,11 +455,6 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void ModelRendering(RenderContext& rc);
 		/// <summary>
-		/// シャドウモデルを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void ShadowModelRendering(RenderContext& rc, Camera& camera);
-		/// <summary>
 		/// スプライトを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
@@ -458,11 +475,7 @@ namespace nsK2EngineLow {
 		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 
-		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
-		RenderTarget m_shadowMap;								//シャドウマップのレンダーターゲット
-		Camera m_lightCamera;									//ライトカメラ
-		Sprite m_shadowSprite;
-
+		Shadow						m_shadow;					//シャドウマップ
 		PostEffect					m_postEffect;				//ポストエフェクト
 	};
 }

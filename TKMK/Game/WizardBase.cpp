@@ -42,6 +42,11 @@ void WizardBase::SetModel()
 	m_animationClips[enWizardState_Attack].SetLoopFlag(false);
 	m_animationClips[enWizardState_Avoidance].Load("Assets/animData/Wizard/Wizard_Avoidance.tka");
 	m_animationClips[enWizardState_Avoidance].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Wizard/Wizard_Damege.tka");
+	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Wizard/Wizard_Death.tka");
+	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+
 
 	//魔法使いのモデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Wizard/Wizard.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -125,16 +130,59 @@ void WizardBase::Rotation()
 	}
 }
 
+/// <summary>
+/// ダメージを受けたときの処理
+/// </summary>
+/// <param name="damege">敵の攻撃力</param>
 void WizardBase::Dameged(int damege)
 {
+	m_Status.Hp -= damege;
+	//自身のHPが0以下なら
+	if (m_Status.Hp <= 0) {
+		//倒されたときの処理に遷移
+		//死亡ステート
+		m_wizardState = enWizardState_Death;
+		m_Status.Hp = 0;
+		//Death();
+		//SetRespawn();
 
+
+	}
+	else {
+		//ダメージステート
+		m_wizardState = enWizardState_Damege;
+		//無敵時間フラグ
+		//invincibleFlag = true;
+	}
 }
 
+/// <summary>
+/// 
+/// </summary>
 void WizardBase::Death()
 {
+	////死亡ステート
+	//m_playerState = enKnightState_Death;
+	//レベルを１下げる
+	levelDown(LvUpStatus, m_Status, Lv, 1);
+	//HPを最大にする
+	m_Status.Hp = m_Status.MaxHp;
+	//経験値をリセット
+	ExpReset(Lv, GetExp);
+	//一つ下のレベルの経験値テーブルにする
+	ExpTableChamge(Lv, ExpTable);
 
+
+	//レベルに合わせてレベルの画像を変更する
+	gameUI->LevelFontChange(Lv);
 }
 
+/// <summary>
+/// スキルの処理
+/// </summary>
+/// <param name="position"></param>
+/// <param name="rotation"></param>
+/// <param name="charCon"></param>
 void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterController& charCon)
 {
 	m_moveSpeed = Vector3::AxisZ;
@@ -143,13 +191,18 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 	position += m_moveSpeed * 500.0f;
 	m_moveSpeed *= 1000.0f;
 	rotation.AddRotationDegY(360.0f);
-	//m_moveSpeed *= g_gameTime->GetFrameDeltaTime();
+
+	//ワープした座標がスタジアムの外なら
+
 
 	//キャラクターコントローラーを使って座標を移動させる。
-	position = charCon.Execute(m_moveSpeed, 20.0f / 60.0f);
-
+	//position = charCon.Execute(m_moveSpeed, 20.0f / 60.0f);
+	charCon.SetPosition(position);
 }
 
+/// <summary>
+/// 
+/// </summary>
 void WizardBase::UltimateSkill()
 {
 
@@ -228,7 +281,7 @@ void WizardBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	case enWizardState_Run:
-		m_modelRender.SetAnimationSpeed(0.8f);
+		m_modelRender.SetAnimationSpeed(0.9f);
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.2f);
 		break;
 	case enWizardState_Attack:
@@ -248,6 +301,7 @@ void WizardBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
 		break;
 	case enWizardState_Death:
+		m_modelRender.SetAnimationSpeed(1.2f);
 		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.4f);
 	default:
 		break;
@@ -376,12 +430,29 @@ void WizardBase::OnProcessAvoidanceStateTransition()
 
 void WizardBase::OnProcessDamegeStateTransition()
 {
-
+	//ダメージを受けたときのアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//待機ステート
+		m_wizardState = enWizardState_Idle;
+		//無敵時間ステート
+		//invincibleFlag = false;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessDeathStateTransition()
 {
-
+	//ダメージを受けたときのアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//リスポーンする座標に自身の座標をセット
+		SetRespawn();
+		Death();
+		//待機ステート
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 

@@ -124,7 +124,11 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_wizardState != enWizardState_Attack;
+		return m_wizardState != enWizardState_Attack &&
+			m_wizardState != enAnimationClip_Damege &&
+			m_wizardState != enAnimationClip_Death &&
+			m_wizardState != enAnimationClip_Avoidance &&
+			m_wizardState != enAnimationClip_Skill;
 	}
 
 	/// <summary>

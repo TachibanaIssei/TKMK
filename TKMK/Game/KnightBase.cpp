@@ -260,7 +260,7 @@ void KnightBase::Collition()
 /// <summary>
 /// ダメージを受けたときの処理
 /// </summary>
-/// <param name="damege">敵のダメージ</param>
+/// <param name="damege">敵の攻撃力</param>
 void KnightBase::Dameged(int damege)
 {
 	m_Status.Hp -= damege;

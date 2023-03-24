@@ -156,6 +156,8 @@ private:
 
 	bool m_spriteFlag = true;
 
+	int dddd = 20;
+
 	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 };

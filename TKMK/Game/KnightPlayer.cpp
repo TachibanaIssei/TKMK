@@ -111,7 +111,7 @@ void KnightPlayer::Update()
 	//ステートがデスのときボタンを押せないようにする
 	if (m_playerState != enKnightState_Death) {
 		//攻撃処理
-		Attack();
+		//Attack();
 		//回避処理
 		Avoidance();
 	}
@@ -239,7 +239,7 @@ void KnightPlayer::Attack()
 		pushFlag = true;
 		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
-		//レベルに合わせてレベルの画像を変更する
+		//レベルに合わせてGameUIのレベルの画像を変更する
 		m_gameUI->LevelFontChange(Lv);
 
 		MakeUltSkill();

@@ -23,6 +23,14 @@ public:
 		enNum,
 	};
 	SelectCharctar m_selectCharctar;
+
+	//プレイヤーのステートを
+	enum EnPlayerStateChange
+	{
+		enPause,
+		enGame,
+	};
+	EnPlayerStateChange m_playerStateChange;
 	
 	bool Start();
 
@@ -187,8 +195,42 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// キャラのステートを変更する
+	/// </summary>
+	/// <returns>選択されたキャラのステートを変更する関数</returns>
+	void CharSetState(EnPlayerStateChange gameState)const
+	{
+		switch (m_selectCharctar)
+		{
+		case enKnight:
+			//ゲームのステートがポーズなら
+			if(gameState==enPause)knightPlayer->SetPlayerState(KnightPlayer::enKnightState_Pause);
+			//ゲームのステートがゲームなら
+			if (gameState == enGame)knightPlayer->SetPlayerState(KnightPlayer::enKnightState_Idle);
+			break;
+
+		case enWizard:
+			
+			//ゲームのステートがポーズなら
+			if (gameState == enPause)wizardPlayer->SetPlayerState(WizardPlayer::enWizardState_Pause);
+			//ゲームのステートがゲームなら
+			if (gameState == enGame)wizardPlayer->SetPlayerState(WizardPlayer::enWizardState_Idle);
+			break;
+
+		case enZombie:
+			break;
+
+		case enMonster:
+			break;
 
 
+		default:
+			break;
+		}
+	}
+
+private:
 
 	Game* game = nullptr;
 	GameUI* gameUI = nullptr;

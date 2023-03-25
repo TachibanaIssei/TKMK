@@ -245,10 +245,10 @@ void Game::Update()
 	if (m_GameState == enGameState_Battle) {
 		//リザルト画面への遷移
 	    //Yボタンが押されたら。
-		if (g_pad[0]->IsTrigger(enButtonY))
+		/*if (g_pad[0]->IsTrigger(enButtonY))
 		{
 			m_GameState = enGameState_Rezult;
-		}
+		}*/
 	}
 	
 

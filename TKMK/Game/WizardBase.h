@@ -179,7 +179,7 @@ public:
 	/// <returns></returns>
 	const Vector3& GetForward() const
 	{
-		return m_forward;
+		return m_Forward;
 	}
 
 	/// <summary>

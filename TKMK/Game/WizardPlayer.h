@@ -22,6 +22,8 @@ public:
 
 	inline Vector3 GetPosition() { return m_position; }
 
+	void AvoidanceSprite();
+
 	/// <summary>
 	/// マジックボールの生成
 	/// </summary>
@@ -67,6 +69,11 @@ private:
 	CollisionObject* AtkCollision;                   //アタックのコリジョン
 	Vector3 AtkCollisionPos = Vector3::Zero;
 	Vector3 AtkCollisionVec = Vector3::Zero;
+	
+	FontRender Skillfont;
+	SpriteRender m_Avoidance_flameRender;
+	SpriteRender m_Avoidance_barRender;
+
 	//アタックのコリジョンを作成したかの判定
 	bool AtkCollisionSetFlag = false;
 	bool AttackFlag = false;

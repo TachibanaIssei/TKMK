@@ -226,6 +226,7 @@ void KnightPlayer::Attack()
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
+		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed, stickL);
 		pushFlag = true;
 		SkillState = true;

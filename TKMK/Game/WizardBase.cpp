@@ -3,6 +3,7 @@
 #include "Status.h"
 #include "GameUI.h"
 
+
 WizardBase::WizardBase()
 {
 	//ステータスを読み込む
@@ -192,16 +193,24 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 	m_moveSpeed *= 1000.0f;
 	rotation.AddRotationDegY(360.0f);
 
-	//ワープした座標がスタジアムの外なら
 
+	Vector3 WarpPos;
+	//ワープした座標がオブジェクトとかぶっているなら
+	m_WarpCollisionSolver.Execute
+	(
+		position,
+		oldPosition,
+		position
+	);
 
 	//キャラクターコントローラーを使って座標を移動させる。
-	//position = charCon.Execute(m_moveSpeed, 20.0f / 60.0f);
 	charCon.SetPosition(position);
+
+	SkillEndFlag = true;
 }
 
 /// <summary>
-/// 
+/// 必殺技の処理
 /// </summary>
 void WizardBase::UltimateSkill()
 {

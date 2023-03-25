@@ -180,12 +180,13 @@ public:
 	}
 
 	/// <summary>
-		/// プレイヤーの前方向を取得。
-		/// </summary>
+	/// プレイヤーの前方向を取得。
+	/// </summary>
 	const Vector3& GetForward() const
 	{
-		return m_forward;
+		return m_Forward;
 	}
+
 	Quaternion& GetRot()
 	{
 		return m_rot;

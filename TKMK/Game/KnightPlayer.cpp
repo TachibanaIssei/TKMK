@@ -111,7 +111,7 @@ void KnightPlayer::Update()
 	//ステートがデスのときボタンを押せないようにする
 	if (m_playerState != enKnightState_Death) {
 		//攻撃処理
-		//Attack();
+		Attack();
 		//回避処理
 		Avoidance();
 	}
@@ -135,13 +135,13 @@ void KnightPlayer::Update()
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 	//レベルアップする
-	if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-	{
-		if(Lv!=10)
-		ExpProcess(exp);
-		//m_Status.GetExp += 5;
-		//m_gameUI->LevelFontChange(Lv);
-	}
+	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+	//{
+	//	if(Lv!=10)
+	//	ExpProcess(exp);
+	//	//m_Status.GetExp += 5;
+	//	//m_gameUI->LevelFontChange(Lv);
+	//}
 
 	//ダメージを受ける
 	/*if (g_pad[0]->IsTrigger(enButtonX))
@@ -185,16 +185,16 @@ void KnightPlayer::Attack()
 	if (pushFlag==false&&AtkState == false)
 	{
 		//Bボタン押されたら攻撃する
-		//if (g_pad[0]->IsTrigger(enButtonA))
-		//{
-		//	m_playerState = enKnightState_ChainAtk;
-		//	
-		//	//FirstAtkFlag = true;
-		//	//コンボを1増やす
-		//	//ComboState++;
-		//	pushFlag = true;
-		//	AtkState = true;
-		//}
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			m_playerState = enKnightState_ChainAtk;
+			
+			//FirstAtkFlag = true;
+			//コンボを1増やす
+			//ComboState++;
+			pushFlag = true;
+			AtkState = true;
+		}
 	}
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)

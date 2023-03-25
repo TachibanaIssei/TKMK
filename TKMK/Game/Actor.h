@@ -149,6 +149,7 @@ protected:
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 
+	Vector3 m_Forward;          //プレイヤーの前方向
 
 };
 

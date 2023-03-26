@@ -160,11 +160,18 @@ void WizardPlayer::Attack()
 	//Bボタンを押したら
 	if (pushFlag == false && SkillEndFlag == false && g_pad[0]->IsTrigger(enButtonB))
 	{
-		Skill(m_position,m_rot,m_charCon);
-		m_modelRender.SetPosition(m_position);
-		//HPを10減らす
-		m_Status.Hp -= 10;
-		//SkillState = true;
+		//HPを減らしてHPが0になるならワープさせない
+		if (m_Status.Hp <= 10)
+		{
+			return;
+		}
+		else
+		{
+			//HPを10減らす
+			m_Status.Hp -= 10;
+		}
+		m_wizardState = enWizardState_Skill;
+		SkillState = true;
 		//pushFlag = true;
 	}
 }
@@ -193,6 +200,13 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	{
 		//マジックボールを生成する
 		MakeMagicBall();
+	}
+
+	//ワープが始まったら
+	if (wcscmp(eventName, L"Warp_Start") == 0)
+	{
+		Skill(m_position, m_rot, m_charCon);
+		m_modelRender.SetPosition(m_position);
 	}
 
 }

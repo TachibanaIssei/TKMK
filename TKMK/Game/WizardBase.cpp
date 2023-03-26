@@ -47,6 +47,8 @@ void WizardBase::SetModel()
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Wizard/Wizard_Death.tka");
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Wizard/Wizard_Warp.tka");
+	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
 
 
 	//魔法使いのモデルを読み込み
@@ -205,8 +207,6 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 
 	//キャラクターコントローラーを使って座標を移動させる。
 	charCon.SetPosition(position);
-
-	SkillEndFlag = true;
 }
 
 /// <summary>
@@ -297,7 +297,8 @@ void WizardBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Atk, 0.2f);
 		break;
 	case enWizardState_Skill:
-		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
+		m_modelRender.SetAnimationSpeed(1.2f);
+		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.6f);
 		break;
 	case enWizardState_UltimateSkill:
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill, 0.1);
@@ -407,11 +408,14 @@ void WizardBase::OnProcessAttackStateTransition()
 
 void WizardBase::OnProcessSkillAtkStateTransition()
 {
+	//スキルのアニメーションが終わったら
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//待機ステート
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
+		//スキルエンドフラグをtrueにする
+		SkillEndFlag = true;
 		m_wizardState = enWizardState_Idle;
 		OnProcessCommonStateTransition();
 	}

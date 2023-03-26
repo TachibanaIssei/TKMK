@@ -30,6 +30,11 @@ public:
 	void MakeMagicBall();
 
 	/// <summary>
+	/// 必殺技の雷の生成
+	/// </summary>
+	void UltimateSkill();
+
+	/// <summary>
 	/// プレイヤーのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>

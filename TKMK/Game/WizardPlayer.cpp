@@ -226,6 +226,15 @@ void WizardPlayer::MakeMagicBall()
 	magicBall->SetEnMagician(MagicBall::enMagician_Player);
 }
 
+/// <summary>
+/// •KE‹Z‚Ì—‹‚Ì¶¬
+/// </summary>
+void WizardPlayer::UltimateSkill()
+{
+
+
+}
+
 void WizardPlayer::AvoidanceSprite()
 {
 	Vector3 AvoidanceScale = Vector3::One;

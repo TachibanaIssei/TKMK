@@ -200,9 +200,9 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 	//ワープした座標がオブジェクトとかぶっているなら
 	m_WarpCollisionSolver.Execute
 	(
+		WarpPos,
 		position,
-		oldPosition,
-		position
+		oldPosition
 	);
 
 	//キャラクターコントローラーを使って座標を移動させる。

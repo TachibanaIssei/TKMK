@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include "CameraCollisionSolver.h"
 
 class Game;
 class GameUI;
@@ -70,6 +71,13 @@ public:
 	//void AtkCollisiton();
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="position"></param>
+	/// <returns></returns>
+	void Skill(Vector3& position,Quaternion& rotation,CharacterController& charCon);
+
+	/// <summary>
 	/// 必殺技の当たり判定の処理
 	/// </summary>
 	//void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
@@ -117,7 +125,11 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_wizardState != enWizardState_Attack;
+		return m_wizardState != enWizardState_Attack &&
+			m_wizardState != enAnimationClip_Damege &&
+			m_wizardState != enAnimationClip_Death &&
+			m_wizardState != enAnimationClip_Avoidance &&
+			m_wizardState != enAnimationClip_Skill;
 	}
 
 	/// <summary>
@@ -168,7 +180,7 @@ public:
 	/// <returns></returns>
 	const Vector3& GetForward() const
 	{
-		return m_forward;
+		return m_Forward;
 	}
 
 	/// <summary>
@@ -236,7 +248,8 @@ protected:
 	GameUI* gameUI = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
-	float m_position_YUp = 47.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
+	Vector3 oldPosition = Vector3::Zero;         //前フレームの座標
+	float m_position_YUp = 34.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 collisionRot = Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン
@@ -246,6 +259,7 @@ protected:
 	CharacterController m_charCon;                        //キャラクターコントロール
 	Quaternion m_rot = Quaternion::Identity;              //回転
 	ModelRender m_modelRender;                            //モデルレンダー
+	CameraCollisionSolver	m_WarpCollisionSolver;    //ワープ
 
 	//スキルのクールタイムを計算するタイマー
 	float SkillTimer = 0;
@@ -255,6 +269,8 @@ protected:
 	//ボタンが押されたかの判定
 	bool pushFlag = false;
 
+	//スキルのアニメーション再生が終わったかの判定
+	bool SkillEndFlag = false;
 	//回避アニメーションを再生したかの判定
 	bool AvoidanceFlag = false;
 	//回避アニメーションが終わったかの判定

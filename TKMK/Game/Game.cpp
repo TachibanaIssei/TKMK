@@ -245,10 +245,10 @@ void Game::Update()
 	if (m_GameState == enGameState_Battle) {
 		//リザルト画面への遷移
 	    //Yボタンが押されたら。
-		if (g_pad[0]->IsTrigger(enButtonY))
+		/*if (g_pad[0]->IsTrigger(enButtonY))
 		{
 			m_GameState = enGameState_Rezult;
-		}
+		}*/
 	}
 	
 
@@ -259,9 +259,9 @@ void Game::Update()
 		if (m_GameState == enGameState_Battle) {
 			m_GameState = enGameState_Pause;
 			//プレイヤーのステートをポーズ画面用のステートに変更
-			//m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Pause);
+			player->CharSetState(Player::enPause);
 			//UIのステートをポーズ画面用のステートに変更
-			//m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
+			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 			//カメラのステートをポーズ画面用のステートに変更
 			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
 			//中立の敵をポーズ画面用のステートに変更
@@ -279,9 +279,9 @@ void Game::Update()
 		else if (m_GameState == enGameState_Pause) {
 			m_GameState = enGameState_Battle;
 			//プレイヤーのステートをポーズ画面用のステートではないようにする
-			//m_knightplayer->SetPlayerState(m_knightplayer->enKnightState_Idle);
+			player->CharSetState(Player::enGame);
 			//UIのステートをゲームのステートに変更
-			//m_gameUI->SetGameUIState(m_gameUI->m_GameState);
+			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 			//カメラのステートをゲームのステートに変更
 			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
 			//中立の敵をポーズ画面用のステートに変更

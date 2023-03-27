@@ -145,27 +145,27 @@ void KnightBase::Rotation()
 /// <summary>
 /// 攻撃時の当たり判定の処理
 /// </summary>
-void KnightBase::AtkCollisiton()
-{
-	//コリジョンオブジェクトを作成する。
-	auto collisionObject = NewGO<CollisionObject>(0);
-	Vector3 collisionPosition = m_position;
-	//座標をプレイヤーの少し前に設定する。
-	//collisionPosition += forward * 50.0f;
-	//ボックス状のコリジョンを作成する。
-	collisionObject->CreateBox(collisionPosition, //座標。
-		Quaternion::Identity, //回転。
-		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
-	);
-	collisionObject->SetName("player_attack");
-
-	//「Sword」ボーンのワールド行列を取得する。
-	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-
-	//matrix.MakeRotationZ(90.0f);
-	//「Sword」ボーンのワールド行列をコリジョンに適用する。
-	collisionObject->SetWorldMatrix(matrix);
-}
+//void KnightBase::AtkCollisiton()
+//{
+//	//コリジョンオブジェクトを作成する。
+//	auto collisionObject = NewGO<CollisionObject>(0);
+//	Vector3 collisionPosition = m_position;
+//	//座標をプレイヤーの少し前に設定する。
+//	//collisionPosition += forward * 50.0f;
+//	//ボックス状のコリジョンを作成する。
+//	collisionObject->CreateBox(collisionPosition, //座標。
+//		Quaternion::Identity, //回転。
+//		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
+//	);
+//	collisionObject->SetName("player_attack");
+//
+//	//「Sword」ボーンのワールド行列を取得する。
+//	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+//
+//	//matrix.MakeRotationZ(90.0f);
+//	//「Sword」ボーンのワールド行列をコリジョンに適用する。
+//	collisionObject->SetWorldMatrix(matrix);
+//}
 
 /// <summary>
 /// 必殺技発動時の当たり判定の処理
@@ -209,6 +209,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 			Vector3(300.0f, 50.0f, 15.0f) //大きさ。
 		);
 		collisionObject->SetIsEnableAutoDelete(false);
+
 		collisionObject->SetName("player_UltimateSkill");
 
 		UltCollisionSetFlag = true;
@@ -259,7 +260,7 @@ void KnightBase::Collition()
 /// <summary>
 /// ダメージを受けたときの処理
 /// </summary>
-/// <param name="damege">敵のダメージ</param>
+/// <param name="damege">敵の攻撃力</param>
 void KnightBase::Dameged(int damege)
 {
 	m_Status.Hp -= damege;
@@ -323,7 +324,7 @@ levelDown(LvUpStatus, m_Status, Lv, 3);
 	ExpTableChamge(Lv, ExpTable);
 
 	//レベルに合わせてレベルの画像を変更する
-	m_gameUI->LevelFontChange(Lv);
+	//m_gameUI->LevelFontChange(Lv);
 
 	m_playerState = enKnightState_UltimateSkill;
 

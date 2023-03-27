@@ -116,7 +116,7 @@ bool Game::Start()
 				neutral_Enemy->SetNeutral_EnemyGame(this);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
-				neutral_Enemy->SetKnightPlayer(m_knightplayer);
+				neutral_Enemy->SetPlayer(player);
 				//RespawnNumberBox[enemyNumber]=true;
 				//m_enemyCounter.push_back(neutral_Enemy);
 				//m_Neutral_Enemy0->SetScale(objData.scale);
@@ -130,7 +130,7 @@ bool Game::Start()
 				neutral_Enemy->SetNeutral_EnemyGame(this);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
-				neutral_Enemy->SetKnightPlayer(m_knightplayer);
+				neutral_Enemy->SetPlayer(player);
 				//RespawnNumberBox[enemyNumber] = true;
 				//m_enemyCounter.push_back(neutral_Enemy);
 				//m_Neutral_Enemy1->SetScale(objData.scale);
@@ -144,7 +144,7 @@ bool Game::Start()
 				neutral_Enemy->SetNeutral_EnemyGame(this);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
-				neutral_Enemy->SetKnightPlayer(m_knightplayer);
+				neutral_Enemy->SetPlayer(player);
 				//RespawnNumberBox[enemyNumber] = true;
 				//m_enemyCounter.push_back(neutral_Enemy);
 				//m_Neutral_Enemy2->SetScale(objData.scale);
@@ -158,7 +158,7 @@ bool Game::Start()
 				neutral_Enemy->SetNeutral_EnemyGame(this);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
-				neutral_Enemy->SetKnightPlayer(m_knightplayer);
+				neutral_Enemy->SetPlayer(player);
 				//RespawnNumberBox[enemyNumber] = true;
 				//m_enemyCounter.push_back(neutral_Enemy);
 				//m_Neutral_Enemy3->SetScale(objData.scale);
@@ -171,7 +171,7 @@ bool Game::Start()
 				neutral_Enemy->SetNeutral_EnemyGame(this);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
-				neutral_Enemy->SetKnightPlayer(m_knightplayer);
+				neutral_Enemy->SetPlayer(player);
 				//RespawnNumberBox[enemyNumber] = true;
 				//m_enemyCounter.push_back(neutral_Enemy);
 				//m_Neutral_Enemy4->SetScale(objData.scale);
@@ -346,7 +346,7 @@ void Game::Respawn()
 			neutral_Enemy->SetNeutral_EnemyGame(this);
 			neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
 			//neutral_Enemy->SetRotation(objData.rotation);
-			neutral_Enemy->SetKnightPlayer(m_knightplayer);
+			neutral_Enemy->SetPlayer(player);
 
 		}
 	}

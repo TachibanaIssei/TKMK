@@ -27,7 +27,7 @@ bool Player::Start()
 	{
 	case enKnight:
 		//剣士プレイヤーを生成
-		knightPlayer = NewGO<KnightPlayer>(0, "m_knightplayer");
+		knightPlayer = NewGO<KnightPlayer>(0, "knightplayer");
 		knightPlayer->SetSGame(game);
 		knightPlayer->SetGameUI(gameUI);
 		break;
@@ -273,4 +273,30 @@ Vector3 Player::CharSetForward()const
 	}
 }
 
+/// <summary>
+/// キャラのスプライトフラグを返す
+/// </summary>
+/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
+bool Player::CharSetSpriteFlag()const
+{
+	switch (m_selectCharctar)
+	{
+	case enKnight:
+		return knightPlayer->GetSpriteFlag();
+		break;
 
+	case enWizard:
+		return wizardPlayer->GetSpriteFlag();
+		break;
+
+	case enZombie:
+		break;
+
+	case enMonster:
+		break;
+
+
+	default:
+		break;
+	}
+}

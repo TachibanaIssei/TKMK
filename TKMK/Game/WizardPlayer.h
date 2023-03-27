@@ -43,6 +43,15 @@ public:
 
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	const bool GetSpriteFlag() const
+	{
+		return m_spriteFlag;
+	}
+
 	//void Death()
 	//{
 	//	////死亡ステート

@@ -6,6 +6,7 @@
 #include "KnightPlayer.h"
 #include "GameCamera.h"
 #include "KnightAI.h"
+#include "Player.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -288,6 +289,7 @@ void Neutral_Enemy::Collision()
 		{
 			//プレイヤーの攻撃力を取得
 			//何故かm_knightplayerがnull
+			m_knightplayer = FindGO<KnightPlayer>("knightplayer");
 			//HPを減らす
 			m_Status.Hp -= m_knightplayer->SetKnightAtk();
 
@@ -998,7 +1000,7 @@ bool Neutral_Enemy::DrawHP()
 	float angle = acos(cos);
 
 
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+	Vector3 diff = player->GetCharPosition() - m_position;
 
 	//プレイヤーに向かう距離を計算する
 	float playerdistance = diff.Length();
@@ -1051,7 +1053,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 const bool Neutral_Enemy::CanAttack()const
 {
 	//中立の敵からプレイヤーに向かうベクトルを計算する
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+	Vector3 diff = player->GetCharPosition() - m_position;
 	//距離が近かったら
 	if (diff.LengthSq() <= 50.0f * 50.0f)
 	{
@@ -1070,7 +1072,7 @@ void Neutral_Enemy::Render(RenderContext& rc)
 	//ステートがポーズステートでないなら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
 		//スプライトフラグがtureなら
-		if (m_knightplayer->GetSpriteFlag())
+		if (player->CharSetSpriteFlag())
 		{
 			if (DrawHP())
 			{

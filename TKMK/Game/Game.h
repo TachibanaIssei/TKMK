@@ -47,7 +47,7 @@ public:
 		return enemyNumber;
 	}
 
-
+	
 
 	void Render(RenderContext& rc);
 
@@ -94,7 +94,8 @@ private:
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
 
-	//std::vector<Neutral_Enemy*> m_enemyCounter;
+
+	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

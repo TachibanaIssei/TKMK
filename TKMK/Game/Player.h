@@ -77,10 +77,16 @@ public:
 	void CharSetState(EnPlayerStateChange gameState)const;
 	
 	/// <summary>
-	/// 
+	/// キャラの前方向を返す
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>選択されたキャラの前方向を返す関数	</returns>
 	Vector3 CharSetForward()const;
+
+	/// <summary>
+	/// キャラのスプライトフラグを返す
+	/// </summary>
+	/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
+	bool CharSetSpriteFlag()const;
 
 private:
 

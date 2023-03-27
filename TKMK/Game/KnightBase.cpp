@@ -360,7 +360,7 @@ void KnightBase::Death()
 	ExpTableChamge(Lv,ExpTable);
 
 	//レベルに合わせてレベルの画像を変更する
-	m_gameUI->LevelFontChange(Lv);
+	//m_gameUI->LevelFontChange(Lv);
 }
 
 /// <summary>

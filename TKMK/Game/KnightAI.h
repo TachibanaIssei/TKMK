@@ -8,12 +8,25 @@ class Neutral_Enemy;
 class KnightAI:public KnightBase
 {
 public:
+
+	struct EnemyPositions
+	{
+		Vector3 AIpos[20];
+		bool foundFlag[20];
+	};
+	EnemyPositions m_enemyPositions;
+
 	KnightAI();
 	~KnightAI();
 	void Update();
+	void Move();
+	void Collition();
 	void Attack();
 	void Render(RenderContext& rc);
-	void ChaseAI();
+	void ChaseEnemy();
+	void AtkCollisiton();
+	void LevelMove();
+	void ChasePlayer_OR_AI();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
 
@@ -26,6 +39,33 @@ public:
 	{
 		return m_game;
 	}
+	void Patrol();
+	/// <summary>
+	/// 攻撃できるならtrue
+	/// </summary>
+	/// <returns></returns>
+	const bool CanAttack() const;
+	/// <summary>
+	/// 引数に攻撃力を代入させる
+	/// </summary>
+	/// <param name="attack">剣士の攻撃力を代入したい変数</param>
+	/// <returns></returns>
+	int SetKnightAIAtk(/*int& attack*/) {
+		return m_Status.Atk;
+	}
+	/// <summary>
+	/// 中立の敵を倒したときの経験値の処理
+	/// </summary>
+	/// <param name="GetExp">中立の敵の経験値</param>
+	void ExpProcess(int Exp);
+	/// <summary>
+	/// 巡回する座標を設定する
+	/// </summary>
+	/// <param name="pos">巡回する座標</param>
+	/// <param name="number">座標をセットする番号</param>
+	void SetPatrolPos(Vector3 pos, int number) {
+		m_patrolPos[number] = pos;
+	};
 
 private:
 	enum AtkTimingState
@@ -43,17 +83,22 @@ private:
 	void SearchEnemy();
 	void Rotation();
 	Quaternion				m_rotation;
-	//Vector3					m_position;
-	Vector3                 m_moveSpeed;
 	Vector3					m_forward;
 	bool					m_isSearchEnemy = false;
+	bool                    m_SearchPlayer_OR_AI = false;
 	FontRender				m_fontRender;
 	SphereCollider			m_sphereCollider;							//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
 	Neutral_Enemy*          m_Neutral_Enemy = nullptr;
 	bool UltimateSkillFlag = false;
+	bool PL = true;
 	float SkillSpeed = 270.0f;
 	float UltimateSkillTimer = 0;
-
+	Level3DRender m_knightAIPoslevel;      //剣士AIのポジションレベル
+	Vector3                 m_patrolPos[5];
+	int P = -1;
+	std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	int enemyAmount = 0;
+	Vector3 nearPos = Vector3::Zero;
 };
 

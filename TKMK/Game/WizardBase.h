@@ -40,6 +40,11 @@ public:
 	virtual void Attack() = 0;
 
 	/// <summary>
+	/// “–‚½‚è”»’è
+	/// </summary>
+	void Collision();
+
+	/// <summary>
 	/// ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚Ìˆ—
 	/// </summary>
 	/// <param name="damege">“G‚ÌUŒ‚—Í</param>

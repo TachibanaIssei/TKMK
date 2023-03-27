@@ -134,6 +134,14 @@ void WizardBase::Rotation()
 }
 
 /// <summary>
+/// “–‚½‚è”»’è
+/// </summary>
+void WizardBase::Collision()
+{
+
+}
+
+/// <summary>
 /// ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚Ìˆ—
 /// </summary>
 /// <param name="damege">“G‚ÌUŒ‚—Í</param>

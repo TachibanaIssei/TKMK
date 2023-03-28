@@ -2,6 +2,10 @@
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 
+
+#include "Status.h"
+
+class Status;
 class Game;
 class GameUI;
 class KnightPlayer;
@@ -88,13 +92,25 @@ public:
 	/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
 	bool CharSetSpriteFlag()const;
 
+	/// <summary>
+	/// キャラの攻撃力を返す
+	/// </summary>
+	/// <returns>選択されたキャラの攻撃力を返す関数</returns>
+	int CharSetAttack()const;
+
+	/// <summary>
+	/// キャラのexpの処理
+	/// </summary>
+	/// <param name="exp">中立の敵の経験値</param>
+	void CharSetExpProcess(int exp)const;
+
 private:
 
 	Game* game = nullptr;
 	GameUI* gameUI = nullptr;
 	KnightPlayer* knightPlayer = nullptr;
 	WizardPlayer* wizardPlayer = nullptr;
-
+	Status m_Status;
 	
 
 };

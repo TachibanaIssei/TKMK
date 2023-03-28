@@ -300,3 +300,57 @@ bool Player::CharSetSpriteFlag()const
 		break;
 	}
 }
+
+/// <summary>
+/// キャラの攻撃力を返す
+/// </summary>
+/// <returns>選択されたキャラの攻撃力を返す関数</returns>
+int Player::CharSetAttack()const
+{
+	switch (m_selectCharctar)
+	{
+	case enKnight:
+		return knightPlayer->SetKnightAtk();
+		break;
+
+	//魔法使いはマジックボールで攻撃力を返すので必要ない
+
+	case enZombie:
+		break;
+
+	case enMonster:
+		break;
+
+
+	default:
+		break;
+	}
+}
+
+/// <summary>
+/// キャラのexpの処理
+/// </summary>
+/// <param name="exp">中立の敵の経験値</param>
+void Player::CharSetExpProcess(int exp)const
+{
+	switch (m_selectCharctar)
+	{
+	case enKnight:
+		return knightPlayer->ExpProcess(exp);
+		break;
+
+	case enWizard:
+		return wizardPlayer->ExpProcess(exp);
+		break;
+
+	case enZombie:
+		break;
+
+	case enMonster:
+		break;
+
+
+	default:
+		break;
+	}
+}

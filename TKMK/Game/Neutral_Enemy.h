@@ -11,6 +11,8 @@ class Game;
 class GameCamera;
 class Neutral_Enemy;
 class Patrolnumb;
+class KnightAI;
+class Player;
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -84,7 +86,7 @@ public:
 	/// 追跡
 	/// </summary>
 	void Chase();
-
+	void ChaseAI();
 	/// <summary>
 	/// 回転
 	/// </summary>
@@ -99,15 +101,15 @@ public:
 	/// 当たり判定
 	/// </summary>
 	void Collision();
-
+	void SearchAI();
 	/// <summary>
 	/// プレイヤーが見つかったら
 	/// </summary>
 	void SearchEnemy();
 
-	void SetKnightPlayer(KnightPlayer* knightPlayer)
+	void SetPlayer(Player* m_player)
 	{
-		m_knightplayer = knightPlayer;
+		player = m_player;
 	}
 	KnightPlayer* GetKnightPlayer()
 	{
@@ -238,13 +240,16 @@ private:
 	Vector3       m_scale = Vector3{0.2f,0.2f,0.2f};           //大きさ
 	CharacterController m_charaCon;                            //キャラコン
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //中立の敵のステート。
-	
+	Vector3   RadiusPos;
 	SoundSource* m_se = nullptr;
 
 	KnightPlayer* m_knightplayer = nullptr;
+	KnightAI* m_knightAI = nullptr;
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
 	GameCamera* m_gameCamera = nullptr;
+	Player* player = nullptr;
+
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
 	SpriteRender		m_HPBar;		//HPバー画像
@@ -257,8 +262,9 @@ private:
 	Vector3                 m_inRespawnPosition[12];
 	Vector3                 m_patrolPos[9];
 	Vector3 nowPos = Vector3::Zero;
-
-	bool					m_isSearchPlayer = false;
+	Vector3 m_hagikiPower;
+	bool    m_isSearchPlayer = false;
+	bool    m_isSearchAI = false;
 	bool m_UnderAttack = false;              //攻撃判定
 	bool Patrol = true;                     //巡回
 	int m_AttackBoneId = 1;                  //頭のボーンのID
@@ -274,11 +280,11 @@ private:
 	int GetAtk=0;
 	//やられたかのフラグ
 	bool Deathflag = false;
-
+	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	int Exp = 5;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
-	int P = 0;
+	int P = -1;
 	
 };
 

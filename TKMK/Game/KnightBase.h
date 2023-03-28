@@ -67,10 +67,12 @@ public:
 	/// </summary>
 	//void Skill(Vector3& right,Vector3& forward);
 
+	/////////////////////////////////////////////////////////////////////////////////////////////
 	/// <summary>
 	/// 必殺技を発動したときの処理
 	/// </summary>
 	void UltimateSkill();
+	//////////////////////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
 	/// リスポーンする座標のセット
@@ -85,7 +87,7 @@ public:
 	/// <summary>
 	/// 通常攻撃の当たり判定の処理
 	/// </summary>
-	void AtkCollisiton();
+	//void AtkCollisiton();
 
 	/// <summary>
 	/// 必殺技の当たり判定の処理
@@ -178,12 +180,13 @@ public:
 	}
 
 	/// <summary>
-		/// プレイヤーの前方向を取得。
-		/// </summary>
+	/// プレイヤーの前方向を取得。
+	/// </summary>
 	const Vector3& GetForward() const
 	{
-		return m_forward;
+		return m_Forward;
 	}
+
 	Quaternion& GetRot()
 	{
 		return m_rot;

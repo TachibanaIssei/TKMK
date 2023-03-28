@@ -2,7 +2,8 @@
 #include "KnightPlayer.h"
 #include "Game.h"
 #include "Neutral_Enemy.h"
-//#include "GameUI.h"
+#include "KnightUlt.h"
+#include "GameUI.h"
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
 //for文、findGO使う
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -16,7 +17,7 @@ namespace {
 
 KnightPlayer::KnightPlayer()
 {
-	//m_gameUI = FindGO<GameUI>("m_gameUI");
+	m_gameUI = FindGO<GameUI>("m_gameUI");
 
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
@@ -225,6 +226,7 @@ void KnightPlayer::Attack()
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
+		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed, stickL);
 		pushFlag = true;
 		SkillState = true;
@@ -236,10 +238,12 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//アニメーション再生、レベルを３
+		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
+		//レベルに合わせてGameUIのレベルの画像を変更する
+		m_gameUI->LevelFontChange(Lv);
 
-
+		MakeUltSkill();
 
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -251,29 +255,7 @@ void KnightPlayer::Attack()
 		UltimateSkillFlag = true;
 	}
 
-	//必殺技発動フラグがセットされているなら
-	if (UltimateSkillFlag == true)
-	{
-		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-		//必殺技タイマーが3.0fまでの間
-		if (UltimateSkillTimer <= 3.0f)
-		{
-			//コリジョンの作成、移動処理
-			UltimateSkillCollistion(OldPosition, m_position);
-		}
-		else
-		{
-			//攻撃が有効な時間をリセット
-			UltimateSkillTimer = 0;
-			//必殺技発動フラグをリセット
-			UltimateSkillFlag = false;
-			//コリジョン削除
-			DeleteGO(collisionObject);
-			//コリジョン作成フラグをリセット
-			UltCollisionSetFlag = false;
-		}
-	}
-
+	
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
 	if (AtkCollistionFlag == true) AtkCollisiton();
@@ -297,6 +279,20 @@ void KnightPlayer::Avoidance()
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}
+}
+
+/// <summary>
+/// 必殺技の当たり判定生成する
+/// </summary>
+void KnightPlayer::MakeUltSkill()
+{
+	KnightUlt* knightUlt = NewGO<KnightUlt>(0, "knightUlt");
+
+	Vector3 UltPos = m_position;
+	UltPos.y += 60.0f;
+	knightUlt->SetPosition(UltPos);
+	knightUlt->SetRotation(m_rot);
+	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
 }
 
 /// <summary>

@@ -24,6 +24,7 @@ public:
 
 private:
 	ModelRender m_modelRender;
+	ModelRender m_stagecollision;
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_scale = Vector3::One;
 	Quaternion m_rotation = Quaternion::Identity;

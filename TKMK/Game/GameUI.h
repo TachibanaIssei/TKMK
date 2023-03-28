@@ -41,7 +41,6 @@ public:
 			break;
 		case 2:
 			m_LvNumber.Init("Assets/sprite/Lv2.DDS", 320.0f, 150.0f);
-
 			break;
 		case 3:
 			m_LvNumber.Init("Assets/sprite/Lv3.DDS", 320.0f, 150.0f);

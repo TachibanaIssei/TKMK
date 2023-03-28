@@ -6,7 +6,7 @@ class BackGround;
 class Result;
 class Tittle;
 class GameCamera;
-class KnightBase;
+//class KnightBase;
 class KnightPlayer;
 class Neutral_Enemy;
 class GameUI;
@@ -14,6 +14,7 @@ class Map;
 class KnightAI;
 class WizardPlayer;
 class Player;
+class CharUltFlag;
 
 class Game : public IGameObject
 {
@@ -84,7 +85,7 @@ private:
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
 	GameCamera* m_gamecamera = nullptr;
-	KnightBase* m_knightbase = nullptr;
+	//KnightBase* m_knightbase = nullptr;
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	KnightAI* m_KnightAI = nullptr;
@@ -93,7 +94,7 @@ private:
 	SoundSource* m_bgm = nullptr;	//
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
-
+	CharUltFlag* charUltFlag = nullptr;
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 

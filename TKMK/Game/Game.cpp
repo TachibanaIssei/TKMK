@@ -4,7 +4,7 @@
 #include "Result.h"
 #include "Tittle.h"
 #include "GameCamera.h"
-#include "KnightBase.h"
+//#include "KnightBase.h"
 #include "Actor.h"
 #include "GameUI.h"
 #include "KnightPlayer.h"
@@ -13,6 +13,7 @@
 #include "KnightAI.h"
 #include "WizardPlayer.h"
 #include "Player.h"
+#include "CharUltFlag.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -53,6 +54,7 @@ Game::~Game()
 	DeleteGO(m_Map);
 	DeleteGO(m_KnightAI);
 	DeleteGO(m_bgm);
+	DeleteGO(charUltFlag);
 }
 
 bool Game::Start()
@@ -86,19 +88,13 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//剣士プレイヤーを生成
-	/*m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
-	m_knightplayer->SetSGame(this);
-	m_knightplayer->SetGameUI(m_gameUI);*/
+	//必殺技フラグを生成
+	charUltFlag = NewGO<CharUltFlag>(0, "charUltFlag");
 
 	//プレイヤーの生成
 	player = NewGO<Player>(0, "player");
 	//生成するキャラ選択
 	player->CharSelect(SelectCharNumber);
-
-	////魔法使いプレイヤーの生成
-	//wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
-	//wizardPlayer->SetSGame(this);
 
 	//ゲームカメラの生成
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");

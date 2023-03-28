@@ -249,7 +249,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 /// </summary>
 void WizardBase::UltimateSkill()
 {
-
+	m_wizardState = enWizardState_UltimateSkill;
 }
 
 /// <summary>
@@ -458,7 +458,15 @@ void WizardBase::OnProcessSkillAtkStateTransition()
 
 void WizardBase::OnProcessUltimateSkillAtkStateTransition()
 {
-
+	//必殺技のアニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//待機ステート
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessAvoidanceStateTransition()

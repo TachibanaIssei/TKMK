@@ -128,6 +128,8 @@ void WizardPlayer::Update()
 	ManageState();
 	//アニメーションの再生
 	PlayAnimation();
+	//当たり判定
+	Collision();
 
 	//クールタイムが終わっていないなら
 	if (AvoidanceTimer != AvoidanceCoolTime)
@@ -224,6 +226,7 @@ void WizardPlayer::MakeMagicBall()
 	magicBall->SetPosition(MagicBallPos);
 	magicBall->SetRotation(m_rot);
 	magicBall->SetEnMagician(MagicBall::enMagician_Player);
+	magicBall->GetWizardAttack(m_Status);
 }
 
 /// <summary>

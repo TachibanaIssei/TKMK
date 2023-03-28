@@ -280,5 +280,8 @@ protected:
 	bool AvoidanceFlag = false;
 	//回避アニメーションが終わったかの判定
 	bool AvoidanceEndFlag = false;
+
+	//中立の敵から受けるダメージ
+	int Enemy_atk = 10;
 };
 

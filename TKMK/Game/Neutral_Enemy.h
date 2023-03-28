@@ -267,6 +267,9 @@ private:
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
 	float   m_stopTimer = 1.0f;             //止まってしまったタイマー
 
+	//enemyの色を決める変数
+	int enemyColorRam = 0;
+
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;
 	//やられたかのフラグ

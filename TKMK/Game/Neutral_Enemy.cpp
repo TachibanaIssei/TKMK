@@ -42,8 +42,25 @@ bool Neutral_Enemy::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-	//モデルを読み込む。
-	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
+
+	enemyColorRam = rand() % 1;
+
+	switch (enemyColorRam)
+	{
+	case 0:
+		//モデルを読み込む。
+		//緑
+		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
+		break;
+	case 1:
+		//赤
+		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
+		break;
+	case 2:
+		//白
+		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
+		break;
+	}
 
 	//座標を設定
 	m_modelRender.SetPosition(m_position);
@@ -278,6 +295,23 @@ void Neutral_Enemy::Collision()
 			{
 				//剣士に経験値を渡す
 				m_knightplayer->ExpProcess(Exp);
+				//倒した時の報酬を剣士に渡す
+				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
+				switch (enemyColorRam)
+				{
+				case 0:
+					m_knightplayer->KnightHpUp(30);
+					if (m_knightplayer->GetKnightMaxHp() < m_knightplayer->GetKnightHp())
+					{
+						m_knightplayer->KnightHpReset(m_knightplayer->GetKnightMaxHp());
+					}
+					break;
+				case 1:
+					m_knightplayer->KnightAtkUp(50);
+					break;
+				case 2:
+					break;
+				}
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;

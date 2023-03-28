@@ -85,6 +85,37 @@ public:
 		return m_Status.Atk;
 	}
 
+	/// <summary>
+	/// 攻撃力を増加させる
+	/// </summary>
+	/// <param name="AtkUp">剣士の攻撃力を増加させる数値</param
+	void KnightAtkUp(int AtkUp)
+	{
+		m_Status.Atk += AtkUp;
+	}
+
+	/// <summary>
+	/// HPを回復
+	/// </summary>
+	/// <param name="HpUp">剣士のHPを回復させる数値</param
+	void KnightHpUp(int HpUp)
+	{
+		m_Status.Hp += HpUp;
+	}
+
+	/// <summary>
+	/// HPが上限を超えた時に上限までにする関数
+	/// </summary>
+	void KnightHpReset(int HpReset)
+	{
+		m_Status.Hp = HpReset;
+	}
+
+	//剣士のHp上限を渡す
+	int GetKnightMaxHp() { return m_Status.MaxHp; };
+	//剣士のHpを渡す
+	int GetKnightHp() { return m_Status.Hp; };
+
 private:
 	Game* m_game=nullptr;
 	//GameUI* m_gameUI = nullptr;

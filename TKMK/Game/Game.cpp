@@ -105,23 +105,23 @@ bool Game::Start()
 	//m_gamecamera->SetKnight(m_knightplayer);
 
 	//中立の敵の生成
-	//m_Enemylevel.Init("Assets/level3D/enemy_respawnLevel.tkl", [&](LevelObjectData& objData) {
+	m_Enemylevel.Init("Assets/level3D/enemy_respawnLevel.tkl", [&](LevelObjectData& objData) {
 
-	//	if (objData.ForwardMatchName(L"Neutral_Enemy") == true) {
-	//		//左上の座標
-	//		if (objData.number == 0) {
-	//			enemyNumber++;
-	//			ENEMY_AMOUNT;
-	//			Neutral_Enemy*neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-	//			neutral_Enemy->SetNeutral_EnemyGame(this);
-	//			neutral_Enemy->SetPosition(objData.position);
-	//			neutral_Enemy->SetRotation(objData.rotation);
-	//			neutral_Enemy->SetKnightPlayer(m_knightplayer);
-	//			//RespawnNumberBox[enemyNumber]=true;
-	//			//m_enemyCounter.push_back(neutral_Enemy);
-	//			//m_Neutral_Enemy0->SetScale(objData.scale);
-	//			return true;
-	//		}
+		if (objData.ForwardMatchName(L"Neutral_Enemy") == true) {
+			//左上の座標
+			if (objData.number == 0) {
+				enemyNumber++;
+				ENEMY_AMOUNT;
+				Neutral_Enemy*neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+				neutral_Enemy->SetNeutral_EnemyGame(this);
+				neutral_Enemy->SetPosition(objData.position);
+				neutral_Enemy->SetRotation(objData.rotation);
+				neutral_Enemy->SetKnightPlayer(m_knightplayer);
+				//RespawnNumberBox[enemyNumber]=true;
+				//m_enemyCounter.push_back(neutral_Enemy);
+				//m_Neutral_Enemy0->SetScale(objData.scale);
+				return true;
+			}
 	//		//右上の座標
 	//		if (objData.number == 1) {
 	//			enemyNumber++;
@@ -177,9 +177,9 @@ bool Game::Start()
 	//			//m_Neutral_Enemy4->SetScale(objData.scale);
 	//			return true;
 	//		}
-	//	}
-	//	return true;
-	//});
+		}
+		return true;
+	});
 
 	/*m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 	m_Neutral_Enemy->SetNeutral_EnemyGame(this);

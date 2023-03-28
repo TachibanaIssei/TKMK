@@ -7,6 +7,7 @@
 #include "GameCamera.h"
 #include "KnightAI.h"
 #include "Player.h"
+#include "MagicBall.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -238,7 +239,7 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+	Vector3 diff = player->GetCharPosition() - m_position;
 	diff.Normalize();
 	//移動速度を設定する。
 	m_moveSpeed = diff * m_Status.Speed;
@@ -289,16 +290,16 @@ void Neutral_Enemy::Collision()
 		{
 			//プレイヤーの攻撃力を取得
 			//何故かm_knightplayerがnull
-			m_knightplayer = FindGO<KnightPlayer>("knightplayer");
+			//m_knightplayer = FindGO<KnightPlayer>("knightplayer");
 			//HPを減らす
-			m_Status.Hp -= m_knightplayer->SetKnightAtk();
+			m_Status.Hp -= player->CharSetAttack();
 
 			
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
 				//剣士に経験値を渡す
-				m_knightplayer->ExpProcess(Exp);
+				player->CharSetExpProcess(Exp);
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
@@ -355,6 +356,40 @@ void Neutral_Enemy::Collision()
 			{
 				//剣士に経験値を渡す
 				m_knightAI->ExpProcess(Exp);
+				//Deathflag = true;
+				//死亡ステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
+				//効果音再生
+			}
+		}
+	}
+
+	//攻撃中、デス中は当たり判定の処理を行わない
+	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
+	{
+		return;
+	}
+	//魔法使いの攻撃用のコリジョンを取得する
+	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("player_MagicBall");
+	//コリジョンの配列をfor文で回す
+	for (auto Wizardcollision : Wizardcollisions)
+	{
+		if (Wizardcollision->IsHit(m_charaCon))
+		{
+			magicBall = FindGO<MagicBall>("magicBall");
+			//魔法使いの攻撃力を取得
+			//HPを減らす
+			m_Status.Hp -= magicBall->SetWizardAttack();
+
+			//HPが0になったら
+			if (m_Status.Hp <= 0)
+			{
+				//魔法使いに経験値を渡す
+				player->CharSetExpProcess(Exp);
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
@@ -585,7 +620,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	{
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
-		Vector3 diff = m_knightplayer->GetPosition() - m_position;
+		Vector3 diff = player->GetCharPosition() - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff * m_Status.Speed;

@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Neutral_Enemy.h"
 #include "MagicBall.h"
+#include "CharUltFlag.h"
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f, 1.0f);
@@ -59,6 +60,9 @@ WizardPlayer::WizardPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
+	//必殺技フラグのインスタンスを探す
+	charUltFlag = FindGO<CharUltFlag>("charUltFlag");
 }
 
 WizardPlayer::~WizardPlayer()
@@ -176,6 +180,22 @@ void WizardPlayer::Attack()
 		SkillState = true;
 		//pushFlag = true;
 	}
+
+	//必殺技の発動
+	//レベル４以上でＸボタンを押したら
+	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	{
+		pushFlag = true;
+		//雷の生成
+		MakeUltimateSkill();
+		//必殺技発動時の処理
+		UltimateSkill();
+		//レベルに合わせてGameUIのレベルの画像を変更する
+		//m_gameUI->LevelFontChange(Lv);
+
+		//必殺技発動フラグをセット
+		//UltimateSkillFlag = true;
+	}
 }
 
 /// <summary>
@@ -232,8 +252,12 @@ void WizardPlayer::MakeMagicBall()
 /// <summary>
 /// 必殺技の雷の生成
 /// </summary>
-void WizardPlayer::UltimateSkill()
+void WizardPlayer::MakeUltimateSkill()
 {
+	//必殺技フラグを魔法使いのステートにする
+	charUltFlag->WhoUlt(CharUltFlag::enWizardState);
+	//必殺技の雷の生成
+
 
 
 }

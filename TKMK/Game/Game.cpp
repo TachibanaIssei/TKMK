@@ -95,6 +95,8 @@ bool Game::Start()
 	player = NewGO<Player>(0, "player");
 	//生成するキャラ選択
 	player->CharSelect(SelectCharNumber);
+	player->CreaetPlayer();
+	m_Actors.push_back(player->playerActor);
 
 	////魔法使いプレイヤーの生成
 	//wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
@@ -110,6 +112,16 @@ bool Game::Start()
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
+
+				//enemyNumber++;
+				//ENEMY_AMOUNT;
+				//Neutral_Enemy*neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+				//neutral_Enemy->SetNeutral_EnemyGame(this);
+				//neutral_Enemy->SetPlayerActor(player->playerActor);
+				//neutral_Enemy->SetPosition(objData.position);
+				//neutral_Enemy->SetRotation(objData.rotation);
+				//neutral_Enemy->SetKnightPlayer(m_knightplayer);
+
 				enemyNumber++;
 				ENEMY_AMOUNT;
 				Neutral_Enemy*neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
@@ -117,6 +129,7 @@ bool Game::Start()
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
 				neutral_Enemy->SetPlayer(player);
+
 				//RespawnNumberBox[enemyNumber]=true;
 				//m_enemyCounter.push_back(neutral_Enemy);
 				//m_Neutral_Enemy0->SetScale(objData.scale);
@@ -128,6 +141,7 @@ bool Game::Start()
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 				neutral_Enemy->SetNeutral_EnemyGame(this);
+				neutral_Enemy->SetPlayerActor(player->playerActor);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
 				neutral_Enemy->SetPlayer(player);
@@ -142,6 +156,7 @@ bool Game::Start()
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 				neutral_Enemy->SetNeutral_EnemyGame(this);
+				neutral_Enemy->SetPlayerActor(player->playerActor);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
 				neutral_Enemy->SetPlayer(player);
@@ -156,6 +171,7 @@ bool Game::Start()
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 				neutral_Enemy->SetNeutral_EnemyGame(this);
+				neutral_Enemy->SetPlayerActor(player->playerActor);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
 				neutral_Enemy->SetPlayer(player);
@@ -169,6 +185,7 @@ bool Game::Start()
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 				neutral_Enemy->SetNeutral_EnemyGame(this);
+				neutral_Enemy->SetPlayerActor(player->playerActor);
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
 				neutral_Enemy->SetPlayer(player);
@@ -185,13 +202,14 @@ bool Game::Start()
 	m_Neutral_Enemy->SetNeutral_EnemyGame(this);
 	m_Neutral_Enemy->SetKnightPlayer(m_knightplayer);*/
 	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+
 	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
 	m_KnightAI->SetGame(this);
+	m_Actors.push_back(m_KnightAI);
 	
 	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
 
-	
 	//ポーズ画面の背景の設定
 	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
 	m_Pause_Back.SetPosition(g_vec3Zero);

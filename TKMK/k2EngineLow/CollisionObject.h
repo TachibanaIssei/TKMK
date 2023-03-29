@@ -86,6 +86,24 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// 制作者の名前を設定。
+		/// </summary>
+		/// <param name="name">名前。</param>
+		void SetCreatorName(const char* name)
+		{
+			m_creatorName = name;
+		}
+
+		/// <summary>
+		/// 制作者の名前を取得。
+		/// </summary>
+		/// <returns></returns>
+		const char* GetCreatorName() const
+		{
+			return m_creatorName;
+		}
+
+		/// <summary>
 		/// 座標を設定。
 		/// </summary>
 		/// <param name="position"></param>
@@ -198,7 +216,8 @@ namespace nsK2EngineLow {
 
 	private:
 		PhysicsGhostObject			m_physicsGhostObject;				//ゴーストオブジェクト
-		const char* m_name = nullptr;					//名前。
+		const char* m_name = nullptr;									//名前。
+		const char* m_creatorName = nullptr;							//制作者の名前。
 		float						m_timer = 0.0f;						//タイマー
 		float						m_timeLimit = 0.0f;					//削除されるまでの時間
 		bool						m_isEnableAutoDelete = true;		//自動で削除されるならtrue

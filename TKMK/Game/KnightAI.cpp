@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
+#include "Actor.h"
 
 
 KnightAI::KnightAI()
@@ -30,36 +31,11 @@ KnightAI::KnightAI()
 	m_knightAIPoslevel.Init("Assets/level3D/knightAIPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
-			//左上の座標
-			if (objData.number == 4) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 3) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 2) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 1) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-
-			}
-			if (objData.number == 0) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
+			SetPatrolPos(objData.position, objData.number);
+			return true;
 		}
 	});
-	//m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
 
-	//剣士のY座標が腰なのでY座標を上げる
-	//m_position.y = m_position_YUp;
-
-	//m_modelRender.SetPosition(m_position);
 }
 KnightAI::~KnightAI()
 {
@@ -79,7 +55,7 @@ void KnightAI::Move()
 }
 void KnightAI::Update()
 {
-	Rotation();
+	
 	Patrol();
 	SearchEnemy();
 	ChaseEnemy();
@@ -89,6 +65,7 @@ void KnightAI::Update()
 	//アニメーションの再生
 	PlayAnimation();
 	Collition();
+	Rotation();
 	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
 
 	//剣士のY座標が腰なのでY座標を上げる
@@ -96,54 +73,7 @@ void KnightAI::Update()
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 }
-/// <summary>
-/// 中立の敵を倒したときの経験値の処理
-/// </summary>
-/// <param name="GetExp">中立の敵の経験値</param>
-void KnightAI::ExpProcess(int Exp)
-{
-	//もしレベルが10(Max)なら
-	if (Lv == 10)return;
-	//自身の経験値に敵を倒したときに手に入れる経験値を足す
-	GetExp += Exp;
-	//手に入れた経験値より経験値テーブルのほうが大きかったら
-	if (GetExp < ExpTable) return;      //抜け出す
-	else {
-		//経験値テーブルより手に入れた経験値のほうが大きかったら
-		//レベルアップ
-		LevelUp(LvUpStatus, m_Status, Lv);
-		//レベルに合わせてレベルの画像を変更する
-		switch (Lv)
-		{
-		case 2:
-			ExpTable = 10;
-			break;
-		case 3:
-			ExpTable = 20;
-			break;
-		case 4:
-			ExpTable = 30;
-			break;
-		case 5:
-			ExpTable = 40;
-			break;
-		case 6:
-			ExpTable = 50;
-			break;
-		case 7:
-			ExpTable = 60;
-			break;
-		case 8:
-			ExpTable = 70;
-			break;
-		case 9:
-			ExpTable = 80;
-			break;
-		default:
-			break;
-		}
-	}
-}
+
 /// <summary>
 /// 攻撃時の当たり判定の処理
 /// </summary>
@@ -159,7 +89,8 @@ void KnightAI::AtkCollisiton()
 		Quaternion::Identity, //回転。
 		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
 	);
-	collisionObject->SetName("KnightAI_attack");
+	collisionObject->SetName("player_attack");
+	collisionObject->SetCreatorName(GetName());
 
 	//「Sword」ボーンのワールド行列を取得する。
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
@@ -354,8 +285,29 @@ void KnightAI::ChasePlayer_OR_AI()
 }
 void KnightAI::ChaseEnemy()
 {
+	if (m_isSearchEnemy == true)
+	{
+		PL = false;
+			//�G�l�~�[�̍�W��擾
+			Vector3 AIpos = m_Neutral_Enemy->GetPosition();
+			Vector3 diff = AIpos - m_position;
+			diff.Normalize();
+			m_moveSpeed = diff * m_Status.Speed;
+			m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+			if (m_charCon.IsOnGround()) {
+				//�n�ʂɂ����B
+				m_moveSpeed.y = 0.0f;
+			}
+			Vector3 modelPosition = m_position;
+			//�����Ƃ������f���̍�W�����B
+			modelPosition.y += 2.5f;
+			m_modelRender.SetPosition(modelPosition);
+		
+	}
+	else
+	{
 
-	/*m_isSearchEnemy == true;*/
+	}
 	//Vector3 diff = m_Neutral_Enemy->GetPosition() - m_position;
 	//nearPos = Vector3::Zero;
 	//for (int i = 0; i <= enemyAmount; i++)
@@ -425,8 +377,23 @@ struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 };
 void KnightAI::SearchEnemy()
 {
-	
-	/*m_isSearchEnemy = false;*/
+	for (auto enemy : m_neutral_Enemys)
+	{		
+		//�G�l�~�[�̍�W��擾
+		Vector3 AIpos = enemy->GetPosition();
+		Vector3 diff = AIpos - m_position;
+		diff.Normalize();
+		float angle = acosf(diff.Dot(m_forward));
+		//�v���C���[�����E��ɋ��Ȃ������B
+		if (Math::PI * 0.1f <= fabsf(angle))
+		{
+			m_isSearchEnemy = true;
+			m_Neutral_Enemy = enemy;
+
+			return;
+		}
+		
+	}
 
 	//m_forward = Vector3::AxisZ;
 	//m_rotation.Apply(m_forward);
@@ -434,6 +401,17 @@ void KnightAI::SearchEnemy()
 	//enemyAmount = 0;
 	//for (auto enemy : m_neutral_Enemys)
 	//{
+	//	//�G�l�~�[�̍�W��擾
+	//	Vector3 AIpos = enemy->GetPosition();
+	//	m_enemyPositions.AIpos[i] = enemy->GetPosition();
+	//	Vector3 diff = m_enemyPositions.AIpos[i] - m_position;
+	//	if (diff.Length() >= 10000.0f)
+	//	{
+	//		m_enemyPositions.foundFlag[i] = false;
+	//		//for��ŏ��ɖ߂�B
+	//		continue;
+	//	}
+
 	//	//エネミーの座標を取得
 	//	//Vector3 AIpos = enemy->GetPosition();
 	//	m_enemyPositions.AIpos[i]= enemy->GetPosition();
@@ -444,6 +422,7 @@ void KnightAI::SearchEnemy()
 	//	//	//forを最初に戻る。
 	//	//	continue;
 	//	//}
+
 
 	//	diff.Normalize();
 	//	float angle = acosf(diff.Dot(m_forward));
@@ -461,6 +440,32 @@ void KnightAI::SearchEnemy()
 	//	}
 	//	enemyAmount++;
 	//	i++;
+
+
+		//}
+		//btTransform start, end;
+		//start.setIdentity();
+		//end.setIdentity();
+		////�n�_�̓G�l�~�[�̍�W�B
+		//start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+		////�I�_�̓v���C���[�̍�W�B
+		//end.setOrigin(btVector3(AIPos.x, AIPos.y + 70.0f, AIPos.z));
+
+		//SweepResultWall callback;
+		////�R���C�_�[��n�_����I�_�܂œ������āB
+		////�Փ˂��邩�ǂ����𒲂ׂ�B
+		//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+		////�ǂƏՓ˂����I
+		//if (callback.isHit == true)
+		//{
+		//	//�v���C���[�͌�����Ă��Ȃ��B
+		//	return;
+		//}
+
+		//�ǂƏՓ˂��ĂȂ��I�I
+		//�v���C���[�������t���O��true�ɁB
+		
+
 	//	
 	//}
 	//btTransform start, end;
@@ -485,8 +490,10 @@ void KnightAI::SearchEnemy()
 	////壁と衝突してない！！
 	////プレイヤー見つけたフラグをtrueに。
 	//m_isSearchEnemy = true;
+
 	
 }
+
 void KnightAI::Patrol()
 {
 	if (PL == true)
@@ -647,6 +654,56 @@ void KnightAI::Patrol()
 
 const bool KnightAI ::CanAttack()const
 {
+
+
+		//�G�l�~�[�̍�W��擾
+		Vector3 AIpos = m_Neutral_Enemy->GetPosition();
+		Vector3 diff = AIpos - m_position;
+
+		if (diff.LengthSq() <= 50.0f * 50.0f)
+		{
+			//�U���ł���
+			return true;
+		}
+		//�U���ł��Ȃ�
+		return false;
+	
+		
+	////�����̓G����v���C���[�Ɍ�x�N�g����v�Z����
+	//Vector3 diff = nearPos - m_position;
+	////�������߂������
+	//if (diff.LengthSq() <= 50.0f * 50.0f)
+	//{
+	//	//�U���ł���
+	//	return true;
+	//}
+	////�U���ł��Ȃ�
+	//return false;
+}
+void KnightAI::Attack()
+{
+	if (CanAttack() == true) {
+		//�A�łōU���ł��Ȃ��Ȃ�
+
+		//��i�ڂ̃A�^�b�N��Ă��Ȃ��Ȃ�
+		if ( AtkState == false)
+		{
+		
+			m_playerState = enKnightState_ChainAtk;
+
+			//FirstAtkFlag = true;
+			//�R���{��1���₷
+			//ComboState++;
+			
+			AtkState = true;
+		}
+		//��i�ڂ̃A�^�b�N�̃A�j���[�V�������X�^�[�g�����Ȃ�
+		if (m_AtkTmingState == FirstAtk_State)
+		{
+
+			//�X�e�[�g���i�ڂ̃A�^�b�N�̃A�j���[�V�����X�^�[�g�X�e�[�g�ɂ���
+			m_AtkTmingState = SecondAtk_State;
+
 	//中立の敵からプレイヤーに向かうベクトルを計算する
 	Vector3 diff = nearPos - m_position;
 	//距離が近かったら
@@ -687,15 +744,31 @@ void KnightAI::Attack()
 	//		//ステートを二段目のアタックのアニメーションスタートステートにする
 	//		m_AtkTmingState = SecondAtk_State;
 
-	//	}
 
-	//	if (m_AtkTmingState == SecondAtkStart_State)
-	//	{
+		}
+
+		if (m_AtkTmingState == SecondAtkStart_State)
+		{
+
+
+			//�X�e�[�g��O�i�ڂ̃A�^�b�N�̃A�j���[�V�����X�^�[�g�X�e�[�g�ɂ���
+			m_AtkTmingState = LastAtk_State;
 
 	//		//ステートを三段目のアタックのアニメーションスタートステートにする
 	//		m_AtkTmingState = LastAtk_State;
 
-	//	}
+
+		}
+
+
+	}
+		//�X�L���𔭓����鏈��
+		//B�{�^���������ꂽ��
+		if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+		{
+
+			//�ړ����x��グ��
+			m_Status.Speed += 120.0f;
 
 	//}
 		////スキルを発動する処理
@@ -706,11 +779,60 @@ void KnightAI::Attack()
 		//	//移動速度を上げる
 		//	m_Status.Speed += 120.0f;
 
-		//	AnimationMove(SkillSpeed);
-		//	pushFlag = true;
-		//	SkillState = true;
-		//	//AtkCollistionFlag = true;
-		//}
+
+			/*AnimationMove(SkillSpeed);*/
+			pushFlag = true;
+			SkillState = true;
+			//AtkCollistionFlag = true;
+		}
+
+
+		//�K�E�Z�𔭓����鏈��
+		//X�{�^���������ꂽ��
+		if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+		{
+			pushFlag = true;
+			//�A�j���[�V�����Đ��A���x����R
+			UltimateSkill();
+
+
+
+			//�A���e�B���b�gSE
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(16);
+			se->Play(false);
+			se->SetVolume(0.3f);
+
+			//�K�E�Z�����t���O��Z�b�g
+			UltimateSkillFlag = true;
+		}
+
+		//�K�E�Z�����t���O���Z�b�g����Ă���Ȃ�
+		if (UltimateSkillFlag == true)
+		{
+			UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
+			//�K�E�Z�^�C�}�[��3.0f�܂ł̊�
+			if (UltimateSkillTimer <= 3.0f)
+			{
+				//�R���W�����̍쐬�A�ړ�����
+				UltimateSkillCollistion(OldPosition, m_position);
+			}
+			else
+			{
+				//�U�����L��Ȏ��Ԃ�Z�b�g
+				UltimateSkillTimer = 0;
+				//�K�E�Z�����t���O��Z�b�g
+				UltimateSkillFlag = false;
+				//�R���W�����폜
+				DeleteGO(collisionObject);
+				//�R���W�����쐬�t���O��Z�b�g
+				UltCollisionSetFlag = false;
+			}
+		}
+
+		//�U�����X�L����g�p���Ă���Ȃ�
+		//�R���W�����쐬
+		if (AtkCollistionFlag == true) AtkCollisiton();
 
 		////必殺技を発動する処理
 		////Xボタンが押されたら
@@ -758,6 +880,7 @@ void KnightAI::Attack()
 		////攻撃かスキルを使用しているなら
 		////コリジョン作成
 		//if (AtkCollistionFlag == true) AtkCollisiton();
+
 	
 }
 

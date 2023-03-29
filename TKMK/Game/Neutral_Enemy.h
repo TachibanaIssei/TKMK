@@ -13,6 +13,7 @@ class Neutral_Enemy;
 class Patrolnumb;
 class KnightAI;
 class Actor;
+
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -105,10 +106,10 @@ public:
 	/// 見つかったらtrueを返す
 	/// </summary>
 	bool Search();
-
 	void SetKnightPlayer(Actor* knightPlayer)
 	{
 		m_targetActor = knightPlayer;
+
 	}
 	Actor* GetKnightPlayer()
 	{
@@ -256,6 +257,8 @@ private:
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
 	GameCamera* m_gameCamera = nullptr;
+	Player* player = nullptr;
+
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
 	SpriteRender		m_HPBar;		//HPバー画像

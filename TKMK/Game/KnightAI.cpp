@@ -10,22 +10,22 @@ KnightAI::KnightAI()
 {
 	m_Status.Init("Knight");
 	SetModel();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg—p‚ÌŠÖ”‚ğİ’è‚·‚éB
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆç”¨ã®é–¢æ•°ã‚’è¨­å®šã™ã‚‹ã€‚
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W0”Ô‚Ìæ“¾
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™0ç•ªã®å–å¾—
 	GetRespawnPos();
-	respawnNumber = 1;        //ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†
+	respawnNumber = 1;        //ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ç•ªå·
 	m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
-	//ƒLƒƒƒ‰ƒRƒ“
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
+	//ã‚­ãƒ£ãƒ©ã‚³ãƒ³
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	//Œ•m
+	//å‰£å£«
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//ƒXƒtƒBƒAƒRƒ‰ƒCƒ_[‚ğ‰Šú‰»B
+	//ã‚¹ãƒ•ã‚£ã‚¢ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’åˆæœŸåŒ–ã€‚
 	m_sphereCollider.Create(1.0f);
 
 	m_knightAIPoslevel.Init("Assets/level3D/knightAIPos.tkl", [&](LevelObjectData& objData) {
@@ -35,6 +35,7 @@ KnightAI::KnightAI()
 			return true;
 		}
 	});
+
 }
 KnightAI::~KnightAI()
 {
@@ -44,7 +45,7 @@ void KnightAI::Move()
 {
 	Vector3 diff = m_forward;
 	diff.Normalize();
-	////ˆÚ“®‘¬“x‚ğİ’è‚·‚éB
+	////ç§»å‹•é€Ÿåº¦ã‚’è¨­å®šã™ã‚‹ã€‚
 	m_moveSpeed = diff * m_Status.Speed;
 	m_forward.Normalize();
 	Vector3 moveSpeed = m_forward * m_Status.Speed;
@@ -59,112 +60,112 @@ void KnightAI::Update()
 	SearchEnemy();
 	ChaseEnemy();
 	Attack();
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	ManageState();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿ
 	PlayAnimation();
 	Collition();
 	Rotation();
 	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
 
-	//Œ•m‚ÌYÀ•W‚ª˜‚È‚Ì‚ÅYÀ•W‚ğã‚°‚é
+	//å‰£å£«ã®Yåº§æ¨™ãŒè…°ãªã®ã§Yåº§æ¨™ã‚’ä¸Šã’ã‚‹
 	m_position.y = m_position_YUp;
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 }
 
 /// <summary>
-/// UŒ‚‚Ì“–‚½‚è”»’è‚Ìˆ—
+/// æ”»æ’ƒæ™‚ã®å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†
 /// </summary>
 void KnightAI::AtkCollisiton()
 {
-	//ƒRƒŠƒWƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚éB
+	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ã€‚
 	auto collisionObject = NewGO<CollisionObject>(0);
 	Vector3 collisionPosition = m_position;
-	//À•W‚ğƒvƒŒƒCƒ„[‚Ì­‚µ‘O‚Éİ’è‚·‚éB
+	//åº§æ¨™ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å°‘ã—å‰ã«è¨­å®šã™ã‚‹ã€‚
 	//collisionPosition += forward * 50.0f;
-	//ƒ{ƒbƒNƒXó‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì¬‚·‚éB
-	collisionObject->CreateBox(collisionPosition, //À•WB
-		Quaternion::Identity, //‰ñ“]B
-		Vector3(70.0f, 15.0f, 15.0f) //‘å‚«‚³B
+	//ãƒœãƒƒã‚¯ã‚¹çŠ¶ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œæˆã™ã‚‹ã€‚
+	collisionObject->CreateBox(collisionPosition, //åº§æ¨™ã€‚
+		Quaternion::Identity, //å›è»¢ã€‚
+		Vector3(70.0f, 15.0f, 15.0f) //å¤§ãã•ã€‚
 	);
 	collisionObject->SetName("player_attack");
 	collisionObject->SetCreatorName(GetName());
 
-	//uSwordvƒ{[ƒ“‚Ìƒ[ƒ‹ƒhs—ñ‚ğæ“¾‚·‚éB
+	//ã€ŒSwordã€ãƒœãƒ¼ãƒ³ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’å–å¾—ã™ã‚‹ã€‚
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
 
 	//matrix.MakeRotationZ(90.0f);
-	//uSwordvƒ{[ƒ“‚Ìƒ[ƒ‹ƒhs—ñ‚ğƒRƒŠƒWƒ‡ƒ“‚É“K—p‚·‚éB
+	//ã€ŒSwordã€ãƒœãƒ¼ãƒ³ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’ã‚³ãƒªã‚¸ãƒ§ãƒ³ã«é©ç”¨ã™ã‚‹ã€‚
 	collisionObject->SetWorldMatrix(matrix);
 }
 void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"FirstAttack_Start") == 0)
 	{
 		m_AtkTmingState = FirstAtk_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
-		//Œ•‚P’i–Ú‰¹
+		//å‰£ï¼‘æ®µç›®éŸ³
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(13);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
-	//“ñ’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//äºŒæ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
 	{
 		m_AtkTmingState = SecondAtkStart_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
-		//Œ•‚Q’i–Ú‰¹
+		//å‰£ï¼’æ®µç›®éŸ³
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(14);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
-	//O’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//ä¸‰æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
 	{
 		m_AtkTmingState = LastAtk_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
-		//Œ•‚R’i–Ú‰¹
+		//å‰£ï¼“æ®µç›®éŸ³
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(15);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
 		m_Status.Atk += 20;
 		//m_AtkTmingState = LastAtk_State;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆ
 		AtkCollistionFlag = true;
 
-		//ƒXƒLƒ‹‰¹‚ğ”­¶
+		//ã‚¹ã‚­ãƒ«éŸ³ã‚’ç™ºç”Ÿ
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(11);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"FirstAttack_End") == 0)
 	{
 
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
 	}
-	///ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚ç
+	///ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"FirstToIdle") == 0)
 	{
-		//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚©‚Á‚½‚ç
+		//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ãªã‹ã£ãŸã‚‰
 		if (m_AtkTmingState != SecondAtk_State)
 		{
-			//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+			//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 			pushFlag = false;
 			AtkState = false;
 			m_playerState = enKnightState_Idle;
@@ -172,54 +173,54 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		}
 	}
 
-	//“ñ’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//äºŒæ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SecondAttack_End") == 0)
 	{
 
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
-		//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚È‚©‚Á‚½‚ç
+		//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ãªã‹ã£ãŸã‚‰
 		if (m_AtkTmingState != LastAtk_State)
 		{
-			//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+			//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 			pushFlag = false;
 			AtkState = false;
 			m_playerState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
-	//O’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//ä¸‰æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"LastAttack_End") == 0)
 	{
 		m_AtkTmingState = Num_State;
 		AtkState = false;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
 	}
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶‚ªI‚í‚Á‚½‚ç
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰
 	if (m_modelRender.IsPlayingAnimation() == false) {
 		m_playerState = enKnightState_Idle;
 		AtkState = false;
-		//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 		pushFlag = false;
 	}
 
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ÅŒ•‚ğU‚èI‚í‚Á‚½‚ç
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã§å‰£ã‚’æŒ¯ã‚Šçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
 		m_Status.Atk -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
-		//ƒXƒLƒ‹‚ÌˆÚ“®ˆ—‚ğ‚µ‚È‚¢‚æ‚¤‚É‚·‚é
+		//ã‚¹ã‚­ãƒ«ã®ç§»å‹•å‡¦ç†ã‚’ã—ãªã„ã‚ˆã†ã«ã™ã‚‹
 		SkillState = false;
 		m_Status.Speed -= 120.0f;
-		//Œ•‚ÌƒRƒŠƒWƒ‡ƒ“‚ğ¶¬‚µ‚È‚¢
+		//å‰£ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ç”Ÿæˆã—ãªã„
 		AtkCollistionFlag = false;
 	}
-	//‰ñ”ğƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚ç
+	//å›é¿ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰
 	if (wcscmp(eventName, L"Avoidance_End") == 0)
 	{
-		//ˆÚ“®ˆ—‚ğ‚µ‚È‚¢‚æ‚¤‚É‚·‚é
+		//ç§»å‹•å‡¦ç†ã‚’ã—ãªã„ã‚ˆã†ã«ã™ã‚‹
 
 		AvoidanceFlag = false;
 		//m_AtkTmingState = Num_State;
@@ -228,7 +229,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 }
 void KnightAI::Collition()
 {
-	//”íƒ_ƒ[ƒWAƒ_ƒEƒ“’†A•KE‹ZA’ÊíUŒ‚‚Íƒ_ƒ[ƒW”»’è‚ğ‚µ‚È‚¢B
+	//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã€ãƒ€ã‚¦ãƒ³ä¸­ã€å¿…æ®ºæŠ€ã€é€šå¸¸æ”»æ’ƒæ™‚ã¯ãƒ€ãƒ¡ãƒ¼ã‚¸åˆ¤å®šã‚’ã—ãªã„ã€‚
 	if (m_playerState == enKnightState_Damege ||
 		m_playerState == enKnightState_Death ||
 		m_playerState == enKnightState_UltimateSkill ||
@@ -240,17 +241,17 @@ void KnightAI::Collition()
 	}
 	else
 	{
-		//“G‚ÌUŒ‚—p‚ÌƒRƒŠƒWƒ‡ƒ“‚ğæ“¾‚·‚é–¼‘Oˆê‚É‚·‚é
+		//æ•µã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹åå‰ä¸€ç·’ã«ã™ã‚‹
 		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
-		//ƒRƒŠƒWƒ‡ƒ“‚Ì”z—ñ‚ğfor•¶‚Å‰ñ‚·
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
 		for (auto collision : collisions)
 		{
-			//ƒRƒŠƒWƒ‡ƒ“‚ª©g‚ÌƒLƒƒƒ‰ƒRƒ“‚É“–‚½‚Á‚½‚ç
+			//ã‚³ãƒªã‚¸ãƒ§ãƒ³ãŒè‡ªèº«ã®ã‚­ãƒ£ãƒ©ã‚³ãƒ³ã«å½“ãŸã£ãŸã‚‰
 			if (collision->IsHit(m_charCon))
 			{
-				//ƒGƒlƒ~[‚ÌUŒ‚—Í‚ğæ‚Á‚Ä‚­‚é
+				//ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒåŠ›ã‚’å–ã£ã¦ãã‚‹
 
-				//hp‚ğ10Œ¸‚ç‚·
+				//hpã‚’10æ¸›ã‚‰ã™
 				Dameged(Enemy_atk);
 
 			}
@@ -287,18 +288,18 @@ void KnightAI::ChaseEnemy()
 	if (m_isSearchEnemy == true)
 	{
 		PL = false;
-			//ƒGƒlƒ~[‚ÌÀ•W‚ğæ“¾
+			//ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½Wï¿½ï¿½æ“¾
 			Vector3 AIpos = m_Neutral_Enemy->GetPosition();
 			Vector3 diff = AIpos - m_position;
 			diff.Normalize();
 			m_moveSpeed = diff * m_Status.Speed;
 			m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 			if (m_charCon.IsOnGround()) {
-				//’n–Ê‚É‚Â‚¢‚½B
+				//ï¿½nï¿½Ê‚É‚Â‚ï¿½ï¿½ï¿½ï¿½B
 				m_moveSpeed.y = 0.0f;
 			}
 			Vector3 modelPosition = m_position;
-			//‚¿‚å‚Á‚Æ‚¾‚¯ƒ‚ƒfƒ‹‚ÌÀ•W‚ğ‹“‚°‚éB
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½Ìï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½B
 			modelPosition.y += 2.5f;
 			m_modelRender.SetPosition(modelPosition);
 		
@@ -318,15 +319,15 @@ void KnightAI::ChaseEnemy()
 	//}
 
 	//nearPos.Normalize();
-	////ˆÚ“®‘¬“x‚ğİ’è‚·‚éB
+	////ç§»å‹•é€Ÿåº¦ã‚’è¨­å®šã™ã‚‹ã€‚
 	//m_moveSpeed = nearPos * m_Status.Speed;
 	//m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	//if (m_charCon.IsOnGround()) {
-	//	//’n–Ê‚É‚Â‚¢‚½B
+	//	//åœ°é¢ã«ã¤ã„ãŸã€‚
 	//	m_moveSpeed.y = 0.0f;
 	//}
 	//Vector3 modelPosition = m_position;
-	////‚¿‚å‚Á‚Æ‚¾‚¯ƒ‚ƒfƒ‹‚ÌÀ•W‚ğ‹“‚°‚éB
+	////ã¡ã‚‡ã£ã¨ã ã‘ãƒ¢ãƒ‡ãƒ«ã®åº§æ¨™ã‚’æŒ™ã’ã‚‹ã€‚
 	//modelPosition.y += 2.5f;
 	//m_modelRender.SetPosition(modelPosition);
 }
@@ -334,42 +335,42 @@ void KnightAI::Rotation()
 {
 	if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
-		//m_moveSpeed.x‚Æm_moveSpeed.z‚Ìâ‘Î’l‚ª‚Æ‚à‚É0.001ˆÈ‰º‚Æ‚¢‚¤‚±‚Æ‚Í
-		//‚±‚ÌƒtƒŒ[ƒ€‚Å‚ÍƒLƒƒƒ‰‚ÍˆÚ“®‚µ‚Ä‚¢‚È‚¢‚Ì‚Åù‰ñ‚·‚é•K—v‚Í‚È‚¢B
+		//m_moveSpeed.xã¨m_moveSpeed.zã®çµ¶å¯¾å€¤ãŒã¨ã‚‚ã«0.001ä»¥ä¸‹ã¨ã„ã†ã“ã¨ã¯
+		//ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã¯ã‚­ãƒ£ãƒ©ã¯ç§»å‹•ã—ã¦ã„ãªã„ã®ã§æ—‹å›ã™ã‚‹å¿…è¦ã¯ãªã„ã€‚
 		return;
 	}
-	//atan2‚ÍtanƒÆ‚Ì’l‚ğŠp“x(ƒ‰ƒWƒAƒ“’PˆÊ)‚É•ÏŠ·‚µ‚Ä‚­‚ê‚éŠÖ”B
-	//m_moveSpeed.x / m_moveSpeed.z‚ÌŒ‹‰Ê‚ÍtanƒÆ‚É‚È‚éB
-	//atan2‚ğg—p‚µ‚ÄAŠp“x‚ğ‹‚ß‚Ä‚¢‚éB
-	//‚±‚ê‚ª‰ñ“]Šp“x‚É‚È‚éB
+	//atan2ã¯tanÎ¸ã®å€¤ã‚’è§’åº¦(ãƒ©ã‚¸ã‚¢ãƒ³å˜ä½)ã«å¤‰æ›ã—ã¦ãã‚Œã‚‹é–¢æ•°ã€‚
+	//m_moveSpeed.x / m_moveSpeed.zã®çµæœã¯tanÎ¸ã«ãªã‚‹ã€‚
+	//atan2ã‚’ä½¿ç”¨ã—ã¦ã€è§’åº¦ã‚’æ±‚ã‚ã¦ã„ã‚‹ã€‚
+	//ã“ã‚ŒãŒå›è»¢è§’åº¦ã«ãªã‚‹ã€‚
 	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
-	//atan‚ª•Ô‚µ‚Ä‚­‚éŠp“x‚Íƒ‰ƒWƒAƒ“’PˆÊ‚È‚Ì‚Å
-	//SetRotationDeg‚Å‚Í‚È‚­SetRotation‚ğg—p‚·‚éB
+	//atanãŒè¿”ã—ã¦ãã‚‹è§’åº¦ã¯ãƒ©ã‚¸ã‚¢ãƒ³å˜ä½ãªã®ã§
+	//SetRotationDegã§ã¯ãªãSetRotationã‚’ä½¿ç”¨ã™ã‚‹ã€‚
 	m_rot.SetRotationY(-angle);
 
-	//‰ñ“]‚ğİ’è‚·‚éB
+	//å›è»¢ã‚’è¨­å®šã™ã‚‹ã€‚
 	m_modelRender.SetRotation(m_rot);
 
-	//ƒvƒŒƒCƒ„[‚Ì‘OƒxƒNƒgƒ‹‚ğŒvZ‚·‚éB
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹ã€‚
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
 
-//Õ“Ë‚µ‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚éŠÖ”ƒIƒuƒWƒFƒNƒg(•Ç—p)
+//è¡çªã—ãŸã¨ãã«å‘¼ã°ã‚Œã‚‹é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ(å£ç”¨)
 struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 {
-	bool isHit = false;						//Õ“Ëƒtƒ‰ƒOB
+	bool isHit = false;						//è¡çªãƒ•ãƒ©ã‚°ã€‚
 
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
-		//•Ç‚Æ‚Ô‚Â‚©‚Á‚Ä‚È‚©‚Á‚½‚çB
+		//å£ã¨ã¶ã¤ã‹ã£ã¦ãªã‹ã£ãŸã‚‰ã€‚
 		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-			//Õ“Ë‚µ‚½‚Ì‚Í•Ç‚Å‚Í‚È‚¢B
+			//è¡çªã—ãŸã®ã¯å£ã§ã¯ãªã„ã€‚
 			return 0.0f;
 		}
 
-		//•Ç‚Æ‚Ô‚Â‚©‚Á‚½‚çB
-		//ƒtƒ‰ƒO‚ğtrue‚ÉB
+		//å£ã¨ã¶ã¤ã‹ã£ãŸã‚‰ã€‚
+		//ãƒ•ãƒ©ã‚°ã‚’trueã«ã€‚
 		isHit = true;
 		return 0.0f;
 	}
@@ -378,12 +379,12 @@ void KnightAI::SearchEnemy()
 {
 	for (auto enemy : m_neutral_Enemys)
 	{		
-		//ƒGƒlƒ~[‚ÌÀ•W‚ğæ“¾
+		//ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½Wï¿½ï¿½æ“¾
 		Vector3 AIpos = enemy->GetPosition();
 		Vector3 diff = AIpos - m_position;
 		diff.Normalize();
 		float angle = acosf(diff.Dot(m_forward));
-		//ƒvƒŒƒCƒ„[‚ª‹ŠE“à‚É‹‚È‚©‚Á‚½‚çB
+		//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½ï¿½É‹ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 		if (Math::PI * 0.1f <= fabsf(angle))
 		{
 			m_isSearchEnemy = true;
@@ -400,57 +401,96 @@ void KnightAI::SearchEnemy()
 	//enemyAmount = 0;
 	//for (auto enemy : m_neutral_Enemys)
 	//{
-	//	//ƒGƒlƒ~[‚ÌÀ•W‚ğæ“¾
+	//	//ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½Wï¿½ï¿½æ“¾
 	//	Vector3 AIpos = enemy->GetPosition();
 	//	m_enemyPositions.AIpos[i] = enemy->GetPosition();
 	//	Vector3 diff = m_enemyPositions.AIpos[i] - m_position;
 	//	if (diff.Length() >= 10000.0f)
 	//	{
 	//		m_enemyPositions.foundFlag[i] = false;
-	//		//for‚ğÅ‰‚É–ß‚éB
+	//		//forï¿½ï¿½Åï¿½ï¿½É–ß‚ï¿½B
 	//		continue;
 	//	}
 
+	//	//ã‚¨ãƒãƒŸãƒ¼ã®åº§æ¨™ã‚’å–å¾—
+	//	//Vector3 AIpos = enemy->GetPosition();
+	//	m_enemyPositions.AIpos[i]= enemy->GetPosition();
+	//	Vector3 diff = m_enemyPositions.AIpos[i] - m_position;
+	//	//if (diff.Length() >= 10000.0f)
+	//	//{
+	//	//	m_enemyPositions.foundFlag[i] = false;
+	//	//	//forã‚’æœ€åˆã«æˆ»ã‚‹ã€‚
+	//	//	continue;
+	//	//}
+
+
 	//	diff.Normalize();
 	//	float angle = acosf(diff.Dot(m_forward));
-	//	//ƒvƒŒƒCƒ„[‚ª‹ŠE“à‚É‹‚È‚©‚Á‚½‚çB
+	//	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¦–ç•Œå†…ã«å±…ãªã‹ã£ãŸã‚‰ã€‚
 	//	if (Math::PI * 0.35f <= fabsf(angle))
 	//	{
-	//		//ƒvƒŒƒCƒ„[‚ÍŒ©‚Â‚©‚Á‚Ä‚¢‚È‚¢B
+	//		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯è¦‹ã¤ã‹ã£ã¦ã„ãªã„ã€‚
 	//		m_enemyPositions.foundFlag[i] = false;
 	//		//return;
 	//	}
 	//	else {
-	//		//‹ŠE“à‚È‚ç
+	//		//è¦–ç•Œå†…ãªã‚‰
 	//		m_enemyPositions.foundFlag[i] = true;
 	//		//PL = false;
 	//	}
 	//	enemyAmount++;
 	//	i++;
 
+
 		//}
 		//btTransform start, end;
 		//start.setIdentity();
 		//end.setIdentity();
-		////n“_‚ÍƒGƒlƒ~[‚ÌÀ•WB
+		////ï¿½nï¿½_ï¿½ÍƒGï¿½lï¿½~ï¿½[ï¿½Ìï¿½Wï¿½B
 		//start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
-		////I“_‚ÍƒvƒŒƒCƒ„[‚ÌÀ•WB
+		////ï¿½Iï¿½_ï¿½Íƒvï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìï¿½Wï¿½B
 		//end.setOrigin(btVector3(AIPos.x, AIPos.y + 70.0f, AIPos.z));
 
 		//SweepResultWall callback;
-		////ƒRƒ‰ƒCƒ_[‚ğn“_‚©‚çI“_‚Ü‚Å“®‚©‚µ‚ÄB
-		////Õ“Ë‚·‚é‚©‚Ç‚¤‚©‚ğ’²‚×‚éB
+		////ï¿½Rï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½ï¿½nï¿½_ï¿½ï¿½ï¿½ï¿½Iï¿½_ï¿½Ü‚Å“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÄB
+		////ï¿½Õ“Ë‚ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½ğ’²‚×‚ï¿½B
 		//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-		////•Ç‚ÆÕ“Ë‚µ‚½I
+		////ï¿½Ç‚ÆÕ“Ë‚ï¿½ï¿½ï¿½ï¿½I
 		//if (callback.isHit == true)
 		//{
-		//	//ƒvƒŒƒCƒ„[‚ÍŒ©‚Â‚©‚Á‚Ä‚¢‚È‚¢B
+		//	//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÍŒï¿½ï¿½Â‚ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½B
 		//	return;
 		//}
 
-		//•Ç‚ÆÕ“Ë‚µ‚Ä‚È‚¢II
-		//ƒvƒŒƒCƒ„[Œ©‚Â‚¯‚½ƒtƒ‰ƒO‚ğtrue‚ÉB
+		//ï¿½Ç‚ÆÕ“Ë‚ï¿½ï¿½Ä‚È‚ï¿½ï¿½Iï¿½I
+		//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½trueï¿½ÉB
 		
+
+	//	
+	//}
+	//btTransform start, end;
+	//start.setIdentity();
+	//end.setIdentity();
+	////å§‹ç‚¹ã¯ã‚¨ãƒãƒŸãƒ¼ã®åº§æ¨™ã€‚
+	//start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+	////çµ‚ç‚¹ã¯ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™ã€‚
+	//end.setOrigin(btVector3(AIPos.x, AIPos.y + 70.0f, AIPos.z));
+
+	//SweepResultWall callback;
+	////ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’å§‹ç‚¹ã‹ã‚‰çµ‚ç‚¹ã¾ã§å‹•ã‹ã—ã¦ã€‚
+	////è¡çªã™ã‚‹ã‹ã©ã†ã‹ã‚’èª¿ã¹ã‚‹ã€‚
+	//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+	////å£ã¨è¡çªã—ãŸï¼
+	//if (callback.isHit == true)
+	//{
+	//	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯è¦‹ã¤ã‹ã£ã¦ã„ãªã„ã€‚
+	//	return;
+	//}
+
+	////å£ã¨è¡çªã—ã¦ãªã„ï¼ï¼
+	////ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¦‹ã¤ã‘ãŸãƒ•ãƒ©ã‚°ã‚’trueã«ã€‚
+	//m_isSearchEnemy = true;
+
 	
 }
 
@@ -480,7 +520,7 @@ void KnightAI::Patrol()
 			if (distance.Length() <= 100.0f)
 			{
 
-				//1‚©‚ç‚É‚µ‚©‚Á‚½‚ç+‚P‚µ‚ë
+				//1ã‹ã‚‰ã«ã—ã‹ã£ãŸã‚‰+ï¼‘ã—ã‚
 				int ram = rand() % 100 /*+ 1*/;
 				if (ram >= 0)
 				{
@@ -503,8 +543,8 @@ void KnightAI::Patrol()
 		}
 		if (P == 1)
 		{
-			//position1‚ÉŒü‚©‚¤ƒR[ƒh
-			//‚à‚µ‚àposition1‚É“’…‚µ‚½‚çP=1;
+			//position1ã«å‘ã‹ã†ã‚³ãƒ¼ãƒ‰
+			//ã‚‚ã—ã‚‚position1ã«åˆ°ç€ã—ãŸã‚‰P=1;
 			//patrol=true;
 			Vector3 newForward = m_patrolPos[1] - m_position;
 			Vector3 distance = newForward;
@@ -514,7 +554,7 @@ void KnightAI::Patrol()
 			if (distance.Length() <= 100.0f)
 			{
 
-				//1‚©‚ç‚É‚µ‚©‚Á‚½‚ç+‚P‚µ‚ë
+				//1ã‹ã‚‰ã«ã—ã‹ã£ãŸã‚‰+ï¼‘ã—ã‚
 				int ram = rand() % 100 /*+ 1*/;
 				if (ram < 50)
 				{
@@ -529,8 +569,8 @@ void KnightAI::Patrol()
 		}
 		if (P == 2)
 		{
-			//position1‚ÉŒü‚©‚¤ƒR[ƒh
-			//‚à‚µ‚àposition1‚É“’…‚µ‚½‚çP=1;
+			//position1ã«å‘ã‹ã†ã‚³ãƒ¼ãƒ‰
+			//ã‚‚ã—ã‚‚position1ã«åˆ°ç€ã—ãŸã‚‰P=1;
 			//patrol=true;
 			Vector3 newForward = m_patrolPos[2] - m_position;
 			Vector3 distance = newForward;
@@ -540,7 +580,7 @@ void KnightAI::Patrol()
 			if (distance.Length() <= 100.0f)
 			{
 
-				//1‚©‚ç‚É‚µ‚©‚Á‚½‚ç+‚P‚µ‚ë
+				//1ã‹ã‚‰ã«ã—ã‹ã£ãŸã‚‰+ï¼‘ã—ã‚
 				int ram = rand() % 100 /*+ 1*/;
 				if (ram < 50)
 				{
@@ -555,8 +595,8 @@ void KnightAI::Patrol()
 		}
 		if (P == 3)
 		{
-			//position1‚ÉŒü‚©‚¤ƒR[ƒh
-			//‚à‚µ‚àposition1‚É“’…‚µ‚½‚çP=1;
+			//position1ã«å‘ã‹ã†ã‚³ãƒ¼ãƒ‰
+			//ã‚‚ã—ã‚‚position1ã«åˆ°ç€ã—ãŸã‚‰P=1;
 			//patrol=true;
 			Vector3 newForward = m_patrolPos[3] - m_position;
 			Vector3 distance = newForward;
@@ -566,7 +606,7 @@ void KnightAI::Patrol()
 			if (distance.Length() <= 100.0f)
 			{
 
-				//1‚©‚ç‚É‚µ‚©‚Á‚½‚ç+‚P‚µ‚ë
+				//1ã‹ã‚‰ã«ã—ã‹ã£ãŸã‚‰+ï¼‘ã—ã‚
 				int ram = rand() % 100 /*+ 1*/;
 				if (ram < 50)
 				{
@@ -581,8 +621,8 @@ void KnightAI::Patrol()
 		}
 		if (P == 4)
 		{
-			//position1‚ÉŒü‚©‚¤ƒR[ƒh
-			//‚à‚µ‚àposition1‚É“’…‚µ‚½‚çP=1;
+			//position1ã«å‘ã‹ã†ã‚³ãƒ¼ãƒ‰
+			//ã‚‚ã—ã‚‚position1ã«åˆ°ç€ã—ãŸã‚‰P=1;
 			//patrol=true;
 			Vector3 newForward = m_patrolPos[4] - m_position;
 			Vector3 distance = newForward;
@@ -592,7 +632,7 @@ void KnightAI::Patrol()
 			if (distance.Length() <= 100.0f)
 			{
 
-				//1‚©‚ç‚É‚µ‚©‚Á‚½‚ç+‚P‚µ‚ë
+				//1ã‹ã‚‰ã«ã—ã‹ã£ãŸã‚‰+ï¼‘ã—ã‚
 				int ram = rand() % 100 /*+ 1*/;
 				if (ram < 50)
 				{
@@ -616,72 +656,129 @@ const bool KnightAI ::CanAttack()const
 {
 
 
-		//ƒGƒlƒ~[‚ÌÀ•W‚ğæ“¾
+		//ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½Wï¿½ï¿½æ“¾
 		Vector3 AIpos = m_Neutral_Enemy->GetPosition();
 		Vector3 diff = AIpos - m_position;
 
 		if (diff.LengthSq() <= 50.0f * 50.0f)
 		{
-			//UŒ‚‚Å‚«‚é
+			//ï¿½Uï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½
 			return true;
 		}
-		//UŒ‚‚Å‚«‚È‚¢
+		//ï¿½Uï¿½ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½
 		return false;
 	
 		
-	////’†—§‚Ì“G‚©‚çƒvƒŒƒCƒ„[‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ‚·‚é
+	////ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÉŒï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 	//Vector3 diff = nearPos - m_position;
-	////‹——£‚ª‹ß‚©‚Á‚½‚ç
+	////ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//if (diff.LengthSq() <= 50.0f * 50.0f)
 	//{
-	//	//UŒ‚‚Å‚«‚é
+	//	//ï¿½Uï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½
 	//	return true;
 	//}
-	////UŒ‚‚Å‚«‚È‚¢
+	////ï¿½Uï¿½ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½
 	//return false;
 }
 void KnightAI::Attack()
 {
 	if (CanAttack() == true) {
-		//˜A‘Å‚ÅUŒ‚‚Å‚«‚È‚­‚È‚é
+		//ï¿½Aï¿½Å‚ÅUï¿½ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½È‚ï¿½
 
-		//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ğ‚µ‚Ä‚¢‚È‚¢‚È‚ç
+		//ï¿½ï¿½iï¿½Ú‚ÌƒAï¿½^ï¿½bï¿½Nï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½È‚ï¿½
 		if ( AtkState == false)
 		{
 		
 			m_playerState = enKnightState_ChainAtk;
 
 			//FirstAtkFlag = true;
-			//ƒRƒ“ƒ{‚ğ1‘‚â‚·
+			//ï¿½Rï¿½ï¿½ï¿½{ï¿½ï¿½1ï¿½ï¿½ï¿½â‚·
 			//ComboState++;
 			
 			AtkState = true;
 		}
-		//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªƒXƒ^[ƒg‚µ‚½‚È‚ç
+		//ï¿½ï¿½iï¿½Ú‚ÌƒAï¿½^ï¿½bï¿½Nï¿½ÌƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½^ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 		if (m_AtkTmingState == FirstAtk_State)
 		{
 
-			//ƒXƒe[ƒg‚ğ“ñ’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒ^[ƒgƒXƒe[ƒg‚É‚·‚é
+			//ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ï¿½iï¿½Ú‚ÌƒAï¿½^ï¿½bï¿½Nï¿½ÌƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½^ï¿½[ï¿½gï¿½Xï¿½eï¿½[ï¿½gï¿½É‚ï¿½ï¿½ï¿½
 			m_AtkTmingState = SecondAtk_State;
+
+	//ä¸­ç«‹ã®æ•µã‹ã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹
+	Vector3 diff = nearPos - m_position;
+	//è·é›¢ãŒè¿‘ã‹ã£ãŸã‚‰
+	if (diff.LengthSq() <= 50.0f * 50.0f)
+	{
+		//æ”»æ’ƒã§ãã‚‹
+		return true;
+	}
+
+	//æ”»æ’ƒã‹ã‚¹ã‚­ãƒ«ã‚’ä½¿ç”¨ã—ã¦ã„ã‚‹ãªã‚‰
+	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ä½œæˆ
+	//if (AtkCollistionFlag == true) AtkCollisiton();
+
+	//æ”»æ’ƒã§ããªã„
+	return false;
+}
+void KnightAI::Attack()
+{
+	//if (CanAttack() == true) {
+	//	//é€£æ‰“ã§æ”»æ’ƒã§ããªããªã‚‹
+
+	//	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã‚’ã—ã¦ã„ãªã„ãªã‚‰
+	//	if ( AtkState == false)
+	//	{
+	//	
+	//		m_playerState = enKnightState_ChainAtk;
+
+	//		//FirstAtkFlag = true;
+	//		//ã‚³ãƒ³ãƒœã‚’1å¢—ã‚„ã™
+	//		//ComboState++;
+	//		
+	//		AtkState = true;
+	//	}
+	//	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒã‚¹ã‚¿ãƒ¼ãƒˆã—ãŸãªã‚‰
+	//	if (m_AtkTmingState == FirstAtk_State)
+	//	{
+
+	//		//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’äºŒæ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ã‚¿ãƒ¼ãƒˆã‚¹ãƒ†ãƒ¼ãƒˆã«ã™ã‚‹
+	//		m_AtkTmingState = SecondAtk_State;
+
 
 		}
 
 		if (m_AtkTmingState == SecondAtkStart_State)
 		{
 
-			//ƒXƒe[ƒg‚ğO’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒ^[ƒgƒXƒe[ƒg‚É‚·‚é
+
+			//ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½Oï¿½iï¿½Ú‚ÌƒAï¿½^ï¿½bï¿½Nï¿½ÌƒAï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½^ï¿½[ï¿½gï¿½Xï¿½eï¿½[ï¿½gï¿½É‚ï¿½ï¿½ï¿½
 			m_AtkTmingState = LastAtk_State;
+
+	//		//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ä¸‰æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ã‚¿ãƒ¼ãƒˆã‚¹ãƒ†ãƒ¼ãƒˆã«ã™ã‚‹
+	//		m_AtkTmingState = LastAtk_State;
+
 
 		}
 
+
 	}
-		//ƒXƒLƒ‹‚ğ”­“®‚·‚éˆ—
-		//Bƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+		//ï¿½Xï¿½Lï¿½ï¿½ï¿½ğ”­“ï¿½ï¿½ï¿½ï¿½éˆï¿½ï¿½
+		//Bï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½
 		if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 		{
 
-			//ˆÚ“®‘¬“x‚ğã‚°‚é
+			//ï¿½Ú“ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ã‚°ï¿½ï¿½
 			m_Status.Speed += 120.0f;
+
+	//}
+		////ã‚¹ã‚­ãƒ«ã‚’ç™ºå‹•ã™ã‚‹å‡¦ç†
+		////Bãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+		//if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+		//{
+
+		//	//ç§»å‹•é€Ÿåº¦ã‚’ä¸Šã’ã‚‹
+		//	m_Status.Speed += 120.0f;
+
 
 			/*AnimationMove(SkillSpeed);*/
 			pushFlag = true;
@@ -689,52 +786,101 @@ void KnightAI::Attack()
 			//AtkCollistionFlag = true;
 		}
 
-		//•KE‹Z‚ğ”­“®‚·‚éˆ—
-		//Xƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
+
+		//ï¿½Kï¿½Eï¿½Zï¿½ğ”­“ï¿½ï¿½ï¿½ï¿½éˆï¿½ï¿½
+		//Xï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½
 		if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 		{
 			pushFlag = true;
-			//ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶AƒŒƒxƒ‹‚ğ‚R
+			//ï¿½Aï¿½jï¿½ï¿½ï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Äï¿½ï¿½Aï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½R
 			UltimateSkill();
 
 
 
-			//ƒAƒ‹ƒeƒBƒƒbƒgSE
+			//ï¿½Aï¿½ï¿½ï¿½eï¿½Bï¿½ï¿½ï¿½bï¿½gSE
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(16);
 			se->Play(false);
 			se->SetVolume(0.3f);
 
-			//•KE‹Z”­“®ƒtƒ‰ƒO‚ğƒZƒbƒg
+			//ï¿½Kï¿½Eï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½Zï¿½bï¿½g
 			UltimateSkillFlag = true;
 		}
 
-		//•KE‹Z”­“®ƒtƒ‰ƒO‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚é‚È‚ç
+		//ï¿½Kï¿½Eï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½È‚ï¿½
 		if (UltimateSkillFlag == true)
 		{
 			UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-			//•KE‹Zƒ^ƒCƒ}[‚ª3.0f‚Ü‚Å‚ÌŠÔ
+			//ï¿½Kï¿½Eï¿½Zï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½3.0fï¿½Ü‚Å‚ÌŠï¿½
 			if (UltimateSkillTimer <= 3.0f)
 			{
-				//ƒRƒŠƒWƒ‡ƒ“‚Ìì¬AˆÚ“®ˆ—
+				//ï¿½Rï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ìì¬ï¿½Aï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
 				UltimateSkillCollistion(OldPosition, m_position);
 			}
 			else
 			{
-				//UŒ‚‚ª—LŒø‚ÈŠÔ‚ğƒŠƒZƒbƒg
+				//ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½Èï¿½ï¿½Ô‚ï¿½Zï¿½bï¿½g
 				UltimateSkillTimer = 0;
-				//•KE‹Z”­“®ƒtƒ‰ƒO‚ğƒŠƒZƒbƒg
+				//ï¿½Kï¿½Eï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½Zï¿½bï¿½g
 				UltimateSkillFlag = false;
-				//ƒRƒŠƒWƒ‡ƒ“íœ
+				//ï¿½Rï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½íœ
 				DeleteGO(collisionObject);
-				//ƒRƒŠƒWƒ‡ƒ“ì¬ƒtƒ‰ƒO‚ğƒŠƒZƒbƒg
+				//ï¿½Rï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ì¬ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½Zï¿½bï¿½g
 				UltCollisionSetFlag = false;
 			}
 		}
 
-		//UŒ‚‚©ƒXƒLƒ‹‚ğg—p‚µ‚Ä‚¢‚é‚È‚ç
-		//ƒRƒŠƒWƒ‡ƒ“ì¬
+		//ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½Lï¿½ï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½È‚ï¿½
+		//ï¿½Rï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ì¬
 		if (AtkCollistionFlag == true) AtkCollisiton();
+
+		////å¿…æ®ºæŠ€ã‚’ç™ºå‹•ã™ã‚‹å‡¦ç†
+		////Xãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+		//if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+		//{
+		//	pushFlag = true;
+		//	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿã€ãƒ¬ãƒ™ãƒ«ã‚’ï¼“
+		//	UltimateSkill();
+
+
+
+		//	//ã‚¢ãƒ«ãƒ†ã‚£ãƒ¡ãƒƒãƒˆSE
+		//	SoundSource* se = NewGO<SoundSource>(0);
+		//	se->Init(16);
+		//	se->Play(false);
+		//	se->SetVolume(0.3f);
+
+		//	//å¿…æ®ºæŠ€ç™ºå‹•ãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ
+		//	UltimateSkillFlag = true;
+		//}
+
+		//å¿…æ®ºæŠ€ç™ºå‹•ãƒ•ãƒ©ã‚°ãŒã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã‚‹ãªã‚‰
+		//if (UltimateSkillFlag == true)
+		//{
+		//	UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
+		//	//å¿…æ®ºæŠ€ã‚¿ã‚¤ãƒãƒ¼ãŒ3.0fã¾ã§ã®é–“
+		//	if (UltimateSkillTimer <= 3.0f)
+		//	{
+		//		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®ä½œæˆã€ç§»å‹•å‡¦ç†
+		//		UltimateSkillCollistion(OldPosition, m_position);
+		//	}
+		//	else
+		//	{
+		//		//æ”»æ’ƒãŒæœ‰åŠ¹ãªæ™‚é–“ã‚’ãƒªã‚»ãƒƒãƒˆ
+		//		UltimateSkillTimer = 0;
+		//		//å¿…æ®ºæŠ€ç™ºå‹•ãƒ•ãƒ©ã‚°ã‚’ãƒªã‚»ãƒƒãƒˆ
+		//		UltimateSkillFlag = false;
+		//		//ã‚³ãƒªã‚¸ãƒ§ãƒ³å‰Šé™¤
+		//		DeleteGO(collisionObject);
+		//		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ä½œæˆãƒ•ãƒ©ã‚°ã‚’ãƒªã‚»ãƒƒãƒˆ
+		//		UltCollisionSetFlag = false;
+		//	}
+		//}
+
+		////æ”»æ’ƒã‹ã‚¹ã‚­ãƒ«ã‚’ä½¿ç”¨ã—ã¦ã„ã‚‹ãªã‚‰
+		////ã‚³ãƒªã‚¸ãƒ§ãƒ³ä½œæˆ
+		//if (AtkCollistionFlag == true) AtkCollisiton();
+
 	
 }
 

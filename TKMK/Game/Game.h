@@ -123,6 +123,6 @@ private:
 	bool PauseCloseFlag = true;
 
 	//ƒLƒƒƒ‰‚Ì”Ô†
-	int SelectCharNumber = 0;
+	int SelectCharNumber = 1;
 };
 

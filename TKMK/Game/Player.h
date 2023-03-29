@@ -13,7 +13,7 @@ public:
 	Player();
 	~Player();
 
-	//ƒLƒƒƒ‰‘I‘ğ
+	//ã‚­ãƒ£ãƒ©é¸æŠ
 	enum SelectCharctar
 	{
 		enKnight,
@@ -23,172 +23,74 @@ public:
 		enNum,
 	};
 	SelectCharctar m_selectCharctar;
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’
+	enum EnPlayerStateChange
+	{
+		enPause,
+		enGame,
+	};
+	EnPlayerStateChange m_playerStateChange;
 	
 	/// <summary>
-	/// ƒvƒŒƒCƒ„[‚ğ¶¬‚·‚é
+	/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
 	/// </summary>
 	void CreaetPlayer();
 
 	/// <summary>
-	/// ¶¬‚·‚éƒLƒƒƒ‰‚ğ‘I‚Ô
+	/// ç”Ÿæˆã™ã‚‹ã‚­ãƒ£ãƒ©ã‚’é¸ã¶
 	/// </summary>
-	/// <param name="number">ƒLƒƒƒ‰‚Ì”Ô†</param>
-	void CharSelect(int number)
-	{
-		switch (number)
-		{
-		case 0:
-			m_selectCharctar = enKnight;
-			break;
-		case 1:
-			m_selectCharctar = enWizard;
-			break;
-		case 2:
-			m_selectCharctar = enZombie;
-			break;
-		case 3:
-			m_selectCharctar = enMonster;
-			break;
-
-		default:
-			break;
-		}
-	}
+	/// <param name="number">ã‚­ãƒ£ãƒ©ã®ç•ªå·</param>
+	void CharSelect(int number);
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌÀ•W‚ğæ“¾
+	/// ã‚­ãƒ£ãƒ©ã®åº§æ¨™ã‚’å–å¾—
 	/// </summary>
-	/// <returns>‘I‘ğ‚³‚ê‚Ä‚¢‚éƒLƒƒƒ‰‚ÌÀ•W</returns>
-	Vector3 GetCharPosition()const
-	{
-		switch (m_selectCharctar)
-		{
-		case enKnight:
-			return knightPlayer->GetPosition();
-			break;
-
-		case enWizard:
-			return wizardPlayer->GetPosition();
-			break;
-
-		case enZombie:
-			break;
-
-		case enMonster:
-			break;
-
-		default:
-			break;
-		}
-	}
+	/// <returns>é¸æŠã•ã‚Œã¦ã„ã‚‹ã‚­ãƒ£ãƒ©ã®åº§æ¨™</returns>
+	Vector3 GetCharPosition()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌŒ»İ‚ÌƒŒƒxƒ‹‚ğ•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌŒ»İ‚ÌƒŒƒxƒ‹‚ğ•Ô‚·ŠÖ”</returns>
-	int CharSetLevel()const
-	{
-		switch (m_selectCharctar)
-		{
-		case enKnight:
-			return knightPlayer->SetLevel();
-			break;
-		case enWizard:
-			return wizardPlayer->SetLevel();
-			break;
-		case enZombie:
-			break;
-		case enMonster:
-			break;
-		
-		default:
-			break;
-		}
-	}
+	/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™é–¢æ•°</returns>
+	int CharSetLevel()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌŒ»İ‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌŒ»İ‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·ŠÖ”</returns>
-	int CharSetHp()const
-	{
-		switch (m_selectCharctar)
-		{
-		case enKnight:
-			return knightPlayer->SetHp();
-			break;
-
-		case enWizard:
-			return wizardPlayer->SetHp();
-			break;
-
-		case enZombie:
-			break;
-
-		case enMonster:
-			break;
-
-
-		default:
-			break;
-		}
-	}
+	/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™é–¢æ•°</returns>
+	int CharSetHp()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌÅ‘åƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®æœ€å¤§ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌÅ‘åƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·ŠÖ”</returns>
-	int CharSetMaxHp()const
-	{
-		switch (m_selectCharctar)
-		{
-		case enKnight:
-			return knightPlayer->SetMaxHp();
-			break;
-
-		case enWizard:
-			return wizardPlayer->SetMaxHp();
-			break;
-
-		case enZombie:
-			break;
-
-		case enMonster:
-			break;
-
-
-		default:
-			break;
-		}
-	}
+	/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®æœ€å¤§ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™é–¢æ•°</returns>
+	int CharSetMaxHp()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ğ•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®å›è»¢é‡ã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ğ•Ô‚·ŠÖ”</returns>
-	Quaternion CharSetRot()const
-	{
-		switch (m_selectCharctar)
-		{
-		case enKnight:
-			return knightPlayer->GetRot();
-			break;
+	/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®å›è»¢é‡ã‚’è¿”ã™é–¢æ•°</returns>
+	Quaternion CharSetRot()const;
+	/// <summary>
+	/// ã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´ã™ã‚‹
+	/// </summary>
+	/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´ã™ã‚‹é–¢æ•°</returns>
+	void CharSetState(EnPlayerStateChange gameState)const;
+	
+	/// <summary>
+	/// ã‚­ãƒ£ãƒ©ã®å‰æ–¹å‘ã‚’è¿”ã™
+	/// </summary>
+	/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®å‰æ–¹å‘ã‚’è¿”ã™é–¢æ•°	</returns>
+	Vector3 CharSetForward()const;
 
-		case enWizard:
-			return wizardPlayer->GetRot();
-			break;
+	/// <summary>
+	/// ã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ãƒ©ã‚°ã‚’è¿”ã™
+	/// </summary>
+	/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ãƒ©ã‚°ã‚’è¿”ã™é–¢æ•°</returns>
+	bool CharSetSpriteFlag()const;
 
-		case enZombie:
-			break;
-
-		case enMonster:
-			break;
-
-
-		default:
-			break;
-		}
-	}
+private:
 
 	Game* game = nullptr;
 	GameUI* gameUI = nullptr;

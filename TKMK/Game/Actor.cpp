@@ -33,10 +33,17 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	//y方向には移動させない。
 	forward.y = 0.0f;
 	right.y = 0.0f;
-
+	forward.Normalize();
 	//左スティックの入力量とstatusのスピードを乗算。
 	right *= stickL.x * status.Speed;
 	forward *= stickL.y * status.Speed;
+
+	//プレイヤーの前方向の情報を更新
+	//xかzの移動速度があったら(スティックの入力があったら)。
+	if (fabsf(forward.x) >= 0.001f || fabsf(forward.z) >= 0.001f)
+	{
+		m_Forward = forward+ right;
+	}
 
 	//移動速度にスティックの入力量を加算する。
 	m_moveSpeed += right + forward;

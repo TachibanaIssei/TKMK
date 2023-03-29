@@ -13,6 +13,9 @@ public:
 	~GameCamera();
 	bool Start();
 	void Update();
+	void Target();
+
+	void CameraReset();
 
 	//カメラのステート
 	enum CameraState
@@ -49,5 +52,9 @@ public:
 	Vector3					m_position				= Vector3::Zero;		//カメラ座標
 	Vector3					m_target				= Vector3::Zero;		//カメラ注視点
 	Quaternion				m_rotation				= Quaternion::Identity;	//回転
+
+	//注視点の計算
+	Vector3 TargetPos;
+	//Quaternion oldgetRot;
 };
 

@@ -252,7 +252,6 @@ protected:
 	Game* game = nullptr;
 	GameUI* gameUI = nullptr;
 
-	Vector3 m_position = Vector3::Zero;
 	Vector3 oldPosition = Vector3::Zero;         //前フレームの座標
 	float m_position_YUp = 34.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
@@ -262,8 +261,6 @@ protected:
 	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
 	CharacterController m_charCon;                        //キャラクターコントロール
-	Quaternion m_rot = Quaternion::Identity;              //回転
-	ModelRender m_modelRender;                            //モデルレンダー
 	CameraCollisionSolver	m_WarpCollisionSolver;    //ワープ
 
 	//スキルのクールタイムを計算するタイマー

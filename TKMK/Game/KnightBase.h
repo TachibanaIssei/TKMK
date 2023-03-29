@@ -87,7 +87,7 @@ public:
 	/// <summary>
 	/// 通常攻撃の当たり判定の処理
 	/// </summary>
-	//void AtkCollisiton();
+	void AtkCollisiton();
 
 	/// <summary>
 	/// 必殺技の当たり判定の処理
@@ -260,11 +260,10 @@ protected:
 	GameUI* m_gameUI = nullptr;
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
-	Status m_Status;
+	
 
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
-	Vector3 m_position = Vector3::Zero;                   //座標
 	float m_position_YUp = 33.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 collisionRot= Vector3::Zero;                  //必殺技
@@ -273,13 +272,11 @@ protected:
 	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
 	CharacterController m_charCon;                        //キャラクターコントロール
-	Quaternion m_rot = Quaternion::Identity;              //回転
-	ModelRender m_modelRender;                            //モデルレンダー
+	
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	PlayerState m_playerState/* = enKnightState_Num*/;
 	
-	//レベルアップ時に増加するステータス
-	LvUpStatus LvUpStatus = { 30,5,10.0f };
+	
 
 	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ

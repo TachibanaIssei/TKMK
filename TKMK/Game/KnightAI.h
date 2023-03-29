@@ -42,32 +42,23 @@ public:
 	}
 	void Patrol();
 	/// <summary>
-	/// UŒ‚‚Å‚«‚é‚È‚çtrue
+	/// æ”»æ’ƒã§ãã‚‹ãªã‚‰true
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttack() const;
+	
 	/// <summary>
-	/// ˆø”‚ÉUŒ‚—Í‚ğ‘ã“ü‚³‚¹‚é
+	/// å·¡å›ã™ã‚‹åº§æ¨™ã‚’è¨­å®šã™ã‚‹
 	/// </summary>
-	/// <param name="attack">Œ•m‚ÌUŒ‚—Í‚ğ‘ã“ü‚µ‚½‚¢•Ï”</param>
-	/// <returns></returns>
-	int SetKnightAIAtk(/*int& attack*/) {
-		return m_Status.Atk;
-	}
-	/// <summary>
-	/// ’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l‚Ìˆ—
-	/// </summary>
-	/// <param name="GetExp">’†—§‚Ì“G‚ÌŒoŒ±’l</param>
-	void ExpProcess(int Exp);
-	/// <summary>
-	/// „‰ñ‚·‚éÀ•W‚ğİ’è‚·‚é
-	/// </summary>
-	/// <param name="pos">„‰ñ‚·‚éÀ•W</param>
-	/// <param name="number">À•W‚ğƒZƒbƒg‚·‚é”Ô†</param>
+	/// <param name="pos">å·¡å›ã™ã‚‹åº§æ¨™</param>
+	/// <param name="number">åº§æ¨™ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ç•ªå·</param>
 	void SetPatrolPos(Vector3 pos, int number) {
 		m_patrolPos[number] = pos;
 	};
-
+	void SetNeutral_Enemy(Neutral_Enemy* ptr)
+	{
+		m_Neutral_Enemy = ptr;
+	}
 private:
 	enum AtkTimingState
 	{
@@ -79,28 +70,29 @@ private:
 
 	};
 	AtkTimingState m_AtkTmingState = Num_State;
-	Game* m_game;//ƒQ[ƒ€
-	KnightPlayer* m_knightPlayer;//Œ•mƒvƒŒƒCƒ„[void Rotation();
+	Game* m_game;//ã‚²ãƒ¼ãƒ 
+	KnightPlayer* m_knightPlayer;//å‰£å£«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼void Rotation();
 	void SearchEnemy();
 	void Rotation();
-	Quaternion				m_rotation;
 	Vector3					m_forward;
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
 	FontRender				m_fontRender;
-	SphereCollider			m_sphereCollider;							//ƒRƒ‰ƒCƒ_[B
-	RigidBody				m_rigidBody;						//„‘ÌB	
-	Neutral_Enemy*          m_Neutral_Enemy = nullptr;
+	SphereCollider			m_sphereCollider;					//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã€‚
+	RigidBody				m_rigidBody;						//å‰›ä½“ã€‚	
 	CharUltFlag* charUltFlag = nullptr;
+	Neutral_Enemy*          m_Neutral_Enemy = nullptr;			// ä»Šè¿½ã„ã‹ã‘ã¦ã„ã‚‹ã‚¨ãƒãƒŸãƒ¼      
+
 	bool UltimateSkillFlag = false;
 	bool PL = true;
 	float SkillSpeed = 270.0f;
 	float UltimateSkillTimer = 0;
-	Level3DRender m_knightAIPoslevel;      //Œ•mAI‚Ìƒ|ƒWƒVƒ‡ƒ“ƒŒƒxƒ‹
+	Level3DRender m_knightAIPoslevel;      //å‰£å£«AIã®ãƒã‚¸ã‚·ãƒ§ãƒ³ãƒ¬ãƒ™ãƒ«
 	Vector3                 m_patrolPos[5];
 	int P = -1;
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	int enemyAmount = 0;
 	Vector3 nearPos = Vector3::Zero;
+
 };
 

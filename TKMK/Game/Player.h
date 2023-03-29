@@ -17,7 +17,7 @@ public:
 	Player();
 	~Player();
 
-	//ƒLƒƒƒ‰‘I‘ð
+	//ã‚­ãƒ£ãƒ©é¸æŠž
 	enum SelectCharctar
 	{
 		enKnight,
@@ -28,7 +28,7 @@ public:
 	};
 	SelectCharctar m_selectCharctar;
 
-	//ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg‚ð
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’
 	enum EnPlayerStateChange
 	{
 		enPause,
@@ -36,73 +36,79 @@ public:
 	};
 	EnPlayerStateChange m_playerStateChange;
 	
-	bool Start();
+	/// <summary>
+	/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
+	/// </summary>
+	void CreaetPlayer();
 
 	/// <summary>
-	/// ¶¬‚·‚éƒLƒƒƒ‰‚ð‘I‚Ô
+	/// ç”Ÿæˆã™ã‚‹ã‚­ãƒ£ãƒ©ã‚’é¸ã¶
 	/// </summary>
-	/// <param name="number">ƒLƒƒƒ‰‚Ì”Ô†</param>
+	/// <param name="number">ã‚­ãƒ£ãƒ©ã®ç•ªå·</param>
 	void CharSelect(int number);
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌÀ•W‚ðŽæ“¾
+	/// ã‚­ãƒ£ãƒ©ã®åº§æ¨™ã‚’å–å¾—
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚Ä‚¢‚éƒLƒƒƒ‰‚ÌÀ•W</returns>
+	/// <returns>é¸æŠžã•ã‚Œã¦ã„ã‚‹ã‚­ãƒ£ãƒ©ã®åº§æ¨™</returns>
 	Vector3 GetCharPosition()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌŒ»Ý‚ÌƒŒƒxƒ‹‚ð•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚ÌŒ»Ý‚ÌƒŒƒxƒ‹‚ð•Ô‚·ŠÖ”</returns>
+	/// <returns>é¸æŠžã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™é–¢æ•°</returns>
 	int CharSetLevel()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌŒ»Ý‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg‚ð•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚ÌŒ»Ý‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg‚ð•Ô‚·ŠÖ”</returns>
+	/// <returns>é¸æŠžã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™é–¢æ•°</returns>
 	int CharSetHp()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌÅ‘åƒqƒbƒgƒ|ƒCƒ“ƒg‚ð•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®æœ€å¤§ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚ÌÅ‘åƒqƒbƒgƒ|ƒCƒ“ƒg‚ð•Ô‚·ŠÖ”</returns>
+	/// <returns>é¸æŠžã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®æœ€å¤§ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™é–¢æ•°</returns>
 	int CharSetMaxHp()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ð•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®å›žè»¢é‡ã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ð•Ô‚·ŠÖ”</returns>
+	/// <returns>é¸æŠžã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®å›žè»¢é‡ã‚’è¿”ã™é–¢æ•°</returns>
 	Quaternion CharSetRot()const;
-
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌƒXƒe[ƒg‚ð•ÏX‚·‚é
+	/// ã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´ã™ã‚‹
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚ÌƒXƒe[ƒg‚ð•ÏX‚·‚éŠÖ”</returns>
+	/// <returns>é¸æŠžã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´ã™ã‚‹é–¢æ•°</returns>
 	void CharSetState(EnPlayerStateChange gameState)const;
 	
 	/// <summary>
-	/// ƒLƒƒƒ‰‚Ì‘O•ûŒü‚ð•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®å‰æ–¹å‘ã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚Ì‘O•ûŒü‚ð•Ô‚·ŠÖ”	</returns>
+	/// <returns>é¸æŠžã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®å‰æ–¹å‘ã‚’è¿”ã™é–¢æ•°	</returns>
 	Vector3 CharSetForward()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌƒXƒvƒ‰ƒCƒgƒtƒ‰ƒO‚ð•Ô‚·
+	/// ã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ãƒ©ã‚°ã‚’è¿”ã™
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚ÌƒXƒvƒ‰ƒCƒgƒtƒ‰ƒO‚ð•Ô‚·ŠÖ”</returns>
+	/// <returns>é¸æŠžã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ãƒ©ã‚°ã‚’è¿”ã™é–¢æ•°</returns>
 	bool CharSetSpriteFlag()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚ÌUŒ‚—Í‚ð•Ô‚·
+	/// ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ÌUï¿½ï¿½ï¿½Í‚ï¿½Ô‚ï¿½
 	/// </summary>
-	/// <returns>‘I‘ð‚³‚ê‚½ƒLƒƒƒ‰‚ÌUŒ‚—Í‚ð•Ô‚·ŠÖ”</returns>
+	/// <returns>ï¿½Iï¿½ï¿½ê‚½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ÌUï¿½ï¿½ï¿½Í‚ï¿½Ô‚ï¿½ï¿½Öï¿½</returns>
 	int CharSetAttack()const;
 
 	/// <summary>
-	/// ƒLƒƒƒ‰‚Ìexp‚Ìˆ—
+	/// ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½expï¿½Ìï¿½ï¿½ï¿½
 	/// </summary>
-	/// <param name="exp">’†—§‚Ì“G‚ÌŒoŒ±’l</param>
+	/// <param name="exp">ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½ÌŒoï¿½ï¿½ï¿½l</param>
 	void CharSetExpProcess(int exp)const;
+
+	Actor* GetPlayerActor() {
+		return playerActor;
+	}
 
 private:
 
@@ -111,7 +117,8 @@ private:
 	KnightPlayer* knightPlayer = nullptr;
 	WizardPlayer* wizardPlayer = nullptr;
 	Status m_Status;
-	
+
+	Actor* playerActor = nullptr;
 
 };
 

@@ -15,6 +15,7 @@ class KnightAI;
 class WizardPlayer;
 class Player;
 class CharUltFlag;
+class Actor;
 
 class Game : public IGameObject
 {
@@ -33,17 +34,17 @@ public:
 	}*/
 
 	/// <summary>
-	/// �G�l�~�[�̐������炷����
+	/// エネミーの数を減らす処理
 	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
+	/// <returns>エネミーの数</returns>
 	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
 
 	/// <summary>
-	/// �G�l�~�[�̐������炷����
+	/// エネミーの数を減らす処理
 	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
+	/// <returns>エネミーの数</returns>
 	int GetNeutral_EnemyContaier() {
 		return enemyNumber;
 	}
@@ -61,6 +62,10 @@ public:
 		enGameState_Num,
 	};
 	
+	//Actorを返す
+	std::vector<Actor*>& GetActors() {
+		return m_Actors;
+	}
 
 private:
 	
@@ -77,8 +82,8 @@ private:
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
 
-	SpriteRender m_Pause_Front;    //�|�[�Y���
-	SpriteRender m_Pause_Back;     //�|�[�Y�̗����
+	SpriteRender m_Pause_Front;    //ポーズ画面
+	SpriteRender m_Pause_Back;     //ポーズの裏画面
 
 
 	BackGround* m_backGround = nullptr;
@@ -97,6 +102,7 @@ private:
 	CharUltFlag* charUltFlag = nullptr;
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	std::vector<Actor*> m_Actors;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
@@ -108,16 +114,16 @@ private:
 
 	float m_Timer = 0.0f;
 
-	//BGM�̉��ʒ����Ɏg�p����ϐ�
+	//BGMの音量調整に使用する変数
 	float musicVolume = 1.0f;
 
-	//���U���g��ʂ��̃t���O
+	//リザルト画面かのフラグ
 	bool RezultFlag = false;
-	//�|�[�Y��ʂ��̃t���O
+	//ポーズ画面かのフラグ
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
 
-	//�L�����̔ԍ�
+	//キャラの番号
 	int SelectCharNumber = 1;
 };
 

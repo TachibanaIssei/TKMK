@@ -64,7 +64,7 @@ bool Map::Start()
 void Map::Update()
 {
 	PlayerMap();
-	//EnemyMap();
+	EnemyMap();
 	m_Map.Update();
 	m_MapFrame.Update();
 }
@@ -169,5 +169,5 @@ void Map::Render(RenderContext& rc)
 	m_Map.Draw(rc);
 	m_MapFrame.Draw(rc);
 	m_MapPlayer.Draw(rc);
-	//for(int amount=0;amount< m_neutral_Enemys.size();amount++) m_MapEnemy[amount].Draw(rc);
+	for(int amount=0;amount< m_neutral_Enemys.size();amount++) m_MapEnemy[amount].Draw(rc);
 }

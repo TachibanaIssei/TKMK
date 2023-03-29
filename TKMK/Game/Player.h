@@ -24,7 +24,10 @@ public:
 	};
 	SelectCharctar m_selectCharctar;
 	
-	bool Start();
+	/// <summary>
+	/// プレイヤーを生成する
+	/// </summary>
+	void CreaetPlayer();
 
 	/// <summary>
 	/// 生成するキャラを選ぶ
@@ -187,15 +190,12 @@ public:
 		}
 	}
 
-
-
-
 	Game* game = nullptr;
 	GameUI* gameUI = nullptr;
 	KnightPlayer* knightPlayer = nullptr;
 	WizardPlayer* wizardPlayer = nullptr;
 
-	
+	Actor* playerActor = nullptr;
 
 };
 

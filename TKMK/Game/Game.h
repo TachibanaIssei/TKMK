@@ -14,6 +14,7 @@ class Map;
 class KnightAI;
 class WizardPlayer;
 class Player;
+class Actor;
 
 class Game : public IGameObject
 {
@@ -60,6 +61,10 @@ public:
 		enGameState_Num,
 	};
 	
+	//Actor‚ð•Ô‚·
+	std::vector<Actor*>& GetActors() {
+		return m_Actors;
+	}
 
 private:
 	
@@ -96,6 +101,7 @@ private:
 
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	std::vector<Actor*> m_Actors;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;

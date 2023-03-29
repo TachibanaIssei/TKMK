@@ -6,6 +6,7 @@
 #include "KnightPlayer.h"
 #include "GameCamera.h"
 #include "KnightAI.h"
+#include "Actor.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -24,10 +25,6 @@ Neutral_Enemy::Neutral_Enemy()
 
 Neutral_Enemy::~Neutral_Enemy()
 {
-
-
-
-
 	
 }
 
@@ -63,7 +60,7 @@ bool Neutral_Enemy::Start()
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
 
-	//剣のボーンのIDを取得する
+	//頭のボーンのIDを取得する
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 
 	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
@@ -73,101 +70,63 @@ bool Neutral_Enemy::Start()
 
 	m_HPFrame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
 
-
-
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-	m_knightplayer = FindGO<KnightPlayer>("m_knightplayer");
-	m_knightAI = FindGO<KnightAI>("KnightAI");
+
 	//乱数を初期化。
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
+
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
 
-	
-
+	//巡回用のパスを読み込む
 	m_EnemyPoslevel.Init("Assets/level3D/enemyPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
-			//左上の座標
-			if (objData.number == 8) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 7) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 6) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 5) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 4) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 3) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 2) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
-			if (objData.number == 1) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-
-			}
-			if (objData.number == 0) {
-				SetPatrolPos(objData.position, objData.number);
-				return true;
-			}
+			SetPatrolPos(objData.position, objData.number);
 			RadiusPos = objData.position;
+
+			return true;
 		}
 
 	});
+
 	return true;
 }
 
 void Neutral_Enemy::Update()
 {
-
-	SearchEnemy();
-
-	SearchAI();
+	// ポーズ中は何もしない
 	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
 		return;
 	}
 
+	//探索処理。
+	//Search();
 	//追跡処理。
-	Chase();
+	//Chase();
+
 	//回転処理。
 	Rotation();
 	//当たり判定。
 	Collision();
 	//攻撃処理。
-	Attack();
+	//Attack();
 	//アニメーションの再生。
 	PlayAnimation();
 	//ステートの遷移処理。
 	ManageState();
-	nowPos = m_position;
 	HPBar();
 	//モデルの更新。
 	m_modelRender.Update();
 }
+
 void Neutral_Enemy::Move()
 {
-
 	Vector3 diff = m_forward;
 	diff.Normalize();
 	////移動速度を設定する。
@@ -183,8 +142,8 @@ void Neutral_Enemy::Move()
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 	m_modelRender.SetPosition(m_position);
 
-
 }
+
 void Neutral_Enemy::Rotation()
 {
 	
@@ -210,6 +169,7 @@ void Neutral_Enemy::Rotation()
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
+
 //衝突したときに呼ばれる関数オブジェクト(壁用)
 struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 {
@@ -237,7 +197,8 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+
+	Vector3 diff = m_targetActor->GetPosition() - m_position;
 	diff.Normalize();
 	//移動速度を設定する。
 	m_moveSpeed = diff * m_Status.Speed;
@@ -251,24 +212,6 @@ void Neutral_Enemy::Chase()
 	modelPosition.y += 2.5f;
 	m_modelRender.SetPosition(modelPosition);
 
-
-}
-void Neutral_Enemy::ChaseAI()
-{
-	
-	Vector3 diff = m_knightAI->GetPosition() - m_position;
-	diff.Normalize();
-	//移動速度を設定する。
-	m_moveSpeed = diff * m_Status.Speed;
-	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-	if (m_charaCon.IsOnGround()) {
-		//地面についた。
-		m_moveSpeed.y = 0.0f;
-	}
-	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる。
-	modelPosition.y += 2.5f;
-	m_modelRender.SetPosition(modelPosition);
 }
 
 void Neutral_Enemy::Collision()
@@ -286,20 +229,22 @@ void Neutral_Enemy::Collision()
 	{
 		if (collision->IsHit(m_charaCon))
 		{
-			//プレイヤーの攻撃力を取得
-			//何故かm_knightplayerがnull
-			//HPを減らす
-			m_Status.Hp -= m_knightplayer->SetKnightAtk();
+			//このコリジョンを作ったアクターを検索
+			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
+			//プレイヤーの攻撃力を取得
+			//HPを減らす
+			m_Status.Hp -= m_lastAttackActor->GetAtk();
 			
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
-				//剣士に経験値を渡す
-				m_knightplayer->ExpProcess(Exp);
+				//相手に経験値を渡す
+				m_lastAttackActor->ExpProcess(Exp);
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+				m_Neutral_Enemy = nullptr;
 			}
 			else {
 				//被ダメージステートに遷移する。
@@ -315,12 +260,18 @@ void Neutral_Enemy::Collision()
 	{
 		if (collision->IsHit(m_charaCon))
 		{
+			//このコリジョンを作ったアクターを検索
+			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
+
 			//hpを減らす
 			m_Status.Hp -= 100;
 			if (m_Status.Hp < 0)
 			{
+				//相手に経験値を渡す
+				m_lastAttackActor->ExpProcess(Exp);
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+				m_Neutral_Enemy = nullptr;
 			}
 			else {
 				//被ダメージステートに遷移する。
@@ -335,35 +286,6 @@ void Neutral_Enemy::Collision()
 		return;
 	}
 
-	//敵の攻撃用のコリジョンを取得する
-	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("KnightAI_attack");
-	//子リジョンの配列をfor文で回す
-	for (auto AIcollision : AIcollisions)
-	{
-		if (AIcollision->IsHit(m_charaCon))
-		{
-			//プレイヤーの攻撃力を取得
-			//何故かm_knightAIがnull
-			//HPを減らす
-			m_Status.Hp -= m_knightAI->SetKnightAIAtk();
-
-
-			//HPが0になったら
-			if (m_Status.Hp <= 0)
-			{
-				//剣士に経験値を渡す
-				m_knightAI->ExpProcess(Exp);
-				//Deathflag = true;
-				//死亡ステートに遷移する。
-				m_Neutral_EnemyState = enNeutral_Enemy_Death;
-			}
-			else {
-				//被ダメージステートに遷移する。
-				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
-			}
-		}
-	}
 }
 
 void Neutral_Enemy::Attack()
@@ -373,64 +295,32 @@ void Neutral_Enemy::Attack()
 	{
 		return;
 	}
-	//攻撃判定中であれば
-	if (m_UnderAttack = true)
-	{
-		//攻撃用のコリジョンを作成
-		MakeAttackCollision();
-	}
 
 }
-void Neutral_Enemy::SearchAI()
+
+bool Neutral_Enemy::Search()
 {
-	Vector3 AIPosition = m_knightAI->GetPosition();
-	Vector3 diff = AIPosition - m_position;
-	diff.Normalize();
-	float angle = acosf(diff.Dot(m_forward));
-	//プレイヤーが視界内に居なかったら。
-	if (Math::PI * 0.1f <= fabsf(angle))
-	{
-		//プレイヤーは見つかっていない。
-		return;
-	}
-	m_isSearchAI = true;
-}
-void Neutral_Enemy::SearchEnemy()
-{
-	//Vector3 playerPosition = m_knightplayer->GetPosition();
-	//Vector3 diff = playerPosition - m_position;
-	//diff.Normalize();
-	//float angle = acosf(diff.Dot(m_forward));
-	////プレイヤーが視界内に居なかったら。
-	//if (Math::PI * 0.1f <= fabsf(angle))
-	//{
-	//	//プレイヤーは見つかっていない。
-	//	return;
-	//}
+	//全てのActorを調べる
+	for (Actor* actor : m_game->GetActors()) {
 
-	//btTransform start, end;
-	//start.setIdentity();
-	//end.setIdentity();
-	////始点はエネミーの座標。
-	//start.setOrigin(btVector3(m_position.x, 50.0f, m_position.z));
-	////終点はプレイヤーの座標。
-	//end.setOrigin(btVector3(playerPosition.x, 50.0f, playerPosition.z));
-
-	//SweepResultWall callback;
-	////コライダーを始点から終点まで動かして。
-	////衝突するかどうかを調べる。
-	//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-	////壁と衝突した！
-	//if (callback.isHit == true)
-	//{
-	//	//プレイヤーは見つかっていない。
-	//	return;
-	//}
-
-	//壁と衝突してない！！
-	//プレイヤー見つけたフラグをtrueに。
-	/*m_isSearchPlayer = true;*/
+		Vector3 ActorPosition = actor->GetPosition();
+		Vector3 diff = ActorPosition - m_position;
+		diff.Normalize();
+		float angle = acosf(diff.Dot(m_forward));
 	
+		//Actorが視界内に居たら。
+		if (Math::PI * 0.8f > fabsf(angle) && (ActorPosition - m_position).LengthSq() <= 100.0f * 100.0f)
+		{
+			m_targetActor = actor;
+
+			return true;
+		}
+	}
+
+	//どのActorも視界内にいない。
+	m_targetActor = nullptr;
+
+	return false;
 }
 
 void Neutral_Enemy::MakeAttackCollision()
@@ -440,10 +330,10 @@ void Neutral_Enemy::MakeAttackCollision()
 	//頭のボーンのワールド行列を取得する。
 	Matrix matrix = m_modelRender.GetBone(m_AttackBoneId)->GetWorldMatrix();
 	//ボックス状のコリジョンを作成する。
-	collisionObject->CreateSphere(m_position, Quaternion::Identity,10.0f);
+	collisionObject->CreateSphere(m_position, Quaternion::Identity,20.0f);
 	collisionObject->SetWorldMatrix(matrix);
 	collisionObject->SetName("enemy_attack");
-
+	collisionObject->SetCreatorName(GetName());
 }
 
 void Neutral_Enemy::ProcessCommonStateTransition()
@@ -452,52 +342,16 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//各タイマーを初期化。
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
-	//敵を見つかったら攻撃
-	//プレイヤーを見つけたら。
-	//if (m_isSearchPlayer == true)
-	//{
-	//	Vector3 diff = m_knightplayer->GetPosition() - m_position;
-	//	diff.Normalize();
-	//	//移動速度を設定する。
-	//	m_moveSpeed = diff;
-	//	m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 
-	//	//攻撃できる距離なら。
-	//	if (CanAttack() == true)
-	//	{
-	//		//乱数によって、攻撃するか待機させるかを決定する。	
-	//		{
-	//			//乱数によって、攻撃するか待機させるかを決定する。	
-	//	/*		int ram = rand() % 100;
-	//			if (ram > 50)*/
-	//				//攻撃ステートに移行する。
-	//				m_Neutral_EnemyState = enNeutral_Enemy_Attack;
-	//			m_UnderAttack = false;
-	//			return;
-	//		}
-	//	}
-	//	//攻撃できない距離なら。
-	//	else
-	//	{
-	//		
-	//			//追跡ステートに移行する。
-	//			m_Neutral_EnemyState = enNeutral_Enemy_Chase;
-	//			return;
-	//		
-	//	}
-	//}
-	////敵を見つけられなければ。
-	//else
-	//{
-	//	m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
-	//}
-	if (m_isSearchAI == true)
+	if (m_targetActor!=nullptr)
 	{
-		Vector3 diff = m_knightAI->GetPosition() - m_position;
+		Vector3 diff = m_targetActor->GetPosition() - m_position;
+
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff;
-		ChaseAI();
+		
+
 		//攻撃できる距離なら。
 		if (CanAttack() == true)
 		{
@@ -506,8 +360,14 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 				//乱数によって、攻撃するか待機させるかを決定する。	
 		/*		int ram = rand() % 100;
 				if (ram > 50)*/
+
 				//攻撃ステートに移行する。
-				m_Neutral_EnemyState = enNeutral_Enemy_Attack;
+				if (m_Neutral_EnemyState == enNeutral_Enemy_Attack) {
+					m_Neutral_EnemyState = enNeutral_Enemy_Chase;
+				}
+				else {
+					m_Neutral_EnemyState = enNeutral_Enemy_Attack;
+				}
 				m_UnderAttack = false;
 				return;
 			}
@@ -517,7 +377,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 		{
 
 			//追跡ステートに移行する。
-			ChaseAI();
+			m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 			return;
 
 		}
@@ -550,13 +410,21 @@ void Neutral_Enemy::ProcessRunStateTransition()
 
 void Neutral_Enemy::ProcessChaseStateTransition()
 {
-	//攻撃できる距離なら。
-	if (CanAttack())
-	{
-		//他のステートへ遷移する。
-		ProcessCommonStateTransition();
-		return;
+	Chase();
+
+	if (Search() == false) {
+		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
 	}
+	else {
+		//攻撃できる距離なら。
+		if (CanAttack())
+		{
+			//他のステートへ遷移する。
+			ProcessCommonStateTransition();
+			return;
+		}
+	}
+
 	m_chaseTimer += g_gameTime->GetFrameDeltaTime();
 	//追跡時間がある程度経過したら。
 	if (m_chaseTimer >= 0.5f)
@@ -568,6 +436,7 @@ void Neutral_Enemy::ProcessChaseStateTransition()
 
 void Neutral_Enemy::ProcessAttackStateTransition()
 {
+	Attack();
 	//攻撃アニメーションの再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
@@ -581,12 +450,16 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	//被ダメージアニメーションの再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		if (m_lastAttackActor == nullptr) {
+			//対象が居ないので巡回する。
+			m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
+
+			return;
+		}
+
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
-		Vector3 diff = m_knightplayer->GetPosition() - m_position;
-		diff.Normalize();
-		//移動速度を設定する。
-		m_moveSpeed = diff * m_Status.Speed;
+		m_targetActor = m_lastAttackActor;
 	}
 }
 
@@ -604,262 +477,257 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 }
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
-
-	if (Patrol)
+	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	for (auto enemy : m_neutral_Enemys)
 	{
-		m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-		for (auto enemy : m_neutral_Enemys)
-		{
-			if (enemy == this) {
-				continue;
-			}
-			Vector3 diff = m_position - enemy->m_position;
-			if (diff.Length() < 50.0f)
-			{
-				diff.Normalize();
-				m_hagikiPower += diff * 20.0f;
-			}
+		if (enemy == this) {
+			continue;
 		}
-		if (P < 0 || P > 8)
+		Vector3 diff = m_position - enemy->m_position;
+		if (diff.Length() < 50.0f)
 		{
-			Vector3 newForward = m_patrolPos[0] - m_position;
-			Vector3 distance = newForward;
-			newForward.Normalize();
-			m_forward = newForward;
-			Move();
-			if (distance.Length() <= 100.0f)
+			diff.Normalize();
+			m_hagikiPower += diff * 20.0f;
+		}
+	}
+	if (P < 0 || P > 8)
+	{
+		Vector3 newForward = m_patrolPos[0] - m_position;
+		Vector3 distance = newForward;
+		newForward.Normalize();
+		m_forward = newForward;
+		Move();
+		if (distance.Length() <= 100.0f)
+		{
+			P = 0;
+		}
+
+	}
+	if (P == 0)
+	{
+		Vector3 newForward = m_patrolPos[0] - m_position;
+		Vector3 distance = newForward;
+		newForward.Normalize();
+		m_forward = newForward;
+		Move();
+		if (distance.Length() <= 10.0f)
+		{
+
+			//1からにしかったら+１しろ
+			int ram = rand() % 100 /*+ 1*/;
+			if (ram >= 0)
+			{
+				P = 1;
+			}
+			if (ram > 25)
+			{
+				P = 3;
+			}
+			if (ram > 50)
+			{
+				P = 5;
+			}
+			if (ram > 75)
+			{
+				P = 7;
+			}
+
+		}
+
+	}
+	if (P == 1)
+	{
+		Vector3 newForward2 = m_patrolPos[1] - m_position;
+		Vector3 distance2 = newForward2;
+		newForward2.Normalize();
+		m_forward = newForward2;
+		Move();
+		if (distance2.Length() <= 10.0f)
+		{
+
+			int ram = rand() % 100;
+			if (ram < 50)
+			{
+				P = 2;
+			}
+			if (ram > 50)
+			{
+				P = 9;
+			}
+
+		}
+
+	}
+	if (P == 2)
+	{
+		Vector3 newForward3 = m_patrolPos[2] - m_position;
+		Vector3 distance3 = newForward3;
+		newForward3.Normalize();
+		m_forward = newForward3;
+		Move();
+		if (distance3.Length() <= 10.0f)
+		{
+
+			int ram = rand() % 100;
+			if (ram < 50)
+			{
+				P = 1;
+			}
+			if (ram > 50)
+			{
+				P = 3;
+			}
+
+		}
+
+	}
+	if (P == 3)
+	{
+		Vector3 newForward4 = m_patrolPos[3] - m_position;
+		Vector3 distance4 = newForward4;
+		newForward4.Normalize();
+		m_forward = newForward4;
+		Move();
+		if (distance4.Length() <= 10.0f)
+		{
+
+			int ram = rand() % 100;
+			if (ram > 0)
+			{
+				P = 2;
+			}
+			/*if (ram > 33)
+			{
+				P = 0;
+			}*/
+			if (ram > 66)
+			{
+				P = 4;
+			}
+
+		}
+	}
+	if (P == 4)
+	{
+		Vector3 newForward5 = m_patrolPos[4] - m_position;
+		Vector3 distance5 = newForward5;
+		newForward5.Normalize();
+		m_forward = newForward5;
+		Move();
+		if (distance5.Length() <= 10.0f)
+		{
+
+			int ram = rand() % 100;
+			if (ram < 50)
+			{
+				P = 3;
+			}
+			if (ram > 50)
+			{
+				P = 5;
+			}
+
+		}
+	}
+	if (P == 5)
+	{
+		Vector3 newForward6 = m_patrolPos[5] - m_position;
+		Vector3 distance6 = newForward6;
+		newForward6.Normalize();
+		m_forward = newForward6;
+		Move();
+		if (distance6.Length() <= 10.0f)
+		{
+
+			int ram = rand() % 100;
+			if (ram > 0)
+			{
+				P = 4;
+			}
+			/*if (ram > 33)
+			{
+				P = 0;
+			}*/
+			if (ram > 66)
+			{
+				P = 6;
+			}
+
+		}
+	}
+	if (P == 6)
+	{
+		Vector3 newForward7 = m_patrolPos[6] - m_position;
+		Vector3 distance7 = newForward7;
+		newForward7.Normalize();
+		m_forward = newForward7;
+		Move();
+		if (distance7.Length() <= 10.0f)
+		{
+			int ram = rand() % 100;
+			if (ram < 50)
+			{
+				P = 5;
+			}
+			if (ram > 50)
+			{
+				P = 7;
+			}
+
+		}
+	}
+	if (P == 7)
+	{
+		Vector3 newForward8 = m_patrolPos[7] - m_position;
+		Vector3 distance8 = newForward8;
+		newForward8.Normalize();
+		m_forward = newForward8;
+		Move();
+		if (distance8.Length() <= 10.0f)
+		{
+
+			int ram = rand() % 100;
+			if (ram > 0)
+			{
+				P = 6;
+			}
+			//if (ram > 33)
+			//{
+			   // P = 0;
+			//}
+			if (ram > 66)
+			{
+				P = 8;
+			}
+
+		}
+	}
+	if (P == 8)
+	{
+		Vector3 newForward9 = m_patrolPos[8] - m_position;
+		Vector3 distance9 = newForward9;
+		newForward9.Normalize();
+		m_forward = newForward9;
+		Move();
+		if (distance9.Length() <= 10.0f)
+		{
+
+			int ram = rand() % 100;
+			if (ram < 50)
+			{
+				P = 7;
+			}
+			if (ram > 50)
 			{
 				P = 0;
 			}
 
 		}
-		if (P == 0)
-		{
-			Vector3 newForward = m_patrolPos[0] - m_position;
-			Vector3 distance = newForward;
-			newForward.Normalize();
-			m_forward = newForward;
-			Move();
-			if (distance.Length() <= 10.0f)
-			{
-				
-				//1からにしかったら+１しろ
-				int ram = rand() % 100 /*+ 1*/;
-				if (ram >= 0)
-				{
-					P = 1;
-				}
-				if (ram > 25)
-				{
-					P = 3;
-				}
-				if (ram > 50)
-				{
-					P = 5;
-				}
-				if (ram > 75)
-				{
-					P = 7;
-				}
-				
-			}
-	
-		}
-		 if (P == 1)
-		{
-			Vector3 newForward2 = m_patrolPos[1] - m_position;
-			Vector3 distance2 = newForward2;
-			newForward2.Normalize();
-			m_forward = newForward2;
-			Move();
-			if (distance2.Length() <= 10.0f)
-			{
-			
-				int ram = rand() % 100;
-				if (ram < 50)
-				{
-					P = 2;
-				}
-				if (ram > 50)
-				{
-					P = 9;
-				}
-				
-			}
-
-		}
-		 if (P == 2)
-		{
-			Vector3 newForward3 = m_patrolPos[2] - m_position;
-			Vector3 distance3 = newForward3;
-			newForward3.Normalize();
-			m_forward = newForward3;
-			Move();
-			if (distance3.Length() <= 10.0f)
-			{
-				
-				int ram = rand() % 100;
-				if (ram < 50)
-				{
-					P = 1;
-				}
-				if (ram > 50)
-				{
-					P = 3;
-				} 
-				
-			}
-
-		}
-		 if (P == 3)
-		{
-			Vector3 newForward4 = m_patrolPos[3] - m_position;
-			Vector3 distance4 = newForward4;
-			newForward4.Normalize();
-			m_forward = newForward4;
-			Move();
-			if (distance4.Length() <= 10.0f)
-			{
-				
-				int ram = rand() % 100;
-				if (ram > 0)
-				{
-					P = 2;
-				}
-				if (ram > 33)
-				{
-					P = 0;
-				}
-				if (ram > 66)
-				{
-					P = 4;
-				}
-				
-			}
-		}
-		 if (P == 4)
-		{
-			Vector3 newForward5 = m_patrolPos[4] - m_position;
-			Vector3 distance5 = newForward5;
-			newForward5.Normalize();
-			m_forward = newForward5;
-			Move();
-			if (distance5.Length() <= 10.0f)
-			{
-			
-				int ram = rand() % 100;
-				if (ram < 50)
-				{
-					P = 3;
-				}
-				if (ram > 50)
-				{
-					P = 5;
-				}
-			
-			}
-		}
-		 if (P == 5)
-		 {
-			 Vector3 newForward6 = m_patrolPos[5] - m_position;
-			 Vector3 distance6 = newForward6;
-			 newForward6.Normalize();
-			 m_forward = newForward6;
-			 Move();
-			 if (distance6.Length() <= 10.0f)
-			 {
-				 
-				 int ram = rand() % 100;
-				 if (ram > 0)
-				 {
-					 P = 4;
-				 }
-				 if (ram > 33)
-				 {
-					 P = 0;
-				 }
-				 if (ram > 66)
-				 {
-					 P = 6;
-				 }
-				
-			 }
-		 }
-			 if (P == 6)
-			 {
-				 Vector3 newForward7 = m_patrolPos[6] - m_position;
-				 Vector3 distance7 = newForward7;
-				 newForward7.Normalize();
-				 m_forward = newForward7;
-				 Move();
-				 if (distance7.Length() <= 10.0f)
-				 {
-					 int ram = rand() % 100;
-					 if (ram < 50)
-					 {
-						 P = 5;
-					 }
-					 if (ram > 50)
-					 {
-						 P = 7;
-					 }
-					
-				 }
-			 }
-			 if (P == 7)
-			 {
-				 Vector3 newForward8 = m_patrolPos[7] - m_position;
-				 Vector3 distance8 = newForward8;
-				 newForward8.Normalize();
-				 m_forward = newForward8;
-				 Move();
-				 if (distance8.Length() <= 10.0f)
-				 {
-					 
-					 int ram = rand() % 100;
-					 if (ram > 0)
-					 {
-						 P = 6;
-					 }
-					 //if (ram > 33)
-					 //{
-						// P = 0;
-					 //}
-					 if (ram > 66)
-					 {
-						 P = 8;
-					 }
-		
-				 }
-			 }
-			 if (P == 8)
-			 {
-				 Vector3 newForward9 = m_patrolPos[8] - m_position;
-				 Vector3 distance9 = newForward9;
-				 newForward9.Normalize();
-				 m_forward = newForward9;
-				 Move();
-				 if (distance9.Length() <= 10.0f)
-				 {
-			
-					 int ram = rand() % 100;
-					 if (ram < 50)
-					 {
-						 P = 7;
-					 }
-					 if (ram > 50)
-					 {
-						 P = 0;
-					 }
-					
-				 }
-			 }
-		 
-		
 	}
-	else
+
+	//対象を探す
+	if (Search())
 	{
-		
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
 	ProcessCommonStateTransition();
@@ -925,7 +793,7 @@ void Neutral_Enemy::PlayAnimation()
 		break;
 		//攻撃ステート
 	case enNeutral_Enemy_Attack:
-		m_modelRender.SetAnimationSpeed(0.8f);
+		m_modelRender.SetAnimationSpeed(1.0f);
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
 		break;
 		//被ダメージステート
@@ -997,12 +865,11 @@ bool Neutral_Enemy::DrawHP()
 	float cos = Dot(toCameraTarget, toMush);
 	float angle = acos(cos);
 
-
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+	//カメラの後ろにあるなら描画しない
+	Vector3 diff = m_player->GetPosition() - m_position;
 
 	//プレイヤーに向かう距離を計算する
 	float playerdistance = diff.Length();
-
 
 	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<800.0f)
 	{
@@ -1021,7 +888,9 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//攻撃中の判定をtrueにする
 		m_UnderAttack = true;
 		//攻撃エフェクトを発生させる
-
+		
+		//攻撃用のコリジョンを作成
+		MakeAttackCollision();
 
 		//大きさを設定する。
 
@@ -1044,14 +913,16 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 	//キーの名前がattack_endの時
 	else if (wcscmp(eventName,L"Attack_end")==0){
 		m_UnderAttack = false;
-	
+
+		//ステートを切り替える
+		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
 }
 
 const bool Neutral_Enemy::CanAttack()const
 {
 	//中立の敵からプレイヤーに向かうベクトルを計算する
-	Vector3 diff = m_knightplayer->GetPosition() - m_position;
+	Vector3 diff = m_targetActor->GetPosition() - m_position;
 	//距離が近かったら
 	if (diff.LengthSq() <= 50.0f * 50.0f)
 	{
@@ -1070,7 +941,7 @@ void Neutral_Enemy::Render(RenderContext& rc)
 	//ステートがポーズステートでないなら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
 		//スプライトフラグがtureなら
-		if (m_knightplayer->GetSpriteFlag())
+		if (m_player->GetSpriteFlag())
 		{
 			if (DrawHP())
 			{

@@ -16,9 +16,8 @@ Player::~Player()
 	DeleteGO(wizardPlayer);
 }
 
-bool Player::Start()
+void Player::CreaetPlayer()
 {
-
 	game = FindGO<Game>("game");
 	gameUI = FindGO<GameUI>("m_gameUI");
 
@@ -30,6 +29,8 @@ bool Player::Start()
 		knightPlayer = NewGO<KnightPlayer>(0, "m_knightplayer");
 		knightPlayer->SetSGame(game);
 		knightPlayer->SetGameUI(gameUI);
+
+		playerActor = knightPlayer;
 		break;
 
 	case enWizard:
@@ -37,16 +38,14 @@ bool Player::Start()
 		wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
 		wizardPlayer->SetSGame(game);
 		wizardPlayer->SetGameUI(gameUI);
+
+		playerActor = wizardPlayer;
 		break;
 
 	default:
 		break;
 	}
-
-
-	
-	//int a = 0;
-	return true;
 }
+
 
 

@@ -88,7 +88,7 @@ void KnightBase::ExpProcess(int Exp)
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
-		LevelUp(LvUpStatus,m_Status,Lv);
+		LevelUp(LvUPStatus,m_Status,Lv);
 		//レベルに合わせてレベルの画像を変更する
 		m_gameUI->LevelFontChange(Lv);
 		switch (Lv)
@@ -158,6 +158,7 @@ void KnightBase::AtkCollisiton()
 		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
 	);
 	collisionObject->SetName("player_attack");
+	collisionObject->SetCreatorName(GetName());
 
 	//「Sword」ボーンのワールド行列を取得する。
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
@@ -210,6 +211,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 		);
 		collisionObject->SetIsEnableAutoDelete(false);
 		collisionObject->SetName("player_UltimateSkill");
+		collisionObject->SetCreatorName(GetName());
 
 		UltCollisionSetFlag = true;
 	}
@@ -316,7 +318,7 @@ void KnightBase::Dameged(int damege)
 void KnightBase::UltimateSkill()
 {
 	//レベルを3下げる
-levelDown(LvUpStatus, m_Status, Lv, 3);
+levelDown(LvUPStatus, m_Status, Lv, 3);
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//レベルの経験値テーブルにする
@@ -351,7 +353,7 @@ void KnightBase::Death()
 	////死亡ステート
 	//m_playerState = enKnightState_Death;
 	//レベルを１下げる
-	levelDown(LvUpStatus, m_Status, Lv,1);
+	levelDown(LvUPStatus, m_Status, Lv,1);
 	//HPを最大にする
 	m_Status.Hp = m_Status.MaxHp;
 	//経験値をリセット

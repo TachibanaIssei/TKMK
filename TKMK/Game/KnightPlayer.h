@@ -49,41 +49,6 @@ public:
 	//	}
 	//}
 
-	/// <summary>
-	/// �摜�\���t���O��擾����
-	/// </summary>
-	/// <returns>false�Ȃ�\�����Ȃ�</returns>
-	const bool GetSpriteFlag() const
-	{
-		return m_spriteFlag;
-	}
-
-	/// <summary>
-	/// 座標を設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	void SetPosition(const Vector3& position)
-	{
-		m_position = position;
-	}
-
-	/// <summary>
-	/// 座標を取得
-	/// </summary>
-	/// <returns>座標</returns>
-	const Vector3& GetPosition() const
-	{
-		return m_position;
-	}
-
-	/// <summary>
-	/// 引数に攻撃力を代入させる
-	/// </summary>
-	/// <param name="attack">剣士の攻撃力を代入したい変数</param>
-	/// <returns></returns>
-	int SetKnightAtk(/*int& attack*/) {
-		return m_Status.Atk;
-	}
 
 private:
 	Game* m_game=nullptr;
@@ -122,7 +87,7 @@ private:
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
-	bool m_spriteFlag = true;
+	
 
 	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵

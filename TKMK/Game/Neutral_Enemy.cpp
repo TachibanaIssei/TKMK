@@ -354,8 +354,9 @@ void Neutral_Enemy::Collision()
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
+				player = FindGO<Player>("player");
 				//相手に経験値を渡す
-				m_lastAttackActor->ExpProcess(Exp);
+				//m_lastAttackActor->ExpProcess(Exp);
 				//魔法使いに経験値を渡す
 				player->CharSetExpProcess(Exp);
 				//Deathflag = true;

@@ -865,10 +865,8 @@ bool Neutral_Enemy::DrawHP()
 	float cos = Dot(toCameraTarget, toMush);
 	float angle = acos(cos);
 
-
 	//カメラの後ろにあるなら描画しない
 	Vector3 diff = m_player->GetPosition() - m_position;
-
 
 	//プレイヤーに向かう距離を計算する
 	float playerdistance = diff.Length();
@@ -924,9 +922,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 const bool Neutral_Enemy::CanAttack()const
 {
 	//中立の敵からプレイヤーに向かうベクトルを計算する
-
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
-
 	//距離が近かったら
 	if (diff.LengthSq() <= 50.0f * 50.0f)
 	{
@@ -946,7 +942,6 @@ void Neutral_Enemy::Render(RenderContext& rc)
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
 		//スプライトフラグがtureなら
 		if (m_player->GetSpriteFlag())
-
 		{
 			if (DrawHP())
 			{

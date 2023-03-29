@@ -90,6 +90,10 @@ public:
 	/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
 	bool CharSetSpriteFlag()const;
 
+	Actor* GetPlayerActor() {
+		return playerActor;
+	}
+
 private:
 
 	Game* game = nullptr;

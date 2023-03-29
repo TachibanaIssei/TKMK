@@ -683,205 +683,99 @@ const bool KnightAI ::CanAttack()const
 void KnightAI::Attack()
 {
 	if (CanAttack() == true) {
-		//�A�łōU���ł��Ȃ��Ȃ�
+		//連打で攻撃できなくなる
 
-		//��i�ڂ̃A�^�b�N��Ă��Ȃ��Ȃ�
-		if ( AtkState == false)
+		//一段目のアタックをしていないなら
+		if (AtkState == false)
 		{
-		
+
 			m_playerState = enKnightState_ChainAtk;
 
 			//FirstAtkFlag = true;
-			//�R���{��1���₷
+			//コンボを1増やす
 			//ComboState++;
-			
+
 			AtkState = true;
 		}
-		//��i�ڂ̃A�^�b�N�̃A�j���[�V�������X�^�[�g�����Ȃ�
+		//一段目のアタックのアニメーションがスタートしたなら
 		if (m_AtkTmingState == FirstAtk_State)
 		{
 
-			//�X�e�[�g���i�ڂ̃A�^�b�N�̃A�j���[�V�����X�^�[�g�X�e�[�g�ɂ���
+			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
-
-	//中立の敵からプレイヤーに向かうベクトルを計算する
-	Vector3 diff = nearPos - m_position;
-	//距離が近かったら
-	if (diff.LengthSq() <= 50.0f * 50.0f)
-	{
-		//攻撃できる
-		return true;
-	}
-
-	//攻撃かスキルを使用しているなら
-	//コリジョン作成
-	//if (AtkCollistionFlag == true) AtkCollisiton();
-
-	//攻撃できない
-	return false;
-}
-void KnightAI::Attack()
-{
-	//if (CanAttack() == true) {
-	//	//連打で攻撃できなくなる
-
-	//	//一段目のアタックをしていないなら
-	//	if ( AtkState == false)
-	//	{
-	//	
-	//		m_playerState = enKnightState_ChainAtk;
-
-	//		//FirstAtkFlag = true;
-	//		//コンボを1増やす
-	//		//ComboState++;
-	//		
-	//		AtkState = true;
-	//	}
-	//	//一段目のアタックのアニメーションがスタートしたなら
-	//	if (m_AtkTmingState == FirstAtk_State)
-	//	{
-
-	//		//ステートを二段目のアタックのアニメーションスタートステートにする
-	//		m_AtkTmingState = SecondAtk_State;
-
 
 		}
 
 		if (m_AtkTmingState == SecondAtkStart_State)
 		{
 
-
-			//�X�e�[�g��O�i�ڂ̃A�^�b�N�̃A�j���[�V�����X�^�[�g�X�e�[�g�ɂ���
+			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
 
-	//		//ステートを三段目のアタックのアニメーションスタートステートにする
-	//		m_AtkTmingState = LastAtk_State;
-
-
 		}
-
 
 	}
-		//�X�L���𔭓����鏈��
-		//B�{�^���������ꂽ��
-		if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	//スキルを発動する処理
+	//Bボタンが押されたら
+	if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	{
+
+		//移動速度を上げる
+		m_Status.Speed += 120.0f;
+
+		/*AnimationMove(SkillSpeed);*/
+		pushFlag = true;
+		SkillState = true;
+		//AtkCollistionFlag = true;
+	}
+
+	//必殺技を発動する処理
+	//Xボタンが押されたら
+	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	{
+		pushFlag = true;
+		//アニメーション再生、レベルを３
+		UltimateSkill();
+
+
+
+		//アルティメットSE
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(16);
+		se->Play(false);
+		se->SetVolume(0.3f);
+
+		//必殺技発動フラグをセット
+		UltimateSkillFlag = true;
+	}
+
+	//必殺技発動フラグがセットされているなら
+	if (UltimateSkillFlag == true)
+	{
+		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
+		//必殺技タイマーが3.0fまでの間
+		if (UltimateSkillTimer <= 3.0f)
 		{
-
-			//�ړ����x��グ��
-			m_Status.Speed += 120.0f;
-
-	//}
-		////スキルを発動する処理
-		////Bボタンが押されたら
-		//if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
-		//{
-
-		//	//移動速度を上げる
-		//	m_Status.Speed += 120.0f;
-
-
-			/*AnimationMove(SkillSpeed);*/
-			pushFlag = true;
-			SkillState = true;
-			//AtkCollistionFlag = true;
+			//コリジョンの作成、移動処理
+			UltimateSkillCollistion(OldPosition, m_position);
 		}
-
-
-		//�K�E�Z�𔭓����鏈��
-		//X�{�^���������ꂽ��
-		if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+		else
 		{
-			pushFlag = true;
-			//�A�j���[�V�����Đ��A���x����R
-			UltimateSkill();
-
-
-
-			//�A���e�B���b�gSE
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(16);
-			se->Play(false);
-			se->SetVolume(0.3f);
-
-			//�K�E�Z�����t���O��Z�b�g
-			UltimateSkillFlag = true;
+			//攻撃が有効な時間をリセット
+			UltimateSkillTimer = 0;
+			//必殺技発動フラグをリセット
+			UltimateSkillFlag = false;
+			//コリジョン削除
+			DeleteGO(collisionObject);
+			//コリジョン作成フラグをリセット
+			UltCollisionSetFlag = false;
 		}
+	}
 
-		//�K�E�Z�����t���O���Z�b�g����Ă���Ȃ�
-		if (UltimateSkillFlag == true)
-		{
-			UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-			//�K�E�Z�^�C�}�[��3.0f�܂ł̊�
-			if (UltimateSkillTimer <= 3.0f)
-			{
-				//�R���W�����̍쐬�A�ړ�����
-				UltimateSkillCollistion(OldPosition, m_position);
-			}
-			else
-			{
-				//�U�����L��Ȏ��Ԃ�Z�b�g
-				UltimateSkillTimer = 0;
-				//�K�E�Z�����t���O��Z�b�g
-				UltimateSkillFlag = false;
-				//�R���W�����폜
-				DeleteGO(collisionObject);
-				//�R���W�����쐬�t���O��Z�b�g
-				UltCollisionSetFlag = false;
-			}
-		}
+	//攻撃かスキルを使用しているなら
+	//コリジョン作成
+	if (AtkCollistionFlag == true) AtkCollisiton();
 
-		//�U�����X�L����g�p���Ă���Ȃ�
-		//�R���W�����쐬
-		if (AtkCollistionFlag == true) AtkCollisiton();
-
-		////必殺技を発動する処理
-		////Xボタンが押されたら
-		//if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
-		//{
-		//	pushFlag = true;
-		//	//アニメーション再生、レベルを３
-		//	UltimateSkill();
-
-
-
-		//	//アルティメットSE
-		//	SoundSource* se = NewGO<SoundSource>(0);
-		//	se->Init(16);
-		//	se->Play(false);
-		//	se->SetVolume(0.3f);
-
-		//	//必殺技発動フラグをセット
-		//	UltimateSkillFlag = true;
-		//}
-
-		//必殺技発動フラグがセットされているなら
-		//if (UltimateSkillFlag == true)
-		//{
-		//	UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-		//	//必殺技タイマーが3.0fまでの間
-		//	if (UltimateSkillTimer <= 3.0f)
-		//	{
-		//		//コリジョンの作成、移動処理
-		//		UltimateSkillCollistion(OldPosition, m_position);
-		//	}
-		//	else
-		//	{
-		//		//攻撃が有効な時間をリセット
-		//		UltimateSkillTimer = 0;
-		//		//必殺技発動フラグをリセット
-		//		UltimateSkillFlag = false;
-		//		//コリジョン削除
-		//		DeleteGO(collisionObject);
-		//		//コリジョン作成フラグをリセット
-		//		UltCollisionSetFlag = false;
-		//	}
-		//}
-
-		////攻撃かスキルを使用しているなら
-		////コリジョン作成
-		//if (AtkCollistionFlag == true) AtkCollisiton();
-
-	
 }
 
 void KnightAI::Render(RenderContext& rc)

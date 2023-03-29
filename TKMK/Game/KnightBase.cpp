@@ -145,7 +145,6 @@ void KnightBase::Rotation()
 /// <summary>
 /// 攻撃時の当たり判定の処理
 /// </summary>
-
 void KnightBase::AtkCollisiton()
 {
 	//コリジョンオブジェクトを作成する。

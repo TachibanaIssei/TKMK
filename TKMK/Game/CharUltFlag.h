@@ -24,5 +24,7 @@ public:
 		m_whoUltimatSkill = Who;
 	}
 
+
+
 };
 

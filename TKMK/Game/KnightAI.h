@@ -4,6 +4,7 @@
 class Game;
 class KnightPlayer;
 class Neutral_Enemy;
+class CharUltFlag;
 
 class KnightAI:public KnightBase
 {
@@ -90,6 +91,7 @@ private:
 	SphereCollider			m_sphereCollider;							//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
 	Neutral_Enemy*          m_Neutral_Enemy = nullptr;
+	CharUltFlag* charUltFlag = nullptr;
 	bool UltimateSkillFlag = false;
 	bool PL = true;
 	float SkillSpeed = 270.0f;

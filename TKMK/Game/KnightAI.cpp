@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
-
+#include "CharUltFlag.h"
 
 KnightAI::KnightAI()
 {
@@ -24,6 +24,7 @@ KnightAI::KnightAI()
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	charUltFlag = FindGO<CharUltFlag>("charUltFlag");
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
 

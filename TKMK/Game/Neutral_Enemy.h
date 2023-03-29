@@ -12,7 +12,10 @@ class GameCamera;
 class Neutral_Enemy;
 class Patrolnumb;
 class KnightAI;
+class Player;
+class MagicBall;
 class Actor;
+
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -256,6 +259,9 @@ private:
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
 	GameCamera* m_gameCamera = nullptr;
+	Player* player = nullptr;
+	MagicBall* magicBall = nullptr;
+
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
 	SpriteRender		m_HPBar;		//HPバー画像

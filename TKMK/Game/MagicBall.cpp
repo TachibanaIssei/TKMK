@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MagicBall.h"
 
+
 MagicBall::MagicBall()
 {
 

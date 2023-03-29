@@ -261,6 +261,7 @@ private:
 	GameCamera* m_gameCamera = nullptr;
 	Player* player = nullptr;
 	MagicBall* magicBall = nullptr;
+	KnightAI* m_knightAI = nullptr;
 
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス

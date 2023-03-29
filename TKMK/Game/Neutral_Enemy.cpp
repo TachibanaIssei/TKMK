@@ -298,23 +298,30 @@ void Neutral_Enemy::Collision()
 	}
 
 	//敵の攻撃用のコリジョンを取得する
-	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("KnightAI_attack");
+	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
 	//子リジョンの配列をfor文で回す
 	for (auto AIcollision : AIcollisions)
 	{
 		if (AIcollision->IsHit(m_charaCon))
 		{
+			//このコリジョンを作ったアクターを検索
+			m_lastAttackActor = FindGO<Actor>(AIcollision->GetCreatorName());
+
 			//プレイヤーの攻撃力を取得
 			//何故かm_knightAIがnull
 			//HPを減らす
-			m_Status.Hp -= m_knightAI->SetKnightAIAtk();
+			// //HPを減らす
+			m_Status.Hp -= m_lastAttackActor->GetAtk();
+			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 
 
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
+				//相手に経験値を渡す
+				m_lastAttackActor->ExpProcess(Exp);
 				//剣士に経験値を渡す
-				m_knightAI->ExpProcess(Exp);
+				//m_knightAI->ExpProcess(Exp);
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
@@ -347,6 +354,8 @@ void Neutral_Enemy::Collision()
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
+				//相手に経験値を渡す
+				m_lastAttackActor->ExpProcess(Exp);
 				//魔法使いに経験値を渡す
 				player->CharSetExpProcess(Exp);
 				//Deathflag = true;

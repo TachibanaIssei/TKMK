@@ -98,7 +98,7 @@ public:
 	/// �L�����̍U���͂�Ԃ�
 	/// </summary>
 	/// <returns>�I��ꂽ�L�����̍U���͂�Ԃ��֐�</returns>
-	int CharSetAttack()const;
+	//int CharSetAttack()const;
 
 	/// <summary>
 	/// �L������exp�̏���

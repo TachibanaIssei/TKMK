@@ -302,27 +302,27 @@ bool Player::CharSetSpriteFlag()const
 /// �L�����̍U���͂�Ԃ�
 /// </summary>
 /// <returns>�I��ꂽ�L�����̍U���͂�Ԃ��֐�</returns>
-int Player::CharSetAttack()const
-{
-	switch (m_selectCharctar)
-	{
-	case enKnight:
-		return knightPlayer->SetKnightAtk();
-		break;
-
-	//���@�g���̓}�W�b�N�{�[���ōU���͂�Ԃ��̂ŕK�v�Ȃ�
-
-	case enZombie:
-		break;
-
-	case enMonster:
-		break;
-
-
-	default:
-		break;
-	}
-}
+//int Player::CharSetAttack()const
+//{
+//	//switch (m_selectCharctar)
+//	//{
+//	//case enKnight:
+//	//	return knightPlayer->SetKnightAtk();
+//	//	break;
+//
+//	////���@�g���̓}�W�b�N�{�[���ōU���͂�Ԃ��̂ŕK�v�Ȃ�
+//
+//	//case enZombie:
+//	//	break;
+//
+//	//case enMonster:
+//	//	break;
+//
+//
+//	//default:
+//	//	break;
+//	//}
+//}
 
 /// <summary>
 /// �L������exp�̏���

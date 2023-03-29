@@ -27,6 +27,9 @@ public:
 	void Pause();
 	void GameState();
 	
+	/// <summary>
+	/// 
+	/// </summary>
 	void Respawn();
 
 	/*std::vector<Neutral_Enemy*> GetNeutral_EnemyContaier() {
@@ -50,6 +53,16 @@ public:
 	}
 
 	
+	Vector3 SetEnemyRespawnPos();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="number"></param>
+	void SetRespawnPosition(Vector3 pos, int number) {
+		EnemyRespawnPosition[number] = pos;
+	};
 
 	void Render(RenderContext& rc);
 
@@ -106,6 +119,9 @@ private:
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
+	
+	Vector3 EnemyRespawnPosition[9];                        //中立の敵のリスポーンする座標を格納する
+
 	float m_spriteAlpha = 0.0f;
 
 	int enemyNumber = 0;

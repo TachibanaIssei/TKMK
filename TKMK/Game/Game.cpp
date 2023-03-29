@@ -108,7 +108,8 @@ bool Game::Start()
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
-
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
 				//enemyNumber++;
 				//ENEMY_AMOUNT;
 				//Neutral_Enemy*neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
@@ -132,6 +133,8 @@ bool Game::Start()
 			}
 			//右上の座標
 			if (objData.number == 1) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
@@ -144,8 +147,15 @@ bool Game::Start()
 				//m_Neutral_Enemy1->SetScale(objData.scale);
 				return true;
 			}
+			if (objData.number == 2) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
+				return true;
+			}
 			//右下の座標
 			if (objData.number == 3) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
@@ -158,8 +168,15 @@ bool Game::Start()
 				//m_Neutral_Enemy2->SetScale(objData.scale);
 				return true;
 			}
+			if (objData.number == 4) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
+				return true;
+			}
 			//左下の座標
 			if (objData.number == 5) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
@@ -172,7 +189,14 @@ bool Game::Start()
 				//m_Neutral_Enemy3->SetScale(objData.scale);
 				return true;
 			}
+			if (objData.number == 6) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
+				return true;
+			}
 			if (objData.number == 7) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
 				Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
@@ -183,6 +207,11 @@ bool Game::Start()
 				//RespawnNumberBox[enemyNumber] = true;
 				//m_enemyCounter.push_back(neutral_Enemy);
 				//m_Neutral_Enemy4->SetScale(objData.scale);
+				return true;
+			}
+			if (objData.number == 8) {
+				//リスポーン座標の設定
+				SetRespawnPosition(objData.position, objData.number);
 				return true;
 			}
 		}
@@ -344,6 +373,9 @@ void Game::Pause()
 	}
 }
 
+/// <summary>
+/// 中立の敵のリスポーンの処理
+/// </summary>
 void Game::Respawn()
 {
 	if (ENEMY_AMOUNT != enemyNumber) {
@@ -354,6 +386,8 @@ void Game::Respawn()
 			Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
 			neutral_Enemy->SetNeutral_EnemyGame(this);
 			neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
+			//リスポーンする座標
+			neutral_Enemy->SetPosition(SetEnemyRespawnPos());
 			//neutral_Enemy->SetRotation(objData.rotation);
 			neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 
@@ -362,27 +396,35 @@ void Game::Respawn()
 
 	//マップのFindGO関数を呼び出しエネミーの数を把握する
 	m_Map->FindEnemys();
+}
 
-	//Neutral_Enemyを配列で消す
-	//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//存在するエネミーの数がスタジアムのエネミーの総数より小さいなら
-	//if (ENEMY_AMOUNT != m_enemyCounter.size()) {
-	//	//生成するエネミーの数
-	//	int spawnAmount = ENEMY_AMOUNT - m_enemyCounter.size();
-	//	//
-	//	for (int generate = 0; generate < spawnAmount; generate++) {
-
-
-	//		Neutral_Enemy* m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-
-	//		m_Neutral_Enemy->SetNeutral_EnemyGame(this);
-	//		m_Neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
-	//		//m_Neutral_Enemy->SetRotation(objData.rotation);
-	//		m_Neutral_Enemy->SetKnightPlayer(m_knightplayer);
-	//		m_enemyCounter.push_back(neutral_Enemy);
-
-	//	}
-	//}
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+Vector3 Game::SetEnemyRespawnPos()
+{
+	for (int i = 0; i < 9; i++)
+	{
+		int a;
+		for (auto actorPos : m_Actors)
+		{
+			//キャラの座標
+			Vector3 CharPos = actorPos->GetPosition();
+			Vector3 diff = EnemyRespawnPosition[i] - CharPos;
+			if (diff.Length() < 200)
+			{
+				a++;
+			}
+			
+		}
+		//もしリスポーンする座標が全てのキャラの座標から200離れていたら
+		if (a == m_Actors.max_size())
+		{
+			//その座標をリスポーンする座標とする
+			return EnemyRespawnPosition[i];
+		}
+	}
 }
 
 //ゲームステートの管理

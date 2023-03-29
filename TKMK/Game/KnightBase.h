@@ -87,7 +87,7 @@ public:
 	/// <summary>
 	/// 通常攻撃の当たり判定の処理
 	/// </summary>
-	//void AtkCollisiton();
+	void AtkCollisiton();
 
 	/// <summary>
 	/// 必殺技の当たり判定の処理

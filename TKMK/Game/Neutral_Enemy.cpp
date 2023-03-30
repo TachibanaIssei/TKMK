@@ -32,7 +32,7 @@ Neutral_Enemy::~Neutral_Enemy()
 
 bool Neutral_Enemy::Start()
 {
-	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’èª­ã¿è¾¼ã‚€ã€‚
+	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ğ“Ç‚İ‚ŞB
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Neutral_Enemy/Idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Neutral_Enemy/Run.tka");
@@ -43,26 +43,26 @@ bool Neutral_Enemy::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-	//ãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã‚€ã€‚
+	//ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚ŞB
 	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
 
-	//åº§æ¨™ã‚’è¨­å®š
+	//À•W‚ğİ’è
 	m_modelRender.SetPosition(m_position);
-	//å›è»¢ã‚’è¨­å®šã™ã‚‹ã€‚
+	//‰ñ“]‚ğİ’è‚·‚éB
 	m_modelRender.SetRotation(m_rot);
-	//å¤§ãã•ã‚’è¨­å®šã™ã‚‹ã€‚
+	//‘å‚«‚³‚ğİ’è‚·‚éB
 	m_modelRender.SetScale(m_scale);
-	//å¤§ãã•èª¿æ•´
-	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’åˆæœŸåŒ–ã€‚
+	//‘å‚«‚³’²®
+	//ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚ğ‰Šú‰»B
 	m_charaCon.Init(
-		9.0f,			//åŠå¾„ã€‚
-		20.0f,			//é«˜ã•ã€‚
-		m_position		//åº§æ¨™ã€‚
+		9.0f,			//”¼ŒaB
+		20.0f,			//‚‚³B
+		m_position		//À•WB
 	);
-	//ã‚¹ãƒ•ã‚£ã‚¢ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’åˆæœŸåŒ–ã€‚
+	//ƒXƒtƒBƒAƒRƒ‰ƒCƒ_[‚ğ‰Šú‰»B
 	m_sphereCollider.Create(1.0f);
 
-	//é ­ã®ãƒœãƒ¼ãƒ³ã®IDã‚’å–å¾—ã™ã‚‹
+	//“ª‚Ìƒ{[ƒ“‚ÌID‚ğæ“¾‚·‚é
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 
 	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
@@ -72,20 +72,20 @@ bool Neutral_Enemy::Start()
 
 	m_HPFrame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
 
-	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆç”¨ã®é–¢æ•°ã‚’è¨­å®šã™ã‚‹ã€‚
+	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg—p‚ÌŠÖ”‚ğİ’è‚·‚éB
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
 
-	//ä¹±æ•°ã‚’åˆæœŸåŒ–ã€‚
+	//—”‚ğ‰Šú‰»B
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
 
-	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’èª­ã¿è¾¼ã‚€
+	//ƒXƒe[ƒ^ƒX‚ğ“Ç‚İ‚Ş
 	m_Status.Init("Enemy");
 
-	//å·¡å›ç”¨ã®ãƒ‘ã‚¹ã‚’èª­ã¿è¾¼ã‚€
+	//„‰ñ—p‚ÌƒpƒX‚ğ“Ç‚İ‚Ş
 	m_EnemyPoslevel.Init("Assets/level3D/enemyPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
@@ -102,28 +102,28 @@ bool Neutral_Enemy::Start()
 
 void Neutral_Enemy::Update()
 {
-	// ãƒãƒ¼ã‚ºä¸­ã¯ä½•ã‚‚ã—ãªã„
+	// ƒ|[ƒY’†‚Í‰½‚à‚µ‚È‚¢
 	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
 		return;
 	}
 
-	//æ¢ç´¢å‡¦ç†ã€‚
+	//’Tõˆ—B
 	//Search();
-	//è¿½è·¡å‡¦ç†ã€‚
+	//’ÇÕˆ—B
 	//Chase();
 
-	//å›è»¢å‡¦ç†ã€‚
+	//‰ñ“]ˆ—B
 	Rotation();
-	//å½“ãŸã‚Šåˆ¤å®šã€‚
+	//“–‚½‚è”»’èB
 	Collision();
-	//æ”»æ’ƒå‡¦ç†ã€‚
+	//UŒ‚ˆ—B
 	//Attack();
-	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿã€‚
+	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶B
 	PlayAnimation();
-	//ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†ã€‚
+	//ƒXƒe[ƒg‚Ì‘JˆÚˆ—B
 	ManageState();
 	HPBar();
-	//ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°ã€‚
+	//ƒ‚ƒfƒ‹‚ÌXVB
 	m_modelRender.Update();
 }
 
@@ -131,7 +131,7 @@ void Neutral_Enemy::Move()
 {
 	Vector3 diff = m_forward;
 	diff.Normalize();
-	////ç§»å‹•é€Ÿåº¦ã‚’è¨­å®šã™ã‚‹ã€‚
+	////ˆÚ“®‘¬“x‚ğİ’è‚·‚éB
 	m_moveSpeed = diff * m_Status.Speed;
 	m_forward.Normalize();
 	Vector3 moveSpeed = m_forward * m_Status.Speed + m_hagikiPower;
@@ -151,42 +151,42 @@ void Neutral_Enemy::Rotation()
 	
 	if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
-		//m_moveSpeed.xã¨m_moveSpeed.zã®çµ¶å¯¾å€¤ãŒã¨ã‚‚ã«0.001ä»¥ä¸‹ã¨ã„ã†ã“ã¨ã¯
-		//ã“ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§ã¯ã‚­ãƒ£ãƒ©ã¯ç§»å‹•ã—ã¦ã„ãªã„ã®ã§æ—‹å›ã™ã‚‹å¿…è¦ã¯ãªã„ã€‚
+		//m_moveSpeed.x‚Æm_moveSpeed.z‚Ìâ‘Î’l‚ª‚Æ‚à‚É0.001ˆÈ‰º‚Æ‚¢‚¤‚±‚Æ‚Í
+		//‚±‚ÌƒtƒŒ[ƒ€‚Å‚ÍƒLƒƒƒ‰‚ÍˆÚ“®‚µ‚Ä‚¢‚È‚¢‚Ì‚Åù‰ñ‚·‚é•K—v‚Í‚È‚¢B
 		return;
 	}
-	//atan2ã¯tanÎ¸ã®å€¤ã‚’è§’åº¦(ãƒ©ã‚¸ã‚¢ãƒ³å˜ä½)ã«å¤‰æ›ã—ã¦ãã‚Œã‚‹é–¢æ•°ã€‚
-	//m_moveSpeed.x / m_moveSpeed.zã®çµæœã¯tanÎ¸ã«ãªã‚‹ã€‚
-	//atan2ã‚’ä½¿ç”¨ã—ã¦ã€è§’åº¦ã‚’æ±‚ã‚ã¦ã„ã‚‹ã€‚
-	//ã“ã‚ŒãŒå›è»¢è§’åº¦ã«ãªã‚‹ã€‚
+	//atan2‚ÍtanƒÆ‚Ì’l‚ğŠp“x(ƒ‰ƒWƒAƒ“’PˆÊ)‚É•ÏŠ·‚µ‚Ä‚­‚ê‚éŠÖ”B
+	//m_moveSpeed.x / m_moveSpeed.z‚ÌŒ‹‰Ê‚ÍtanƒÆ‚É‚È‚éB
+	//atan2‚ğg—p‚µ‚ÄAŠp“x‚ğ‹‚ß‚Ä‚¢‚éB
+	//‚±‚ê‚ª‰ñ“]Šp“x‚É‚È‚éB
 	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
-	//atanãŒè¿”ã—ã¦ãã‚‹è§’åº¦ã¯ãƒ©ã‚¸ã‚¢ãƒ³å˜ä½ãªã®ã§
-	//SetRotationDegã§ã¯ãªãSetRotationã‚’ä½¿ç”¨ã™ã‚‹ã€‚
+	//atan‚ª•Ô‚µ‚Ä‚­‚éŠp“x‚Íƒ‰ƒWƒAƒ“’PˆÊ‚È‚Ì‚Å
+	//SetRotationDeg‚Å‚Í‚È‚­SetRotation‚ğg—p‚·‚éB
 	m_rot.SetRotationY(-angle);
 
-	//å›è»¢ã‚’è¨­å®šã™ã‚‹ã€‚
+	//‰ñ“]‚ğİ’è‚·‚éB
 	m_modelRender.SetRotation(m_rot);
 
-	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹ã€‚
+	//ƒvƒŒƒCƒ„[‚Ì‘OƒxƒNƒgƒ‹‚ğŒvZ‚·‚éB
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
 
-//è¡çªã—ãŸã¨ãã«å‘¼ã°ã‚Œã‚‹é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ(å£ç”¨)
+//Õ“Ë‚µ‚½‚Æ‚«‚ÉŒÄ‚Î‚ê‚éŠÖ”ƒIƒuƒWƒFƒNƒg(•Ç—p)
 struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 {
-	bool isHit = false;						//è¡çªãƒ•ãƒ©ã‚°ã€‚
+	bool isHit = false;						//Õ“Ëƒtƒ‰ƒOB
 
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
-		//å£ã¨ã¶ã¤ã‹ã£ã¦ãªã‹ã£ãŸã‚‰ã€‚
+		//•Ç‚Æ‚Ô‚Â‚©‚Á‚Ä‚È‚©‚Á‚½‚çB
 		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-			//è¡çªã—ãŸã®ã¯å£ã§ã¯ãªã„ã€‚
+			//Õ“Ë‚µ‚½‚Ì‚Í•Ç‚Å‚Í‚È‚¢B
 			return 0.0f;
 		}
 
-		//å£ã¨ã¶ã¤ã‹ã£ãŸã‚‰ã€‚
-		//ãƒ•ãƒ©ã‚°ã‚’trueã«ã€‚
+		//•Ç‚Æ‚Ô‚Â‚©‚Á‚½‚çB
+		//ƒtƒ‰ƒO‚ğtrue‚ÉB
 		isHit = true;
 		return 0.0f;
 	}
@@ -194,7 +194,7 @@ struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 
 void Neutral_Enemy::Chase()
 {
-	//è¿½è·¡ã‚¹ãƒ†ãƒ¼ãƒˆã§ãªã„ãªã‚‰ã€è¿½è·¡å‡¦ç†ã¯ã—ãªã„ã€‚
+	//’ÇÕƒXƒe[ƒg‚Å‚È‚¢‚È‚çA’ÇÕˆ—‚Í‚µ‚È‚¢B
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Chase)
 	{
 		return;
@@ -203,15 +203,15 @@ void Neutral_Enemy::Chase()
 
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
 	diff.Normalize();
-	//ç§»å‹•é€Ÿåº¦ã‚’è¨­å®šã™ã‚‹ã€‚
+	//ˆÚ“®‘¬“x‚ğİ’è‚·‚éB
 	m_moveSpeed = diff * m_Status.Speed;
 	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
-		//åœ°é¢ã«ã¤ã„ãŸã€‚
+		//’n–Ê‚É‚Â‚¢‚½B
 		m_moveSpeed.y = 0.0f;
 	}
 	Vector3 modelPosition = m_position;
-	//ã¡ã‚‡ã£ã¨ã ã‘ãƒ¢ãƒ‡ãƒ«ã®åº§æ¨™ã‚’æŒ™ã’ã‚‹ã€‚
+	//‚¿‚å‚Á‚Æ‚¾‚¯ƒ‚ƒfƒ‹‚ÌÀ•W‚ğ‹“‚°‚éB
 	modelPosition.y += 2.5f;
 	m_modelRender.SetPosition(modelPosition);
 
@@ -219,144 +219,147 @@ void Neutral_Enemy::Chase()
 
 void Neutral_Enemy::Collision()
 {
-	//æ”»æ’ƒä¸­ã€ãƒ‡ã‚¹ä¸­ã¯å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†ã‚’è¡Œã‚ãªã„
+	//UŒ‚’†AƒfƒX’†‚Í“–‚½‚è”»’è‚Ìˆ—‚ğs‚í‚È‚¢
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
 
-	//æ•µã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹
+	//“G‚ÌUŒ‚—p‚ÌƒRƒŠƒWƒ‡ƒ“‚ğæ“¾‚·‚é
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
-	//å­ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
+	//qƒŠƒWƒ‡ƒ“‚Ì”z—ñ‚ğfor•¶‚Å‰ñ‚·
 	for (auto collision : collisions)
 	{
 		if (collision->IsHit(m_charaCon))
 		{
-			//ã“ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œã£ãŸã‚¢ã‚¯ã‚¿ãƒ¼ã‚’æ¤œç´¢
+			//‚±‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì‚Á‚½ƒAƒNƒ^[‚ğŒŸõ
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
-			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ”»æ’ƒåŠ›ã‚’å–å¾—
-			//ä½•æ•…ã‹m_knightplayerãŒnull
-			//m_knightplayer = FindGO<KnightPlayer>("knightplayer");
-			//HPã‚’æ¸›ã‚‰ã™
-			//m_Status.Hp -= player->CharSetAttack();
-
-			//HPã‚’æ¸›ã‚‰ã™
+			//HP‚ğŒ¸‚ç‚·
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 
-			//HPãŒ0ã«ãªã£ãŸã‚‰
+			//HP‚ª0‚É‚È‚Á‚½‚ç
 			if (m_Status.Hp <= 0)
 			{
-				//å‰£å£«ã«çµŒé¨“å€¤ã‚’æ¸¡ã™
-				//player->CharSetExpProcess(Exp);
-
-				//ç›¸æ‰‹ã«çµŒé¨“å€¤ã‚’æ¸¡ã™
+				//‘Šè‚ÉŒoŒ±’l‚ğ“n‚·
 				m_lastAttackActor->ExpProcess(Exp);
 				//Deathflag = true;
-				//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//€–SƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 				m_Neutral_Enemy = nullptr;
 			}
 			else {
-				//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//”íƒ_ƒ[ƒWƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//åŠ¹æœéŸ³å†ç”Ÿ
+				//Œø‰Ê‰¹Ä¶
 			}
 		}
 	}
-	//æ•µã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹
+	//“G‚ÌUŒ‚—p‚ÌƒRƒŠƒWƒ‡ƒ“‚ğæ“¾‚·‚é
 	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
-	//å­ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
+	//qƒŠƒWƒ‡ƒ“‚Ì”z—ñ‚ğfor•¶‚Å‰ñ‚·
 	for (auto collision : Ultcollisions)
 	{
 		if (collision->IsHit(m_charaCon))
 		{
-			//ã“ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œã£ãŸã‚¢ã‚¯ã‚¿ãƒ¼ã‚’æ¤œç´¢
+			//‚±‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì‚Á‚½ƒAƒNƒ^[‚ğŒŸõ
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
-			//hpã‚’æ¸›ã‚‰ã™
+			//hp‚ğŒ¸‚ç‚·
 			m_Status.Hp -= 100;
 			if (m_Status.Hp < 0)
 			{
-				//ç›¸æ‰‹ã«çµŒé¨“å€¤ã‚’æ¸¡ã™
+				//‘Šè‚ÉŒoŒ±’l‚ğ“n‚·
 				m_lastAttackActor->ExpProcess(Exp);
-				//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//€–SƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 				m_Neutral_Enemy = nullptr;
 			}
 			else {
-				//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//”íƒ_ƒ[ƒWƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//åŠ¹æœéŸ³å†ç”Ÿ
+				//Œø‰Ê‰¹Ä¶
 			}
 		}
 	}
-	//æ”»æ’ƒä¸­ã€ãƒ‡ã‚¹ä¸­ã¯å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†ã‚’è¡Œã‚ãªã„
+	//UŒ‚’†AƒfƒX’†‚Í“–‚½‚è”»’è‚Ìˆ—‚ğs‚í‚È‚¢
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
 
-	//æ•µã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹
-	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("KnightAI_attack");
-	//å­ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
+	//“G‚ÌUŒ‚—p‚ÌƒRƒŠƒWƒ‡ƒ“‚ğæ“¾‚·‚é
+	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//qƒŠƒWƒ‡ƒ“‚Ì”z—ñ‚ğfor•¶‚Å‰ñ‚·
 	for (auto AIcollision : AIcollisions)
 	{
 		if (AIcollision->IsHit(m_charaCon))
 		{
-			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ”»æ’ƒåŠ›ã‚’å–å¾—
-			//ä½•æ•…ã‹m_knightAIãŒnull
-			//HPã‚’æ¸›ã‚‰ã™
-			m_Status.Hp -= m_knightAI->SetKnightAIAtk();
+			//‚±‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì‚Á‚½ƒAƒNƒ^[‚ğŒŸõ
+			m_lastAttackActor = FindGO<Actor>(AIcollision->GetCreatorName());
+
+			//ƒvƒŒƒCƒ„[‚ÌUŒ‚—Í‚ğæ“¾
+			//‰½ŒÌ‚©m_knightAI‚ªnull
+			//HP‚ğŒ¸‚ç‚·
+			// //HP‚ğŒ¸‚ç‚·
+			m_Status.Hp -= m_lastAttackActor->GetAtk();
+			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 
 
-			//HPãŒ0ã«ãªã£ãŸã‚‰
+			//HP‚ª0‚É‚È‚Á‚½‚ç
 			if (m_Status.Hp <= 0)
 			{
-				//å‰£å£«ã«çµŒé¨“å€¤ã‚’æ¸¡ã™
-				m_knightAI->ExpProcess(Exp);
+				//‘Šè‚ÉŒoŒ±’l‚ğ“n‚·
+				m_lastAttackActor->ExpProcess(Exp);
+				//Œ•m‚ÉŒoŒ±’l‚ğ“n‚·
+				//m_knightAI->ExpProcess(Exp);
 				//Deathflag = true;
-				//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//€–SƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
 			else {
-				//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//”íƒ_ƒ[ƒWƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//åŠ¹æœéŸ³å†ç”Ÿ
+				//Œø‰Ê‰¹Ä¶
 			}
 		}
 	}
 
-	//æ”»æ’ƒä¸­ã€ãƒ‡ã‚¹ä¸­ã¯å½“ãŸã‚Šåˆ¤å®šã®å‡¦ç†ã‚’è¡Œã‚ãªã„
+	//UŒ‚’†AƒfƒX’†‚Í“–‚½‚è”»’è‚Ìˆ—‚ğs‚í‚È‚¢
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
-	//é­”æ³•ä½¿ã„ã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹
-	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("player_MagicBall");
-	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
+	//–‚–@g‚¢‚ÌUŒ‚—p‚ÌƒRƒŠƒWƒ‡ƒ“‚ğæ“¾‚·‚é
+	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("Wizard_MagicBall");
+	//ƒRƒŠƒWƒ‡ƒ“‚Ì”z—ñ‚ğfor•¶‚Å‰ñ‚·
 	for (auto Wizardcollision : Wizardcollisions)
 	{
 		if (Wizardcollision->IsHit(m_charaCon))
 		{
-			magicBall = FindGO<MagicBall>("magicBall");
-			//é­”æ³•ä½¿ã„ã®æ”»æ’ƒåŠ›ã‚’å–å¾—
-			//HPã‚’æ¸›ã‚‰ã™
-			m_Status.Hp -= magicBall->SetWizardAttack();
+			//‚±‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì‚Á‚½ƒAƒNƒ^[‚ğŒŸõ
+			m_lastAttackActor = FindGO<Actor>(Wizardcollision->GetCreatorName());
+			//magicBall = FindGO<MagicBall>("magicBall");
+			//–‚–@g‚¢‚ÌUŒ‚—Í‚ğæ“¾
+			//HP‚ğŒ¸‚ç‚·
+			m_Status.Hp -= m_lastAttackActor->GetAtk();
 
-			//HPãŒ0ã«ãªã£ãŸã‚‰
+			//HP‚ª0‚É‚È‚Á‚½‚ç
 			if (m_Status.Hp <= 0)
 			{
-				//é­”æ³•ä½¿ã„ã«çµŒé¨“å€¤ã‚’æ¸¡ã™
-				player->CharSetExpProcess(Exp);
+				//player = FindGO<Player>("player");
+				//‘Šè‚ÉŒoŒ±’l‚ğ“n‚·
+				m_lastAttackActor->ExpProcess(Exp);
+				//–‚–@g‚¢‚ÉŒoŒ±’l‚ğ“n‚·
+				//player->CharSetExpProcess(Exp);
 				//Deathflag = true;
-				//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//€–SƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
 			else {
-				//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆã«é·ç§»ã™ã‚‹ã€‚
+				//”íƒ_ƒ[ƒWƒXƒe[ƒg‚É‘JˆÚ‚·‚éB
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//åŠ¹æœéŸ³å†ç”Ÿ
+				//Œø‰Ê‰¹Ä¶
 			}
 		}
 	}
@@ -364,7 +367,7 @@ void Neutral_Enemy::Collision()
 
 void Neutral_Enemy::Attack()
 {
-	//æ”»æ’ƒã‚¹ãƒ†ãƒ¼ãƒˆã§ã¯ãªã‹ã£ãŸã‚‰
+	//UŒ‚ƒXƒe[ƒg‚Å‚Í‚È‚©‚Á‚½‚ç
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Attack)
 	{
 		return;
@@ -374,7 +377,7 @@ void Neutral_Enemy::Attack()
 
 bool Neutral_Enemy::Search()
 {
-	//å…¨ã¦ã®Actorã‚’èª¿ã¹ã‚‹
+	//‘S‚Ä‚ÌActor‚ğ’²‚×‚é
 	for (Actor* actor : m_game->GetActors()) {
 
 		Vector3 ActorPosition = actor->GetPosition();
@@ -382,7 +385,7 @@ bool Neutral_Enemy::Search()
 		diff.Normalize();
 		float angle = acosf(diff.Dot(m_forward));
 	
-		//ActorãŒè¦–ç•Œå†…ã«å±…ãŸã‚‰ã€‚
+		//Actor‚ª‹ŠE“à‚É‹‚½‚çB
 		if (Math::PI * 0.8f > fabsf(angle) && (ActorPosition - m_position).LengthSq() <= 100.0f * 100.0f)
 		{
 			m_targetActor = actor;
@@ -391,7 +394,7 @@ bool Neutral_Enemy::Search()
 		}
 	}
 
-	//ã©ã®Actorã‚‚è¦–ç•Œå†…ã«ã„ãªã„ã€‚
+	//‚Ç‚ÌActor‚à‹ŠE“à‚É‚¢‚È‚¢B
 	m_targetActor = nullptr;
 
 	return false;
@@ -399,11 +402,11 @@ bool Neutral_Enemy::Search()
 
 void Neutral_Enemy::MakeAttackCollision()
 {
-	//æ”»æ’ƒåˆ¤å®šç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ã€‚
+	//UŒ‚”»’è—p‚ÌƒRƒŠƒWƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚éB
 	auto collisionObject = NewGO<CollisionObject>(0);
-	//é ­ã®ãƒœãƒ¼ãƒ³ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’å–å¾—ã™ã‚‹ã€‚
+	//“ª‚Ìƒ{[ƒ“‚Ìƒ[ƒ‹ƒhs—ñ‚ğæ“¾‚·‚éB
 	Matrix matrix = m_modelRender.GetBone(m_AttackBoneId)->GetWorldMatrix();
-	//ãƒœãƒƒã‚¯ã‚¹çŠ¶ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œæˆã™ã‚‹ã€‚
+	//ƒ{ƒbƒNƒXó‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì¬‚·‚éB
 	collisionObject->CreateSphere(m_position, Quaternion::Identity,20.0f);
 	collisionObject->SetWorldMatrix(matrix);
 	collisionObject->SetName("enemy_attack");
@@ -413,7 +416,7 @@ void Neutral_Enemy::MakeAttackCollision()
 void Neutral_Enemy::ProcessCommonStateTransition()
 {
 	
-	//å„ã‚¿ã‚¤ãƒãƒ¼ã‚’åˆæœŸåŒ–ã€‚
+	//Šeƒ^ƒCƒ}[‚ğ‰Šú‰»B
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
 
@@ -422,20 +425,20 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 		Vector3 diff = m_targetActor->GetPosition() - m_position;
 
 		diff.Normalize();
-		//ç§»å‹•é€Ÿåº¦ã‚’è¨­å®šã™ã‚‹ã€‚
+		//ˆÚ“®‘¬“x‚ğİ’è‚·‚éB
 		m_moveSpeed = diff;
 		
 
-		//æ”»æ’ƒã§ãã‚‹è·é›¢ãªã‚‰ã€‚
+		//UŒ‚‚Å‚«‚é‹——£‚È‚çB
 		if (CanAttack() == true)
 		{
-			//ä¹±æ•°ã«ã‚ˆã£ã¦ã€æ”»æ’ƒã™ã‚‹ã‹å¾…æ©Ÿã•ã›ã‚‹ã‹ã‚’æ±ºå®šã™ã‚‹ã€‚	
+			//—”‚É‚æ‚Á‚ÄAUŒ‚‚·‚é‚©‘Ò‹@‚³‚¹‚é‚©‚ğŒˆ’è‚·‚éB	
 			{
-				//ä¹±æ•°ã«ã‚ˆã£ã¦ã€æ”»æ’ƒã™ã‚‹ã‹å¾…æ©Ÿã•ã›ã‚‹ã‹ã‚’æ±ºå®šã™ã‚‹ã€‚	
+				//—”‚É‚æ‚Á‚ÄAUŒ‚‚·‚é‚©‘Ò‹@‚³‚¹‚é‚©‚ğŒˆ’è‚·‚éB	
 		/*		int ram = rand() % 100;
 				if (ram > 50)*/
 
-				//æ”»æ’ƒã‚¹ãƒ†ãƒ¼ãƒˆã«ç§»è¡Œã™ã‚‹ã€‚
+				//UŒ‚ƒXƒe[ƒg‚ÉˆÚs‚·‚éB
 				if (m_Neutral_EnemyState == enNeutral_Enemy_Attack) {
 					m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 				}
@@ -446,17 +449,17 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 				return;
 			}
 		}
-		//æ”»æ’ƒã§ããªã„è·é›¢ãªã‚‰ã€‚
+		//UŒ‚‚Å‚«‚È‚¢‹——£‚È‚çB
 		else
 		{
 
-			//è¿½è·¡ã‚¹ãƒ†ãƒ¼ãƒˆã«ç§»è¡Œã™ã‚‹ã€‚
+			//’ÇÕƒXƒe[ƒg‚ÉˆÚs‚·‚éB
 			m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 			return;
 
 		}
 	}
-	//æ•µã‚’è¦‹ã¤ã‘ã‚‰ã‚Œãªã‘ã‚Œã°ã€‚
+	//“G‚ğŒ©‚Â‚¯‚ç‚ê‚È‚¯‚ê‚ÎB
 	else
 	{
 		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
@@ -467,10 +470,10 @@ void Neutral_Enemy::ProcessIdleStateTransition()
 {
 	m_idleTimer += g_gameTime->GetFrameDeltaTime();
 
-	//å¾…æ©Ÿæ™‚é–“ãŒã‚ã‚‹ç¨‹åº¦çµŒéã—ãŸã‚‰ã€‚
+	//‘Ò‹@ŠÔ‚ª‚ ‚é’ö“xŒo‰ß‚µ‚½‚çB
 	if (m_idleTimer >= 0.5f)
 	{
-		//ä»–ã®ã‚¹ãƒ†ãƒ¼ãƒˆã¸é·ç§»ã™ã‚‹ã€‚
+		//‘¼‚ÌƒXƒe[ƒg‚Ö‘JˆÚ‚·‚éB
 		ProcessCommonStateTransition();
 
 	}
@@ -478,7 +481,7 @@ void Neutral_Enemy::ProcessIdleStateTransition()
 }
 void Neutral_Enemy::ProcessRunStateTransition()
 {
-	//ä»–ã®ã‚¹ãƒ†ãƒ¼ãƒˆã¸é·ç§»ã™ã‚‹ã€‚
+	//‘¼‚ÌƒXƒe[ƒg‚Ö‘JˆÚ‚·‚éB
 	ProcessCommonStateTransition();
 }
 
@@ -490,20 +493,20 @@ void Neutral_Enemy::ProcessChaseStateTransition()
 		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
 	}
 	else {
-		//æ”»æ’ƒã§ãã‚‹è·é›¢ãªã‚‰ã€‚
+		//UŒ‚‚Å‚«‚é‹——£‚È‚çB
 		if (CanAttack())
 		{
-			//ä»–ã®ã‚¹ãƒ†ãƒ¼ãƒˆã¸é·ç§»ã™ã‚‹ã€‚
+			//‘¼‚ÌƒXƒe[ƒg‚Ö‘JˆÚ‚·‚éB
 			ProcessCommonStateTransition();
 			return;
 		}
 	}
 
 	m_chaseTimer += g_gameTime->GetFrameDeltaTime();
-	//è¿½è·¡æ™‚é–“ãŒã‚ã‚‹ç¨‹åº¦çµŒéã—ãŸã‚‰ã€‚
+	//’ÇÕŠÔ‚ª‚ ‚é’ö“xŒo‰ß‚µ‚½‚çB
 	if (m_chaseTimer >= 0.5f)
 	{
-		//ä»–ã®ã‚¹ãƒ†ãƒ¼ãƒˆã¸é·ç§»ã™ã‚‹ã€‚
+		//‘¼‚ÌƒXƒe[ƒg‚Ö‘JˆÚ‚·‚éB
 		ProcessCommonStateTransition();
 	}
 }
@@ -511,31 +514,31 @@ void Neutral_Enemy::ProcessChaseStateTransition()
 void Neutral_Enemy::ProcessAttackStateTransition()
 {
 	Attack();
-	//æ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
+	//UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶‚ªI‚í‚Á‚½‚çB
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//ä»–ã®ã‚¹ãƒ†ãƒ¼ãƒˆã¸é·ç§»ã™ã‚‹ã€‚
+		//‘¼‚ÌƒXƒe[ƒg‚Ö‘JˆÚ‚·‚éB
 		ProcessCommonStateTransition();
 	}
 }
 
 void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 {
-	//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
+	//”íƒ_ƒ[ƒWƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶‚ªI‚í‚Á‚½‚çB
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		if (m_lastAttackActor == nullptr) {
-			//å¯¾è±¡ãŒå±…ãªã„ã®ã§å·¡å›ã™ã‚‹ã€‚
+			//‘ÎÛ‚ª‹‚È‚¢‚Ì‚Å„‰ñ‚·‚éB
 			m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
 
 			return;
 		}
 
-		//æ”»æ’ƒã•ã‚ŒãŸã‚‰è·é›¢é–¢ä¿‚ç„¡ã—ã«ã€å–ã‚Šæ•¢ãˆãšè¿½è·¡ã•ã›ã‚‹ã€‚
+		//UŒ‚‚³‚ê‚½‚ç‹——£ŠÖŒW–³‚µ‚ÉAæ‚èŠ¸‚¦‚¸’ÇÕ‚³‚¹‚éB
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 		//Vector3 diff = player->GetCharPosition() - m_position;
 		//diff.Normalize();
-		//ç§»å‹•é€Ÿåº¦ã‚’è¨­å®šã™ã‚‹ã€‚
+		//ˆÚ“®‘¬“x‚ğİ’è‚·‚éB
 		//m_moveSpeed = diff * m_Status.Speed;
 		m_targetActor = m_lastAttackActor;
 	}
@@ -543,13 +546,13 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 
 void Neutral_Enemy::ProcessDeathStateTransition()
 {
-	//ãƒ€ã‚¦ãƒ³ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
+	//ƒ_ƒEƒ“ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶‚ªI‚í‚Á‚½‚çB
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//m_game->GetNeutral_EnemyContaier().erase(std::remove(m_game->GetNeutral_EnemyContaier().begin(),
 		//	m_game->GetNeutral_EnemyContaier().end(), this), m_game->GetNeutral_EnemyContaier().end()/*std::cend(m_game->GetNeutral_EnemyContaier()*/);
 		m_game->SubNeutral_EnemyContaier();
-		//è‡ªèº«ã‚’å‰Šé™¤ã™ã‚‹ã€‚
+		//©g‚ğíœ‚·‚éB
 		DeleteGO(this);
 	}
 }
@@ -591,7 +594,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		if (distance.Length() <= 10.0f)
 		{
 
-			//1ã‹ã‚‰ã«ã—ã‹ã£ãŸã‚‰+ï¼‘ã—ã‚
+			//1‚©‚ç‚É‚µ‚©‚Á‚½‚ç+‚P‚µ‚ë
 			int ram = rand() % 100 /*+ 1*/;
 			if (ram >= 0)
 			{
@@ -803,7 +806,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		}
 	}
 
-	//å¯¾è±¡ã‚’æ¢ã™
+	//‘ÎÛ‚ğ’T‚·
 	if (Search())
 	{
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
@@ -830,23 +833,23 @@ void Neutral_Enemy::ManageState()
 {
 	switch (m_Neutral_EnemyState)
 	{
-		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
+		//‘Ò‹@ƒXƒe[ƒg
 	case enNeutral_Enemy_Idle:
 		ProcessIdleStateTransition();
 		break;
-		//è¿½è·¡ã‚¹ãƒ†ãƒ¼ãƒˆ
+		//’ÇÕƒXƒe[ƒg
 	case enNeutral_Enemy_Chase:
 		ProcessChaseStateTransition();
 		break;
-		//æ”»æ’ƒã‚¹ãƒ†ãƒ¼ãƒˆ
+		//UŒ‚ƒXƒe[ƒg
 	case enNeutral_Enemy_Attack:
 		ProcessAttackStateTransition();
 		break;
-		//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆ
+		//”íƒ_ƒ[ƒWƒXƒe[ƒg
 	case enNeutral_Enemy_ReceiveDamage:
 		ProcessReceiveDamageStateTransition();
 		break;
-		//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆ
+		//€–SƒXƒe[ƒg
 	case enNeutral_Enemy_Death:
 		ProcessDeathStateTransition();
 		break;
@@ -861,24 +864,24 @@ void Neutral_Enemy::PlayAnimation()
 	m_modelRender.SetAnimationSpeed(1.5f);
 	switch(m_Neutral_EnemyState)
 	{
-		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
+		//‘Ò‹@ƒXƒe[ƒg
 	case enNeutral_Enemy_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.5f);
 		break;
-		//è¿½è·¡ã‚¹ãƒ†ãƒ¼ãƒˆ
+		//’ÇÕƒXƒe[ƒg
 	case enNeutral_Enemy_Chase:
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.5f);
 		break;
-		//æ”»æ’ƒã‚¹ãƒ†ãƒ¼ãƒˆ
+		//UŒ‚ƒXƒe[ƒg
 	case enNeutral_Enemy_Attack:
 		m_modelRender.SetAnimationSpeed(1.0f);
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
 		break;
-		//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆ
+		//”íƒ_ƒ[ƒWƒXƒe[ƒg
 	case enNeutral_Enemy_ReceiveDamage:
 		m_modelRender.PlayAnimation(enNeutral_Enemy_ReceiveDamage, 0.5f);
 		break;
-		//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆ
+		//€–SƒXƒe[ƒg
 	case enNeutral_Enemy_Death:
 		m_modelRender.PlayAnimation(enNeutral_Enemy_Death, 0.5f);
 		break;
@@ -902,13 +905,13 @@ void Neutral_Enemy::HPBar()
 
 	Vector3 BerPosition = m_position;
 	BerPosition.y += 75.0f;
-	//åº§æ¨™ã‚’å¤‰æ›ã™ã‚‹
+	//À•W‚ğ•ÏŠ·‚·‚é
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBerPos, BerPosition);
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindowPos, BerPosition);
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBackPos, BerPosition);
 
-	//HPãƒãƒ¼ç”»åƒã‚’å·¦å¯„ã›ã«è¡¨ç¤ºã™ã‚‹
-	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//ç”»åƒã®å…ƒã®å¤§ãã•
+	//HPƒo[‰æ‘œ‚ğ¶Šñ‚¹‚É•\¦‚·‚é
+	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//‰æ‘œ‚ÌŒ³‚Ì‘å‚«‚³
 	m_HPBerPos.x -= BerSizeSubtraction.x;
 
 	m_HPBar.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
@@ -921,9 +924,9 @@ void Neutral_Enemy::HPBar()
 }
 Vector3 Neutral_Enemy::HPBerSend(Vector3 size, Vector3 scale)
 {
-	Vector3 hpBerSize = size;								//ç”»åƒã®å…ƒã®å¤§ãã•
-	Vector3 changeBerSize = Vector3::Zero;					//ç”»åƒã‚’ã‚¹ã‚±ãƒ¼ãƒ«å¤‰æ›ã—ãŸã‚ã¨ã®å¤§ãã•
-	Vector3 BerSizeSubtraction = Vector3::Zero;				//ç”»åƒã®å…ƒã¨å¤‰æ›å¾Œã®å·®
+	Vector3 hpBerSize = size;								//‰æ‘œ‚ÌŒ³‚Ì‘å‚«‚³
+	Vector3 changeBerSize = Vector3::Zero;					//‰æ‘œ‚ğƒXƒP[ƒ‹•ÏŠ·‚µ‚½‚ ‚Æ‚Ì‘å‚«‚³
+	Vector3 BerSizeSubtraction = Vector3::Zero;				//‰æ‘œ‚ÌŒ³‚Æ•ÏŠ·Œã‚Ì·
 
 	changeBerSize.x = hpBerSize.x * scale.x;
 	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
@@ -943,10 +946,10 @@ bool Neutral_Enemy::DrawHP()
 	float cos = Dot(toCameraTarget, toMush);
 	float angle = acos(cos);
 
-	//ã‚«ãƒ¡ãƒ©ã®å¾Œã‚ã«ã‚ã‚‹ãªã‚‰æç”»ã—ãªã„
+	//ƒJƒƒ‰‚ÌŒã‚ë‚É‚ ‚é‚È‚ç•`‰æ‚µ‚È‚¢
 	Vector3 diff = m_player->GetPosition() - m_position;
 
-	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å‘ã‹ã†è·é›¢ã‚’è¨ˆç®—ã™ã‚‹
+	//ƒvƒŒƒCƒ„[‚ÉŒü‚©‚¤‹——£‚ğŒvZ‚·‚é
 	float playerdistance = diff.Length();
 
 	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<800.0f)
@@ -961,64 +964,64 @@ bool Neutral_Enemy::DrawHP()
 void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	(void)clipName;
-	//ã‚­ãƒ¼ã®åå‰ãŒAttack_startã®æ™‚
+	//ƒL[‚Ì–¼‘O‚ªAttack_start‚Ì
 	if (wcscmp(eventName, L"Attack_start") == 0) {
-		//æ”»æ’ƒä¸­ã®åˆ¤å®šã‚’trueã«ã™ã‚‹
+		//UŒ‚’†‚Ì”»’è‚ğtrue‚É‚·‚é
 		m_UnderAttack = true;
-		//æ”»æ’ƒã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’ç™ºç”Ÿã•ã›ã‚‹
+		//UŒ‚ƒGƒtƒFƒNƒg‚ğ”­¶‚³‚¹‚é
 		
-		//æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œæˆ
+		//UŒ‚—p‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì¬
 		MakeAttackCollision();
 
-		//å¤§ãã•ã‚’è¨­å®šã™ã‚‹ã€‚
+		//‘å‚«‚³‚ğİ’è‚·‚éB
 
-		//åº§æ¨™ã‚’èª¿æ•´
+		//À•W‚ğ’²®
 
-		//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆå†ç”Ÿ
+		//ƒGƒtƒFƒNƒgÄ¶
 
 
-		//åŠ¹æœéŸ³å†ç”Ÿ
-		//æ”»æ’ƒã®å£°
+		//Œø‰Ê‰¹Ä¶
+		//UŒ‚‚Ìº
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(21);
 		se->Play(false);
 		se->SetVolume(0.5f);
 
-		//åŠ¹æœéŸ³ã‚’å†ç”Ÿã™ã‚‹
+		//Œø‰Ê‰¹‚ğÄ¶‚·‚é
 
 
 	}
-	//ã‚­ãƒ¼ã®åå‰ãŒattack_endã®æ™‚
+	//ƒL[‚Ì–¼‘O‚ªattack_end‚Ì
 	else if (wcscmp(eventName,L"Attack_end")==0){
 		m_UnderAttack = false;
 
-		//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
+		//ƒXƒe[ƒg‚ğØ‚è‘Ö‚¦‚é
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
 }
 
 const bool Neutral_Enemy::CanAttack()const
 {
-	//ä¸­ç«‹ã®æ•µã‹ã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹
+	//’†—§‚Ì“G‚©‚çƒvƒŒƒCƒ„[‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ğŒvZ‚·‚é
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
-	//è·é›¢ãŒè¿‘ã‹ã£ãŸã‚‰
+	//‹——£‚ª‹ß‚©‚Á‚½‚ç
 	if (diff.LengthSq() <= 50.0f * 50.0f)
 	{
-		//æ”»æ’ƒã§ãã‚‹
+		//UŒ‚‚Å‚«‚é
 		return true;
 	}
-	//æ”»æ’ƒã§ããªã„
+	//UŒ‚‚Å‚«‚È‚¢
 	return false;
 }
 
 void Neutral_Enemy::Render(RenderContext& rc)
 {
-	//ãƒ¢ãƒ‡ãƒ«ã‚’æç”»ã™ã‚‹ã€‚
+	//ƒ‚ƒfƒ‹‚ğ•`‰æ‚·‚éB
 	m_modelRender.Draw(rc);
 
-	//ã‚¹ãƒ†ãƒ¼ãƒˆãŒãƒãƒ¼ã‚ºã‚¹ãƒ†ãƒ¼ãƒˆã§ãªã„ãªã‚‰
+	//ƒXƒe[ƒg‚ªƒ|[ƒYƒXƒe[ƒg‚Å‚È‚¢‚È‚ç
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
-		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ãƒ©ã‚°ãŒtureãªã‚‰
+		//ƒXƒvƒ‰ƒCƒgƒtƒ‰ƒO‚ªture‚È‚ç
 		if (m_player->GetSpriteFlag())
 		{
 			if (DrawHP())

@@ -71,6 +71,31 @@ public:
 		return m_Status.Atk;
 	}
 
+	/// <summary>
+	/// このクラスを作ったオブジェクトの名前
+	/// </summary>
+	/// <param name="collisionname">名前</param>
+	void SetCreatorName(const char* creatorname)
+	{
+		//コリジョンオブジェクトを作成する。
+		BallCollision = NewGO<CollisionObject>(0);
+		//このクラスを作ったオブジェクトの名前
+		BallCollision->SetCreatorName(creatorname);
+	}
+
+	/// <summary>
+	/// 当たり判定の設定
+	/// </summary>
+	void SetCollision()
+	{
+		//球状のコリジョンを作成する。
+		BallCollision->CreateSphere(m_position, Quaternion::Identity, 20.0f);
+		//名前をplayer_fireballにする。
+		BallCollision->SetName("Wizard_MagicBall");
+		//懲り所オブジェクトが自動で削除されないようにする。
+		BallCollision->SetIsEnableAutoDelete(false);
+	}
+
 private:
 	Status m_Status;
 

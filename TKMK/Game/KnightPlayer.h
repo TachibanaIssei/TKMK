@@ -26,31 +26,6 @@ public:
 	void AvoidanceSprite();
 
 	/// <summary>
-	/// 通常攻撃の当たり判定の処理
-	/// </summary>
-	void AtkCollisiton() {
-		//コリジョンオブジェクトを作成する。
-		auto collisionObject = NewGO<CollisionObject>(0);
-		Vector3 collisionPosition = m_position;
-		//座標をプレイヤーの少し前に設定する。
-		//collisionPosition += forward * 50.0f;
-		//ボックス状のコリジョンを作成する。
-		collisionObject->CreateBox(collisionPosition, //座標。
-			Quaternion::Identity, //回転。
-			Vector3(70.0f, 15.0f, 15.0f) //大きさ。
-		);
-		collisionObject->SetName("player_attack");
-
-		//「Sword」ボーンのワールド行列を取得する。
-		Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-
-		//matrix.MakeRotationZ(90.0f);
-		//「Sword」ボーンのワールド行列をコリジョンに適用する。
-		collisionObject->SetWorldMatrix(matrix);
-	}
-
-
-	/// <summary>
 	/// 必殺技の当たり判定生成する
 	/// </summary>
 	void MakeUltSkill();

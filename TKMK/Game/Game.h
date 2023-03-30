@@ -61,14 +61,35 @@ public:
 		enGameState_Rezult,
 		enGameState_Num,
 	};
-	
+	//Enemy��Ԃ�
+	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
+		return m_neutral_Enemys;
+	}
+
+	//Actor��Ԃ�
 	//Actorを返す
+
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
-	
+	/// <summary>
+	/// �G�l�~�[�𐶐�����x�ɌĂڂ�
+	/// </summary>
+	char* CreateEnemyName() {
+		//�G�l�~�[�̖��O�𐶐�
+		enemyNum++;
+		swprintf_s(name_t, 255, L"Neutral_Enemy%d", enemyNum);
+		enemyName = (char*)name_t;
+		wcstombs(enemyName, name_t, sizeof(name_t));
+		
+		return enemyName;
+	}
+	/// <summary>
+	/// �G�l�~�[�𐶐�
+	/// </summary>
+	void CreateEnemy(Vector3 pos, Quaternion rot);
 
 	EnGameState m_GameState = enGameState_Start;
 
@@ -101,6 +122,7 @@ private:
 	Player* player = nullptr;
 	CharUltFlag* charUltFlag = nullptr;
 
+
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
 
@@ -109,6 +131,9 @@ private:
 	float m_spriteAlpha = 0.0f;
 
 	int enemyNumber = 0;
+	int enemyNum = 0;	// ���̖ڂ̃G�l�~�[��
+	char* enemyName;
+	wchar_t name_t[255];
 
 	//bool RespawnNumberBox[50];
 
@@ -125,5 +150,6 @@ private:
 
 	//キャラの番号
 	int SelectCharNumber = 1;
+
 };
 

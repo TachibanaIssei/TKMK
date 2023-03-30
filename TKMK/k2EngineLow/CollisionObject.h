@@ -111,14 +111,7 @@ namespace nsK2EngineLow {
 		{
 			m_physicsGhostObject.SetPosition(position);
 		}
-		/// <summary>
-		/// À•W‚ğæ“¾
-		/// </summary>
-		/// <returns></returns>
-		const Vector3& GetPosition()
-		{
-			return m_physicsGhostObject.GetPosition();
-		}
+
 		/// <summary>
 		/// ‰ñ“]‚ğİ’èB
 		/// </summary>

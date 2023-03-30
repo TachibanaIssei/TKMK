@@ -50,9 +50,9 @@ bool Map::Start()
 	player = FindGO<Player>("player");
 	//m_Neutral_Enemy = FindGO<Neutral_Enemy>("Neutral_Enemy");
 
-	m_game = FindGO<Game>("game");
+	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
-	m_neutral_Enemys = m_game->GetNeutral_Enemys();
+	m_game = FindGO<Game>("game");
 
 	////配列のサイズを調べてfor文で回す
 	//for (auto seutral_Enemy : seutral_Enemys)

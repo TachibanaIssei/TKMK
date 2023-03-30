@@ -61,13 +61,33 @@ public:
 		enGameState_Num,
 	};
 	
+	//Enemyを返す
+	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
+		return m_neutral_Enemys;
+	}
+
 	//Actorを返す
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
-	
+	/// <summary>
+	/// エネミーを生成する度に呼ぼう
+	/// </summary>
+	char* CreateEnemyName() {
+		//エネミーの名前を生成
+		enemyNum++;
+		swprintf_s(name_t, 255, L"Neutral_Enemy%d", enemyNum);
+		enemyName = (char*)name_t;
+		wcstombs(enemyName, name_t, sizeof(name_t));
+		
+		return enemyName;
+	}
+	/// <summary>
+	/// エネミーを生成
+	/// </summary>
+	void CreateEnemy(Vector3 pos, Quaternion rot);
 
 	EnGameState m_GameState = enGameState_Start;
 
@@ -99,7 +119,6 @@ private:
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
 
-
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
 
@@ -108,6 +127,9 @@ private:
 	float m_spriteAlpha = 0.0f;
 
 	int enemyNumber = 0;
+	int enemyNum = 0;	// 何体目のエネミーか
+	char* enemyName;
+	wchar_t name_t[255];
 
 	//bool RespawnNumberBox[50];
 
@@ -123,6 +145,6 @@ private:
 	bool PauseCloseFlag = true;
 
 	//キャラの番号
-	int SelectCharNumber = 1;
+	int SelectCharNumber = 0;
 };
 

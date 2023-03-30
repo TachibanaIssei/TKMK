@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "KnightPlayer.h"
 #include "GameCamera.h"
-#include "KnightAI.h"
+//#include "KnightAI.h"
 #include "Actor.h"
 //#include <vector>
 //#include <algorithm>

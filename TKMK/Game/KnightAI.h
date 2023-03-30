@@ -19,14 +19,11 @@ public:
 	KnightAI();
 	~KnightAI();
 	void Update();
-	void Move();
-	void Collition();
 	void Attack();
 	void Render(RenderContext& rc);
-	void ChaseEnemy();
+	//void ChaseEnemy();
 	void AtkCollisiton();
-	void LevelMove();
-	void ChasePlayer_OR_AI();
+	//void LevelMove();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
 
@@ -41,19 +38,15 @@ public:
 	}
 	void Patrol();
 	/// <summary>
-	/// 攻撃できるならtrue
+	/// エネミーへの攻撃できるならtrue
 	/// </summary>
 	/// <returns></returns>
-	const bool CanAttack() const;
-	
+	const bool CanAttackenemy();
 	/// <summary>
-	/// 巡回する座標を設定する
+	/// キャラクターへの攻撃できるならtrue
 	/// </summary>
-	/// <param name="pos">巡回する座標</param>
-	/// <param name="number">座標をセットする番号</param>
-	void SetPatrolPos(Vector3 pos, int number) {
-		m_patrolPos[number] = pos;
-	};
+	/// <returns></returns>
+	const bool CanAttackActor();
 	void SetNeutral_Enemy(Neutral_Enemy* ptr)
 	{
 		m_Neutral_Enemy = ptr;
@@ -68,6 +61,13 @@ private:
 		Num_State,
 
 	};
+
+	/// <summary>
+	/// 狙う相手を決める
+	/// </summary>
+	/// <returns>狙う相手の座標</returns>
+	const Vector3 TargetChange();
+
 	AtkTimingState m_AtkTmingState = Num_State;
 	Game* m_game;//ゲーム
 	KnightPlayer* m_knightPlayer;//剣士プレイヤーvoid Rotation();
@@ -80,14 +80,13 @@ private:
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
 	Neutral_Enemy*          m_Neutral_Enemy = nullptr;			// 今追いかけているエネミー      
+	Neutral_Enemy*          m_targetEnemy = nullptr;          //ターゲットなってる敵
+	Actor*					m_targetActor = nullptr;
 	bool UltimateSkillFlag = false;
 	bool PL = true;
 	float SkillSpeed = 270.0f;
 	float UltimateSkillTimer = 0;
 	Level3DRender m_knightAIPoslevel;      //剣士AIのポジションレベル
-	Vector3                 m_patrolPos[5];
-	int P = -1;
-	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	int enemyAmount = 0;
 	Vector3 nearPos = Vector3::Zero;
 

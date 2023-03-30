@@ -38,13 +38,18 @@ Game::~Game()
 	}
 	DeleteGO(m_gamecamera);
 
-	//Neutral_Enemyを配列で消す
-	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//配列のサイズを調べてfor文で回す
-	for (auto seutral_Enemy : seutral_Enemys)
-	{
-		DeleteGO(seutral_Enemy);
-	}
+	QueryGOs<Neutral_Enemy>("Neutral_Enemy", [&](Neutral_Enemy* neutral_Enemy_) {
+		DeleteGO(neutral_Enemy_);
+		return true;
+		});
+
+	////Neutral_Enemyを配列で消す
+	//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	////配列のサイズを調べてfor文で回す
+	//for (auto seutral_Enemy : seutral_Enemys)
+	//{
+	//	DeleteGO(seutral_Enemy);
+	//}
 
 	DeleteGO(player);
 	DeleteGO(m_knightplayer);
@@ -109,97 +114,69 @@ bool Game::Start()
 			//左上の座標
 			if (objData.number == 0) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//右上の座標
 			if (objData.number == 1) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
+				//中立の敵の生成
 				CreateEnemy(objData.position, objData.rotation);
-				/*Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-				neutral_Enemy->SetNeutral_EnemyGame(this);
-				neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
-				neutral_Enemy->SetPosition(objData.position);
-				neutral_Enemy->SetRotation(objData.rotation);*/
-				//RespawnNumberBox[enemyNumber] = true;
-				//m_enemyCounter.push_back(neutral_Enemy);
-				//m_Neutral_Enemy1->SetScale(objData.scale);
 				return true;
 			}
 			if (objData.number == 2) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//右下の座標
 			if (objData.number == 3) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
+				//中立の敵の生成
 				CreateEnemy(objData.position, objData.rotation);
-				/*Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-				neutral_Enemy->SetNeutral_EnemyGame(this);
-				neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
-				neutral_Enemy->SetPosition(objData.position);
-				neutral_Enemy->SetRotation(objData.rotation);*/
-				//RespawnNumberBox[enemyNumber] = true;
-				//m_enemyCounter.push_back(neutral_Enemy);
-				//m_Neutral_Enemy2->SetScale(objData.scale);
 				return true;
 			}
 			if (objData.number == 4) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//左下の座標
 			if (objData.number == 5) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
+
 				enemyNumber++;
 				ENEMY_AMOUNT;
+				//中立の敵の生成
 				CreateEnemy(objData.position, objData.rotation);
-				/*Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-				neutral_Enemy->SetNeutral_EnemyGame(this);
-				neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
-				neutral_Enemy->SetPosition(objData.position);
-				neutral_Enemy->SetRotation(objData.rotation);*/
+				//中立の敵の生成
 				CreateEnemy(objData.position, objData.rotation);
-				/*Neutral_Enemy* neutral_Enemy2 = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-				neutral_Enemy2->SetNeutral_EnemyGame(this);
-				neutral_Enemy2->SetPlayerActor(player->GetPlayerActor());
-				neutral_Enemy2->SetPosition(objData.position);
-				neutral_Enemy2->SetRotation(objData.rotation);*/
 				return true;
 			}
 			if (objData.number == 6) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			if (objData.number == 7) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
+				//中立の敵の生成
 				CreateEnemy(objData.position, objData.rotation);
-				/*Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-				neutral_Enemy->SetNeutral_EnemyGame(this);
-				neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
-				neutral_Enemy->SetPosition(objData.position);
-				neutral_Enemy->SetRotation(objData.rotation);*/
-				//RespawnNumberBox[enemyNumber] = true;
-				//m_enemyCounter.push_back(neutral_Enemy);
-				//m_Neutral_Enemy4->SetScale(objData.scale);
 				return true;
 			}
 			if (objData.number == 8) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 		}
@@ -322,9 +299,10 @@ void Game::Update()
 
 	GameState();
 	
+	//リスポーンの処理
 	m_Timer += g_gameTime->GetFrameDeltaTime();
 	if (m_Timer>=15) {
-		//Respawn();
+		Respawn();
 		m_Timer = 0.0f;
 	}
 	
@@ -371,13 +349,12 @@ void Game::Respawn()
 		for (int generate = 0; generate < spawnAmount; generate++) {
 			enemyNumber++;
 			ENEMY_AMOUNT;
-			Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-			neutral_Enemy->SetNeutral_EnemyGame(this);
-			neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
-			//リスポーンする座標
-			//neutral_Enemy->SetPosition(SetEnemyRespawnPos());
-			//neutral_Enemy->SetRotation(objData.rotation);
-			neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
+			CreateEnemy(SetEnemyRespawnPos(), EnemyReapawnPot[SearchRespawnPos]);
+			
+			////リスポーンする座標
+			////neutral_Enemy->SetPosition(SetEnemyRespawnPos());
+			////neutral_Enemy->SetRotation(objData.rotation);
+			//neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 
 		}
 	}
@@ -390,31 +367,32 @@ void Game::Respawn()
 /// 
 /// </summary>
 /// <returns></returns>
-//Vector3 Game::SetEnemyRespawnPos()
-//{
-//	//for (int i = 0; i < 9; i++)
-//	//{
-//	//	int a;
-//	//	for (auto actorPos : m_Actors)
-//	//	{
-//	//		//キャラの座標
-//	//		Vector3 CharPos = actorPos->GetPosition();
-//	//		Vector3 diff = EnemyRespawnPosition[i] - CharPos;
-//	//		if (diff.Length() < 200)
-//	//		{
-//	//			a++;
-//	//		}
-//	//		
-//	//	}
-//	//	//もしリスポーンする座標が全てのキャラの座標から200離れていたら
-//	//	if (a == m_Actors.max_size())
-//	//	{
-//	//		//その座標をリスポーンする座標とする
-//	//		return EnemyRespawnPosition[i];
-//	//	}
-//	//}
-//	return;
-//}
+Vector3 Game::SetEnemyRespawnPos()
+{
+	SearchRespawnPos = 1;
+	for (SearchRespawnPos; SearchRespawnPos < 9; SearchRespawnPos++)
+	{
+		int distanceCounter = 0;
+		for (auto actorPos : m_Actors)
+		{
+			//キャラの座標
+			Vector3 CharPos = actorPos->GetPosition();
+			Vector3 diff = EnemyRespawnPosition[SearchRespawnPos] - CharPos;
+			if (diff.Length() < 200)
+			{
+				distanceCounter++;
+			}
+			
+		}
+		//もしリスポーンする座標が全てのキャラの座標から200離れていたら
+		if (distanceCounter == m_Actors.max_size())
+		{
+			//その座標をリスポーンする座標とする
+			return EnemyRespawnPosition[SearchRespawnPos];
+		}
+	}
+
+}
 
 //ゲームステートの管理
 void Game::GameState()
@@ -448,6 +426,11 @@ void Game::GameState()
 	}
 }
 
+/// <summary>
+/// 中立の敵の生成
+/// </summary>
+/// <param name="pos">生成する座標</param>
+/// <param name="rot">回転量</param>
 void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 
 	enemyNumber++;

@@ -52,16 +52,23 @@ public:
 		return enemyNumber;
 	}
 
-	
-	//Vector3 SetEnemyRespawnPos();
+	/// <summary>
+	/// リスポーンする座標を設定
+	/// </summary>
+	/// <returns></returns>
+	Vector3 SetEnemyRespawnPos();
+
+
 
 	/// <summary>
-	/// 
+	/// リスポーンする座標を格納する
 	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="number"></param>
-	void SetRespawnPosition(Vector3 pos, int number) {
+	/// <param name="pos">オブジェクトの座標</param>
+	/// <param name="rot">オブジェクトの回転量</param>
+	/// <param name="number">オブジェクトの番号</param>
+	void SetRespawnPosition(Vector3 pos, Quaternion rot, int number) {
 		EnemyRespawnPosition[number] = pos;
+		EnemyReapawnPot[number] = rot;
 	};
 
 	void Render(RenderContext& rc);
@@ -98,6 +105,14 @@ private:
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
+
+	/*struct ReapawnEnemyInfo
+	{
+		
+	};
+	ReapawnEnemyInfo m_RespawnEnemyInfo;*/
+
+	//
 	EnGameState m_GameState = enGameState_Start;
 
 
@@ -112,8 +127,8 @@ private:
 
 	SpriteRender m_Pause_Front;    //ポーズ画面
 	SpriteRender m_Pause_Back;     //ポーズの裏画面
-
-
+	Vector3 EnemyRespawnPosition[9];          //レベルの中立の敵のリスポーンする座標を格納する
+	Quaternion EnemyReapawnPot[9];            //レベルの中立の敵のオブジェクトの回転量を格納する
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
@@ -135,12 +150,13 @@ private:
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	
-	Vector3 EnemyRespawnPosition[9];                        //中立の敵のリスポーンする座標を格納する
+	
 
 	float m_spriteAlpha = 0.0f;
 
 	int enemyNumber = 0;
 
+	int SearchRespawnPos;       //リスポーンする座標の番号を探す
 	//bool RespawnNumberBox[50];
 
 	float m_Timer = 0.0f;

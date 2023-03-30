@@ -235,21 +235,12 @@ void Neutral_Enemy::Collision()
 			//このコリジョンを作ったアクターを検索
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
-			//プレイヤーの攻撃力を取得
-			//何故かm_knightplayerがnull
-			//m_knightplayer = FindGO<KnightPlayer>("knightplayer");
-			//HPを減らす
-			//m_Status.Hp -= player->CharSetAttack();
-
 			//HPを減らす
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
-				//剣士に経験値を渡す
-				//player->CharSetExpProcess(Exp);
-
 				//相手に経験値を渡す
 				m_lastAttackActor->ExpProcess(Exp);
 				//Deathflag = true;
@@ -340,25 +331,27 @@ void Neutral_Enemy::Collision()
 		return;
 	}
 	//魔法使いの攻撃用のコリジョンを取得する
-	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("player_MagicBall");
+	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("Wizard_MagicBall");
 	//コリジョンの配列をfor文で回す
 	for (auto Wizardcollision : Wizardcollisions)
 	{
 		if (Wizardcollision->IsHit(m_charaCon))
 		{
-			magicBall = FindGO<MagicBall>("magicBall");
+			//このコリジョンを作ったアクターを検索
+			m_lastAttackActor = FindGO<Actor>(Wizardcollision->GetCreatorName());
+			//magicBall = FindGO<MagicBall>("magicBall");
 			//魔法使いの攻撃力を取得
 			//HPを減らす
-			m_Status.Hp -= magicBall->SetWizardAttack();
+			m_Status.Hp -= m_lastAttackActor->GetAtk();
 
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
-				player = FindGO<Player>("player");
+				//player = FindGO<Player>("player");
 				//相手に経験値を渡す
-				//m_lastAttackActor->ExpProcess(Exp);
+				m_lastAttackActor->ExpProcess(Exp);
 				//魔法使いに経験値を渡す
-				player->CharSetExpProcess(Exp);
+				//player->CharSetExpProcess(Exp);
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;

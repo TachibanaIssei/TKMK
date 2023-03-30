@@ -59,6 +59,7 @@ void KnightBase::SetModel()
 	//攻撃時のアニメーションイベント剣士の座標のID(番号)を取得する。
 	AtkEndPosId = m_modelRender.FindBoneID(L"movePos");
 
+
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);
 	//m_modelRender.SetScale(Vector3(0.1f, 0.1f, 0.1f));
@@ -176,55 +177,58 @@ void KnightBase::AtkCollisiton()
 /// <param name="position">現在の座標</param>
 void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 {	
-	//コリジョン生成していないなら
-	if (UltCollisionSetFlag == false)
-	{
-		//コリジョンの座標をプレイヤーと同じに設定
-		UltCollisionPos = position;
-		UltCollisionPos.y += 50.0f;
+	//	//コリジョンオブジェクトを作成する。
+	//UltCollision = NewGO<CollisionObject>(0);
+	//UltCollision->SetName("Knight_UltimateSkill");
+	////コリジョン生成していないなら
+	//if (UltCollisionSetFlag == false)
+	//{
+	//	//コリジョンの座標をプレイヤーと同じに設定
+	//	UltCollisionPos = position;
+	//	UltCollisionPos.y += 50.0f;
 
-		//前フレームの座標を代入
-		Vector3 oldPosition = oldpostion;
-		//前フレームの座標から現在のフレームに向かうベクトルを計算する
-		collisionRot = position - oldPosition;
+	//	//前フレームの座標を代入
+	//	Vector3 oldPosition = oldpostion;
+	//	//前フレームの座標から現在のフレームに向かうベクトルを計算する
+	//	collisionRot = position - oldPosition;
 
-		//Y方向のベクトルを0.0fにする
-		collisionRot.y = 0.0f;
+	//	//Y方向のベクトルを0.0fにする
+	//	collisionRot.y = 0.0f;
 
-		//正規化
-		collisionRot.Normalize();
+	//	//正規化
+	//	collisionRot.Normalize();
 
-		Quaternion rot;
-		//Y軸回りの回転クォータニオンを作成
-		rot.SetRotationYFromDirectionXZ(collisionRot);
-		//ベクトルにクォータニオンを適応
-		rot.Apply(oldpostion);
+	//	Quaternion rot;
+	//	//Y軸回りの回転クォータニオンを作成
+	//	rot.SetRotationYFromDirectionXZ(collisionRot);
+	//	//ベクトルにクォータニオンを適応
+	//	rot.Apply(oldpostion);
 
-		//コリジョンオブジェクトを作成する。
-		collisionObject = NewGO<CollisionObject>(0);
-		Vector3 collitionPosition = position;
-		collitionPosition.y += 50.0f;
-		//collisionPosition.y += 50.0f;
-		//ボックス状のコリジョンを作成する。
-		collisionObject->CreateBox(collitionPosition, //座標。
-			Quaternion(rot), //回転。
-			Vector3(300.0f, 50.0f, 15.0f) //大きさ。
-		);
-		collisionObject->SetIsEnableAutoDelete(false);
+	//	//コリジョンオブジェクトを作成する。
+	//	collisionObject = NewGO<CollisionObject>(0);
+	//	Vector3 collitionPosition = position;
+	//	collitionPosition.y += 50.0f;
+	//	//collisionPosition.y += 50.0f;
+	//	//ボックス状のコリジョンを作成する。
+	//	collisionObject->CreateBox(collitionPosition, //座標。
+	//		Quaternion(rot), //回転。
+	//		Vector3(300.0f, 50.0f, 15.0f) //大きさ。
+	//	);
+	//	collisionObject->SetIsEnableAutoDelete(false);
 
-		collisionObject->SetName("player_UltimateSkill");
-		collisionObject->SetCreatorName(GetName());
+	//	collisionObject->SetName("player_UltimateSkill");
+	//	collisionObject->SetCreatorName(GetName());
 
-		UltCollisionSetFlag = true;
-	}
-	else
-	{
-		//移動速度設定
-		UltCollisionPos += collisionRot * 4.0f;
-		//座標を設定
-		collisionObject->SetPosition(UltCollisionPos);
+	//	UltCollisionSetFlag = true;
+	//}
+	//else
+	//{
+	//	//移動速度設定
+	//	UltCollisionPos += collisionRot * 4.0f;
+	//	//座標を設定
+	//	collisionObject->SetPosition(UltCollisionPos);
 
-	}
+	//}
 }
 
 void KnightBase::Collition()
@@ -292,27 +296,7 @@ void KnightBase::Dameged(int damege)
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}
-}///////////////////////m_Status.getExp
-
-/// <summary>
-/// スキルを使用したときの処理
-/// </summary>
-//void KnightBase::Skill(Vector3& right, Vector3& forward)
-//{
-//	//スキルステート
-//	m_playerState = enKnightState_Skill;
-//
-//	//移動処理
-//	//移動速度にスティックの入力量を加算する。
-//	//Vector3 m_SkillSpeed; 
-//	m_moveSpeed = right + forward;
-//	//キャラクターコントローラーを使って座標を移動させる。
-//	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-//
-//	//当たり判定作成
-//	//SkillState = true;
-//	
-//}
+}
 
 /// <summary>
 /// レベル4で必殺技を使用したときの処理

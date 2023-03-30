@@ -76,6 +76,13 @@ void KnightPlayer::Update()
 	if (m_playerState == enKnightState_Pause) {
 		return;
 	}
+	//今のフレームと前のフレームのレベルが違っていたら
+	if (oldLv != Lv) {
+		//レベルに合わせてGameUIのレベルの画像を変更する
+		m_gameUI->LevelFontChange(Lv);
+	}
+
+	oldLv = Lv;
 
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];
@@ -240,10 +247,6 @@ void KnightPlayer::Attack()
 		pushFlag = true;
 		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
-		//レベルに合わせてGameUIのレベルの画像を変更する
-		m_gameUI->LevelFontChange(Lv);
-
-		MakeUltSkill();
 
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -286,7 +289,9 @@ void KnightPlayer::Avoidance()
 /// </summary>
 void KnightPlayer::MakeUltSkill()
 {
-	KnightUlt* knightUlt = NewGO<KnightUlt>(0, "knightUlt");
+	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
+	//製作者の名前を入れる
+	knightUlt->SetCreatorName(GetName());
 
 	Vector3 UltPos = m_position;
 	UltPos.y += 60.0f;
@@ -351,6 +356,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		se->Init(11);
 		se->Play(false);
 		se->SetVolume(0.3f);
+	}
+	//必殺技のアニメーションが始まったら
+	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
+	{
+		
+		//必殺技の当たり判定のクラスを作成
+		MakeUltSkill();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら

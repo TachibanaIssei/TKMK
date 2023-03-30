@@ -243,7 +243,7 @@ protected:
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
-	Status m_Status;
+	//Status m_Status;
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,5,10.0f };
 

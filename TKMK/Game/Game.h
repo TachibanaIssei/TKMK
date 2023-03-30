@@ -69,10 +69,16 @@ public:
 		enGameState_Rezult,
 		enGameState_Num,
 	};
-	//Enemy????
+	//ƒxƒNƒ^Œ^‚ÌNeutral_Enemy‚ð•Ô‚·
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
+
+	void Enemys()
+	{
+		m_neutral_Enemys.pop_back();
+	}
+
 	//Actor‚ð•Ô‚·
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;

@@ -332,11 +332,11 @@ void Game::Pause()
 /// </summary>
 void Game::Respawn()
 {
-	if (ENEMY_AMOUNT != enemyNumber) {
-		int spawnAmount = ENEMY_AMOUNT - enemyNumber;
+	if (ENEMY_AMOUNT != m_neutral_Enemys.size()) {
+		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
 		for (int generate = 0; generate < spawnAmount; generate++) {
-			enemyNumber++;
-			ENEMY_AMOUNT;
+			//enemyNumber++;
+			//ENEMY_AMOUNT;
 			CreateEnemy(SetEnemyRespawnPos(), EnemyReapawnPot[SearchRespawnPos]);
 			
 			////neutral_Enemy->SetPosition(SetEnemyRespawnPos());
@@ -421,6 +421,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 	neutral_Enemy->SetRotation(rot);
 
 	m_neutral_Enemys.push_back(neutral_Enemy);
+	//m_neutral_Enemys.erase(m_neutral_Enemys.);
 }
 
 void Game::Render(RenderContext& rc)

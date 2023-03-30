@@ -27,7 +27,10 @@ Neutral_Enemy::Neutral_Enemy()
 
 Neutral_Enemy::~Neutral_Enemy()
 {
-	
+	m_game = FindGO<Game>("game");
+	m_game->Enemys();
+	/*m_neutral_Enemys = m_game->GetNeutral_Enemys();
+	m_neutral_Enemys.pop_back();*/
 }
 
 bool Neutral_Enemy::Start()

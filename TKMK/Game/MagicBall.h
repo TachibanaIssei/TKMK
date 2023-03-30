@@ -1,4 +1,7 @@
 #pragma once
+#include "Status.h"
+class Status;
+
 class MagicBall:public IGameObject
 {
 public:
@@ -49,7 +52,28 @@ public:
 		m_enMagician = enMagician;
 	}
 
+
+	/// <summary>
+	/// 魔法使いの攻撃力を取得
+	/// </summary>
+	/// <param name="status">魔法使いの攻撃力</param>
+	void GetWizardAttack(Status status)
+	{
+		m_Status.Atk = status.Atk;
+	}
+
+	/// <summary>
+	/// 魔法使いの攻撃力を返す
+	/// </summary>
+	/// <returns>魔法使いの攻撃力</returns>
+	int SetWizardAttack()const
+	{
+		return m_Status.Atk;
+	}
+
 private:
+	Status m_Status;
+
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;
 	Vector3 m_scale;
@@ -57,6 +81,8 @@ private:
 	CollisionObject* BallCollision;
 
 	float m_timer = 0.0f;
+
+	int WizardAtk = 0;
 
 };
 

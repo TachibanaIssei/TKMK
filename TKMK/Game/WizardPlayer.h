@@ -6,6 +6,7 @@
 class Game;
 class Neutral_Enemy;
 class MagicBall;
+class CharUltFlag;
 
 class WizardPlayer:public WizardBase
 {
@@ -32,7 +33,7 @@ public:
 	/// <summary>
 	/// 必殺技の雷の生成
 	/// </summary>
-	void UltimateSkill();
+	void MakeUltimateSkill();
 
 	/// <summary>
 	/// プレイヤーのステートを変更
@@ -78,6 +79,7 @@ public:
 private:
 	Game* m_game = nullptr;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
+	CharUltFlag* charUltFlag = nullptr;
 	//MagicBall* magicBall = nullptr;
 
 	CollisionObject* AtkCollision;                   //アタックのコリジョン

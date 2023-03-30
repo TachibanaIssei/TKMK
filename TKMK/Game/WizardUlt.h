@@ -1,4 +1,8 @@
 #pragma once
+
+class Player;
+class KnightAI;
+
 class WizardUlt:public IGameObject
 {
 public:
@@ -7,11 +11,22 @@ public:
 
 	//必殺技を撃ったキャラ。
 	enum EnUltimateSkillian {
-		enMagician_None,
-		enMagician_Player,			//プレイヤー。
-		enMagician_Wizard,			//魔法使い。
+		enUltimateSkill_None,
+		enUltimateSkill_Player,			//プレイヤー。
+		enUltimateSkill_Wizard,			//魔法使い。
 	};
 	EnUltimateSkillian m_ultSkillian;
+
+	//魔法使いの必殺技を打たれたキャラ
+	enum EnDamegedChar
+	{
+		enDamegedChar_Plater,
+		enDamegedChar_KnightAI,
+		enDamegedChar_WizardAI,
+		enDamegedChar_ZombieAI,
+		enDamegedChar_MonsterAI
+	};
+	EnDamegedChar m_DamegedChar;
 
 	bool Start();
 	void Update();
@@ -50,6 +65,9 @@ public:
 	}
 
 private:
+	Player* player = nullptr;
+	KnightAI* knightAI = nullptr;
+
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;
 	Vector3 m_scale;

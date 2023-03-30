@@ -134,6 +134,41 @@ void WizardBase::Rotation()
 }
 
 /// <summary>
+/// 当たり判定
+/// </summary>
+void WizardBase::Collision()
+{
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_wizardState == enWizardState_Damege ||
+		m_wizardState == enWizardState_Death ||
+		m_wizardState == enWizardState_UltimateSkill ||
+		m_wizardState == enWizardState_Attack ||
+		m_wizardState == enWizardState_Skill ||
+		m_wizardState == enWizardState_Avoidance)
+	{
+		return;
+	}
+	else
+	{
+		//敵の攻撃用のコリジョンを取得する名前一緒にする
+		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
+		//コリジョンの配列をfor文で回す
+		for (auto collision : collisions)
+		{
+			//コリジョンが自身のキャラコンに当たったら
+			if (collision->IsHit(m_charCon))
+			{
+				//エネミーの攻撃力を取ってくる
+
+				//hpを10減らす
+				Dameged(Enemy_atk);
+
+			}
+		}
+	}
+}
+
+/// <summary>
 /// ダメージを受けたときの処理
 /// </summary>
 /// <param name="damege">敵の攻撃力</param>
@@ -214,7 +249,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 /// </summary>
 void WizardBase::UltimateSkill()
 {
-
+	m_wizardState = enWizardState_UltimateSkill;
 }
 
 /// <summary>
@@ -423,7 +458,15 @@ void WizardBase::OnProcessSkillAtkStateTransition()
 
 void WizardBase::OnProcessUltimateSkillAtkStateTransition()
 {
-
+	//必殺技のアニメーションが終わったら
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//待機ステート
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessAvoidanceStateTransition()

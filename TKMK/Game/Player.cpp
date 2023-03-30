@@ -298,3 +298,57 @@ bool Player::CharSetSpriteFlag()const
 	}
 }
 
+/// <summary>
+/// �L�����̍U���͂�Ԃ�
+/// </summary>
+/// <returns>�I��ꂽ�L�����̍U���͂�Ԃ��֐�</returns>
+int Player::CharSetAttack()const
+{
+	switch (m_selectCharctar)
+	{
+	case enKnight:
+		return knightPlayer->SetKnightAtk();
+		break;
+
+	//���@�g���̓}�W�b�N�{�[���ōU���͂�Ԃ��̂ŕK�v�Ȃ�
+
+	case enZombie:
+		break;
+
+	case enMonster:
+		break;
+
+
+	default:
+		break;
+	}
+}
+
+/// <summary>
+/// �L������exp�̏���
+/// </summary>
+/// <param name="exp">�����̓G�̌o���l</param>
+void Player::CharSetExpProcess(int exp)const
+{
+	switch (m_selectCharctar)
+	{
+	case enKnight:
+		return knightPlayer->ExpProcess(exp);
+		break;
+
+	case enWizard:
+		return wizardPlayer->ExpProcess(exp);
+		break;
+
+	case enZombie:
+		break;
+
+	case enMonster:
+		break;
+
+
+	default:
+		break;
+	}
+}
+

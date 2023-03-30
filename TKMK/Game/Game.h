@@ -6,7 +6,7 @@ class BackGround;
 class Result;
 class Tittle;
 class GameCamera;
-class KnightBase;
+//class KnightBase;
 class KnightPlayer;
 class Neutral_Enemy;
 class GameUI;
@@ -14,6 +14,7 @@ class Map;
 class KnightAI;
 class WizardPlayer;
 class Player;
+class CharUltFlag;
 class Actor;
 
 class Game : public IGameObject
@@ -33,17 +34,17 @@ public:
 	}*/
 
 	/// <summary>
-	/// ƒGƒlƒ~[‚Ì”‚ğŒ¸‚ç‚·ˆ—
+	/// ã‚¨ãƒãƒŸãƒ¼ã®æ•°ã‚’æ¸›ã‚‰ã™å‡¦ç†
 	/// </summary>
-	/// <returns>ƒGƒlƒ~[‚Ì”</returns>
+	/// <returns>ã‚¨ãƒãƒŸãƒ¼ã®æ•°</returns>
 	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
 
 	/// <summary>
-	/// ƒGƒlƒ~[‚Ì”‚ğŒ¸‚ç‚·ˆ—
+	/// ã‚¨ãƒãƒŸãƒ¼ã®æ•°ã‚’æ¸›ã‚‰ã™å‡¦ç†
 	/// </summary>
-	/// <returns>ƒGƒlƒ~[‚Ì”</returns>
+	/// <returns>ã‚¨ãƒãƒŸãƒ¼ã®æ•°</returns>
 	int GetNeutral_EnemyContaier() {
 		return enemyNumber;
 	}
@@ -60,23 +61,24 @@ public:
 		enGameState_Rezult,
 		enGameState_Num,
 	};
-	
-	//Enemy‚ğ•Ô‚·
+	//Enemyï¿½ï¿½Ô‚ï¿½
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
 
-	//Actor‚ğ•Ô‚·
+	//Actorï¿½ï¿½Ô‚ï¿½
+	//Actorã‚’è¿”ã™
+
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
 	/// <summary>
-	/// ƒGƒlƒ~[‚ğ¶¬‚·‚é“x‚ÉŒÄ‚Ú‚¤
+	/// ï¿½Gï¿½lï¿½~ï¿½[ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ÉŒÄ‚Ú‚ï¿½
 	/// </summary>
 	char* CreateEnemyName() {
-		//ƒGƒlƒ~[‚Ì–¼‘O‚ğ¶¬
+		//ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ì–ï¿½ï¿½Oï¿½ğ¶ï¿½
 		enemyNum++;
 		swprintf_s(name_t, 255, L"Neutral_Enemy%d", enemyNum);
 		enemyName = (char*)name_t;
@@ -85,7 +87,7 @@ private:
 		return enemyName;
 	}
 	/// <summary>
-	/// ƒGƒlƒ~[‚ğ¶¬
+	/// ï¿½Gï¿½lï¿½~ï¿½[ï¿½ğ¶ï¿½
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
@@ -101,15 +103,15 @@ private:
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
 
-	SpriteRender m_Pause_Front;    //ƒ|[ƒY‰æ–Ê
-	SpriteRender m_Pause_Back;     //ƒ|[ƒY‚Ì— ‰æ–Ê
+	SpriteRender m_Pause_Front;    //ãƒãƒ¼ã‚ºç”»é¢
+	SpriteRender m_Pause_Back;     //ãƒãƒ¼ã‚ºã®è£ç”»é¢
 
 
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
 	GameCamera* m_gamecamera = nullptr;
-	KnightBase* m_knightbase = nullptr;
+	//KnightBase* m_knightbase = nullptr;
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	KnightAI* m_KnightAI = nullptr;
@@ -118,6 +120,8 @@ private:
 	SoundSource* m_bgm = nullptr;	//
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
+	CharUltFlag* charUltFlag = nullptr;
+
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
@@ -127,7 +131,7 @@ private:
 	float m_spriteAlpha = 0.0f;
 
 	int enemyNumber = 0;
-	int enemyNum = 0;	// ‰½‘Ì–Ú‚ÌƒGƒlƒ~[‚©
+	int enemyNum = 0;	// ï¿½ï¿½ï¿½Ì–Ú‚ÌƒGï¿½lï¿½~ï¿½[ï¿½ï¿½
 	char* enemyName;
 	wchar_t name_t[255];
 
@@ -135,16 +139,17 @@ private:
 
 	float m_Timer = 0.0f;
 
-	//BGM‚Ì‰¹—Ê’²®‚Ég—p‚·‚é•Ï”
+	//BGMã®éŸ³é‡èª¿æ•´ã«ä½¿ç”¨ã™ã‚‹å¤‰æ•°
 	float musicVolume = 1.0f;
 
-	//ƒŠƒUƒ‹ƒg‰æ–Ê‚©‚Ìƒtƒ‰ƒO
+	//ãƒªã‚¶ãƒ«ãƒˆç”»é¢ã‹ã®ãƒ•ãƒ©ã‚°
 	bool RezultFlag = false;
-	//ƒ|[ƒY‰æ–Ê‚©‚Ìƒtƒ‰ƒO
+	//ãƒãƒ¼ã‚ºç”»é¢ã‹ã®ãƒ•ãƒ©ã‚°
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
 
-	//ƒLƒƒƒ‰‚Ì”Ô†
-	int SelectCharNumber = 0;
+	//ã‚­ãƒ£ãƒ©ã®ç•ªå·
+	int SelectCharNumber = 1;
+
 };
 

@@ -13,7 +13,7 @@ public:
 	KnightBase();
 	virtual ~KnightBase();
 
-	enum KnightState {
+	enum PlayerState {
 		enKnightState_Idle,
 		enKnightState_Walk,
 		enKnightState_Run,
@@ -23,7 +23,6 @@ public:
 		enKnightState_Skill,
 		enKnightState_UltimateSkill,
 		enKnightState_Avoidance,
-		enKnightState_Patrol,
 		enKnightState_Num,
 		enKnightState_Pause,        //ゲームの状態を受け取る
 	};
@@ -46,6 +45,7 @@ public:
 	/// 
 	/// </summary>
 	virtual void Attack()=0;
+
 	/// <summary>
 	/// 自身の当たり判定
 	/// </summary>
@@ -155,12 +155,12 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_knightState != enKnightState_ChainAtk &&
-			m_knightState != enKnightState_UltimateSkill &&
-			m_knightState != enKnightState_Skill &&
-			m_knightState != enKnightState_Avoidance &&
-			m_knightState != enKnightState_Damege&&
-			m_knightState != enKnightState_Death;
+		return m_playerState != enKnightState_ChainAtk &&
+			m_playerState != enKnightState_UltimateSkill &&
+			m_playerState != enKnightState_Skill &&
+			m_playerState != enKnightState_Avoidance &&
+			m_playerState != enKnightState_Damege&&
+			m_playerState != enKnightState_Death;
 	}
 
 	/// <summary>
@@ -205,8 +205,8 @@ public:
 	/// プレイヤーのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
-	void SetPlayerState(KnightState gamescene) {
-		m_knightState = gamescene;
+	void SetPlayerState(PlayerState gamescene) {
+		m_playerState = gamescene;
 
 	}
 
@@ -260,6 +260,7 @@ protected:
 	GameUI* m_gameUI = nullptr;
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
+	
 
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
@@ -273,9 +274,11 @@ protected:
 	CharacterController m_charCon;                        //キャラクターコントロール
 	
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
-	KnightState m_knightState/* = enKnightState_Num*/;
+	PlayerState m_playerState/* = enKnightState_Num*/;
+	
+	
 
-	KnightState m_animState = enKnightState_Idle;
+	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ
 	int ComboState = 0;
 	//コンボが継続する時間を記録する
@@ -298,9 +301,17 @@ protected:
 	float SkillTimer = 0;
 	//回避のクールタイムを計算するタイマー
 	float AvoidanceTimer = 0;
+
+	//獲得した経験値仮
+	int exp=5;
+	//Newtral_Enemyの攻撃力
+	int Enemy_atk = 10;
 	//必殺技使用のフラグ
 	bool UltCollisionSetFlag = false;
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
+
+
+
 };
 

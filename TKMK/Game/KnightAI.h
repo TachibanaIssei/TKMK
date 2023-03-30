@@ -20,14 +20,10 @@ public:
 	KnightAI();
 	~KnightAI();
 	void Update();
-	void Move();
 	void Collition();
 	void Attack();
 	void Render(RenderContext& rc);
-	void ChaseEnemy();
 	void AtkCollisiton();
-	void LevelMove();
-	void ChasePlayer_OR_AI();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
 
@@ -40,25 +36,15 @@ public:
 	{
 		return m_game;
 	}
-	void Patrol();
-	/// <summary>
-	/// æ”»æ’ƒã§ãã‚‹ãªã‚‰true
+	/// UŒ‚‚Å‚«‚é‚È‚çtrue
 	/// </summary>
 	/// <returns></returns>
-	const bool CanAttack() const;
-	
+	const bool CanAttackenemy();
 	/// <summary>
-	/// å·¡å›ã™ã‚‹åº§æ¨™ã‚’è¨­å®šã™ã‚‹
+
 	/// </summary>
-	/// <param name="pos">å·¡å›ã™ã‚‹åº§æ¨™</param>
-	/// <param name="number">åº§æ¨™ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ç•ªå·</param>
-	void SetPatrolPos(Vector3 pos, int number) {
-		m_patrolPos[number] = pos;
-	};
-	void SetNeutral_Enemy(Neutral_Enemy* ptr)
-	{
-		m_Neutral_Enemy = ptr;
-	}
+	/// <returns></returns>
+	const bool CanAttackActor();
 private:
 	enum AtkTimingState
 	{
@@ -69,25 +55,30 @@ private:
 		Num_State,
 
 	};
+	/// <summary>
+	/// ?_?????????
+	/// </summary>
+	/// <returns>?_????????W</returns>
+	const Vector3 TargetChange();
 	AtkTimingState m_AtkTmingState = Num_State;
-	Game* m_game;//ã‚²ãƒ¼ãƒ 
-	KnightPlayer* m_knightPlayer;//å‰£å£«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼void Rotation();
+	Game* m_game;//ƒQ[ƒ€
+	KnightPlayer* m_knightPlayer;//Œ•mƒvƒŒƒCƒ„[void Rotation();
 	void SearchEnemy();
 	void Rotation();
 	Vector3					m_forward;
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
 	FontRender				m_fontRender;
-	SphereCollider			m_sphereCollider;					//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã€‚
-	RigidBody				m_rigidBody;						//å‰›ä½“ã€‚	
+	SphereCollider			m_sphereCollider;					//ƒRƒ‰ƒCƒ_[B
+	RigidBody				m_rigidBody;						//„‘ÌB	
 	CharUltFlag* charUltFlag = nullptr;
-	Neutral_Enemy*          m_Neutral_Enemy = nullptr;			// ä»Šè¿½ã„ã‹ã‘ã¦ã„ã‚‹ã‚¨ãƒãƒŸãƒ¼      
-
+	Neutral_Enemy* m_targetEnemy = nullptr;					// ¡’Ç‚¢‚©‚¯‚Ä‚¢‚éƒGƒlƒ~[      
+	Actor* m_targetActor = nullptr;
 	bool UltimateSkillFlag = false;
 	bool PL = true;
 	float SkillSpeed = 270.0f;
 	float UltimateSkillTimer = 0;
-	Level3DRender m_knightAIPoslevel;      //å‰£å£«AIã®ãƒã‚¸ã‚·ãƒ§ãƒ³ãƒ¬ãƒ™ãƒ«
+	Level3DRender m_knightAIPoslevel;      //Œ•mAI‚Ìƒ|ƒWƒVƒ‡ƒ“ƒŒƒxƒ‹
 	Vector3                 m_patrolPos[5];
 	int P = -1;
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;

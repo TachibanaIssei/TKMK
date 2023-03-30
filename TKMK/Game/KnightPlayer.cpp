@@ -73,7 +73,7 @@ void KnightPlayer::Update()
 {
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_playerState == enKnightState_Pause) {
+	if (m_knightState == enKnightState_Pause) {
 		return;
 	}
 	//今のフレームと前のフレームのレベルが違っていたら
@@ -103,20 +103,20 @@ void KnightPlayer::Update()
 	////回避
 	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 	//	//回避ステート
-	//	//m_playerState = enKnightState_Avoidance;
+	//	//m_knightState = enKnightState_Avoidance;
 	//	AnimationMove();
 	//	AvoidanceFlag = true;
 	//}
 	
 	//回避中なら
 	if (AvoidanceFlag == true) {
-		m_playerState = enKnightState_Avoidance;
+		m_knightState = enKnightState_Avoidance;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
 	//ステートがデスのときボタンを押せないようにする
-	if (m_playerState != enKnightState_Death) {
+	if (m_knightState != enKnightState_Death) {
 		//攻撃処理
 		Attack();
 		//回避処理
@@ -127,7 +127,7 @@ void KnightPlayer::Update()
 	//スキル使用中なら
 	if (SkillState == true) {
 		//スキルステート
-		m_playerState = enKnightState_Skill;
+		m_knightState = enKnightState_Skill;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
@@ -194,7 +194,7 @@ void KnightPlayer::Attack()
 		//Bボタン押されたら攻撃する
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			m_playerState = enKnightState_ChainAtk;
+			m_knightState = enKnightState_ChainAtk;
 			
 			//FirstAtkFlag = true;
 			//コンボを1増やす
@@ -274,7 +274,7 @@ void KnightPlayer::Avoidance()
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
-		//m_playerState = enKnightState_Avoidance;
+		//m_knightState = enKnightState_Avoidance;
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
@@ -360,7 +360,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
-		
 		//必殺技の当たり判定のクラスを作成
 		MakeUltSkill();
 	}
@@ -381,7 +380,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_playerState = enKnightState_Idle;
+			m_knightState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -398,7 +397,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_playerState = enKnightState_Idle;
+			m_knightState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -412,7 +411,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;

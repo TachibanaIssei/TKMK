@@ -301,7 +301,6 @@ void Neutral_Enemy::Collision()
 			//プレイヤーの攻撃力を取得
 			//何故かm_knightAIがnull
 			//HPを減らす
-			// //HPを減らす
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 

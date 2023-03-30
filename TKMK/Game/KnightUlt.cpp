@@ -2,7 +2,7 @@
 #include "KnightUlt.h"
 
 namespace {
-	const Vector3 CollsionSize = Vector3(300.0f, 50.0f, 15.0f);
+	const Vector3 CollsionSize = Vector3(300.0f, 120.0f, 15.0f);
 }
 
 KnightUlt::KnightUlt()
@@ -25,26 +25,9 @@ bool KnightUlt::Start()
 	m_moveSpeed *= 200.0f;
 	m_rotation.AddRotationDegY(360.0f);
 
-	//コリジョンオブジェクトを作成する。
-	UltCollision = NewGO<CollisionObject>(0);
-	//球状のコリジョンを作成する。
-	UltCollision->CreateBox(m_position, m_rotation, CollsionSize);
+	SetCollision(CollsionSize);
 
-	//術者がプレイヤーだったら。
-	if (m_enUltSkill == enUltSkill_Player)
-	{
-		//名前をplayer_fireballにする。
-		UltCollision->SetName("player_Ult");
-	}
-	//術者が魔法使いだったら。
-	else if (m_enUltSkill == enUltSkill_Knight)
-	{
-		//名前をenemy_fireballにする。
-		UltCollision->SetName("KnightAI_Ult");
-	}
-
-	//懲り所オブジェクトが自動で削除されないようにする。
-	UltCollision->SetIsEnableAutoDelete(false);
+	
 
 	return true;
 }

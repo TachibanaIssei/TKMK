@@ -81,7 +81,22 @@ public:
 	}
 
 private:
-	
+	/// <summary>
+	/// ?G?l?~?[????????x?????
+	/// </summary>
+	char* CreateEnemyName() {
+		//?G?l?~?[????O????
+		enemyNum++;
+		swprintf_s(name_t, 255, L"Neutral_Enemy%d", enemyNum);
+		enemyName = (char*)name_t;
+		wcstombs(enemyName, name_t, sizeof(name_t));
+
+		return enemyName;
+	}
+	/// <summary>
+	/// ?G?l?~?[????
+	/// </summary>
+	void CreateEnemy(Vector3 pos, Quaternion rot);
 
 	EnGameState m_GameState = enGameState_Start;
 
@@ -141,5 +156,9 @@ private:
 
 	//キャラの番号
 	int SelectCharNumber = 1;
+
+	int enemyNum = 0;
+	char* enemyName;
+	wchar_t name_t[255];
 };
 

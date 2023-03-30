@@ -263,6 +263,8 @@ protected:
 	CharacterController m_charCon;                        //キャラクターコントロール
 	CameraCollisionSolver	m_WarpCollisionSolver;    //ワープ
 
+	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
+
 	//スキルのクールタイムを計算するタイマー
 	float SkillTimer = 0;
 	//回避のクールタイムを計算するタイマー

@@ -166,6 +166,31 @@ void WizardBase::Collision()
 			}
 		}
 	}
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_wizardState == enWizardState_Damege ||
+		m_wizardState == enWizardState_Death ||
+		m_wizardState == enWizardState_UltimateSkill ||
+		m_wizardState == enWizardState_Attack ||
+		m_wizardState == enWizardState_Skill ||
+		m_wizardState == enWizardState_Avoidance)
+	{
+		return;
+	}
+	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	const auto& Knightcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//コリジョンの配列をfor文で回す
+	for (auto knightcollision : Knightcollisions)
+	{
+		//このコリジョンを作ったアクターを検索
+		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
+		//コリジョンが自身のキャラコンに当たったら
+		if (knightcollision->IsHit(m_charCon))
+		{
+			//剣士の攻撃力分HPを減らす
+			Dameged(m_lastAttackActor->GetAtk());
+
+		}
+	}
 }
 
 /// <summary>

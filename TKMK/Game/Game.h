@@ -53,7 +53,7 @@ public:
 	}
 
 	
-	Vector3 SetEnemyRespawnPos();
+	//Vector3 SetEnemyRespawnPos();
 
 	/// <summary>
 	/// 

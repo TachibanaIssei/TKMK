@@ -184,9 +184,12 @@ bool Game::Start()
 				neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 				neutral_Enemy->SetPosition(objData.position);
 				neutral_Enemy->SetRotation(objData.rotation);
-				//RespawnNumberBox[enemyNumber] = true;
-				//m_enemyCounter.push_back(neutral_Enemy);
-				//m_Neutral_Enemy3->SetScale(objData.scale);
+
+				Neutral_Enemy* neutral_Enemy2 = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
+				neutral_Enemy2->SetNeutral_EnemyGame(this);
+				neutral_Enemy2->SetPlayerActor(player->GetPlayerActor());
+				neutral_Enemy2->SetPosition(objData.position);
+				neutral_Enemy2->SetRotation(objData.rotation);
 				return true;
 			}
 			if (objData.number == 6) {
@@ -387,7 +390,7 @@ void Game::Respawn()
 			neutral_Enemy->SetNeutral_EnemyGame(this);
 			neutral_Enemy->SetPosition(Vector3(0.0f,0.0f,0.0f));
 			//リスポーンする座標
-			neutral_Enemy->SetPosition(SetEnemyRespawnPos());
+			//neutral_Enemy->SetPosition(SetEnemyRespawnPos());
 			//neutral_Enemy->SetRotation(objData.rotation);
 			neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 
@@ -402,30 +405,31 @@ void Game::Respawn()
 /// 
 /// </summary>
 /// <returns></returns>
-Vector3 Game::SetEnemyRespawnPos()
-{
-	for (int i = 0; i < 9; i++)
-	{
-		int a;
-		for (auto actorPos : m_Actors)
-		{
-			//キャラの座標
-			Vector3 CharPos = actorPos->GetPosition();
-			Vector3 diff = EnemyRespawnPosition[i] - CharPos;
-			if (diff.Length() < 200)
-			{
-				a++;
-			}
-			
-		}
-		//もしリスポーンする座標が全てのキャラの座標から200離れていたら
-		if (a == m_Actors.max_size())
-		{
-			//その座標をリスポーンする座標とする
-			return EnemyRespawnPosition[i];
-		}
-	}
-}
+//Vector3 Game::SetEnemyRespawnPos()
+//{
+//	//for (int i = 0; i < 9; i++)
+//	//{
+//	//	int a;
+//	//	for (auto actorPos : m_Actors)
+//	//	{
+//	//		//キャラの座標
+//	//		Vector3 CharPos = actorPos->GetPosition();
+//	//		Vector3 diff = EnemyRespawnPosition[i] - CharPos;
+//	//		if (diff.Length() < 200)
+//	//		{
+//	//			a++;
+//	//		}
+//	//		
+//	//	}
+//	//	//もしリスポーンする座標が全てのキャラの座標から200離れていたら
+//	//	if (a == m_Actors.max_size())
+//	//	{
+//	//		//その座標をリスポーンする座標とする
+//	//		return EnemyRespawnPosition[i];
+//	//	}
+//	//}
+//	return;
+//}
 
 //ゲームステートの管理
 void Game::GameState()

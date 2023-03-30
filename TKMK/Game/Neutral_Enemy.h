@@ -82,7 +82,12 @@ public:
 		return m_position;
 	}
 	
-
+	/// <summary>
+	/// 引数に攻撃力を代入させる
+	/// </summary>
+	int GetAtk() {
+		return m_Status.Atk;
+	}
 
 	void Move();
 	/// <summary>
@@ -282,8 +287,6 @@ private:
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
 	float   m_stopTimer = 1.0f;             //止まってしまったタイマー
 
-	//攻撃を受けたときに相手の攻撃力を格納する変数
-	int GetAtk=0;
 	//やられたかのフラグ
 	bool Deathflag = false;
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;

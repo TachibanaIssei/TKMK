@@ -261,7 +261,32 @@ void KnightBase::Collition()
 			}
 		}
 	}
-	
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_knightState == enKnightState_Damege ||
+		m_knightState == enKnightState_Death ||
+		m_knightState == enKnightState_UltimateSkill ||
+		m_knightState == enKnightState_ChainAtk ||
+		m_knightState == enKnightState_Skill ||
+		m_knightState == enKnightState_Avoidance)
+	{
+		return;
+	}
+	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	const auto& Knightcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//コリジョンの配列をfor文で回す
+	for (auto knightcollision : Knightcollisions)
+	{
+		//このコリジョンを作ったアクターを検索
+		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
+		//コリジョンが自身のキャラコンに当たったら
+		if (knightcollision->IsHit(m_charCon))
+		{
+			//剣士の攻撃力分HPを減らす
+			Dameged(m_lastAttackActor->GetAtk());
+
+		}
+	}
+
 }
 
 /// <summary>

@@ -276,7 +276,7 @@ protected:
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	PlayerState m_knightState/* = enKnightState_Num*/;
 	
-	
+	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 
 	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ

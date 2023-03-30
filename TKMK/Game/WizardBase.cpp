@@ -200,7 +200,7 @@ void WizardBase::Dameged(int damege)
 void WizardBase::Death()
 {
 	////死亡ステート
-	//m_playerState = enKnightState_Death;
+	//m_knightState = enKnightState_Death;
 	//レベルを１下げる
 	levelDown(LvUpStatus, m_Status, Lv, 1);
 	//HPを最大にする

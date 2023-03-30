@@ -20,14 +20,11 @@ public:
 	KnightAI();
 	~KnightAI();
 	void Update();
-	void Move();
-	void Collition();
 	void Attack();
 	void Render(RenderContext& rc);
-	void ChaseEnemy();
+	//void ChaseEnemy();
 	void AtkCollisiton();
-	void LevelMove();
-	void ChasePlayer_OR_AI();
+	//void LevelMove();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
 
@@ -42,12 +39,16 @@ public:
 	}
 	void Patrol();
 	/// <summary>
+
 	/// 攻撃できるならtrue
 	/// </summary>
 	/// <returns></returns>
-	const bool CanAttack() const;
-	
+	const bool CanAttackenemy();
 	/// <summary>
+
+	/// </summary>
+	/// <returns></returns>
+	const bool CanAttackActor();
 	/// 巡回する座標を設定する
 	/// </summary>
 	/// <param name="pos">巡回する座標</param>
@@ -69,6 +70,13 @@ private:
 		Num_State,
 
 	};
+
+	/// <summary>
+	/// �_�������߂�
+	/// </summary>
+	/// <returns>�_������̍�W</returns>
+	const Vector3 TargetChange();
+
 	AtkTimingState m_AtkTmingState = Num_State;
 	Game* m_game;//ゲーム
 	KnightPlayer* m_knightPlayer;//剣士プレイヤーvoid Rotation();
@@ -82,7 +90,7 @@ private:
 	RigidBody				m_rigidBody;						//剛体。	
 	CharUltFlag* charUltFlag = nullptr;
 	Neutral_Enemy*          m_Neutral_Enemy = nullptr;			// 今追いかけているエネミー      
-
+	Actor*					m_targetActor = nullptr;
 	bool UltimateSkillFlag = false;
 	bool PL = true;
 	float SkillSpeed = 270.0f;

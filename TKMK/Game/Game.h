@@ -27,6 +27,9 @@ public:
 	void Pause();
 	void GameState();
 	
+	/// <summary>
+	/// 
+	/// </summary>
 	void Respawn();
 
 	/*std::vector<Neutral_Enemy*> GetNeutral_EnemyContaier() {
@@ -34,22 +37,32 @@ public:
 	}*/
 
 	/// <summary>
-	/// ã‚¨ãƒãƒŸãƒ¼ã®æ•°ã‚’æ¸›ã‚‰ã™å‡¦ç†
+	/// ƒGƒlƒ~[‚Ì”‚ğŒ¸‚ç‚·ˆ—
 	/// </summary>
-	/// <returns>ã‚¨ãƒãƒŸãƒ¼ã®æ•°</returns>
+	/// <returns>ƒGƒlƒ~[‚Ì”</returns>
 	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
 
 	/// <summary>
-	/// ã‚¨ãƒãƒŸãƒ¼ã®æ•°ã‚’æ¸›ã‚‰ã™å‡¦ç†
+	/// ƒGƒlƒ~[‚Ì”‚ğŒ¸‚ç‚·ˆ—
 	/// </summary>
-	/// <returns>ã‚¨ãƒãƒŸãƒ¼ã®æ•°</returns>
+	/// <returns>ƒGƒlƒ~[‚Ì”</returns>
 	int GetNeutral_EnemyContaier() {
 		return enemyNumber;
 	}
 
 	
+	//Vector3 SetEnemyRespawnPos();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="number"></param>
+	void SetRespawnPosition(Vector3 pos, int number) {
+		EnemyRespawnPosition[number] = pos;
+	};
 
 	void Render(RenderContext& rc);
 
@@ -61,33 +74,29 @@ public:
 		enGameState_Rezult,
 		enGameState_Num,
 	};
-	//Enemyï¿½ï¿½Ô‚ï¿½
+	//Enemy????
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
-
-	//Actorï¿½ï¿½Ô‚ï¿½
-	//Actorã‚’è¿”ã™
-
+	//Actor‚ğ•Ô‚·
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
 	/// <summary>
-	/// ï¿½Gï¿½lï¿½~ï¿½[ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ÉŒÄ‚Ú‚ï¿½
+	/// ’†—§‚Ì“G‚Ì–¼‘O‚ğì‚é
 	/// </summary>
 	char* CreateEnemyName() {
-		//ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ì–ï¿½ï¿½Oï¿½ğ¶ï¿½
 		enemyNum++;
 		swprintf_s(name_t, 255, L"Neutral_Enemy%d", enemyNum);
 		enemyName = (char*)name_t;
 		wcstombs(enemyName, name_t, sizeof(name_t));
-		
+
 		return enemyName;
 	}
 	/// <summary>
-	/// ï¿½Gï¿½lï¿½~ï¿½[ï¿½ğ¶ï¿½
+	/// ’†—§‚Ì“G‚ğì‚é
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
@@ -103,8 +112,8 @@ private:
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
 
-	SpriteRender m_Pause_Front;    //ãƒãƒ¼ã‚ºç”»é¢
-	SpriteRender m_Pause_Back;     //ãƒãƒ¼ã‚ºã®è£ç”»é¢
+	SpriteRender m_Pause_Front;    //ƒ|[ƒY‰æ–Ê
+	SpriteRender m_Pause_Back;     //ƒ|[ƒY‚Ì— ‰æ–Ê
 
 
 	BackGround* m_backGround = nullptr;
@@ -122,34 +131,36 @@ private:
 	Player* player = nullptr;
 	CharUltFlag* charUltFlag = nullptr;
 
-
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
+	
+	Vector3 EnemyRespawnPosition[9];                        //’†—§‚Ì“G‚ÌƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ğŠi”[‚·‚é
+
 	float m_spriteAlpha = 0.0f;
 
 	int enemyNumber = 0;
-	int enemyNum = 0;	// ï¿½ï¿½ï¿½Ì–Ú‚ÌƒGï¿½lï¿½~ï¿½[ï¿½ï¿½
+	int enemyNum = 0;
 	char* enemyName;
 	wchar_t name_t[255];
-
 	//bool RespawnNumberBox[50];
 
 	float m_Timer = 0.0f;
 
-	//BGMã®éŸ³é‡èª¿æ•´ã«ä½¿ç”¨ã™ã‚‹å¤‰æ•°
+	//BGM‚Ì‰¹—Ê’²®‚Ég—p‚·‚é•Ï”
 	float musicVolume = 1.0f;
 
-	//ãƒªã‚¶ãƒ«ãƒˆç”»é¢ã‹ã®ãƒ•ãƒ©ã‚°
+	//ƒŠƒUƒ‹ƒg‰æ–Ê‚©‚Ìƒtƒ‰ƒO
 	bool RezultFlag = false;
-	//ãƒãƒ¼ã‚ºç”»é¢ã‹ã®ãƒ•ãƒ©ã‚°
+	//ƒ|[ƒY‰æ–Ê‚©‚Ìƒtƒ‰ƒO
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
 
-	//ã‚­ãƒ£ãƒ©ã®ç•ªå·
+	//ƒLƒƒƒ‰‚Ì”Ô†
 	int SelectCharNumber = 1;
+
 
 };
 

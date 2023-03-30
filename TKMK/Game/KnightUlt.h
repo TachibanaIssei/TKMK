@@ -49,12 +49,41 @@ public:
 		m_enUltSkill = enMagician;
 	}
 
+	/// <summary>
+	/// このクラスを作ったオブジェクトの名前
+	/// </summary>
+	/// <param name="collisionname">名前</param>
+	void SetCreatorName(const char* creatorname)
+	{
+		//コリジョンオブジェクトを作成する。
+		UltCollision = NewGO<CollisionObject>(0);
+		//このクラスを作ったオブジェクトの名前
+		UltCollision->SetCreatorName(creatorname);
+	}
+
+	/// <summary>
+	/// 当たり判定の設定
+	/// </summary>
+	void SetCollision(Vector3 collisionsize)
+	{
+		
+		//球状のコリジョンを作成する。
+		UltCollision->CreateBox(m_position, m_rotation, collisionsize);
+		//コリジョンの名前
+		UltCollision->SetName("player_UltimateSkill");
+
+		//懲り所オブジェクトが自動で削除されないようにする。
+		UltCollision->SetIsEnableAutoDelete(false);
+	}
+
 private:
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;
 	Vector3 m_scale;
 	Vector3	m_moveSpeed;
 	CollisionObject* UltCollision;
+
+	//char m_collisionName;
 
 	float m_timer = 0.0f;
 

@@ -11,16 +11,6 @@ public:
 protected:
 
 	/// <summary>
-	/// 初期ステータス
-	/// </summary>
-	//struct Status {
-	//	int MaxHp;                 //最大ヒットポイント
-	//	int Hp;                    //ヒットポイント(体力)
-	//	int Atk;                   //攻撃力
-	//	float Speed;               //移動速度
-	//};
-
-	/// <summary>
 	/// レベルアップ時に増加するステータス
 	/// </summary>
 	struct LvUpStatus {
@@ -30,6 +20,16 @@ protected:
 	};
 
 public:
+
+	//ゲームクラスの現在の状態を示すステート
+	enum EnGameState
+	{
+		enStart,
+		enGame,
+		enPause,
+		enEnd
+	};
+	EnGameState m_GameState= enGame;
 
 	/// <summary>
 	/// 移動処理
@@ -165,6 +165,17 @@ public:
 	/// </summary>
 	/// <param name="GetExp">中立の敵の経験値</param>
 	void ExpProcess(int Exp);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="gameState"></param>
+	void ChangeGameState(EnGameState gameState)
+	{
+		m_GameState = gameState;
+	}
+
+
 
 private:
     Level3DRender m_respawnLevel;

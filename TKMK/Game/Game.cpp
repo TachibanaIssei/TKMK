@@ -18,7 +18,7 @@
 //#include <algorithm>
 
 namespace {
-	int ENEMY_AMOUNT = 5;
+	int ENEMY_AMOUNT = 8;
 }
 
 Game::Game()
@@ -38,15 +38,13 @@ Game::~Game()
 	}
 	DeleteGO(m_gamecamera);
 
-	QueryGOs<Neutral_Enemy>("Neutral_Enemy", [&](Neutral_Enemy* neutral_Enemy_) {
+	/*QueryGOs<Neutral_Enemy>("Neutral_Enemy", [&](Neutral_Enemy* neutral_Enemy_) {
 		DeleteGO(neutral_Enemy_);
 		return true;
-		});
+		});*/
 
-	//Neutral_Enemyを配列で消す
-	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 	//配列のサイズを調べてfor文で回す
-	for (auto seutral_Enemy : seutral_Enemys)
+	for (auto seutral_Enemy : m_neutral_Enemys)
 	{
 		DeleteGO(seutral_Enemy);
 	}
@@ -102,6 +100,7 @@ bool Game::Start()
 	player->CharSelect(SelectCharNumber);
 	player->CreaetPlayer();
 	m_Actors.push_back(player->GetPlayerActor());
+
 
 	//ゲームカメラの生成
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
@@ -250,8 +249,11 @@ void Game::Update()
 		//ゲーム画面からポーズ画面に遷移する時の処理
 		if (m_GameState == enGameState_Battle) {
 			m_GameState = enGameState_Pause;
-			//プレイヤーのステートをポーズ画面用のステートに変更
-			player->CharSetState(Player::enPause);
+			//プレイヤー、AIのステートをポーズ画面用のステートに変更
+			for (auto character : m_Actors)
+			{
+				character->ChangeGameState(character->enPause);
+			}
 			//UIのステートをポーズ画面用のステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 			//カメラのステートをポーズ画面用のステートに変更
@@ -259,10 +261,10 @@ void Game::Update()
 			//中立の敵をポーズ画面用のステートに変更
 			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 			////配列のサイズを調べてfor文で回す
-			//for (auto seutral_Enemy : seutral_Enemys)
-			//{
-			//	seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
-			//}
+			for (auto seutral_Enemy : m_neutral_Enemys)
+			{
+				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
+			}
 
 			
 		}
@@ -271,7 +273,12 @@ void Game::Update()
 		else if (m_GameState == enGameState_Pause) {
 			m_GameState = enGameState_Battle;
 			//プレイヤーのステートをポーズ画面用のステートではないようにする
-			player->CharSetState(Player::enGame);
+			// //プレイヤー、AIのステートをポーズ画面用のステートに変更
+			for (auto character : m_Actors)
+			{
+				character->ChangeGameState(character->enGame);
+			}
+			//player->CharSetState(Player::enGame);
 			//UIのステートをゲームのステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 			//カメラのステートをゲームのステートに変更
@@ -279,17 +286,17 @@ void Game::Update()
 			//中立の敵をポーズ画面用のステートに変更
 			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 			////配列のサイズを調べてfor文で回す
-			//for (auto seutral_Enemy : seutral_Enemys)
-			//{
-			//	seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
-			//}
+			for (auto seutral_Enemy : m_neutral_Enemys)
+			{
+				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
+			}
 		}
 	}
 
 	GameState();
 	
 	m_Timer += g_gameTime->GetFrameDeltaTime();
-	if (m_Timer>=15) {
+	if (m_Timer>=20) {
 		Respawn();
 		m_Timer = 0.0f;
 	}
@@ -337,7 +344,10 @@ void Game::Respawn()
 		for (int generate = 0; generate < spawnAmount; generate++) {
 			//enemyNumber++;
 			//ENEMY_AMOUNT;
-			CreateEnemy(SetEnemyRespawnPos(), EnemyReapawnPot[SearchRespawnPos]);
+			//ランダムにリスポーンする座標の番号を決める
+			RandamRespawnPosNumber = rand() % 8 + 1;
+			SetEnemyRespawnPos();
+			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber]);
 			
 			////neutral_Enemy->SetPosition(SetEnemyRespawnPos());
 			////neutral_Enemy->SetRotation(objData.rotation);
@@ -354,26 +364,52 @@ void Game::Respawn()
 /// 
 /// </summary>
 /// <returns></returns>
-Vector3 Game::SetEnemyRespawnPos()
+void Game::SetEnemyRespawnPos()
 {
-	SearchRespawnPos = 1;
-	for (SearchRespawnPos; SearchRespawnPos < 9; SearchRespawnPos++)
+	//ランダムに選んだ番号を代入
+	SearchRespawnPosNumber = RandamRespawnPosNumber;
+	//検索する番号の最大値
+	int MaxSearchNumber = SearchRespawnPosNumber - 1;
+
+	if(SearchRespawnPosNumber==0)
 	{
+		MaxSearchNumber = 8;
+	}
+
+	while (SearchRespawnPosNumber!= MaxSearchNumber)
+	{
+
 		int distanceCounter = 0;
 		for (auto actorPos : m_Actors)
 		{
 			Vector3 CharPos = actorPos->GetPosition();
-			Vector3 diff = EnemyRespawnPosition[SearchRespawnPos] - CharPos;
-			if (diff.Length() < 200)
+			//リスポーンする座標からキャラの座標へのベクトルを計算する
+			Vector3 diff = EnemyRespawnPosition[SearchRespawnPosNumber] - CharPos;
+			//ベクトルの長さが700以上なら
+			if (diff.Length() > 700)
 			{
+				//距離が離れている
 				distanceCounter++;
 			}
-			
+
 		}
-		if (distanceCounter == m_Actors.max_size())
+		//キャラの数と距離カウントが同じなら抜け出す
+		if (distanceCounter == m_Actors.size())
 		{
-			return EnemyRespawnPosition[SearchRespawnPos];
+			//この段階のSearchRespawnPosNumberがリスポーンする座標の番号になる
+			return;
 		}
+
+		//リスポーンする座標の番号が8ではないなら
+		if (SearchRespawnPosNumber < 8)
+		{
+			SearchRespawnPosNumber++;
+		}
+		else  //リスポーンする座標の番号が最後(8)までいったら
+		{
+			SearchRespawnPosNumber = 0;
+		}
+		
 	}
 }
 

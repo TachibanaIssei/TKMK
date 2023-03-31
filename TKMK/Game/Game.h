@@ -52,7 +52,7 @@ public:
 		return enemyNumber;
 	}
 
-	Vector3 SetEnemyRespawnPos();
+	void SetEnemyRespawnPos();
 
 	void SetRespawnPosition(Vector3 pos, Quaternion rot, int number) {
 		EnemyRespawnPosition[number] = pos;
@@ -143,7 +143,8 @@ private:
 
 	int enemyNumber = 0;
 
-	int SearchRespawnPos;
+	int SearchRespawnPosNumber;
+	int RandamRespawnPosNumber;
 
 	//bool RespawnNumberBox[50];
 

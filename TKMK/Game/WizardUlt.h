@@ -2,6 +2,7 @@
 
 class Player;
 class KnightAI;
+class Actor;
 
 class WizardUlt:public IGameObject
 {
@@ -67,12 +68,13 @@ public:
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
+	Actor* m_targetActor = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;
 	Vector3 m_scale;
 	Vector3	m_moveSpeed;
-	CollisionObject* BallCollision;
+	CollisionObject* UltCollision;
 
 	float m_timer = 0.0f;
 

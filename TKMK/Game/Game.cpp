@@ -233,6 +233,85 @@ bool Game::Start()
 
 void Game::Update()
 {
+	//if (m_GameState == enGameState_Battle) {
+	//	//リザルト画面への遷移
+	//	//CTRLが押されたら。
+	//	if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+	//	{
+	//		m_GameState = enGameState_Rezult;
+	//	}
+	//}
+	//
+
+	////ポーズ画面への遷移
+	////スタートボタンが押されたら。
+	//if (g_pad[0]->IsTrigger(enButtonStart)) {
+	//	//ゲーム画面からポーズ画面に遷移する時の処理
+	//	if (m_GameState == enGameState_Battle) {
+	//		m_GameState = enGameState_Pause;
+	//		//プレイヤー、AIのステートをポーズ画面用のステートに変更
+	//		for (auto character : m_Actors)
+	//		{
+	//			character->ChangeGameState(character->enPause);
+	//		}
+	//		//UIのステートをポーズ画面用のステートに変更
+	//		m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
+	//		//カメラのステートをポーズ画面用のステートに変更
+	//		m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
+	//		//中立の敵をポーズ画面用のステートに変更
+	//		//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	//		////配列のサイズを調べてfor文で回す
+	//		for (auto seutral_Enemy : m_neutral_Enemys)
+	//		{
+	//			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
+	//		}
+
+	//		
+	//	}
+	//		
+	//	//ポーズ画面からゲーム画面に戻る時の処理
+	//	else if (m_GameState == enGameState_Pause) {
+	//		m_GameState = enGameState_Battle;
+	//		//プレイヤーのステートをポーズ画面用のステートではないようにする
+	//		// //プレイヤー、AIのステートをポーズ画面用のステートに変更
+	//		for (auto character : m_Actors)
+	//		{
+	//			character->ChangeGameState(character->enGame);
+	//		}
+	//		//player->CharSetState(Player::enGame);
+	//		//UIのステートをゲームのステートに変更
+	//		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
+	//		//カメラのステートをゲームのステートに変更
+	//		m_gamecamera->SetCameraState(m_gamecamera->enGameState);
+	//		//中立の敵をポーズ画面用のステートに変更
+	//		//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	//		////配列のサイズを調べてfor文で回す
+	//		for (auto seutral_Enemy : m_neutral_Enemys)
+	//		{
+	//			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
+	//		}
+	//	}
+	//}
+
+	GameState();
+	
+	/*m_Timer += g_gameTime->GetFrameDeltaTime();
+	if (m_Timer>=20) {
+		Respawn();
+		m_Timer = 0.0f;
+	}*/
+	
+	m_modelRender.Update();
+	//m_Pause_Back.Update();
+}
+
+void Game::BattleStart()
+{
+
+}
+
+void Game::Battle()
+{
 	if (m_GameState == enGameState_Battle) {
 		//リザルト画面への遷移
 		//CTRLが押されたら。
@@ -241,13 +320,11 @@ void Game::Update()
 			m_GameState = enGameState_Rezult;
 		}
 	}
-	
 
 	//ポーズ画面への遷移
 	//スタートボタンが押されたら。
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
 		//ゲーム画面からポーズ画面に遷移する時の処理
-		if (m_GameState == enGameState_Battle) {
 			m_GameState = enGameState_Pause;
 			//プレイヤー、AIのステートをポーズ画面用のステートに変更
 			for (auto character : m_Actors)
@@ -259,18 +336,26 @@ void Game::Update()
 			//カメラのステートをポーズ画面用のステートに変更
 			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
 			//中立の敵をポーズ画面用のステートに変更
-			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 			////配列のサイズを調べてfor文で回す
 			for (auto seutral_Enemy : m_neutral_Enemys)
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
 			}
+	}
 
-			
-		}
-			
+	m_Timer += g_gameTime->GetFrameDeltaTime();
+	if (m_Timer >= 20) {
+		Respawn();
+		m_Timer = 0.0f;
+	}
+}
+
+//ポーズ画面の処理
+void Game::Pause()
+{
+	//スタートボタンが押されたら。
+	if (g_pad[0]->IsTrigger(enButtonStart)) {
 		//ポーズ画面からゲーム画面に戻る時の処理
-		else if (m_GameState == enGameState_Pause) {
 			m_GameState = enGameState_Battle;
 			//プレイヤーのステートをポーズ画面用のステートではないようにする
 			// //プレイヤー、AIのステートをポーズ画面用のステートに変更
@@ -278,36 +363,18 @@ void Game::Update()
 			{
 				character->ChangeGameState(character->enGame);
 			}
-			//player->CharSetState(Player::enGame);
 			//UIのステートをゲームのステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 			//カメラのステートをゲームのステートに変更
 			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
 			//中立の敵をポーズ画面用のステートに変更
-			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 			////配列のサイズを調べてfor文で回す
 			for (auto seutral_Enemy : m_neutral_Enemys)
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
 			}
-		}
 	}
 
-	GameState();
-	
-	m_Timer += g_gameTime->GetFrameDeltaTime();
-	if (m_Timer>=20) {
-		Respawn();
-		m_Timer = 0.0f;
-	}
-	
-	m_modelRender.Update();
-	//m_Pause_Back.Update();
-}
-
-//ポーズ画面の処理
-void Game::Pause()
-{
 	//音量を上げる
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
 		if(musicVolume<4.0f)
@@ -332,6 +399,11 @@ void Game::Pause()
 		Tittle*m_tittle = NewGO<Tittle>(0,"m_tittle");
 		DeleteGO(this);
 	}
+}
+
+void Game::End()
+{
+
 }
 
 /// <summary>
@@ -419,11 +491,11 @@ void Game::GameState()
 	switch (m_GameState)
 	{
 	case enGameState_Start:
-
+		BattleStart();
 		break;
 
 	case enGameState_Battle:
-
+		Battle();
 		break;
 
 	case enGameState_Pause:
@@ -431,7 +503,7 @@ void Game::GameState()
 		break;
 
 	case enGamestate_End:
-
+		End();
 		break;
 
 	case enGameState_Rezult:

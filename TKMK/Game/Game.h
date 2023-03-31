@@ -22,9 +22,22 @@ class Game : public IGameObject
 public:
 	Game();
 	~Game();
+
+	enum EnGameState {
+		enGameState_Start,
+		enGameState_Battle,
+		enGameState_Pause,
+		enGamestate_End,
+		enGameState_Rezult,
+		enGameState_Num,
+	};
+
 	bool Start();
 	void Update();
+	void BattleStart();
+	void Battle();
 	void Pause();
+	void End();
 	void GameState();
 	
 	/// <summary>
@@ -61,14 +74,7 @@ public:
 
 	void Render(RenderContext& rc);
 
-	enum EnGameState {
-		enGameState_Start,
-		enGameState_Battle,
-		enGameState_Pause,
-		enGamestate_End,
-		enGameState_Rezult,
-		enGameState_Num,
-	};
+
 	//ƒxƒNƒ^Œ^‚ÌNeutral_Enemy‚ð•Ô‚·
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;

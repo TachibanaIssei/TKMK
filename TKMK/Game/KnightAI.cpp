@@ -36,6 +36,10 @@ KnightAI::~KnightAI()
 }
 void KnightAI::Update()
 {
+	//gameクラスのポーズのフラグが立っている間処理を行わない
+	if (m_GameState == enPause) {
+		return;
+	}
 	Attack();
 	//ステート
 	ManageState();

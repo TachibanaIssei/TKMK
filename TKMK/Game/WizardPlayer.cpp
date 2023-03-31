@@ -73,7 +73,7 @@ WizardPlayer::~WizardPlayer()
 void WizardPlayer::Update()
 {
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_wizardState == enWizardState_Pause) {
+	if (m_GameState == enPause) {
 		return;
 	}
 
@@ -178,7 +178,7 @@ void WizardPlayer::Attack()
 		}
 		m_wizardState = enWizardState_Skill;
 		SkillState = true;
-		//pushFlag = true;
+		pushFlag = true;
 	}
 
 	//必殺技の発動

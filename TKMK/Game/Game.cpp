@@ -233,74 +233,8 @@ bool Game::Start()
 
 void Game::Update()
 {
-	//if (m_GameState == enGameState_Battle) {
-	//	//リザルト画面への遷移
-	//	//CTRLが押されたら。
-	//	if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
-	//	{
-	//		m_GameState = enGameState_Rezult;
-	//	}
-	//}
-	//
-
-	////ポーズ画面への遷移
-	////スタートボタンが押されたら。
-	//if (g_pad[0]->IsTrigger(enButtonStart)) {
-	//	//ゲーム画面からポーズ画面に遷移する時の処理
-	//	if (m_GameState == enGameState_Battle) {
-	//		m_GameState = enGameState_Pause;
-	//		//プレイヤー、AIのステートをポーズ画面用のステートに変更
-	//		for (auto character : m_Actors)
-	//		{
-	//			character->ChangeGameState(character->enPause);
-	//		}
-	//		//UIのステートをポーズ画面用のステートに変更
-	//		m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
-	//		//カメラのステートをポーズ画面用のステートに変更
-	//		m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
-	//		//中立の敵をポーズ画面用のステートに変更
-	//		//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//		////配列のサイズを調べてfor文で回す
-	//		for (auto seutral_Enemy : m_neutral_Enemys)
-	//		{
-	//			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
-	//		}
-
-	//		
-	//	}
-	//		
-	//	//ポーズ画面からゲーム画面に戻る時の処理
-	//	else if (m_GameState == enGameState_Pause) {
-	//		m_GameState = enGameState_Battle;
-	//		//プレイヤーのステートをポーズ画面用のステートではないようにする
-	//		// //プレイヤー、AIのステートをポーズ画面用のステートに変更
-	//		for (auto character : m_Actors)
-	//		{
-	//			character->ChangeGameState(character->enGame);
-	//		}
-	//		//player->CharSetState(Player::enGame);
-	//		//UIのステートをゲームのステートに変更
-	//		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
-	//		//カメラのステートをゲームのステートに変更
-	//		m_gamecamera->SetCameraState(m_gamecamera->enGameState);
-	//		//中立の敵をポーズ画面用のステートに変更
-	//		//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//		////配列のサイズを調べてfor文で回す
-	//		for (auto seutral_Enemy : m_neutral_Enemys)
-	//		{
-	//			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
-	//		}
-	//	}
-	//}
-
 	GameState();
-	
-	/*m_Timer += g_gameTime->GetFrameDeltaTime();
-	if (m_Timer>=20) {
-		Respawn();
-		m_Timer = 0.0f;
-	}*/
-	
+
 	m_modelRender.Update();
 	//m_Pause_Back.Update();
 }

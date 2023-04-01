@@ -262,7 +262,9 @@ protected:
 	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
 	CharacterController m_charCon;                        //キャラクターコントロール
-	CameraCollisionSolver	m_WarpCollisionSolver;    //ワープ
+
+	RigidBody				m_rigidBody;						//剛体。
+	SphereCollider			m_sphereCollider;							//コライダー。
 
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 

@@ -4,6 +4,7 @@
 #include "Neutral_Enemy.h"
 #include "MagicBall.h"
 #include "CharUltFlag.h"
+#include "WizardUlt.h"
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f, 1.0f);
@@ -110,10 +111,10 @@ void WizardPlayer::Update()
 	//}
 
 	//ダメージを受ける
-	if (g_pad[0]->IsTrigger(enButtonX))
+	/*if (g_pad[0]->IsTrigger(enButtonX))
 	{
 		Dameged(dddd);
-	}
+	}*/
 
 	//移動処理
 	//移動処理
@@ -186,8 +187,7 @@ void WizardPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//雷の生成
-		MakeUltimateSkill();
+		
 		//必殺技発動時の処理
 		UltimateSkill();
 		//レベルに合わせてGameUIのレベルの画像を変更する
@@ -231,6 +231,13 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_modelRender.SetPosition(m_position);
 	}
 
+	//
+	if (wcscmp(eventName, L"UltAttack_Start") == 0)
+	{
+		//雷の生成
+		MakeUltimateSkill();
+	}
+
 }
 
 /// <summary>
@@ -258,9 +265,12 @@ void WizardPlayer::MakeUltimateSkill()
 	//必殺技フラグを魔法使いのステートにする
 	charUltFlag->WhoUlt(CharUltFlag::enWizardState);
 	//必殺技の雷の生成
+	WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+	wizardUlt->SetCreatorName(GetName());
 
-
-
+	Vector3 UltPos = Actor::GetPosition();
+	UltPos.y += 100.0f;
+	wizardUlt->SetPosition(UltPos);
 }
 
 void WizardPlayer::AvoidanceSprite()

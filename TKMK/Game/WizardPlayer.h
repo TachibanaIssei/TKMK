@@ -7,6 +7,7 @@ class Game;
 class Neutral_Enemy;
 class MagicBall;
 class CharUltFlag;
+class WizardUlt;
 
 class WizardPlayer:public WizardBase
 {

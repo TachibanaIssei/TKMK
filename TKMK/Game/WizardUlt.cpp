@@ -11,55 +11,53 @@ WizardUlt::WizardUlt()
 
 WizardUlt::~WizardUlt()
 {
-
+	DeleteGO(UltCollision);
 }
 
 bool WizardUlt::Start()
 {
-	UltCollision->CreateSphere(m_position, Quaternion::Identity, 100.0f);
-	UltCollision->SetName("Wizard_UltSkill");
-	//UltCollision->SetCreatorName();
-
+	CreatCollision();
+	m_CreatMeActor = FindGO<Actor>(UltCollision->GetCreatorName());
 	return true;
 }
 
 void WizardUlt::Update()
 {
-	//switch (m_DamegedChar)
-	//{
-	//case enDamegedChar_Plater:
+	//タイマーを加算する。
+	m_timer += g_gameTime->GetFrameDeltaTime();
+	//タイマーが10秒を超えると
+	if (m_timer > 10)
+	{
+		//ダメージを受けるか受けないか決める
+		Damege();
+		//ポイントを増やす
 
+		DeleteGO(this);
+	}
 
-	//	break;
+	Move();
+}
 
-	//case enDamegedChar_KnightAI:
+void WizardUlt::Move()
+{
+	//m_CreatMeActor = FindGO<Actor>(UltCollision->GetCreatorName());
 
-	//	//int probability = rand() % 100;
-	//	//int damege=0;
-	//	////確率が50％以下なら
-	//	//if (probability < 50)
-	//	//{
-	//	//	damege = 1000;
-	//	//}
+	m_position = m_CreatMeActor->GetPosition();
+	m_position.y += 100.0f;
 
-	//	//knightAI->Dameged(damege);
+	UltCollision->SetPosition(m_position);
+}
 
-	//	//DeleteGO(this);
-	//	break;
+void WizardUlt::Damege()
+{
+	int Randam = rand() % 100;
+	int Damege = 0;
+	//もし２０以下なら即死
+	if (Randam < 20)
+	{
+		Damege = 1000;
+		m_CreatMeActor->Dameged(Damege);
+	}
 
-	//case enDamegedChar_WizardAI:
-
-	//	break;
-
-	//case enDamegedChar_ZombieAI:
-
-	//	break;
-
-	//case enDamegedChar_MonsterAI:
-
-	//	break;
-
-	//default:
-	//	break;
-	//}
+	
 }

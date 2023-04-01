@@ -31,6 +31,9 @@ public:
 
 	bool Start();
 	void Update();
+	void Move();
+
+	void Damege();
 
 	/// <summary>
 		/// 座標を設定する。
@@ -65,10 +68,36 @@ public:
 		m_ultSkillian = enMagician;
 	}
 
+	/// <summary>
+	/// このクラスを作ったオブジェクトの名前
+	/// </summary>
+	/// <param name="collisionname">名前</param>
+	void SetCreatorName(const char* creatorname)
+	{
+		//コリジョンオブジェクトを作成する。
+		UltCollision = NewGO<CollisionObject>(0);
+		//このクラスを作ったオブジェクトの名前
+		UltCollision->SetCreatorName(creatorname);
+	}
+
+	void CreatCollision()
+	{
+		UltCollision->CreateSphere(m_position, Quaternion::Identity, 20.0f);
+		UltCollision->SetName("Wizard_UltSkill");
+		//懲り所オブジェクトが自動で削除されないようにする。
+		UltCollision->SetIsEnableAutoDelete(false);
+	}
+
+	const void SetActor(Actor* character)
+	{
+		m_targetActor = character;
+	}
+
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
 	Actor* m_targetActor = nullptr;
+	Actor* m_CreatMeActor = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;

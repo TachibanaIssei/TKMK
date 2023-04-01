@@ -49,7 +49,8 @@ void WizardBase::SetModel()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Wizard/Wizard_Warp.tka");
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
-
+	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Wizard/Wizard_UltimateSkill.tka");
+	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 
 	//–‚–@g‚¢‚Ìƒ‚ƒfƒ‹‚ğ“Ç‚İ‚İ
 	m_modelRender.Init("Assets/modelData/character/Wizard/Wizard.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);

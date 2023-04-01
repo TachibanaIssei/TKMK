@@ -134,7 +134,8 @@ public:
 			m_wizardState != enAnimationClip_Damege &&
 			m_wizardState != enAnimationClip_Death &&
 			m_wizardState != enAnimationClip_Avoidance &&
-			m_wizardState != enAnimationClip_Skill;
+			m_wizardState != enAnimationClip_Skill &&
+			m_wizardState != enAnimationClip_UltimateSkill;
 	}
 
 	/// <summary>

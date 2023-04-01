@@ -1,10 +1,12 @@
 #pragma once
 #include "KnightBase.h"
 #include "Status.h"
+#include "WizardUlt.h"    //ŠÖ”‚ğ.cpp‚ÉˆÚ‚µ‚½‚çÁ‚·todo
 class Game;
 class KnightPlayer;
 class Neutral_Enemy;
 class CharUltFlag;
+class WizardUlt;
 
 class KnightAI:public KnightBase
 {
@@ -45,6 +47,18 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttackActor();
+	//.cpp‚ÉˆÚ‚·@todo
+	void MakeWizardUlt()
+	{
+		//•KE‹Z‚Ì—‹‚Ì¶¬
+		WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+		wizardUlt->SetCreatorName(GetName());
+
+		Vector3 UltPos = Actor::GetPosition();
+		UltPos.y += 100.0f;
+		wizardUlt->SetPosition(UltPos);
+	}
+
 private:
 	enum AtkTimingState
 	{

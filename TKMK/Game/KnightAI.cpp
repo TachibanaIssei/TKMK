@@ -5,7 +5,7 @@
 #include "Neutral_Enemy.h"
 #include "CharUltFlag.h"
 #include "Actor.h"
-
+#include "WizardUlt.h"
 
 KnightAI::KnightAI()
 {
@@ -39,6 +39,14 @@ void KnightAI::Update()
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
+	}
+	//魔法使いが必殺技を使ったら
+	if (charUltFlag->m_whoUltimatSkill == charUltFlag->enWizardState)
+	{
+		//自分の上部に雷(魔法使いの必殺技)を生成
+		MakeWizardUlt();
+		//ステートを誰も必殺技を打っていない状態にする
+		charUltFlag->WhoUlt(charUltFlag->enNobodyState);
 	}
 	Attack();
 	//ステート

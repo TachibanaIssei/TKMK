@@ -234,6 +234,8 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//
 	if (wcscmp(eventName, L"UltAttack_Start") == 0)
 	{
+		//必殺技フラグを魔法使いのステートにする
+		charUltFlag->WhoUlt(CharUltFlag::enWizardState);
 		//雷の生成
 		MakeUltimateSkill();
 	}
@@ -262,8 +264,6 @@ void WizardPlayer::MakeMagicBall()
 /// </summary>
 void WizardPlayer::MakeUltimateSkill()
 {
-	//必殺技フラグを魔法使いのステートにする
-	charUltFlag->WhoUlt(CharUltFlag::enWizardState);
 	//必殺技の雷の生成
 	WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
 	wizardUlt->SetCreatorName(GetName());

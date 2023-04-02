@@ -274,32 +274,62 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 {
 	//ワープ先の座標を格納する
 	Vector3 WarpPos = position;
+	//
+	float kyori = 500.0f;
 	m_moveSpeed = Vector3::AxisZ;
 	//回転も
 	rotation.Apply(m_moveSpeed);
-	WarpPos += m_moveSpeed * 500.0f;
+	WarpPos += m_moveSpeed * kyori;
 	m_moveSpeed *= 1000.0f;
 	rotation.AddRotationDegY(360.0f);
 
-	btTransform start, end;
-	start.setIdentity();
-	end.setIdentity();
-	//始点はエネミーの座標。
-	start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
-	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
-
-	SweepResultWall callback;
-	//コライダーを始点から終点まで動かして。
-	//衝突するかどうかを調べる。
-	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-	//壁と衝突した！
-	if (callback.isHit == true)
+	while (true)
 	{
-		//ワープさせない。
-		//ワープの距離を縮める処理追加todo
-		return;
+		btTransform start, end;
+		start.setIdentity();
+		end.setIdentity();
+		//始点はエネミーの座標。
+		start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+		//終点はプレイヤーの座標。
+		end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
+
+		SweepResultWall callback;
+		//コライダーを始点から終点まで動かして。
+		//衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+		//壁と衝突した！
+		if (callback.isHit == true)
+		{
+			//ワープさせない。
+			//ワープの距離を縮める(壁)処理追加todo
+			kyori -= 10.0f;
+			WarpPos += m_moveSpeed * kyori;
+			continue;
+			//return;
+		}
+
+		break;
 	}
+
+	//btTransform start, end;
+	//start.setIdentity();
+	//end.setIdentity();
+	////始点はエネミーの座標。
+	//start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+	////終点はプレイヤーの座標。
+	//end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
+
+	//SweepResultWall callback;
+	////コライダーを始点から終点まで動かして。
+	////衝突するかどうかを調べる。
+	//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+	////壁と衝突した！
+	//if (callback.isHit == true)
+	//{
+	//	//ワープさせない。
+	//	//ワープの距離を縮める(壁)処理追加todo
+	//	return;
+	//}
 
 
 	//キャラクターコントローラーを使って座標を移動させる。

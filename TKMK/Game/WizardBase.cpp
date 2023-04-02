@@ -282,7 +282,8 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 	WarpPos += m_moveSpeed * kyori;
 	m_moveSpeed *= 1000.0f;
 	rotation.AddRotationDegY(360.0f);
-
+	bool WarpFlag = false;
+	//ループする時フリーズする
 	while (true)
 	{
 		btTransform start, end;
@@ -304,11 +305,16 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 			//ワープの距離を縮める(壁)処理追加todo
 			kyori -= 10.0f;
 			WarpPos += m_moveSpeed * kyori;
-			continue;
+			//continue;
 			//return;
 		}
-
-		break;
+		else
+		{
+			//キャラクターコントローラーを使って座標を移動させる。
+			charCon.SetPosition(WarpPos);
+			return;
+		}
+		
 	}
 
 	//btTransform start, end;
@@ -333,7 +339,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 
 
 	//キャラクターコントローラーを使って座標を移動させる。
-	charCon.SetPosition(WarpPos);
+	//charCon.SetPosition(WarpPos);
 }
 
 /// <summary>

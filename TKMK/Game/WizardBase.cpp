@@ -275,12 +275,14 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 	//ワープ先の座標を格納する
 	Vector3 WarpPos = position;
 	//
-	float kyori = 500.0f;
+	int kyori = 500;
 	m_moveSpeed = Vector3::AxisZ;
-	//回転も
+	//回転もこの辺カエル
 	rotation.Apply(m_moveSpeed);
 	WarpPos += m_moveSpeed * kyori;
-	m_moveSpeed *= 1000.0f;
+	//ノーマライズ
+	//WarpPos.Normalize();
+
 	rotation.AddRotationDegY(360.0f);
 	bool WarpFlag = false;
 	//ループする時フリーズする
@@ -290,7 +292,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 		start.setIdentity();
 		end.setIdentity();
 		//始点はエネミーの座標。
-		start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+		start.setOrigin(btVector3(position.x, position.y + 70.0f, position.z));
 		//終点はプレイヤーの座標。
 		end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
 
@@ -298,13 +300,13 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 		//コライダーを始点から終点まで動かして。
 		//衝突するかどうかを調べる。
 		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-		//壁と衝突した！
+		//壁と衝突した！壁の近くでやったらたまにエラー出る
 		if (callback.isHit == true)
 		{
 			//ワープさせない。
-			//ワープの距離を縮める(壁)処理追加todo
-			kyori -= 10.0f;
-			WarpPos += m_moveSpeed * kyori;
+			//ワープの距離を縮める(壁)
+			kyori -= 10;
+			WarpPos += m_moveSpeed * kyori;//かける１０
 			//continue;
 			//return;
 		}

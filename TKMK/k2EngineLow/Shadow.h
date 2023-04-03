@@ -26,5 +26,7 @@ namespace nsK2EngineLow {
 		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
 		RenderTarget m_shadowMap;
 		Camera m_lightCamera;
+
+		Vector3 m_lightCameraPosition = Vector3(0.0f,600.0f,300.0f);
 	};
 }

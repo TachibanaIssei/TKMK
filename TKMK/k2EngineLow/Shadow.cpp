@@ -35,7 +35,7 @@ void nsK2EngineLow::Shadow::InitRenderTarget()
 
 void nsK2EngineLow::Shadow::InitLightCamera()
 {
-	m_lightCamera.SetPosition(0, 600, 300);
+	m_lightCamera.SetPosition(m_lightCameraPosition);
 	m_lightCamera.SetTarget(0, 0, 0);
 	m_lightCamera.SetUp(1, 0, 0);
 	m_lightCamera.SetViewAngle(Math::DegToRad(10.0f));
@@ -44,6 +44,13 @@ void nsK2EngineLow::Shadow::InitLightCamera()
 
 void nsK2EngineLow::Shadow::UpdateLightCamera()
 {
+	//ライトカメラの位置を計算する
+	Vector3 lightCamPos = g_camera3D->GetTarget();
+	lightCamPos.x += m_lightCameraPosition.x;
+	lightCamPos.y = m_lightCameraPosition.y;
+	lightCamPos.z += m_lightCameraPosition.z;
+
+	m_lightCamera.SetPosition(lightCamPos);
 	m_lightCamera.SetTarget(g_camera3D->GetTarget());
 	m_lightCamera.Update();
 }

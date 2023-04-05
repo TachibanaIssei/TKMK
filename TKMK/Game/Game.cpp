@@ -4,7 +4,6 @@
 #include "Result.h"
 #include "Tittle.h"
 #include "GameCamera.h"
-//#include "KnightBase.h"
 #include "Actor.h"
 #include "GameUI.h"
 #include "KnightPlayer.h"
@@ -14,6 +13,7 @@
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "CharUltFlag.h"
+#include "Lamp.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -58,6 +58,7 @@ Game::~Game()
 	DeleteGO(m_KnightAI);
 	DeleteGO(m_bgm);
 	DeleteGO(charUltFlag);
+	DeleteGO(lamp);
 }
 
 bool Game::Start()
@@ -79,6 +80,15 @@ bool Game::Start()
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);
 			m_backGround->SetScale(objData.scale);
+
+			return true;
+		}
+
+		if (objData.EqualObjectName(L"Lamp") == true) {
+			lamp = NewGO<Lamp>(0, "lamp");
+			lamp->SetPosition(objData.position);
+			lamp->SetRotation(objData.rotation);
+			lamp->SetScale(objData.scale);
 
 			return true;
 		}

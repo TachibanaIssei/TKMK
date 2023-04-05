@@ -48,10 +48,10 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 
 	m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture();
 
-	m_modelInitData.m_expandConstantBuffer =
-		(void*)&g_renderingEngine->GetLightCamera().GetViewProjectionMatrix();
-	m_modelInitData.m_expandConstantBufferSize =
-		sizeof(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+	//ライトカメラのビュープロジェクション行列を設定する
+	g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+
+	MakeDirectionData();
 
 	m_model.Init(m_modelInitData);
 }
@@ -72,6 +72,7 @@ void nsK2EngineLow::ModelRender::Update()
 	if (m_shadowModel.IsInited())
 	{
 		m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 	}
 
 	//アニメーションを進める

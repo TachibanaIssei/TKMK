@@ -65,6 +65,7 @@ namespace nsK2EngineLow {
 		Vector3 cameraEyePos;	//カメラ座標
 		float pad4;
 		Vector4 ambientLight;	//環境光
+		Matrix mLVP;			//ライトビュープロジェクション行列
 	};
 
 	class SceneLight {
@@ -75,6 +76,14 @@ namespace nsK2EngineLow {
 			return m_light;
 		}
 
+		/// <summary>
+		/// ライトビュープロジェクション行列を設定する
+		/// </summary>
+		/// <param name="LVP">ライトビュープロジェクション行列</param>
+		void SetmLVP(Matrix LVP)
+		{
+			m_light.mLVP = LVP;
+		}
 	////////////////////////////////////////////////////////////////////////////////////////
 	///ディレクションライトの関数
 	////////////////////////////////////////////////////////////////////////////////////////

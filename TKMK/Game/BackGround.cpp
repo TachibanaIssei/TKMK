@@ -15,11 +15,17 @@ bool BackGround::Start()
 	
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rotation);
-	m_modelRender.SetScale(1.3f,1.0f,1.3f);
+	m_scale.y = 1.3f;
+	m_modelRender.SetScale(m_scale);
 
 	m_modelRender.Update();
-
-	m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
+	m_stagecollision.Init("Assets/modelData/background/backgroundcoll.tkm");
+	m_stagecollision.SetPosition(m_position);
+	m_stagecollision.SetRotation(m_rotation);
+	m_scale.y = 1.3f;
+	m_stagecollision.SetScale(m_scale);
+	m_stagecollision.Update();
+	m_physicsStaticObject.CreateFromModel(m_stagecollision.GetModel(), m_stagecollision.GetModel().GetWorldMatrix());
 	m_physicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Wall);
 
 	return true;

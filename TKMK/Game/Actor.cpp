@@ -11,7 +11,7 @@ Actor::~Actor()
 
 }
 
-void Actor::Move(Vector3& position, CharacterController& charcon,Status& status)
+void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
 {
 	//特定のアニメーションが再生中なら
 	if (IsEnableMove() == false)
@@ -23,9 +23,9 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status)
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	Vector3 stickL;
+	/*Vector3 stickL;
 	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
+	stickL.y = g_pad[0]->GetLStickYF();*/
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
 	Vector3 forward = g_camera3D->GetForward();
@@ -33,10 +33,17 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status)
 	//y方向には移動させない。
 	forward.y = 0.0f;
 	right.y = 0.0f;
-
+	forward.Normalize();
 	//左スティックの入力量とstatusのスピードを乗算。
 	right *= stickL.x * status.Speed;
 	forward *= stickL.y * status.Speed;
+
+	//プレイヤーの前方向の情報を更新
+	//xかzの移動速度があったら(スティックの入力があったら)。
+	if (fabsf(forward.x) >= 0.001f || fabsf(forward.z) >= 0.001f)
+	{
+		m_Forward = forward+ right;
+	}
 
 	//移動速度にスティックの入力量を加算する。
 	m_moveSpeed += right + forward;
@@ -115,7 +122,54 @@ void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level, int downLe
 	nowStatus.Atk -= downLevel*lus.LvAtk;
 	nowStatus.Speed -= downLevel*lus.LvSpeed;
 }
-
+/// <summary>
+/// 中立の敵を倒したときの経験値の処理
+/// </summary>
+/// <param name="GetExp">中立の敵の経験値</param>
+void Actor::ExpProcess(int Exp)
+{
+	//もしレベルが10(Max)なら
+	if (Lv == 10)return;
+	//自身の経験値に敵を倒したときに手に入れる経験値を足す
+	GetExp += Exp;
+	//手に入れた経験値より経験値テーブルのほうが大きかったら
+	if (GetExp < ExpTable) return;      //抜け出す
+	else {
+		//経験値テーブルより手に入れた経験値のほうが大きかったら
+		//レベルアップ
+		LevelUp(LvUPStatus, m_Status, Lv);
+		//レベルに合わせてレベルの画像を変更する
+		switch (Lv)
+		{
+		case 2:
+			ExpTable = 10;
+			break;
+		case 3:
+			ExpTable = 20;
+			break;
+		case 4:
+			ExpTable = 30;
+			break;
+		case 5:
+			ExpTable = 40;
+			break;
+		case 6:
+			ExpTable = 50;
+			break;
+		case 7:
+			ExpTable = 60;
+			break;
+		case 8:
+			ExpTable = 70;
+			break;
+		case 9:
+			ExpTable = 80;
+			break;
+		default:
+			break;
+		}
+	}
+}
 /// <summary>
 /// リスポーンしたときのレベルによって経験値を変更する
 /// </summary>

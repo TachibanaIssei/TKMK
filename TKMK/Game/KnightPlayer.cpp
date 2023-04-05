@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
 #include "Game.h"
-//#include "GameUI.h"
+#include "Neutral_Enemy.h"
+#include "KnightUlt.h"
+#include "GameUI.h"
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
 //for文、findGO使う
+//HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -14,7 +17,7 @@ namespace {
 
 KnightPlayer::KnightPlayer()
 {
-	//m_gameUI = FindGO<GameUI>("m_gameUI");
+	m_gameUI = FindGO<GameUI>("m_gameUI");
 
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
@@ -24,12 +27,25 @@ KnightPlayer::KnightPlayer()
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	respawnNumber = 0;        //リスポーンする座標の番号
-	m_respawnPos[respawnNumber].y += m_position_YUp;
+	//m_respawnPos[respawnNumber].y += m_position_YUp;
+
+	//m_position=
+
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+
+	//m_position=m_respawnPos[respawnNumber];
+
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	
+	//剣士のY座標が腰なのでY座標を上げる
+	//m_position.y = m_position_YUp;
+
+	m_modelRender.SetPosition(m_position);
+	//m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
@@ -57,9 +73,16 @@ void KnightPlayer::Update()
 {
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_playerState == enKnightState_Pause) {
+	if (m_knightState == enKnightState_Pause) {
 		return;
 	}
+	//今のフレームと前のフレームのレベルが違っていたら
+	if (oldLv != Lv) {
+		//レベルに合わせてGameUIのレベルの画像を変更する
+		m_gameUI->LevelFontChange(Lv);
+	}
+
+	oldLv = Lv;
 
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];
@@ -71,34 +94,40 @@ void KnightPlayer::Update()
 	OldPosition = m_position;
 
 	//移動処理
-	Move(m_position, m_charCon, m_Status);
+	Vector3 stickL;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+	Move(m_position, m_charCon, m_Status, stickL);
 	
 	////RBボタンが押されたら。
 	////回避
 	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 	//	//回避ステート
-	//	//m_playerState = enKnightState_Avoidance;
+	//	//m_knightState = enKnightState_Avoidance;
 	//	AnimationMove();
 	//	AvoidanceFlag = true;
 	//}
 	
 	//回避中なら
 	if (AvoidanceFlag == true) {
-		m_playerState = enKnightState_Avoidance;
+		m_knightState = enKnightState_Avoidance;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
-	//攻撃処理
-	Attack();
-
-	//回避処理
-	Avoidance();
+	//ステートがデスのときボタンを押せないようにする
+	if (m_knightState != enKnightState_Death) {
+		//攻撃処理
+		Attack();
+		//回避処理
+		Avoidance();
+	}
+	
 
 	//スキル使用中なら
 	if (SkillState == true) {
 		//スキルステート
-		m_playerState = enKnightState_Skill;
+		m_knightState = enKnightState_Skill;
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
@@ -165,7 +194,7 @@ void KnightPlayer::Attack()
 		//Bボタン押されたら攻撃する
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			m_playerState = enKnightState_ChainAtk;
+			m_knightState = enKnightState_ChainAtk;
 			
 			//FirstAtkFlag = true;
 			//コンボを1増やす
@@ -201,8 +230,11 @@ void KnightPlayer::Attack()
 
 		//移動速度を上げる
 		m_Status.Speed += 120.0f;
-		
-		AnimationMove(SkillSpeed);
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		//スキルを使うときのスピードを使う
+		AnimationMove(SkillSpeed, stickL);
 		pushFlag = true;
 		SkillState = true;
 		//AtkCollistionFlag = true;
@@ -213,10 +245,8 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//アニメーション再生、レベルを３
+		//アニメーション再生、レベルを３下げる
 		UltimateSkill();
-
-
 
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -228,29 +258,7 @@ void KnightPlayer::Attack()
 		UltimateSkillFlag = true;
 	}
 
-	//必殺技発動フラグがセットされているなら
-	if (UltimateSkillFlag == true)
-	{
-		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-		//必殺技タイマーが3.0fまでの間
-		if (UltimateSkillTimer <= 3.0f)
-		{
-			//コリジョンの作成、移動処理
-			UltimateSkillCollistion(OldPosition, m_position);
-		}
-		else
-		{
-			//攻撃が有効な時間をリセット
-			UltimateSkillTimer = 0;
-			//必殺技発動フラグをリセット
-			UltimateSkillFlag = false;
-			//コリジョン削除
-			DeleteGO(collisionObject);
-			//コリジョン作成フラグをリセット
-			UltCollisionSetFlag = false;
-		}
-	}
-
+	
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
 	if (AtkCollistionFlag == true) AtkCollisiton();
@@ -266,11 +274,30 @@ void KnightPlayer::Avoidance()
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
-		//m_playerState = enKnightState_Avoidance;
-		AnimationMove(AvoidanceSpeed);
+		//m_knightState = enKnightState_Avoidance;
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		AnimationMove(AvoidanceSpeed, stickL);
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}
+}
+
+/// <summary>
+/// 必殺技の当たり判定生成する
+/// </summary>
+void KnightPlayer::MakeUltSkill()
+{
+	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
+	//製作者の名前を入れる
+	knightUlt->SetCreatorName(GetName());
+
+	Vector3 UltPos = m_position;
+	UltPos.y += 60.0f;
+	knightUlt->SetPosition(UltPos);
+	knightUlt->SetRotation(m_rot);
+	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
 }
 
 /// <summary>
@@ -330,6 +357,12 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
+	//必殺技のアニメーションが始まったら
+	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
+	{
+		//必殺技の当たり判定のクラスを作成
+		MakeUltSkill();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"FirstAttack_End") == 0)
@@ -347,7 +380,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_playerState = enKnightState_Idle;
+			m_knightState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -364,7 +397,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_playerState = enKnightState_Idle;
+			m_knightState = enKnightState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -378,7 +411,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;

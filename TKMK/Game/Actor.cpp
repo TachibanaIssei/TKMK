@@ -54,9 +54,9 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
-	m_respawnLevel.Init("Assets/level3D/respawnLevel.tkl", [&](LevelObjectData& objData) {
+	m_respawnLevel.Init("Assets/level3D/CharRespawnLevel.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.ForwardMatchName(L"Knight") == true) {
+		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
 				SetRespawnPos(objData.position, objData.number);

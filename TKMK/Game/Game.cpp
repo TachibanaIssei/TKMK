@@ -72,9 +72,9 @@ bool Game::Start()
 	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f,1.0f });
 
 	//スタジアムの生成
-	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
+	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.EqualObjectName(L"stadium04") == true) {
+		if (objData.EqualObjectName(L"stadium05_ground") == true) {
 			m_backGround = NewGO<BackGround>(0, "backGround");
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);
@@ -107,7 +107,7 @@ bool Game::Start()
 	//m_gamecamera->SetKnight(m_knightplayer);
 
 	//中立の敵の生成
-	m_Enemylevel.Init("Assets/level3D/enemy_respawn.tkl", [&](LevelObjectData& objData) {
+	m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			//左上の座標

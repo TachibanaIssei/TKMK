@@ -66,12 +66,12 @@ bool Game::Start()
 {
 	g_renderingEngine->UnUseHemiLight();
 
-	//?P?B???N?V???????C?g????
-	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
+	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
+  
 	directionLightDir.Normalize();
-	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };
+	Vector4 directionLightColor = Vector4{ 0.5f, 0.5f, 0.5f, 1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f,1.0f });
+	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f,1.0f });
 
 	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
@@ -238,7 +238,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

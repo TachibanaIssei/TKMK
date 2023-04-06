@@ -25,6 +25,8 @@ namespace
 	const Vector3 LvPos = Vector3(-920.0f, -480.0f, 0.0f);
 
 	const Vector3 FlamePos = Vector3(-640.0f,-490.0f,0.0f);
+
+	const Vector3 PointPos = Vector3(-850.0f, -260.0f, 0.0f);  //ポイント
 }
 GameUI::GameUI()
 {
@@ -50,6 +52,12 @@ bool GameUI::Start()
 	m_LevelFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_LevelFont.SetRotation(0.0f);
 	m_LevelFont.SetShadowParam(true, 2.0f, g_vec4Black);
+
+	m_PointFont.SetPosition(PointPos);
+	m_PointFont.SetScale(2.0f);
+	m_PointFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_PointFont.SetRotation(0.0f);
+	m_PointFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 	/*m_LevelNameFont.SetText(L"Lv");
 	m_LevelNameFont.SetPosition(-950.0f, -460.0f,0.0f);
@@ -147,9 +155,13 @@ void GameUI::Update()
 	swprintf_s(Lv, 255, L"%d", LEVEL);
 	m_LevelFont.SetText(Lv);
 
-
+	//ポイントの表示
+	int POINT = player->CharSetPoint();
+	wchar_t P[255];
+	swprintf_s(P, 255, L"%dポイント", POINT);
+	m_PointFont.SetText(P);
 	
-
+	//時間切れではないなら
 	if (GameEndFlag == false) {
 		Timer();
 	}
@@ -236,4 +248,6 @@ void GameUI::Render(RenderContext& rc)
 	m_Lv.Draw(rc);
 	m_LvNumber.Draw(rc);
 	m_LevelFont.Draw(rc);
+
+	m_PointFont.Draw(rc);
 }

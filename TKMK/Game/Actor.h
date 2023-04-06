@@ -114,13 +114,19 @@ public:
 	void ExpTableChamge(int& Lv,int& expTable);
 
 	/// <summary>
-	/// ポイントを増やす処理
+	/// ポイントを増やす
 	/// </summary>
-	/// <param name="point">現在のポイント</param>
-	void PointProcess(int& point)
+	/// <param name="point">倒された相手の現在のポイント</param>
+	/// <param name="level">自分の現在のレベル</param>
+	void PointProcess(int level)
 	{
-		//ポイントを1増やす
-		point++;
+		//レベルが5以上なら
+		if (level > 5)
+		{
+			level = 5;
+		}
+		//レベル分ポイントを増やす
+		Point += level;
 	}
 
 	/// <summary>

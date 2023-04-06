@@ -74,7 +74,7 @@ void KnightPlayer::Update()
 {
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_knightState == enKnightState_Pause) {
+	if (m_GameState == enPause) {
 		return;
 	}
 	//今のフレームと前のフレームのレベルが違っていたら

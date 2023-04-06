@@ -106,22 +106,7 @@ Vector3 Player::GetCharPosition()const
 /// <returns>選択されたキャラの現在のレベルを返す関数</returns>
 int Player::CharSetLevel()const
 {
-	switch (m_selectCharctar)
-	{
-	case enKnight:
-		return knightPlayer->SetLevel();
-		break;
-	case enWizard:
-		return wizardPlayer->SetLevel();
-		break;
-	case enZombie:
-		break;
-	case enMonster:
-		break;
-
-	default:
-		break;
-	}
+	return playerActor->GetLevel();
 }
 
 /// <summary>
@@ -299,56 +284,39 @@ bool Player::CharSetSpriteFlag()const
 }
 
 /// <summary>
-/// ?L??????U???????
+/// プレイヤーのポイントを返す
 /// </summary>
-/// <returns>?I????L??????U??????????</returns>
-//int Player::CharSetAttack()const
-//{
-//	//switch (m_selectCharctar)
-//	//{
-//	//case enKnight:
-//	//	return knightPlayer->SetKnightAtk();
-//	//	break;
-//
-//	////???@?g????}?W?b?N?{?[????U??????????K?v???
-//
-//	//case enZombie:
-//	//	break;
-//
-//	//case enMonster:
-//	//	break;
-//
-//
-//	//default:
-//	//	break;
-//	//}
-//}
+/// <returns>プレイヤーの現在のポイント</returns>
+int Player::CharSetPoint()const
+{
+	return playerActor->GetPoint();
+}
 
 /// <summary>
 /// ?L??????exp?????
 /// </summary>
 /// <param name="exp">??????G??o???l</param>
-void Player::CharSetExpProcess(int exp)const
-{
-	switch (m_selectCharctar)
-	{
-	case enKnight:
-		return knightPlayer->ExpProcess(exp);
-		break;
-
-	case enWizard:
-		return wizardPlayer->ExpProcess(exp);
-		break;
-
-	case enZombie:
-		break;
-
-	case enMonster:
-		break;
-
-
-	default:
-		break;
-	}
-}
+//void Player::CharSetExpProcess(int exp)const
+//{
+//	switch (m_selectCharctar)
+//	{
+//	case enKnight:
+//		return knightPlayer->ExpProcess(exp);
+//		break;
+//
+//	case enWizard:
+//		return wizardPlayer->ExpProcess(exp);
+//		break;
+//
+//	case enZombie:
+//		break;
+//
+//	case enMonster:
+//		break;
+//
+//
+//	default:
+//		break;
+//	}
+//}
 

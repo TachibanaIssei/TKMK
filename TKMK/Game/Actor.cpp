@@ -59,22 +59,22 @@ void Actor::GetRespawnPos()
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//右上の座標
 			if (objData.number == 1) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//右下の座標
 			if (objData.number == 2) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//左下の座標
 			if (objData.number == 3) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 		}

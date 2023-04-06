@@ -123,8 +123,9 @@ public:
 	/// </summary>
 	/// <param name="pos">リスポーンする座標</param>
 	/// <param name="number">座標をセットする番号</param>
-	void SetRespawnPos(Vector3 pos, int number) {
+	void SetRespawnPos(Vector3 pos,Quaternion rot, int number) {
 		m_respawnPos[number] = pos;
+		m_respawnRotation[number] = rot;
 	};
 
 	/// <summary>
@@ -197,6 +198,7 @@ protected:
 	//float timer = 0.0f;
 	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
+	Quaternion m_respawnRotation[4];
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 
 	Vector3 m_Forward;          //プレイヤーの前方向

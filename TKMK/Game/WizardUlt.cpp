@@ -26,7 +26,7 @@ void WizardUlt::Update()
 	//タイマーを加算する。
 	m_timer += g_gameTime->GetFrameDeltaTime();
 	//タイマーが10秒を超えると
-	if (m_timer > 10)
+	if (m_timer > 3)
 	{
 		//ダメージを受けるか受けないか決める
 		Damege();

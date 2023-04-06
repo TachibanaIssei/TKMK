@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include "KnightPlayer.h"
 #include "GameCamera.h"
-//#include "KnightAI.h"
+#include "KnightAI.h"
+#include "Player.h"
+#include "MagicBall.h"
 #include "Actor.h"
 //#include <vector>
 //#include <algorithm>
@@ -41,24 +43,8 @@ bool Neutral_Enemy::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-
 	//モデルを読み込む。
-	enemyColorRam = rand() % 3;
-	switch (enemyColorRam)
-	{
-	case 0:
-		//白
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
-		break;
-	case 1:
-		//赤
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
-		break;
-	case 2:
-		//緑
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
-		break;
-	}
+	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
 
 	//座標を設定
 	m_modelRender.SetPosition(m_position);
@@ -213,6 +199,7 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
+	//Vector3 diff = player->GetCharPosition() - m_position;
 
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
 	diff.Normalize();
@@ -248,32 +235,14 @@ void Neutral_Enemy::Collision()
 			//このコリジョンを作ったアクターを検索
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
-			//プレイヤーの攻撃力を取得
 			//HPを減らす
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
-			
+
 			//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
 				//相手に経験値を渡す
 				m_lastAttackActor->ExpProcess(Exp);
-				//倒した時の報酬を剣士に渡す
-				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
-				switch (enemyColorRam)
-				{
-				case 0:
-					m_lastAttackActor->HpUp(30);
-					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
-					{
-						m_lastAttackActor->HpReset(m_lastAttackActor->GetMaxHp());
-					}
-					break;
-				case 1:
-					m_lastAttackActor->AtkUp(50);
-					break;
-				case 2:
-					break;
-				}
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
@@ -319,6 +288,80 @@ void Neutral_Enemy::Collision()
 		return;
 	}
 
+	//敵の攻撃用のコリジョンを取得する
+	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//子リジョンの配列をfor文で回す
+	for (auto AIcollision : AIcollisions)
+	{
+		if (AIcollision->IsHit(m_charaCon))
+		{
+			//このコリジョンを作ったアクターを検索
+			m_lastAttackActor = FindGO<Actor>(AIcollision->GetCreatorName());
+
+			//プレイヤーの攻撃力を取得
+			//何故かm_knightAIがnull
+			//HPを減らす
+			m_Status.Hp -= m_lastAttackActor->GetAtk();
+			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
+
+
+			//HPが0になったら
+			if (m_Status.Hp <= 0)
+			{
+				//相手に経験値を渡す
+				m_lastAttackActor->ExpProcess(Exp);
+				//剣士に経験値を渡す
+				//m_knightAI->ExpProcess(Exp);
+				//Deathflag = true;
+				//死亡ステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
+				//効果音再生
+			}
+		}
+	}
+
+	//攻撃中、デス中は当たり判定の処理を行わない
+	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
+	{
+		return;
+	}
+	//魔法使いの攻撃用のコリジョンを取得する
+	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("Wizard_MagicBall");
+	//コリジョンの配列をfor文で回す
+	for (auto Wizardcollision : Wizardcollisions)
+	{
+		if (Wizardcollision->IsHit(m_charaCon))
+		{
+			//このコリジョンを作ったアクターを検索
+			m_lastAttackActor = FindGO<Actor>(Wizardcollision->GetCreatorName());
+			//magicBall = FindGO<MagicBall>("magicBall");
+			//魔法使いの攻撃力を取得
+			//HPを減らす
+			m_Status.Hp -= m_lastAttackActor->GetAtk();
+
+			//HPが0になったら
+			if (m_Status.Hp <= 0)
+			{
+				//player = FindGO<Player>("player");
+				//相手に経験値を渡す
+				m_lastAttackActor->ExpProcess(Exp);
+				//魔法使いに経験値を渡す
+				//player->CharSetExpProcess(Exp);
+				//Deathflag = true;
+				//死亡ステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
+				//効果音再生
+			}
+		}
+	}
 }
 
 void Neutral_Enemy::Attack()
@@ -492,6 +535,10 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
+		//Vector3 diff = player->GetCharPosition() - m_position;
+		//diff.Normalize();
+		//移動速度を設定する。
+		//m_moveSpeed = diff * m_Status.Speed;
 		m_targetActor = m_lastAttackActor;
 	}
 }

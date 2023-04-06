@@ -4,8 +4,9 @@
 class Game;
 class KnightPlayer;
 class Neutral_Enemy;
+class CharUltFlag;
 
-class KnightAI :public KnightBase
+class KnightAI:public KnightBase
 {
 public:
 
@@ -19,18 +20,14 @@ public:
 	KnightAI();
 	~KnightAI();
 	void Update();
-	void Move();
 	void Collition();
-	//void Attack();
-	//void Render(RenderContext& rc);
-	//void ChaseEnemy();
+	void Attack();
+	void Render(RenderContext& rc);
 	void AtkCollisiton();
-	//void LevelMove();
-	//void ChasePlayer_OR_AI();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
 
-	//void AvoidanceSprite();
+	void AvoidanceSprite();
 	void SetGame(Game* game)
 	{
 		m_game = game;
@@ -39,25 +36,15 @@ public:
 	{
 		return m_game;
 	}
-	//void Patrol();
-	/// <summary>
 	/// 攻撃できるならtrue
 	/// </summary>
 	/// <returns></returns>
-	//const bool CanAttack() const;
-
+	const bool CanAttackenemy();
 	/// <summary>
-	/// 巡回する座標を設定する
+
 	/// </summary>
-	/// <param name="pos">巡回する座標</param>
-	/// <param name="number">座標をセットする番号</param>
-	void SetPatrolPos(Vector3 pos, int number) {
-		m_patrolPos[number] = pos;
-	};
-	void SetNeutral_Enemy(Neutral_Enemy* ptr)
-	{
-		m_Neutral_Enemy = ptr;
-	}
+	/// <returns></returns>
+	const bool CanAttackActor();
 private:
 	enum AtkTimingState
 	{
@@ -68,18 +55,25 @@ private:
 		Num_State,
 
 	};
+	/// <summary>
+	/// ?_?????????
+	/// </summary>
+	/// <returns>?_????????W</returns>
+	const Vector3 TargetChange();
 	AtkTimingState m_AtkTmingState = Num_State;
 	Game* m_game;//ゲーム
 	KnightPlayer* m_knightPlayer;//剣士プレイヤーvoid Rotation();
-	//void SearchEnemy();
-	//void Rotation();
+	void SearchEnemy();
+	void Rotation();
 	Vector3					m_forward;
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
 	FontRender				m_fontRender;
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
-	Neutral_Enemy* m_Neutral_Enemy = nullptr;			// 今追いかけているエネミー      
+	CharUltFlag* charUltFlag = nullptr;
+	Neutral_Enemy* m_targetEnemy = nullptr;					// 今追いかけているエネミー      
+	Actor* m_targetActor = nullptr;
 	bool UltimateSkillFlag = false;
 	bool PL = true;
 	float SkillSpeed = 270.0f;

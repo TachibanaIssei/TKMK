@@ -18,29 +18,10 @@ bool MagicBall::Start()
 	m_rotation.Apply(m_moveSpeed);
 
 	m_position += m_moveSpeed * 50.0f;
-	m_moveSpeed *= 200.0f;
+	m_moveSpeed *= 250.0f;
 	m_rotation.AddRotationDegY(360.0f);
 
-	//コリジョンオブジェクトを作成する。
-	BallCollision = NewGO<CollisionObject>(0);
-	//球状のコリジョンを作成する。
-	BallCollision->CreateSphere(m_position, Quaternion::Identity, 20.0f/*50.0f * m_scale.z*/);
-
-	//術者がプレイヤーだったら。
-	if (m_enMagician == enMagician_Player)
-	{
-		//名前をplayer_fireballにする。
-		BallCollision->SetName("player_MagicBall");
-	}
-	//術者が魔法使いだったら。
-	else if (m_enMagician == enMagician_Wizard)
-	{
-		//名前をenemy_fireballにする。
-		BallCollision->SetName("WizardAI_Magicball");
-	}
-
-	//懲り所オブジェクトが自動で削除されないようにする。
-	BallCollision->SetIsEnableAutoDelete(false);
+	SetCollision();
 
 	return true;
 }

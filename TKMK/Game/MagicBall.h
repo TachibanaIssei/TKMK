@@ -1,4 +1,7 @@
 #pragma once
+#include "Status.h"
+class Status;
+
 class MagicBall:public IGameObject
 {
 public:
@@ -49,7 +52,53 @@ public:
 		m_enMagician = enMagician;
 	}
 
+
+	/// <summary>
+	/// 魔法使いの攻撃力を取得
+	/// </summary>
+	/// <param name="status">魔法使いの攻撃力</param>
+	void GetWizardAttack(Status status)
+	{
+		m_Status.Atk = status.Atk;
+	}
+
+	/// <summary>
+	/// 魔法使いの攻撃力を返す
+	/// </summary>
+	/// <returns>魔法使いの攻撃力</returns>
+	int SetWizardAttack()const
+	{
+		return m_Status.Atk;
+	}
+
+	/// <summary>
+	/// このクラスを作ったオブジェクトの名前
+	/// </summary>
+	/// <param name="collisionname">名前</param>
+	void SetCreatorName(const char* creatorname)
+	{
+		//コリジョンオブジェクトを作成する。
+		BallCollision = NewGO<CollisionObject>(0);
+		//このクラスを作ったオブジェクトの名前
+		BallCollision->SetCreatorName(creatorname);
+	}
+
+	/// <summary>
+	/// 当たり判定の設定
+	/// </summary>
+	void SetCollision()
+	{
+		//球状のコリジョンを作成する。
+		BallCollision->CreateSphere(m_position, Quaternion::Identity, 20.0f);
+		//名前をplayer_fireballにする。
+		BallCollision->SetName("Wizard_MagicBall");
+		//懲り所オブジェクトが自動で削除されないようにする。
+		BallCollision->SetIsEnableAutoDelete(false);
+	}
+
 private:
+	Status m_Status;
+
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;
 	Vector3 m_scale;
@@ -57,6 +106,8 @@ private:
 	CollisionObject* BallCollision;
 
 	float m_timer = 0.0f;
+
+	int WizardAtk = 0;
 
 };
 

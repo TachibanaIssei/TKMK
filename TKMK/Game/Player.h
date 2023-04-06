@@ -2,6 +2,10 @@
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 
+
+#include "Status.h"
+
+class Status;
 class Game;
 class GameUI;
 class KnightPlayer;
@@ -90,6 +94,18 @@ public:
 	/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
 	bool CharSetSpriteFlag()const;
 
+	/// <summary>
+	/// ?L??????U???????
+	/// </summary>
+	/// <returns>?I????L??????U??????????</returns>
+	//int CharSetAttack()const;
+
+	/// <summary>
+	/// ?L??????exp?????
+	/// </summary>
+	/// <param name="exp">??????G??o???l</param>
+	void CharSetExpProcess(int exp)const;
+
 	Actor* GetPlayerActor() {
 		return playerActor;
 	}
@@ -100,6 +116,7 @@ private:
 	GameUI* gameUI = nullptr;
 	KnightPlayer* knightPlayer = nullptr;
 	WizardPlayer* wizardPlayer = nullptr;
+	Status m_Status;
 
 	Actor* playerActor = nullptr;
 

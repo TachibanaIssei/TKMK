@@ -94,7 +94,7 @@ private:
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
-	
+	int oldLv;
 
 	int dddd = 20;
 

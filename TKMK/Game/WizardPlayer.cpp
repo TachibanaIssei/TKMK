@@ -217,7 +217,8 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 void WizardPlayer::MakeMagicBall()
 {
 	MagicBall* magicBall = NewGO<MagicBall>(0, "magicBall");
-
+	//»ìŽÒ‚Ì–¼‘O‚ð“ü‚ê‚é
+	magicBall->SetCreatorName(GetName());
 	Vector3 MagicBallPos = m_position;
 	MagicBallPos.y += 15.0f;
 

@@ -5,10 +5,14 @@ namespace nsK2EngineLow {
 	class PostEffect
 	{
 	public:
-		void InitBloom(RenderTarget& mainRenderTarget);
+		void Init(RenderTarget& mainRenderTarget);
 		void Render(RenderContext& rc,RenderTarget& mainRenderTarget);
 
 	private:
-		Bloom m_bloom;
+		void InitBloom(RenderTarget& mainRenderTarget);
+
+	private:
+		Bloom		m_bloom;
+		
 	};
 }

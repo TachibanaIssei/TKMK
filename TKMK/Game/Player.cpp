@@ -74,7 +74,7 @@ void Player::CharSelect(int number)
 }
 
 /// <summary>
-/// キャラの座標を取得
+/// キャラの座標を取得カメラで使う
 /// </summary>
 /// <returns>選択されているキャラの座標</returns>
 Vector3 Player::GetCharPosition()const
@@ -243,7 +243,7 @@ void Player::CharSetState(EnPlayerStateChange gameState)const
 }
 
 /// <summary>
-/// キャラの前方向を取得する
+/// キャラの前方向を取得するカメラで使う
 /// </summary>
 /// <returns>選択されたキャラの前方向を取得する関数</returns>
 Vector3 Player::CharSetForward()const

@@ -243,8 +243,7 @@ void KnightBase::Collition()
 	{
 		return;
 	}
-	else
-	{
+	
 		//敵の攻撃用のコリジョンを取得する名前一緒にする
 		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
 		//コリジョンの配列をfor文で回す
@@ -260,7 +259,7 @@ void KnightBase::Collition()
 
 			}
 		}
-	}
+	
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
 	if (m_knightState == enKnightState_Damege ||
 		m_knightState == enKnightState_Death ||
@@ -271,6 +270,8 @@ void KnightBase::Collition()
 	{
 		return;
 	}
+	//自分の剣の当たり判定に当たっている？
+	// 勝手にダメージを受ける
 	//敵の攻撃用のコリジョンを取得する名前一緒にする
 	const auto& Knightcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
 	//コリジョンの配列をfor文で回す

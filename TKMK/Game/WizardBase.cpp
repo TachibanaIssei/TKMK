@@ -410,6 +410,7 @@ void WizardBase::SetRespawn()
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//–‚–@Žg‚¢
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 }
 
 /// <summary>

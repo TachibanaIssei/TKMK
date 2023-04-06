@@ -354,6 +354,7 @@ void KnightBase::SetRespawn()
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//Œ•Žm
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 }
 
 /// <summary>

@@ -45,6 +45,7 @@ KnightPlayer::KnightPlayer()
 	//m_position.y = m_position_YUp;
 
 	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 	//m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定

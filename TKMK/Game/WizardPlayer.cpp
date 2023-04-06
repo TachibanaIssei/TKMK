@@ -31,10 +31,10 @@ WizardPlayer::WizardPlayer()
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-
 	m_respawnPos[respawnNumber].y = m_position_YUp;
-	//剣士
+	//
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 
 	//m_position=m_respawnPos[respawnNumber];
 	

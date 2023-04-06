@@ -81,7 +81,7 @@ public:
 	/// 現在のレベルを返す　KnightBaseのを持ってくるto do
 	/// </summary>
 	/// <returns></returns>
-	inline int GetLevel() { return Lv; }
+	inline int& GetLevel() { return Lv; }
 
 	/// <summary>
 	/// レベルアップの処理
@@ -112,6 +112,16 @@ public:
     /// <param name="Lv">現在のレベル</param>
     /// <param name="expTable">経験値テーブル</param>
 	void ExpTableChamge(int& Lv,int& expTable);
+
+	/// <summary>
+	/// ポイントを増やす処理
+	/// </summary>
+	/// <param name="point">現在のポイント</param>
+	void PointProcess(int& point)
+	{
+		//ポイントを1増やす
+		point++;
+	}
 
 	/// <summary>
 	/// 死んだときの処理
@@ -176,7 +186,12 @@ public:
 		m_GameState = gameState;
 	}
 
-
+	/// <summary>
+	/// 現在のポイント返す
+	/// </summary>
+	int GetPoint() {
+		return Point;
+	}
 
 private:
     Level3DRender m_respawnLevel;
@@ -195,7 +210,7 @@ protected:
 	int respawnNumber;         //リスポーンする座標の番号
 	bool isDeath = false;      //死んだかどうかの判定
 	bool invincibleFlag = false;     //無敵時間フラグ
-	//float timer = 0.0f;
+	int Ponit = 0;                  //獲得したポイント
 	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Quaternion m_respawnRotation[4];

@@ -5,7 +5,7 @@ class Game;
 class KnightPlayer;
 class Neutral_Enemy;
 
-class KnightAI:public KnightBase
+class KnightAI :public KnightBase
 {
 public:
 
@@ -21,16 +21,16 @@ public:
 	void Update();
 	void Move();
 	void Collition();
-	void Attack();
-	void Render(RenderContext& rc);
-	void ChaseEnemy();
+	//void Attack();
+	//void Render(RenderContext& rc);
+	//void ChaseEnemy();
 	void AtkCollisiton();
-	void LevelMove();
-	void ChasePlayer_OR_AI();
+	//void LevelMove();
+	//void ChasePlayer_OR_AI();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
 
-	void AvoidanceSprite();
+	//void AvoidanceSprite();
 	void SetGame(Game* game)
 	{
 		m_game = game;
@@ -39,25 +39,13 @@ public:
 	{
 		return m_game;
 	}
-	void Patrol();
+	//void Patrol();
 	/// <summary>
 	/// 攻撃できるならtrue
 	/// </summary>
 	/// <returns></returns>
-	const bool CanAttack() const;
-	/// <summary>
-	/// 引数に攻撃力を代入させる
-	/// </summary>
-	/// <param name="attack">剣士の攻撃力を代入したい変数</param>
-	/// <returns></returns>
-	int SetKnightAIAtk(/*int& attack*/) {
-		return m_Status.Atk;
-	}
-	/// <summary>
-	/// 中立の敵を倒したときの経験値の処理
-	/// </summary>
-	/// <param name="GetExp">中立の敵の経験値</param>
-	void ExpProcess(int Exp);
+	//const bool CanAttack() const;
+
 	/// <summary>
 	/// 巡回する座標を設定する
 	/// </summary>
@@ -66,7 +54,10 @@ public:
 	void SetPatrolPos(Vector3 pos, int number) {
 		m_patrolPos[number] = pos;
 	};
-
+	void SetNeutral_Enemy(Neutral_Enemy* ptr)
+	{
+		m_Neutral_Enemy = ptr;
+	}
 private:
 	enum AtkTimingState
 	{
@@ -80,16 +71,15 @@ private:
 	AtkTimingState m_AtkTmingState = Num_State;
 	Game* m_game;//ゲーム
 	KnightPlayer* m_knightPlayer;//剣士プレイヤーvoid Rotation();
-	void SearchEnemy();
-	void Rotation();
-	Quaternion				m_rotation;
+	//void SearchEnemy();
+	//void Rotation();
 	Vector3					m_forward;
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
 	FontRender				m_fontRender;
-	SphereCollider			m_sphereCollider;							//コライダー。
+	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
-	Neutral_Enemy*          m_Neutral_Enemy = nullptr;
+	Neutral_Enemy* m_Neutral_Enemy = nullptr;			// 今追いかけているエネミー      
 	bool UltimateSkillFlag = false;
 	bool PL = true;
 	float SkillSpeed = 270.0f;
@@ -100,5 +90,6 @@ private:
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	int enemyAmount = 0;
 	Vector3 nearPos = Vector3::Zero;
+
 };
 

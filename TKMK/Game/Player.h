@@ -13,7 +13,7 @@ public:
 	Player();
 	~Player();
 
-	//�L�����I��
+	//キャラ選択
 	enum SelectCharctar
 	{
 		enKnight,
@@ -24,7 +24,7 @@ public:
 	};
 	SelectCharctar m_selectCharctar;
 
-	//�v���C���[�̃X�e�[�g��
+	//プレイヤーのステートを
 	enum EnPlayerStateChange
 	{
 		enPause,
@@ -32,61 +32,67 @@ public:
 	};
 	EnPlayerStateChange m_playerStateChange;
 	
-	bool Start();
+	/// <summary>
+	/// プレイヤーを生成する
+	/// </summary>
+	void CreaetPlayer();
 
 	/// <summary>
-	/// ��������L������I��
+	/// 生成するキャラを選ぶ
 	/// </summary>
-	/// <param name="number">�L�����̔ԍ�</param>
+	/// <param name="number">キャラの番号</param>
 	void CharSelect(int number);
 
 	/// <summary>
-	/// �L�����̍��W���擾
+	/// キャラの座標を取得
 	/// </summary>
-	/// <returns>�I������Ă���L�����̍��W</returns>
+	/// <returns>選択されているキャラの座標</returns>
 	Vector3 GetCharPosition()const;
 
 	/// <summary>
-	/// �L�����̌��݂̃��x����Ԃ�
+	/// キャラの現在のレベルを返す
 	/// </summary>
-	/// <returns>�I�����ꂽ�L�����̌��݂̃��x����Ԃ��֐�</returns>
+	/// <returns>選択されたキャラの現在のレベルを返す関数</returns>
 	int CharSetLevel()const;
 
 	/// <summary>
-	/// �L�����̌��݂̃q�b�g�|�C���g��Ԃ�
+	/// キャラの現在のヒットポイントを返す
 	/// </summary>
-	/// <returns>�I�����ꂽ�L�����̌��݂̃q�b�g�|�C���g��Ԃ��֐�</returns>
+	/// <returns>選択されたキャラの現在のヒットポイントを返す関数</returns>
 	int CharSetHp()const;
 
 	/// <summary>
-	/// �L�����̍ő�q�b�g�|�C���g��Ԃ�
+	/// キャラの最大ヒットポイントを返す
 	/// </summary>
-	/// <returns>�I�����ꂽ�L�����̍ő�q�b�g�|�C���g��Ԃ��֐�</returns>
+	/// <returns>選択されたキャラの最大ヒットポイントを返す関数</returns>
 	int CharSetMaxHp()const;
 
 	/// <summary>
-	/// �L�����̉�]�ʂ�Ԃ�
+	/// キャラの回転量を返す
 	/// </summary>
-	/// <returns>�I�����ꂽ�L�����̉�]�ʂ�Ԃ��֐�</returns>
+	/// <returns>選択されたキャラの回転量を返す関数</returns>
 	Quaternion CharSetRot()const;
-
 	/// <summary>
-	/// �L�����̃X�e�[�g��ύX����
+	/// キャラのステートを変更する
 	/// </summary>
-	/// <returns>�I�����ꂽ�L�����̃X�e�[�g��ύX����֐�</returns>
+	/// <returns>選択されたキャラのステートを変更する関数</returns>
 	void CharSetState(EnPlayerStateChange gameState)const;
 	
 	/// <summary>
-	/// �L�����̑O������Ԃ�
+	/// キャラの前方向を返す
 	/// </summary>
-	/// <returns>�I�����ꂽ�L�����̑O������Ԃ��֐�	</returns>
+	/// <returns>選択されたキャラの前方向を返す関数	</returns>
 	Vector3 CharSetForward()const;
 
 	/// <summary>
-	/// �L�����̃X�v���C�g�t���O��Ԃ�
+	/// キャラのスプライトフラグを返す
 	/// </summary>
-	/// <returns>�I�����ꂽ�L�����̃X�v���C�g�t���O��Ԃ��֐�</returns>
+	/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
 	bool CharSetSpriteFlag()const;
+
+	Actor* GetPlayerActor() {
+		return playerActor;
+	}
 
 private:
 
@@ -95,7 +101,7 @@ private:
 	KnightPlayer* knightPlayer = nullptr;
 	WizardPlayer* wizardPlayer = nullptr;
 
-	
+	Actor* playerActor = nullptr;
 
 };
 

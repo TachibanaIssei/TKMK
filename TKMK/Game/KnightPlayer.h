@@ -26,31 +26,6 @@ public:
 	void AvoidanceSprite();
 
 	/// <summary>
-	/// 通常攻撃の当たり判定の処理
-	/// </summary>
-	void AtkCollisiton() {
-		//コリジョンオブジェクトを作成する。
-		auto collisionObject = NewGO<CollisionObject>(0);
-		Vector3 collisionPosition = m_position;
-		//座標をプレイヤーの少し前に設定する。
-		//collisionPosition += forward * 50.0f;
-		//ボックス状のコリジョンを作成する。
-		collisionObject->CreateBox(collisionPosition, //座標。
-			Quaternion::Identity, //回転。
-			Vector3(70.0f, 15.0f, 15.0f) //大きさ。
-		);
-		collisionObject->SetName("player_attack");
-
-		//「Sword」ボーンのワールド行列を取得する。
-		Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-
-		//matrix.MakeRotationZ(90.0f);
-		//「Sword」ボーンのワールド行列をコリジョンに適用する。
-		collisionObject->SetWorldMatrix(matrix);
-	}
-
-
-	/// <summary>
 	/// 必殺技の当たり判定生成する
 	/// </summary>
 	void MakeUltSkill();
@@ -80,72 +55,6 @@ public:
 	//	}
 	//}
 
-	/// <summary>
-	/// �摜�\���t���O��擾����
-	/// </summary>
-	/// <returns>false�Ȃ�\�����Ȃ�</returns>
-	const bool GetSpriteFlag() const
-	{
-		return m_spriteFlag;
-	}
-
-	/// <summary>
-	/// 座標を設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	void SetPosition(const Vector3& position)
-	{
-		m_position = position;
-	}
-
-	/// <summary>
-	/// 座標を取得
-	/// </summary>
-	/// <returns>座標</returns>
-	const Vector3& GetPosition() const
-	{
-		return m_position;
-	}
-
-	/// <summary>
-	/// 引数に攻撃力を代入させる
-	/// </summary>
-	/// <param name="attack">剣士の攻撃力を代入したい変数</param>
-	/// <returns></returns>
-	int SetKnightAtk(/*int& attack*/) {
-		return m_Status.Atk;
-	}
-
-	/// <summary>
-	/// 攻撃力を増加させる
-	/// </summary>
-	/// <param name="AtkUp">剣士の攻撃力を増加させる数値</param
-	void KnightAtkUp(int AtkUp)
-	{
-		m_Status.Atk += AtkUp;
-	}
-
-	/// <summary>
-	/// HPを回復
-	/// </summary>
-	/// <param name="HpUp">剣士のHPを回復させる数値</param
-	void KnightHpUp(int HpUp)
-	{
-		m_Status.Hp += HpUp;
-	}
-
-	/// <summary>
-	/// HPが上限を超えた時に上限までにする関数
-	/// </summary>
-	void KnightHpReset(int HpReset)
-	{
-		m_Status.Hp = HpReset;
-	}
-
-	//剣士のHp上限を渡す
-	int GetKnightMaxHp() { return m_Status.MaxHp; };
-	//剣士のHpを渡す
-	int GetKnightHp() { return m_Status.Hp; };
 
 private:
 	Game* m_game=nullptr;
@@ -185,7 +94,7 @@ private:
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
-	bool m_spriteFlag = true;
+	
 
 	int dddd = 20;
 

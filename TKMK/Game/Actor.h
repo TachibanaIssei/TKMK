@@ -127,6 +127,79 @@ public:
 		m_respawnPos[number] = pos;
 	};
 
+	/// <summary>
+	/// 座標を設定
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(const Vector3& position)
+	{
+		m_position = position;
+	}
+
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
+	const Vector3& GetPosition() const
+	{
+		return m_position;
+	}
+	/// <summary>
+/// knightPlayer
+/// </summary>
+/// <returns>false�Ȃ�\�����Ȃ�</returns>
+	const bool GetSpriteFlag() const
+	{
+		return m_spriteFlag;
+	}
+
+	/// <summary>
+	/// 引数に攻撃力を代入させる
+	/// </summary>
+	int GetAtk() {
+		return m_Status.Atk;
+	}
+
+	/////////////////追加///////////////
+	/// <summary>
+	/// 攻撃力を増加させる
+	/// </summary>
+	/// <param name="AtkUp">攻撃力を増加させる数値</param>
+	void AtkUp(int AtkUp)
+	{
+		m_Status.Atk += AtkUp;
+	}
+
+	/// <summary>
+	/// HPを回復
+	/// </summary>
+	/// <param name="HpUp">剣士のHPを回復させる数値</param>
+	void HpUp(int HpUp)
+	{
+		m_Status.Hp += HpUp;
+	}
+
+	/// <summary>
+	/// HPが上限を超えた時に上限までにする関数
+	/// </summary>
+	/// /// <param name="HpReset">MaxHpを代入する</param>	
+	void HpReset(int HpReset)
+	{
+		m_Status.Hp = HpReset;
+	}
+
+	//Hp上限を渡す
+	int GetMaxHp() { return m_Status.MaxHp; };
+	//Hpを渡す
+	int GetHp() { return m_Status.Hp; };
+	/////////////////////追加終わり///////////////////////////
+
+	/// <summary>
+	/// 中立の敵を倒したときの経験値の処理
+	/// </summary>
+	/// <param name="GetExp">中立の敵の経験値</param>
+	void ExpProcess(int Exp);
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -151,5 +224,12 @@ protected:
 
 	Vector3 m_Forward;          //プレイヤーの前方向
 
+	Vector3 m_position = Vector3::Zero;                   //座標
+	ModelRender m_modelRender;                            //モデルレンダー
+	Quaternion m_rot = Quaternion::Identity;              //回転
+	bool m_spriteFlag = true;
+	Status m_Status;                                      //ステータス
+	//レベルアップ時に増加するステータス
+	LvUpStatus LvUPStatus = { 30,5,10.0f };
 };
 

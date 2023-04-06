@@ -14,6 +14,7 @@ class Map;
 class KnightAI;
 class WizardPlayer;
 class Player;
+class Actor;
 
 class Game : public IGameObject
 {
@@ -60,6 +61,10 @@ public:
 		enGameState_Num,
 	};
 	
+	//Actorを返す
+	std::vector<Actor*>& GetActors() {
+		return m_Actors;
+	}
 
 private:
 	
@@ -96,6 +101,7 @@ private:
 
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	std::vector<Actor*> m_Actors;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
@@ -108,7 +114,7 @@ private:
 	float m_Timer = 0.0f;
 
 	//BGMの音量調整に使用する変数
-	float musicVolume = 1.0f;
+	float musicVolume = 0.2f;
 
 	//リザルト画面かのフラグ
 	bool RezultFlag = false;
@@ -117,6 +123,6 @@ private:
 	bool PauseCloseFlag = true;
 
 	//キャラの番号
-	int SelectCharNumber = 1;
+	int SelectCharNumber = 0;
 };
 

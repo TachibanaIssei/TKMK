@@ -12,7 +12,7 @@ class GameCamera;
 class Neutral_Enemy;
 class Patrolnumb;
 class KnightAI;
-class Player;
+class Actor;
 /// <summary>
 /// 中立の敵
 /// </summary>
@@ -86,7 +86,6 @@ public:
 	/// 追跡
 	/// </summary>
 	void Chase();
-	void ChaseAI();
 	/// <summary>
 	/// 回転
 	/// </summary>
@@ -101,19 +100,19 @@ public:
 	/// 当たり判定
 	/// </summary>
 	void Collision();
-	void SearchAI();
 	/// <summary>
-	/// プレイヤーが見つかったら
+	/// 追いかける対象を探す
+	/// 見つかったらtrueを返す
 	/// </summary>
-	void SearchEnemy();
+	bool Search();
 
-	void SetPlayer(Player* m_player)
+	void SetKnightPlayer(Actor* knightPlayer)
 	{
-		player = m_player;
+		m_targetActor = knightPlayer;
 	}
-	KnightPlayer* GetKnightPlayer()
+	Actor* GetKnightPlayer()
 	{
-		return m_knightplayer;
+		return m_targetActor;
 	}
 
 	/// <summary>
@@ -218,6 +217,13 @@ public:
 		m_patrolPos[number] = pos;
 	};
 
+	/// <summary>
+	/// プレイヤーのアクターを設定する
+	/// </summary>
+	void SetPlayerActor(Actor* actor) {
+		m_player = actor;
+	}
+
 	enum EnAnimationClip {                      //アニメーション。
 		enAnimationClip_Idle,					//待機アニメーション。
 		enAnimationClip_Run,					//走りアニメーション。
@@ -243,13 +249,15 @@ private:
 	Vector3   RadiusPos;
 	SoundSource* m_se = nullptr;
 
-	KnightPlayer* m_knightplayer = nullptr;
-	KnightAI* m_knightAI = nullptr;
+	Actor* m_targetActor = nullptr;
+	Actor* m_player = nullptr;
+	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
+
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
 	GameCamera* m_gameCamera = nullptr;
-	Player* player = nullptr;
-
+	//KnightPlayer* m_knightPlayer = nullptr;
+	
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
 	SpriteRender		m_HPBar;		//HPバー画像
@@ -263,10 +271,7 @@ private:
 	Vector3                 m_patrolPos[9];
 	Vector3 nowPos = Vector3::Zero;
 	Vector3 m_hagikiPower;
-	bool    m_isSearchPlayer = false;
-	bool    m_isSearchAI = false;
 	bool m_UnderAttack = false;              //攻撃判定
-	bool Patrol = true;                     //巡回
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	//中立の敵
 	float	m_chaseTimer = 0.0f;			//追跡タイマー。

@@ -278,6 +278,7 @@ protected:
 	
 	Actor* m_lastAttackActor = nullptr;		// ÅŒã‚É©•ª‚ğUŒ‚‚µ‚½‚â‚Â
 
+
 	PlayerState m_animState = enKnightState_Idle;
 	//Œ»İ‚ÌƒRƒ“ƒ{
 	int ComboState = 0;

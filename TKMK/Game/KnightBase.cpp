@@ -270,8 +270,8 @@ void KnightBase::Collition()
 	{
 		return;
 	}
-	//自分の剣の当たり判定に当たっている？
-	// 勝手にダメージを受ける
+	//自分の剣の当たり判定に当たっている
+	//当たり判定の名前を変えないといけない
 	//敵の攻撃用のコリジョンを取得する名前一緒にする
 	const auto& Knightcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
 	//コリジョンの配列をfor文で回す
@@ -284,7 +284,8 @@ void KnightBase::Collition()
 		{
 			//剣士の攻撃力分HPを減らす
 			Dameged(m_lastAttackActor->GetAtk());
-
+			//倒された相手のポイントを増やす
+			//m_lastAttackActor->PointProcess(Lv);
 		}
 	}
 
@@ -307,10 +308,8 @@ void KnightBase::Dameged(int damege)
 		se->Play(false);
 		se->SetVolume(0.5f);
 		m_Status.Hp = 0;
-		//Death();
-		//SetRespawn();
-
-
+		//倒された相手のポイントを増やす
+		m_lastAttackActor->PointProcess(Lv);
 	}
 	else {
 		//ダメージステート

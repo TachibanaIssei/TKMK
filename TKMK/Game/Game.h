@@ -53,7 +53,7 @@ public:
 	}
 
 	/// <summary>
-	/// 繝ｪ繧ｹ繝昴�繝ｳ縺吶ｋ蠎ｧ讓吶ｒ險ｭ螳
+	///	
 	/// </summary>
 	/// <returns></returns>
 	Vector3 SetEnemyRespawnPos();
@@ -61,11 +61,11 @@ public:
 
 
 	/// <summary>
-	/// 繝ｪ繧ｹ繝昴�繝ｳ縺吶ｋ蠎ｧ讓吶ｒ譬ｼ邏阪☆繧
+	/// 
 	/// </summary>
-	/// <param name="pos">繧ｪ繝悶ず繧ｧ繧ｯ繝医�蠎ｧ讓</param>
-	/// <param name="rot">繧ｪ繝悶ず繧ｧ繧ｯ繝医�蝗櫁ｻ｢驥</param>
-	/// <param name="number">繧ｪ繝悶ず繧ｧ繧ｯ繝医�逡ｪ蜿ｷ</param>
+	/// <param name="pos"></param>
+	/// <param name="rot"></param>
+	/// <param name="number"></param>
 	void SetRespawnPosition(Vector3 pos, Quaternion rot, int number) {
 		EnemyRespawnPosition[number] = pos;
 		EnemyReapawnPot[number] = rot;
@@ -119,8 +119,8 @@ private:
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
-	Vector3 EnemyRespawnPosition[9];          //繝ｬ繝吶Ν縺ｮ荳ｭ遶九�謨ｵ縺ｮ繝ｪ繧ｹ繝昴�繝ｳ縺吶ｋ蠎ｧ讓吶ｒ譬ｼ邏阪☆繧
-	Quaternion EnemyReapawnPot[9];            //繝ｬ繝吶Ν縺ｮ荳ｭ遶九�謨ｵ縺ｮ繧ｪ繝悶ず繧ｧ繧ｯ繝医�蝗櫁ｻ｢驥上ｒ譬ｼ邏阪☆繧
+	Vector3 EnemyRespawnPosition[9];          //
+	Quaternion EnemyReapawnPot[9];            //
 	SpriteRender m_Pause_Front;    //ポーズ画面
 	SpriteRender m_Pause_Back;     //ポーズの裏画面
 
@@ -149,7 +149,7 @@ private:
 
 	int enemyNumber = 0;
 
-	int SearchRespawnPos;       //繝ｪ繧ｹ繝昴�繝ｳ縺吶ｋ蠎ｧ讓吶�逡ｪ蜿ｷ繧呈爾縺
+	int SearchRespawnPos;       //
 
 	//bool RespawnNumberBox[50];
 

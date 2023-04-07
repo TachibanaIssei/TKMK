@@ -119,11 +119,11 @@ bool Game::Start()
 			//右上の座標
 			if (objData.number == 1) {
 
-				//繝ｪ繧ｹ繝昴�繝ｳ蠎ｧ讓吶�險ｭ螳
+				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//荳ｭ遶九�謨ｵ縺ｮ逕滓�
+				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
@@ -134,48 +134,48 @@ bool Game::Start()
 			}
 			//右下の座標
 			if (objData.number == 3) {
-				//繝ｪ繧ｹ繝昴�繝ｳ蠎ｧ讓吶�險ｭ螳
+				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//荳ｭ遶九�謨ｵ縺ｮ逕滓�
+				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 4) {
 				//リスポーン座標の設定
-				SetRespawnPosition(objData.position, objData.number);
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//左下の座標
 			if (objData.number == 5) {
-				//繝ｪ繧ｹ繝昴�繝ｳ蠎ｧ讓吶�險ｭ螳
+				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//荳ｭ遶九�謨ｵ縺ｮ逕滓�
+				//
 				CreateEnemy(objData.position, objData.rotation);
-				//荳ｭ遶九�謨ｵ縺ｮ逕滓�
+				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 6) {
-				//繝ｪ繧ｹ繝昴�繝ｳ蠎ｧ讓吶�險ｭ螳
+				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			if (objData.number == 7) {
-				//繝ｪ繧ｹ繝昴�繝ｳ蠎ｧ讓吶�險ｭ螳
+				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//荳ｭ遶九�謨ｵ縺ｮ逕滓�
+				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 8) {
-				//繝ｪ繧ｹ繝昴�繝ｳ蠎ｧ讓吶�險ｭ螳
+				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
@@ -299,7 +299,7 @@ void Game::Update()
 
 	GameState();
 	
-	//繝ｪ繧ｹ繝昴�繝ｳ縺ｮ蜃ｦ逅
+	//
 	m_Timer += g_gameTime->GetFrameDeltaTime();
 	if (m_Timer>=15) {
 		Respawn();
@@ -351,9 +351,9 @@ void Game::Respawn()
 			ENEMY_AMOUNT;
 			CreateEnemy(SetEnemyRespawnPos(), EnemyReapawnPot[SearchRespawnPos]);
 			
-			////繝ｪ繧ｹ繝昴�繝ｳ縺吶ｋ蠎ｧ讓
-			////neutral_Enemy->SetPosition(SetEnemyRespawnPos());
-			////neutral_Enemy->SetRotation(objData.rotation);
+			//
+			//neutral_Enemy->SetPosition(SetEnemyRespawnPos());
+			//neutral_Enemy->SetRotation(objData.rotation);
 			//neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 
 		}
@@ -375,7 +375,7 @@ Vector3 Game::SetEnemyRespawnPos()
 		int distanceCounter = 0;
 		for (auto actorPos : m_Actors)
 		{
-			//繧ｭ繝｣繝ｩ縺ｮ蠎ｧ讓
+			//
 			Vector3 CharPos = actorPos->GetPosition();
 			Vector3 diff = EnemyRespawnPosition[SearchRespawnPos] - CharPos;
 			if (diff.Length() < 200)
@@ -384,10 +384,10 @@ Vector3 Game::SetEnemyRespawnPos()
 			}
 			
 		}
-		//繧ゅ＠繝ｪ繧ｹ繝昴�繝ｳ縺吶ｋ蠎ｧ讓吶′蜈ｨ縺ｦ縺ｮ繧ｭ繝｣繝ｩ縺ｮ蠎ｧ讓吶°繧200髮｢繧後※縺�◆繧
+		//
 		if (distanceCounter == m_Actors.max_size())
 		{
-			//縺昴�蠎ｧ讓吶ｒ繝ｪ繧ｹ繝昴�繝ｳ縺吶ｋ蠎ｧ讓吶→縺吶ｋ
+			//
 			return EnemyRespawnPosition[SearchRespawnPos];
 		}
 	}
@@ -426,10 +426,10 @@ void Game::GameState()
 }
 
 /// <summary>
-/// 荳ｭ遶九�謨ｵ縺ｮ逕滓�
+/// 
 /// </summary>
-/// <param name="pos">逕滓�縺吶ｋ蠎ｧ讓</param>
-/// <param name="rot">蝗櫁ｻ｢驥</param>
+/// <param name="pos"></param>
+/// <param name="rot"></param>
 void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 
 	enemyNumber++;

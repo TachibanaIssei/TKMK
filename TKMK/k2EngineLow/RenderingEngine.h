@@ -111,34 +111,36 @@ namespace nsK2EngineLow {
 		/// ディレクションライトの光の方向を設定する
 		/// </summary>
 		/// <param name="direction">方向</param>
-		void SetDirLightDirection(Vector3 direction)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetDirLightDirection(Vector3 direction, int lightNo = 0)
 		{
-			m_sceneLight.SetDirLightDirection(direction);
+			m_sceneLight.SetDirLightDirection(direction,lightNo);
 		}
 		/// <summary>
 		/// ディレクションライトの光の色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetDirLightColor(Vector4 color)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetDirLightColor(Vector4 color, int lightNo = 0)
 		{
-			m_sceneLight.SetDirLightColor(color);
+			m_sceneLight.SetDirLightColor(color,lightNo);
 		}
 
 		/// <summary>
 		/// ディレクションライトの光の方向を取得する
 		/// </summary>
 		/// <returns>光の方向</returns>
-		const Vector3& GetDirLigDirection() const
+		const Vector3& GetDirLigDirection(int lightNo = 0) const
 		{
-			return m_sceneLight.GetDirLigDirection();
+			return m_sceneLight.GetDirLigDirection(lightNo);
 		}
 		/// <summary>
 		/// ディレクションライトの光の色を取得する
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector4& GetDirLigColor() const
+		const Vector4& GetDirLigColor(int lightNo = 0) const
 		{
-			return m_sceneLight.GetDirLigColor();
+			return m_sceneLight.GetDirLigColor(lightNo);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////

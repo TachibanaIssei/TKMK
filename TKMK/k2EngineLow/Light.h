@@ -55,7 +55,7 @@ namespace nsK2EngineLow {
 	/// </summary>
 	struct Light
 	{
-		DirectionalLight directionalLight;	//ディレクションライトの配列
+		DirectionalLight directionalLight[MAX_DIRECTIONAL_LIGHT];	//ディレクションライトの配列
 		PointLight pointLight;	//ポイントライト
 		float pad1;
 		SpotLight spotLight;	//スポットライト
@@ -95,40 +95,44 @@ namespace nsK2EngineLow {
 		/// <param name="color">ライトの色</param>
 		void SetDirectionLight(int lightNo, Vector3 direction, Vector4 color)
 		{
-			SetDirLightDirection(direction);
-			SetDirLightColor(color);
+			SetDirLightDirection(direction,lightNo);
+			SetDirLightColor(color,lightNo);
 		}
 		/// <summary>
 		/// ディレクションライトの光の方向を設定する
 		/// </summary>
 		/// <param name="direction">方向</param>
-		void SetDirLightDirection(Vector3 direction)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetDirLightDirection(Vector3 direction, int lightNo = 0)
 		{
-			m_light.directionalLight.direction = direction;
+			m_light.directionalLight[lightNo].direction = direction;
 		}
 		/// <summary>
 		/// ディレクションライトの光の色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetDirLightColor(Vector4 color)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetDirLightColor(Vector4 color, int lightNo = 0)
 		{
-			m_light.directionalLight.color = color;
+			m_light.directionalLight[lightNo].color = color;
 		}
 		/// <summary>
 		/// ディレクションライトの光の方向を取得する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>光の方向</returns>
-		const Vector3& GetDirLigDirection() const
+		const Vector3& GetDirLigDirection(int lightNo = 0) const
 		{
-			return m_light.directionalLight.direction;
+			return m_light.directionalLight[lightNo].direction;
 		}
 		/// <summary>
 		/// ディレクションライトの光の色を取得する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>色</returns>
-		const Vector4& GetDirLigColor() const
+		const Vector4& GetDirLigColor(int lightNo = 0) const
 		{
-			return m_light.directionalLight.color;
+			return m_light.directionalLight[lightNo].color;
 		}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -454,6 +458,9 @@ namespace nsK2EngineLow {
 		{
 			return m_light.hemisphereLight.isUse;
 		}
+
+	private:
+		void InitDirectionLight();
 
 	private:
 		Light m_light;

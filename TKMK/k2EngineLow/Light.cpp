@@ -3,24 +3,35 @@
 
 void nsK2EngineLow::SceneLight::Init()
 {
-    m_light.directionalLight.color.x = 0.5f;
-    m_light.directionalLight.color.y = 0.5f;
-    m_light.directionalLight.color.z = 0.5f;
-    m_light.directionalLight.color.w = 1.0f;
+    //ディレクションライトの初期化
+    InitDirectionLight();
 
-    m_light.directionalLight.direction.x = 1.0f;
-    m_light.directionalLight.direction.y = -1.0f;
-    m_light.directionalLight.direction.z = -1.0f;
-    m_light.directionalLight.direction.Normalize();
+    //環境光の設定
+    Vector4 ambient = { 0.3f,0.3f,0.3f,1.0f };
+    SetAmbient(ambient);
 
-    m_light.ambientLight.x = 0.3f;
-    m_light.ambientLight.y = 0.3f;
-    m_light.ambientLight.z = 0.3f;
-    m_light.ambientLight.w = 1.0f;
-
-    m_light.hemisphereLight.groundColor = Vector3(0.17f, 0.15f, 0.1255f);
-    m_light.hemisphereLight.skyColor = Vector3(0.0116f, 0.0766f, 0.0766f);
-    m_light.hemisphereLight.groundNormal = Vector3(0.0f, 1.0f, 0.0f);
+    //半球ライトの設定
+    Vector3 groundColor = { 0.17f, 0.15f, 0.1255f };
+    Vector3 skyColor = { 0.0116f, 0.0766f, 0.0766f };
+    Vector3 groundNormal = Vector3{ 0.0f, 1.0f, 0.0f };
+    SetHemiLight(groundColor, skyColor, groundNormal);
 
     m_light.cameraEyePos = g_camera3D->GetPosition();
+}
+
+void nsK2EngineLow::SceneLight::InitDirectionLight()
+{
+    //すべてのディレクションライトを光らないようにする
+    for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
+    {
+        SetDirectionLight(i, g_vec3Zero, g_vec3Zero);
+    }
+
+    Vector3 dir = { 0.0f,-1.0f,-1.0f };
+    dir.Normalize();
+
+    Vector4 color = { 0.5f,0.5f,0.5f,1.0f };
+
+    //0番目のディレクションライトだけ光るようにする
+    SetDirectionLight(0, dir, color);
 }

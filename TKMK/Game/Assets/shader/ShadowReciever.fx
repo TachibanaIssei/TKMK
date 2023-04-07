@@ -122,6 +122,7 @@ SPSIn VSMain(SVSIn vsIn)
     psIn.uv = vsIn.uv;
 
     psIn.normal = mul(mWorld, vsIn.normal);
+    psIn.normal = normalize(psIn.normal);
 
     psIn.tangent = normalize(mul(mWorld, vsIn.tangent));
     psIn.biNormal = normalize(mul(mWorld, vsIn.biNormal));

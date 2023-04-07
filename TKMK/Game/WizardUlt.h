@@ -87,17 +87,32 @@ public:
 		//懲り所オブジェクトが自動で削除されないようにする。
 		UltCollision->SetIsEnableAutoDelete(false);
 	}
-
-	const void SetActor(Actor* character)
+	
+	/// <summary>
+	/// アクターのオブジェクト名を取得する
+	/// </summary>
+	/// <param name="character">オブジェクトの名前</param>
+	const void SetActor(const char* character)
 	{
-		m_targetActor = character;
+		m_targrtName = character;
+	}
+
+	/// <summary>
+	/// アクターのオブジェクト名を返す
+	/// </summary>
+	/// <returns>オブジェクトの名前</returns>
+	const char* SetTargetActorName()
+	{
+		return m_targrtName;
 	}
 
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
+
 	Actor* m_targetActor = nullptr;
 	Actor* m_CreatMeActor = nullptr;
+	Actor* m_GivePointActor = nullptr;
 
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;
@@ -106,6 +121,6 @@ private:
 	CollisionObject* UltCollision;
 
 	float m_timer = 0.0f;
-
+	const char* m_targrtName = nullptr;
 };
 

@@ -73,6 +73,7 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
 	SetEyePos(g_camera3D->GetPosition());
 
+	//シャドウマップを作成
 	m_shadow.Render(rc);
 
 	//メインレンダリングターゲットに変更
@@ -86,8 +87,10 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	//レンダリングターゲットへの書き込み終了待ち
 	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
 
+	//ポストエフェクト
 	m_postEffect.Render(rc, m_mainRenderTarget);
 
+	//フレームバッファにコピーする
 	rc.SetRenderTarget(
 		g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
 		g_graphicsEngine->GetCurrentFrameBuffuerDSV()

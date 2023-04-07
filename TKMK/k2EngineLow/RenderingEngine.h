@@ -129,6 +129,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの光の方向を取得する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>光の方向</returns>
 		const Vector3& GetDirLigDirection(int lightNo = 0) const
 		{
@@ -137,10 +138,20 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの光の色を取得する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>色</returns>
 		const Vector4& GetDirLigColor(int lightNo = 0) const
 		{
 			return m_sceneLight.GetDirLigColor(lightNo);
+		}
+
+		/// <summary>
+		/// ディレクションライトを消す
+		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
+		void ClearDirectionLight(int lightNo = 0)
+		{
+			m_sceneLight.SetDirectionLight(lightNo, g_vec3Zero, g_vec3Zero);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////

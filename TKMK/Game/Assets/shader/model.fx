@@ -1,8 +1,7 @@
 /*!
  * @brief	シンプルなモデルシェーダー。
  */
-
-//const int MAX_DIRECTION_LIGHT = 4;
+#include "light_const.h"
 
 ////////////////////////////////////////////////
 // 構造体
@@ -83,7 +82,7 @@ cbuffer ModelCb : register(b0)
 
 cbuffer LightCB : register(b1)
 {
-    DirectionLight  directionLight[4];
+    DirectionLight  directionLight[MAX_DIRECTION_LIGHT];
     PointLight      pointLight;
     SpotLight       spotLight;
     HemisphereLight hemisphereLight;
@@ -188,7 +187,7 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	//ディレクションライトによるライティングの計算
     float3 directionLig[4];
     float3 finalDirectionLig = {0.0f,0.0f,0.0f};
-    for(int ligNo = 0; ligNo < 4; ligNo++)
+    for(int ligNo = 0; ligNo < MAX_DIRECTION_LIGHT; ligNo++)
     {
         directionLig[ligNo] = CalcLigFromDirectionLight(psIn,normal,ligNo);
         finalDirectionLig += directionLig[ligNo];

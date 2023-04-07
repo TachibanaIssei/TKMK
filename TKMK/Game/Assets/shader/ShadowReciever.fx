@@ -1,6 +1,7 @@
 /*!
  * @brief 影が落とされるモデル用のシェーダー
  */
+#include "light_const.h"
 
 ///////////////////////////////////////////////////
 // 構造体
@@ -77,7 +78,7 @@ cbuffer ModelCb : register(b0)
 // ライトビュープロジェクション行列の定数バッファーを定義
 cbuffer LightCB : register(b1)
 {
-    DirectionLight  directionLight[4];
+    DirectionLight  directionLight[MAX_DIRECTION_LIGHT];
     PointLight      pointLight;
     SpotLight       spotLight;
     HemisphereLight hemisphereLight;
@@ -141,9 +142,9 @@ float4 PSMain(SPSIn psIn) : SV_Target0
     //法線を計算
     float3 normal = CalcNormalMap(psIn);
     //ディレクションライトによるライティングの計算
-    float3 directionLig[4];
+    float3 directionLig[MAX_DIRECTION_LIGHT];
     float3 finalDirectionLig = {0.0f,0.0f,0.0f};
-    for(int ligNo = 0;ligNo<4;ligNo++)
+    for(int ligNo = 0; ligNo < MAX_DIRECTION_LIGHT; ligNo++)
     {
         directionLig[ligNo] = CalcLigFromDirectionLight(psIn, normal,ligNo);
         finalDirectionLig += directionLig[ligNo];
@@ -367,11 +368,11 @@ float3 CalcNormalMap(SPSIn psIn)
 {
     float3 normal = psIn.normal;
     //法線マップからタンジェントスペースの法線をサンプリング
-    // float3 localNormal = g_normalMap.Sample(g_sampler, psIn.uv).xyz;
-    // //タンジェントスペースの法線を0～1の範囲から-1～1の範囲に復元
-    // localNormal = (localNormal - 0.5f) * 2.0f;
-    // //タンジェントスペースの法線をワールドスペースに変換
-    // normal = psIn.tangent * localNormal.x + psIn.biNormal * localNormal.y + normal * localNormal.z;
+    float3 localNormal = g_normalMap.Sample(g_sampler, psIn.uv).xyz;
+    //タンジェントスペースの法線を0～1の範囲から-1～1の範囲に復元
+    localNormal = (localNormal - 0.5f) * 2.0f;
+    //タンジェントスペースの法線をワールドスペースに変換
+    normal = psIn.tangent * localNormal.x + psIn.biNormal * localNormal.y + normal * localNormal.z;
     
     return normal;
 }

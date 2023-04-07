@@ -59,10 +59,11 @@ public:
 	virtual void Attack() = 0;
 
 	/// <summary>
-	/// 攻撃を受けたときの処理
+	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
-	virtual void Dameged(int damege) = 0;
+	/// <param name="playerGivePoints">ポイントを与えるキャラ</param>
+	virtual void Dameged(int damege,Actor* CharGivePoints) = 0;
 
 	/// <summary>
 	/// 必殺技を打つ処理
@@ -197,6 +198,22 @@ public:
 	/// </summary>
 	int GetPoint() {
 		return Point;
+	}
+
+	/// <summary>
+	/// ステータスを返す
+	/// </summary>
+	Status& GetStatus()
+	{
+		return m_Status;
+	}
+
+	/// <summary>
+	/// レベルアップ時に増加するステータスを返す
+	/// </summary>
+	LvUpStatus& GetLvUPStatus()
+	{
+		return LvUPStatus;
 	}
 
 private:

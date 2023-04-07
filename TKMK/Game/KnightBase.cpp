@@ -255,7 +255,7 @@ void KnightBase::Collition()
 				//エネミーの攻撃力を取ってくる
 
 				//hpを10減らす
-				Dameged(Enemy_atk);
+				Dameged(Enemy_atk, m_Neutral_enemy);
 
 			}
 		}
@@ -283,7 +283,7 @@ void KnightBase::Collition()
 		if (knightcollision->IsHit(m_charCon))
 		{
 			//剣士の攻撃力分HPを減らす
-			Dameged(m_lastAttackActor->GetAtk());
+			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 			//倒された相手のポイントを増やす
 			//m_lastAttackActor->PointProcess(Lv);
 		}
@@ -295,7 +295,7 @@ void KnightBase::Collition()
 /// ダメージを受けたときの処理
 /// </summary>
 /// <param name="damege">敵の攻撃力</param>
-void KnightBase::Dameged(int damege)
+void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
 	//自身のHPが0以下なら
@@ -308,8 +308,12 @@ void KnightBase::Dameged(int damege)
 		se->Play(false);
 		se->SetVolume(0.5f);
 		m_Status.Hp = 0;
-		//倒された相手のポイントを増やす
-		m_lastAttackActor->PointProcess(Lv);
+		//攻撃された相手が中立の敵以外なら
+		if (CharGivePoints != nullptr)
+		{
+			//倒された相手のポイントを増やす
+			CharGivePoints->PointProcess(Lv);
+		}
 	}
 	else {
 		//ダメージステート

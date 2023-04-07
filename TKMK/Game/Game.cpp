@@ -43,19 +43,25 @@ Game::~Game()
 		return true;
 		});*/
 
-	//配列のサイズを調べてfor文で回す
+	//中立の敵のサイズを調べてfor文で回す
 	for (auto seutral_Enemy : m_neutral_Enemys)
 	{
 		DeleteGO(seutral_Enemy);
 	}
+	//m_neutral_Enemys.clear();
+
+	for (auto aoctor : m_Actors)
+	{
+		DeleteGO(aoctor);
+	}
 
 	DeleteGO(player);
-	DeleteGO(m_knightplayer);
-	DeleteGO(wizardPlayer);
+	/*DeleteGO(m_knightplayer);
+	DeleteGO(wizardPlayer);*/
 	
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
-	DeleteGO(m_KnightAI);
+	//DeleteGO(m_KnightAI);
 	DeleteGO(m_bgm);
 	DeleteGO(charUltFlag);
 	DeleteGO(lamp);
@@ -236,7 +242,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

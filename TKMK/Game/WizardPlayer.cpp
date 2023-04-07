@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "Neutral_Enemy.h"
 #include "MagicBall.h"
-#include "CharUltFlag.h"
 #include "WizardUlt.h"
 
 namespace {
@@ -61,9 +60,6 @@ WizardPlayer::WizardPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
-
-	//必殺技フラグのインスタンスを探す
-	charUltFlag = FindGO<CharUltFlag>("charUltFlag");
 }
 
 WizardPlayer::~WizardPlayer()
@@ -234,8 +230,6 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//
 	if (wcscmp(eventName, L"UltAttack_Start") == 0)
 	{
-		//必殺技フラグを魔法使いのステートにする
-		charUltFlag->WhoUlt(CharUltFlag::enWizardState);
 		//雷の生成
 		MakeUltimateSkill();
 	}
@@ -264,13 +258,24 @@ void WizardPlayer::MakeMagicBall()
 /// </summary>
 void WizardPlayer::MakeUltimateSkill()
 {
-	//必殺技の雷の生成
-	WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
-	wizardUlt->SetCreatorName(GetName());
-
-	Vector3 UltPos = Actor::GetPosition();
-	UltPos.y += 100.0f;
-	wizardUlt->SetPosition(UltPos);
+	for (auto actors : game->GetActors())
+	{
+		//生成するキャラと自分のオブジェクトの名前が同じなら処理を飛ばす
+		if (GetName() == actors->GetName())
+		{
+			continue;
+		}
+		//必殺技の雷の生成
+		WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+		//自分のオブジェクトの名前をセット
+		wizardUlt->SetCreatorName(GetName());
+		//攻撃するアクターのオブジェクト名をセット
+		wizardUlt->SetActor(actors->GetName());
+		//攻撃するアクターの座標取得
+		Vector3 UltPos = actors->GetPosition();
+		UltPos.y += 100.0f;
+		wizardUlt->SetPosition(UltPos);
+	}
 }
 
 void WizardPlayer::AvoidanceSprite()

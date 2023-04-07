@@ -6,7 +6,6 @@
 class Game;
 class Neutral_Enemy;
 class MagicBall;
-class CharUltFlag;
 class WizardUlt;
 
 class WizardPlayer:public WizardBase
@@ -80,7 +79,6 @@ public:
 private:
 	Game* m_game = nullptr;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
-	CharUltFlag* charUltFlag = nullptr;
 	//MagicBall* magicBall = nullptr;
 
 	CollisionObject* AtkCollision;                   //アタックのコリジョン

@@ -5,7 +5,6 @@
 class Game;
 class KnightPlayer;
 class Neutral_Enemy;
-class CharUltFlag;
 class WizardUlt;
 
 class KnightAI:public KnightBase
@@ -47,17 +46,6 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttackActor();
-	//.cppに移す　todo
-	void MakeWizardUlt()
-	{
-		//必殺技の雷の生成
-		WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
-		wizardUlt->SetCreatorName(GetName());
-
-		Vector3 UltPos = Actor::GetPosition();
-		UltPos.y += 100.0f;
-		wizardUlt->SetPosition(UltPos);
-	}
 
 private:
 	enum AtkTimingState
@@ -85,7 +73,6 @@ private:
 	FontRender				m_fontRender;
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
-	CharUltFlag* charUltFlag = nullptr;
 	Neutral_Enemy* m_targetEnemy = nullptr;					// 今追いかけているエネミー      
 	Actor* m_targetActor = nullptr;
 	bool UltimateSkillFlag = false;

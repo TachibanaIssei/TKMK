@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
-#include "CharUltFlag.h"
 #include "Actor.h"
 #include "WizardUlt.h"
 
@@ -26,7 +25,6 @@ KnightAI::KnightAI()
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	charUltFlag = FindGO<CharUltFlag>("charUltFlag");
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
 }
@@ -39,14 +37,6 @@ void KnightAI::Update()
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
-	}
-	//魔法使いが必殺技を使ったら
-	if (charUltFlag->m_whoUltimatSkill == charUltFlag->enWizardState)
-	{
-		//自分の上部に雷(魔法使いの必殺技)を生成
-		MakeWizardUlt();
-		//ステートを誰も必殺技を打っていない状態にする
-		charUltFlag->WhoUlt(charUltFlag->enNobodyState);
 	}
 	Attack();
 	//ステート
@@ -390,7 +380,7 @@ void KnightAI::Collition()
 				//エネミーの攻撃力を取ってくる
 
 				//hpを10減らす
-				Dameged(Enemy_atk);
+				//Dameged(Enemy_atk);
 
 			}
 		}

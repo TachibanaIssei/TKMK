@@ -2,47 +2,33 @@
 #include "KnightAI.h"
 #include "Game.h"
 #include "KnightPlayer.h"
-namespace {
-	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f, 1.0f);
-	const Vector3 AVOIDANCE_BAR_POS = Vector3(98.0f, -397.0f, 0.0f);
-
-	const Vector3 AVOIDANCE_FLAME_POS = Vector3(0.0f, -410.0f, 0.0f);
-}
+#include "Neutral_Enemy.h"
+#include "CharUltFlag.h"
+#include "Actor.h"
 
 
 KnightAI::KnightAI()
 {
+	m_Status.Init("Knight");
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
-	/*m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
-		});*/
+		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	respawnNumber = 1;        //リスポーンする座標の番号
-	m_respawnPos[respawnNumber].y += m_position_YUp;
+	m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
+	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+	charUltFlag = FindGO<CharUltFlag>("charUltFlag");
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
-	//スキルのクールタイムを表示するフォントの設定
-	/*Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
-	Skillfont.SetScale(2.0f);
-	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	Skillfont.SetRotation(0.0f);
-	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);*/
-
-	//回避のフレームの設定
-	//m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
-	//m_Avoidance_flameRender.SetPosition(AVOIDANCE_FLAME_POS);
-	////回避のバーの設定
-	//m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
-	//m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
-	//m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 }
 KnightAI::~KnightAI()
 {
@@ -50,104 +36,410 @@ KnightAI::~KnightAI()
 }
 void KnightAI::Update()
 {
+	Attack();
+	//ステート
+	ManageState();
+	//アニメーションの再生
+	PlayAnimation();
+	Collition();
 	Rotation();
-	SearchPlayer();
+	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
 
+	//剣士のY座標が腰なのでY座標を上げる
+	m_position.y = m_position_YUp;
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_rot);
 	m_modelRender.Update();
+}
+
+const bool KnightAI::CanAttackenemy()
+{
+	//エネミーたちの情報を取得する
+	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
+
+	for (auto Enemys : enemys)
+	{
+		//取得したエネミーたちの座標を取得
+		Vector3 enemyPos = Enemys->GetPosition();
+		//取得した座標を自分のと引く
+		Vector3 diff = enemyPos - m_position;
+
+		if (diff.LengthSq() <= 70.0f * 70.0f)
+		{
+			m_targetEnemy = Enemys;
+
+			return true;
+		}
+	}
+	m_targetEnemy = nullptr;
+
+	return false;
+}
+const bool KnightAI::CanAttackActor()
+{
+	//アクターたちの情報を取得する
+	std::vector<Actor*>& actors = m_game->GetActors();
+	for (auto Actors : actors)
+	{
+		if (Actors == this) {
+			//for文の一番最初に戻る
+			continue;
+		}
+
+		Vector3 actorPos = Actors->GetPosition();
+		Vector3 diff = actorPos - m_position;
+
+		if (diff.LengthSq() <= 70.0f * 70.0f)
+		{
+			m_targetActor = Actors;
+			return true;
+		}
+	}
+	m_targetActor = nullptr;
+	return false;
+}
+void KnightAI::Attack()
+{
+	if (CanAttackenemy() || CanAttackActor()) {
+		//狙う方を変える
+		Vector3 targetPos = TargetChange();
+		//連打で攻撃できなくなる
+
+		//一段目のアタックをしていないなら
+		if (AtkState == false)
+		{
+			Vector3 diff = targetPos - m_position;
+			m_rot.SetRotationYFromDirectionXZ(diff);
+			m_knightState = enKnightState_ChainAtk;
+
+			//FirstAtkFlag = true;
+			//コンボを1増やす
+			//ComboState++;
+
+			AtkState = true;
+		}
+		//一段目のアタックのアニメーションがスタートしたなら
+		if (m_AtkTmingState == FirstAtk_State)
+		{
+			Vector3 diff = targetPos - m_position;
+			m_rot.SetRotationYFromDirectionXZ(diff);
+			//ステートを二段目のアタックのアニメーションスタートステートにする
+			m_AtkTmingState = SecondAtk_State;
+
+		}
+
+		if (m_AtkTmingState == SecondAtkStart_State)
+		{
+			Vector3 diff = targetPos - m_position;
+			m_rot.SetRotationYFromDirectionXZ(diff);
+			//ステートを三段目のアタックのアニメーションスタートステートにする
+			m_AtkTmingState = LastAtk_State;
+
+		}
+
+	}
+	//スキルを発動する処理
+	//Bボタンが押されたら
+	if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	{
+
+		//移動速度を上げる
+		m_Status.Speed += 120.0f;
+
+		/*AnimationMove(SkillSpeed);*/
+		pushFlag = true;
+		SkillState = true;
+		//AtkCollistionFlag = true;
+	}
+
+	//必殺技を発動する処理
+	//Xボタンが押されたら
+	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	{
+		pushFlag = true;
+		//アニメーション再生、レベルを３
+		UltimateSkill();
+
+
+
+		//アルティメットSE
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(16);
+		se->Play(false);
+		se->SetVolume(0.3f);
+
+		//必殺技発動フラグをセット
+		UltimateSkillFlag = true;
+	}
+
+	//必殺技発動フラグがセットされているなら
+	if (UltimateSkillFlag == true)
+	{
+		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
+		//必殺技タイマーが3.0fまでの間
+		if (UltimateSkillTimer <= 3.0f)
+		{
+			//コリジョンの作成、移動処理
+			UltimateSkillCollistion(OldPosition, m_position);
+		}
+		else
+		{
+			//攻撃が有効な時間をリセット
+			UltimateSkillTimer = 0;
+			//必殺技発動フラグをリセット
+			UltimateSkillFlag = false;
+			//コリジョン削除
+			DeleteGO(collisionObject);
+			//コリジョン作成フラグをリセット
+			UltCollisionSetFlag = false;
+		}
+	}
+
+	//攻撃かスキルを使用しているなら
+	//コリジョン作成
+	if (AtkCollistionFlag == true) AtkCollisiton();
+
+}
+/// <summary>
+/// 攻撃時の当たり判定の処理
+/// </summary>
+void KnightAI::AtkCollisiton()
+{
+	//コリジョンオブジェクトを作成する。
+	auto collisionObject = NewGO<CollisionObject>(0);
+	Vector3 collisionPosition = m_position;
+	//座標をプレイヤーの少し前に設定する。
+	//collisionPosition += forward * 50.0f;
+	//ボックス状のコリジョンを作成する。
+	collisionObject->CreateBox(collisionPosition, //座標。
+		Quaternion::Identity, //回転。
+		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
+	);
+	collisionObject->SetName("player_attack");
+	collisionObject->SetCreatorName(GetName());
+
+	//「Sword」ボーンのワールド行列を取得する。
+	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+
+	//matrix.MakeRotationZ(90.0f);
+	//「Sword」ボーンのワールド行列をコリジョンに適用する。
+	collisionObject->SetWorldMatrix(matrix);
 }
 void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//一段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"FirstAttack_Start") == 0)
+	{
+		m_AtkTmingState = FirstAtk_State;
+		//剣のコリジョンを生成
+		AtkCollistionFlag = true;
+		//剣１段目音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(13);
+		se->Play(false);
+		se->SetVolume(0.3f);
+	}
+	//二段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
+	{
+		m_AtkTmingState = SecondAtkStart_State;
+		//剣のコリジョンを生成
+		AtkCollistionFlag = true;
+		//剣２段目音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(14);
+		se->Play(false);
+		se->SetVolume(0.3f);
+	}
+	//三段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"LastAttack_Start") == 0)
+	{
+		m_AtkTmingState = LastAtk_State;
+		//剣のコリジョンを生成
+		AtkCollistionFlag = true;
+		//剣３段目音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(15);
+		se->Play(false);
+		se->SetVolume(0.3f);
+	}
+	//スキルのアニメーションが始まったら
+	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
+	{
+		m_Status.Atk += 20;
+		//m_AtkTmingState = LastAtk_State;
+		//剣のコリジョンを生成
+		AtkCollistionFlag = true;
+
+		//スキル音を発生
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(11);
+		se->Play(false);
+		se->SetVolume(0.3f);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	//一段目のアタックのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"FirstAttack_End") == 0)
+	{
+
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+	}
+	///一段目のアタックのアニメーションが終わったら
+	if (wcscmp(eventName, L"FirstToIdle") == 0)
+	{
+		//ボタンが押されていなかったら
+		if (m_AtkTmingState != SecondAtk_State)
+		{
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			AtkState = false;
+			m_knightState = enKnightState_Idle;
+			m_AtkTmingState = Num_State;
+		}
+	}
+
+	//二段目のアタックのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"SecondAttack_End") == 0)
+	{
+
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+		//ボタンが押されていなかったら
+		if (m_AtkTmingState != LastAtk_State)
+		{
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			AtkState = false;
+			m_knightState = enKnightState_Idle;
+			m_AtkTmingState = Num_State;
+		}
+	}
+	//三段目のアタックのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"LastAttack_End") == 0)
+	{
+		m_AtkTmingState = Num_State;
+		AtkState = false;
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+	}
+	//アニメーションの再生が終わったら
+	if (m_modelRender.IsPlayingAnimation() == false) {
+		m_knightState = enKnightState_Idle;
+		AtkState = false;
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+	}
+
+	//スキルのアニメーションで剣を振り終わったら
+	if (wcscmp(eventName, L"SkillAttack_End") == 0)
+	{
+		m_Status.Atk -= 20;
+		m_AtkTmingState = Num_State;
+		AtkState = false;
+		//スキルの移動処理をしないようにする
+		SkillState = false;
+		m_Status.Speed -= 120.0f;
+		//剣のコリジョンを生成しない
+		AtkCollistionFlag = false;
+	}
+	//回避アニメーションが終わったら
+	if (wcscmp(eventName, L"Avoidance_End") == 0)
+	{
+		//移動処理をしないようにする
+
+		AvoidanceFlag = false;
+		//m_AtkTmingState = Num_State;
+
+	}
+}
+void KnightAI::Collition()
+{
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_knightState == enKnightState_Damege ||
+		m_knightState == enKnightState_Death ||
+		m_knightState == enKnightState_UltimateSkill ||
+		m_knightState == enKnightState_ChainAtk ||
+		m_knightState == enKnightState_Skill ||
+		m_knightState == enKnightState_Avoidance)
+	{
+		return;
+	}
+	else
+	{
+		//敵の攻撃用のコリジョンを取得する名前一緒にする
+		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
+		//コリジョンの配列をfor文で回す
+		for (auto collision : collisions)
+		{
+			//コリジョンが自身のキャラコンに当たったら
+			if (collision->IsHit(m_charCon))
+			{
+				//エネミーの攻撃力を取ってくる
+
+				//hpを10減らす
+				Dameged(Enemy_atk);
+
+			}
+		}
+	}
 
 }
 void KnightAI::AvoidanceSprite()
 {
 
 }
-
 void KnightAI::Rotation()
 {
-	m_rotation.AddRotationDegY(1.0f);
-	m_modelRender.SetRotation(m_rotation);
-
-	Vector3 diff = m_knightPlayer->GetPosition() - m_position;
-}
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
-{
-	bool isHit = false;						//衝突フラグ。
-
-	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-	{
-		//壁とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-			//衝突したのは壁ではない。
-			return 0.0f;
-		}
-
-		//壁とぶつかったら。
-		//フラグをtrueに。
-		isHit = true;
-		return 0.0f;
+	if (fabsf(m_moveSpeed.x) < 0.001f
+		&& fabsf(m_moveSpeed.z) < 0.001f) {
+		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
+		//このフレームではキャラは移動していないので旋回する必要はない。
+		return;
 	}
-};
-void KnightAI::SearchPlayer()
-{
-	m_isSearchPlayer = false;
+	//atan2はtanθの値を角度(ラジアン単位)に変換してくれる関数。
+	//m_moveSpeed.x / m_moveSpeed.zの結果はtanθになる。
+	//atan2を使用して、角度を求めている。
+	//これが回転角度になる。
+	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
+	//atanが返してくる角度はラジアン単位なので
+	//SetRotationDegではなくSetRotationを使用する。
+	m_rot.SetRotationY(-angle);
 
+	//回転を設定する。
+	m_modelRender.SetRotation(m_rot);
+
+	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
-	m_rotation.Apply(m_forward);
-
-	Vector3 playerPosition = m_knightPlayer->GetPosition();
-	Vector3 diff = playerPosition - m_position;
-
-	diff.Normalize();
-	float angle = acosf(diff.Dot(m_forward));
-	//プレイヤーが視界内に居なかったら。
-	if (Math::PI * 0.35f <= fabsf(angle))
-	{
-		//プレイヤーは見つかっていない。
-		return;
-	}
-
-	btTransform start, end;
-	start.setIdentity();
-	end.setIdentity();
-	//始点はエネミーの座標。
-	start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
-	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(playerPosition.x, playerPosition.y + 70.0f, playerPosition.z));
-
-	SweepResultWall callback;
-	//コライダーを始点から終点まで動かして。
-	//衝突するかどうかを調べる。
-	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-	//壁と衝突した！
-	if (callback.isHit == true)
-	{
-		//プレイヤーは見つかっていない。
-		return;
-	}
-
-	//壁と衝突してない！！
-	//プレイヤー見つけたフラグをtrueに。
-	m_isSearchPlayer = true;
+	m_rot.Apply(m_forward);
 }
-void KnightAI::Attack()
+
+const Vector3 KnightAI::TargetChange()
 {
+	if (m_targetEnemy == nullptr && m_targetActor == nullptr) {
+		abort();	//呼ぶな
+	}
+
+	if (m_targetEnemy != nullptr && m_targetActor == nullptr) {
+		//エネミーの座標を渡す
+		return m_targetEnemy->GetPosition();
+	}
+	if (m_targetActor != nullptr && m_targetEnemy == nullptr) {
+		//アクターの座標を渡す
+		return m_targetActor->GetPosition();
+	}
+	//中立の敵とアクタークラスの敵両方いる場合は、
+	//かつアクタークラスの敵が自分よりレベル低い時中立の敵を倒しに行く
+	if (m_targetActor->GetLevel() > Lv) {
+		return m_targetEnemy->GetPosition();
+	}
+
+	return m_targetActor->GetPosition();
 
 }
-
 void KnightAI::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	if (m_isSearchPlayer == false)
-	{
-		m_fontRender.SetText(L"見つからない・・・");
-	}
-	else
-	{
-		m_fontRender.SetText(L"見つけた！");
-	}
-	m_fontRender.Draw(rc);
+
 }
 

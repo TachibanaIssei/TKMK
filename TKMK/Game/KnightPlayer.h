@@ -4,7 +4,9 @@
 #include "Status.h"
 
 class Game;
-//class GameUI;
+class Neutral_Enemy;
+class KnightUlt;
+class GameUI;
 
 class KnightPlayer:public KnightBase
 {
@@ -23,58 +25,43 @@ public:
 
 	void AvoidanceSprite();
 
-	/*void SetSGame(Game* Cgame)
-	{
-		m_game = Cgame;
-	}*/
-	/*Game* GetSGame()
-	{
-		return m_game;
-	}*/
-
-	
+	/// <summary>
+	/// 必殺技の当たり判定生成する
+	/// </summary>
+	void MakeUltSkill();
 
 	/// <summary>
-	/// �摜�\���t���O��擾����
+	/// スキルを発動したときに範囲内で一番近い敵をねらう処理
 	/// </summary>
-	/// <returns>false�Ȃ�\�����Ȃ�</returns>
-	const bool GetSpriteFlag() const
-	{
-		return m_spriteFlag;
-	}
+	//void SkillTarget()
+	//{
+	//	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
-	/// <summary>
-	/// 座標を設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	void SetPosition(const Vector3& position)
-	{
-		m_position = position;
-	}
+	//	Vector3 nearPos = Vector3::Zero;
+	//	//一番近い距離
+	//	float Near = nearPos.Length();
+	//	for (auto enemy : m_neutral_Enemys)
+	//	{
+	//		Vector3 toEnemy = enemy->GetPosition() - m_position;
+	//		//エネミーとの距離を計算する
+	//		float newNear = toEnemy.Length();
+	//		//計算した距離が一番近い距離より小さいなら上書き
+	//		if (Near > newNear) {
+	//			Near = newNear;
+	//		}
+	//	}
+	//	if (Near < 300) {
 
-	/// <summary>
-	/// 座標を取得
-	/// </summary>
-	/// <returns>座標</returns>
-	const Vector3& GetPosition() const
-	{
-		return m_position;
-	}
+	//	}
+	//}
 
-	/// <summary>
-	/// 引数に攻撃力を代入させる
-	/// </summary>
-	/// <param name="attack">剣士の攻撃力を代入したい変数</param>
-	/// <returns></returns>
-	int SetKnightAtk(/*int& attack*/) {
-		return m_Status.Atk;
-	}
 
 private:
 	Game* m_game=nullptr;
-	//GameUI* m_gameUI = nullptr;
 	
-
+	GameUI* m_gameUI = nullptr;
+	
+	//CollisionObject* collisionObject;                     //コリジョン
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
@@ -107,14 +94,11 @@ private:
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
-	bool m_spriteFlag = true;
+	int oldLv;
 
-	//Status m_Status;                           //ステータス
+	int dddd = 20;
 
-	//Vector3 m_position = Vector3::Zero;
-	////初期ステータス 最大HP、HP、攻撃力、スピード
-	//Status status = { 150,150,35,150.0f };
-	////レベルアップ時に増加するステータス
-	//LvUpStatus LvUpStatus = { 30,10,30.0f };
+	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 };
 

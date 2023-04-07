@@ -225,6 +225,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BackGround.cpp" />
+    <ClCompile Include="CharUltFlag.cpp" />
     <ClCompile Include="Enemy_Respawn.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
@@ -232,9 +233,12 @@
     <ClCompile Include="KnightAI.cpp" />
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightPlayer.cpp" />
+    <ClCompile Include="KnightUlt.cpp" />
+    <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Neutral_Enemy.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -244,10 +248,14 @@
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Tittle.cpp" />
+    <ClCompile Include="WizardBase.cpp" />
+    <ClCompile Include="WizardPlayer.cpp" />
+    <ClCompile Include="WizardUlt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BackGround.h" />
+    <ClInclude Include="CharUltFlag.h" />
     <ClInclude Include="Enemy_Respawn.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
@@ -255,13 +263,19 @@
     <ClInclude Include="KnightAI.h" />
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="KnightPlayer.h" />
+    <ClInclude Include="KnightUlt.h" />
+    <ClInclude Include="MagicBall.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Neutral_Enemy.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Tittle.h" />
+    <ClInclude Include="WizardBase.h" />
+    <ClInclude Include="WizardPlayer.h" />
+    <ClInclude Include="WizardUlt.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

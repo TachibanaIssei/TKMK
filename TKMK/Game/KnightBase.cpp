@@ -59,6 +59,7 @@ void KnightBase::SetModel()
 	//攻撃時のアニメーションイベント剣士の座標のID(番号)を取得する。
 	AtkEndPosId = m_modelRender.FindBoneID(L"movePos");
 
+
 	m_position = { 0.0f,0.0f,0.0f };
 	m_modelRender.SetPosition(m_position);
 	//m_modelRender.SetScale(Vector3(0.1f, 0.1f, 0.1f));
@@ -88,7 +89,7 @@ void KnightBase::ExpProcess(int Exp)
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
-		LevelUp(LvUpStatus,m_Status,Lv);
+		LevelUp(LvUPStatus,m_Status,Lv);
 		//レベルに合わせてレベルの画像を変更する
 		m_gameUI->LevelFontChange(Lv);
 		switch (Lv)
@@ -158,6 +159,7 @@ void KnightBase::AtkCollisiton()
 		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
 	);
 	collisionObject->SetName("player_attack");
+	collisionObject->SetCreatorName(GetName());
 
 	//「Sword」ボーンのワールド行列を取得する。
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
@@ -167,6 +169,7 @@ void KnightBase::AtkCollisiton()
 	collisionObject->SetWorldMatrix(matrix);
 }
 
+
 /// <summary>
 /// 必殺技発動時の当たり判定の処理
 /// </summary>
@@ -174,64 +177,69 @@ void KnightBase::AtkCollisiton()
 /// <param name="position">現在の座標</param>
 void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 {	
-	//コリジョン生成していないなら
-	if (UltCollisionSetFlag == false)
-	{
-		//コリジョンの座標をプレイヤーと同じに設定
-		UltCollisionPos = position;
-		UltCollisionPos.y += 50.0f;
+	//	//コリジョンオブジェクトを作成する。
+	//UltCollision = NewGO<CollisionObject>(0);
+	//UltCollision->SetName("Knight_UltimateSkill");
+	////コリジョン生成していないなら
+	//if (UltCollisionSetFlag == false)
+	//{
+	//	//コリジョンの座標をプレイヤーと同じに設定
+	//	UltCollisionPos = position;
+	//	UltCollisionPos.y += 50.0f;
 
-		//前フレームの座標を代入
-		Vector3 oldPosition = oldpostion;
-		//前フレームの座標から現在のフレームに向かうベクトルを計算する
-		collisionRot = position - oldPosition;
+	//	//前フレームの座標を代入
+	//	Vector3 oldPosition = oldpostion;
+	//	//前フレームの座標から現在のフレームに向かうベクトルを計算する
+	//	collisionRot = position - oldPosition;
 
-		//Y方向のベクトルを0.0fにする
-		collisionRot.y = 0.0f;
+	//	//Y方向のベクトルを0.0fにする
+	//	collisionRot.y = 0.0f;
 
-		//正規化
-		collisionRot.Normalize();
+	//	//正規化
+	//	collisionRot.Normalize();
 
-		Quaternion rot;
-		//Y軸回りの回転クォータニオンを作成
-		rot.SetRotationYFromDirectionXZ(collisionRot);
-		//ベクトルにクォータニオンを適応
-		rot.Apply(oldpostion);
+	//	Quaternion rot;
+	//	//Y軸回りの回転クォータニオンを作成
+	//	rot.SetRotationYFromDirectionXZ(collisionRot);
+	//	//ベクトルにクォータニオンを適応
+	//	rot.Apply(oldpostion);
 
-		//コリジョンオブジェクトを作成する。
-		collisionObject = NewGO<CollisionObject>(0);
-		Vector3 collitionPosition = position;
-		collitionPosition.y += 50.0f;
-		//collisionPosition.y += 50.0f;
-		//ボックス状のコリジョンを作成する。
-		collisionObject->CreateBox(collitionPosition, //座標。
-			Quaternion(rot), //回転。
-			Vector3(300.0f, 50.0f, 15.0f) //大きさ。
-		);
-		collisionObject->SetIsEnableAutoDelete(false);
-		collisionObject->SetName("player_UltimateSkill");
+	//	//コリジョンオブジェクトを作成する。
+	//	collisionObject = NewGO<CollisionObject>(0);
+	//	Vector3 collitionPosition = position;
+	//	collitionPosition.y += 50.0f;
+	//	//collisionPosition.y += 50.0f;
+	//	//ボックス状のコリジョンを作成する。
+	//	collisionObject->CreateBox(collitionPosition, //座標。
+	//		Quaternion(rot), //回転。
+	//		Vector3(300.0f, 50.0f, 15.0f) //大きさ。
+	//	);
+	//	collisionObject->SetIsEnableAutoDelete(false);
 
-		UltCollisionSetFlag = true;
-	}
-	else
-	{
-		//移動速度設定
-		UltCollisionPos += collisionRot * 4.0f;
-		//座標を設定
-		collisionObject->SetPosition(UltCollisionPos);
+	//	collisionObject->SetName("player_UltimateSkill");
+	//	collisionObject->SetCreatorName(GetName());
 
-	}
+	//	UltCollisionSetFlag = true;
+	//}
+	//else
+	//{
+	//	//移動速度設定
+	//	UltCollisionPos += collisionRot * 4.0f;
+	//	//座標を設定
+	//	collisionObject->SetPosition(UltCollisionPos);
+
+	//}
 }
 
 void KnightBase::Collition()
 {
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_playerState == enKnightState_Damege || 
-		m_playerState == enKnightState_Death ||
-		m_playerState == enKnightState_UltimateSkill ||
-		m_playerState == enKnightState_ChainAtk ||
-		m_playerState == enKnightState_Skill ||
-		m_playerState == enKnightState_Avoidance)
+	if (m_knightState == enKnightState_Damege || 
+		m_knightState == enKnightState_Death ||
+		m_knightState == enKnightState_UltimateSkill ||
+		m_knightState == enKnightState_ChainAtk ||
+		m_knightState == enKnightState_Skill ||
+		m_knightState == enKnightState_Avoidance)
 	{
 		return;
 	}
@@ -259,7 +267,7 @@ void KnightBase::Collition()
 /// <summary>
 /// ダメージを受けたときの処理
 /// </summary>
-/// <param name="damege">敵のダメージ</param>
+/// <param name="damege">敵の攻撃力</param>
 void KnightBase::Dameged(int damege)
 {
 	m_Status.Hp -= damege;
@@ -267,7 +275,7 @@ void KnightBase::Dameged(int damege)
 	if (m_Status.Hp <= 0) {
 		//倒されたときの処理に遷移
 		//死亡ステート
-		m_playerState = enKnightState_Death;
+		m_knightState = enKnightState_Death;
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(17);
 		se->Play(false);
@@ -276,10 +284,11 @@ void KnightBase::Dameged(int damege)
 		//Death();
 		//SetRespawn();
 
+
 	}
 	else {
 		//ダメージステート
-		m_playerState = enKnightState_Damege;
+		m_knightState = enKnightState_Damege;
 		SoundSource * se = NewGO<SoundSource>(0);
 		se->Init(12);
 		se->Play(false);
@@ -287,27 +296,7 @@ void KnightBase::Dameged(int damege)
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}
-}///////////////////////m_Status.getExp
-
-/// <summary>
-/// スキルを使用したときの処理
-/// </summary>
-//void KnightBase::Skill(Vector3& right, Vector3& forward)
-//{
-//	//スキルステート
-//	m_playerState = enKnightState_Skill;
-//
-//	//移動処理
-//	//移動速度にスティックの入力量を加算する。
-//	//Vector3 m_SkillSpeed; 
-//	m_moveSpeed = right + forward;
-//	//キャラクターコントローラーを使って座標を移動させる。
-//	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-//
-//	//当たり判定作成
-//	//SkillState = true;
-//	
-//}
+}
 
 /// <summary>
 /// レベル4で必殺技を使用したときの処理
@@ -315,16 +304,16 @@ void KnightBase::Dameged(int damege)
 void KnightBase::UltimateSkill()
 {
 	//レベルを3下げる
-levelDown(LvUpStatus, m_Status, Lv, 3);
+levelDown(LvUPStatus, m_Status, Lv, 3);
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//レベルの経験値テーブルにする
 	ExpTableChamge(Lv, ExpTable);
 
 	//レベルに合わせてレベルの画像を変更する
-	m_gameUI->LevelFontChange(Lv);
+	//m_gameUI->LevelFontChange(Lv);
 
-	m_playerState = enKnightState_UltimateSkill;
+	m_knightState = enKnightState_UltimateSkill;
 
 }
 
@@ -348,9 +337,9 @@ void KnightBase::SetRespawn()
 void KnightBase::Death()
 {
 	////死亡ステート
-	//m_playerState = enKnightState_Death;
+	//m_knightState = enKnightState_Death;
 	//レベルを１下げる
-	levelDown(LvUpStatus, m_Status, Lv,1);
+	levelDown(LvUPStatus, m_Status, Lv,1);
 	//HPを最大にする
 	m_Status.Hp = m_Status.MaxHp;
 	//経験値をリセット
@@ -359,22 +348,21 @@ void KnightBase::Death()
 	ExpTableChamge(Lv,ExpTable);
 
 	//レベルに合わせてレベルの画像を変更する
-	m_gameUI->LevelFontChange(Lv);
+	//m_gameUI->LevelFontChange(Lv);
 }
 
 /// <summary>
 /// アニメーション再生時に直線移動させる方向の決定
 /// </summary>
-void KnightBase::AnimationMove(float moveSpeed)
+/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
+/// <param name="stickL">スティックの移動の入力量</param>
+void KnightBase::AnimationMove(float moveSpeed,Vector3 stickL)
 {
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
 	//移動の入力量がないなら
-	if (g_pad[0]->GetLStickXF() == 0.0f&&g_pad[0]->GetLStickYF() == 0.0f) {
+	if (stickL.x == 0.0f&& stickL.y == 0.0f) {
 		//前に移動
 		stickL.x = 0.0f;
 		stickL.y = 1.0f;
@@ -413,7 +401,7 @@ void KnightBase::PlayAnimation()
 {
 	m_modelRender.SetAnimationSpeed(1.0f);
 
-	switch (m_playerState)
+	switch (m_knightState)
 	{
 	case enKnightState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
@@ -454,7 +442,7 @@ void KnightBase::PlayAnimation()
 /// </summary>
 void KnightBase::ManageState()
 {
-	switch (m_playerState)
+	switch (m_knightState)
 	{
 	case enKnightState_Idle:
 		OnProcessIdleStateTransition();
@@ -496,18 +484,18 @@ void KnightBase::OnProcessCommonStateTransition()
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		if (Lv < 2) {
-			m_playerState = enKnightState_Walk;
+			m_knightState = enKnightState_Walk;
 		}
 		else
 			//走りステート
-		m_playerState = enKnightState_Run;
+		m_knightState = enKnightState_Run;
 
 		return;
 	}
 	else
 	{
 		//なかったら待機ステート
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		return;
 	}
 }
@@ -541,7 +529,7 @@ void KnightBase::OnProcessChainAtkStateTransition()
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -559,7 +547,7 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -576,7 +564,7 @@ void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -592,7 +580,7 @@ void KnightBase::OnProcessAvoidanceStateTransition()
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -606,7 +594,7 @@ void KnightBase::OnProcessDamegeStateTransition()
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//待機ステート
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		//無敵時間ステート
 		//invincibleFlag = false;
 		OnProcessCommonStateTransition();
@@ -625,7 +613,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		SetRespawn();
 		Death();
 		//待機ステート
-		m_playerState = enKnightState_Idle;
+		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }

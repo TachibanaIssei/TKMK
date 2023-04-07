@@ -48,7 +48,7 @@ public:
 	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
-	void Dameged(int damege);
+	void Dameged(int damege, Actor* CharGivePoints);
 
 	/// <summary>
 	/// 自身が倒されたときの処理
@@ -267,6 +267,7 @@ protected:
 	SphereCollider			m_sphereCollider;							//コライダー。
 
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
+	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
 
 	//スキルのクールタイムを計算するタイマー
 	float SkillTimer = 0;

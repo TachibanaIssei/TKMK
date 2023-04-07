@@ -165,7 +165,7 @@ void WizardBase::Collision()
 				//エネミーの攻撃力を取ってくる
 
 				//hpを10減らす
-				Dameged(Enemy_atk);
+				Dameged(Enemy_atk,m_Neutral_enemy);
 
 			}
 		}
@@ -191,7 +191,7 @@ void WizardBase::Collision()
 		if (knightcollision->IsHit(m_charCon))
 		{
 			//剣士の攻撃力分HPを減らす
-			Dameged(m_lastAttackActor->GetAtk());
+			Dameged(m_lastAttackActor->GetAtk(),m_lastAttackActor);
 
 		}
 	}
@@ -201,7 +201,7 @@ void WizardBase::Collision()
 /// ダメージを受けたときの処理
 /// </summary>
 /// <param name="damege">敵の攻撃力</param>
-void WizardBase::Dameged(int damege)
+void WizardBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
 	//自身のHPが0以下なら
@@ -210,9 +210,12 @@ void WizardBase::Dameged(int damege)
 		//死亡ステート
 		m_wizardState = enWizardState_Death;
 		m_Status.Hp = 0;
-		//Death();
-		//SetRespawn();
-
+		//攻撃された相手が中立の敵以外なら
+		if (CharGivePoints != nullptr)
+		{
+			//倒された相手のポイントを増やす
+			CharGivePoints->PointProcess(Lv);
+		}
 
 	}
 	else {

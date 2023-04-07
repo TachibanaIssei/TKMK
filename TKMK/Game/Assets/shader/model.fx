@@ -1,6 +1,9 @@
 /*!
  * @brief	シンプルなモデルシェーダー。
  */
+
+//const int MAX_DIRECTION_LIGHT = 4;
+
 ////////////////////////////////////////////////
 // 構造体
 ////////////////////////////////////////////////
@@ -47,7 +50,7 @@ struct PointLight
     float4  color;      //ライトの色
     float3  range;      //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
 };
-
+    
 //スポットライト構造体
 struct SpotLight
 {
@@ -80,7 +83,7 @@ cbuffer ModelCb : register(b0)
 
 cbuffer LightCB : register(b1)
 {
-    DirectionLight  directionLight;
+    DirectionLight  directionLight[4];
     PointLight      pointLight;
     SpotLight       spotLight;
     HemisphereLight hemisphereLight;
@@ -102,7 +105,7 @@ sampler g_sampler : register(s0);	                    //サンプラステート
 ////////////////////////////////////////////////
 float3 CalcLambertDiffuse(float3 lightDirection, float4 lightColor, float3 normal);
 float3 CalcPhongSpecular(float3 lightDirection, float4 lightColor, float3 worldPos, float3 normal,float2 uv);
-float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal);
+float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal,int lightNo);
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromHemisphereLight(SPSIn psIn);
@@ -183,8 +186,14 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
     float3 normal = CalcNormalMap(psIn);
     
 	//ディレクションライトによるライティングの計算
-    float3 directionLig = CalcLigFromDirectionLight(psIn,normal);
-	
+    float3 directionLig[4];
+    float3 finalDirectionLig = {0.0f,0.0f,0.0f};
+    for(int ligNo = 0; ligNo < 4; ligNo++)
+    {
+        directionLig[ligNo] = CalcLigFromDirectionLight(psIn,normal,ligNo);
+        finalDirectionLig += directionLig[ligNo];
+    }
+
     //ポイントライトによるライティングの計算
     float3 pointLig = { 0.0f, 0.0f, 0.0f };
     if (pointLight.isUse)
@@ -206,7 +215,7 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
     }
     
 	//光を合成する
-    float3 light = directionLig + pointLig + spotLig + hemiLight + ambient;
+    float3 light = finalDirectionLig + pointLig + spotLig + hemiLight + ambient;
     
     float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
     albedoColor.xyz *= light;
@@ -273,17 +282,17 @@ float3 CalcPhongSpecular(float3 lightDirection, float4 lightColor, float3 worldP
 /////////////////////////////////////////////////////////////////////////
 //  ディレクションライトを計算
 /////////////////////////////////////////////////////////////////////////
-float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal)
+float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal,int lightNo)
 {
     // ディレクションライトによるLambert拡散反射光を計算する
-    float3 diffDirection = CalcLambertDiffuse(directionLight.direction, directionLight.color, normal);
+    float3 diffDirection = CalcLambertDiffuse(directionLight[lightNo].direction, directionLight[lightNo].color, normal);
 
     // ディレクションライトによるPhong鏡面反射光を計算する
     float3 specDirection = CalcPhongSpecular(
-            directionLight.direction, directionLight.color, psIn.worldPos, normal,psIn.uv);
+            directionLight[lightNo].direction, directionLight[lightNo].color, psIn.worldPos, normal,psIn.uv);
     
     //サーフェイスの法線と光の入射方向に依存するリムの強さ
-    float power1 = 1.0f - max(0.0f, dot(directionLight.direction, psIn.normal));
+    float power1 = 1.0f - max(0.0f, dot(directionLight[lightNo].direction, psIn.normal));
     //サーフェイスの法線と視線の方向に依存するリムの強さ
     float power2 = 1.0f - max(0.0f, psIn.normalInView.z * -1.0f);
     //最終的なリムの強さ

@@ -17,7 +17,12 @@ WizardUlt::~WizardUlt()
 bool WizardUlt::Start()
 {
 	CreatCollision();
+	//作成したアクターの名前のインスタンスを探す
 	m_CreatMeActor = FindGO<Actor>(UltCollision->GetCreatorName());
+
+	//ターゲットのアクターのインスタンスを探す
+	m_targetActor = FindGO<Actor>(SetTargetActorName());
+
 	return true;
 }
 
@@ -40,9 +45,7 @@ void WizardUlt::Update()
 
 void WizardUlt::Move()
 {
-	//m_CreatMeActor = FindGO<Actor>(UltCollision->GetCreatorName());
-
-	m_position = m_CreatMeActor->GetPosition();
+	m_position = m_targetActor->GetPosition();
 	m_position.y += 100.0f;
 
 	UltCollision->SetPosition(m_position);
@@ -56,7 +59,15 @@ void WizardUlt::Damege()
 	if (Randam < 20)
 	{
 		Damege = 1000;
-		m_CreatMeActor->Dameged(Damege);
+		//ターゲットのキャラにダメージを与える(即死)
+		m_targetActor->Dameged(Damege, m_CreatMeActor);
+		int downlevel = 1;
+		//この技を打ったキャラのレベルを下げる
+		m_CreatMeActor->levelDown(
+			m_CreatMeActor->GetLvUPStatus(), 
+			m_CreatMeActor->GetStatus(), 
+			m_CreatMeActor->GetLevel(), 
+			downlevel);
 	}
 
 	

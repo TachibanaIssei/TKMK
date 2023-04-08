@@ -37,64 +37,10 @@ KnightAI::~KnightAI()
 {
 
 }
-void KnightAI::LotNextTargetAI()
-{
-
-}
-int KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
-{
-	return 0;
-}
-void KnightAI::LotNextTargetEnemy()
-{
-	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
-	std::vector<int> evals;
-	for (auto enemy : enemys) {
-		// ŠeƒGƒlƒ~[‚Ì•]‰¿’l‚ğŒvZ‚·‚é
-		int eval = CalculateTargetEnemy(enemy);
-		evals.push_back(eval);
-	}
-	// ˆê”Ô•]‰¿’l‚ª‚‚¢ƒGƒlƒ~[‚ğ‘_‚¤
-	int targetEnemyNo = 0;
-	int maxEval = 0;
-	for (int i = 0;  i < evals.size(); i++) {
-		if (maxEval < evals[i]) {
-			// ‚±‚¢‚Â‚Ì•û‚ª•]‰¿’l‚ª‚‚¢
-			maxEval = evals[i];
-			targetEnemyNo = i;
-		}
-	}
-	// 
-}
-int KnightAI::CalculatAIAttackEvaluationValue()
-{
-	return 0;
-}
-int KnightAI::CalculatEnemyAttackEvaluationValue()
-{
-	return 0;
-}
-void KnightAI::LotNextAction()
-{
-	// ‚`‚h‚ğ‘_‚¤‚©“G‚ğ‘_‚¤‚©Œˆ’è‚·‚é
-	int aiAttackEvaluationValue = CalculatAIAttackEvaluationValue();
-	int enemyAttackEvaluationValue = CalculatEnemyAttackEvaluationValue();
-	if (aiAttackEvaluationValue > enemyAttackEvaluationValue) {
-		// AI‚ğ‘_‚¤•]‰¿’l‚ª‚‚©‚Á‚½
-		// ‚Ç‚ÌAI‚ğ‘_‚¤‚©’Š‘I
-		LotNextTargetAI();
-	}
-	else {
-		// “G‚ğ‘_‚¤
-		LotNextTargetEnemy();
-	}
-}
 void KnightAI::Update()
 {
 	m_Status.Hp = 80;
-	// Ÿ‚ÌƒAƒNƒVƒ‡ƒ“‚ğ’Š‘I
-	LotNextAction();
-	// SearchEnemy();
+	SearchEnemy();
 	Attack();
 	//ƒXƒe[ƒg
 	ManageState();
@@ -177,6 +123,8 @@ void KnightAI::SearchEnemy()
 
 		}
 	}
+
+
 	if (Lv >= 1 && Lv <= 3)
 	{
 		if (m_Status.Hp < m_Status.MaxHp )

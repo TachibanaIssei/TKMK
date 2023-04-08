@@ -45,6 +45,17 @@ public:
 	/// <returns></returns>
 	const bool CanAttackActor();
 private:
+	void LotNextAction();
+	int CalculatAIAttackEvaluationValue();
+	int CalculatEnemyAttackEvaluationValue();
+	void LotNextTargetAI();
+	void LotNextTargetEnemy();
+	int CalculateTargetEnemy(Neutral_Enemy* enemy);
+	enum Action {
+		AttackAI,
+		AttackEnemy,
+
+	};
 	enum AtkTimingState
 	{
 		FirstAtk_State,

@@ -23,11 +23,11 @@ namespace {
 
 Game::Game()
 {
-	//soundè¨­å®š
-	//1-5 Title/Gameä¸­BGM
-	//6-10 é¸æŠéŸ³
-	//11-20 playerã®ã‚¹ã‚­ãƒ«ãªã©ã®éŸ³
-	//21-30 enemyã®éŸ³
+	//soundİ’è
+	//1-5 Title/Game’†BGM
+	//6-10 ‘I‘ğ‰¹
+	//11-20 player‚ÌƒXƒLƒ‹‚È‚Ç‚Ì‰¹
+	//21-30 enemy‚Ì‰¹
 }
 
 Game::~Game()
@@ -43,9 +43,9 @@ Game::~Game()
 		return true;
 		});
 
-	//Neutral_Enemyã‚’é…åˆ—ã§æ¶ˆã™
+	//Neutral_Enemy‚ğ”z—ñ‚ÅÁ‚·
 	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã¦foræ–‡ã§å›ã™
+	//”z—ñ‚ÌƒTƒCƒY‚ğ’²‚×‚Äfor•¶‚Å‰ñ‚·
 	for (auto seutral_Enemy : seutral_Enemys)
 	{
 		DeleteGO(seutral_Enemy);
@@ -73,7 +73,7 @@ bool Game::Start()
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
 	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f,1.0f });
 
-	//ã‚¹ã‚¿ã‚¸ã‚¢ãƒ ã®ç”Ÿæˆ
+	//ƒXƒ^ƒWƒAƒ€‚Ì¶¬
 	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium04") == true) {
@@ -89,93 +89,82 @@ bool Game::Start()
 
 	});
 
-	//GameUIã®ç”Ÿæˆ
+	//GameUI‚Ì¶¬
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//å¿…æ®ºæŠ€ãƒ•ãƒ©ã‚°ã‚’ç”Ÿæˆ
+	//•KE‹Zƒtƒ‰ƒO‚ğ¶¬
 	charUltFlag = NewGO<CharUltFlag>(0, "charUltFlag");
 
-	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç”Ÿæˆ
+	//ƒvƒŒƒCƒ„[‚Ì¶¬
 	player = NewGO<Player>(0, "player");
-	//ç”Ÿæˆã™ã‚‹ã‚­ãƒ£ãƒ©é¸æŠ
+	//¶¬‚·‚éƒLƒƒƒ‰‘I‘ğ
 	player->CharSelect(SelectCharNumber);
 	player->CreaetPlayer();
 	m_Actors.push_back(player->GetPlayerActor());
 
-	//ã‚²ãƒ¼ãƒ ã‚«ãƒ¡ãƒ©ã®ç”Ÿæˆ
+	//ƒQ[ƒ€ƒJƒƒ‰‚Ì¶¬
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	//m_gamecamera->SetKnight(m_knightplayer);
 
-	//ä¸­ç«‹ã®æ•µã®ç”Ÿæˆ
+	//’†—§‚Ì“G‚Ì¶¬
 	m_Enemylevel.Init("Assets/level3D/enemy_respawn.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
-			//å·¦ä¸Šã®åº§æ¨™
+			//¶ã‚ÌÀ•W
 			if (objData.number == 0) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//å³ä¸Šã®åº§æ¨™
+			//‰Eã‚ÌÀ•W
 			if (objData.number == 1) {
 
-				//ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³è ï½§è®“å¶ï¿½éšªï½­è³
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//è³ï½­é¶ä¹ï¿½è¬¨ï½µç¸ºï½®é€•æ»“ï¿½
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 2) {
-				//ãƒªã‚¹ãƒãƒ¼ãƒ³åº§æ¨™ã®è¨­å®š
+				//ƒŠƒXƒ|[ƒ“À•W‚Ìİ’è
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//å³ä¸‹ã®åº§æ¨™
+			//‰E‰º‚ÌÀ•W
 			if (objData.number == 3) {
-				//ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³è ï½§è®“å¶ï¿½éšªï½­è³
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//è³ï½­é¶ä¹ï¿½è¬¨ï½µç¸ºï½®é€•æ»“ï¿½
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 4) {
-				//ãƒªã‚¹ãƒãƒ¼ãƒ³åº§æ¨™ã®è¨­å®š
-				SetRespawnPosition(objData.position, objData.number);
+				//ƒŠƒXƒ|[ƒ“À•W‚Ìİ’è
+				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//å·¦ä¸‹ã®åº§æ¨™
+			//¶‰º‚ÌÀ•W
 			if (objData.number == 5) {
-				//ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³è ï½§è®“å¶ï¿½éšªï½­è³
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//è³ï½­é¶ä¹ï¿½è¬¨ï½µç¸ºï½®é€•æ»“ï¿½
 				CreateEnemy(objData.position, objData.rotation);
-				//è³ï½­é¶ä¹ï¿½è¬¨ï½µç¸ºï½®é€•æ»“ï¿½
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 6) {
-				//ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³è ï½§è®“å¶ï¿½éšªï½­è³
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			if (objData.number == 7) {
-				//ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³è ï½§è®“å¶ï¿½éšªï½­è³
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//è³ï½­é¶ä¹ï¿½è¬¨ï½µç¸ºï½®é€•æ»“ï¿½
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 8) {
-				//ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³è ï½§è®“å¶ï¿½éšªï½­è³
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
@@ -192,10 +181,10 @@ bool Game::Start()
 	m_KnightAI->SetGame(this);
 	m_Actors.push_back(m_KnightAI);
 	
-	//ãƒãƒƒãƒ—ã®ç”Ÿæˆ
+	//ƒ}ƒbƒv‚Ì¶¬
 	m_Map = NewGO<Map>(2, "map");
 
-	//ãƒãƒ¼ã‚ºç”»é¢ã®èƒŒæ™¯ã®è¨­å®š
+	//ƒ|[ƒY‰æ–Ê‚Ì”wŒi‚Ìİ’è
 	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
 	m_Pause_Back.SetPosition(g_vec3Zero);
 	m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
@@ -211,24 +200,24 @@ bool Game::Start()
 
 	m_GameState = enGameState_Battle;
 
-	//BGMã®è¨­å®š
+	//BGM‚Ìİ’è
 	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
 	//se
 	//player
-	//å‰£ã‚¹ã‚­ãƒ«
+	//Œ•ƒXƒLƒ‹
 	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
-	//ãƒ€ãƒ¡ãƒ¼ã‚¸ãã‚‰ã£ãŸã¨ãã®æ‚²é³´
+	//ƒ_ƒ[ƒW‚­‚ç‚Á‚½‚Æ‚«‚Ì”ß–Â
 	g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
-	//å‰£é€šå¸¸æ”»æ’ƒ
+	//Œ•’ÊíUŒ‚
 	g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
 	g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
 	g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
-	//ã‚¢ãƒ«ãƒ†ã‚£ãƒ¡ãƒƒãƒˆ
+	//ƒAƒ‹ƒeƒBƒƒbƒg
 	g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
-	//æ­»äº¡ã—ãŸã¨ã
+	//€–S‚µ‚½‚Æ‚«
 	g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
 	//enemy
-	//æ”»æ’ƒã®å£°
+	//UŒ‚‚Ìº
 	g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
 	
 	m_bgm = NewGO<SoundSource>(0);
@@ -236,9 +225,9 @@ bool Game::Start()
 	m_bgm->Play(true);
 	m_bgm->SetVolume(musicVolume);
 
-	//å½“ãŸã‚Šåˆ¤å®šã®å¯è¦–åŒ–
+	//“–‚½‚è”»’è‚Ì‰Â‹‰»
 
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }
@@ -246,8 +235,8 @@ bool Game::Start()
 void Game::Update()
 {
 	if (m_GameState == enGameState_Battle) {
-		//ãƒªã‚¶ãƒ«ãƒˆç”»é¢ã¸ã®é·ç§»
-		//CTRLãŒæŠ¼ã•ã‚ŒãŸã‚‰ã€‚
+		//ƒŠƒUƒ‹ƒg‰æ–Ê‚Ö‚Ì‘JˆÚ
+		//CTRL‚ª‰Ÿ‚³‚ê‚½‚çB
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
 		{
 			m_GameState = enGameState_Rezult;
@@ -255,21 +244,21 @@ void Game::Update()
 	}
 	
 
-	//ãƒãƒ¼ã‚ºç”»é¢ã¸ã®é·ç§»
-	//ã‚¹ã‚¿ãƒ¼ãƒˆãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰ã€‚
+	//ƒ|[ƒY‰æ–Ê‚Ö‚Ì‘JˆÚ
+	//ƒXƒ^[ƒgƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çB
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
-		//ã‚²ãƒ¼ãƒ ç”»é¢ã‹ã‚‰ãƒãƒ¼ã‚ºç”»é¢ã«é·ç§»ã™ã‚‹æ™‚ã®å‡¦ç†
+		//ƒQ[ƒ€‰æ–Ê‚©‚çƒ|[ƒY‰æ–Ê‚É‘JˆÚ‚·‚é‚Ìˆ—
 		if (m_GameState == enGameState_Battle) {
 			m_GameState = enGameState_Pause;
-			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ãƒãƒ¼ã‚ºç”»é¢ç”¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´
+			//ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
 			player->CharSetState(Player::enPause);
-			//UIã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ãƒãƒ¼ã‚ºç”»é¢ç”¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´
+			//UI‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
-			//ã‚«ãƒ¡ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ãƒãƒ¼ã‚ºç”»é¢ç”¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´
+			//ƒJƒƒ‰‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
 			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
-			//ä¸­ç«‹ã®æ•µã‚’ãƒãƒ¼ã‚ºç”»é¢ç”¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´
+			//’†—§‚Ì“G‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
 			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-			////é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã¦foræ–‡ã§å›ã™
+			////”z—ñ‚ÌƒTƒCƒY‚ğ’²‚×‚Äfor•¶‚Å‰ñ‚·
 			//for (auto seutral_Enemy : seutral_Enemys)
 			//{
 			//	seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
@@ -278,18 +267,18 @@ void Game::Update()
 			
 		}
 			
-		//ãƒãƒ¼ã‚ºç”»é¢ã‹ã‚‰ã‚²ãƒ¼ãƒ ç”»é¢ã«æˆ»ã‚‹æ™‚ã®å‡¦ç†
+		//ƒ|[ƒY‰æ–Ê‚©‚çƒQ[ƒ€‰æ–Ê‚É–ß‚é‚Ìˆ—
 		else if (m_GameState == enGameState_Pause) {
 			m_GameState = enGameState_Battle;
-			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ãƒãƒ¼ã‚ºç”»é¢ç”¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã§ã¯ãªã„ã‚ˆã†ã«ã™ã‚‹
+			//ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚Å‚Í‚È‚¢‚æ‚¤‚É‚·‚é
 			player->CharSetState(Player::enGame);
-			//UIã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´
+			//UI‚ÌƒXƒe[ƒg‚ğƒQ[ƒ€‚ÌƒXƒe[ƒg‚É•ÏX
 			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
-			//ã‚«ãƒ¡ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´
+			//ƒJƒƒ‰‚ÌƒXƒe[ƒg‚ğƒQ[ƒ€‚ÌƒXƒe[ƒg‚É•ÏX
 			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
-			//ä¸­ç«‹ã®æ•µã‚’ãƒãƒ¼ã‚ºç”»é¢ç”¨ã®ã‚¹ãƒ†ãƒ¼ãƒˆã«å¤‰æ›´
+			//’†—§‚Ì“G‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
 			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-			////é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã¦foræ–‡ã§å›ã™
+			////”z—ñ‚ÌƒTƒCƒY‚ğ’²‚×‚Äfor•¶‚Å‰ñ‚·
 			//for (auto seutral_Enemy : seutral_Enemys)
 			//{
 			//	seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
@@ -299,7 +288,7 @@ void Game::Update()
 
 	GameState();
 	
-	//ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³ç¸ºï½®èœƒï½¦é€…
+
 	m_Timer += g_gameTime->GetFrameDeltaTime();
 	if (m_Timer>=15) {
 		Respawn();
@@ -310,28 +299,28 @@ void Game::Update()
 	//m_Pause_Back.Update();
 }
 
-//ãƒãƒ¼ã‚ºç”»é¢ã®å‡¦ç†
+//ƒ|[ƒY‰æ–Ê‚Ìˆ—
 void Game::Pause()
 {
-	//éŸ³é‡ã‚’ä¸Šã’ã‚‹
+	//‰¹—Ê‚ğã‚°‚é
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
 		if(musicVolume<4.0f)
 		musicVolume += 0.1f;
-		//éŸ³é‡èª¿æ•´
+		//‰¹—Ê’²®
 		m_bgm->SetVolume(musicVolume);
 	}
-	//éŸ³é‡ã‚’ä¸‹ã’ã‚‹
+	//‰¹—Ê‚ğ‰º‚°‚é
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if(musicVolume>0)
 		musicVolume -= 0.1f;
-		//éŸ³é‡èª¿æ•´
+		//‰¹—Ê’²®
 		m_bgm->SetVolume(musicVolume);
 	}
 	
 
 
-	//ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã¸ã®é·ç§»
-	//Aãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
+	//ƒ^ƒCƒgƒ‹‰æ–Ê‚Ö‚Ì‘JˆÚ
+	//Aƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		Tittle*m_tittle = NewGO<Tittle>(0,"m_tittle");
@@ -340,7 +329,7 @@ void Game::Pause()
 }
 
 /// <summary>
-/// ä¸­ç«‹ã®æ•µã®ãƒªã‚¹ãƒãƒ¼ãƒ³ã®å‡¦ç†
+/// ’†—§‚Ì“G‚ÌƒŠƒXƒ|[ƒ“‚Ìˆ—
 /// </summary>
 void Game::Respawn()
 {
@@ -351,7 +340,6 @@ void Game::Respawn()
 			ENEMY_AMOUNT;
 			CreateEnemy(SetEnemyRespawnPos(), EnemyReapawnPot[SearchRespawnPos]);
 			
-			////ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³ç¸ºå¶ï½‹è ï½§è®“
 			////neutral_Enemy->SetPosition(SetEnemyRespawnPos());
 			////neutral_Enemy->SetRotation(objData.rotation);
 			//neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
@@ -359,7 +347,7 @@ void Game::Respawn()
 		}
 	}
 
-	//ãƒãƒƒãƒ—ã®FindGOé–¢æ•°ã‚’å‘¼ã³å‡ºã—ã‚¨ãƒãƒŸãƒ¼ã®æ•°ã‚’æŠŠæ¡ã™ã‚‹
+	//ƒ}ƒbƒv‚ÌFindGOŠÖ”‚ğŒÄ‚Ño‚µƒGƒlƒ~[‚Ì”‚ğ”cˆ¬‚·‚é
 	m_Map->FindEnemys();
 }
 
@@ -375,7 +363,7 @@ Vector3 Game::SetEnemyRespawnPos()
 		int distanceCounter = 0;
 		for (auto actorPos : m_Actors)
 		{
-			//ç¹§ï½­ç¹ï½£ç¹ï½©ç¸ºï½®è ï½§è®“
+		
 			Vector3 CharPos = actorPos->GetPosition();
 			Vector3 diff = EnemyRespawnPosition[SearchRespawnPos] - CharPos;
 			if (diff.Length() < 200)
@@ -384,16 +372,16 @@ Vector3 Game::SetEnemyRespawnPos()
 			}
 			
 		}
-		//ç¹§ã‚…ï¼ ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³ç¸ºå¶ï½‹è ï½§è®“å¶â€²èœˆï½¨ç¸ºï½¦ç¸ºï½®ç¹§ï½­ç¹ï½£ç¹ï½©ç¸ºï½®è ï½§è®“å¶Â°ç¹§200é«®ï½¢ç¹§å¾Œâ€»ç¸ºï¿½â—†ç¹§
+	
 		if (distanceCounter == m_Actors.max_size())
 		{
-			//ç¸ºæ˜´ï¿½è ï½§è®“å¶ï½’ç¹ï½ªç¹§ï½¹ç¹æ˜´ï¿½ç¹ï½³ç¸ºå¶ï½‹è ï½§è®“å¶â†’ç¸ºå¶ï½‹
+			
 			return EnemyRespawnPosition[SearchRespawnPos];
 		}
 	}
 }
 
-//ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ãƒˆã®ç®¡ç†
+//ƒQ[ƒ€ƒXƒe[ƒg‚ÌŠÇ—
 void Game::GameState()
 {
 	switch (m_GameState)
@@ -415,7 +403,7 @@ void Game::GameState()
 		break;
 
 	case enGameState_Rezult:
-		//ãƒªã‚¶ãƒ«ãƒˆç”»é¢ã®ç”Ÿæˆã€ã‚²ãƒ¼ãƒ ã®å‰Šé™¤
+		//ƒŠƒUƒ‹ƒg‰æ–Ê‚Ì¶¬AƒQ[ƒ€‚Ìíœ
 		Result* result = NewGO<Result>(0, "Result");
 		DeleteGO(this);
 		break;
@@ -425,11 +413,6 @@ void Game::GameState()
 	}
 }
 
-/// <summary>
-/// è³ï½­é¶ä¹ï¿½è¬¨ï½µç¸ºï½®é€•æ»“ï¿½
-/// </summary>
-/// <param name="pos">é€•æ»“ï¿½ç¸ºå¶ï½‹è ï½§è®“</param>
-/// <param name="rot">è—æ«ï½»ï½¢é©¥</param>
 void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 
 	enemyNumber++;

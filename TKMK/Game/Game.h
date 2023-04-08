@@ -37,24 +37,35 @@ public:
 	}*/
 
 	/// <summary>
-	/// �G�l�~�[�̐������炷����
+	/// エネミーの数を減らす処理
 	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
+	/// <returns>エネミーの数</returns>
 	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
 
 	/// <summary>
-	/// �G�l�~�[�̐������炷����
+	/// エネミーの数を減らす処理
 	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
+	/// <returns>エネミーの数</returns>
 	int GetNeutral_EnemyContaier() {
 		return enemyNumber;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	Vector3 SetEnemyRespawnPos();
 
 
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="rot"></param>
+	/// <param name="number"></param>
 	void SetRespawnPosition(Vector3 pos, Quaternion rot, int number) {
 		EnemyRespawnPosition[number] = pos;
 		EnemyReapawnPot[number] = rot;
@@ -74,14 +85,14 @@ public:
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
-	//Actor��Ԃ�
+	//Actorを返す
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
 	/// <summary>
-	/// �����̓G�̖��O�����
+	/// 中立の敵の名前を作る
 	/// </summary>
 	char* CreateEnemyName() {
 		enemyNum++;
@@ -92,7 +103,7 @@ private:
 		return enemyName;
 	}
 	/// <summary>
-	/// �����̓G�����
+	/// 中立の敵を作る
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
@@ -108,10 +119,10 @@ private:
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
-	Vector3 EnemyRespawnPosition[9];          
-	Quaternion EnemyReapawnPot[9];           
-	SpriteRender m_Pause_Front;    //�|�[�Y���
-	SpriteRender m_Pause_Back;     //�|�[�Y�̗����
+	Vector3 EnemyRespawnPosition[9];          //
+	Quaternion EnemyReapawnPot[9];            //
+	SpriteRender m_Pause_Front;    //ポーズ画面
+	SpriteRender m_Pause_Back;     //ポーズの裏画面
 
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
@@ -138,23 +149,23 @@ private:
 
 	int enemyNumber = 0;
 
-	int SearchRespawnPos;      
+	int SearchRespawnPos;       //
 
 	//bool RespawnNumberBox[50];
 
 	float m_Timer = 0.0f;
 
-	//BGM�̉��ʒ����Ɏg�p����ϐ�
+	//BGMの音量調整に使用する変数
 	float musicVolume = 1.0f;
 
-	//���U���g��ʂ��̃t���O
+	//リザルト画面かのフラグ
 	bool RezultFlag = false;
-	//�|�[�Y��ʂ��̃t���O
+	//ポーズ画面かのフラグ
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
 
 
-	//�L�����̔ԍ�
+	//キャラの番号
 	int SelectCharNumber = 1;
 
 

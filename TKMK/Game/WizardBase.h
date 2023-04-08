@@ -286,5 +286,7 @@ protected:
 
 	//’†—§‚Ì“G‚©‚çó‚¯‚éƒ_ƒ[ƒW
 	int Enemy_atk = 10;
+
+	btCollisionWorld::LocalConvexResult* m_localConvexResult = nullptr;
 };
 

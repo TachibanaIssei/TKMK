@@ -259,9 +259,39 @@ struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 			//衝突したのは壁ではない。
 			return 0.0f;
 		}
+		////すり抜け可能な壁にぶつかっていなかったら
+		//if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_SlipThroughWall) {
+		//	//衝突したのは壁ではない。
+		//	return 0.0f;
+		//}
 
 		//壁とぶつかったら。
 		//フラグをtrueに。
+		isHit = true;
+		return 0.0f;
+	}
+};
+
+//衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
+struct SweepResultSlipThroughWall :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
+	const btCollisionObject* hitObject = nullptr;
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//衝突点を記録している
+		//convexResult.m_hitPointLocal
+		//ワープの距離が長すぎると当たったオブジェクトが別々のときに使う
+		//hitObjectに記録する
+		
+		//壁とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_SlipThroughWall) {
+			//衝突したのは壁ではない。
+			return 0.0f;
+		}
+		//壁とぶつかったら。
+		//フラグをtrueに。
+		hitObject = convexResult.m_hitCollisionObject;
 		isHit = true;
 		return 0.0f;
 	}
@@ -277,77 +307,88 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 {
 	//ワープ先の座標を格納する
 	Vector3 WarpPos = position;
-	//
+
+	Vector3 moreWarpPos = position;
+	int warpkyori = 0;
 	int kyori = 500;
 	m_moveSpeed = Vector3::AxisZ;
-	//回転もこの辺カエル
 	rotation.Apply(m_moveSpeed);
-
 	WarpPos += m_moveSpeed * kyori;
-	//ノーマライズ
-	//WarpPos.Normalize();
-	//m_moveSpeed *= kyori;
-	//rotation.Apply(WarpPos);
 	rotation.AddRotationDegY(360.0f);
 	
-	//ループする時フリーズする
+	
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(position.x, position.y + 70.0f, position.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
+
 	while (true)
 	{
-		btTransform start, end;
-		start.setIdentity();
-		end.setIdentity();
-		//始点はエネミーの座標。
-		start.setOrigin(btVector3(position.x, position.y + 70.0f, position.z));
-		//終点はプレイヤーの座標。
-		end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
-
-		SweepResultWall callback;
+		//壁の判定を返す
+		SweepResultWall callback_Wall;
 		//コライダーを始点から終点まで動かして。
-		//衝突するかどうかを調べる。
-		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-		//壁と衝突した！壁の近くでやったらたまにエラー出る
-		if (callback.isHit == true)
+		//壁と衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback_Wall);
+		//壁と衝突した！
+		if (callback_Wall.isHit == true)
 		{
 			//ワープさせない。
 			//ワープの距離を縮める(壁)
 			kyori -= 10;
 			WarpPos = position;
 			WarpPos += m_moveSpeed * kyori;
-			//continue;
-			//return;
-		}
-		else
-		{
-			//キャラクターコントローラーを使って座標を移動させる。
-			charCon.SetPosition(WarpPos);
-			return;
+			//ワープ先の座標を変える。
+			end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
+			continue;
 		}
 		
+		//すり抜け可能な壁の判定を返す
+		SweepResultSlipThroughWall callback_SlipThroughWall;
+		//コライダーを始点から終点まで動かして。
+		//すり抜け可能な壁と衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback_SlipThroughWall);
+		if (callback_SlipThroughWall.isHit == true)
+		{
+			warpkyori += 100;
+			//ワープ先の座標をさらに100移動させる
+			moreWarpPos = WarpPos;
+			moreWarpPos += m_moveSpeed * warpkyori;
+	
+			btTransform newend;
+			newend.setIdentity();
+			//新しいワープ先の座標。
+			end.setOrigin(btVector3(moreWarpPos.x, moreWarpPos.y + 70.0f, moreWarpPos.z));
+
+			SweepResultSlipThroughWall callback_SlipThroughWall2;
+			// すり抜け壁にぶつかったので、中に入っていないか調べる。
+			PhysicsWorld::GetInstance()->ConvexSweepTest(
+				(const btConvexShape*)m_sphereCollider.GetBody(), 
+				end,                                                   //最初のワープ先の座標
+				newend,                                                 //ワープ先からさらにワープ先の座標
+				callback_SlipThroughWall2);
+			if (callback_SlipThroughWall2.isHit == false) {
+				// ワープできる
+			}
+			else {
+				// 中に埋もれていないか調べる
+				if (callback_SlipThroughWall.hitObject == callback_SlipThroughWall2.hitObject) {
+					//埋もれてる
+					//100先に座標変更
+					moreWarpPos += m_moveSpeed * 100;
+					WarpPos = moreWarpPos;
+				}
+			}
+		}
+
+		//キャラクターコントローラーを使って座標を移動させる。
+		charCon.SetPosition(WarpPos);
+		return;
 	}
 
-	//btTransform start, end;
-	//start.setIdentity();
-	//end.setIdentity();
-	////始点はエネミーの座標。
-	//start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
-	////終点はプレイヤーの座標。
-	//end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
-
-	//SweepResultWall callback;
-	////コライダーを始点から終点まで動かして。
-	////衝突するかどうかを調べる。
-	//PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-	////壁と衝突した！
-	//if (callback.isHit == true)
-	//{
-	//	//ワープさせない。
-	//	//ワープの距離を縮める(壁)処理追加todo
-	//	return;
-	//}
-
-
-	//キャラクターコントローラーを使って座標を移動させる。
-	//charCon.SetPosition(WarpPos);
+	
 }
 
 /// <summary>

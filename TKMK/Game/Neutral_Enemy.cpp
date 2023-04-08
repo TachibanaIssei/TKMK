@@ -47,23 +47,20 @@ bool Neutral_Enemy::Start()
 	//モデルを読み込む。
 	enemyColorRam = rand() % 10;
 
-	if (enemyColorRam <= 5)
-	{
-		//白
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
-		m_enemyKinds = enEnemyKinds_White;
-	}
-	else if (enemyColorRam <= 7)
+	if (enemyColorRam <= 2)
 	{
 		//緑
 		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
-		m_enemyKinds = enEnemyKinds_Green;
 	}
-	else if (enemyColorRam <= 9)
+	else if (enemyColorRam >= 4)
+	{
+		//白
+		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
+	}
+	else if (enemyColorRam = 3)
 	{
 		//赤
 		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
-		m_enemyKinds = enEnemyKinds_Red;
 	}
 
 	//座標を設定
@@ -335,7 +332,7 @@ void Neutral_Enemy::Collision()
 				//倒した時の報酬を倒した人に渡す
 				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
 				//緑の場合
-				if (m_enemyKinds == enEnemyKinds_Green)
+				if (enemyColorRam <= 2)
 				{
 					m_lastAttackActor->HpUp(HpPass);
 					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
@@ -344,7 +341,7 @@ void Neutral_Enemy::Collision()
 					}
 				}
 				//赤の場合
-				else if (m_enemyKinds == enEnemyKinds_Red)
+				else if (enemyColorRam = 3)
 				{
 					m_lastAttackActor->AtkUp(AtkPass);
 				}

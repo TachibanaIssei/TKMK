@@ -79,7 +79,7 @@ cbuffer ModelCb : register(b0)
 cbuffer LightCB : register(b1)
 {
     DirectionLight  directionLight[MAX_DIRECTION_LIGHT];
-    PointLight      pointLight;
+    PointLight      pointLight[MAX_POINT_LIGHT];
     SpotLight       spotLight;
     HemisphereLight hemisphereLight;
     float3          CameraEyePos;   //カメラの座標
@@ -103,7 +103,7 @@ sampler g_sampler : register(s0);               // サンプラーステート
 float3 CalcLambertDiffuse(float3 lightDirection, float4 lightColor, float3 normal);
 float3 CalcPhongSpecular(float3 lightDirection, float4 lightColor, float3 worldPos, float3 normal,float2 uv);
 float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal,int lightNo);
-float3 CalcLigFromPointLight(SPSIn psIn,float3 normal);
+float3 CalcLigFromPointLight(SPSIn psIn,float3 normal, int lightNo);
 float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromHemisphereLight(SPSIn psIn);
 float3 CalcNormalMap(SPSIn psIn);
@@ -149,12 +149,19 @@ float4 PSMain(SPSIn psIn) : SV_Target0
         directionLig[ligNo] = CalcLigFromDirectionLight(psIn, normal,ligNo);
         finalDirectionLig += directionLig[ligNo];
     }
+
     //ポイントライトによるライティングの計算
-    float3 pointLig = { 0.0f, 0.0f, 0.0f };
-    if (pointLight.isUse)
+    float3 pointLig[MAX_POINT_LIGHT];
+    float3 finalPointLig = {0.0f,0.0f,0.0f};
+    for(int pointLigNo = 0; pointLigNo < MAX_POINT_LIGHT; pointLigNo++)
     {
-        pointLig = CalcLigFromPointLight(psIn,normal);
+        if (pointLight[pointLigNo].isUse)
+        {
+            pointLig[pointLigNo] = CalcLigFromPointLight(psIn,normal,pointLigNo);
+            finalPointLig += pointLig[pointLigNo];
+        }
     }
+
     //スポットライトによるライティングの計算
     float3 spotLig = { 0.0f, 0.0f, 0.0f };
     if (spotLight.isUse)
@@ -168,7 +175,7 @@ float4 PSMain(SPSIn psIn) : SV_Target0
         hemiLight = CalcLigFromHemisphereLight(psIn);
     }
     //光の合成
-    float3 light = finalDirectionLig + ambient;
+    float3 light = finalDirectionLig + finalPointLig + spotLig + hemiLight + ambient;
 
     float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
 
@@ -258,10 +265,10 @@ float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal,int lightNo)
 /////////////////////////////////////////////////////////////////////////
 //  ポイントライトを計算
 /////////////////////////////////////////////////////////////////////////
-float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
+float3 CalcLigFromPointLight(SPSIn psIn, float3 normal, int lightNo)
 {
     // このサーフェイスに入射しているポイントライトの光の向きを計算する
-    float3 ligDir = psIn.worldPos - pointLight.position;
+    float3 ligDir = psIn.worldPos - pointLight[lightNo].position;
 
     // 正規化して大きさ1のベクトルにする
     ligDir = normalize(ligDir);
@@ -269,14 +276,14 @@ float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
     // 減衰なしのLambert拡散反射光を計算する
     float3 diffPoint = CalcLambertDiffuse(
         ligDir,             // ライトの方向
-        pointLight.color,   // ライトのカラー
+        pointLight[lightNo].color,   // ライトのカラー
         normal              // サーフェイスの法線
     );
 
     // 減衰なしのPhong鏡面反射光を計算する
     float3 specPoint = CalcPhongSpecular(
         ligDir,             // ライトの方向
-        pointLight.color,   // ライトのカラー
+        pointLight[lightNo].color,   // ライトのカラー
         psIn.worldPos,      // サーフェイスのワールド座標
         normal,             // サーフェイスの法線
         psIn.uv
@@ -284,16 +291,16 @@ float3 CalcLigFromPointLight(SPSIn psIn,float3 normal)
 
     // 距離による影響率を計算する
     // ポイントライトとの距離を計算する
-    float3 distance = length(psIn.worldPos - pointLight.position);
+    float3 distance = length(psIn.worldPos - pointLight[lightNo].position);
 
     // 影響率は距離に比例して小さくなっていく
-    float affect = 1.0f - 1.0f / pointLight.range.x * distance;
+    float affect = 1.0f - 1.0f / pointLight[lightNo].range.x * distance;
 
     // 影響力がマイナスにならないように補正をかける
     affect = max(0.0f, affect);
 
     // 影響の仕方を指数関数的にする
-    affect = pow(affect, pointLight.range.y);
+    affect = pow(affect, pointLight[lightNo].range.y);
 
     // 拡散反射光と鏡面反射光に減衰率を乗算して影響を弱める
     diffPoint *= affect;

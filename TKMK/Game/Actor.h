@@ -147,7 +147,7 @@ public:
 	/// <summary>
 /// knightPlayer
 /// </summary>
-/// <returns>false???\???????</returns>
+/// <returns>false????????</returns>
 	const bool GetSpriteFlag() const
 	{
 		return m_spriteFlag;
@@ -160,39 +160,37 @@ public:
 		return m_Status.Atk;
 	}
 
-	/////////////////è¿½åŠ ///////////////
 	/// <summary>
-	/// æ”»æ’ƒåŠ›ã‚’å¢—åŠ ã•ã›ã‚‹
+	/// ’†—§‚ÌÔF‚Ì“G‚ğ“|‚µ‚½UŒ‚‚ğã‚°‚éˆ—
 	/// </summary>
-	/// <param name="AtkUp">æ”»æ’ƒåŠ›ã‚’å¢—åŠ ã•ã›ã‚‹æ•°å€¤</param>
+	/// <param name="AtkUp">‘‰Á‚·‚éUŒ‚—Í</param>
 	void AtkUp(int AtkUp)
 	{
 		m_Status.Atk += AtkUp;
 	}
 
 	/// <summary>
-	/// HPã‚’å›å¾©
+	/// HP‰ñ•œ‚³‚¹‚éˆ—
 	/// </summary>
-	/// <param name="HpUp">å‰£å£«ã®HPã‚’å›å¾©ã•ã›ã‚‹æ•°å€¤</param>
+	/// <param name="HpUp">HP‚Ì‰ñ•œ—Ê</param>
 	void HpUp(int HpUp)
 	{
 		m_Status.Hp += HpUp;
 	}
 
 	/// <summary>
-	/// HPãŒä¸Šé™ã‚’è¶…ãˆãŸæ™‚ã«ä¸Šé™ã¾ã§ã«ã™ã‚‹é–¢æ•°
+	/// HP‚ÌãŒÀ‚ğ’´‚¦‚½ãŒÀ‚Ü‚Å‚É–ß‚·ˆ—
 	/// </summary>
-	/// /// <param name="HpReset">MaxHpã‚’ä»£å…¥ã™ã‚‹</param>	
+	/// /// <param name="HpReset">MaxHp‚Ì’l‚ğ“ü‚ê‚é</param>	
 	void HpReset(int HpReset)
 	{
 		m_Status.Hp = HpReset;
 	}
 
-	//Hpä¸Šé™ã‚’æ¸¡ã™
+	//MaxHp‚ğ“n‚·
 	int GetMaxHp() { return m_Status.MaxHp; };
-	//Hpã‚’æ¸¡ã™
+	//¡‚ÌHp‚ğ“n‚·
 	int GetHp() { return m_Status.Hp; };
-	/////////////////////è¿½åŠ çµ‚ã‚ã‚Š///////////////////////////
 
 	/// <summary>
 	/// ’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l‚Ìˆ—

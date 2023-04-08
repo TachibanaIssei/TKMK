@@ -159,7 +159,7 @@ private:
 	bool PauseCloseFlag = true;
 
 	//ƒLƒƒƒ‰‚Ì”Ô†
-	int SelectCharNumber = 1;
+	int SelectCharNumber = 0;
 
 
 };

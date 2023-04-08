@@ -558,13 +558,16 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 }
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
-	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	for (auto enemy : m_neutral_Enemys)
+	//エネミーたちの情報を取得する
+	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
+	for (auto Enemys : enemys)
 	{
-		if (enemy == this) {
+	/*	if (Enemys == this) {
 			continue;
-		}
-		Vector3 diff = m_position - enemy->m_position;
+		}*/
+		//取得したエネミーたちの座標を取得
+		Vector3 enemyPos = Enemys->GetPosition();
+		Vector3 diff = m_position - enemyPos;
 		if (diff.Length() < 50.0f)
 		{
 			diff.Normalize();
@@ -580,21 +583,6 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		Move();
 		if (distance.Length() <= 100.0f)
 		{
-			P = 0;
-		}
-
-	}
-	if (P == 0)
-	{
-		Vector3 newForward = m_patrolPos[0] - m_position;
-		Vector3 distance = newForward;
-		newForward.Normalize();
-		m_forward = newForward;
-		Move();
-		if (distance.Length() <= 10.0f)
-		{
-
-			//1からにしかったら+１しろ
 			int ram = rand() % 100 /*+ 1*/;
 			if (ram >= 0)
 			{
@@ -612,6 +600,21 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			{
 				P = 7;
 			}
+		}
+
+	}
+	if (P == 0)
+	{
+		Vector3 newForward = m_patrolPos[0] - m_position;
+		Vector3 distance = newForward;
+		newForward.Normalize();
+		m_forward = newForward;
+		Move();
+		if (distance.Length() <= 10.0f)
+		{
+
+			//1からにしかったら+１しろ
+			
 
 		}
 
@@ -800,7 +803,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			}
 			if (ram > 50)
 			{
-				P = 0;
+				P = 1;
 			}
 
 		}
@@ -812,22 +815,6 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
 	ProcessCommonStateTransition();
-
-	//Vector3 fff = m_position - nowPos;
-	//if (fff.LengthSq() <= 0.0000002f)
-	//{
-	//	m_stopTimer -= g_gameTime->GetFrameDeltaTime();
-	//}
-	//else
-	//{
-	//	m_stopTimer = 1.0f;
-	//}
-	//if (m_stopTimer < 1.0f)
-	//{
-	//	m_position.z += 5.0f;
-	//	//m_moveSpeed.y = 10.0f;
-	//}
-
 }
 void Neutral_Enemy::ManageState()
 {

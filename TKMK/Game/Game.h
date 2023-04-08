@@ -74,7 +74,17 @@ public:
 
 	void Render(RenderContext& rc);
 
-
+	void RemoveEnemyFromList(Neutral_Enemy* enemy)
+	{
+		std::vector<Neutral_Enemy*>::iterator it = std::find(
+			m_neutral_Enemys.begin(), // 検索開始位置を示すイテレータ
+			m_neutral_Enemys.end(),   // 検索終了位置を示すイテレータ
+			enemy                     // 検索したい要素
+		);
+		if (it != m_neutral_Enemys.end()) {
+			m_neutral_Enemys.erase(it);
+		}
+	}
 	//ベクタ型のNeutral_Enemyを返す
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;

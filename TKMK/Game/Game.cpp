@@ -18,7 +18,7 @@
 //#include <algorithm>
 
 namespace {
-	int ENEMY_AMOUNT = 8;
+	int ENEMY_AMOUNT = 5;
 }
 
 Game::Game()

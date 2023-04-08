@@ -78,11 +78,14 @@ public:
 	void COOlTIME(float SkillCooltimer,bool& skillstate,float& timer);
 	
 	/// <summary>
-	/// 現在のレベルを返す　KnightBaseのを持ってくるto do
-	/// </summary>
+	/// 現在のレベルを返す
 	/// <returns></returns>
 	inline int GetLevel() { return Lv; }
-
+	///// <summary>
+	///// 現在のGPを返す
+	///// </summary>
+	///// <returns></returns>
+	//inline int GetHP() { return Hp; }
 	/// <summary>
 	/// レベルアップの処理
 	/// </summary>

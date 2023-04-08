@@ -3,14 +3,15 @@
 
 void nsK2EngineLow::RenderingEngine::Init()
 {
-	InitRenderTarget();
-	m_postEffect.InitBloom(m_mainRenderTarget);
+	InitRenderTargets();
+	m_shadow.Init();
+	m_postEffect.Init(m_mainRenderTarget);
 	InitCopyToFrameBufferSprite();
 
 	m_sceneLight.Init();
 }
 
-void nsK2EngineLow::RenderingEngine::InitRenderTarget()
+void nsK2EngineLow::RenderingEngine::InitRenderTargets()
 {
 	//メインレンダリングターゲット
 	m_mainRenderTarget.Create(
@@ -45,6 +46,13 @@ void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
 	}
 }
 
+void nsK2EngineLow::RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera)
+{
+	for (auto& modelObj : m_modelList) {
+		modelObj->OnRenderShadowModel(rc,camera);
+	}
+}
+
 void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc)
 {
 	for (auto& spriteObj : m_spriteList)
@@ -64,6 +72,8 @@ void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc)
 void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
 	SetEyePos(g_camera3D->GetPosition());
+
+	m_shadow.Render(rc);
 
 	//メインレンダリングターゲットに変更
 	rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);

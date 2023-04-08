@@ -2,6 +2,7 @@
 
 #include "PostEffect.h"
 #include "Light.h"
+#include "Shadow.h"
 
 namespace nsK2EngineLow {
 	class ModelRender;
@@ -14,7 +15,7 @@ namespace nsK2EngineLow {
 	public:
 		void Init();
 
-		void InitRenderTarget();
+		void InitRenderTargets();
 		void InitCopyToFrameBufferSprite();
 
 		/// <summary>
@@ -43,20 +44,10 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// モデルを描画する
+		/// シャドウモデルを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void ModelRendering(RenderContext& rc);
-		/// <summary>
-		/// スプライトを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void SpriteRendering(RenderContext& rc);
-		/// <summary>
-		/// フォントを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void FontRendering(RenderContext& rc);
+		void ShadowModelRendering(RenderContext& rc, Camera& camera);
 
 		/// <summary>
 		/// 描画処理を実行
@@ -64,9 +55,43 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
+		/// <summary>
+		/// シーンライトを取得
+		/// </summary>
+		/// <returns>シーンライト</returns>
 		SceneLight& GetSceneLight()
 		{
 			return m_sceneLight;
+		}
+
+		/// <summary>
+		/// ライトビュープロジェクション行列を設定する
+		/// </summary>
+		/// <param name="LVP">ライトビュープロジェクション行列</param>
+		void SetmLVP(Matrix LVP)
+		{
+			m_sceneLight.SetmLVP(LVP);
+		}
+
+	////////////////////////////////////////////////////////////////////////////////
+	///シャドウマップの関数
+	////////////////////////////////////////////////////////////////////////////////
+		/// <summary>
+		/// シャドウマップのテクスチャを取得
+		/// </summary>
+		/// <returns>シャドウマップのテクスチャ</returns>
+		Texture& GetShadowMapTexture()
+		{
+			return m_shadow.GetShadowMapTexture();
+		}
+
+		/// <summary>
+		/// ライトカメラを取得
+		/// </summary>
+		/// <returns>ライトカメラ</returns>
+		Camera& GetLightCamera()
+		{
+			return m_shadow.GetLightCamera();
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -433,6 +458,23 @@ namespace nsK2EngineLow {
 		}
 
 	private:
+		/// <summary>
+		/// モデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void ModelRendering(RenderContext& rc);
+		/// <summary>
+		/// スプライトを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void SpriteRendering(RenderContext& rc);
+		/// <summary>
+		/// フォントを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void FontRendering(RenderContext& rc);
+
+	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
 		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
@@ -442,6 +484,7 @@ namespace nsK2EngineLow {
 		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 
+		Shadow						m_shadow;					//シャドウマップ
 		PostEffect					m_postEffect;				//ポストエフェクト
 	};
 }

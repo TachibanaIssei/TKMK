@@ -26,26 +26,26 @@ public:
 	void AvoidanceSprite();
 
 	/// <summary>
-	/// •KE‹Z‚Ì“–‚½‚è”»’è¶¬‚·‚é
+	/// å¿…æ®ºæŠ€ã®å½“ãŸã‚Šåˆ¤å®šç”Ÿæˆã™ã‚‹
 	/// </summary>
 	void MakeUltSkill();
 
 	/// <summary>
-	/// ƒXƒLƒ‹‚ğ”­“®‚µ‚½‚Æ‚«‚É”ÍˆÍ“à‚Åˆê”Ô‹ß‚¢“G‚ğ‚Ë‚ç‚¤ˆ—
+	/// ã‚¹ã‚­ãƒ«ã‚’ç™ºå‹•ã—ãŸã¨ãã«ç¯„å›²å†…ã§ä¸€ç•ªè¿‘ã„æ•µã‚’ã­ã‚‰ã†å‡¦ç†
 	/// </summary>
 	//void SkillTarget()
 	//{
 	//	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
 	//	Vector3 nearPos = Vector3::Zero;
-	//	//ˆê”Ô‹ß‚¢‹——£
+	//	//ä¸€ç•ªè¿‘ã„è·é›¢
 	//	float Near = nearPos.Length();
 	//	for (auto enemy : m_neutral_Enemys)
 	//	{
 	//		Vector3 toEnemy = enemy->GetPosition() - m_position;
-	//		//ƒGƒlƒ~[‚Æ‚Ì‹——£‚ğŒvZ‚·‚é
+	//		//ã‚¨ãƒãƒŸãƒ¼ã¨ã®è·é›¢ã‚’è¨ˆç®—ã™ã‚‹
 	//		float newNear = toEnemy.Length();
-	//		//ŒvZ‚µ‚½‹——£‚ªˆê”Ô‹ß‚¢‹——£‚æ‚è¬‚³‚¢‚È‚çã‘‚«
+	//		//è¨ˆç®—ã—ãŸè·é›¢ãŒä¸€ç•ªè¿‘ã„è·é›¢ã‚ˆã‚Šå°ã•ã„ãªã‚‰ä¸Šæ›¸ã
 	//		if (Near > newNear) {
 	//			Near = newNear;
 	//		}
@@ -61,7 +61,7 @@ private:
 	
 	GameUI* m_gameUI = nullptr;
 	
-	//CollisionObject* collisionObject;                     //ƒRƒŠƒWƒ‡ƒ“
+	//CollisionObject* collisionObject;                     //ã‚³ãƒªã‚¸ãƒ§ãƒ³
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
@@ -89,9 +89,9 @@ private:
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
 
-	//ƒXƒLƒ‹‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	//ã‚¹ã‚­ãƒ«ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
 	float SkillSpeed = 270.0f;
-	//‰ñ”ğ‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	//å›é¿ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
 	float AvoidanceSpeed = 170.0f;
 
 	int oldLv;
@@ -99,6 +99,6 @@ private:
 	int dddd = 20;
 
 	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
-	Neutral_Enemy* m_Neutral_Enemy = nullptr; //’†—§‚Ì“G
+	Neutral_Enemy* m_Neutral_Enemy = nullptr; //ä¸­ç«‹ã®æ•µ
 };
 

@@ -214,6 +214,15 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	return albedoColor;
 }
 
+/// <summary>
+/// シャドウマップ描画用のピクセルシェーダー
+/// </summary>
+float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
+{
+    //シャドウマップにZ値を書き込む
+    return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
+}
+
 /////////////////////////////////////////////////////////////////////////
 //  Lambert拡散反射を計算
 /////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 #pragma once
 namespace nsK2EngineLow {
 	const int MAX_DIRECTIONAL_LIGHT = 4;	//ディレクションライトの最大数
+	const int MAX_POINT_LIGHT = 10;			//ポイントライトの最大数
 
 	/// <summary>
 	/// ディレクションライト構造体
@@ -21,6 +22,7 @@ namespace nsK2EngineLow {
 		int isUse = false;		//使用中フラグ
 		Vector4 color;			//カラー
 		Vector3	attn;			//xに影響範囲,yに影響率に累乗するパラメータ
+		float pad1;
 	};
 
 	/// <summary>
@@ -56,14 +58,13 @@ namespace nsK2EngineLow {
 	struct Light
 	{
 		DirectionalLight directionalLight[MAX_DIRECTIONAL_LIGHT];	//ディレクションライトの配列
-		PointLight pointLight;	//ポイントライト
-		float pad1;
+		PointLight pointLight[MAX_POINT_LIGHT];	//ポイントライト
 		SpotLight spotLight;	//スポットライト
-		float pad2;
+		float pad1;
 		HemisphereLight hemisphereLight;
-		float pad3;
+		float pad2;
 		Vector3 cameraEyePos;	//カメラ座標
-		float pad4;
+		float pad3;
 		Vector4 ambientLight;	//環境光
 		Matrix mLVP;			//ライトビュープロジェクション行列
 	};
@@ -165,86 +166,96 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ポイントライトを設定する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <param name="pos">ライトの位置</param>
 		/// <param name="color">ライトの色</param>
 		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
-		void SetPointLight(Vector3 pos, Vector4 color,Vector3 attn)
+		void SetPointLight(int lightNo, Vector3 pos, Vector4 color,Vector3 attn)
 		{
-			SetPointLightPosition(pos);
-			SetPointLightColor(color);
-			SetPointLightAttn(attn);
-			UsePointLight();
+			SetPointLightPosition(pos,lightNo);
+			SetPointLightColor(color, lightNo);
+			SetPointLightAttn(attn, lightNo);
+			UsePointLight(lightNo);
 		}
 		/// <summary>
 		/// ポイントライトの座標を設定する
 		/// </summary>
-		/// <param name="pos"></param>
-		void SetPointLightPosition(Vector3 pos)
+		/// <param name="pos">座標</param>
+		/// <param name="lightNo">ライトの番号</param>
+		void SetPointLightPosition(Vector3 pos, int lightNo = 0)
 		{
-			m_light.pointLight.position = pos;
+			m_light.pointLight[lightNo].position = pos;
 		}
 		/// <summary>
 		/// ポイントライトの色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetPointLightColor(Vector4 color)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetPointLightColor(Vector4 color, int lightNo = 0)
 		{
-			m_light.pointLight.color = color;
+			m_light.pointLight[lightNo].color = color;
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
 		/// </summary>
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
-		void SetPointLightAttn(Vector3 attn)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetPointLightAttn(Vector3 attn, int lightNo = 0)
 		{
-			m_light.pointLight.attn = attn;
+			m_light.pointLight[lightNo].attn = attn;
 		}
 		/// <summary>
 		/// ポイントライトを使用する
 		/// </summary>
-		void UsePointLight()
+		/// <param name="lightNo">ライトの番号</param>
+		void UsePointLight(int lightNo = 0)
 		{
-			m_light.pointLight.isUse = true;
+			m_light.pointLight[lightNo].isUse = true;
 		}
 		/// <summary>
 		/// ポイントライトを使用しない
 		/// </summary>
-		void UnUsePointLight()
+		/// <param name="lightNo">ライトの番号</param>
+		void UnUsePointLight(int lightNo = 0)
 		{
-			m_light.pointLight.isUse = false;
+			m_light.pointLight[lightNo].isUse = false;
 		}
 
 		/// <summary>
 		/// ポイントライトの位置を取得する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>座標</returns>
-		const Vector3& GetPointLightPosition() const
+		const Vector3& GetPointLightPosition(int lightNo = 0) const
 		{
-			return m_light.pointLight.position;
+			return m_light.pointLight[lightNo].position;
 		}
 		/// <summary>
 		/// ポイントライトの光の色を取得
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>色</returns>
-		const Vector4& GetPointLightColor() const
+		const Vector4& GetPointLightColor(int lightNo = 0) const
 		{
-			return m_light.pointLight.color;
+			return m_light.pointLight[lightNo].color;
 		}
 		/// <summary>
 		/// スポットライトの影響範囲と累乗するパラメータを取得
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>Xに影響範囲,Yに累乗するパラメータ</returns>
-		const Vector3& GetPointLightAttn() const
+		const Vector3& GetPointLightAttn(int lightNo = 0) const
 		{
-			return m_light.pointLight.attn;
+			return m_light.pointLight[lightNo].attn;
 		}
 		/// <summary>
 		/// ポイントライトは使用中?
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>使用中ならtrue</returns>
-		const int PointLightIsUse() const
+		const int PointLightIsUse(int lightNo = 0) const
 		{
-			return m_light.pointLight.isUse;
+			return m_light.pointLight[lightNo].isUse;
 		}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -461,6 +472,7 @@ namespace nsK2EngineLow {
 
 	private:
 		void InitDirectionLight();
+		void InitPointLight();
 
 	private:
 		Light m_light;

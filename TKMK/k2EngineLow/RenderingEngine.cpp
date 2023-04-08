@@ -39,6 +39,14 @@ void nsK2EngineLow::RenderingEngine::InitCopyToFrameBufferSprite()
 	m_copyToFrameBufferSprite.Init(spriteInitData);
 }
 
+void nsK2EngineLow::RenderingEngine::AllUnUsePointLight()
+{
+	for (int i = 0; i < MAX_POINT_LIGHT; i++)
+	{
+		UnUsePointLight(i);
+	}
+}
+
 void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
 {
 	for (auto& modelObj : m_modelList) {

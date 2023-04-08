@@ -184,84 +184,99 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ポイントライトを設定する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <param name="pos">ライトの位置</param>
 		/// <param name="color">ライトの色</param>
 		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
-		void SetPointLight(Vector3 pos, Vector4 color, Vector3 range)
+		void SetPointLight(int lightNo, Vector3 pos, Vector4 color, Vector3 range)
 		{
-			m_sceneLight.SetPointLight(pos, color, range);
+			m_sceneLight.SetPointLight(lightNo, pos, color, range);
 		}
 		/// <summary>
 		/// ポイントライトの座標を設定する
 		/// </summary>
-		/// <param name="pos"></param>
-		void SetPointLightPosition(Vector3 pos)
+		/// <param name="pos">座標</param>
+		/// <param name="lightNo">ライトの番号</param>
+		void SetPointLightPosition(Vector3 pos, int lightNo = 0)
 		{
-			m_sceneLight.SetPointLightPosition(pos);
+			m_sceneLight.SetPointLightPosition(pos,lightNo);
 		}
 		/// <summary>
 		/// ポイントライトの色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetPointLightColor(Vector4 color)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetPointLightColor(Vector4 color, int lightNo = 0)
 		{
-			m_sceneLight.SetPointLightColor(color);
+			m_sceneLight.SetPointLightColor(color, lightNo);
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
 		/// </summary>
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
-		void SetPointLightAttn(Vector3 attn)
+		/// <param name="lightNo">ライトの番号</param>
+		void SetPointLightAttn(Vector3 attn, int lightNo = 0)
 		{
-			m_sceneLight.SetPointLightAttn(attn);
+			m_sceneLight.SetPointLightAttn(attn, lightNo);
 		}
 		/// <summary>
 		/// ポイントライトを使用する
 		/// </summary>
-		void UsePointLight()
+		/// <param name="lightNo">ライトの番号</param>
+		void UsePointLight(int lightNo = 0)
 		{
-			m_sceneLight.UsePointLight();
+			m_sceneLight.UsePointLight(lightNo);
 		}
 		/// <summary>
 		/// ポイントライトを使用しない
 		/// </summary>
-		void UnUsePointLight()
+		/// <param name="lightNo">ライトの番号</param>
+		void UnUsePointLight(int lightNo = 0)
 		{
-			m_sceneLight.UnUsePointLight();
+			m_sceneLight.UnUsePointLight(lightNo);
 		}
 
 		/// <summary>
 		/// ポイントライトの位置を取得する
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>座標</returns>
-		const Vector3& GetPointLightPosition() const
+		const Vector3& GetPointLightPosition(int lightNo = 0) const
 		{
-			return m_sceneLight.GetPointLightPosition();
+			return m_sceneLight.GetPointLightPosition(lightNo);
 		}
 		/// <summary>
 		/// ポイントライトの光の色を取得
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>色</returns>
-		const Vector4& GetPointLightColor() const
+		const Vector4& GetPointLightColor(int lightNo = 0) const
 		{
-			return m_sceneLight.GetPointLightColor();
+			return m_sceneLight.GetPointLightColor(lightNo = 0);
 		}
 		/// <summary>
 		/// スポットライトの影響範囲と累乗するパラメータを取得
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>Xに影響範囲,Yに累乗するパラメータ</returns>
-		const Vector3& GetPointLightAttn() const
+		const Vector3& GetPointLightAttn(int lightNo = 0) const
 		{
-			return m_sceneLight.GetPointLightAttn();
+			return m_sceneLight.GetPointLightAttn(lightNo);
 		}
 		/// <summary>
 		/// ポイントライトは使用中?
 		/// </summary>
+		/// <param name="lightNo">ライトの番号</param>
 		/// <returns>使用中ならtrue</returns>
-		const int PointLightIsUse() const
+		const int PointLightIsUse(int lightNo = 0) const
 		{
-			return m_sceneLight.PointLightIsUse();
+			return m_sceneLight.PointLightIsUse(lightNo);
 		}
+
+		/// <summary>
+		/// すべてのポイントライトを使用しないようにする
+		/// </summary>
+		void AllUnUsePointLight();
 
 	////////////////////////////////////////////////////////////////////////////////
 	///スポットライトの関数

@@ -40,11 +40,6 @@ public:
 	virtual void Attack() = 0;
 
 	/// <summary>
-	/// 当たり判定
-	/// </summary>
-	void Collision();
-
-	/// <summary>
 	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
@@ -277,8 +272,5 @@ protected:
 	bool AvoidanceFlag = false;
 	//回避アニメーションが終わったかの判定
 	bool AvoidanceEndFlag = false;
-
-	//中立の敵から受けるダメージ
-	int Enemy_atk = 10;
 };
 

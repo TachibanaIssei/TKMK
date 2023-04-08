@@ -150,7 +150,7 @@ public:
 	/// <summary>
 /// knightPlayer
 /// </summary>
-/// <returns>false???\???????</returns>
+/// <returns>false????????</returns>
 	const bool GetSpriteFlag() const
 	{
 		return m_spriteFlag;
@@ -162,6 +162,38 @@ public:
 	int GetAtk() {
 		return m_Status.Atk;
 	}
+
+	/// <summary>
+	/// ’†—§‚ÌÔF‚Ì“G‚ğ“|‚µ‚½UŒ‚‚ğã‚°‚éˆ—
+	/// </summary>
+	/// <param name="AtkUp">‘‰Á‚·‚éUŒ‚—Í</param>
+	void AtkUp(int AtkUp)
+	{
+		m_Status.Atk += AtkUp;
+	}
+
+	/// <summary>
+	/// HP‰ñ•œ‚³‚¹‚éˆ—
+	/// </summary>
+	/// <param name="HpUp">HP‚Ì‰ñ•œ—Ê</param>
+	void HpUp(int HpUp)
+	{
+		m_Status.Hp += HpUp;
+	}
+
+	/// <summary>
+	/// HP‚ÌãŒÀ‚ğ’´‚¦‚½ãŒÀ‚Ü‚Å‚É–ß‚·ˆ—
+	/// </summary>
+	/// /// <param name="HpReset">MaxHp‚Ì’l‚ğ“ü‚ê‚é</param>	
+	void HpReset(int HpReset)
+	{
+		m_Status.Hp = HpReset;
+	}
+
+	//MaxHp‚ğ“n‚·
+	int GetMaxHp() { return m_Status.MaxHp; };
+	//¡‚ÌHp‚ğ“n‚·
+	int GetHp() { return m_Status.Hp; };
 
 	/// <summary>
 	/// ’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l‚Ìˆ—

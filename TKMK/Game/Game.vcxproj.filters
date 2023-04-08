@@ -7,7 +7,6 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameUI.cpp" />
-    <ClCompile Include="KnightAI.cpp" />
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightPlayer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -24,6 +23,7 @@
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="KnightUlt.cpp" />
     <ClCompile Include="WizardUlt.cpp" />
+    <ClCompile Include="KnightAI.cpp" />
     <ClCompile Include="CharUltFlag.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,7 +33,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameUI.h" />
-    <ClInclude Include="KnightAI.h" />
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="KnightPlayer.h" />
     <ClInclude Include="Map.h" />
@@ -49,6 +48,7 @@
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="KnightUlt.h" />
     <ClInclude Include="WizardUlt.h" />
+    <ClInclude Include="KnightAI.h" />
     <ClInclude Include="CharUltFlag.h" />
   </ItemGroup>
 </Project>

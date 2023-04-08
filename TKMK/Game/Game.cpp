@@ -236,8 +236,8 @@ bool Game::Start()
 	m_bgm->Play(true);
 	m_bgm->SetVolume(musicVolume);
 
-
 	//当たり判定の可視化
+
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;

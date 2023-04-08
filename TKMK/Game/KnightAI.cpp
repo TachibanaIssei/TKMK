@@ -7,6 +7,7 @@
 #include "Actor.h"
 
 
+
 KnightAI::KnightAI()
 {
 	m_Status.Init("Knight");
@@ -29,6 +30,8 @@ KnightAI::KnightAI()
 	charUltFlag = FindGO<CharUltFlag>("charUltFlag");
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
+	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
+	
 }
 KnightAI::~KnightAI()
 {
@@ -36,6 +39,7 @@ KnightAI::~KnightAI()
 }
 void KnightAI::Update()
 {
+	SearchEnemy();
 	Attack();
 	//ステート
 	ManageState();
@@ -43,15 +47,109 @@ void KnightAI::Update()
 	PlayAnimation();
 	Collition();
 	Rotation();
-	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
-
-	//剣士のY座標が腰なのでY座標を上げる
 	m_position.y = m_position_YUp;
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rot);
 	m_modelRender.Update();
 }
+void KnightAI::SearchEnemy()
+{
+	//特定のアニメーションが再生中なら
+	if (IsEnableMove() == false)
+	{
+		//抜け出す　移動処理を行わない
+		return;
+	}
+	//アクターたちの情報を取得する
+	std::vector<Actor*>& actors = m_game->GetActors();
+	Actor* m_actor = nullptr;
+	Actor* m_Lvactor = nullptr;
+	float minactorDistance = INFINITY;
+	float maxactorDistance = 0.0f;
+	for (auto actor : actors)
+	{
+		if (actor == this) {
+			//for文の一番最初に戻る
+			continue;
+		}
+		//取得したエネミーたちの座標を取得
+		Vector3 actorPos = actor->GetPosition();
+		Vector3 diff = m_position - actorPos;
+		float distance = diff.Length();
+		if (distance < minactorDistance)
+		{
 
+			minactorDistance = distance;
+			m_actor = actor;
+		}
+	}
+	//エネミーたちの情報を取得する
+	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
+	Neutral_Enemy* m_neutral_enemy = nullptr;
+	Neutral_Enemy* m_farneutral_enemy = nullptr;
+	//一番小さい
+	float minenemyDistance = INFINITY;
+	//一番デカい
+	float maxenemyDistance = 0.0f;
+	for (auto enemy : enemys)
+	{
+		for (auto actor : actors)
+		{
+			if (actor == this) {
+				//for文の一番最初に戻る
+				continue;
+			}
+			//取得したエネミーたちの座標を取得
+			Vector3 enemyPos = enemy->GetPosition();
+			//自分の座標引くエネミーの座標
+			Vector3 diff = m_position - enemyPos;
+			diff.y = 0.0f;
+			float mindistance = diff.Length();
+			
+			if (mindistance < minenemyDistance)
+			{
+				minenemyDistance = mindistance;
+				m_neutral_enemy = enemy;
+			}
+			Vector3 actorPos = actor->GetPosition();
+			Vector3 diff2 = actorPos - enemyPos;
+			float maxdistance = diff2.Length();
+			if (maxdistance > maxenemyDistance)
+			{
+				maxenemyDistance = maxdistance;
+				m_farneutral_enemy = enemy;
+			}
+
+		}
+	}
+	if (Lv >= 1 && Lv <= 3)
+	{
+		Vector3 diff = m_neutral_enemy->GetPosition() - m_position;
+		diff.Normalize();
+		//移動速度を設定する。
+		m_moveSpeed = diff * m_Status.Speed;
+		m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+		/*if (m_Status.Hp < m_Status.MaxHp )
+		{
+			Vector3 diff = m_farneutral_enemy->GetPosition() - m_position;
+			diff.Normalize();
+			m_moveSpeed = diff * m_Status.Speed;
+			m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+		}*/
+	}
+	else 
+	{
+		Vector3 diff = m_actor->GetPosition() - m_position;
+		diff.y = 0.0f;
+		diff.Normalize();
+		//移動速度を設定する。
+		m_moveSpeed = diff * m_Status.Speed;
+		m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+		
+	}
+
+
+}
 const bool KnightAI::CanAttackenemy()
 {
 	//エネミーたちの情報を取得する
@@ -100,6 +198,7 @@ const bool KnightAI::CanAttackActor()
 }
 void KnightAI::Attack()
 {
+	
 	if (CanAttackenemy() || CanAttackActor()) {
 		//狙う方を変える
 		Vector3 targetPos = TargetChange();
@@ -140,7 +239,7 @@ void KnightAI::Attack()
 	}
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	if (pushFlag == false && SkillEndFlag == false && SkillState == false )
 	{
 
 		//移動速度を上げる
@@ -154,7 +253,7 @@ void KnightAI::Attack()
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	if (pushFlag == false && Lv >= 4&& UltFlug==true)
 	{
 		pushFlag = true;
 		//アニメーション再生、レベルを３
@@ -353,38 +452,6 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 
 	}
 }
-void KnightAI::Collition()
-{
-	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_knightState == enKnightState_Damege ||
-		m_knightState == enKnightState_Death ||
-		m_knightState == enKnightState_UltimateSkill ||
-		m_knightState == enKnightState_ChainAtk ||
-		m_knightState == enKnightState_Skill ||
-		m_knightState == enKnightState_Avoidance)
-	{
-		return;
-	}
-	else
-	{
-		//敵の攻撃用のコリジョンを取得する名前一緒にする
-		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
-		//コリジョンの配列をfor文で回す
-		for (auto collision : collisions)
-		{
-			//コリジョンが自身のキャラコンに当たったら
-			if (collision->IsHit(m_charCon))
-			{
-				//エネミーの攻撃力を取ってくる
-
-				//hpを10減らす
-				Dameged(Enemy_atk);
-
-			}
-		}
-	}
-
-}
 void KnightAI::AvoidanceSprite()
 {
 
@@ -426,6 +493,7 @@ const Vector3 KnightAI::TargetChange()
 	}
 	if (m_targetActor != nullptr && m_targetEnemy == nullptr) {
 		//アクターの座標を渡す
+		UltFlug = true;
 		return m_targetActor->GetPosition();
 	}
 	//中立の敵とアクタークラスの敵両方いる場合は、

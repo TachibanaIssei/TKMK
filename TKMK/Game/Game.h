@@ -164,8 +164,10 @@ private:
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
 
+
 	//キャラの番号
 	int SelectCharNumber = 1;
+
 
 	int enemyNum = 0;
 	char* enemyName;

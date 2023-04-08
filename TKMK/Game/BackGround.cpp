@@ -19,7 +19,7 @@ bool BackGround::Start()
 	m_modelRender.SetScale(m_scale);
 	m_modelRender.Update();
 	m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
-	m_physicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Wall);
+	m_physicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_SlipThroughWall);
 
 	//スタジアムの壁の生成
 	m_modelRender_Wall.Init("Assets/modelData/background/stadium05_Wall.tkm");

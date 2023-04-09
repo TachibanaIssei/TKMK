@@ -84,7 +84,7 @@ cbuffer LightCB : register(b1)
 {
     DirectionLight  directionLight[MAX_DIRECTION_LIGHT];
     PointLight      pointLight[MAX_POINT_LIGHT];
-    SpotLight       spotLight;
+    SpotLight       spotLight[MAX_SPOT_LIGHT];
     HemisphereLight hemisphereLight;
     float3          CameraEyePos;   //カメラの座標
     float4          ambient;        //環境光
@@ -106,7 +106,7 @@ float3 CalcLambertDiffuse(float3 lightDirection, float4 lightColor, float3 norma
 float3 CalcPhongSpecular(float3 lightDirection, float4 lightColor, float3 worldPos, float3 normal,float2 uv);
 float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal,int lightNo);
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal, int lightNo);
-float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
+float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal, int lightNo);
 float3 CalcLigFromHemisphereLight(SPSIn psIn);
 float3 CalcNormalMap(SPSIn psIn);
 
@@ -206,10 +206,15 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
     }
     
     //スポットライトによるライティングの計算
-    float3 spotLig = { 0.0f, 0.0f, 0.0f };
-    if (spotLight.isUse)
+    float3 spotLig[MAX_SPOT_LIGHT];
+    float3 finalSpotLig = {0.0f,0.0f,0.0f};
+    for(int spotLigNo = 0;spotLigNo < MAX_SPOT_LIGHT; spotLigNo++)
     {
-        spotLig = CalcLigFromSpotLight(psIn,normal);
+        if(spotLight[spotLigNo].isUse)
+        {
+            spotLig[spotLigNo] = CalcLigFromSpotLight(psIn,normal,spotLigNo);
+            finalSpotLig += spotLig[spotLigNo];
+        }
     }
     
     float3 hemiLight = { 0.0f, 0.0f, 0.0f };
@@ -219,7 +224,7 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
     }
     
 	//光を合成する
-    float3 light = finalDirectionLig + finalPointLig + spotLig + hemiLight + ambient;
+    float3 light = finalDirectionLig + finalPointLig + finalSpotLig + hemiLight + ambient;
     
     float4 albedoColor = g_albedo.Sample(g_sampler, psIn.uv);
     albedoColor.xyz *= light;
@@ -357,45 +362,45 @@ float3 CalcLigFromPointLight(SPSIn psIn, float3 normal, int lightNo)
 /////////////////////////////////////////////////////////////////////////
 //  スポットライトを計算
 /////////////////////////////////////////////////////////////////////////
-float3 CalcLigFromSpotLight(SPSIn psIn, float3 normal)
+float3 CalcLigFromSpotLight(SPSIn psIn, float3 normal, int lightNo)
 {
     //サーフェイスによる入射するスポットライトの光の向き
-    float3 ligDir = psIn.worldPos - spotLight.position;
+    float3 ligDir = psIn.worldPos - spotLight[lightNo].position;
     ligDir = normalize(ligDir);
     //減衰なしのLambert拡散反射光を計算
     float3 diffSpotLight = CalcLambertDiffuse(
         ligDir,
-        spotLight.color,
+        spotLight[lightNo].color,
         normal
     );
     //減衰なしのPhong鏡面反射光を計算
     float3 specSpotLight = CalcPhongSpecular(
         ligDir,
-        spotLight.color,
+        spotLight[lightNo].color,
         psIn.worldPos,
         normal,
         psIn.uv
     );
     
     //距離による影響率を計算する
-    float3 distance = length(psIn.worldPos - spotLight.position);
-    float affect = 1.0f - 1.0f / spotLight.range.x * distance;
+    float3 distance = length(psIn.worldPos - spotLight[lightNo].position);
+    float affect = 1.0f - 1.0f / spotLight[lightNo].range.x * distance;
     if (affect < 0.0f)
     {
         affect = 0.0f;
     }
-    affect = pow(affect, spotLight.range.y);
+    affect = pow(affect, spotLight[lightNo].range.y);
     diffSpotLight *= affect;
     specSpotLight *= affect;
     
-    float angle = dot(ligDir, spotLight.direction);
+    float angle = dot(ligDir, spotLight[lightNo].direction);
     angle = abs(acos(angle));
-    affect = 1.0f - 1.0 / spotLight.angle.x * angle;
+    affect = 1.0f - 1.0 / spotLight[lightNo].angle.x * angle;
     if (affect < 0.0f)
     {
         affect = 0.0f;
     }
-    affect = pow(affect, spotLight.angle.y);
+    affect = pow(affect, spotLight[lightNo].angle.y);
     diffSpotLight *= affect;
     specSpotLight *= affect;
     

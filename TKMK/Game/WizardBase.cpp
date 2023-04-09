@@ -259,12 +259,7 @@ struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 			//衝突したのは壁ではない。
 			return 0.0f;
 		}
-		////すり抜け可能な壁にぶつかっていなかったら
-		//if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_SlipThroughWall) {
-		//	//衝突したのは壁ではない。
-		//	return 0.0f;
-		//}
-
+		
 		//壁とぶつかったら。
 		//フラグをtrueに。
 		isHit = true;
@@ -360,7 +355,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 			btTransform newend;
 			newend.setIdentity();
 			//新しいワープ先の座標。
-			end.setOrigin(btVector3(moreWarpPos.x, moreWarpPos.y + 70.0f, moreWarpPos.z));
+			newend.setOrigin(btVector3(moreWarpPos.x, moreWarpPos.y + 70.0f, moreWarpPos.z));
 
 			SweepResultSlipThroughWall callback_SlipThroughWall2;
 			// すり抜け壁にぶつかったので、中に入っていないか調べる。
@@ -369,8 +364,10 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 				end,                                                   //最初のワープ先の座標
 				newend,                                                 //ワープ先からさらにワープ先の座標
 				callback_SlipThroughWall2);
+			//壁ぎりぎりにワープすると壁の中にワープしてしまう
 			if (callback_SlipThroughWall2.isHit == false) {
 				// ワープできる
+				int a = 0;
 			}
 			else {
 				// 中に埋もれていないか調べる

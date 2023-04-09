@@ -38,11 +38,6 @@ Game::~Game()
 	}
 	DeleteGO(m_gamecamera);
 
-	/*QueryGOs<Neutral_Enemy>("Neutral_Enemy", [&](Neutral_Enemy* neutral_Enemy_) {
-		DeleteGO(neutral_Enemy_);
-		return true;
-		});*/
-
 	//中立の敵のサイズを調べてfor文で回す
 	for (auto seutral_Enemy : m_neutral_Enemys)
 	{
@@ -213,6 +208,7 @@ bool Game::Start()
 	m_Pause_Front.SetRotation(m_sRotation);
 	m_Pause_Front.Update();
 
+	//ゲームのステートをゲームにする
 	m_GameState = enGameState_Battle;
 
 	//BGMの設定
@@ -260,6 +256,7 @@ void Game::BattleStart()
 
 }
 
+//バトルステート時の処理
 void Game::Battle()
 {
 	if (m_GameState == enGameState_Battle) {
@@ -351,6 +348,7 @@ void Game::Pause()
 	}
 }
 
+//バトル終了時の処理
 void Game::End()
 {
 
@@ -361,29 +359,29 @@ void Game::End()
 /// </summary>
 void Game::Respawn()
 {
-	if (ENEMY_AMOUNT != m_neutral_Enemys.size()) {
-		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
-		for (int generate = 0; generate < spawnAmount; generate++) {
-			//enemyNumber++;
-			//ENEMY_AMOUNT;
-			//ランダムにリスポーンする座標の番号を決める
-			RandamRespawnPosNumber = rand() % 8 + 1;
-			SetEnemyRespawnPos();
-			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber]);
-			
-			////neutral_Enemy->SetPosition(SetEnemyRespawnPos());
-			////neutral_Enemy->SetRotation(objData.rotation);
-			//neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
-
-		}
+	for (int count = 0; count < 10; count++)
+	{
+		EnemyRespawnFlag[count] = false;
 	}
 
-	//マップのFindGO関数を呼び出しエネミーの数を把握する
-	m_Map->FindEnemys();
+	//中立の敵の総数と生成されている中立の敵の数が違うなら
+	if (ENEMY_AMOUNT != m_neutral_Enemys.size()) {
+		//足りていない数を計算する
+		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
+		for (int generate = 0; generate < spawnAmount; generate++) {
+			//ランダムにリスポーンする座標の番号を決める
+			RandamRespawnPosNumber = rand() % 8 + 1;
+
+			//リスポーンする座標を決める
+			SetEnemyRespawnPos();
+			//中立の敵生成
+			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber]);
+		}
+	}
 }
 
 /// <summary>
-/// 
+/// 中立の敵のリスポーンする座標を決める
 /// </summary>
 /// <returns></returns>
 void Game::SetEnemyRespawnPos()
@@ -392,7 +390,7 @@ void Game::SetEnemyRespawnPos()
 	SearchRespawnPosNumber = RandamRespawnPosNumber;
 	//検索する番号の最大値
 	int MaxSearchNumber = SearchRespawnPosNumber - 1;
-
+	//選んだ番号が0なら
 	if(SearchRespawnPosNumber==0)
 	{
 		MaxSearchNumber = 8;
@@ -400,28 +398,33 @@ void Game::SetEnemyRespawnPos()
 
 	while (SearchRespawnPosNumber!= MaxSearchNumber)
 	{
-
-		int distanceCounter = 0;
-		for (auto actorPos : m_Actors)
+		if (EnemyRespawnFlag[SearchRespawnPosNumber] == false)
 		{
-			Vector3 CharPos = actorPos->GetPosition();
-			//リスポーンする座標からキャラの座標へのベクトルを計算する
-			Vector3 diff = EnemyRespawnPosition[SearchRespawnPosNumber] - CharPos;
-			//ベクトルの長さが700以上なら
-			if (diff.Length() > 700)
+			//アクターから距離が一定以上離れているかのカウンター
+			int distanceCounter = 0;
+			for (auto actorPos : m_Actors)
 			{
-				//距離が離れている
-				distanceCounter++;
+				Vector3 CharPos = actorPos->GetPosition();
+				//リスポーンする座標からキャラの座標へのベクトルを計算する
+				Vector3 diff = EnemyRespawnPosition[SearchRespawnPosNumber] - CharPos;
+				//ベクトルの長さが700以上なら
+				if (diff.Length() > 600)
+				{
+					//カウンターの値+1
+					distanceCounter++;
+				}
+
 			}
-
+			//キャラの数と距離カウントが同じなら抜け出す
+			if (distanceCounter == m_Actors.size())
+			{
+				//
+				EnemyRespawnFlag[SearchRespawnPosNumber] = true;
+				//この段階のSearchRespawnPosNumberがリスポーンする座標の番号になる
+				return;
+			}
 		}
-		//キャラの数と距離カウントが同じなら抜け出す
-		if (distanceCounter == m_Actors.size())
-		{
-			//この段階のSearchRespawnPosNumberがリスポーンする座標の番号になる
-			return;
-		}
-
+		
 		//リスポーンする座標の番号が8ではないなら
 		if (SearchRespawnPosNumber < 8)
 		{
@@ -432,7 +435,11 @@ void Game::SetEnemyRespawnPos()
 			SearchRespawnPosNumber = 0;
 		}
 		
+		
 	}
+	//全ての座標でリスポーンする座標を設定できなかったら
+	SearchRespawnPosNumber= rand() % 8 + 1;
+	return;
 }
 
 //ゲームステートの管理

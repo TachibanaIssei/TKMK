@@ -159,10 +159,9 @@ private:
 
 	int enemyNumber = 0;
 
-	int SearchRespawnPosNumber;
+	int SearchRespawnPosNumber = 0;
 	int RandamRespawnPosNumber;
-
-	//bool RespawnNumberBox[50];
+	bool EnemyRespawnFlag[10];
 
 	float m_Timer = 0.0f;
 

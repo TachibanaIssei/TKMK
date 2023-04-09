@@ -282,10 +282,9 @@ void KnightBase::Collition()
 		//ƒRƒŠƒWƒ‡ƒ“‚ªŽ©g‚ÌƒLƒƒƒ‰ƒRƒ“‚É“–‚½‚Á‚½‚ç
 		if (knightcollision->IsHit(m_charCon))
 		{
-			//Œ•Žm‚ÌUŒ‚—Í•ªHP‚ðŒ¸‚ç‚·
-			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+			//Œ•Žm‚ÌUŒ‚—Í•ªHP‚ðŒ¸‚ç‚·B
 			//“|‚³‚ê‚½‘ŠŽè‚Ìƒ|ƒCƒ“ƒg‚ð‘‚â‚·
-			//m_lastAttackActor->PointProcess(Lv);
+			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 		}
 	}
 

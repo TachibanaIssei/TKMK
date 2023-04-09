@@ -47,6 +47,14 @@ void nsK2EngineLow::RenderingEngine::AllUnUsePointLight()
 	}
 }
 
+void nsK2EngineLow::RenderingEngine::AllUnUseSpotLight()
+{
+	for (int i = 0; i < MAX_SPOT_LIGHT; i++)
+	{
+		UnUseSpotLight(i);
+	}
+}
+
 void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
 {
 	for (auto& modelObj : m_modelList) {

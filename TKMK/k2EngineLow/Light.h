@@ -2,6 +2,7 @@
 namespace nsK2EngineLow {
 	const int MAX_DIRECTIONAL_LIGHT = 4;	//ディレクションライトの最大数
 	const int MAX_POINT_LIGHT = 10;			//ポイントライトの最大数
+	const int MAX_SPOT_LIGHT = 10;
 
 	/// <summary>
 	/// ディレクションライト構造体
@@ -9,7 +10,7 @@ namespace nsK2EngineLow {
 	struct DirectionalLight
 	{
 		Vector3 direction;	//ライトの方向
-		float pad0;
+		float	pad0;
 		Vector4 color;		//ライトのカラー
 	};
 
@@ -19,10 +20,10 @@ namespace nsK2EngineLow {
 	struct PointLight
 	{
 		Vector3 position;		//位置
-		int isUse = false;		//使用中フラグ
+		int		isUse = false;		//使用中フラグ
 		Vector4 color;			//カラー
 		Vector3	attn;			//xに影響範囲,yに影響率に累乗するパラメータ
-		float pad1;
+		float	pad1;
 	};
 
 	/// <summary>
@@ -31,13 +32,14 @@ namespace nsK2EngineLow {
 	struct SpotLight 
 	{
 		Vector3 position;	//位置
-		float pad0;
+		float	pad0;
 		Vector3 angle;		//xに照射角度,yに影響に累乗するパラメータ
-		float pad1;
+		float	pad1;
 		Vector4 color;		//色
 		Vector3 attn;		//xに影響範囲,yに影響率に累乗するパラメータ
-		int isUse = false;	//使用中フラグ
+		int		isUse = false;	//使用中フラグ
 		Vector3 direction;	//照射方向
+		float	pad2;
 	};
 
 	/// <summary>
@@ -48,7 +50,7 @@ namespace nsK2EngineLow {
 		Vector3 groundColor;	//地面色
 		int		isUse = false;	//使用フラグ
 		Vector3 skyColor;		//天球色
-		float pad1;
+		float	pad0;
 		Vector3 groundNormal;	//地面法線
 	};
 
@@ -57,16 +59,15 @@ namespace nsK2EngineLow {
 	/// </summary>
 	struct Light
 	{
-		DirectionalLight directionalLight[MAX_DIRECTIONAL_LIGHT];	//ディレクションライトの配列
-		PointLight pointLight[MAX_POINT_LIGHT];	//ポイントライト
-		SpotLight spotLight;	//スポットライト
-		float pad1;
-		HemisphereLight hemisphereLight;
-		float pad2;
-		Vector3 cameraEyePos;	//カメラ座標
-		float pad3;
-		Vector4 ambientLight;	//環境光
-		Matrix mLVP;			//ライトビュープロジェクション行列
+		DirectionalLight	directionalLight[MAX_DIRECTIONAL_LIGHT];	//ディレクションライトの配列
+		PointLight			pointLight[MAX_POINT_LIGHT];				//ポイントライト
+		SpotLight			spotLight[MAX_SPOT_LIGHT];					//スポットライト
+		HemisphereLight		hemisphereLight;
+		float				pad1;
+		Vector3				cameraEyePos;								//カメラ座標
+		float				pad2;
+		Vector4				ambientLight;								//環境光
+		Matrix				mLVP;										//ライトビュープロジェクション行列
 	};
 
 	class SceneLight {
@@ -269,117 +270,117 @@ namespace nsK2EngineLow {
 		/// <param name="range">Xに影響範囲,Yに累乗するパラメータ</param>
 		/// <param name="direction">方向</param>
 		/// <param name="angle">角度</param>
-		void SetSpotLight(Vector3 pos, Vector4 color, Vector3 attn, Vector3 direction, Vector3 angle)
+		void SetSpotLight(int lightNo, Vector3 pos, Vector4 color, Vector3 attn, Vector3 direction, Vector3 angle)
 		{
-			SetSpotLightPosition(pos);
-			SetSpotLightColor(color);
-			SetSpotLightAttn(attn);
-			SetSpotLightDirection(direction);
-			SetSpotLightAngle(angle);
-			UseSpotLight();
+			SetSpotLightPosition(pos,lightNo);
+			SetSpotLightColor(color, lightNo);
+			SetSpotLightAttn(attn, lightNo);
+			SetSpotLightDirection(direction, lightNo);
+			SetSpotLightAngle(angle, lightNo);
+			UseSpotLight(lightNo);
 		}
 		/// <summary>
 		/// スポットライトの位置を設定
 		/// </summary>
 		/// <param name="pos">座標</param>
-		void SetSpotLightPosition(Vector3 pos)
+		void SetSpotLightPosition(Vector3 pos, int lightNo = 0)
 		{
-			m_light.spotLight.position = pos;
+			m_light.spotLight[lightNo].position = pos;
 		}
 		/// <summary>
 		/// スポットライトのライト色の設定
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetSpotLightColor(Vector4 color)
+		void SetSpotLightColor(Vector4 color, int lightNo = 0)
 		{
-			m_light.spotLight.color = color;
+			m_light.spotLight[lightNo].color = color;
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
 		/// </summary>
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
-		void SetSpotLightAttn(Vector3 attn)
+		void SetSpotLightAttn(Vector3 attn, int lightNo = 0)
 		{
-			m_light.spotLight.attn = attn;
+			m_light.spotLight[lightNo].attn = attn;
 		}
 		/// <summary>
 		/// スポットライトのライトの方向を設定
 		/// </summary>
 		/// <param name="direction">方向</param>
-		void SetSpotLightDirection(Vector3 direction)
+		void SetSpotLightDirection(Vector3 direction, int lightNo = 0)
 		{
-			m_light.spotLight.direction = direction;
+			m_light.spotLight[lightNo].direction = direction;
 		}
 		/// <summary>
 		/// スポットライトのライトの角度を設定
 		/// </summary>
 		/// <param name="angle">角度</param>
-		void SetSpotLightAngle(Vector3 angle)
+		void SetSpotLightAngle(Vector3 angle, int lightNo = 0)
 		{
-			m_light.spotLight.angle = angle;
+			m_light.spotLight[lightNo].angle = angle;
 		}
 		/// <summary>
 		/// スポットライトを使用する
 		/// </summary>
-		void UseSpotLight()
+		void UseSpotLight(int lightNo = 0)
 		{
-			m_light.spotLight.isUse = true;
+			m_light.spotLight[lightNo].isUse = true;
 		}
 		/// <summary>
 		/// スポットライトを使用しない
 		/// </summary>
-		void UnUseSpotLight()
+		void UnUseSpotLight(int lightNo = 0)
 		{
-			m_light.spotLight.isUse = false;
+			m_light.spotLight[lightNo].isUse = false;
 		}
 
 		/// <summary>
 		/// スポットライトの位置を取得
 		/// </summary>
 		/// <returns>座標</returns>
-		const Vector3& GetSpotLightPosition() const
+		const Vector3& GetSpotLightPosition(int lightNo = 0) const
 		{
-			return m_light.spotLight.position;
+			return m_light.spotLight[lightNo].position;
 		}
 		/// <summary>
 		/// スポットライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector4& GetSpotLightColor() const
+		const Vector4& GetSpotLightColor(int lightNo = 0) const
 		{
-			return m_light.spotLight.color;
+			return m_light.spotLight[lightNo].color;
 		}
 		/// <summary>
 		/// スポットライトの影響範囲と累乗するパラメータを取得
 		/// </summary>
 		/// <returns>Xに影響範囲,Yに累乗するパラメータ</returns>
-		const Vector3& GetSpotLightAttn()const
+		const Vector3& GetSpotLightAttn(int lightNo = 0)const
 		{
-			return m_light.spotLight.attn;
+			return m_light.spotLight[lightNo].attn;
 		}
 		/// <summary>
 		/// スポットライトの光の方向を取得
 		/// </summary>
 		/// <returns>光の方向</returns>
-		const Vector3& GetSpotLightDirection() const
+		const Vector3& GetSpotLightDirection(int lightNo = 0) const
 		{
-			return m_light.spotLight.direction;
+			return m_light.spotLight[lightNo].direction;
 		}
 		/// <summary>
 		/// スポットライトの角度を取得する
 		/// </summary>
 		/// <returns>角度</returns>
-		const Vector3& GetSpotLightAngle() const
+		const Vector3& GetSpotLightAngle(int lightNo = 0) const
 		{
-			return m_light.spotLight.angle;
+			return m_light.spotLight[lightNo].angle;
 		}
 		/// <summary>
 		/// スポットライトは使用中？
 		/// </summary>
 		/// <returns>使用中の場合true</returns>
-		const int SpotLightIsUse() const
+		const int SpotLightIsUse(int lightNo = 0) const
 		{
-			return m_light.spotLight.isUse;
+			return m_light.spotLight[lightNo].isUse;
 		}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -473,6 +474,7 @@ namespace nsK2EngineLow {
 	private:
 		void InitDirectionLight();
 		void InitPointLight();
+		void InitSpotLight();
 
 	private:
 		Light m_light;

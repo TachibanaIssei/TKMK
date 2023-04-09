@@ -289,113 +289,115 @@ namespace nsK2EngineLow {
 		/// <param name="range">xに影響範囲,yに影響範囲に累乗するパラメータ</param>
 		/// <param name="direction">照射方向</param>
 		/// <param name="angle">xは照射角度,ｙは影響に累乗するパラメータ</param>
-		void SetSpotLight(Vector3 pos, Vector4 color, Vector3 attn, Vector3 direction, Vector3 angle)
+		void SetSpotLight(int lightNo, Vector3 pos, Vector4 color, Vector3 attn, Vector3 direction, Vector3 angle)
 		{
-			m_sceneLight.SetSpotLight(pos, color, attn, direction, angle);
+			m_sceneLight.SetSpotLight(lightNo, pos, color, attn, direction, angle);
 		}
 		/// <summary>
 		/// スポットライトの位置を設定する
 		/// </summary>
 		/// <param name="pos">座標</param>
-		void SetSpotLightPosition(Vector3 pos)
+		void SetSpotLightPosition(Vector3 pos, int lightNo = 0)
 		{
-			m_sceneLight.SetSpotLightPosition(pos);
+			m_sceneLight.SetSpotLightPosition(pos, lightNo);
 		}
 		/// <summary>
 		/// スポットライトのライト色の設定
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetSpotLightColor(Vector4 color)
+		void SetSpotLightColor(Vector4 color, int lightNo = 0)
 		{
-			m_sceneLight.SetSpotLightColor(color);
+			m_sceneLight.SetSpotLightColor(color, lightNo);
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
 		/// </summary>
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
-		void SetSpotLightAttn(Vector3 attn)
+		void SetSpotLightAttn(Vector3 attn, int lightNo = 0)
 		{
-			m_sceneLight.SetSpotLightAttn(attn);
+			m_sceneLight.SetSpotLightAttn(attn, lightNo);
 		}
 		/// <summary>
 		/// スポットライトのライトの方向を設定
 		/// </summary>
 		/// <param name="direction">方向</param>
-		void SetSpotLightDirection(Vector3 direction)
+		void SetSpotLightDirection(Vector3 direction, int lightNo = 0)
 		{
-			m_sceneLight.SetSpotLightDirection(direction);
+			m_sceneLight.SetSpotLightDirection(direction, lightNo);
 		}
 		/// <summary>
 		/// スポットライトのライトの角度を設定
 		/// </summary>
 		/// <param name="angle">角度</param>
-		void SetSpotLightAngle(Vector3 angle)
+		void SetSpotLightAngle(Vector3 angle, int lightNo = 0)
 		{
-			m_sceneLight.SetSpotLightAngle(angle);
+			m_sceneLight.SetSpotLightAngle(angle, lightNo);
 		}
 		/// <summary>
 		/// スポットライトを使用する
 		/// </summary>
-		void UseSpotLight()
+		void UseSpotLight(int lightNo = 0)
 		{
-			m_sceneLight.UseSpotLight();
+			m_sceneLight.UseSpotLight(lightNo);
 		}
 		/// <summary>
 		/// スポットライトを使用しない
 		/// </summary>
-		void UnUseSpotLight()
+		void UnUseSpotLight(int lightNo = 0)
 		{
-			m_sceneLight.UnUseSpotLight();
+			m_sceneLight.UnUseSpotLight(lightNo);
 		}
 
 		/// <summary>
 		/// スポットライトの位置を取得
 		/// </summary>
 		/// <returns>座標</returns>
-		const Vector3& GetSpotLightPosition() const
+		const Vector3& GetSpotLightPosition(int lightNo = 0) const
 		{
-			return m_sceneLight.GetSpotLightPosition();
+			return m_sceneLight.GetSpotLightPosition(lightNo);
 		}
 		/// <summary>
 		/// スポットライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector4& GetSpotLightColor() const
+		const Vector4& GetSpotLightColor(int lightNo = 0) const
 		{
-			return m_sceneLight.GetSpotLightColor();
+			return m_sceneLight.GetSpotLightColor(lightNo);
 		}
 		/// <summary>
 		/// スポットライトの影響範囲と累乗するパラメータを取得
 		/// </summary>
 		/// <returns></returns>
-		const Vector3& GetSpotLightAttn()const
+		const Vector3& GetSpotLightAttn(int lightNo = 0)const
 		{
-			return m_sceneLight.GetSpotLightAttn();
+			return m_sceneLight.GetSpotLightAttn(lightNo);
 		}
 		/// <summary>
 		/// スポットライトの光の方向を取得する
 		/// </summary>
 		/// <returns>方向</returns>
-		const Vector3& GetSpotLightDirection() const
+		const Vector3& GetSpotLightDirection(int lightNo = 0) const
 		{
-			return m_sceneLight.GetSpotLightDirection();
+			return m_sceneLight.GetSpotLightDirection(lightNo);
 		}
 		/// <summary>
 		/// スポットライトの角度を取得する
 		/// </summary>
 		/// <returns>角度</returns>
-		const Vector3& GetSpotLightAngle() const
+		const Vector3& GetSpotLightAngle(int lightNo = 0) const
 		{
-			return m_sceneLight.GetSpotLightAngle();
+			return m_sceneLight.GetSpotLightAngle(lightNo);
 		}
 		/// <summary>
 		/// スポットライトは使用中？
 		/// </summary>
 		/// <returns>使用中の場合true</returns>
-		const int SpotLightIsUse() const
+		const int SpotLightIsUse(int lightNo = 0) const
 		{
-			return m_sceneLight.SpotLightIsUse();
+			return m_sceneLight.SpotLightIsUse(lightNo);
 		}
+
+		void AllUnUseSpotLight();
 
 	////////////////////////////////////////////////////////////////////////////////
 	///半球ライトの関数

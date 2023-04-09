@@ -5,8 +5,8 @@ void nsK2EngineLow::SceneLight::Init()
 {
     //ディレクションライトの初期化
     InitDirectionLight();
-
-    //ポイントライトの初期化
+    InitPointLight();
+    InitSpotLight();
 
     //環境光の設定
     Vector4 ambient = { 0.3f,0.3f,0.3f,1.0f };
@@ -46,5 +46,16 @@ void nsK2EngineLow::SceneLight::InitPointLight()
         SetPointLightColor(g_vec3Zero, i);
         SetPointLightAttn(g_vec3Zero, i);
         UnUsePointLight(i);
+    }
+}
+
+void nsK2EngineLow::SceneLight::InitSpotLight()
+{
+    for (int i = 0; i < MAX_SPOT_LIGHT; i++)
+    {
+        SetSpotLightPosition(g_vec3Zero, i);
+        SetSpotLightColor(g_vec3Zero, i);
+        SetSpotLightAttn(g_vec3Zero, i);
+        UnUseSpotLight(i);
     }
 }

@@ -347,7 +347,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback_SlipThroughWall);
 		if (callback_SlipThroughWall.isHit == true)
 		{
-			warpkyori += 100;
+			warpkyori += 200;
 			//ワープ先の座標をさらに100移動させる
 			moreWarpPos = WarpPos;
 			moreWarpPos += m_moveSpeed * warpkyori;
@@ -374,7 +374,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 				if (callback_SlipThroughWall.hitObject == callback_SlipThroughWall2.hitObject) {
 					//埋もれてる
 					//100先に座標変更
-					moreWarpPos += m_moveSpeed * 100;
+					moreWarpPos += m_moveSpeed * 50;
 					WarpPos = moreWarpPos;
 				}
 			}

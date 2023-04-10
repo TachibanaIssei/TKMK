@@ -9,7 +9,7 @@
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
 #include "Map.h"
-//#include "KnightAI.h"
+#include "KnightAI.h"
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "Lamp.h"
@@ -184,9 +184,9 @@ bool Game::Start()
 	//m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
 	//�Ƃ肠�����R�����g�A�E�g
-	//m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-	//m_KnightAI->SetGame(this);
-	//m_Actors.push_back(m_KnightAI);
+	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+	m_KnightAI->SetGame(this);
+	m_Actors.push_back(m_KnightAI);
 	
 	//�}�b�v�̐���
 	m_Map = NewGO<Map>(2, "map");

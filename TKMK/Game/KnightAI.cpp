@@ -37,12 +37,66 @@ KnightAI::~KnightAI()
 {
 
 }
+int KnightAI::CalculateTargetAI(Actor* actor)
+{
+	std::vector<Actor*>& actors = m_game->GetActors();
+	for (auto actor : actors)
+	{
+		int actorlv = actor->GetLevel();
+		if (actorlv >=3)
+		{
+			return 3;
+		}
+		else if (actorlv >=6)
+		{
+			return 2;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+	for (auto actor : actors)
+	{
+		int actorhp = actor->GetHP();
+		if (m_Status.Hp-actorhp>=90)
+		{
+			return 2;
+		}
+		else if (m_Status.Hp - actorhp <= 60)
+		{
+			return 1;
+		}
+	}
+}
 void KnightAI::LotNextTargetAI()
 {
-
+	std::vector<Actor*>& actors = m_game->GetActors();
+	std::vector<int> evals;
+	for (auto actor : actors) {
+		// 各Actor評価値を計算する
+		int eval = CalculateTargetAI(actor);
+		evals.push_back(eval);
+	}
+	// 一番評価値が高いActorを狙う
+	int targetEnemyNo = 0;
+	int maxEval = 0;
+	for (int i = 0; i < evals.size(); i++) {
+		if (maxEval < evals[i]) {
+			// こいつの方が評価値が高い
+			maxEval = evals[i];
+			targetEnemyNo = i;
+		}
+	}
+	AIget = true;
+	AItargetPos = actors[targetEnemyNo]->GetPosition();
 }
 int KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 {
+	if (m_Status.Hp - m_Status.MaxHp >= 50)
+	{
+		
+	}
 	return 0;
 }
 void KnightAI::LotNextTargetEnemy()
@@ -62,63 +116,59 @@ void KnightAI::LotNextTargetEnemy()
 			// こいつの方が評価値が高い
 			maxEval = evals[i];
 			targetEnemyNo = i;
+			
 		}
 	}
-	// 
+	Enemyget = true;
+	EnemytargePos = enemys[targetEnemyNo]->GetPosition();
 }
 int KnightAI::CalculatAIAttackEvaluationValue()
 {
-	return 0;
+	std::vector<Actor*>& actors = m_game->GetActors();
+	for (auto actor : actors)
+	{
+		int actorlv = actor->GetLevel();
+		int level = Lv - actorlv;
+		if (level <= 1)
+		{
+			return 4;
+		}
+		else if (level <= 2)
+		{
+			return 3;
+		}
+		else
+		{
+			return 1;
+		}
+	}
 }
 int KnightAI::CalculatEnemyAttackEvaluationValue()
 {
-	return 0;
-}
-void KnightAI::LotNextAction()
-{
-	// ＡＩを狙うか敵を狙うか決定する
-	int aiAttackEvaluationValue = CalculatAIAttackEvaluationValue();
-	int enemyAttackEvaluationValue = CalculatEnemyAttackEvaluationValue();
-	if (aiAttackEvaluationValue > enemyAttackEvaluationValue) {
-		// AIを狙う評価値が高かった
-		// どのAIを狙うか抽選
-		LotNextTargetAI();
-	}
-	else {
-		// 敵を狙う
-		LotNextTargetEnemy();
-	}
-}
-void KnightAI::Update()
-{
-	m_Status.Hp = 80;
-	// 次のアクションを抽選
-	LotNextAction();
-	// SearchEnemy();
-	Attack();
-	//ステート
-	ManageState();
-	//アニメーションの再生
-	PlayAnimation();
-	Collition();
-	Rotation();
-	m_position.y = m_position_YUp;
-	m_modelRender.SetPosition(m_position);
-	m_modelRender.SetRotation(m_rot);
-	m_modelRender.Update();
-}
-void KnightAI::SearchEnemy()
-{
-	//特定のアニメーションが再生中なら
-	if (IsEnableMove() == false)
+	//エネミーたちの情報を取得する
+	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
+	Neutral_Enemy* m_neutral_enemy = nullptr;
+	//一番小さい
+	float minenemyDistance = INFINITY;
+	for (auto enemy : enemys)
 	{
-		//抜け出す　移動処理を行わない
-		return;
+			//取得したエネミーたちの座標を取得
+			Vector3 enemyPos = enemy->GetPosition();
+			//自分の座標引くエネミーの座標
+			Vector3 diff = m_position - enemyPos;
+			diff.y = 0.0f;
+			float mindistance = diff.Length();
+
+			if (mindistance < minenemyDistance)
+			{
+				minenemyDistance = mindistance;
+				m_neutral_enemy = enemy;
+			}
 	}
+	
 	//アクターたちの情報を取得する
 	std::vector<Actor*>& actors = m_game->GetActors();
 	Actor* m_actor = nullptr;
-	Actor* m_Lvactor = nullptr;
 	float minactorDistance = INFINITY;
 	for (auto actor : actors)
 	{
@@ -138,74 +188,87 @@ void KnightAI::SearchEnemy()
 		}
 
 	}
-	//エネミーたちの情報を取得する
-	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
-	Neutral_Enemy* m_neutral_enemy = nullptr;
-	Neutral_Enemy* m_farneutral_enemy = nullptr;
-	//一番小さい
-	float minenemyDistance = INFINITY;
-	//一番デカい
-	float maxenemyDistance = 0.0f;
-	for (auto enemy : enemys)
+	Vector3 diff = m_neutral_enemy->GetPosition() - m_position;
+	Vector3 diff2 = m_actor->GetPosition() - m_position;
+	float enemypos = diff.Length();
+	float actorpos = diff2.Length();
+	if (enemypos < actorpos)
 	{
-		for (auto actor : actors)
-		{
-			if (actor == this) {
-				//for文の一番最初に戻る
-				continue;
-			}
-			//取得したエネミーたちの座標を取得
-			Vector3 enemyPos = enemy->GetPosition();
-			//自分の座標引くエネミーの座標
-			Vector3 diff = m_position - enemyPos;
-			diff.y = 0.0f;
-			float mindistance = diff.Length();
+		return 3;
+	}
+}
+void KnightAI::LotNextAction()
+{
+	// ＡＩを狙うか敵を狙うか決定する
+	int aiAttackEvaluationValue = CalculatAIAttackEvaluationValue();
+	int enemyAttackEvaluationValue = CalculatEnemyAttackEvaluationValue();
+	if (aiAttackEvaluationValue > enemyAttackEvaluationValue) {
+		// AIを狙う評価値が高かった
+		// どのAIを狙うか抽選
+		LotNextTargetAI();
+	}
+	else {
+		// 敵を狙う
+		LotNextTargetEnemy();
+	}
+}
+void KnightAI::Update()
+{
+	// 次のアクションを抽選
+	LotNextAction();
+	SearchEnemy();
+	Attack();
+	//ステート
+	ManageState();
+	//アニメーションの再生
+	PlayAnimation();
+	Collition();
+	Rotation();
+	m_position.y = m_position_YUp;
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_rot);
+	m_modelRender.Update();
+}
+void KnightAI::SearchEnemy()
+{
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_knightState == enKnightState_Damege ||
+		m_knightState == enKnightState_Death ||
+		m_knightState == enKnightState_UltimateSkill ||
+		m_knightState == enKnightState_ChainAtk ||
+		m_knightState == enKnightState_Skill ||
+		m_knightState == enKnightState_Avoidance)
+	{
+		return;
+	}
+	if (AIget == true)
+	{
+		Vector3 diff = AItargetPos - m_position;
+		Vector3 diff2 = diff * -1;
+		
+	
+		//移動速度を設定する。
+		if (diff2.Length() < 45.0f) {
+			diff2.Normalize();
 			
-			if (mindistance < minenemyDistance)
-			{
-				minenemyDistance = mindistance;
-				m_neutral_enemy = enemy;
-			}
-			Vector3 actorPos = actor->GetPosition();
-			Vector3 diff2 = actorPos - enemyPos;
-			float maxdistance = diff2.Length();
-			if (maxdistance > maxenemyDistance)
-			{
-				maxenemyDistance = maxdistance;
-				m_farneutral_enemy = enemy;
-			}
-
+			m_moveSpeed = diff2 * m_Status.Speed;
+			m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 		}
-	}
-	if (Lv >= 1 && Lv <= 3)
-	{
-		if (m_Status.Hp < m_Status.MaxHp )
+		if (diff.Length() > 40.0f)
 		{
-			Vector3 diff = m_farneutral_enemy->GetPosition() - m_position;
 			diff.Normalize();
-			m_moveSpeed = diff * m_Status.Speed;
-			m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-		}
-		else {
-			Vector3 diff = m_neutral_enemy->GetPosition() - m_position;
-			diff.Normalize();
-			//移動速度を設定する。
 			m_moveSpeed = diff * m_Status.Speed;
 			m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 		}
 	}
-	else if (Lv >= 4 && Lv <= 7)
+	if(Enemyget == true)
 	{
-		Vector3 diff = m_actor->GetPosition() - m_position;
-		diff.y = 0.0f;
+		Vector3 diff = EnemytargePos - m_position;
 		diff.Normalize();
 		//移動速度を設定する。
 		m_moveSpeed = diff * m_Status.Speed;
 		m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-		
 	}
-
-
 }
 const bool KnightAI::CanAttackenemy()
 {
@@ -227,7 +290,7 @@ const bool KnightAI::CanAttackenemy()
 		}
 	}
 	m_targetEnemy = nullptr;
-
+	Enemyget = false;
 	return false;
 }
 const bool KnightAI::CanAttackActor()
@@ -251,6 +314,7 @@ const bool KnightAI::CanAttackActor()
 		}
 	}
 	m_targetActor = nullptr;
+	AIget = false;
 	return false;
 }
 void KnightAI::Attack()

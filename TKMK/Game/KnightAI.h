@@ -51,6 +51,7 @@ private:
 	void LotNextTargetAI();
 	void LotNextTargetEnemy();
 	int CalculateTargetEnemy(Neutral_Enemy* enemy);
+	int CalculateTargetAI(Actor* actor);
 	enum Action {
 		AttackAI,
 		AttackEnemy,
@@ -84,8 +85,10 @@ private:
 	CharUltFlag* charUltFlag = nullptr;
 	Neutral_Enemy* m_targetEnemy = nullptr;					// 今追いかけているエネミー      
 	Actor* m_targetActor = nullptr;
+	Actor* Lvactor = nullptr;
 	bool UltimateSkillFlag = false;
-	bool PL = true;
+	bool AIget = false;
+	bool Enemyget = false;
 	bool UltFlug = false;
 	float SkillSpeed = 270.0f;
 	float UltimateSkillTimer = 0;
@@ -95,6 +98,8 @@ private:
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	int enemyAmount = 0;
 	Vector3 nearPos = Vector3::Zero;
+	Vector3 AItargetPos = Vector3::Zero;
+	Vector3 EnemytargePos = Vector3::Zero;
 
 };
 

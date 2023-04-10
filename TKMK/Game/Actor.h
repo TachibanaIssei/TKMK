@@ -162,7 +162,10 @@ public:
 	int GetAtk() {
 		return m_Status.Atk;
 	}
-
+	int GetHP()
+	{
+		return m_Status.Hp;
+	}
 	/// <summary>
 	/// ’†—§‚ÌÔF‚Ì“G‚ğ“|‚µ‚½UŒ‚‚ğã‚°‚éˆ—
 	/// </summary>

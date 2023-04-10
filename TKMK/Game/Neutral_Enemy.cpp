@@ -43,25 +43,8 @@ bool Neutral_Enemy::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-
 	//モデルを読み込む。
-	enemyColorRam = rand() % 10;
-
-	if (enemyColorRam <= 2)
-	{
-		//緑
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
-	}
-	else if (enemyColorRam >= 4)
-	{
-		//白
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
-	}
-	else if (enemyColorRam = 3)
-	{
-		//赤
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
-	}
+	m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
 
 	//座標を設定
 	m_modelRender.SetPosition(m_position);
@@ -318,6 +301,7 @@ void Neutral_Enemy::Collision()
 			//プレイヤーの攻撃力を取得
 			//何故かm_knightAIがnull
 			//HPを減らす
+			// //HPを減らす
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 
@@ -329,22 +313,6 @@ void Neutral_Enemy::Collision()
 				m_lastAttackActor->ExpProcess(Exp);
 				//剣士に経験値を渡す
 				//m_knightAI->ExpProcess(Exp);
-				//倒した時の報酬を倒した人に渡す
-				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
-				//緑の場合
-				if (enemyColorRam <= 2)
-				{
-					m_lastAttackActor->HpUp(HpPass);
-					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
-					{
-						m_lastAttackActor->HpReset(m_lastAttackActor->GetMaxHp());
-					}
-				}
-				//赤の場合
-				else if (enemyColorRam = 3)
-				{
-					m_lastAttackActor->AtkUp(AtkPass);
-				}
 				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
@@ -590,14 +558,14 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 }
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
-	//�G�l�~�[�����̏���擾����
+	//エネミーたちの情報を取得する
 	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
 	for (auto Enemys : enemys)
 	{
 	/*	if (Enemys == this) {
 			continue;
 		}*/
-		//�擾�����G�l�~�[�����̍�W��擾
+		//取得したエネミーたちの座標を取得
 		Vector3 enemyPos = Enemys->GetPosition();
 		Vector3 diff = m_position - enemyPos;
 		if (diff.Length() < 50.0f)
@@ -645,7 +613,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		if (distance.Length() <= 10.0f)
 		{
 
-			//1����ɂ��������+�P����
+			//1からにしかったら+１しろ
 			
 
 		}

@@ -130,7 +130,7 @@ int KnightAI::CalculatAIAttackEvaluationValue()
 		int level = Lv - actorlv;
 		if (level <= 1)
 		{
-			return 4;
+			return 0;
 		}
 		else if (level <= 2)
 		{
@@ -216,9 +216,9 @@ void KnightAI::Update()
 	LotNextAction();
 	SearchEnemy();
 	Attack();
-　//ステート
+    //ステート
 	ManageState();
-　//アニメーションの再生
+	//アニメーションの再生
 	PlayAnimation();
 	Collition();
 	Rotation();

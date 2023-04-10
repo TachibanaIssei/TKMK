@@ -124,7 +124,8 @@ void WizardPlayer::Update()
 	Avoidance();
 	//回転処理
 	Rotation();
-
+	//当たり判定
+	Collision();
 	//ステート
 	ManageState();
 	//アニメーションの再生

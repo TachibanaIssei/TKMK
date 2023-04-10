@@ -284,7 +284,7 @@ void KnightBase::Collition()
 		{
 			//Œ•Žm‚ÌUŒ‚—Í•ªHP‚ðŒ¸‚ç‚·B
 			//“|‚³‚ê‚½‘ŠŽè‚Ìƒ|ƒCƒ“ƒg‚ð‘‚â‚·
-			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+			/*Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);*/
 		}
 	}
 

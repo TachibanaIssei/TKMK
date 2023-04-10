@@ -235,7 +235,7 @@ bool Game::Start()
 
 
 	//�����蔻��̉���
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

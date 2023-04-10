@@ -131,7 +131,7 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
-　//探索処理。
+    //探索処理。
 	//Search();
 	//追跡処理。
 	//Chase();
@@ -404,7 +404,7 @@ void Neutral_Enemy::Collision()
 
 void Neutral_Enemy::Attack()
 {
-　//攻撃ステートではなかったら
+    //攻撃ステートではなかったら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Attack)
 	{
 		return;
@@ -637,22 +637,6 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		}
 
 	}
-	if (P == 0)
-	{
-		Vector3 newForward = m_patrolPos[0] - m_position;
-		Vector3 distance = newForward;
-		newForward.Normalize();
-		m_forward = newForward;
-		Move();
-		if (distance.Length() <= 10.0f)
-		{
-
-			//1からにしかったら+１しろ
-			
-
-		}
-
-	}
 	if (P == 1)
 	{
 		Vector3 newForward2 = m_patrolPos[1] - m_position;
@@ -710,15 +694,11 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		{
 
 			int ram = rand() % 100;
-			if (ram > 0)
+			if (ram < 50)
 			{
 				P = 2;
 			}
-			/*if (ram > 33)
-			{
-				P = 0;
-			}*/
-			if (ram > 66)
+			if (ram > 50)
 			{
 				P = 4;
 			}
@@ -758,15 +738,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		{
 
 			int ram = rand() % 100;
-			if (ram > 0)
+			if (ram < 50)
 			{
 				P = 4;
 			}
-			/*if (ram > 33)
-			{
-				P = 0;
-			}*/
-			if (ram > 66)
+	
+			if (ram > 50)
 			{
 				P = 6;
 			}
@@ -805,15 +782,12 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		{
 
 			int ram = rand() % 100;
-			if (ram > 0)
+			if (ram < 50)
 			{
 				P = 6;
 			}
-			//if (ram > 33)
-			//{
-			   // P = 0;
-			//}
-			if (ram > 66)
+			
+			if (ram > 50)
 			{
 				P = 8;
 			}

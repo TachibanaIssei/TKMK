@@ -54,27 +54,27 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
-	m_respawnLevel.Init("Assets/level3D/respawnLevel.tkl", [&](LevelObjectData& objData) {
+	m_respawnLevel.Init("Assets/level3D/CharRespawnLevel.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.ForwardMatchName(L"Knight") == true) {
+		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//右上の座標
 			if (objData.number == 1) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//右下の座標
 			if (objData.number == 2) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			//左下の座標
 			if (objData.number == 3) {
-				SetRespawnPos(objData.position, objData.number);
+				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 		}

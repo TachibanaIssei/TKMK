@@ -48,18 +48,7 @@ bool Map::Start()
 	m_game = FindGO<Game>("game");
 	
 	player = FindGO<Player>("player");
-	//m_Neutral_Enemy = FindGO<Neutral_Enemy>("Neutral_Enemy");
-
-	//m_game->
-	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-
 	
-
-	////配列のサイズを調べてfor文で回す
-	//for (auto seutral_Enemy : seutral_Enemys)
-	//{
-	//	DeleteGO(seutral_Enemy);
-	//}
 	return true;
 }
 void Map::Update()
@@ -127,17 +116,8 @@ void Map::PlayerMap()
 //エネミーのマップの移動処理
 void Map::EnemyMap()
 {
-	if (m_game->GetNeutral_EnemyContaier() == 0)
-	{
-		m_neutral_Enemys.clear();
-		return;
-	}
-	//謎のエラー
-	// レベル上限
-	//m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//enemyの数だけ繰り返す
 	int i = 0;
-	for (auto enemy : m_neutral_Enemys)
+	for (auto enemy : m_game->GetNeutral_Enemys())
 	{
 		//エネミーの座標を取得
 		Vector3 enemyPosition = enemy->GetPosition();
@@ -151,24 +131,11 @@ void Map::EnemyMap()
 			i++;
 		}
 	}
-
-
-	/*Vector3 enemyPosition = m_Neutral_Enemy->GetPosition();
-	Vector3 mapPosition;
-
-	if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
-	{
-		m_MapEnemy.SetPosition(mapPosition + MAP_CENTER_POSITION);
-
-	}*/
-	//m_MapEnemy.Update();
 }
 void Map::Render(RenderContext& rc) 
 {
-
-	
 	m_Map.Draw(rc);
 	m_MapFrame.Draw(rc);
 	m_MapPlayer.Draw(rc);
-	for(int amount=0;amount< m_neutral_Enemys.size();amount++) m_MapEnemy[amount].Draw(rc);
+	for(int amount=0;amount< m_game->GetNeutral_Enemys().size(); amount++) m_MapEnemy[amount].Draw(rc);
 }

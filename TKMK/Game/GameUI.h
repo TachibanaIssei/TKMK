@@ -104,6 +104,8 @@ private:
 	FontRender m_AtkFont;
 	FontRender m_SpeedFont;
 
+	FontRender m_PointFont;
+
 	/*KnightPlayer* m_knightplayer=nullptr;
 	WizardPlayer* wizardPlayer = nullptr;*/
 	Player* player = nullptr;
@@ -119,6 +121,7 @@ private:
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;
 	SpriteRender            m_Flame;                //制限時間と獲得ポイントやHPバーの画像を
+	SpriteRender            m_Point;                //ポイント
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション

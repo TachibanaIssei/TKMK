@@ -4,7 +4,6 @@
 #include "Result.h"
 #include "Tittle.h"
 #include "GameCamera.h"
-#include "KnightBase.h"
 #include "Actor.h"
 #include "GameUI.h"
 #include "KnightPlayer.h"
@@ -13,6 +12,7 @@
 #include "KnightAI.h"
 #include "WizardPlayer.h"
 #include "Player.h"
+#include "Lamp.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -37,27 +37,27 @@ Game::~Game()
 	}
 	DeleteGO(m_gamecamera);
 
-	QueryGOs<Neutral_Enemy>("Neutral_Enemy", [&](Neutral_Enemy* neutral_Enemy_) {
-		DeleteGO(neutral_Enemy_);
-		return true;
-		});
-
-	//Neutral_Enemy��z��ŏ��
-	auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	//�z��̃T�C�Y�𒲂ׂ�for���ŉ�
-	for (auto seutral_Enemy : seutral_Enemys)
+	//�����̓G�̃T�C�Y�𒲂ׂ�for���ŉ�
+	for (auto seutral_Enemy : m_neutral_Enemys)
 	{
 		DeleteGO(seutral_Enemy);
 	}
+	//m_neutral_Enemys.clear();
+
+	for (auto aoctor : m_Actors)
+	{
+		DeleteGO(aoctor);
+	}
 
 	DeleteGO(player);
-	DeleteGO(m_knightplayer);
-	DeleteGO(wizardPlayer);
+	/*DeleteGO(m_knightplayer);
+	DeleteGO(wizardPlayer);*/
 	
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	//DeleteGO(m_KnightAI);
 	DeleteGO(m_bgm);
+	DeleteGO(lamp);
 }
 
 bool Game::Start()
@@ -72,13 +72,22 @@ bool Game::Start()
 	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f,1.0f });
 
 	//�X�^�W�A���̐���
-	m_level3DRender.Init("Assets/level3D/stadiumLevel.tkl", [&](LevelObjectData& objData) {
+	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.EqualObjectName(L"stadium04") == true) {
+		if (objData.EqualObjectName(L"stadium05_ground") == true) {
 			m_backGround = NewGO<BackGround>(0, "backGround");
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);
 			m_backGround->SetScale(objData.scale);
+
+			return true;
+		}
+
+		if (objData.EqualObjectName(L"Lamp") == true) {
+			lamp = NewGO<Lamp>(0, "lamp");
+			lamp->SetPosition(objData.position);
+			lamp->SetRotation(objData.rotation);
+			lamp->SetScale(objData.scale);
 
 			return true;
 		}
@@ -87,32 +96,25 @@ bool Game::Start()
 
 	});
 
+
 	//GameUI�̐���
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//���m�v���C���[�𐶐�
-	/*m_knightplayer = NewGO<KnightPlayer>(0, "m_knightplayer");
-	m_knightplayer->SetSGame(this);
-	m_knightplayer->SetGameUI(m_gameUI);*/
-
 	//�v���C���[�̐���
 	player = NewGO<Player>(0, "player");
 	//��������L�����I��
+
 	player->CharSelect(SelectCharNumber);
 	player->CreaetPlayer();
 	m_Actors.push_back(player->GetPlayerActor());
-
-	////���@�g���v���C���[�̐���
-	//wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
-	//wizardPlayer->SetSGame(this);
 
 	//�Q�[���J�����̐���
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	//m_gamecamera->SetKnight(m_knightplayer);
 
 	//�����̓G�̐���
-	m_Enemylevel.Init("Assets/level3D/enemy_respawn.tkl", [&](LevelObjectData& objData) {
+	m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			//����̍�W
@@ -123,11 +125,9 @@ bool Game::Start()
 			//�E��̍�W
 			if (objData.number == 1) {
 
-				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
@@ -138,11 +138,9 @@ bool Game::Start()
 			}
 			//�E���̍�W
 			if (objData.number == 3) {
-				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
@@ -153,33 +151,26 @@ bool Game::Start()
 			}
 			//�����̍�W
 			if (objData.number == 5) {
-				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//
 				CreateEnemy(objData.position, objData.rotation);
-				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 6) {
-				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
 			if (objData.number == 7) {
-				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
 				ENEMY_AMOUNT;
-				//
 				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 8) {
-				//
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
@@ -214,6 +205,7 @@ bool Game::Start()
 	m_Pause_Front.SetRotation(m_sRotation);
 	m_Pause_Front.Update();
 
+	//�Q�[���̃X�e�[�g��Q�[���ɂ���
 	m_GameState = enGameState_Battle;
 
 	//BGM�̐ݒ�
@@ -242,14 +234,27 @@ bool Game::Start()
 	m_bgm->SetVolume(musicVolume);
 
 
-	//当たり判定の可視化
-  
+	//�����蔻��̉���
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }
 
 void Game::Update()
+{
+	GameState();
+
+	m_modelRender.Update();
+	//m_Pause_Back.Update();
+}
+
+void Game::BattleStart()
+{
+
+}
+
+//�o�g���X�e�[�g���̏���
+void Game::Battle()
 {
 	if (m_GameState == enGameState_Battle) {
 		//���U���g��ʂւ̑J��
@@ -259,66 +264,61 @@ void Game::Update()
 			m_GameState = enGameState_Rezult;
 		}
 	}
-	
 
 	//�|�[�Y��ʂւ̑J��
 	//�X�^�[�g�{�^���������ꂽ��B
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
 		//�Q�[����ʂ���|�[�Y��ʂɑJ�ڂ��鎞�̏���
-		if (m_GameState == enGameState_Battle) {
 			m_GameState = enGameState_Pause;
-			//�v���C���[�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
-			player->CharSetState(Player::enPause);
+			//�v���C���[�AAI�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
+			for (auto character : m_Actors)
+			{
+				character->ChangeGameState(character->enPause);
+			}
 			//UI�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 			//�J�����̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
 			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
 			//�����̓G��|�[�Y��ʗp�̃X�e�[�g�ɕύX
-			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 			////�z��̃T�C�Y�𒲂ׂ�for���ŉ�
-			//for (auto seutral_Enemy : seutral_Enemys)
-			//{
-			//	seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
-			//}
-
-			
-		}
-			
-		//�|�[�Y��ʂ���Q�[����ʂɖ߂鎞�̏���
-		else if (m_GameState == enGameState_Pause) {
-			m_GameState = enGameState_Battle;
-			//�v���C���[�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ł͂Ȃ��悤�ɂ���
-			player->CharSetState(Player::enGame);
-			//UI�̃X�e�[�g��Q�[���̃X�e�[�g�ɕύX
-			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
-			//�J�����̃X�e�[�g��Q�[���̃X�e�[�g�ɕύX
-			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
-			//�����̓G��|�[�Y��ʗp�̃X�e�[�g�ɕύX
-			//auto seutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-			////�z��̃T�C�Y�𒲂ׂ�for���ŉ�
-			//for (auto seutral_Enemy : seutral_Enemys)
-			//{
-			//	seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
-			//}
-		}
+			for (auto seutral_Enemy : m_neutral_Enemys)
+			{
+				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
+			}
 	}
 
-	GameState();
-	
-	//
 	m_Timer += g_gameTime->GetFrameDeltaTime();
-	if (m_Timer>=15) {
+	if (m_Timer >= 20) {
 		Respawn();
 		m_Timer = 0.0f;
 	}
-	
-	m_modelRender.Update();
-	//m_Pause_Back.Update();
 }
 
 //�|�[�Y��ʂ̏���
 void Game::Pause()
 {
+	//�X�^�[�g�{�^���������ꂽ��B
+	if (g_pad[0]->IsTrigger(enButtonStart)) {
+		//�|�[�Y��ʂ���Q�[����ʂɖ߂鎞�̏���
+			m_GameState = enGameState_Battle;
+			//�v���C���[�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ł͂Ȃ��悤�ɂ���
+			// //�v���C���[�AAI�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
+			for (auto character : m_Actors)
+			{
+				character->ChangeGameState(character->enGame);
+			}
+			//UI�̃X�e�[�g��Q�[���̃X�e�[�g�ɕύX
+			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
+			//�J�����̃X�e�[�g��Q�[���̃X�e�[�g�ɕύX
+			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
+			//�����̓G��|�[�Y��ʗp�̃X�e�[�g�ɕύX
+			////�z��̃T�C�Y�𒲂ׂ�for���ŉ�
+			for (auto seutral_Enemy : m_neutral_Enemys)
+			{
+				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
+			}
+	}
+
 	//���ʂ�グ��
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
 		if(musicVolume<4.0f)
@@ -345,58 +345,98 @@ void Game::Pause()
 	}
 }
 
+//�o�g���I�����̏���
+void Game::End()
+{
+
+}
+
 /// <summary>
 /// �����̓G�̃��X�|�[���̏���
 /// </summary>
 void Game::Respawn()
 {
-	if (ENEMY_AMOUNT != enemyNumber) {
-		int spawnAmount = ENEMY_AMOUNT - enemyNumber;
-		for (int generate = 0; generate < spawnAmount; generate++) {
-			enemyNumber++;
-			ENEMY_AMOUNT;
-			CreateEnemy(SetEnemyRespawnPos(), EnemyReapawnPot[SearchRespawnPos]);
-			
-			////
-			////neutral_Enemy->SetPosition(SetEnemyRespawnPos());
-			////neutral_Enemy->SetRotation(objData.rotation);
-			//neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
-
-		}
+	for (int count = 0; count < 10; count++)
+	{
+		EnemyRespawnFlag[count] = false;
 	}
 
-	//�}�b�v��FindGO�֐���Ăяo���G�l�~�[�̐���c������
-	m_Map->FindEnemys();
+	//�����̓G�̑����Ɛ�������Ă��钆���̓G�̐����Ⴄ�Ȃ�
+	if (ENEMY_AMOUNT != m_neutral_Enemys.size()) {
+		//����Ă��Ȃ�����v�Z����
+		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
+		for (int generate = 0; generate < spawnAmount; generate++) {
+			//�����_���Ƀ��X�|�[�������W�̔ԍ���߂�
+			RandamRespawnPosNumber = rand() % 8 + 1;
+
+			//���X�|�[�������W��߂�
+			SetEnemyRespawnPos();
+			//�����̓G����
+			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber]);
+		}
+	}
 }
 
 /// <summary>
-/// 
+/// �����̓G�̃��X�|�[�������W��߂�
 /// </summary>
 /// <returns></returns>
-Vector3 Game::SetEnemyRespawnPos()
+void Game::SetEnemyRespawnPos()
 {
-	SearchRespawnPos = 1;
-	for (SearchRespawnPos; SearchRespawnPos < 9; SearchRespawnPos++)
+	//�����_���ɑI�񂾔ԍ�����
+	SearchRespawnPosNumber = RandamRespawnPosNumber;
+	//�����ԍ��̍ő�l
+	int MaxSearchNumber = SearchRespawnPosNumber - 1;
+	//�I�񂾔ԍ���0�Ȃ�
+	if(SearchRespawnPosNumber==0)
 	{
-		int distanceCounter = 0;
-		for (auto actorPos : m_Actors)
-		{
-			//
-			Vector3 CharPos = actorPos->GetPosition();
-			Vector3 diff = EnemyRespawnPosition[SearchRespawnPos] - CharPos;
-			if (diff.Length() < 200)
-			{
-				distanceCounter++;
-			}
-			
-		}
-		//
-		if (distanceCounter == m_Actors.max_size())
-		{
-			//
-			return EnemyRespawnPosition[SearchRespawnPos];
-		}
+		MaxSearchNumber = 8;
 	}
+
+	while (SearchRespawnPosNumber!= MaxSearchNumber)
+	{
+		if (EnemyRespawnFlag[SearchRespawnPosNumber] == false)
+		{
+			//�A�N�^�[���狗�������ȏ㗣��Ă��邩�̃J�E���^�[
+			int distanceCounter = 0;
+			for (auto actorPos : m_Actors)
+			{
+				Vector3 CharPos = actorPos->GetPosition();
+				//���X�|�[�������W����L�����̍�W�ւ̃x�N�g����v�Z����
+				Vector3 diff = EnemyRespawnPosition[SearchRespawnPosNumber] - CharPos;
+				//�x�N�g���̒�����700�ȏ�Ȃ�
+				if (diff.Length() > 600)
+				{
+					//�J�E���^�[�̒l+1
+					distanceCounter++;
+				}
+
+			}
+			//�L�����̐��Ƌ����J�E���g�������Ȃ甲���o��
+			if (distanceCounter == m_Actors.size())
+			{
+				//
+				EnemyRespawnFlag[SearchRespawnPosNumber] = true;
+				//���̒i�K��SearchRespawnPosNumber�����X�|�[�������W�̔ԍ��ɂȂ�
+				return;
+			}
+		}
+		
+		//���X�|�[�������W�̔ԍ���8�ł͂Ȃ��Ȃ�
+		if (SearchRespawnPosNumber < 8)
+		{
+			SearchRespawnPosNumber++;
+		}
+		else  //���X�|�[�������W�̔ԍ����Ō�(8)�܂ł������
+		{
+			SearchRespawnPosNumber = 0;
+		}
+		
+		
+	}
+	//�S�Ă̍�W�Ń��X�|�[�������W��ݒ�ł��Ȃ������
+	SearchRespawnPosNumber= rand() % 8 + 1;
+	return;
 }
 
 //�Q�[���X�e�[�g�̊Ǘ�
@@ -405,11 +445,11 @@ void Game::GameState()
 	switch (m_GameState)
 	{
 	case enGameState_Start:
-
+		BattleStart();
 		break;
 
 	case enGameState_Battle:
-
+		Battle();
 		break;
 
 	case enGameState_Pause:
@@ -417,7 +457,7 @@ void Game::GameState()
 		break;
 
 	case enGamestate_End:
-
+		End();
 		break;
 
 	case enGameState_Rezult:
@@ -431,11 +471,6 @@ void Game::GameState()
 	}
 }
 
-/// <summary>
-/// 
-/// </summary>
-/// <param name="pos"></param>
-/// <param name="rot"></param>
 void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 
 	enemyNumber++;
@@ -448,6 +483,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 	neutral_Enemy->SetRotation(rot);
 
 	m_neutral_Enemys.push_back(neutral_Enemy);
+	//m_neutral_Enemys.erase(m_neutral_Enemys.);
 }
 
 void Game::Render(RenderContext& rc)

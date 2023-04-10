@@ -6,20 +6,23 @@
 
 WizardBase::WizardBase()
 {
-	//ƒXƒe[ƒ^ƒX‚ğ“Ç‚İ‚Ş
+	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’èª­ã¿è¾¼ã‚€
 	m_Status.Init("Wizard");
-	Lv = 1;                    //ƒŒƒxƒ‹
-	AtkSpeed = 10;              //UŒ‚‘¬“x
+	Lv = 1;                    //ãƒ¬ãƒ™ãƒ«
+	AtkSpeed = 10;              //æ”»æ’ƒé€Ÿåº¦
 
-	Cooltime = 15;            //ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	Cooltime = 15;            //ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 	SkillTimer = Cooltime;
 
-	AvoidanceCoolTime = 2;     ///‰ñ”ğ‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	AvoidanceCoolTime = 2;     ///å›é¿ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 	AvoidanceTimer = AvoidanceCoolTime;
 
-	Point = 0;                 //“G‚ğ“|‚µ‚Äè‚É“ü‚ê‚½ƒ|ƒCƒ“ƒg
-	GetExp = 0;                //’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l
-	ExpTable = 5;              //ŒoŒ±’lƒe[ƒuƒ‹
+	Point = 0;                 //æ•µã‚’å€’ã—ã¦æ‰‹ã«å…¥ã‚ŒãŸãƒã‚¤ãƒ³ãƒˆ
+	GetExp = 0;                //ä¸­ç«‹ã®æ•µã‚’å€’ã—ãŸã¨ãã®çµŒé¨“å€¤
+	ExpTable = 5;              //çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«
+
+	//ã‚¹ãƒ•ã‚£ã‚¢ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’åˆæœŸåŒ–ã€‚
+	m_sphereCollider.Create(1.0f);
 }
 
 WizardBase::~WizardBase()
@@ -28,11 +31,11 @@ WizardBase::~WizardBase()
 }
 
 /// <summary>
-/// –‚–@g‚¢‚Ìƒ‚ƒfƒ‹‚âƒAƒjƒ[ƒVƒ‡ƒ“AƒLƒƒƒ‰ƒRƒ“‚Ì‰Šú‰»
+/// é­”æ³•ä½¿ã„ã®ãƒ¢ãƒ‡ãƒ«ã‚„ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€ã‚­ãƒ£ãƒ©ã‚³ãƒ³ã®åˆæœŸåŒ–
 /// </summary>
 void WizardBase::SetModel()
 {
-	//ƒvƒŒƒCƒ„[
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Wizard/Wizard_Idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/Wizard/Wizard_Walk.tka");
@@ -49,9 +52,10 @@ void WizardBase::SetModel()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Wizard/Wizard_Warp.tka");
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Wizard/Wizard_UltimateSkill.tka");
+	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 
-
-	//–‚–@g‚¢‚Ìƒ‚ƒfƒ‹‚ğ“Ç‚İ‚İ
+	//é­”æ³•ä½¿ã„ã®ãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã¿
 	m_modelRender.Init("Assets/modelData/character/Wizard/Wizard.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 
 	m_position = { 0.0f,0.0f,0.0f };
@@ -69,22 +73,22 @@ void WizardBase::SetModel()
 }
 
 /// <summary>
-/// ’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l‚Ìˆ—
+/// ä¸­ç«‹ã®æ•µã‚’å€’ã—ãŸã¨ãã®çµŒé¨“å€¤ã®å‡¦ç†
 /// </summary>
-/// <param name="GetExp">’†—§‚Ì“G‚ÌŒoŒ±’l</param>
+/// <param name="GetExp">ä¸­ç«‹ã®æ•µã®çµŒé¨“å€¤</param>
 void WizardBase::ExpProcess(int Exp)
 {
-	//‚à‚µƒŒƒxƒ‹‚ª10(Max)‚È‚ç
+	//ã‚‚ã—ãƒ¬ãƒ™ãƒ«ãŒ10(Max)ãªã‚‰
 	if (Lv == 10)return;
-	//©g‚ÌŒoŒ±’l‚É“G‚ğ“|‚µ‚½‚Æ‚«‚Éè‚É“ü‚ê‚éŒoŒ±’l‚ğ‘«‚·
+	//è‡ªèº«ã®çµŒé¨“å€¤ã«æ•µã‚’å€’ã—ãŸã¨ãã«æ‰‹ã«å…¥ã‚Œã‚‹çµŒé¨“å€¤ã‚’è¶³ã™
 	GetExp += Exp;
-	//è‚É“ü‚ê‚½ŒoŒ±’l‚æ‚èŒoŒ±’lƒe[ƒuƒ‹‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚ç
-	if (GetExp < ExpTable) return;      //”²‚¯o‚·
+	//æ‰‹ã«å…¥ã‚ŒãŸçµŒé¨“å€¤ã‚ˆã‚ŠçµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã®ã»ã†ãŒå¤§ãã‹ã£ãŸã‚‰
+	if (GetExp < ExpTable) return;      //æŠœã‘å‡ºã™
 	else {
-		//ŒoŒ±’lƒe[ƒuƒ‹‚æ‚èè‚É“ü‚ê‚½ŒoŒ±’l‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚ç
-		//ƒŒƒxƒ‹ƒAƒbƒv
+		//çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã‚ˆã‚Šæ‰‹ã«å…¥ã‚ŒãŸçµŒé¨“å€¤ã®ã»ã†ãŒå¤§ãã‹ã£ãŸã‚‰
+		//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—
 		LevelUp(LvUpStatus, m_Status, Lv);
-		//ƒŒƒxƒ‹‚É‡‚í‚¹‚ÄƒŒƒxƒ‹‚Ì‰æ‘œ‚ğ•ÏX‚·‚é
+		//ãƒ¬ãƒ™ãƒ«ã«åˆã‚ã›ã¦ãƒ¬ãƒ™ãƒ«ã®ç”»åƒã‚’å¤‰æ›´ã™ã‚‹
 		gameUI->LevelFontChange(Lv);
 		switch (Lv)
 		{
@@ -119,42 +123,105 @@ void WizardBase::ExpProcess(int Exp)
 }
 
 /// <summary>
-/// ‰ñ“]ˆ—
+/// å›è»¢å‡¦ç†
 /// </summary>
 void WizardBase::Rotation()
 {
-	//x‚©z‚ÌˆÚ“®‘¬“x‚ª‚ ‚Á‚½‚ç(ƒXƒeƒBƒbƒN‚Ì“ü—Í‚ª‚ ‚Á‚½‚ç)B
+	//xã‹zã®ç§»å‹•é€Ÿåº¦ãŒã‚ã£ãŸã‚‰(ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›ãŒã‚ã£ãŸã‚‰)ã€‚
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		//ƒLƒƒƒ‰ƒNƒ^[‚Ì•ûŒü‚ğ•Ï‚¦‚éB
+		//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®æ–¹å‘ã‚’å¤‰ãˆã‚‹ã€‚
 		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
-		//ŠG•`‚«‚³‚ñ‚É‰ñ“]‚ğ‹³‚¦‚éB
+		//çµµæãã•ã‚“ã«å›è»¢ã‚’æ•™ãˆã‚‹ã€‚
 		m_modelRender.SetRotation(m_rot);
 	}
 }
 
 /// <summary>
-/// ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚Ìˆ—
+/// å½“ãŸã‚Šåˆ¤å®š
 /// </summary>
-/// <param name="damege">“G‚ÌUŒ‚—Í</param>
-void WizardBase::Dameged(int damege)
+void WizardBase::Collision()
+{
+	//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã€ãƒ€ã‚¦ãƒ³ä¸­ã€å¿…æ®ºæŠ€ã€é€šå¸¸æ”»æ’ƒæ™‚ã¯ãƒ€ãƒ¡ãƒ¼ã‚¸åˆ¤å®šã‚’ã—ãªã„ã€‚
+	if (m_wizardState == enWizardState_Damege ||
+		m_wizardState == enWizardState_Death ||
+		m_wizardState == enWizardState_UltimateSkill ||
+		m_wizardState == enWizardState_Attack ||
+		m_wizardState == enWizardState_Skill ||
+		m_wizardState == enWizardState_Avoidance)
+	{
+		return;
+	}
+	else
+	{
+		//æ•µã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹åå‰ä¸€ç·’ã«ã™ã‚‹
+		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
+		for (auto collision : collisions)
+		{
+			//ã‚³ãƒªã‚¸ãƒ§ãƒ³ãŒè‡ªèº«ã®ã‚­ãƒ£ãƒ©ã‚³ãƒ³ã«å½“ãŸã£ãŸã‚‰
+			if (collision->IsHit(m_charCon))
+			{
+				//ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒåŠ›ã‚’å–ã£ã¦ãã‚‹
+
+				//hpã‚’10æ¸›ã‚‰ã™
+				Dameged(Enemy_atk,m_Neutral_enemy);
+
+			}
+		}
+	}
+	//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã€ãƒ€ã‚¦ãƒ³ä¸­ã€å¿…æ®ºæŠ€ã€é€šå¸¸æ”»æ’ƒæ™‚ã¯ãƒ€ãƒ¡ãƒ¼ã‚¸åˆ¤å®šã‚’ã—ãªã„ã€‚
+	if (m_wizardState == enWizardState_Damege ||
+		m_wizardState == enWizardState_Death ||
+		m_wizardState == enWizardState_UltimateSkill ||
+		m_wizardState == enWizardState_Attack ||
+		m_wizardState == enWizardState_Skill ||
+		m_wizardState == enWizardState_Avoidance)
+	{
+		return;
+	}
+	//æ•µã®æ”»æ’ƒç”¨ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’å–å¾—ã™ã‚‹åå‰ä¸€ç·’ã«ã™ã‚‹
+	const auto& Knightcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®é…åˆ—ã‚’foræ–‡ã§å›ã™
+	for (auto knightcollision : Knightcollisions)
+	{
+		//ã“ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œã£ãŸã‚¢ã‚¯ã‚¿ãƒ¼ã‚’æ¤œç´¢
+		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ãŒè‡ªèº«ã®ã‚­ãƒ£ãƒ©ã‚³ãƒ³ã«å½“ãŸã£ãŸã‚‰
+		if (knightcollision->IsHit(m_charCon))
+		{
+			//å‰£å£«ã®æ”»æ’ƒåŠ›åˆ†HPã‚’æ¸›ã‚‰ã™
+			Dameged(m_lastAttackActor->GetAtk(),m_lastAttackActor);
+
+		}
+	}
+}
+
+/// <summary>
+/// ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®å‡¦ç†
+/// </summary>
+/// <param name="damege">æ•µã®æ”»æ’ƒåŠ›</param>
+void WizardBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
-	//©g‚ÌHP‚ª0ˆÈ‰º‚È‚ç
+	//è‡ªèº«ã®HPãŒ0ä»¥ä¸‹ãªã‚‰
 	if (m_Status.Hp <= 0) {
-		//“|‚³‚ê‚½‚Æ‚«‚Ìˆ—‚É‘JˆÚ
-		//€–SƒXƒe[ƒg
+		//å€’ã•ã‚ŒãŸã¨ãã®å‡¦ç†ã«é·ç§»
+		//æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_wizardState = enWizardState_Death;
 		m_Status.Hp = 0;
-		//Death();
-		//SetRespawn();
-
+		//æ”»æ’ƒã•ã‚ŒãŸç›¸æ‰‹ãŒä¸­ç«‹ã®æ•µä»¥å¤–ãªã‚‰
+		if (CharGivePoints != nullptr)
+		{
+			//å€’ã•ã‚ŒãŸç›¸æ‰‹ã®ãƒã‚¤ãƒ³ãƒˆã‚’å¢—ã‚„ã™
+			CharGivePoints->PointProcess(Lv);
+		}
 
 	}
 	else {
-		//ƒ_ƒ[ƒWƒXƒe[ƒg
+		//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_wizardState = enWizardState_Damege;
-		//–³“GŠÔƒtƒ‰ƒO
+		//ç„¡æ•µæ™‚é–“ãƒ•ãƒ©ã‚°
 		//invincibleFlag = true;
 	}
 }
@@ -164,72 +231,185 @@ void WizardBase::Dameged(int damege)
 /// </summary>
 void WizardBase::Death()
 {
-	////€–SƒXƒe[ƒg
+	////æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆ
 	//m_knightState = enKnightState_Death;
-	//ƒŒƒxƒ‹‚ğ‚P‰º‚°‚é
+	//ãƒ¬ãƒ™ãƒ«ã‚’ï¼‘ä¸‹ã’ã‚‹
 	levelDown(LvUpStatus, m_Status, Lv, 1);
-	//HP‚ğÅ‘å‚É‚·‚é
+	//HPã‚’æœ€å¤§ã«ã™ã‚‹
 	m_Status.Hp = m_Status.MaxHp;
-	//ŒoŒ±’l‚ğƒŠƒZƒbƒg
+	//çµŒé¨“å€¤ã‚’ãƒªã‚»ãƒƒãƒˆ
 	ExpReset(Lv, GetExp);
-	//ˆê‚Â‰º‚ÌƒŒƒxƒ‹‚ÌŒoŒ±’lƒe[ƒuƒ‹‚É‚·‚é
+	//ä¸€ã¤ä¸‹ã®ãƒ¬ãƒ™ãƒ«ã®çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã™ã‚‹
 	ExpTableChamge(Lv, ExpTable);
 
 
-	//ƒŒƒxƒ‹‚É‡‚í‚¹‚ÄƒŒƒxƒ‹‚Ì‰æ‘œ‚ğ•ÏX‚·‚é
+	//ãƒ¬ãƒ™ãƒ«ã«åˆã‚ã›ã¦ãƒ¬ãƒ™ãƒ«ã®ç”»åƒã‚’å¤‰æ›´ã™ã‚‹
 	gameUI->LevelFontChange(Lv);
 }
 
+//è¡çªã—ãŸã¨ãã«å‘¼ã°ã‚Œã‚‹é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ(å£ç”¨)
+struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//è¡çªãƒ•ãƒ©ã‚°ã€‚
+
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//å£ã¨ã¶ã¤ã‹ã£ã¦ãªã‹ã£ãŸã‚‰ã€‚
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
+			//è¡çªã—ãŸã®ã¯å£ã§ã¯ãªã„ã€‚
+			return 0.0f;
+		}
+		
+		//å£ã¨ã¶ã¤ã‹ã£ãŸã‚‰ã€‚
+		//ãƒ•ãƒ©ã‚°ã‚’trueã«ã€‚
+		isHit = true;
+		return 0.0f;
+	}
+};
+
+//è¡çªã—ãŸã¨ãã«å‘¼ã°ã‚Œã‚‹é–¢æ•°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ(ã™ã‚ŠæŠœã‘ã‚‹å£ç”¨)
+struct SweepResultSlipThroughWall :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//è¡çªãƒ•ãƒ©ã‚°ã€‚
+	const btCollisionObject* hitObject = nullptr;
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//è¡çªç‚¹ã‚’è¨˜éŒ²ã—ã¦ã„ã‚‹
+		//convexResult.m_hitPointLocal
+		//ãƒ¯ãƒ¼ãƒ—ã®è·é›¢ãŒé•·ã™ãã‚‹ã¨å½“ãŸã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒåˆ¥ã€…ã®ã¨ãã«ä½¿ã†
+		//hitObjectã«è¨˜éŒ²ã™ã‚‹
+		
+		//å£ã¨ã¶ã¤ã‹ã£ã¦ãªã‹ã£ãŸã‚‰ã€‚
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_SlipThroughWall) {
+			//è¡çªã—ãŸã®ã¯å£ã§ã¯ãªã„ã€‚
+			return 0.0f;
+		}
+		//å£ã¨ã¶ã¤ã‹ã£ãŸã‚‰ã€‚
+		//ãƒ•ãƒ©ã‚°ã‚’trueã«ã€‚
+		hitObject = convexResult.m_hitCollisionObject;
+		isHit = true;
+		return 0.0f;
+	}
+};
+
 /// <summary>
-/// ƒXƒLƒ‹‚Ìˆ—
+/// ã‚¹ã‚­ãƒ«ã®å‡¦ç†
 /// </summary>
-/// <param name="position"></param>
-/// <param name="rotation"></param>
-/// <param name="charCon"></param>
+/// <param name="position">ç¾åœ¨ã®åº§æ¨™</param>
+/// <param name="rotation">ç¾åœ¨ã®å›è»¢é‡</param>
+/// <param name="charCon">ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼</param>
 void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterController& charCon)
 {
+	//ãƒ¯ãƒ¼ãƒ—å…ˆã®åº§æ¨™ã‚’æ ¼ç´ã™ã‚‹
+	Vector3 WarpPos = position;
+
+	Vector3 moreWarpPos = position;
+	int warpkyori = 0;
+	int kyori = 500;
 	m_moveSpeed = Vector3::AxisZ;
-	//‰ñ“]‚à
 	rotation.Apply(m_moveSpeed);
-	position += m_moveSpeed * 500.0f;
-	m_moveSpeed *= 1000.0f;
+	WarpPos += m_moveSpeed * kyori;
 	rotation.AddRotationDegY(360.0f);
+	
+	
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//å§‹ç‚¹ã¯ã‚¨ãƒãƒŸãƒ¼ã®åº§æ¨™ã€‚
+	start.setOrigin(btVector3(position.x, position.y + 70.0f, position.z));
+	//çµ‚ç‚¹ã¯ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åº§æ¨™ã€‚
+	end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
 
+	while (true)
+	{
+		//å£ã®åˆ¤å®šã‚’è¿”ã™
+		SweepResultWall callback_Wall;
+		//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’å§‹ç‚¹ã‹ã‚‰çµ‚ç‚¹ã¾ã§å‹•ã‹ã—ã¦ã€‚
+		//å£ã¨è¡çªã™ã‚‹ã‹ã©ã†ã‹ã‚’èª¿ã¹ã‚‹ã€‚
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback_Wall);
+		//å£ã¨è¡çªã—ãŸï¼
+		if (callback_Wall.isHit == true)
+		{
+			//ãƒ¯ãƒ¼ãƒ—ã•ã›ãªã„ã€‚
+			//ãƒ¯ãƒ¼ãƒ—ã®è·é›¢ã‚’ç¸®ã‚ã‚‹(å£)
+			kyori -= 10;
+			WarpPos = position;
+			WarpPos += m_moveSpeed * kyori;
+			//ãƒ¯ãƒ¼ãƒ—å…ˆã®åº§æ¨™ã‚’å¤‰ãˆã‚‹ã€‚
+			end.setOrigin(btVector3(WarpPos.x, WarpPos.y + 70.0f, WarpPos.z));
+			continue;
+		}
+		
+		//ã™ã‚ŠæŠœã‘å¯èƒ½ãªå£ã®åˆ¤å®šã‚’è¿”ã™
+		SweepResultSlipThroughWall callback_SlipThroughWall;
+		//ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’å§‹ç‚¹ã‹ã‚‰çµ‚ç‚¹ã¾ã§å‹•ã‹ã—ã¦ã€‚
+		//ã™ã‚ŠæŠœã‘å¯èƒ½ãªå£ã¨è¡çªã™ã‚‹ã‹ã©ã†ã‹ã‚’èª¿ã¹ã‚‹ã€‚
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback_SlipThroughWall);
+		if (callback_SlipThroughWall.isHit == true)
+		{
+			warpkyori += 200;
+			//ãƒ¯ãƒ¼ãƒ—å…ˆã®åº§æ¨™ã‚’ã•ã‚‰ã«100ç§»å‹•ã•ã›ã‚‹
+			moreWarpPos = WarpPos;
+			moreWarpPos += m_moveSpeed * warpkyori;
+	
+			btTransform newend;
+			newend.setIdentity();
+			//æ–°ã—ã„ãƒ¯ãƒ¼ãƒ—å…ˆã®åº§æ¨™ã€‚
+			newend.setOrigin(btVector3(moreWarpPos.x, moreWarpPos.y + 70.0f, moreWarpPos.z));
 
-	Vector3 WarpPos;
-	//ƒ[ƒv‚µ‚½À•W‚ªƒIƒuƒWƒFƒNƒg‚Æ‚©‚Ô‚Á‚Ä‚¢‚é‚È‚ç
-	m_WarpCollisionSolver.Execute
-	(
-		WarpPos,
-		position,
-		oldPosition
-	);
+			SweepResultSlipThroughWall callback_SlipThroughWall2;
+			// ã™ã‚ŠæŠœã‘å£ã«ã¶ã¤ã‹ã£ãŸã®ã§ã€ä¸­ã«å…¥ã£ã¦ã„ãªã„ã‹èª¿ã¹ã‚‹ã€‚
+			PhysicsWorld::GetInstance()->ConvexSweepTest(
+				(const btConvexShape*)m_sphereCollider.GetBody(), 
+				end,                                                   //æœ€åˆã®ãƒ¯ãƒ¼ãƒ—å…ˆã®åº§æ¨™
+				newend,                                                 //ãƒ¯ãƒ¼ãƒ—å…ˆã‹ã‚‰ã•ã‚‰ã«ãƒ¯ãƒ¼ãƒ—å…ˆã®åº§æ¨™
+				callback_SlipThroughWall2);
+			//å£ãã‚Šãã‚Šã«ãƒ¯ãƒ¼ãƒ—ã™ã‚‹ã¨å£ã®ä¸­ã«ãƒ¯ãƒ¼ãƒ—ã—ã¦ã—ã¾ã†
+			if (callback_SlipThroughWall2.isHit == false) {
+				// ãƒ¯ãƒ¼ãƒ—ã§ãã‚‹
+				int a = 0;
+			}
+			else {
+				// ä¸­ã«åŸ‹ã‚‚ã‚Œã¦ã„ãªã„ã‹èª¿ã¹ã‚‹
+				if (callback_SlipThroughWall.hitObject == callback_SlipThroughWall2.hitObject) {
+					//åŸ‹ã‚‚ã‚Œã¦ã‚‹
+					//100å…ˆã«åº§æ¨™å¤‰æ›´
+					moreWarpPos += m_moveSpeed * 50;
+					WarpPos = moreWarpPos;
+				}
+			}
+		}
 
-	//ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚ğg‚Á‚ÄÀ•W‚ğˆÚ“®‚³‚¹‚éB
-	charCon.SetPosition(position);
+		//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’ä½¿ã£ã¦åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹ã€‚
+		charCon.SetPosition(WarpPos);
+		return;
+	}
+
+	
 }
 
 /// <summary>
-/// •KE‹Z‚Ìˆ—
+/// å¿…æ®ºæŠ€ã®å‡¦ç†
 /// </summary>
 void WizardBase::UltimateSkill()
 {
-
+	//å¿…æ®ºæŠ€ã‚¹ãƒ†ãƒ¼ãƒˆ
+	m_wizardState = enWizardState_UltimateSkill;
 }
 
 /// <summary>
-/// ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚É’¼üˆÚ“®‚³‚¹‚é•ûŒü‚ÌŒˆ’è
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿæ™‚ã«ç›´ç·šç§»å‹•ã•ã›ã‚‹æ–¹å‘ã®æ±ºå®š
 /// </summary>
-/// <param name="moveSpeed">ƒXƒeƒBƒbƒN‚ÌˆÚ“®—Ê‚ÆæZ‚³‚¹‚½‚¢ƒXƒs[ƒh‚Ì’l</param>
-/// <param name="stickL">ƒXƒeƒBƒbƒN‚ÌˆÚ“®‚Ì“ü—Í—Ê</param>
+/// <param name="moveSpeed">ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ç§»å‹•é‡ã¨ä¹—ç®—ã•ã›ãŸã„ã‚¹ãƒ”ãƒ¼ãƒ‰ã®å€¤</param>
+/// <param name="stickL">ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®ç§»å‹•ã®å…¥åŠ›é‡</param>
 void WizardBase::AnimationMove(float moveSpeed, Vector3 stickL)
 {
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	//ˆÚ“®‚Ì“ü—Í—Ê‚ª‚È‚¢‚È‚ç
+	//ç§»å‹•ã®å…¥åŠ›é‡ãŒãªã„ãªã‚‰
 	if (stickL.x == 0.0f && stickL.y == 0.0f) {
-		//‘O‚ÉˆÚ“®
+		//å‰ã«ç§»å‹•
 		stickL.x = 0.0f;
 		stickL.y = 1.0f;
 	}
@@ -237,45 +417,46 @@ void WizardBase::AnimationMove(float moveSpeed, Vector3 stickL)
 	m_Skill_Forward = Vector3::Zero;
 	m_Skill_Right = Vector3::Zero;
 
-	//ƒJƒƒ‰‚Ì‘O•ûŒü‚Æ‰E•ûŒü‚ÌƒxƒNƒgƒ‹‚ğ‚Á‚Ä‚­‚éB
+	//ã‚«ãƒ¡ãƒ©ã®å‰æ–¹å‘ã¨å³æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒã£ã¦ãã‚‹ã€‚
 	m_Skill_Forward = g_camera3D->GetForward();
 	m_Skill_Right = g_camera3D->GetRight();
-	//y•ûŒü‚É‚ÍˆÚ“®‚³‚¹‚È‚¢B
+	//yæ–¹å‘ã«ã¯ç§»å‹•ã•ã›ãªã„ã€‚
 	m_Skill_Forward.y = 0.0f;
 	m_Skill_Right.y = 0.0f;
 
-	//¶ƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚Æstatus‚ÌƒXƒs[ƒh‚ğæZB
+	//å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ã¨statusã®ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ä¹—ç®—ã€‚
 	m_Skill_Right *= stickL.x * moveSpeed;
 	m_Skill_Forward *= stickL.y * moveSpeed;
 }
 
-//’¼üˆÚ“®‚³‚¹‚é
+//ç›´ç·šç§»å‹•ã•ã›ã‚‹
 void WizardBase::MoveStraight(Vector3& right, Vector3& forward)
 {
-	//ˆÚ“®ˆ—
-	//ˆÚ“®‘¬“x‚ÉƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚ğ‰ÁZ‚·‚éB
+	//ç§»å‹•å‡¦ç†
+	//ç§»å‹•é€Ÿåº¦ã«ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ã‚’åŠ ç®—ã™ã‚‹ã€‚
 	//Vector3 m_SkillSpeed; 
 	m_moveSpeed = right + forward;
-	//ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚ğg‚Á‚ÄÀ•W‚ğˆÚ“®‚³‚¹‚éB
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’ä½¿ã£ã¦åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹ã€‚
 	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
 
 /// <summary>
-/// ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
+/// ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
 /// </summary>
 void WizardBase::SetRespawn()
 {
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W2”Ô‚Ìæ“¾
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™2ç•ªã®å–å¾—
 	GetRespawnPos();
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
-	//ƒLƒƒƒ‰ƒRƒ“
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
+	//ã‚­ãƒ£ãƒ©ã‚³ãƒ³
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	//–‚–@g‚¢
+	//é­”æ³•ä½¿ã„
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 }
 
 /// <summary>
-/// ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚Ìˆ—
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿã®å‡¦ç†
 /// </summary>
 void WizardBase::PlayAnimation()
 {
@@ -319,7 +500,7 @@ void WizardBase::PlayAnimation()
 }
 
 /// <summary>
-/// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒXƒe[ƒg‚Ìˆ—
+/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¹ãƒ†ãƒ¼ãƒˆã®å‡¦ç†
 /// </summary>
 void WizardBase::ManageState()
 {
@@ -357,25 +538,25 @@ void WizardBase::ManageState()
 }
 
 /// <summary>
-/// •à‚«ƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶‚³‚ê‚Ä‚¢‚é‚È‚çB
+/// æ­©ãã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿã•ã‚Œã¦ã„ã‚‹ãªã‚‰ã€‚
 /// </summary>
 void WizardBase::OnProcessCommonStateTransition()
 {
-	//ƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚ª‚ ‚Á‚½‚ç
+	//ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ãŒã‚ã£ãŸã‚‰
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		if (Lv < 4) {
 			m_wizardState = enWizardState_Walk;
 		}
 		else
-			//‘–‚èƒXƒe[ƒg
+			//èµ°ã‚Šã‚¹ãƒ†ãƒ¼ãƒˆ
 			m_wizardState = enWizardState_Run;
 
 		return;
 	}
 	else
 	{
-		//‚È‚©‚Á‚½‚ç‘Ò‹@ƒXƒe[ƒg
+		//ãªã‹ã£ãŸã‚‰å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_wizardState = enWizardState_Idle;
 		return;
 	}
@@ -393,13 +574,13 @@ void WizardBase::OnProcessRunStateTransition()
 
 void WizardBase::OnProcessAttackStateTransition()
 {
-	//ƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//‘Ò‹@ƒXƒe[ƒg
-		//UŒ‚‚ğn‚ß‚½‚©‚Ì”»’è‚ğfalse‚É‚·‚é
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
+		//æ”»æ’ƒã‚’å§‹ã‚ãŸã‹ã®åˆ¤å®šã‚’falseã«ã™ã‚‹
 		//AtkState = false;
-		//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 		pushFlag = false;
 		m_wizardState = enWizardState_Idle;
 		OnProcessCommonStateTransition();
@@ -408,13 +589,13 @@ void WizardBase::OnProcessAttackStateTransition()
 
 void WizardBase::OnProcessSkillAtkStateTransition()
 {
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚ç
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//‘Ò‹@ƒXƒe[ƒg
-		//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 		pushFlag = false;
-		//ƒXƒLƒ‹ƒGƒ“ƒhƒtƒ‰ƒO‚ğtrue‚É‚·‚é
+		//ã‚¹ã‚­ãƒ«ã‚¨ãƒ³ãƒ‰ãƒ•ãƒ©ã‚°ã‚’trueã«ã™ã‚‹
 		SkillEndFlag = true;
 		m_wizardState = enWizardState_Idle;
 		OnProcessCommonStateTransition();
@@ -428,14 +609,14 @@ void WizardBase::OnProcessUltimateSkillAtkStateTransition()
 
 void WizardBase::OnProcessAvoidanceStateTransition()
 {
-	//‰ñ”ğ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//å›é¿ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		AvoidanceFlag = false;
 		AvoidanceEndFlag = true;
-		//ƒ{ƒ^ƒ“ƒvƒbƒVƒ…ƒtƒ‰ƒO‚ğfalse‚É‚·‚é
+		//ãƒœã‚¿ãƒ³ãƒ—ãƒƒã‚·ãƒ¥ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 		pushFlag = false;
-		//‘Ò‹@ƒXƒe[ƒg
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_wizardState = enWizardState_Idle;
 		OnProcessCommonStateTransition();
 	}
@@ -443,12 +624,12 @@ void WizardBase::OnProcessAvoidanceStateTransition()
 
 void WizardBase::OnProcessDamegeStateTransition()
 {
-	//ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//‘Ò‹@ƒXƒe[ƒg
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_wizardState = enWizardState_Idle;
-		//–³“GŠÔƒXƒe[ƒg
+		//ç„¡æ•µæ™‚é–“ã‚¹ãƒ†ãƒ¼ãƒˆ
 		//invincibleFlag = false;
 		OnProcessCommonStateTransition();
 	}
@@ -456,13 +637,13 @@ void WizardBase::OnProcessDamegeStateTransition()
 
 void WizardBase::OnProcessDeathStateTransition()
 {
-	//ƒ_ƒ[ƒW‚ğó‚¯‚½‚Æ‚«‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚çB
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸã¨ãã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰ã€‚
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚É©g‚ÌÀ•W‚ğƒZƒbƒg
+		//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã«è‡ªèº«ã®åº§æ¨™ã‚’ã‚»ãƒƒãƒˆ
 		SetRespawn();
 		Death();
-		//‘Ò‹@ƒXƒe[ƒg
+		//å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆ
 		m_wizardState = enWizardState_Idle;
 		OnProcessCommonStateTransition();
 	}

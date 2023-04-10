@@ -24,7 +24,7 @@ bool BackGround::Start()
 	m_physicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_SlipThroughWall);
 
 	//�X�^�W�A���̕ǂ̐���
-	m_modelRender_Wall.Init("Assets/modelData/background/stadium05_Wall.tkm");
+	m_modelRender_Wall.InitBackGround("Assets/modelData/background/stadium05_Wall.tkm");
 	m_modelRender_Wall.SetPosition(m_position);
 	m_modelRender_Wall.SetRotation(m_rotation);
 	m_scale.y = 0.7f;

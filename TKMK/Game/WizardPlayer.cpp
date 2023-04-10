@@ -253,7 +253,7 @@ void WizardPlayer::MakeMagicBall()
 /// <summary>
 /// 必殺技の雷の生成
 /// </summary>
-void WizardPlayer::UltimateSkill()
+void WizardPlayer::MakeUltimateSkill()
 {
 	for (auto actors : game->GetActors())
 	{

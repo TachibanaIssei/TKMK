@@ -68,7 +68,7 @@ public:
 	/// <summary>
 	/// 通常攻撃の当たり判定の処理
 	/// </summary>
-	//void AtkCollisiton();
+	void Collision();
 
 	/// <summary>
 	/// 

@@ -14,21 +14,21 @@ namespace {
 
 WizardPlayer::WizardPlayer()
 {
-	//–‚–@g‚¢‚Ìƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
+	//é­”æ³•ä½¿ã„ã®ãƒ¢ãƒ‡ãƒ«ã‚’èª­ã¿è¾¼ã‚€
 	SetModel();
 
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg—p‚ÌŠÖ”‚ğİ’è‚·‚éB
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆç”¨ã®é–¢æ•°ã‚’è¨­å®šã™ã‚‹ã€‚
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W2”Ô‚Ìæ“¾
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™2ç•ªã®å–å¾—
 	GetRespawnPos();
-	respawnNumber = 2;        //ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†
+	respawnNumber = 2;        //ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ç•ªå·
 
 	m_position.y = m_position_YUp;
 	
-	//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ÌƒZƒbƒg
-	//ƒLƒƒƒ‰ƒRƒ“
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã®ã‚»ãƒƒãƒˆ
+	//ã‚­ãƒ£ãƒ©ã‚³ãƒ³
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	m_respawnPos[respawnNumber].y = m_position_YUp;
 	//
@@ -40,23 +40,23 @@ WizardPlayer::WizardPlayer()
 
 	//m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 
-	//Œ•m‚ÌYÀ•W‚ª˜‚È‚Ì‚ÅYÀ•W‚ğã‚°‚é
+	//å‰£å£«ã®Yåº§æ¨™ãŒè…°ãªã®ã§Yåº§æ¨™ã‚’ä¸Šã’ã‚‹
 	//m_position.y = m_position_YUp;
 
 	//m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
-	//ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚ğ•\¦‚·‚éƒtƒHƒ“ƒg‚Ìİ’è
+	//ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’è¡¨ç¤ºã™ã‚‹ãƒ•ã‚©ãƒ³ãƒˆã®è¨­å®š
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);
 	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
 
-	//‰ñ”ğ‚ÌƒtƒŒ[ƒ€‚Ìİ’è
+	//å›é¿ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®è¨­å®š
 	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
 	m_Avoidance_flameRender.SetPosition(AVOIDANCE_FLAME_POS);
-	//‰ñ”ğ‚Ìƒo[‚Ìİ’è
+	//å›é¿ã®ãƒãƒ¼ã®è¨­å®š
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
@@ -69,35 +69,35 @@ WizardPlayer::~WizardPlayer()
 
 void WizardPlayer::Update()
 {
-	//gameƒNƒ‰ƒX‚Ìƒ|[ƒY‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚éŠÔˆ—‚ğs‚í‚È‚¢
+	//gameã‚¯ãƒ©ã‚¹ã®ãƒãƒ¼ã‚ºã®ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹é–“å‡¦ç†ã‚’è¡Œã‚ãªã„
 	if (m_GameState == enPause) {
 		return;
 	}
 
-	//ŠÖ”‚É‚·‚é
+	//é–¢æ•°ã«ã™ã‚‹
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];
 	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 	Skillfont.SetText(Skill);
 
-	//‘OƒtƒŒ[ƒ€‚ÌÀ•W
+	//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®åº§æ¨™
 	oldPosition = m_position;
 
-	//‰ñ”ğ’†‚È‚ç
+	//å›é¿ä¸­ãªã‚‰
 	if (AvoidanceFlag == true) {
 		m_wizardState = enWizardState_Avoidance;
-		//ˆÚ“®ˆ—‚ğs‚¤(’¼üˆÚ“®‚Ì‚İ)B
+		//ç§»å‹•å‡¦ç†ã‚’è¡Œã†(ç›´ç·šç§»å‹•ã®ã¿)ã€‚
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
 
-	//ƒXƒLƒ‹ƒN[ƒ‹ƒ^ƒCƒ€‚Ìˆ—
+	//ã‚¹ã‚­ãƒ«ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®å‡¦ç†
 	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
 	
-	//‰ñ”ğƒN[ƒ‹ƒ^ƒCƒ€‚Ìˆ—
+	//å›é¿ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®å‡¦ç†
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
-	//ƒŒƒxƒ‹ƒAƒbƒv‚·‚é
+	//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã™ã‚‹
 	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
 	//{
 	//	if (Lv != 10)
@@ -106,36 +106,34 @@ void WizardPlayer::Update()
 	//	//m_gameUI->LevelFontChange(Lv);
 	//}
 
-	//ƒ_ƒ[ƒW‚ğó‚¯‚é
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹
 	/*if (g_pad[0]->IsTrigger(enButtonX))
 	{
 		Dameged(dddd);
 	}*/
 
-	//ˆÚ“®ˆ—
-	//ˆÚ“®ˆ—
+	//ç§»å‹•å‡¦ç†
+	//ç§»å‹•å‡¦ç†
 	Vector3 stickL;
 	stickL.x = g_pad[0]->GetLStickXF();
 	stickL.y = g_pad[0]->GetLStickYF();
 	Move(m_position, m_charCon, m_Status, stickL);
 
 	Attack();
-	//‰ñ”ğˆ—
+	//å›é¿å‡¦ç†
 	Avoidance();
-	//‰ñ“]ˆ—
+	//å›è»¢å‡¦ç†
 	Rotation();
 
-	//ƒXƒe[ƒg
+	//ã‚¹ãƒ†ãƒ¼ãƒˆ
 	ManageState();
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿ
 	PlayAnimation();
-	//“–‚½‚è”»’è
-	Collision();
 
-	//ƒN[ƒ‹ƒ^ƒCƒ€‚ªI‚í‚Á‚Ä‚¢‚È‚¢‚È‚ç
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ãŒçµ‚ã‚ã£ã¦ã„ãªã„ãªã‚‰
 	if (AvoidanceTimer != AvoidanceCoolTime)
 	{
-		//‰ñ”ğ‚ÌƒXƒvƒ‰ƒCƒg‚Ì•\¦‚Ìˆ—
+		//å›é¿ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®è¡¨ç¤ºã®å‡¦ç†
 		AvoidanceSprite();
 	}
 
@@ -145,12 +143,12 @@ void WizardPlayer::Update()
 }
 
 /// <summary>
-/// UŒ‚ˆ—
+/// æ”»æ’ƒå‡¦ç†
 /// </summary>
 void WizardPlayer::Attack()
 {
-	//ƒAƒ^ƒbƒN
-	//Aƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
+	//ã‚¢ã‚¿ãƒƒã‚¯
+	//Aãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
 	if (pushFlag==false&&g_pad[0]->IsTrigger(enButtonA))
 	{
 		m_wizardState = enWizardState_Attack;
@@ -159,18 +157,18 @@ void WizardPlayer::Attack()
 		pushFlag = true;
 	}
 
-	//ƒXƒLƒ‹‚ğ”­“®
-	//Bƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
+	//ã‚¹ã‚­ãƒ«ã‚’ç™ºå‹•
+	//Bãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
 	if (pushFlag == false && SkillEndFlag == false && g_pad[0]->IsTrigger(enButtonB))
 	{
-		//HP‚ğŒ¸‚ç‚µ‚ÄHP‚ª0‚É‚È‚é‚È‚çƒ[ƒv‚³‚¹‚È‚¢
+		//HPã‚’æ¸›ã‚‰ã—ã¦HPãŒ0ã«ãªã‚‹ãªã‚‰ãƒ¯ãƒ¼ãƒ—ã•ã›ãªã„
 		if (m_Status.Hp <= 10)
 		{
 			return;
 		}
 		else
 		{
-			//HP‚ğ10Œ¸‚ç‚·
+			//HPã‚’10æ¸›ã‚‰ã™
 			m_Status.Hp -= 10;
 		}
 		m_wizardState = enWizardState_Skill;
@@ -178,18 +176,18 @@ void WizardPlayer::Attack()
 		pushFlag = true;
 	}
 
-	//•KE‹Z‚Ì”­“®
-	//ƒŒƒxƒ‹‚SˆÈã‚Å‚wƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
+	//å¿…æ®ºæŠ€ã®ç™ºå‹•
+	//ãƒ¬ãƒ™ãƒ«ï¼”ä»¥ä¸Šã§ï¼¸ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã‚‰
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
 		
-		//•KE‹Z”­“®‚Ìˆ—
+		//å¿…æ®ºæŠ€ç™ºå‹•æ™‚ã®å‡¦ç†
 		UltimateSkill();
-		//ƒŒƒxƒ‹‚É‡‚í‚¹‚ÄGameUI‚ÌƒŒƒxƒ‹‚Ì‰æ‘œ‚ğ•ÏX‚·‚é
+		//ãƒ¬ãƒ™ãƒ«ã«åˆã‚ã›ã¦GameUIã®ãƒ¬ãƒ™ãƒ«ã®ç”»åƒã‚’å¤‰æ›´ã™ã‚‹
 		//m_gameUI->LevelFontChange(Lv);
 
-		//•KE‹Z”­“®ƒtƒ‰ƒO‚ğƒZƒbƒg
+		//å¿…æ®ºæŠ€ç™ºå‹•ãƒ•ãƒ©ã‚°ã‚’ã‚»ãƒƒãƒˆ
 		//UltimateSkillFlag = true;
 	}
 }
@@ -199,8 +197,8 @@ void WizardPlayer::Attack()
 /// </summary>
 void WizardPlayer::Avoidance()
 {
-	//RBƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çB
-	//‰ñ”ğ
+	//RBãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰ã€‚
+	//å›é¿
 	if (pushFlag == false && AvoidanceEndFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
@@ -213,14 +211,14 @@ void WizardPlayer::Avoidance()
 
 void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	//ˆê’i–Ú‚ÌƒAƒ^ƒbƒN‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªn‚Ü‚Á‚½‚ç
+	//ä¸€æ®µç›®ã®ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"Attack_Start") == 0)
 	{
-		//ƒ}ƒWƒbƒNƒ{[ƒ‹‚ğ¶¬‚·‚é
+		//ãƒã‚¸ãƒƒã‚¯ãƒœãƒ¼ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 		MakeMagicBall();
 	}
 
-	//ƒ[ƒv‚ªn‚Ü‚Á‚½‚ç
+	//ãƒ¯ãƒ¼ãƒ—ãŒå§‹ã¾ã£ãŸã‚‰
 	if (wcscmp(eventName, L"Warp_Start") == 0)
 	{
 		Skill(m_position, m_rot, m_charCon);
@@ -230,19 +228,19 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//
 	if (wcscmp(eventName, L"UltAttack_Start") == 0)
 	{
-		//—‹‚Ì¶¬
+		//é›·ã®ç”Ÿæˆ
 		MakeUltimateSkill();
 	}
 
 }
 
 /// <summary>
-/// ƒ}ƒWƒbƒNƒ{[ƒ‹‚ğ¶¬‚·‚é
+/// ãƒã‚¸ãƒƒã‚¯ãƒœãƒ¼ãƒ«ã‚’ç”Ÿæˆã™ã‚‹
 /// </summary>
 void WizardPlayer::MakeMagicBall()
 {
 	MagicBall* magicBall = NewGO<MagicBall>(0, "magicBall");
-	//»ìÒ‚Ì–¼‘O‚ğ“ü‚ê‚é
+	//è£½ä½œè€…ã®åå‰ã‚’å…¥ã‚Œã‚‹
 	magicBall->SetCreatorName(GetName());
 	Vector3 MagicBallPos = m_position;
 	MagicBallPos.y += 15.0f;
@@ -250,28 +248,27 @@ void WizardPlayer::MakeMagicBall()
 	magicBall->SetPosition(MagicBallPos);
 	magicBall->SetRotation(m_rot);
 	magicBall->SetEnMagician(MagicBall::enMagician_Player);
-	magicBall->GetWizardAttack(m_Status);
 }
 
 /// <summary>
-/// •KE‹Z‚Ì—‹‚Ì¶¬
+/// å¿…æ®ºæŠ€ã®é›·ã®ç”Ÿæˆ
 /// </summary>
-void WizardPlayer::MakeUltimateSkill()
+void WizardPlayer::UltimateSkill()
 {
 	for (auto actors : game->GetActors())
 	{
-		//¶¬‚·‚éƒLƒƒƒ‰‚Æ©•ª‚ÌƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ª“¯‚¶‚È‚çˆ—‚ğ”ò‚Î‚·
+		//ç”Ÿæˆã™ã‚‹ã‚­ãƒ£ãƒ©ã¨è‡ªåˆ†ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ãŒåŒã˜ãªã‚‰å‡¦ç†ã‚’é£›ã°ã™
 		if (GetName() == actors->GetName())
 		{
 			continue;
 		}
-		//•KE‹Z‚Ì—‹‚Ì¶¬
+		//å¿…æ®ºæŠ€ã®é›·ã®ç”Ÿæˆ
 		WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
-		//©•ª‚ÌƒIƒuƒWƒFƒNƒg‚Ì–¼‘O‚ğƒZƒbƒg
+		//è‡ªåˆ†ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰ã‚’ã‚»ãƒƒãƒˆ
 		wizardUlt->SetCreatorName(GetName());
-		//UŒ‚‚·‚éƒAƒNƒ^[‚ÌƒIƒuƒWƒFƒNƒg–¼‚ğƒZƒbƒg
+		//æ”»æ’ƒã™ã‚‹ã‚¢ã‚¯ã‚¿ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã‚’ã‚»ãƒƒãƒˆ
 		wizardUlt->SetActor(actors->GetName());
-		//UŒ‚‚·‚éƒAƒNƒ^[‚ÌÀ•Wæ“¾
+		//æ”»æ’ƒã™ã‚‹ã‚¢ã‚¯ã‚¿ãƒ¼ã®åº§æ¨™å–å¾—
 		Vector3 UltPos = actors->GetPosition();
 		UltPos.y += 100.0f;
 		wizardUlt->SetPosition(UltPos);
@@ -281,7 +278,7 @@ void WizardPlayer::MakeUltimateSkill()
 void WizardPlayer::AvoidanceSprite()
 {
 	Vector3 AvoidanceScale = Vector3::One;
-	//HPƒo[‚ÌŒ¸‚Á‚Ä‚¢‚­Š„‡B
+	//HPãƒãƒ¼ã®æ¸›ã£ã¦ã„ãå‰²åˆã€‚
 	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
 	m_Avoidance_barRender.SetScale(AvoidanceScale);
 
@@ -292,10 +289,10 @@ void WizardPlayer::AvoidanceSprite()
 void WizardPlayer::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	//ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚Æƒ^ƒCƒ}[‚ªˆá‚¤‚¾‚¯•\¦
+	//ã‚¹ã‚­ãƒ«ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã¨ã‚¿ã‚¤ãƒãƒ¼ãŒé•ã†æ™‚ã ã‘è¡¨ç¤º
 	if (SkillTimer != Cooltime)
 		Skillfont.Draw(rc);
-	//‰ñ”ğ‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚Æƒ^ƒCƒ}[‚ªˆá‚¤‚¾‚¯•\¦
+	//å›é¿ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã¨ã‚¿ã‚¤ãƒãƒ¼ãŒé•ã†æ™‚ã ã‘è¡¨ç¤º
 	if (AvoidanceTimer != AvoidanceCoolTime)
 	{
 		m_Avoidance_flameRender.Draw(rc);

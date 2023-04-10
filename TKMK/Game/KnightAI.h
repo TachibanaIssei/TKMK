@@ -21,7 +21,6 @@ public:
 	KnightAI();
 	~KnightAI();
 	void Update();
-	void Collition();
 	void Attack();
 	void Render(RenderContext& rc);
 	void AtkCollisiton();
@@ -77,6 +76,7 @@ private:
 	Actor* m_targetActor = nullptr;
 	bool UltimateSkillFlag = false;
 	bool PL = true;
+	bool UltFlug = false;
 	float SkillSpeed = 270.0f;
 	float UltimateSkillTimer = 0;
 	Level3DRender m_knightAIPoslevel;      //剣士AIのポジションレベル

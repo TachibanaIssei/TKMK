@@ -10,24 +10,13 @@ public:
 	WizardUlt();
 	~WizardUlt();
 
-	//•KE‹Z‚ğŒ‚‚Á‚½ƒLƒƒƒ‰B
+	//å¿…æ®ºæŠ€ã‚’æ’ƒã£ãŸã‚­ãƒ£ãƒ©ã€‚
 	enum EnUltimateSkillian {
-		enUltimateSkill_None,
-		enUltimateSkill_Player,			//ƒvƒŒƒCƒ„[B
-		enUltimateSkill_Wizard,			//–‚–@g‚¢B
+		enMagician_None,
+		enMagician_Player,			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã€‚
+		enMagician_Wizard,			//é­”æ³•ä½¿ã„ã€‚
 	};
 	EnUltimateSkillian m_ultSkillian;
-
-	//–‚–@g‚¢‚Ì•KE‹Z‚ğ‘Å‚½‚ê‚½ƒLƒƒƒ‰
-	enum EnDamegedChar
-	{
-		enDamegedChar_Plater,
-		enDamegedChar_KnightAI,
-		enDamegedChar_WizardAI,
-		enDamegedChar_ZombieAI,
-		enDamegedChar_MonsterAI
-	};
-	EnDamegedChar m_DamegedChar;
 
 	bool Start();
 	void Update();
@@ -36,47 +25,47 @@ public:
 	void Damege();
 
 	/// <summary>
-		/// À•W‚ğİ’è‚·‚éB
+		/// åº§æ¨™ã‚’è¨­å®šã™ã‚‹ã€‚
 		/// </summary>
-		/// <param name="position">À•WB</param>
+		/// <param name="position">åº§æ¨™ã€‚</param>
 	void SetPosition(const Vector3& position)
 	{
 		m_position = position;
 	}
 	/// <summary>
-	/// ‰ñ“]‚ğİ’è‚·‚éB
+	/// å›è»¢ã‚’è¨­å®šã™ã‚‹ã€‚
 	/// </summary>
-	/// <param name="rotation">‰ñ“]B</param>
+	/// <param name="rotation">å›è»¢ã€‚</param>
 	void SetRotation(const Quaternion& rotation)
 	{
 		m_rotation = rotation;
 	}
 	/// <summary>
-	/// ‘å‚«‚³‚ğİ’è‚·‚éB
+	/// å¤§ãã•ã‚’è¨­å®šã™ã‚‹ã€‚
 	/// </summary>
-	/// <param name="scale">‘å‚«‚³B</param>
+	/// <param name="scale">å¤§ãã•ã€‚</param>
 	void SetScale(const Vector3& scale)
 	{
 		m_scale = scale;
 	}
 	/// <summary>
-	/// pÒ‚ğİ’è‚·‚éB
+	/// è¡“è€…ã‚’è¨­å®šã™ã‚‹ã€‚
 	/// </summary>
-	/// <param name="enMagician">pÒB</param>
+	/// <param name="enMagician">è¡“è€…ã€‚</param>
 	void SetEnMagician(const EnUltimateSkillian enMagician)
 	{
 		m_ultSkillian = enMagician;
 	}
 
 	/// <summary>
-	/// ‚±‚ÌƒNƒ‰ƒX‚ğì‚Á‚½ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O
+	/// ã“ã®ã‚¯ãƒ©ã‚¹ã‚’ä½œã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰
 	/// </summary>
-	/// <param name="collisionname">–¼‘O</param>
+	/// <param name="collisionname">åå‰</param>
 	void SetCreatorName(const char* creatorname)
 	{
-		//ƒRƒŠƒWƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğì¬‚·‚éB
+		//ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã™ã‚‹ã€‚
 		UltCollision = NewGO<CollisionObject>(0);
-		//‚±‚ÌƒNƒ‰ƒX‚ğì‚Á‚½ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O
+		//ã“ã®ã‚¯ãƒ©ã‚¹ã‚’ä½œã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰
 		UltCollision->SetCreatorName(creatorname);
 	}
 
@@ -84,23 +73,23 @@ public:
 	{
 		UltCollision->CreateSphere(m_position, Quaternion::Identity, 20.0f);
 		UltCollision->SetName("Wizard_UltSkill");
-		//’¦‚èŠƒIƒuƒWƒFƒNƒg‚ª©“®‚Åíœ‚³‚ê‚È‚¢‚æ‚¤‚É‚·‚éB
+		//æ‡²ã‚Šæ‰€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒè‡ªå‹•ã§å‰Šé™¤ã•ã‚Œãªã„ã‚ˆã†ã«ã™ã‚‹ã€‚
 		UltCollision->SetIsEnableAutoDelete(false);
 	}
 	
 	/// <summary>
-	/// ƒAƒNƒ^[‚ÌƒIƒuƒWƒFƒNƒg–¼‚ğæ“¾‚·‚é
+	/// ã‚¢ã‚¯ã‚¿ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã‚’å–å¾—ã™ã‚‹
 	/// </summary>
-	/// <param name="character">ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O</param>
+	/// <param name="character">ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰</param>
 	const void SetActor(const char* character)
 	{
 		m_targrtName = character;
 	}
 
 	/// <summary>
-	/// ƒAƒNƒ^[‚ÌƒIƒuƒWƒFƒNƒg–¼‚ğ•Ô‚·
+	/// ã‚¢ã‚¯ã‚¿ãƒ¼ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆåã‚’è¿”ã™
 	/// </summary>
-	/// <returns>ƒIƒuƒWƒFƒNƒg‚Ì–¼‘O</returns>
+	/// <returns>ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰</returns>
 	const char* SetTargetActorName()
 	{
 		return m_targrtName;

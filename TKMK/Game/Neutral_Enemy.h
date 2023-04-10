@@ -236,6 +236,13 @@ public:
 		enAnimationClip_Num,					//アニメーションの数。
 	};
 
+	enum EnEnemyKinds {
+		enEnemyKinds_White,						//白
+		enEnemyKinds_Red,						//赤
+		enEnemyKinds_Green,						//緑
+		enEnemyKinds_Num,						//敵の種類
+	};
+
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
@@ -249,6 +256,7 @@ private:
 	Vector3       m_scale = Vector3{0.2f,0.2f,0.2f};           //大きさ
 	CharacterController m_charaCon;                            //キャラコン
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //中立の敵のステート。
+	EnEnemyKinds m_enemyKinds;								   //中立の敵の種類
 	Vector3   RadiusPos;
 	SoundSource* m_se = nullptr;
 
@@ -282,6 +290,10 @@ private:
 	float	m_chaseTimer = 0.0f;			//追跡タイマー。
 	float	m_idleTimer = 0.0f;		        //待機タイマー。
 	float   m_stopTimer = 1.0f;             //止まってしまったタイマー
+
+	int enemyColorRam = 0;					//エネミーのカラーを決める
+	int AtkPass = 10;						//渡す攻撃力の量
+	int HpPass = 30;						//回復量
 
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;

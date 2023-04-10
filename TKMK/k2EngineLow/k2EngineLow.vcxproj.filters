@@ -235,6 +235,7 @@
     <ClCompile Include="CameraCollisionSolver.cpp" />
     <ClCompile Include="PostEffect.cpp" />
     <ClCompile Include="Bloom.cpp" />
+    <ClCompile Include="Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -519,6 +520,7 @@
     <ClInclude Include="CameraCollisionSolver.h" />
     <ClInclude Include="PostEffect.h" />
     <ClInclude Include="Bloom.h" />
+    <ClInclude Include="Shadow.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

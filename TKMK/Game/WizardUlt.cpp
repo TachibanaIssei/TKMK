@@ -17,10 +17,10 @@ WizardUlt::~WizardUlt()
 bool WizardUlt::Start()
 {
 	CreatCollision();
-	//ì¬‚µ‚½ƒAƒNƒ^[‚Ì–¼‘O‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ’T‚·
+	//ï¿½ì¬ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Nï¿½^ï¿½[ï¿½Ì–ï¿½ï¿½Oï¿½ÌƒCï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½Tï¿½ï¿½
 	m_CreatMeActor = FindGO<Actor>(UltCollision->GetCreatorName());
 
-	//ƒ^[ƒQƒbƒg‚ÌƒAƒNƒ^[‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ’T‚·
+	//ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½ÌƒAï¿½Nï¿½^ï¿½[ï¿½ÌƒCï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½ï¿½Tï¿½ï¿½
 	m_targetActor = FindGO<Actor>(SetTargetActorName());
 
 	return true;
@@ -28,14 +28,14 @@ bool WizardUlt::Start()
 
 void WizardUlt::Update()
 {
-	//ƒ^ƒCƒ}[‚ğ‰ÁZ‚·‚éB
+	//ï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½B
 	m_timer += g_gameTime->GetFrameDeltaTime();
-	//ƒ^ƒCƒ}[‚ª10•b‚ğ’´‚¦‚é‚Æ
+	//ï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½10ï¿½bï¿½ğ’´‚ï¿½ï¿½ï¿½ï¿½
 	if (m_timer > 3)
 	{
-		//ƒ_ƒ[ƒW‚ğó‚¯‚é‚©ó‚¯‚È‚¢‚©Œˆ‚ß‚é
+		//ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ó‚¯‚é‚©ï¿½ó‚¯‚È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 		Damege();
-		//ƒ|ƒCƒ“ƒg‚ğ‘‚â‚·
+		//ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ğ‘‚â‚·
 
 		DeleteGO(this);
 	}
@@ -55,14 +55,14 @@ void WizardUlt::Damege()
 {
 	int Randam = rand() % 100;
 	int Damege = 0;
-	//‚à‚µ‚Q‚OˆÈ‰º‚È‚ç‘¦€
+	//ï¿½ï¿½ï¿½Qï¿½Oï¿½È‰ï¿½ï¿½È‚ç‘¦ï¿½ï¿½
 	if (Randam < 20)
 	{
 		Damege = 1000;
-		//ƒ^[ƒQƒbƒg‚ÌƒLƒƒƒ‰‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é(‘¦€)
+		//ï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½ÌƒLï¿½ï¿½ï¿½ï¿½ï¿½Éƒ_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½^ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)
 		m_targetActor->Dameged(Damege, m_CreatMeActor);
 		int downlevel = 1;
-		//‚±‚Ì‹Z‚ğ‘Å‚Á‚½ƒLƒƒƒ‰‚ÌƒŒƒxƒ‹‚ğ‰º‚°‚é
+		//ï¿½ï¿½ï¿½Ì‹Zï¿½ï¿½Å‚ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Ìƒï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		m_CreatMeActor->levelDown(
 			m_CreatMeActor->GetLvUPStatus(), 
 			m_CreatMeActor->GetStatus(), 

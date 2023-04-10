@@ -9,10 +9,9 @@
 #include "KnightPlayer.h"
 #include "Neutral_Enemy.h"
 #include "Map.h"
-#include "KnightAI.h"
+//#include "KnightAI.h"
 #include "WizardPlayer.h"
 #include "Player.h"
-#include "CharUltFlag.h"
 #include "Lamp.h"
 //#include <vector>
 //#include <algorithm>
@@ -23,11 +22,11 @@ namespace {
 
 Game::Game()
 {
-	//soundİ’è
-	//1-5 Title/Game’†BGM
-	//6-10 ‘I‘ğ‰¹
-	//11-20 player‚ÌƒXƒLƒ‹‚È‚Ç‚Ì‰¹
-	//21-30 enemy‚Ì‰¹
+	//soundï¿½İ’ï¿½
+	//1-5 Title/Gameï¿½ï¿½BGM
+	//6-10 ï¿½Iï¿½ï¿½
+	//11-20 playerï¿½ÌƒXï¿½Lï¿½ï¿½ï¿½È‚Ç‚Ì‰ï¿½
+	//21-30 enemyï¿½Ì‰ï¿½
 }
 
 Game::~Game()
@@ -38,7 +37,7 @@ Game::~Game()
 	}
 	DeleteGO(m_gamecamera);
 
-	//’†—§‚Ì“G‚ÌƒTƒCƒY‚ğ’²‚×‚Äfor•¶‚Å‰ñ‚·
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½ÌƒTï¿½Cï¿½Yï¿½ğ’²‚×‚ï¿½forï¿½ï¿½ï¿½Å‰ï¿½
 	for (auto seutral_Enemy : m_neutral_Enemys)
 	{
 		DeleteGO(seutral_Enemy);
@@ -58,7 +57,6 @@ Game::~Game()
 	DeleteGO(m_Map);
 	//DeleteGO(m_KnightAI);
 	DeleteGO(m_bgm);
-	DeleteGO(charUltFlag);
 	DeleteGO(lamp);
 }
 
@@ -66,14 +64,14 @@ bool Game::Start()
 {
 	g_renderingEngine->UnUseHemiLight();
 
-	//?P?B???N?V???????C?g????
-	Vector3 directionLightDir = Vector3{ 1.0f,-1.0f,-1.0f };
+	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
+  
 	directionLightDir.Normalize();
-	Vector4 directionLightColor = Vector4{ 1.0f,1.0f,1.0f, 1.0f };
+	Vector4 directionLightColor = Vector4{ 0.5f, 0.5f, 0.5f, 1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f,1.0f });
+	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f,1.0f });
 
-	//ƒXƒ^ƒWƒAƒ€‚Ì¶¬
+	//ï¿½Xï¿½^ï¿½Wï¿½Aï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium05_ground") == true) {
@@ -98,35 +96,33 @@ bool Game::Start()
 
 	});
 
-	//GameUI‚Ì¶¬
+
+	//GameUIï¿½Ìï¿½ï¿½ï¿½
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//•KE‹Zƒtƒ‰ƒO‚ğ¶¬
-	charUltFlag = NewGO<CharUltFlag>(0, "charUltFlag");
-
-	//ƒvƒŒƒCƒ„[‚Ì¶¬
+	//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìï¿½ï¿½ï¿½
 	player = NewGO<Player>(0, "player");
-	//¶¬‚·‚éƒLƒƒƒ‰‘I‘ğ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½
+
 	player->CharSelect(SelectCharNumber);
 	player->CreaetPlayer();
 	m_Actors.push_back(player->GetPlayerActor());
 
-
-	//ƒQ[ƒ€ƒJƒƒ‰‚Ì¶¬
+	//ï¿½Qï¿½[ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 	//m_gamecamera->SetKnight(m_knightplayer);
 
-	//’†—§‚Ì“G‚Ì¶¬
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½Ìï¿½ï¿½ï¿½
 	m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
-			//¶ã‚ÌÀ•W
+			//ï¿½ï¿½ï¿½ï¿½Ìï¿½W
 			if (objData.number == 0) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//‰Eã‚ÌÀ•W
+			//ï¿½Eï¿½ï¿½Ìï¿½W
 			if (objData.number == 1) {
 
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
@@ -136,11 +132,11 @@ bool Game::Start()
 				return true;
 			}
 			if (objData.number == 2) {
-				//ƒŠƒXƒ|[ƒ“À•W‚Ìİ’è
+				//ï¿½ï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//‰E‰º‚ÌÀ•W
+			//ï¿½Eï¿½ï¿½ï¿½Ìï¿½W
 			if (objData.number == 3) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
@@ -149,11 +145,11 @@ bool Game::Start()
 				return true;
 			}
 			if (objData.number == 4) {
-				//ƒŠƒXƒ|[ƒ“À•W‚Ìİ’è
+				//ï¿½ï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½Wï¿½Ìİ’ï¿½
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//¶‰º‚ÌÀ•W
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½W
 			if (objData.number == 5) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
@@ -187,14 +183,15 @@ bool Game::Start()
 	m_Neutral_Enemy->SetKnightPlayer(m_knightplayer);*/
 	//m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
 
-	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-	m_KnightAI->SetGame(this);
-	m_Actors.push_back(m_KnightAI);
+	//ï¿½Æ‚è‚ ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Aï¿½Eï¿½g
+	//m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+	//m_KnightAI->SetGame(this);
+	//m_Actors.push_back(m_KnightAI);
 	
-	//ƒ}ƒbƒv‚Ì¶¬
+	//ï¿½}ï¿½bï¿½vï¿½Ìï¿½ï¿½ï¿½
 	m_Map = NewGO<Map>(2, "map");
 
-	//ƒ|[ƒY‰æ–Ê‚Ì”wŒi‚Ìİ’è
+	//ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê‚Ì”wï¿½iï¿½Ìİ’ï¿½
 	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
 	m_Pause_Back.SetPosition(g_vec3Zero);
 	m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
@@ -208,27 +205,27 @@ bool Game::Start()
 	m_Pause_Front.SetRotation(m_sRotation);
 	m_Pause_Front.Update();
 
-	//ƒQ[ƒ€‚ÌƒXƒe[ƒg‚ğƒQ[ƒ€‚É‚·‚é
+	//ï¿½Qï¿½[ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
 	m_GameState = enGameState_Battle;
 
-	//BGM‚Ìİ’è
+	//BGMï¿½Ìİ’ï¿½
 	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
 	//se
 	//player
-	//Œ•ƒXƒLƒ‹
+	//ï¿½ï¿½ï¿½Xï¿½Lï¿½ï¿½
 	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
-	//ƒ_ƒ[ƒW‚­‚ç‚Á‚½‚Æ‚«‚Ì”ß–Â
+	//ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Ì”ß–ï¿½
 	g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
-	//Œ•’ÊíUŒ‚
+	//ï¿½ï¿½ï¿½Êï¿½Uï¿½ï¿½
 	g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
 	g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
 	g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
-	//ƒAƒ‹ƒeƒBƒƒbƒg
+	//ï¿½Aï¿½ï¿½ï¿½eï¿½Bï¿½ï¿½ï¿½bï¿½g
 	g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
-	//€–S‚µ‚½‚Æ‚«
+	//ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½
 	g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
 	//enemy
-	//UŒ‚‚Ìº
+	//ï¿½Uï¿½ï¿½ï¿½Ìï¿½
 	g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
 	
 	m_bgm = NewGO<SoundSource>(0);
@@ -237,7 +234,7 @@ bool Game::Start()
 	m_bgm->SetVolume(musicVolume);
 
 
-	//“–‚½‚è”»’è‚Ì‰Â‹‰»
+	//ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½Ì‰Âï¿½ï¿½ï¿½
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
@@ -256,34 +253,34 @@ void Game::BattleStart()
 
 }
 
-//ƒoƒgƒ‹ƒXƒe[ƒg‚Ìˆ—
+//ï¿½oï¿½gï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 void Game::Battle()
 {
 	if (m_GameState == enGameState_Battle) {
-		//ƒŠƒUƒ‹ƒg‰æ–Ê‚Ö‚Ì‘JˆÚ
-		//CTRL‚ª‰Ÿ‚³‚ê‚½‚çB
+		//ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½gï¿½ï¿½Ê‚Ö‚Ì‘Jï¿½ï¿½
+		//CTRLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½B
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
 		{
 			m_GameState = enGameState_Rezult;
 		}
 	}
 
-	//ƒ|[ƒY‰æ–Ê‚Ö‚Ì‘JˆÚ
-	//ƒXƒ^[ƒgƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çB
+	//ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê‚Ö‚Ì‘Jï¿½ï¿½
+	//ï¿½Xï¿½^ï¿½[ï¿½gï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½B
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
-		//ƒQ[ƒ€‰æ–Ê‚©‚çƒ|[ƒY‰æ–Ê‚É‘JˆÚ‚·‚é‚Ìˆ—
+		//ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê‚É‘Jï¿½Ú‚ï¿½ï¿½éï¿½Ìï¿½ï¿½ï¿½
 			m_GameState = enGameState_Pause;
-			//ƒvƒŒƒCƒ„[AAI‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
+			//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½AAIï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê—pï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
 			for (auto character : m_Actors)
 			{
 				character->ChangeGameState(character->enPause);
 			}
-			//UI‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
+			//UIï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê—pï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
-			//ƒJƒƒ‰‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
+			//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê—pï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
 			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
-			//’†—§‚Ì“G‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
-			////”z—ñ‚ÌƒTƒCƒY‚ğ’²‚×‚Äfor•¶‚Å‰ñ‚·
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê—pï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
+			////ï¿½zï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½ğ’²‚×‚ï¿½forï¿½ï¿½ï¿½Å‰ï¿½
 			for (auto seutral_Enemy : m_neutral_Enemys)
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
@@ -297,50 +294,50 @@ void Game::Battle()
 	}
 }
 
-//ƒ|[ƒY‰æ–Ê‚Ìˆ—
+//ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê‚Ìï¿½ï¿½ï¿½
 void Game::Pause()
 {
-	//ƒXƒ^[ƒgƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çB
+	//ï¿½Xï¿½^ï¿½[ï¿½gï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½B
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
-		//ƒ|[ƒY‰æ–Ê‚©‚çƒQ[ƒ€‰æ–Ê‚É–ß‚é‚Ìˆ—
+		//ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê‚ï¿½ï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½Ê‚É–ß‚éï¿½Ìï¿½ï¿½ï¿½
 			m_GameState = enGameState_Battle;
-			//ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚Å‚Í‚È‚¢‚æ‚¤‚É‚·‚é
-			// //ƒvƒŒƒCƒ„[AAI‚ÌƒXƒe[ƒg‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
+			//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê—pï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½Å‚Í‚È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
+			// //ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½AAIï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê—pï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
 			for (auto character : m_Actors)
 			{
 				character->ChangeGameState(character->enGame);
 			}
-			//UI‚ÌƒXƒe[ƒg‚ğƒQ[ƒ€‚ÌƒXƒe[ƒg‚É•ÏX
+			//UIï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
 			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
-			//ƒJƒƒ‰‚ÌƒXƒe[ƒg‚ğƒQ[ƒ€‚ÌƒXƒe[ƒg‚É•ÏX
+			//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ï¿½Qï¿½[ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
 			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
-			//’†—§‚Ì“G‚ğƒ|[ƒY‰æ–Ê—p‚ÌƒXƒe[ƒg‚É•ÏX
-			////”z—ñ‚ÌƒTƒCƒY‚ğ’²‚×‚Äfor•¶‚Å‰ñ‚·
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê—pï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½É•ÏX
+			////ï¿½zï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½ğ’²‚×‚ï¿½forï¿½ï¿½ï¿½Å‰ï¿½
 			for (auto seutral_Enemy : m_neutral_Enemys)
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
 			}
 	}
 
-	//‰¹—Ê‚ğã‚°‚é
+	//ï¿½ï¿½ï¿½Ê‚ï¿½ã‚°ï¿½ï¿½
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
 		if(musicVolume<4.0f)
 		musicVolume += 0.1f;
-		//‰¹—Ê’²®
+		//ï¿½ï¿½ï¿½Ê’ï¿½ï¿½ï¿½
 		m_bgm->SetVolume(musicVolume);
 	}
-	//‰¹—Ê‚ğ‰º‚°‚é
+	//ï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½ï¿½
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if(musicVolume>0)
 		musicVolume -= 0.1f;
-		//‰¹—Ê’²®
+		//ï¿½ï¿½ï¿½Ê’ï¿½ï¿½ï¿½
 		m_bgm->SetVolume(musicVolume);
 	}
 	
 
 
-	//ƒ^ƒCƒgƒ‹‰æ–Ê‚Ö‚Ì‘JˆÚ
-	//Aƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚ç
+	//ï¿½^ï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½Ê‚Ö‚Ì‘Jï¿½ï¿½
+	//Aï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		Tittle*m_tittle = NewGO<Tittle>(0,"m_tittle");
@@ -348,14 +345,14 @@ void Game::Pause()
 	}
 }
 
-//ƒoƒgƒ‹I—¹‚Ìˆ—
+//ï¿½oï¿½gï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 void Game::End()
 {
 
 }
 
 /// <summary>
-/// ’†—§‚Ì“G‚ÌƒŠƒXƒ|[ƒ“‚Ìˆ—
+/// ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½Ìƒï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½
 /// </summary>
 void Game::Respawn()
 {
@@ -364,33 +361,33 @@ void Game::Respawn()
 		EnemyRespawnFlag[count] = false;
 	}
 
-	//’†—§‚Ì“G‚Ì‘”‚Æ¶¬‚³‚ê‚Ä‚¢‚é’†—§‚Ì“G‚Ì”‚ªˆá‚¤‚È‚ç
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½Ì‘ï¿½ï¿½ï¿½ï¿½Æï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é’†ï¿½ï¿½ï¿½Ì“Gï¿½Ìï¿½ï¿½ï¿½ï¿½á‚¤ï¿½È‚ï¿½
 	if (ENEMY_AMOUNT != m_neutral_Enemys.size()) {
-		//‘«‚è‚Ä‚¢‚È‚¢”‚ğŒvZ‚·‚é
+		//ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
 		for (int generate = 0; generate < spawnAmount; generate++) {
-			//ƒ‰ƒ“ƒ_ƒ€‚ÉƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†‚ğŒˆ‚ß‚é
+			//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½Éƒï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì”Ôï¿½ï¿½ï¿½ß‚ï¿½
 			RandamRespawnPosNumber = rand() % 8 + 1;
 
-			//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ğŒˆ‚ß‚é
+			//ï¿½ï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ß‚ï¿½
 			SetEnemyRespawnPos();
-			//’†—§‚Ì“G¶¬
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½ï¿½ï¿½ï¿½
 			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber]);
 		}
 	}
 }
 
 /// <summary>
-/// ’†—§‚Ì“G‚ÌƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ğŒˆ‚ß‚é
+/// ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½Ìƒï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ß‚ï¿½
 /// </summary>
 /// <returns></returns>
 void Game::SetEnemyRespawnPos()
 {
-	//ƒ‰ƒ“ƒ_ƒ€‚É‘I‚ñ‚¾”Ô†‚ğ‘ã“ü
+	//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½É‘Iï¿½ñ‚¾”Ôï¿½ï¿½ï¿½ï¿½ï¿½
 	SearchRespawnPosNumber = RandamRespawnPosNumber;
-	//ŒŸõ‚·‚é”Ô†‚ÌÅ‘å’l
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ôï¿½ï¿½ÌÅ‘ï¿½l
 	int MaxSearchNumber = SearchRespawnPosNumber - 1;
-	//‘I‚ñ‚¾”Ô†‚ª0‚È‚ç
+	//ï¿½Iï¿½ñ‚¾”Ôï¿½ï¿½ï¿½0ï¿½È‚ï¿½
 	if(SearchRespawnPosNumber==0)
 	{
 		MaxSearchNumber = 8;
@@ -400,49 +397,49 @@ void Game::SetEnemyRespawnPos()
 	{
 		if (EnemyRespawnFlag[SearchRespawnPosNumber] == false)
 		{
-			//ƒAƒNƒ^[‚©‚ç‹——£‚ªˆê’èˆÈã—£‚ê‚Ä‚¢‚é‚©‚ÌƒJƒEƒ“ƒ^[
+			//ï¿½Aï¿½Nï¿½^ï¿½[ï¿½ï¿½ï¿½ç‹—ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Èã—£ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½ÌƒJï¿½Eï¿½ï¿½ï¿½^ï¿½[
 			int distanceCounter = 0;
 			for (auto actorPos : m_Actors)
 			{
 				Vector3 CharPos = actorPos->GetPosition();
-				//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚©‚çƒLƒƒƒ‰‚ÌÀ•W‚Ö‚ÌƒxƒNƒgƒ‹‚ğŒvZ‚·‚é
+				//ï¿½ï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½Wï¿½Ö‚Ìƒxï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 				Vector3 diff = EnemyRespawnPosition[SearchRespawnPosNumber] - CharPos;
-				//ƒxƒNƒgƒ‹‚Ì’·‚³‚ª700ˆÈã‚È‚ç
+				//ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ì’ï¿½ï¿½ï¿½ï¿½ï¿½700ï¿½Èï¿½È‚ï¿½
 				if (diff.Length() > 600)
 				{
-					//ƒJƒEƒ“ƒ^[‚Ì’l+1
+					//ï¿½Jï¿½Eï¿½ï¿½ï¿½^ï¿½[ï¿½Ì’l+1
 					distanceCounter++;
 				}
 
 			}
-			//ƒLƒƒƒ‰‚Ì”‚Æ‹——£ƒJƒEƒ“ƒg‚ª“¯‚¶‚È‚ç”²‚¯o‚·
+			//ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½Æ‹ï¿½ï¿½ï¿½ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ç”²ï¿½ï¿½ï¿½oï¿½ï¿½
 			if (distanceCounter == m_Actors.size())
 			{
 				//
 				EnemyRespawnFlag[SearchRespawnPosNumber] = true;
-				//‚±‚Ì’iŠK‚ÌSearchRespawnPosNumber‚ªƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†‚É‚È‚é
+				//ï¿½ï¿½ï¿½Ì’iï¿½Kï¿½ï¿½SearchRespawnPosNumberï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì”Ôï¿½ï¿½É‚È‚ï¿½
 				return;
 			}
 		}
 		
-		//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†‚ª8‚Å‚Í‚È‚¢‚È‚ç
+		//ï¿½ï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì”Ôï¿½ï¿½ï¿½8ï¿½Å‚Í‚È‚ï¿½ï¿½È‚ï¿½
 		if (SearchRespawnPosNumber < 8)
 		{
 			SearchRespawnPosNumber++;
 		}
-		else  //ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚Ì”Ô†‚ªÅŒã(8)‚Ü‚Å‚¢‚Á‚½‚ç
+		else  //ï¿½ï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½Ì”Ôï¿½ï¿½ï¿½ï¿½ÅŒï¿½(8)ï¿½Ü‚Å‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 			SearchRespawnPosNumber = 0;
 		}
 		
 		
 	}
-	//‘S‚Ä‚ÌÀ•W‚ÅƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ğİ’è‚Å‚«‚È‚©‚Á‚½‚ç
+	//ï¿½Sï¿½Ä‚Ìï¿½Wï¿½Åƒï¿½ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½İ’ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	SearchRespawnPosNumber= rand() % 8 + 1;
 	return;
 }
 
-//ƒQ[ƒ€ƒXƒe[ƒg‚ÌŠÇ—
+//ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½ÌŠÇ—ï¿½
 void Game::GameState()
 {
 	switch (m_GameState)
@@ -464,7 +461,7 @@ void Game::GameState()
 		break;
 
 	case enGameState_Rezult:
-		//ƒŠƒUƒ‹ƒg‰æ–Ê‚Ì¶¬AƒQ[ƒ€‚Ìíœ
+		//ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½gï¿½ï¿½Ê‚Ìï¿½ï¿½ï¿½ï¿½Aï¿½Qï¿½[ï¿½ï¿½ï¿½Ìíœ
 		Result* result = NewGO<Result>(0, "Result");
 		DeleteGO(this);
 		break;

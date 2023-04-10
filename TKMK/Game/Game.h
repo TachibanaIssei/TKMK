@@ -50,17 +50,17 @@ public:
 	}*/
 
 	/// <summary>
-	/// ƒGƒlƒ~[‚Ì”‚ğŒ¸‚ç‚·ˆ—
+	/// ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½ï¿½ï¿½ç‚·ï¿½ï¿½ï¿½ï¿½
 	/// </summary>
-	/// <returns>ƒGƒlƒ~[‚Ì”</returns>
+	/// <returns>ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½</returns>
 	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
 
 	/// <summary>
-	/// ƒGƒlƒ~[‚Ì”‚ğŒ¸‚ç‚·ˆ—
+	/// ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½ï¿½ï¿½ç‚·ï¿½ï¿½ï¿½ï¿½
 	/// </summary>
-	/// <returns>ƒGƒlƒ~[‚Ì”</returns>
+	/// <returns>ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½</returns>
 	int GetNeutral_EnemyContaier() {
 		return enemyNumber;
 	}
@@ -77,15 +77,15 @@ public:
 	void RemoveEnemyFromList(Neutral_Enemy* enemy)
 	{
 		std::vector<Neutral_Enemy*>::iterator it = std::find(
-			m_neutral_Enemys.begin(), // ŒŸõŠJnˆÊ’u‚ğ¦‚·ƒCƒeƒŒ[ƒ^
-			m_neutral_Enemys.end(),   // ŒŸõI—¹ˆÊ’u‚ğ¦‚·ƒCƒeƒŒ[ƒ^
-			enemy                     // ŒŸõ‚µ‚½‚¢—v‘f
+			m_neutral_Enemys.begin(), // ï¿½ï¿½ï¿½ï¿½Jï¿½nï¿½Ê’uï¿½ï¿½ï¿½ï¿½Cï¿½eï¿½ï¿½ï¿½[ï¿½^
+			m_neutral_Enemys.end(),   // ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½ï¿½Cï¿½eï¿½ï¿½ï¿½[ï¿½^
+			enemy                     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½f
 		);
 		if (it != m_neutral_Enemys.end()) {
 			m_neutral_Enemys.erase(it);
 		}
 	}
-	//ƒxƒNƒ^Œ^‚ÌNeutral_Enemy‚ğ•Ô‚·
+	//ï¿½xï¿½Nï¿½^ï¿½^ï¿½ï¿½Neutral_Enemyï¿½ï¿½Ô‚ï¿½
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
@@ -95,14 +95,14 @@ public:
 		m_neutral_Enemys.pop_back();
 	}
 
-	//Actor‚ğ•Ô‚·
+	//Actorï¿½ï¿½Ô‚ï¿½
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
 	/// <summary>
-	/// ’†—§‚Ì“G‚Ì–¼‘O‚ğì‚é
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½Ì–ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
 	/// </summary>
 	char* CreateEnemyName() {
 		enemyNum++;
@@ -113,7 +113,7 @@ private:
 		return enemyName;
 	}
 	/// <summary>
-	/// ’†—§‚Ì“G‚ğì‚é
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½Ì“Gï¿½ï¿½ï¿½ï¿½
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
@@ -131,8 +131,8 @@ private:
 	Quaternion m_sRotation = Quaternion::Identity;
 	Vector3 EnemyRespawnPosition[9];
 	Quaternion EnemyReapawnPot[9];
-	SpriteRender m_Pause_Front;    //ƒ|[ƒY‰æ–Ê
-	SpriteRender m_Pause_Back;     //ƒ|[ƒY‚Ì— ‰æ–Ê
+	SpriteRender m_Pause_Front;    //ï¿½|ï¿½[ï¿½Yï¿½ï¿½ï¿½
+	SpriteRender m_Pause_Back;     //ï¿½|ï¿½[ï¿½Yï¿½Ì—ï¿½ï¿½ï¿½ï¿½
 
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
@@ -165,17 +165,18 @@ private:
 
 	float m_Timer = 0.0f;
 
-	//BGM‚Ì‰¹—Ê’²®‚Ég—p‚·‚é•Ï”
+	//BGMï¿½Ì‰ï¿½ï¿½Ê’ï¿½ï¿½ï¿½ï¿½Égï¿½pï¿½ï¿½ï¿½ï¿½Ïï¿½
 	float musicVolume = 1.0f;
 
-	//ƒŠƒUƒ‹ƒg‰æ–Ê‚©‚Ìƒtƒ‰ƒO
+	//ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½gï¿½ï¿½Ê‚ï¿½ï¿½Ìƒtï¿½ï¿½ï¿½O
 	bool RezultFlag = false;
-	//ƒ|[ƒY‰æ–Ê‚©‚Ìƒtƒ‰ƒO
+	//ï¿½|ï¿½[ï¿½Yï¿½ï¿½Ê‚ï¿½ï¿½Ìƒtï¿½ï¿½ï¿½O
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
 
-	//ƒLƒƒƒ‰‚Ì”Ô†
+	//ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Ì”Ôï¿½
 	int SelectCharNumber = 1;
+
 
 	int enemyNum = 0;
 	char* enemyName;

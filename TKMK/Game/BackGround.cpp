@@ -11,8 +11,10 @@ BackGround::~BackGround()
 
 bool BackGround::Start()
 {
-	//ƒXƒ^ƒWƒAƒ€‚Ì°‚Ì¶¬
-	m_modelRender.Init("Assets/modelData/background/stadium05_ground.tkm");
+
+	//ï¿½Xï¿½^ï¿½Wï¿½Aï¿½ï¿½ï¿½Ìï¿½ï¿½Ìï¿½ï¿½ï¿½
+	m_modelRender.InitBackGround("Assets/modelData/background/stadium05_ground.tkm");
+
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rotation);
 	m_scale.y = 1.1f;
@@ -21,7 +23,7 @@ bool BackGround::Start()
 	m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
 	m_physicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_SlipThroughWall);
 
-	//ƒXƒ^ƒWƒAƒ€‚Ì•Ç‚Ì¶¬
+	//ï¿½Xï¿½^ï¿½Wï¿½Aï¿½ï¿½ï¿½Ì•Ç‚Ìï¿½ï¿½ï¿½
 	m_modelRender_Wall.Init("Assets/modelData/background/stadium05_Wall.tkm");
 	m_modelRender_Wall.SetPosition(m_position);
 	m_modelRender_Wall.SetRotation(m_rotation);

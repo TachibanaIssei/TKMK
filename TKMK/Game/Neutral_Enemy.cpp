@@ -131,7 +131,7 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
-　//探索処理。
+    //探索処理。
 	//Search();
 	//追跡処理。
 	//Chase();
@@ -404,7 +404,7 @@ void Neutral_Enemy::Collision()
 
 void Neutral_Enemy::Attack()
 {
-　//攻撃ステートではなかったら
+    //攻撃ステートではなかったら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Attack)
 	{
 		return;

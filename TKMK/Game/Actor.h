@@ -182,7 +182,10 @@ public:
 	int GetAtk() {
 		return m_Status.Atk;
 	}
-
+	int GetHP()
+	{
+		return m_Status.Hp;
+	}
 	/// <summary>
 	/// 中立の赤色の敵を倒した時攻撃を上げる処理
 	/// </summary>

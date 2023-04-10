@@ -266,6 +266,8 @@ private:
 
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
+
+
 	GameCamera* m_gameCamera = nullptr;
 	Player* player = nullptr;
 	MagicBall* magicBall = nullptr;

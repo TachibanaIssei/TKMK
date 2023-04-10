@@ -6,7 +6,6 @@ class BackGround;
 class Result;
 class Tittle;
 class GameCamera;
-//class KnightBase;
 class KnightPlayer;
 class Neutral_Enemy;
 class GameUI;
@@ -16,15 +15,29 @@ class WizardPlayer;
 class Player;
 class CharUltFlag;
 class Actor;
+class Lamp;
 
 class Game : public IGameObject
 {
 public:
 	Game();
 	~Game();
+
+	enum EnGameState {
+		enGameState_Start,
+		enGameState_Battle,
+		enGameState_Pause,
+		enGamestate_End,
+		enGameState_Rezult,
+		enGameState_Num,
+	};
+
 	bool Start();
 	void Update();
+	void BattleStart();
+	void Battle();
 	void Pause();
+	void End();
 	void GameState();
 	
 	/// <summary>
@@ -37,35 +50,23 @@ public:
 	}*/
 
 	/// <summary>
-	/// エネミーの数を減らす処理
+	/// �G�l�~�[�̐���炷����
 	/// </summary>
-	/// <returns>エネミーの数</returns>
+	/// <returns>�G�l�~�[�̐�</returns>
 	int SubNeutral_EnemyContaier() {
 		return enemyNumber--;
 	}
 
 	/// <summary>
-	/// エネミーの数を減らす処理
+	/// �G�l�~�[�̐���炷����
 	/// </summary>
-	/// <returns>エネミーの数</returns>
+	/// <returns>�G�l�~�[�̐�</returns>
 	int GetNeutral_EnemyContaier() {
 		return enemyNumber;
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
-	Vector3 SetEnemyRespawnPos();
+	void SetEnemyRespawnPos();
 
-
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="rot"></param>
-	/// <param name="number"></param>
 	void SetRespawnPosition(Vector3 pos, Quaternion rot, int number) {
 		EnemyRespawnPosition[number] = pos;
 		EnemyReapawnPot[number] = rot;
@@ -73,26 +74,35 @@ public:
 
 	void Render(RenderContext& rc);
 
-	enum EnGameState {
-		enGameState_Start,
-		enGameState_Battle,
-		enGameState_Pause,
-		enGamestate_End,
-		enGameState_Rezult,
-		enGameState_Num,
-	};
-	//Enemy????
+	void RemoveEnemyFromList(Neutral_Enemy* enemy)
+	{
+		std::vector<Neutral_Enemy*>::iterator it = std::find(
+			m_neutral_Enemys.begin(), // ����J�n�ʒu����C�e���[�^
+			m_neutral_Enemys.end(),   // ����I���ʒu����C�e���[�^
+			enemy                     // ��������v�f
+		);
+		if (it != m_neutral_Enemys.end()) {
+			m_neutral_Enemys.erase(it);
+		}
+	}
+	//�x�N�^�^��Neutral_Enemy��Ԃ�
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
-	//Actorを返す
+
+	void Enemys()
+	{
+		m_neutral_Enemys.pop_back();
+	}
+
+	//Actor��Ԃ�
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
 	/// <summary>
-	/// 中立の敵の名前を作る
+	/// �����̓G�̖��O����
 	/// </summary>
 	char* CreateEnemyName() {
 		enemyNum++;
@@ -103,7 +113,7 @@ private:
 		return enemyName;
 	}
 	/// <summary>
-	/// 中立の敵を作る
+	/// �����̓G����
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
@@ -119,16 +129,15 @@ private:
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
-	Vector3 EnemyRespawnPosition[9];          //
-	Quaternion EnemyReapawnPot[9];            //
-	SpriteRender m_Pause_Front;    //ポーズ画面
-	SpriteRender m_Pause_Back;     //ポーズの裏画面
+	Vector3 EnemyRespawnPosition[9];
+	Quaternion EnemyReapawnPot[9];
+	SpriteRender m_Pause_Front;    //�|�[�Y���
+	SpriteRender m_Pause_Back;     //�|�[�Y�̗����
 
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
 	GameCamera* m_gamecamera = nullptr;
-	//KnightBase* m_knightbase = nullptr;
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	KnightAI* m_KnightAI = nullptr;
@@ -138,6 +147,7 @@ private:
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
 	CharUltFlag* charUltFlag = nullptr;
+	Lamp* lamp = nullptr;
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
@@ -149,23 +159,22 @@ private:
 
 	int enemyNumber = 0;
 
-	int SearchRespawnPos;       //
-
-	//bool RespawnNumberBox[50];
+	int SearchRespawnPosNumber = 0;
+	int RandamRespawnPosNumber;
+	bool EnemyRespawnFlag[10];
 
 	float m_Timer = 0.0f;
 
-	//BGMの音量調整に使用する変数
+	//BGM�̉��ʒ����Ɏg�p����ϐ�
 	float musicVolume = 1.0f;
 
-	//リザルト画面かのフラグ
+	//���U���g��ʂ��̃t���O
 	bool RezultFlag = false;
-	//ポーズ画面かのフラグ
+	//�|�[�Y��ʂ��̃t���O
 	bool PauseOpenFlag = false;
 	bool PauseCloseFlag = true;
 
-
-	//キャラの番号
+	//�L�����̔ԍ�
 	int SelectCharNumber = 1;
 
 

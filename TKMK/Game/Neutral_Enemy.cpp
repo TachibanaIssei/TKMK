@@ -27,12 +27,16 @@ Neutral_Enemy::Neutral_Enemy()
 
 Neutral_Enemy::~Neutral_Enemy()
 {
-	
+	m_game = FindGO<Game>("game");
+	//m_game->Enemys();
+	if (m_game != nullptr) {
+		m_game->RemoveEnemyFromList(this);
+	}
 }
 
 bool Neutral_Enemy::Start()
 {
-	//アニメーションを読み込む。
+	//�A�j���[�V������ǂݍ��ށB
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Neutral_Enemy/Idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Neutral_Enemy/Run.tka");
@@ -66,23 +70,23 @@ bool Neutral_Enemy::Start()
 		m_enemyKinds = enEnemyKinds_Red;
 	}
 
-	//座標を設定
+	//��W��ݒ�
 	m_modelRender.SetPosition(m_position);
-	//回転を設定する。
+	//��]��ݒ肷��B
 	m_modelRender.SetRotation(m_rot);
-	//大きさを設定する。
+	//�傫����ݒ肷��B
 	m_modelRender.SetScale(m_scale);
-	//大きさ調整
-	//キャラクターコントローラーを初期化。
+	//�傫������
+	//�L�����N�^�[�R���g���[���[���B
 	m_charaCon.Init(
-		9.0f,			//半径。
-		20.0f,			//高さ。
-		m_position		//座標。
+		9.0f,			//���a�B
+		20.0f,			//�����B
+		m_position		//��W�B
 	);
-	//スフィアコライダーを初期化。
+	//�X�t�B�A�R���C�_�[���B
 	m_sphereCollider.Create(1.0f);
 
-	//頭のボーンのIDを取得する
+	//���̃{�[����ID��擾����
 	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 
 	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
@@ -92,20 +96,20 @@ bool Neutral_Enemy::Start()
 
 	m_HPFrame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
 
-	//アニメーションイベント用の関数を設定する。
+	//�A�j���[�V�����C�x���g�p�̊֐���ݒ肷��B
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
 
-	//乱数を初期化。
+	//�������B
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
 
-	//ステータスを読み込む
+	//�X�e�[�^�X��ǂݍ���
 	m_Status.Init("Enemy");
 
-	//巡回用のパスを読み込む
+	//����p�̃p�X��ǂݍ���
 	m_EnemyPoslevel.Init("Assets/level3D/enemyPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
@@ -122,28 +126,28 @@ bool Neutral_Enemy::Start()
 
 void Neutral_Enemy::Update()
 {
-	// ポーズ中は何もしない
+	// �|�[�Y���͉����Ȃ�
 	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
 		return;
 	}
 
-	//探索処理。
+	//�T����B
 	//Search();
-	//追跡処理。
+	//�ǐՏ����B
 	//Chase();
 
-	//回転処理。
+	//��]�����B
 	Rotation();
-	//当たり判定。
+	//�����蔻��B
 	Collision();
-	//攻撃処理。
+	//�U�������B
 	//Attack();
-	//アニメーションの再生。
+	//�A�j���[�V�����̍Đ��B
 	PlayAnimation();
-	//ステートの遷移処理。
+	//�X�e�[�g�̑J�ڏ����B
 	ManageState();
 	HPBar();
-	//モデルの更新。
+	//���f���̍X�V�B
 	m_modelRender.Update();
 }
 
@@ -151,7 +155,7 @@ void Neutral_Enemy::Move()
 {
 	Vector3 diff = m_forward;
 	diff.Normalize();
-	////移動速度を設定する。
+	////�ړ����x��ݒ肷��B
 	m_moveSpeed = diff * m_Status.Speed;
 	m_forward.Normalize();
 	Vector3 moveSpeed = m_forward * m_Status.Speed + m_hagikiPower;
@@ -171,42 +175,42 @@ void Neutral_Enemy::Rotation()
 	
 	if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
-		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
-		//このフレームではキャラは移動していないので旋回する必要はない。
+		//m_moveSpeed.x��m_moveSpeed.z�̐�Βl���Ƃ��0.001�ȉ��Ƃ������Ƃ�
+		//���̃t���[���ł̓L�����͈ړ����Ă��Ȃ��̂Ő�񂷂�K�v�͂Ȃ��B
 		return;
 	}
-	//atan2はtanθの値を角度(ラジアン単位)に変換してくれる関数。
-	//m_moveSpeed.x / m_moveSpeed.zの結果はtanθになる。
-	//atan2を使用して、角度を求めている。
-	//これが回転角度になる。
+	//atan2��tan�Ƃ̒l��p�x(���W�A���P��)�ɕϊ����Ă����֐��B
+	//m_moveSpeed.x / m_moveSpeed.z�̌��ʂ�tan�ƂɂȂ�B
+	//atan2��g�p���āA�p�x��߂Ă���B
+	//���ꂪ��]�p�x�ɂȂ�B
 	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
-	//atanが返してくる角度はラジアン単位なので
-	//SetRotationDegではなくSetRotationを使用する。
+	//atan���Ԃ��Ă���p�x�̓��W�A���P�ʂȂ̂�
+	//SetRotationDeg�ł͂Ȃ�SetRotation��g�p����B
 	m_rot.SetRotationY(-angle);
 
-	//回転を設定する。
+	//��]��ݒ肷��B
 	m_modelRender.SetRotation(m_rot);
 
-	//プレイヤーの前ベクトルを計算する。
+	//�v���C���[�̑O�x�N�g����v�Z����B
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
 
-//衝突したときに呼ばれる関数オブジェクト(壁用)
+//�Փ˂����Ƃ��ɌĂ΂��֐��I�u�W�F�N�g(�Ǘp)
 struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 {
-	bool isHit = false;						//衝突フラグ。
+	bool isHit = false;						//�Փ˃t���O�B
 
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
-		//壁とぶつかってなかったら。
+		//�ǂƂԂ���ĂȂ������B
 		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
-			//衝突したのは壁ではない。
+			//�Փ˂����͕̂ǂł͂Ȃ��B
 			return 0.0f;
 		}
 
-		//壁とぶつかったら。
-		//フラグをtrueに。
+		//�ǂƂԂ������B
+		//�t���O��true�ɁB
 		isHit = true;
 		return 0.0f;
 	}
@@ -214,7 +218,7 @@ struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 
 void Neutral_Enemy::Chase()
 {
-	//追跡ステートでないなら、追跡処理はしない。
+	//�ǐՃX�e�[�g�łȂ��Ȃ�A�ǐՏ����͂��Ȃ��B
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Chase)
 	{
 		return;
@@ -223,15 +227,15 @@ void Neutral_Enemy::Chase()
 
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
 	diff.Normalize();
-	//移動速度を設定する。
+	//�ړ����x��ݒ肷��B
 	m_moveSpeed = diff * m_Status.Speed;
 	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
-		//地面についた。
+		//�n�ʂɂ����B
 		m_moveSpeed.y = 0.0f;
 	}
 	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる。
+	//�����Ƃ������f���̍�W�����B
 	modelPosition.y += 2.5f;
 	m_modelRender.SetPosition(modelPosition);
 
@@ -239,98 +243,98 @@ void Neutral_Enemy::Chase()
 
 void Neutral_Enemy::Collision()
 {
-	//攻撃中、デス中は当たり判定の処理を行わない
+	//�U�����A�f�X���͓����蔻��̏�����s��Ȃ�
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
 
-	//敵の攻撃用のコリジョンを取得する
+	//�G�̍U���p�̃R���W������擾����
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
-	//子リジョンの配列をfor文で回す
+	//�q���W�����̔z���for���ŉ�
 	for (auto collision : collisions)
 	{
 		if (collision->IsHit(m_charaCon))
 		{
-			//このコリジョンを作ったアクターを検索
+			//���̃R���W����������A�N�^�[���
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
-			//HPを減らす
+			//HP��炷
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 
-			//HPが0になったら
+			//HP��0�ɂȂ����
 			if (m_Status.Hp <= 0)
 			{
-				//相手に経験値を渡す
+				//����Ɍo���l��n��
 				m_lastAttackActor->ExpProcess(Exp);
 				//Deathflag = true;
-				//死亡ステートに遷移する。
+				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 				m_Neutral_Enemy = nullptr;
 			}
 			else {
-				//被ダメージステートに遷移する。
+				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
+				//��ʉ��Đ�
 			}
 		}
 	}
-	//敵の攻撃用のコリジョンを取得する
+	//�G�̍U���p�̃R���W������擾����
 	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
-	//子リジョンの配列をfor文で回す
+	//�q���W�����̔z���for���ŉ�
 	for (auto collision : Ultcollisions)
 	{
 		if (collision->IsHit(m_charaCon))
 		{
-			//このコリジョンを作ったアクターを検索
+			//���̃R���W����������A�N�^�[���
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
-			//hpを減らす
+			//hp��炷
 			m_Status.Hp -= 100;
 			if (m_Status.Hp < 0)
 			{
-				//相手に経験値を渡す
+				//����Ɍo���l��n��
 				m_lastAttackActor->ExpProcess(Exp);
-				//死亡ステートに遷移する。
+				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 				m_Neutral_Enemy = nullptr;
 			}
 			else {
-				//被ダメージステートに遷移する。
+				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
+				//��ʉ��Đ�
 			}
 		}
 	}
-	//攻撃中、デス中は当たり判定の処理を行わない
+	//�U�����A�f�X���͓����蔻��̏�����s��Ȃ�
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
 
-	//敵の攻撃用のコリジョンを取得する
+	//�G�̍U���p�̃R���W������擾����
 	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
-	//子リジョンの配列をfor文で回す
+	//�q���W�����̔z���for���ŉ�
 	for (auto AIcollision : AIcollisions)
 	{
 		if (AIcollision->IsHit(m_charaCon))
 		{
-			//このコリジョンを作ったアクターを検索
+			//���̃R���W����������A�N�^�[���
 			m_lastAttackActor = FindGO<Actor>(AIcollision->GetCreatorName());
 
-			//プレイヤーの攻撃力を取得
-			//何故かm_knightAIがnull
-			//HPを減らす
+			//�v���C���[�̍U���͂�擾
+			//���̂�m_knightAI��null
+			//HP��炷
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 
 
-			//HPが0になったら
+			//HP��0�ɂȂ����
 			if (m_Status.Hp <= 0)
 			{
-				//相手に経験値を渡す
+				//����Ɍo���l��n��
 				m_lastAttackActor->ExpProcess(Exp);
-				//剣士に経験値を渡す
+				//���m�Ɍo���l��n��
 				//m_knightAI->ExpProcess(Exp);
 				//倒した時の報酬を倒した人に渡す
 				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
@@ -349,52 +353,52 @@ void Neutral_Enemy::Collision()
 					m_lastAttackActor->AtkUp(AtkPass);
 				}
 				//Deathflag = true;
-				//死亡ステートに遷移する。
+				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
 			else {
-				//被ダメージステートに遷移する。
+				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
+				//��ʉ��Đ�
 			}
 		}
 	}
 
-	//攻撃中、デス中は当たり判定の処理を行わない
+	//�U�����A�f�X���͓����蔻��̏�����s��Ȃ�
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
 	}
-	//魔法使いの攻撃用のコリジョンを取得する
+	//���@�g���̍U���p�̃R���W������擾����
 	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("Wizard_MagicBall");
-	//コリジョンの配列をfor文で回す
+	//�R���W�����̔z���for���ŉ�
 	for (auto Wizardcollision : Wizardcollisions)
 	{
 		if (Wizardcollision->IsHit(m_charaCon))
 		{
-			//このコリジョンを作ったアクターを検索
+			//���̃R���W����������A�N�^�[���
 			m_lastAttackActor = FindGO<Actor>(Wizardcollision->GetCreatorName());
 			//magicBall = FindGO<MagicBall>("magicBall");
-			//魔法使いの攻撃力を取得
-			//HPを減らす
+			//���@�g���̍U���͂�擾
+			//HP��炷
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 
-			//HPが0になったら
+			//HP��0�ɂȂ����
 			if (m_Status.Hp <= 0)
 			{
 				//player = FindGO<Player>("player");
-				//相手に経験値を渡す
+				//����Ɍo���l��n��
 				m_lastAttackActor->ExpProcess(Exp);
-				//魔法使いに経験値を渡す
+				//���@�g���Ɍo���l��n��
 				//player->CharSetExpProcess(Exp);
 				//Deathflag = true;
-				//死亡ステートに遷移する。
+				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
 			else {
-				//被ダメージステートに遷移する。
+				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
+				//��ʉ��Đ�
 			}
 		}
 	}
@@ -402,7 +406,7 @@ void Neutral_Enemy::Collision()
 
 void Neutral_Enemy::Attack()
 {
-	//攻撃ステートではなかったら
+	//�U���X�e�[�g�ł͂Ȃ������
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Attack)
 	{
 		return;
@@ -412,7 +416,7 @@ void Neutral_Enemy::Attack()
 
 bool Neutral_Enemy::Search()
 {
-	//全てのActorを調べる
+	//�S�Ă�Actor�𒲂ׂ�
 	for (Actor* actor : m_game->GetActors()) {
 
 		Vector3 ActorPosition = actor->GetPosition();
@@ -420,7 +424,7 @@ bool Neutral_Enemy::Search()
 		diff.Normalize();
 		float angle = acosf(diff.Dot(m_forward));
 	
-		//Actorが視界内に居たら。
+		//Actor�����E��ɋ�����B
 		if (Math::PI * 0.8f > fabsf(angle) && (ActorPosition - m_position).LengthSq() <= 100.0f * 100.0f)
 		{
 			m_targetActor = actor;
@@ -429,7 +433,7 @@ bool Neutral_Enemy::Search()
 		}
 	}
 
-	//どのActorも視界内にいない。
+	//�ǂ�Actor���E��ɂ��Ȃ��B
 	m_targetActor = nullptr;
 
 	return false;
@@ -437,11 +441,11 @@ bool Neutral_Enemy::Search()
 
 void Neutral_Enemy::MakeAttackCollision()
 {
-	//攻撃判定用のコリジョンオブジェクトを作成する。
+	//�U������p�̃R���W�����I�u�W�F�N�g��쐬����B
 	auto collisionObject = NewGO<CollisionObject>(0);
-	//頭のボーンのワールド行列を取得する。
+	//���̃{�[���̃��[���h�s���擾����B
 	Matrix matrix = m_modelRender.GetBone(m_AttackBoneId)->GetWorldMatrix();
-	//ボックス状のコリジョンを作成する。
+	//�{�b�N�X��̃R���W������쐬����B
 	collisionObject->CreateSphere(m_position, Quaternion::Identity,20.0f);
 	collisionObject->SetWorldMatrix(matrix);
 	collisionObject->SetName("enemy_attack");
@@ -451,7 +455,7 @@ void Neutral_Enemy::MakeAttackCollision()
 void Neutral_Enemy::ProcessCommonStateTransition()
 {
 	
-	//各タイマーを初期化。
+	//�e�^�C�}�[���B
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
 
@@ -460,20 +464,20 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 		Vector3 diff = m_targetActor->GetPosition() - m_position;
 
 		diff.Normalize();
-		//移動速度を設定する。
+		//�ړ����x��ݒ肷��B
 		m_moveSpeed = diff;
 		
 
-		//攻撃できる距離なら。
+		//�U���ł��鋗���Ȃ�B
 		if (CanAttack() == true)
 		{
-			//乱数によって、攻撃するか待機させるかを決定する。	
+			//�����ɂ��āA�U�����邩�ҋ@�����邩��肷��B	
 			{
-				//乱数によって、攻撃するか待機させるかを決定する。	
+				//�����ɂ��āA�U�����邩�ҋ@�����邩��肷��B	
 		/*		int ram = rand() % 100;
 				if (ram > 50)*/
 
-				//攻撃ステートに移行する。
+				//�U���X�e�[�g�Ɉڍs����B
 				if (m_Neutral_EnemyState == enNeutral_Enemy_Attack) {
 					m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 				}
@@ -484,17 +488,17 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 				return;
 			}
 		}
-		//攻撃できない距離なら。
+		//�U���ł��Ȃ������Ȃ�B
 		else
 		{
 
-			//追跡ステートに移行する。
+			//�ǐՃX�e�[�g�Ɉڍs����B
 			m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 			return;
 
 		}
 	}
-	//敵を見つけられなければ。
+	//�G������Ȃ���΁B
 	else
 	{
 		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
@@ -505,10 +509,10 @@ void Neutral_Enemy::ProcessIdleStateTransition()
 {
 	m_idleTimer += g_gameTime->GetFrameDeltaTime();
 
-	//待機時間がある程度経過したら。
+	//�ҋ@���Ԃ������x�o�߂�����B
 	if (m_idleTimer >= 0.5f)
 	{
-		//他のステートへ遷移する。
+		//���̃X�e�[�g�֑J�ڂ���B
 		ProcessCommonStateTransition();
 
 	}
@@ -516,7 +520,7 @@ void Neutral_Enemy::ProcessIdleStateTransition()
 }
 void Neutral_Enemy::ProcessRunStateTransition()
 {
-	//他のステートへ遷移する。
+	//���̃X�e�[�g�֑J�ڂ���B
 	ProcessCommonStateTransition();
 }
 
@@ -528,20 +532,20 @@ void Neutral_Enemy::ProcessChaseStateTransition()
 		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
 	}
 	else {
-		//攻撃できる距離なら。
+		//�U���ł��鋗���Ȃ�B
 		if (CanAttack())
 		{
-			//他のステートへ遷移する。
+			//���̃X�e�[�g�֑J�ڂ���B
 			ProcessCommonStateTransition();
 			return;
 		}
 	}
 
 	m_chaseTimer += g_gameTime->GetFrameDeltaTime();
-	//追跡時間がある程度経過したら。
+	//�ǐՎ��Ԃ������x�o�߂�����B
 	if (m_chaseTimer >= 0.5f)
 	{
-		//他のステートへ遷移する。
+		//���̃X�e�[�g�֑J�ڂ���B
 		ProcessCommonStateTransition();
 	}
 }
@@ -549,31 +553,31 @@ void Neutral_Enemy::ProcessChaseStateTransition()
 void Neutral_Enemy::ProcessAttackStateTransition()
 {
 	Attack();
-	//攻撃アニメーションの再生が終わったら。
+	//�U���A�j���[�V�����̍Đ����I������B
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//他のステートへ遷移する。
+		//���̃X�e�[�g�֑J�ڂ���B
 		ProcessCommonStateTransition();
 	}
 }
 
 void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 {
-	//被ダメージアニメーションの再生が終わったら。
+	//��_���[�W�A�j���[�V�����̍Đ����I������B
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		if (m_lastAttackActor == nullptr) {
-			//対象が居ないので巡回する。
+			//�Ώۂ����Ȃ��̂ŏ��񂷂�B
 			m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
 
 			return;
 		}
 
-		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
+		//�U�����ꂽ�狗���֌W�����ɁA��芸�����ǐՂ�����B
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 		//Vector3 diff = player->GetCharPosition() - m_position;
 		//diff.Normalize();
-		//移動速度を設定する。
+		//�ړ����x��ݒ肷��B
 		//m_moveSpeed = diff * m_Status.Speed;
 		m_targetActor = m_lastAttackActor;
 	}
@@ -581,13 +585,13 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 
 void Neutral_Enemy::ProcessDeathStateTransition()
 {
-	//ダウンアニメーションの再生が終わったら。
+	//�_�E���A�j���[�V�����̍Đ����I������B
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//m_game->GetNeutral_EnemyContaier().erase(std::remove(m_game->GetNeutral_EnemyContaier().begin(),
 		//	m_game->GetNeutral_EnemyContaier().end(), this), m_game->GetNeutral_EnemyContaier().end()/*std::cend(m_game->GetNeutral_EnemyContaier()*/);
 		m_game->SubNeutral_EnemyContaier();
-		//自身を削除する。
+		//���g��폜����B
 		DeleteGO(this);
 	}
 }
@@ -618,6 +622,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		Move();
 		if (distance.Length() <= 100.0f)
 		{
+			//1����ɂ��������+�P����
 			int ram = rand() % 100 /*+ 1*/;
 			if (ram >= 0)
 			{
@@ -844,7 +849,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		}
 	}
 
-	//対象を探す
+	//�Ώۂ�T��
 	if (Search())
 	{
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
@@ -855,23 +860,23 @@ void Neutral_Enemy::ManageState()
 {
 	switch (m_Neutral_EnemyState)
 	{
-		//待機ステート
+		//�ҋ@�X�e�[�g
 	case enNeutral_Enemy_Idle:
 		ProcessIdleStateTransition();
 		break;
-		//追跡ステート
+		//�ǐՃX�e�[�g
 	case enNeutral_Enemy_Chase:
 		ProcessChaseStateTransition();
 		break;
-		//攻撃ステート
+		//�U���X�e�[�g
 	case enNeutral_Enemy_Attack:
 		ProcessAttackStateTransition();
 		break;
-		//被ダメージステート
+		//��_���[�W�X�e�[�g
 	case enNeutral_Enemy_ReceiveDamage:
 		ProcessReceiveDamageStateTransition();
 		break;
-		//死亡ステート
+		//���S�X�e�[�g
 	case enNeutral_Enemy_Death:
 		ProcessDeathStateTransition();
 		break;
@@ -886,24 +891,24 @@ void Neutral_Enemy::PlayAnimation()
 	m_modelRender.SetAnimationSpeed(1.5f);
 	switch(m_Neutral_EnemyState)
 	{
-		//待機ステート
+		//�ҋ@�X�e�[�g
 	case enNeutral_Enemy_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.5f);
 		break;
-		//追跡ステート
+		//�ǐՃX�e�[�g
 	case enNeutral_Enemy_Chase:
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.5f);
 		break;
-		//攻撃ステート
+		//�U���X�e�[�g
 	case enNeutral_Enemy_Attack:
 		m_modelRender.SetAnimationSpeed(1.0f);
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
 		break;
-		//被ダメージステート
+		//��_���[�W�X�e�[�g
 	case enNeutral_Enemy_ReceiveDamage:
 		m_modelRender.PlayAnimation(enNeutral_Enemy_ReceiveDamage, 0.5f);
 		break;
-		//死亡ステート
+		//���S�X�e�[�g
 	case enNeutral_Enemy_Death:
 		m_modelRender.PlayAnimation(enNeutral_Enemy_Death, 0.5f);
 		break;
@@ -927,13 +932,13 @@ void Neutral_Enemy::HPBar()
 
 	Vector3 BerPosition = m_position;
 	BerPosition.y += 75.0f;
-	//座標を変換する
+	//��W��ϊ�����
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBerPos, BerPosition);
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindowPos, BerPosition);
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBackPos, BerPosition);
 
-	//HPバー画像を左寄せに表示する
-	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
+	//HP�o�[�摜��񂹂ɕ\������
+	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//�摜�̌��̑傫��
 	m_HPBerPos.x -= BerSizeSubtraction.x;
 
 	m_HPBar.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
@@ -946,9 +951,9 @@ void Neutral_Enemy::HPBar()
 }
 Vector3 Neutral_Enemy::HPBerSend(Vector3 size, Vector3 scale)
 {
-	Vector3 hpBerSize = size;								//画像の元の大きさ
-	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
-	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
+	Vector3 hpBerSize = size;								//�摜�̌��̑傫��
+	Vector3 changeBerSize = Vector3::Zero;					//�摜��X�P�[���ϊ��������Ƃ̑傫��
+	Vector3 BerSizeSubtraction = Vector3::Zero;				//�摜�̌��ƕϊ���̍�
 
 	changeBerSize.x = hpBerSize.x * scale.x;
 	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
@@ -968,10 +973,10 @@ bool Neutral_Enemy::DrawHP()
 	float cos = Dot(toCameraTarget, toMush);
 	float angle = acos(cos);
 
-	//カメラの後ろにあるなら描画しない
+	//�J�����̌��ɂ���Ȃ�`�悵�Ȃ�
 	Vector3 diff = m_player->GetPosition() - m_position;
 
-	//プレイヤーに向かう距離を計算する
+	//�v���C���[�Ɍ������v�Z����
 	float playerdistance = diff.Length();
 
 	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<800.0f)
@@ -986,64 +991,64 @@ bool Neutral_Enemy::DrawHP()
 void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	(void)clipName;
-	//キーの名前がAttack_startの時
+	//�L�[�̖��O��Attack_start�̎�
 	if (wcscmp(eventName, L"Attack_start") == 0) {
-		//攻撃中の判定をtrueにする
+		//�U�����̔����true�ɂ���
 		m_UnderAttack = true;
-		//攻撃エフェクトを発生させる
+		//�U���G�t�F�N�g�𔭐�������
 		
-		//攻撃用のコリジョンを作成
+		//�U���p�̃R���W������쐬
 		MakeAttackCollision();
 
-		//大きさを設定する。
+		//�傫����ݒ肷��B
 
-		//座標を調整
+		//��W�𒲐�
 
-		//エフェクト再生
+		//�G�t�F�N�g�Đ�
 
 
-		//効果音再生
-		//攻撃の声
+		//��ʉ��Đ�
+		//�U���̐�
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(21);
 		se->Play(false);
 		se->SetVolume(0.5f);
 
-		//効果音を再生する
+		//��ʉ���Đ�����
 
 
 	}
-	//キーの名前がattack_endの時
+	//�L�[�̖��O��attack_end�̎�
 	else if (wcscmp(eventName,L"Attack_end")==0){
 		m_UnderAttack = false;
 
-		//ステートを切り替える
+		//�X�e�[�g��؂�ւ���
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
 }
 
 const bool Neutral_Enemy::CanAttack()const
 {
-	//中立の敵からプレイヤーに向かうベクトルを計算する
+	//�����̓G����v���C���[�Ɍ�x�N�g����v�Z����
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
-	//距離が近かったら
+	//�������߂������
 	if (diff.LengthSq() <= 50.0f * 50.0f)
 	{
-		//攻撃できる
+		//�U���ł���
 		return true;
 	}
-	//攻撃できない
+	//�U���ł��Ȃ�
 	return false;
 }
 
 void Neutral_Enemy::Render(RenderContext& rc)
 {
-	//モデルを描画する。
+	//���f����`�悷��B
 	m_modelRender.Draw(rc);
 
-	//ステートがポーズステートでないなら
+	//�X�e�[�g���|�[�Y�X�e�[�g�łȂ��Ȃ�
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
-		//スプライトフラグがtureなら
+		//�X�v���C�g�t���O��ture�Ȃ�
 		if (m_player->GetSpriteFlag())
 		{
 			if (DrawHP())

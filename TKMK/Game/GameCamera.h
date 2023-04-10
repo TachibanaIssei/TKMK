@@ -14,7 +14,7 @@ public:
 	bool Start();
 	void Update();
 	void Target();
-
+	void StartCameraSet();
 	void CameraReset();
 
 	//カメラのステート
@@ -56,5 +56,8 @@ public:
 	//注視点の計算
 	Vector3 TargetPos;
 	//Quaternion oldgetRot;
+
+	bool ok = false;
+	float rotamount = 0;
 };
 

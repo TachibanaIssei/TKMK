@@ -1,10 +1,11 @@
 #pragma once
 #include "KnightBase.h"
 #include "Status.h"
+#include "WizardUlt.h"    //関数を.cppに移したら消すtodo
 class Game;
 class KnightPlayer;
 class Neutral_Enemy;
-class CharUltFlag;
+class WizardUlt;
 
 class KnightAI:public KnightBase
 {
@@ -44,6 +45,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttackActor();
+
 private:
 	enum AtkTimingState
 	{
@@ -70,7 +72,6 @@ private:
 	FontRender				m_fontRender;
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
-	CharUltFlag* charUltFlag = nullptr;
 	Neutral_Enemy* m_targetEnemy = nullptr;					// 今追いかけているエネミー      
 	Actor* m_targetActor = nullptr;
 	bool UltimateSkillFlag = false;

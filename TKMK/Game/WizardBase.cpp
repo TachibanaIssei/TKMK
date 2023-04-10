@@ -393,7 +393,8 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 /// </summary>
 void WizardBase::UltimateSkill()
 {
-
+	//必殺技ステート
+	m_wizardState = enWizardState_UltimateSkill;
 }
 
 /// <summary>

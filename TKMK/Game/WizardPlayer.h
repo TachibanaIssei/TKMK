@@ -33,7 +33,7 @@ public:
 	/// <summary>
 	/// 必殺技の雷の生成
 	/// </summary>
-	void UltimateSkill();
+	void MakeUltimateSkill();
 
 	/// <summary>
 	/// プレイヤーのステートを変更

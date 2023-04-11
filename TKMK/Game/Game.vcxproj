@@ -226,7 +226,6 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="CharUltFlag.cpp" />
-    <ClCompile Include="Enemy_Respawn.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameUI.cpp" />
@@ -234,6 +233,7 @@
     <ClCompile Include="KnightBase.cpp" />
     <ClCompile Include="KnightPlayer.cpp" />
     <ClCompile Include="KnightUlt.cpp" />
+    <ClCompile Include="Lamp.cpp" />
     <ClCompile Include="MagicBall.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -256,7 +256,6 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="CharUltFlag.h" />
-    <ClInclude Include="Enemy_Respawn.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameUI.h" />
@@ -264,6 +263,7 @@
     <ClInclude Include="KnightBase.h" />
     <ClInclude Include="KnightPlayer.h" />
     <ClInclude Include="KnightUlt.h" />
+    <ClInclude Include="Lamp.h" />
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Neutral_Enemy.h" />

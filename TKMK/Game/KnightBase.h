@@ -55,7 +55,8 @@ public:
 	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
-	void Dameged(int damege);
+	/// <param name="playerGivePoints">ポイントを与えるキャラ</param>
+	void Dameged(int damege,Actor* CharGivePoints);
 
 	/// <summary>
 	/// 自身が倒されたときの処理
@@ -276,7 +277,8 @@ protected:
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	PlayerState m_knightState/* = enKnightState_Num*/;
 	
-	
+	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
+	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
 
 	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ

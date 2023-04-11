@@ -13,10 +13,6 @@ public:
 	bool Start();
 	void Update();
 
-	void FindEnemys() {
-		m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-	}
-
 	void Render(RenderContext& rc);
 	
 	/// <summary>

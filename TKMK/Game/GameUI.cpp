@@ -226,28 +226,32 @@ void GameUI::Timer()
 
 void GameUI::Render(RenderContext& rc)
 {
-	//m_Flame.Draw(rc);
-	
+	//gameクラスのポーズのフラグが立っている間処理を行わない
+	if (m_GameUIState != m_PauseState) {
+		//m_Flame.Draw(rc);
+
 	//m_LevelNameFont.Draw(rc);
-	m_HpNameFont.Draw(rc);
+		m_HpNameFont.Draw(rc);
 
-	m_TimeAndPointRender.Draw(rc);
+		m_TimeAndPointRender.Draw(rc);
 
-	m_time_left.Draw(rc);
+		m_time_left.Draw(rc);
 
-	/*m_AtkFont.Draw(rc);
-	m_SpeedFont.Draw(rc);*/
-	m_statusBar.Draw(rc);
-	m_hpBar.Draw(rc);
-	//m_playerFaceBack.Draw(rc);
-	m_playerFaceFrame.Draw(rc);
-	m_SkillRender.Draw(rc);
-	m_UltRender.Draw(rc);
+		/*m_AtkFont.Draw(rc);
+		m_SpeedFont.Draw(rc);*/
+		m_statusBar.Draw(rc);
+		m_hpBar.Draw(rc);
+		//m_playerFaceBack.Draw(rc);
+		m_playerFaceFrame.Draw(rc);
+		m_SkillRender.Draw(rc);
+		m_UltRender.Draw(rc);
 
-	m_HpFont.Draw(rc);
-	m_Lv.Draw(rc);
-	m_LvNumber.Draw(rc);
-	m_LevelFont.Draw(rc);
+		m_HpFont.Draw(rc);
+		m_Lv.Draw(rc);
+		m_LvNumber.Draw(rc);
+		m_LevelFont.Draw(rc);
 
-	m_PointFont.Draw(rc);
+		m_PointFont.Draw(rc);
+	}
+	
 }

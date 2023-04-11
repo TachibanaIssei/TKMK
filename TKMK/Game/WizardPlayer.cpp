@@ -185,11 +185,6 @@ void WizardPlayer::Attack()
 		
 		//必殺技発動時の処理
 		UltimateSkill();
-		//レベルに合わせてGameUIのレベルの画像を変更する
-		//m_gameUI->LevelFontChange(Lv);
-
-		//必殺技発動フラグをセット
-		//UltimateSkillFlag = true;
 	}
 }
 

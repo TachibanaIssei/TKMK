@@ -471,7 +471,7 @@ void WizardBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	case enWizardState_Run:
-		m_modelRender.SetAnimationSpeed(0.9f);
+		m_modelRender.SetAnimationSpeed(0.8f);
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.2f);
 		break;
 	case enWizardState_Attack:
@@ -604,7 +604,15 @@ void WizardBase::OnProcessSkillAtkStateTransition()
 
 void WizardBase::OnProcessUltimateSkillAtkStateTransition()
 {
-
+	//必殺技のアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		//待機ステート
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessAvoidanceStateTransition()

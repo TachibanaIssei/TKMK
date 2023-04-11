@@ -51,7 +51,7 @@ void GameCamera::Update()
 		return;
 	}
 	//スタート前のカメラワーク
-	if (ok == false)
+	/*if (ok == false)
 	{
 		StartCameraSet();
 
@@ -61,7 +61,7 @@ void GameCamera::Update()
 		}
 		else
 		return;
-	}
+	}*/
 
 
 	if (g_pad[0]->IsTrigger(enButtonY))

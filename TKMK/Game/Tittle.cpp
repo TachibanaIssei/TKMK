@@ -44,6 +44,12 @@ bool Tittle::Start()
 	m_choice.SetScale(1.7f, 1.0f, 1.0f);
 	m_choice.Update();
 
+	//操作説明画像
+	m_operationPic.Init("Assets/sprite/Controller.DDS", 1920.0f, 1080.0f);
+	m_operationPic.SetPosition(m_opPosition);
+	m_operationPic.SetScale(1.0f, 1.0f, 1.0f);
+	m_operationPic.Update();
+
 	//BGMの設定
 	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/gameBGM/TitleBGM1.wav");
 	//選択音
@@ -59,6 +65,7 @@ bool Tittle::Start()
 
 void Tittle::Update()
 {
+	Select();
 	//ゲーム画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
 		//選択音
@@ -72,34 +79,61 @@ void Tittle::Update()
 		DeleteGO(m_bgm);
 	}
 
-	Select();
+	//説明画面からタイトル画面への遷移
+	if (g_pad[0]->IsTrigger(enButtonB) && m_operationPosition == enOperationPosition_Seem) {
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//説明画面を出す
+		m_operationPosition = enOperationPosition_UnSeem;
+		Operation();
+	}
+
+	//説明画面への遷移
+	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Operation && m_operationPosition == enOperationPosition_UnSeem){
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//説明画面を出す
+		m_operationPosition = enOperationPosition_Seem;
+		Operation();
+	}
+
 
 	m_spriteRender.Update();
 	m_choice.Update();
 	m_start.Update();
 	m_operation.Update();
 	m_charaExplanation.Update();
+	m_operationPic.Update();
 	
 }
 void Tittle::Select()
 {
-	if (g_pad[0]->IsTrigger(enButtonUp))
+	if (m_operationPosition == enOperationPosition_UnSeem)
 	{
-		if (selectPosition != 0)
-			selectPosition--;
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
-		se->Play(false);
-		se->SetVolume(1.0f);
-	}
-	if (g_pad[0]->IsTrigger(enButtonDown))
-	{
-		if (selectPosition < 2)
-			selectPosition++;
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
-		se->Play(false);
-		se->SetVolume(1.0f);
+		if (g_pad[0]->IsTrigger(enButtonUp))
+		{
+			if (selectPosition != 0)
+				selectPosition--;
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(5);
+			se->Play(false);
+			se->SetVolume(1.0f);
+		}
+		if (g_pad[0]->IsTrigger(enButtonDown))
+		{
+			if (selectPosition < 2)
+				selectPosition++;
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(5);
+			se->Play(false);
+			se->SetVolume(1.0f);
+		}
 	}
 
 	switch (selectPosition)
@@ -121,6 +155,21 @@ void Tittle::Select()
 	m_choice.Update();
 }
 
+void Tittle::Operation()
+{
+	if (m_operationPosition == enOperationPosition_Seem)
+	{
+		m_opPosition = { 0.0f,0.0f,0.0f };
+	}
+	if (m_operationPosition == enOperationPosition_UnSeem)
+	{
+		m_opPosition = { 0.0f,2000.0f,0.0f };
+	}
+
+	m_operationPic.SetPosition(m_opPosition);
+	m_operationPic.Update();
+}
+
 
 void Tittle::Render(RenderContext& rc)
 {
@@ -129,4 +178,5 @@ void Tittle::Render(RenderContext& rc)
 	m_start.Draw(rc);
 	m_operation.Draw(rc);
 	m_charaExplanation.Draw(rc);
+	m_operationPic.Draw(rc);
 }

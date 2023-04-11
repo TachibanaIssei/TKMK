@@ -50,12 +50,9 @@ Game::~Game()
 	}
 
 	DeleteGO(player);
-	/*DeleteGO(m_knightplayer);
-	DeleteGO(wizardPlayer);*/
 	
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
-	//DeleteGO(m_KnightAI);
 	DeleteGO(m_bgm);
 	DeleteGO(lamp);
 }
@@ -71,7 +68,7 @@ bool Game::Start()
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
 	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f,1.0f });
 
-	//�X�^�W�A���̐���
+	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium05_ground") == true) {
@@ -97,32 +94,27 @@ bool Game::Start()
 	});
 
 
-	//GameUI�̐���
+	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//�v���C���[�̐���
+	//プレイヤーの生成
 	player = NewGO<Player>(0, "player");
-	//��������L�����I��
-
 	player->CharSelect(SelectCharNumber);
 	player->CreaetPlayer();
 	m_Actors.push_back(player->GetPlayerActor());
 
-	//�Q�[���J�����̐���
+	//カメラの生成
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
-	//m_gamecamera->SetKnight(m_knightplayer);
 
-	//�����̓G�̐���
+	//中立の敵の生成
 	m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
-			//����̍�W
 			if (objData.number == 0) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//�E��̍�W
 			if (objData.number == 1) {
 
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
@@ -132,11 +124,9 @@ bool Game::Start()
 				return true;
 			}
 			if (objData.number == 2) {
-				//���X�|�[����W�̐ݒ�
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//�E���̍�W
 			if (objData.number == 3) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				enemyNumber++;
@@ -145,11 +135,9 @@ bool Game::Start()
 				return true;
 			}
 			if (objData.number == 4) {
-				//���X�|�[����W�̐ݒ�
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//�����̍�W
 			if (objData.number == 5) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
@@ -178,20 +166,15 @@ bool Game::Start()
 		return true;
 	});
 
-	/*m_Neutral_Enemy = NewGO<Neutral_Enemy>(0, "Neutral_Enemy");
-	m_Neutral_Enemy->SetNeutral_EnemyGame(this);
-	m_Neutral_Enemy->SetKnightPlayer(m_knightplayer);*/
-	//m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-
-	//�Ƃ肠�����R�����g�A�E�g
+	//剣士AIの生成
 	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
 	m_KnightAI->SetGame(this);
 	m_Actors.push_back(m_KnightAI);
 	
-	//�}�b�v�̐���
+	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
 
-	//�|�[�Y��ʂ̔w�i�̐ݒ�
+	//ポーズ画面の画像
 	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
 	m_Pause_Back.SetPosition(g_vec3Zero);
 	m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
@@ -199,42 +182,25 @@ bool Game::Start()
 	m_Pause_Back.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
 	m_Pause_Back.Update();
 
-	m_Pause_Front.Init("Assets/sprite/pause.DDS", 1920.0f, 1080.0f);
+	m_Pause_Front.Init("Assets/sprite/Pause2_flame.DDS", 1920.0f, 1080.0f);
 	m_Pause_Front.SetPosition(g_vec3Zero);
 	m_Pause_Front.SetScale(1.0f, 1.0f, 1.0f);
 	m_Pause_Front.SetRotation(m_sRotation);
 	m_Pause_Front.Update();
 
-	//�Q�[���̃X�e�[�g��Q�[���ɂ���
+	//ゲームの状態をゲームステートにする
 	m_GameState = enGameState_Battle;
 
-	//BGM�̐ݒ�
-	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
-	//se
-	//player
-	//���X�L��
-	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
-	//�_���[�W�������Ƃ��̔ߖ�
-	g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
-	//���ʏ�U��
-	g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
-	g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
-	g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
-	//�A���e�B���b�g
-	g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
-	//���S�����Ƃ�
-	g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
-	//enemy
-	//�U���̐�
-	g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
+	//ゲーム中に再生される音を読み込む
+	SetMusic();
 	
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(2);
 	m_bgm->Play(true);
-	m_bgm->SetVolume(musicVolume);
+	m_bgm->SetVolume(BGMVolume);
 
 
-	//�����蔻��̉���
+	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
@@ -253,34 +219,32 @@ void Game::BattleStart()
 
 }
 
-//�o�g���X�e�[�g���̏���
+//バトルステートの処理
 void Game::Battle()
 {
 	if (m_GameState == enGameState_Battle) {
-		//���U���g��ʂւ̑J��
-		//CTRL�������ꂽ��B
+		//CTRLを押したら
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
 		{
 			m_GameState = enGameState_Rezult;
 		}
 	}
 
-	//�|�[�Y��ʂւ̑J��
-	//�X�^�[�g�{�^���������ꂽ��B
+	//ポーズステートに変える
+	//スタートボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
-		//�Q�[����ʂ���|�[�Y��ʂɑJ�ڂ��鎞�̏���
+		//ゲームのステートをポーズにする
 			m_GameState = enGameState_Pause;
-			//�v���C���[�AAI�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
+			//生成されているキャラのステートをポーズステートに変更
 			for (auto character : m_Actors)
 			{
 				character->ChangeGameState(character->enPause);
 			}
-			//UI�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
+			//UIのステートをポーズステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
-			//�J�����̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
+			//カメラのステートをポーズステートに変更
 			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
-			//�����̓G��|�[�Y��ʗp�̃X�e�[�g�ɕύX
-			////�z��̃T�C�Y�𒲂ׂ�for���ŉ�
+			//生成されている中立の敵のステートをポーズステートに変更
 			for (auto seutral_Enemy : m_neutral_Enemys)
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
@@ -294,50 +258,48 @@ void Game::Battle()
 	}
 }
 
-//�|�[�Y��ʂ̏���
+//ポーズ時の処理
 void Game::Pause()
 {
-	//�X�^�[�g�{�^���������ꂽ��B
+	//Bボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
-		//�|�[�Y��ʂ���Q�[����ʂɖ߂鎞�̏���
+		//ステートをバトルステートに戻す
 			m_GameState = enGameState_Battle;
-			//�v���C���[�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ł͂Ȃ��悤�ɂ���
-			// //�v���C���[�AAI�̃X�e�[�g��|�[�Y��ʗp�̃X�e�[�g�ɕύX
+			//生成されているキャラのステートをゲームステートに戻す
 			for (auto character : m_Actors)
 			{
 				character->ChangeGameState(character->enGame);
 			}
-			//UI�̃X�e�[�g��Q�[���̃X�e�[�g�ɕύX
+			//UIのステートをゲームステートに戻す
 			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
-			//�J�����̃X�e�[�g��Q�[���̃X�e�[�g�ɕύX
+			//カメラのステートをゲームステートに戻す
 			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
-			//�����̓G��|�[�Y��ʗp�̃X�e�[�g�ɕύX
-			////�z��̃T�C�Y�𒲂ׂ�for���ŉ�
+			//生成されている中立の敵のステートをゲームステートに戻す
 			for (auto seutral_Enemy : m_neutral_Enemys)
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
 			}
 	}
 
-	//���ʂ�グ��
+	//右
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if(musicVolume<4.0f)
-		musicVolume += 0.1f;
-		//���ʒ���
-		m_bgm->SetVolume(musicVolume);
+		if(BGMVolume <4.0f)
+			BGMVolume += 0.1f;
+		//音量を上げる
+		m_bgm->SetVolume(BGMVolume);
 	}
-	//���ʂ����
+	//左
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
-		if(musicVolume>0)
-		musicVolume -= 0.1f;
-		//���ʒ���
-		m_bgm->SetVolume(musicVolume);
+		if(BGMVolume >0)
+			BGMVolume -= 0.1f;
+		//音量を下げる
+		m_bgm->SetVolume(BGMVolume);
 	}
 	
 
 
-	//�^�C�g����ʂւ̑J��
-	//A�{�^���������
+	//タイトルへの遷移
+	//Aボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		Tittle*m_tittle = NewGO<Tittle>(0,"m_tittle");
@@ -345,14 +307,14 @@ void Game::Pause()
 	}
 }
 
-//�o�g���I�����̏���
+//タイムアップになったあとの処理
 void Game::End()
 {
 
 }
 
 /// <summary>
-/// �����̓G�̃��X�|�[���̏���
+/// 中立の敵のリスポーンの処理
 /// </summary>
 void Game::Respawn()
 {
@@ -361,33 +323,35 @@ void Game::Respawn()
 		EnemyRespawnFlag[count] = false;
 	}
 
-	//�����̓G�̑����Ɛ�������Ă��钆���̓G�̐����Ⴄ�Ȃ�
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+
+	//中立の敵の総数が生成されている中立の敵と数が違うなら
 	if (ENEMY_AMOUNT != m_neutral_Enemys.size()) {
-		//����Ă��Ȃ�����v�Z����
+		//足りない中立の敵の数を調べる
 		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
 		for (int generate = 0; generate < spawnAmount; generate++) {
-			//�����_���Ƀ��X�|�[�������W�̔ԍ���߂�
+			//ランダムに番号を決める(0以外)
 			RandamRespawnPosNumber = rand() % 8 + 1;
 
-			//���X�|�[�������W��߂�
+			//中立の敵のリスポーンする座標を決める
 			SetEnemyRespawnPos();
-			//�����̓G����
+			//中立の敵を生成
 			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber]);
 		}
 	}
 }
 
 /// <summary>
-/// �����̓G�̃��X�|�[�������W��߂�
+/// 中立の敵のリスポーンする座標を決める
 /// </summary>
-/// <returns></returns>
 void Game::SetEnemyRespawnPos()
 {
-	//�����_���ɑI�񂾔ԍ�����
+	//検索する変数にランダムに決めた番号を代入する
 	SearchRespawnPosNumber = RandamRespawnPosNumber;
-	//�����ԍ��̍ő�l
+	//ループする最大値を決める
 	int MaxSearchNumber = SearchRespawnPosNumber - 1;
-	//�I�񂾔ԍ���0�Ȃ�
+	//最大値が0だったら
 	if(SearchRespawnPosNumber==0)
 	{
 		MaxSearchNumber = 8;
@@ -397,49 +361,48 @@ void Game::SetEnemyRespawnPos()
 	{
 		if (EnemyRespawnFlag[SearchRespawnPosNumber] == false)
 		{
-			//�A�N�^�[���狗�������ȏ㗣��Ă��邩�̃J�E���^�[
+			//中立の敵とキャラと一定以上距離が離れていることを記憶する変数
 			int distanceCounter = 0;
 			for (auto actorPos : m_Actors)
 			{
 				Vector3 CharPos = actorPos->GetPosition();
-				//���X�|�[�������W����L�����̍�W�ւ̃x�N�g����v�Z����
+				//検索する変数の座標からキャラに向かうベクトルを計算する
 				Vector3 diff = EnemyRespawnPosition[SearchRespawnPosNumber] - CharPos;
-				//�x�N�g���̒�����700�ȏ�Ȃ�
+				//ベクトルの長さが600より大きかったら
 				if (diff.Length() > 600)
 				{
-					//�J�E���^�[�̒l+1
+					//距離が離れている
 					distanceCounter++;
 				}
 
 			}
-			//�L�����̐��Ƌ����J�E���g�������Ȃ甲���o��
+			//全てのキャラと距離が離れているなら
 			if (distanceCounter == m_Actors.size())
 			{
-				//
+				//生成した番号のフラグをtrueにする
 				EnemyRespawnFlag[SearchRespawnPosNumber] = true;
-				//���̒i�K��SearchRespawnPosNumber�����X�|�[�������W�̔ԍ��ɂȂ�
 				return;
 			}
 		}
 		
-		//���X�|�[�������W�̔ԍ���8�ł͂Ȃ��Ȃ�
+		//番号が8でないなら
 		if (SearchRespawnPosNumber < 8)
 		{
 			SearchRespawnPosNumber++;
 		}
-		else  //���X�|�[�������W�̔ԍ����Ō�(8)�܂ł������
+		else  //番号が8になったら
 		{
 			SearchRespawnPosNumber = 0;
 		}
 		
 		
 	}
-	//�S�Ă̍�W�Ń��X�|�[�������W��ݒ�ł��Ȃ������
+	//ループでどの座標にも生成できなかったらランダムに決める
 	SearchRespawnPosNumber= rand() % 8 + 1;
 	return;
 }
 
-//�Q�[���X�e�[�g�̊Ǘ�
+//ゲームのステート管理
 void Game::GameState()
 {
 	switch (m_GameState)
@@ -461,7 +424,6 @@ void Game::GameState()
 		break;
 
 	case enGameState_Rezult:
-		//���U���g��ʂ̐����A�Q�[���̍폜
 		Result* result = NewGO<Result>(0, "Result");
 		DeleteGO(this);
 		break;
@@ -471,6 +433,7 @@ void Game::GameState()
 	}
 }
 
+//中立の敵の生成処理
 void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 
 	enemyNumber++;
@@ -483,7 +446,55 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 	neutral_Enemy->SetRotation(rot);
 
 	m_neutral_Enemys.push_back(neutral_Enemy);
-	//m_neutral_Enemys.erase(m_neutral_Enemys.);
+}
+
+/// <summary>
+/// ゲーム中に再生される音の読み込み
+/// </summary>
+void Game::SetMusic()
+{
+	//バトル中のBGM
+	{
+		g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
+	}
+	
+	//効果音
+	{
+	//剣士
+		{
+			//���X�L��
+			g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
+			//�_���[�W�������Ƃ��̔ߖ�
+			g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
+			//���ʏ�U��
+			g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
+			g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
+			g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
+			//�A���e�B���b�g
+			g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
+			//���S�����Ƃ�
+			g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
+		}
+	//魔法使い
+		{
+
+		}
+	//ゾンビ
+		{
+
+		}
+	//魔物
+		{
+
+		}
+
+	//中立の敵
+		{
+			g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
+		}
+		
+	}
+	
 }
 
 void Game::Render(RenderContext& rc)

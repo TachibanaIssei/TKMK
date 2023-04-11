@@ -41,32 +41,30 @@ public:
 	void GameState();
 	
 	/// <summary>
-	/// 
+	/// ゲーム中に再生される音の読み込み
+	/// </summary>
+	void SetMusic();
+
+	/// <summary>
+	/// 効果音の音量を返す
+	/// </summary>
+	/// <returns>効果音の音量</returns>
+	float SetSoundEffectVolume()
+	{
+		return SoundEffectVolume;
+	}
+
+	/// <summary>
+	/// 中立の敵のリスポーン
 	/// </summary>
 	void Respawn();
 
-	/*std::vector<Neutral_Enemy*> GetNeutral_EnemyContaier() {
-		return m_enemyCounter;
-	}*/
-
 	/// <summary>
-	/// �G�l�~�[�̐���炷����
+	/// リスポーンする座標の設定
 	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
-	int SubNeutral_EnemyContaier() {
-		return enemyNumber--;
-	}
-
-	/// <summary>
-	/// �G�l�~�[�̐���炷����
-	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
-	int GetNeutral_EnemyContaier() {
-		return enemyNumber;
-	}
-
 	void SetEnemyRespawnPos();
 
+	//リスポーンする座標を格納する
 	void SetRespawnPosition(Vector3 pos, Quaternion rot, int number) {
 		EnemyRespawnPosition[number] = pos;
 		EnemyReapawnPot[number] = rot;
@@ -74,35 +72,34 @@ public:
 
 	void Render(RenderContext& rc);
 
+	/// <summary>
+	/// 中立の敵の情報をリストから削除する
+	/// </summary>
+	/// <param name="enemy">消したい中立の敵</param>
 	void RemoveEnemyFromList(Neutral_Enemy* enemy)
 	{
 		std::vector<Neutral_Enemy*>::iterator it = std::find(
-			m_neutral_Enemys.begin(), // ����J�n�ʒu����C�e���[�^
-			m_neutral_Enemys.end(),   // ����I���ʒu����C�e���[�^
-			enemy                     // ��������v�f
+			m_neutral_Enemys.begin(), // 中立の敵のリストの最初
+			m_neutral_Enemys.end(),   // 中立の敵のリストの最後
+			enemy                     // 消したい中立の敵
 		);
 		if (it != m_neutral_Enemys.end()) {
 			m_neutral_Enemys.erase(it);
 		}
 	}
-	//�x�N�^�^��Neutral_Enemy��Ԃ�
+	//中立の敵のリストを返す
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
 
-	void Enemys()
-	{
-		m_neutral_Enemys.pop_back();
-	}
-
-	//Actor��Ԃ�
+	//Actorのリストを返す
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
 
 private:
 	/// <summary>
-	/// �����̓G�̖��O����
+	/// 中立の敵の名前を設定する
 	/// </summary>
 	char* CreateEnemyName() {
 		enemyNum++;
@@ -113,15 +110,13 @@ private:
 		return enemyName;
 	}
 	/// <summary>
-	/// �����̓G����
+	/// 中立の敵の生成
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
-	//
+	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
 
-
-	//AnimationClip m_animationClips[enAnimationClip_Num];
 	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;
@@ -165,16 +160,16 @@ private:
 
 	float m_Timer = 0.0f;
 
-	//BGM�̉��ʒ����Ɏg�p����ϐ�
-	float musicVolume = 1.0f;
+	//BGMの初期音量
+	float BGMVolume = 1.0f;
+	//効果音の初期音量
+	float SoundEffectVolume = 1.0f;
 
-	//���U���g��ʂ��̃t���O
-	bool RezultFlag = false;
-	//�|�[�Y��ʂ��̃t���O
-	bool PauseOpenFlag = false;
-	bool PauseCloseFlag = true;
-
-	//�L�����̔ԍ�
+	//プレイヤーの使うキャラの番号
+	//０…剣士
+	//１…魔法使い
+	//２…ゾンビ
+	//３…魔物
 	int SelectCharNumber = 1;
 
 

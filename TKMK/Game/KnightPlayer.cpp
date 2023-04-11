@@ -253,7 +253,7 @@ void KnightPlayer::Attack()
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 
 		//必殺技発動フラグをセット
 		UltimateSkillFlag = true;
@@ -318,7 +318,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(13);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
@@ -330,7 +330,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0); 
 		se->Init(14);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
@@ -342,7 +342,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(15);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
@@ -356,7 +356,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(11);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)

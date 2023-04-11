@@ -40,7 +40,7 @@ bool Tittle::Start()
 	m_charaExplanation.Update();
 
 	m_choice.Init("Assets/sprite/Choice.DDS", 200.0f, 100.0f);
-	m_choice.SetPosition(m_position);
+	m_choice.SetPosition(m_sPosition);
 	m_choice.SetScale(1.7f, 1.0f, 1.0f);
 	m_choice.Update();
 
@@ -85,7 +85,7 @@ void Tittle::Select()
 {
 	if (g_pad[0]->IsTrigger(enButtonUp))
 	{
-		if(selectPosition !=0)
+		if (selectPosition != 0)
 			selectPosition--;
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(5);
@@ -94,7 +94,7 @@ void Tittle::Select()
 	}
 	if (g_pad[0]->IsTrigger(enButtonDown))
 	{
-		if(selectPosition <2)
+		if (selectPosition < 2)
 			selectPosition++;
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(5);
@@ -106,20 +106,21 @@ void Tittle::Select()
 	{
 	case 0:
 		m_tSelectPosition = enSelectPosition_Start;
-		m_position = { 0.0f, -150.0f, 0.0f };
+		m_sPosition = { 0.0f, -150.0f, 0.0f };
 		break;
 	case 1:
 		m_tSelectPosition = enSelectPosition_Operation;
-		m_position = { 0.0f, -250.0f, 0.0f };
+		m_sPosition = { 0.0f, -250.0f, 0.0f };
 		break;
 	case 2:
 		m_tSelectPosition = enSelectPosition_CharaExplanation;
-		m_position = { 0.0f, -350.0f, 0.0f };
+		m_sPosition = { 0.0f, -350.0f, 0.0f };
 		break;
 	}
-	m_choice.SetPosition(m_position);
+	m_choice.SetPosition(m_sPosition);
 	m_choice.Update();
 }
+
 
 void Tittle::Render(RenderContext& rc)
 {

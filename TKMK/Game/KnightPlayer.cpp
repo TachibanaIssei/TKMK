@@ -18,6 +18,7 @@ namespace {
 KnightPlayer::KnightPlayer()
 {
 	m_gameUI = FindGO<GameUI>("m_gameUI");
+	m_game = FindGO<Game>("game");
 
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
@@ -172,10 +173,7 @@ void KnightPlayer::Update()
 		//回避のスプライトの表示の処理
 		AvoidanceSprite();
 	}
-	
 
-	//剣士のY座標が腰なのでY座標を上げる
-	m_position.y = m_position_YUp;
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
@@ -230,7 +228,6 @@ void KnightPlayer::Attack()
 	{
 
 		//移動速度を上げる
-		m_Status.Speed += 120.0f;
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
@@ -426,7 +423,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//スキルの移動処理をしないようにする
 		SkillState = false;
-		m_Status.Speed -= 120.0f;
+		//m_Status.Speed -= 120.0f;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}

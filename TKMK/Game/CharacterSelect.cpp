@@ -20,11 +20,13 @@ bool CharacterSelect::Start()
 	m_CharacterSelectPic.SetScale(1.0f, 1.0f, 1.0f);
 	m_CharacterSelectPic.Update();
 
+	//剣士の画像
 	m_KnightPic.Init("Assets/sprite/Knight.DDS", 300.0f, 300.0f); 
 	m_KnightPic.SetPosition(-510.0f, 75.0f, 0.0f);
 	m_KnightPic.SetScale(1.0f, 1.0f, 1.0f);
 	m_KnightPic.Update();
 
+	//魔法使いの画像
 	m_WizardPic.Init("Assets/sprite/Wizard.DDS", 300.0f, 300.0f);
 	m_WizardPic.SetPosition(-40.0f, 75.0f, 0.0f );
 	m_WizardPic.SetScale(1.0f, 1.0f, 1.0f);
@@ -46,20 +48,24 @@ void CharacterSelect::Update()
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		Game* game = NewGO<Game>(0, "game");
-		//キャラクターセレクトが剣士だったら
+		//キャラクターセレクトが
 		switch (m_characterSelect)
 		{
+			//剣士だったら
 		case enCharacterSelect_Knight:
 			game->SetCharacterSelect(enCharacterSelect_Knight);
 			break;
+			//魔法使いだったら
 		case enCharacterSelect_Wizard:
 			game->SetCharacterSelect(enCharacterSelect_Wizard);
 			break;
+			//未定
 		case enCharacterSelect_Mitei:
 			game->SetCharacterSelect(enCharacterSelect_Knight);
 			break;
+			//未定
 		case enCharacterSelect_Mitei2:
-			game->SetCharacterSelect(enCharacterSelect_Knight);
+			game->SetCharacterSelect(enCharacterSelect_Wizard);
 			break;
 		}
 		DeleteGO(this);
@@ -73,6 +79,7 @@ void CharacterSelect::Update()
 
 void CharacterSelect::Cursor()
 {
+	//上下左右移動
 	if (g_pad[0]->IsTrigger(enButtonUp) && CursorNum > 1)
 	{			
 		CursorNum -= 2;

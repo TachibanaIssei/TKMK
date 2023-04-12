@@ -100,6 +100,10 @@ public:
 		return m_Actors;
 	}
 
+	/// <summary>
+	/// CharacterSelectで選んだキャラをセットする
+	/// </summary>
+	/// <param name="select">使うキャラナンバー</param>
 	void SetCharacterSelect(int select)
 	{
 		SelectCharNumber = select;

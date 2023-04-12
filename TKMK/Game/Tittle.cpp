@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Tittle.h"
-
+#include "CharacterSelect.h"
 #include "Game.h"
 
 Tittle::Tittle()
@@ -75,7 +75,7 @@ void Tittle::Update()
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//game‰æ–Ê‚Ö‘JˆÚ
-		Game* game = NewGO<Game>(0, "game");
+		CharacterSelect* characterSelect = NewGO<CharacterSelect>(0, "game");
 		DeleteGO(this);
 		DeleteGO(m_bgm);
 	}

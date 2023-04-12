@@ -100,6 +100,11 @@ public:
 		return m_Actors;
 	}
 
+	void SetCharacterSelect(int select)
+	{
+		SelectCharNumber = select;
+	}
+
 private:
 	/// <summary>
 	/// �����̓G�̖��O����

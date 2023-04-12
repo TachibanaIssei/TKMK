@@ -1,6 +1,7 @@
 #pragma once
 
 class Game;
+class CharacterSelect;
 
 class Tittle:public IGameObject
 {

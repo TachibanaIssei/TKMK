@@ -66,6 +66,7 @@ bool Tittle::Start()
 void Tittle::Update()
 {
 	Select();
+	Operation();
 	//ゲーム画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
 		//選択音
@@ -79,31 +80,6 @@ void Tittle::Update()
 		DeleteGO(m_bgm);
 	}
 
-	//説明画面からタイトル画面への遷移
-	if (g_pad[0]->IsTrigger(enButtonB) && m_operationPosition == enOperationPosition_Seem) {
-		//選択音
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
-		se->Play(false);
-		se->SetVolume(1.0f);
-		//説明画面を出す
-		m_operationPosition = enOperationPosition_UnSeem;
-		Operation();
-	}
-
-	//説明画面への遷移
-	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Operation && m_operationPosition == enOperationPosition_UnSeem){
-		//選択音
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
-		se->Play(false);
-		se->SetVolume(1.0f);
-		//説明画面を出す
-		m_operationPosition = enOperationPosition_Seem;
-		Operation();
-	}
-
-
 	m_spriteRender.Update();
 	m_choice.Update();
 	m_start.Update();
@@ -116,19 +92,17 @@ void Tittle::Select()
 {
 	if (m_operationPosition == enOperationPosition_UnSeem)
 	{
-		if (g_pad[0]->IsTrigger(enButtonUp))
+		if (g_pad[0]->IsTrigger(enButtonUp) && selectPosition != 0)
 		{
-			if (selectPosition != 0)
-				selectPosition--;
+			selectPosition--;
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(5);
 			se->Play(false);
 			se->SetVolume(1.0f);
 		}
-		if (g_pad[0]->IsTrigger(enButtonDown))
+		if (g_pad[0]->IsTrigger(enButtonDown) && selectPosition < 2)
 		{
-			if (selectPosition < 2)
-				selectPosition++;
+			selectPosition++;
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(5);
 			se->Play(false);
@@ -157,6 +131,28 @@ void Tittle::Select()
 
 void Tittle::Operation()
 {
+	//説明画面からタイトル画面への遷移
+	if (g_pad[0]->IsTrigger(enButtonB) && m_operationPosition == enOperationPosition_Seem) {
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//説明画面を消す
+		m_operationPosition = enOperationPosition_UnSeem;
+	}
+
+	//説明画面への遷移
+	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Operation && m_operationPosition == enOperationPosition_UnSeem) {
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//説明画面を出す
+		m_operationPosition = enOperationPosition_Seem;
+	}
+
 	if (m_operationPosition == enOperationPosition_Seem)
 	{
 		m_opPosition = { 0.0f,0.0f,0.0f };

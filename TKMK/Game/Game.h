@@ -175,7 +175,7 @@ private:
 	bool PauseCloseFlag = true;
 
 	//�L�����̔ԍ�
-	int SelectCharNumber = 1;
+	int SelectCharNumber = 0;		//0剣士１魔法使い
 
 
 	int enemyNum = 0;

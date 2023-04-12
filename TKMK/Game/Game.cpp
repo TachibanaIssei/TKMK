@@ -18,6 +18,13 @@
 
 namespace {
 	int ENEMY_AMOUNT = 5;
+	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
+	const Vector3 Menu_HowToPlayPos = Vector3(0.0f, 60.0f, 0.0f);
+	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);
+	const Vector3 Menu_SEPos = Vector3(-245.0f, -185.0f, 0.0f);
+	const Vector3 Menu_QuitGamePos = Vector3(0.0f, -320.0f, 0.0f);
+	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
+	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
 }
 
 Game::Game()
@@ -174,19 +181,69 @@ bool Game::Start()
 	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
 
-	//ポーズ画面の画像
-	m_Pause_Back.Init("Assets/sprite/pause_back.DDS", 1920.0f, 1080.0f);
-	m_Pause_Back.SetPosition(g_vec3Zero);
-	m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
-	m_Pause_Back.SetRotation(m_sRotation);
-	m_Pause_Back.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
-	m_Pause_Back.Update();
+	//ポーズ画面の画像読み込み
+	{
+		//背景
+		m_Pause_Back.Init("Assets/sprite/PauseMenu/pause_back.DDS", 1920.0f, 1080.0f);
+		m_Pause_Back.SetPosition(g_vec3Zero);
+		m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
+		m_Pause_Back.SetRotation(m_sRotation);
+		m_Pause_Back.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 0.4f));
+		m_Pause_Back.Update();
+		//ポーズメイン
+		m_Pause_Front.Init("Assets/sprite/PauseMenu/Pause2_flame.DDS", 1920.0f, 1080.0f);
+		m_Pause_Front.SetPosition(g_vec3Zero);
+		m_Pause_Front.SetScale(1.0f, 1.0f, 1.0f);
+		m_Pause_Front.SetRotation(m_sRotation);
+		m_Pause_Front.Update();
 
-	m_Pause_Front.Init("Assets/sprite/Pause2_flame.DDS", 1920.0f, 1080.0f);
-	m_Pause_Front.SetPosition(g_vec3Zero);
-	m_Pause_Front.SetScale(1.0f, 1.0f, 1.0f);
-	m_Pause_Front.SetRotation(m_sRotation);
-	m_Pause_Front.Update();
+		//Back
+		m_Menu_Back.Init("Assets/sprite/PauseMenu/Pause2_Back_decision.DDS", 300.0f, 100.0f);		m_Menu_Back.SetPosition(Menu_BackPos);
+		m_Menu_Back.SetScale(1.0f, 1.0f, 1.0f);
+		m_Menu_Back.SetRotation(m_sRotation);
+		m_Menu_Back.Update();
+		//HowToPlay
+		m_Menu_HowToPlay.Init("Assets/sprite/PauseMenu/Pause2_HowToPlay.DDS", 620.0f, 120.0f);
+		m_Menu_HowToPlay.SetPosition(Menu_HowToPlayPos);
+		m_Menu_HowToPlay.SetScale(1.0f, 1.0f, 1.0f);
+		m_Menu_HowToPlay.SetRotation(m_sRotation);
+		m_Menu_HowToPlay.Update();
+		//BGM
+		m_Menu_BGM.Init("Assets/sprite/PauseMenu/Pause2_BGM.DDS", 300.0f, 100.0f);
+		m_Menu_BGM.SetPosition(Menu_BGMPos);
+		m_Menu_BGM.SetScale(1.0f, 1.0f, 1.0f);
+		m_Menu_BGM.SetRotation(m_sRotation);
+		m_Menu_BGM.Update();
+		//SE
+		m_Menu_SE.Init("Assets/sprite/PauseMenu/Pause2_SE.DDS", 300.0f, 100.0f);
+		m_Menu_SE.SetPosition(Menu_SEPos);
+		m_Menu_SE.SetScale(1.0f, 1.0f, 1.0f);
+		m_Menu_SE.SetRotation(m_sRotation);
+		m_Menu_SE.Update();
+		//QuitGame  
+		m_Menu_QuitGame.Init("Assets/sprite/PauseMenu/Pause2_QuitGame.DDS", 620.0f, 120.0f);
+		m_Menu_QuitGame.SetPosition(Menu_QuitGamePos);
+		m_Menu_QuitGame.SetScale(1.0f, 1.0f, 1.0f);
+		m_Menu_QuitGame.SetRotation(m_sRotation);
+		m_Menu_QuitGame.Update();
+		//m_Menu_SelectBar_BGM
+		m_Menu_SelectBar_BGM.Init("Assets/sprite/PauseMenu/Pause_selectBar.DDS", 50.0f, 100.0f);
+		m_Menu_SelectBar_BGM.SetPosition(Menu_SelectBar_BGMPos);
+		m_Menu_SelectBar_BGM.SetScale(1.0f, 1.0f, 1.0f);
+		m_Menu_SelectBar_BGM.SetRotation(m_sRotation);
+		m_Menu_SelectBar_BGM.Update();
+		//m_Menu_SelectBar_SE
+		m_Menu_SelectBar_SE.Init("Assets/sprite/PauseMenu/Pause_selectBar.DDS", 50.0f, 100.0f);
+		m_Menu_SelectBar_SE.SetPosition(Menu_SelectBar_SEPos);
+		m_Menu_SelectBar_SE.SetScale(1.0f, 1.0f, 1.0f);
+		m_Menu_SelectBar_SE.SetRotation(m_sRotation);
+		m_Menu_SelectBar_SE.Update();
+
+		SelectBar_BGMPos = Menu_SelectBar_BGMPos;
+		SelectBar_SEPos = Menu_SelectBar_SEPos;
+	}
+	
+	
 
 	//ゲームの状態をゲームステートにする
 	m_GameState = enGameState_Battle;
@@ -251,66 +308,49 @@ void Game::Battle()
 			}
 	}
 
-	m_Timer += g_gameTime->GetFrameDeltaTime();
-	if (m_Timer >= 20) {
+	m_RespawnTimer += g_gameTime->GetFrameDeltaTime();
+	if (m_RespawnTimer >= 20) {
 		Respawn();
-		m_Timer = 0.0f;
+		m_RespawnTimer = 0.0f;
 	}
 }
 
 //ポーズ時の処理
 void Game::Pause()
 {
-	//Bボタンを押したら
-	if (g_pad[0]->IsTrigger(enButtonStart)) {
-		//ステートをバトルステートに戻す
-			m_GameState = enGameState_Battle;
-			//生成されているキャラのステートをゲームステートに戻す
-			for (auto character : m_Actors)
-			{
-				character->ChangeGameState(character->enGame);
-			}
-			//UIのステートをゲームステートに戻す
-			m_gameUI->SetGameUIState(m_gameUI->m_GameState);
-			//カメラのステートをゲームステートに戻す
-			m_gamecamera->SetCameraState(m_gamecamera->enGameState);
-			//生成されている中立の敵のステートをゲームステートに戻す
-			for (auto seutral_Enemy : m_neutral_Enemys)
-			{
-				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
-			}
+	//ポーズ時の移動処理
+	PauseMove();
+	//前のフレームのメニュー番号と今のフレームのメニュー番号が違うなら
+	if (MenuNumber_old != MenuNumber) {
+		//メニューのステートを選ぶ
+		SelectMenu();
 	}
+	//ステートの管理
+	MenuState();
 
-	//右
-	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if(BGMVolume <4.0f)
-			BGMVolume += 0.1f;
-		//音量を上げる
-		m_bgm->SetVolume(BGMVolume);
-	}
-	//左
-	if (g_pad[0]->IsTrigger(enButtonLeft)) {
-		if(BGMVolume >0)
-			BGMVolume -= 0.1f;
-		//音量を下げる
-		m_bgm->SetVolume(BGMVolume);
-	}
-	
-
-
-	//タイトルへの遷移
-	//Aボタンを押したら
-	if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		Tittle*m_tittle = NewGO<Tittle>(0,"m_tittle");
-		DeleteGO(this);
-	}
+	MenuNumber_old = MenuNumber;
 }
 
 //タイムアップになったあとの処理
 void Game::End()
 {
 
+}
+
+void Game::GoResult()
+{
+	Result* result = NewGO<Result>(0, "Result");
+	DeleteGO(this);
+}
+
+//ポーズステートからゲームステートに移るときの間の処理
+void Game::Between()
+{
+	m_BetweenTimer += g_gameTime->GetFrameDeltaTime();
+	if (m_BetweenTimer > 1)
+	{
+		m_GameState = enGameState_Battle;
+	}
 }
 
 /// <summary>
@@ -424,10 +464,12 @@ void Game::GameState()
 		break;
 
 	case enGameState_Rezult:
-		Result* result = NewGO<Result>(0, "Result");
-		DeleteGO(this);
+		GoResult();
 		break;
 
+	case enGameState_BetweenGameAndPause:
+		Between();
+		break;
 	/*default:
 		break;*/
 	}
@@ -497,6 +539,179 @@ void Game::SetMusic()
 	
 }
 
+void Game::PauseMove()
+{
+	if (g_pad[0]->IsTrigger(enButtonDown))
+	{
+		MenuNumber++;
+	}
+	if (g_pad[0]->IsTrigger(enButtonUp))
+	{
+		MenuNumber--;
+	}
+
+}
+
+/// <summary>
+/// 選んだ番号に対応したステートにする処理
+/// </summary>
+void Game::SelectMenu()
+{
+	if (MenuNumber == 0)
+	{
+		m_EnPauseMenu = enPauseMenuState_Back;
+		m_Menu_Back.Init("Assets/sprite/PauseMenu/Pause2_Back_decision.DDS", 300.0f, 100.0f);
+	}
+	else
+	{
+		m_Menu_Back.Init("Assets/sprite/PauseMenu/Pause2_Back.DDS", 300.0f, 100.0f);
+	}
+
+	if (MenuNumber == 1)
+	{
+		m_EnPauseMenu = enPauseMenuState_HowToPlay;
+		m_Menu_HowToPlay.Init("Assets/sprite/PauseMenu/Pause2_HowToPlay_decision.DDS", 620.0f, 120.0f);
+	}
+	else
+	{
+		m_Menu_HowToPlay.Init("Assets/sprite/PauseMenu/Pause2_HowToPlay.DDS", 620.0f, 120.0f);
+	}
+
+	if (MenuNumber == 2)
+	{
+		m_EnPauseMenu = enPauseMenuState_BGM;
+		m_Menu_BGM.Init("Assets/sprite/PauseMenu/Pause2_BGM_decision.DDS", 300.0f, 100.0f);
+	}
+	else
+	{
+		m_Menu_BGM.Init("Assets/sprite/PauseMenu/Pause2_BGM.DDS", 300.0f, 100.0f);
+	}
+
+	if (MenuNumber == 3)
+	{
+		m_EnPauseMenu = enPauseMenuState_SE;
+		m_Menu_SE.Init("Assets/sprite/PauseMenu/Pause2_SE_decision.DDS", 300.0f, 100.0f);
+	}
+	else
+	{
+		m_Menu_SE.Init("Assets/sprite/PauseMenu/Pause2_SE.DDS", 300.0f, 100.0f);
+	}
+
+	if (MenuNumber == 4)
+	{
+		m_EnPauseMenu = enPauseMenuState_QuitGame;
+		m_Menu_QuitGame.Init("Assets/sprite/PauseMenu/Pause2_QuitGame_decision.DDS", 620.0f, 120.0f);
+	}
+	else
+	{
+		m_Menu_QuitGame.Init("Assets/sprite/PauseMenu/Pause2_QuitGame.DDS", 620.0f, 120.0f);
+	}
+}
+
+/// <summary>
+/// メニュー時のステートの管理
+/// </summary>
+void Game::MenuState()
+{
+	switch (m_EnPauseMenu)
+	{
+	case enPauseMenuState_Back:
+		Menu_Back();
+		break;
+	case enPauseMenuState_HowToPlay:
+		Menu_HowToPlay();
+		break;
+	case enPauseMenuState_BGM:
+		Menu_BGM();
+		break;
+	case enPauseMenuState_SE:
+		Menu_SE();
+		break;
+	case enPauseMenuState_QuitGame:
+		Menu_QuitGame();
+		break;
+	}
+}
+//Backの処理
+void Game::Menu_Back()
+{
+	//Aボタンを押したら
+	if (g_pad[0]->IsTrigger(enButtonA)) {
+		//ステートをバトルステートに戻す
+		m_GameState = enGameState_BetweenGameAndPause;
+		//生成されているキャラのステートをゲームステートに戻す
+		for (auto character : m_Actors)
+		{
+			character->ChangeGameState(character->enGame);
+		}
+		//UIのステートをゲームステートに戻す
+		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
+		//カメラのステートをゲームステートに戻す
+		m_gamecamera->SetCameraState(m_gamecamera->enGameState);
+		//生成されている中立の敵のステートをゲームステートに戻す
+		for (auto seutral_Enemy : m_neutral_Enemys)
+		{
+			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
+		}
+	}
+}
+//HowToPlayの処理
+void Game::Menu_HowToPlay()
+{
+
+}
+//BGMの処理
+void Game::Menu_BGM()
+{
+	//音量を上げる
+	if (g_pad[0]->IsTrigger(enButtonRight)) {
+		if (BGMVolume < 4.0f)
+			BGMVolume += 0.1f;
+		m_bgm->SetVolume(BGMVolume);
+		SelectBar_BGMPos.x += m_nuwBGMPos;
+	}
+	//音量を下げる
+	if (g_pad[0]->IsTrigger(enButtonLeft)) {
+		if (BGMVolume > 0)
+			BGMVolume -= 0.1f;
+		m_bgm->SetVolume(BGMVolume);
+		SelectBar_BGMPos.x -= m_nuwBGMPos;
+	}
+	//バーの座標を更新
+	m_Menu_SelectBar_BGM.SetPosition(SelectBar_BGMPos);
+	m_Menu_SelectBar_BGM.Update();
+}
+//SEの処理
+void Game::Menu_SE()
+{
+	//音量を上げる
+	if (g_pad[0]->IsTrigger(enButtonRight)) {
+		if (SoundEffectVolume < 4.0f)
+			SoundEffectVolume += 0.1f;
+		SelectBar_SEPos.x += m_nuwSEPos;
+	}
+	//音量を下げる
+	if (g_pad[0]->IsTrigger(enButtonLeft)) {
+		if (SoundEffectVolume > 0)
+			SoundEffectVolume -= 0.1f;
+		SelectBar_SEPos.x -= m_nuwSEPos;
+	}
+	//バーの座標を更新
+	m_Menu_SelectBar_SE.SetPosition(SelectBar_SEPos);
+	m_Menu_SelectBar_SE.Update();
+}
+//QuitGameの処理
+void Game::Menu_QuitGame()
+{
+	//タイトルへの遷移
+	//Aボタンを押したら
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
+		DeleteGO(this);
+	}
+}
+
 void Game::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
@@ -505,6 +720,13 @@ void Game::Render(RenderContext& rc)
 	{
 		m_Pause_Back.Draw(rc);
 		m_Pause_Front.Draw(rc);
+		m_Menu_Back.Draw(rc);        //Back
+		m_Menu_HowToPlay.Draw(rc);   //HowToPlay
+		m_Menu_BGM.Draw(rc);         //BGM
+		m_Menu_SE.Draw(rc);          //SE
+		m_Menu_QuitGame.Draw(rc);    //QuitGame
+		m_Menu_SelectBar_BGM.Draw(rc);
+		m_Menu_SelectBar_SE.Draw(rc);
 	}
 	//m_fontRender.Draw(rc);
 	

@@ -29,8 +29,19 @@ public:
 		enGameState_Pause,
 		enGamestate_End,
 		enGameState_Rezult,
+		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
+
+	enum EnPauseMenu
+	{
+		enPauseMenuState_Back,
+		enPauseMenuState_HowToPlay,
+		enPauseMenuState_BGM,
+		enPauseMenuState_SE,
+		enPauseMenuState_QuitGame,
+	};
+	EnPauseMenu m_EnPauseMenu = enPauseMenuState_Back;
 
 	bool Start();
 	void Update();
@@ -38,8 +49,31 @@ public:
 	void Battle();
 	void Pause();
 	void End();
+	void Between();
+	void GoResult();
 	void GameState();
 	
+	/// <summary>
+	/// ポーズ時の移動処理
+	/// </summary>
+	void PauseMove();
+
+	/// <summary>
+	/// 選んだ番号に対応したステートにする処理
+	/// </summary>
+	void SelectMenu();
+
+	/// <summary>
+	/// メニュー時のステートの管理
+	/// </summary>
+	void MenuState();
+	
+	void Menu_Back();
+	void Menu_HowToPlay();
+	void Menu_BGM();
+	void Menu_SE();
+	void Menu_QuitGame();
+
 	/// <summary>
 	/// ゲーム中に再生される音の読み込み
 	/// </summary>
@@ -49,7 +83,7 @@ public:
 	/// 効果音の音量を返す
 	/// </summary>
 	/// <returns>効果音の音量</returns>
-	float SetSoundEffectVolume()
+	const float SetSoundEffectVolume()const
 	{
 		return SoundEffectVolume;
 	}
@@ -126,8 +160,22 @@ private:
 	Quaternion m_sRotation = Quaternion::Identity;
 	Vector3 EnemyRespawnPosition[9];
 	Quaternion EnemyReapawnPot[9];
-	SpriteRender m_Pause_Front;    //�|�[�Y���
-	SpriteRender m_Pause_Back;     //�|�[�Y�̗����
+	//ポーズの画像
+	SpriteRender m_Pause_Front;    //ポーズのメイン
+	SpriteRender m_Pause_Back;     //背景
+	SpriteRender m_Menu_Back;        //Back
+	SpriteRender m_Menu_HowToPlay;   //HowToPlay
+	SpriteRender m_Menu_BGM;         //BGM
+	SpriteRender m_Menu_SE;          //SE
+	SpriteRender m_Menu_QuitGame;    //QuitGame
+	SpriteRender m_Menu_SelectBar_BGM;   //SelectBar_BGM
+	SpriteRender m_Menu_SelectBar_SE;   //SelectBar_SE
+
+	Vector3 SelectBar_BGMPos = Vector3::AxisX;
+	Vector3 SelectBar_SEPos = Vector3::AxisX;
+
+	float m_nuwBGMPos=10.0f;
+	float m_nuwSEPos=10.0f;
 
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
@@ -157,9 +205,11 @@ private:
 	int SearchRespawnPosNumber = 0;
 	int RandamRespawnPosNumber;
 	bool EnemyRespawnFlag[10];
-
-	float m_Timer = 0.0f;
-
+	//リスポーンタイマー
+	float m_RespawnTimer = 0.0f;
+	//
+	float m_BetweenTimer = 0.0f;
+	
 	//BGMの初期音量
 	float BGMVolume = 1.0f;
 	//効果音の初期音量
@@ -170,8 +220,11 @@ private:
 	//１…魔法使い
 	//２…ゾンビ
 	//３…魔物
-	int SelectCharNumber = 1;
+	int SelectCharNumber = 0;
 
+	//メニュー
+	int MenuNumber = 0;
+	int MenuNumber_old = 0;
 
 	int enemyNum = 0;
 	char* enemyName;

@@ -25,7 +25,7 @@ WizardPlayer::WizardPlayer()
 	GetRespawnPos();
 	respawnNumber = 2;        //リスポーンする座標の番号
 
-	m_position.y = m_position_YUp;
+	//m_position.y = m_position_YUp;
 	
 	//リスポーンする座標のセット
 	//キャラコン
@@ -138,7 +138,7 @@ void WizardPlayer::Update()
 		AvoidanceSprite();
 	}
 
-	m_position.y = m_position_YUp;
+	//m_position.y = m_position_YUp;
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 }

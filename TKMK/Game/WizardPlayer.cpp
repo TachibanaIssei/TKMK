@@ -33,7 +33,7 @@ WizardPlayer::WizardPlayer()
 	m_respawnPos[respawnNumber].y = m_position_YUp;
 	//
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
-	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+	//m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 
 	//m_position=m_respawnPos[respawnNumber];
 	
@@ -138,6 +138,13 @@ void WizardPlayer::Update()
 		AvoidanceSprite();
 	}
 
+	//スポーン、リスポーンして地面についていないなら処理をしない
+	if (m_TowerToGroundFlag == false)
+	{
+		//飛び降りる処理
+		RespawnMove(m_position, m_rot, m_charCon);
+	}
+
 	//m_position.y = m_position_YUp;
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
@@ -239,7 +246,7 @@ void WizardPlayer::MakeMagicBall()
 	//製作者の名前を入れる
 	magicBall->SetCreatorName(GetName());
 	Vector3 MagicBallPos = m_position;
-	MagicBallPos.y += 15.0f;
+	MagicBallPos.y += 25.0f;
 
 	magicBall->SetPosition(MagicBallPos);
 	magicBall->SetRotation(m_rot);

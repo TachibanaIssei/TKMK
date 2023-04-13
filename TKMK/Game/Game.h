@@ -211,7 +211,7 @@ private:
 	float m_BetweenTimer = 0.0f;
 	
 	//BGMの初期音量
-	float BGMVolume = 1.0f;
+	float BGMVolume = 2.0f;
 	//効果音の初期音量
 	float SoundEffectVolume = 1.0f;
 
@@ -220,7 +220,7 @@ private:
 	//１…魔法使い
 	//２…ゾンビ
 	//３…魔物
-	int SelectCharNumber = 0;
+	int SelectCharNumber = 1;
 
 	//メニュー
 	int MenuNumber = 0;

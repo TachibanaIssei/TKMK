@@ -665,17 +665,23 @@ void Game::Menu_BGM()
 {
 	//音量を上げる
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if (BGMVolume < 4.0f)
-			BGMVolume += 0.1f;
-		m_bgm->SetVolume(BGMVolume);
-		SelectBar_BGMPos.x += m_nuwBGMPos;
+		if (BGMVolume < 8.0f)
+		{
+			BGMVolume += 0.5f;
+			m_bgm->SetVolume(BGMVolume);
+			SelectBar_BGMPos.x += m_nuwBGMPos;
+		}
+		
 	}
 	//音量を下げる
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if (BGMVolume > 0)
-			BGMVolume -= 0.1f;
-		m_bgm->SetVolume(BGMVolume);
-		SelectBar_BGMPos.x -= m_nuwBGMPos;
+		{
+			BGMVolume -= 0.2f;
+			m_bgm->SetVolume(BGMVolume);
+			SelectBar_BGMPos.x -= m_nuwBGMPos;
+		}
+	
 	}
 	//バーの座標を更新
 	m_Menu_SelectBar_BGM.SetPosition(SelectBar_BGMPos);
@@ -687,14 +693,20 @@ void Game::Menu_SE()
 	//音量を上げる
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
 		if (SoundEffectVolume < 4.0f)
-			SoundEffectVolume += 0.1f;
-		SelectBar_SEPos.x += m_nuwSEPos;
+		{
+			SoundEffectVolume += 0.4f;
+			SelectBar_SEPos.x += m_nuwSEPos;
+		}
+		
 	}
 	//音量を下げる
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if (SoundEffectVolume > 0)
+		{
 			SoundEffectVolume -= 0.1f;
-		SelectBar_SEPos.x -= m_nuwSEPos;
+			SelectBar_SEPos.x -= m_nuwSEPos;
+		}
+		
 	}
 	//バーの座標を更新
 	m_Menu_SelectBar_SE.SetPosition(SelectBar_SEPos);

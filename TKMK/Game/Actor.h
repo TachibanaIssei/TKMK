@@ -83,12 +83,6 @@ public:
 	/// <returns></returns>
 	inline int& GetLevel() { return Lv; }
 
-	///// <summary>
-	///// 現在のGPを返す
-	///// </summary>
-	///// <returns></returns>
-	//inline int GetHP() { return Hp; }
-
 	/// <summary>
 	/// レベルアップの処理
 	/// </summary>
@@ -149,6 +143,17 @@ public:
 		m_respawnPos[number] = pos;
 		m_respawnRotation[number] = rot;
 	};
+
+	/// <summary>
+	/// リスポーンしたときに塔から飛び降りる処理
+	/// </summary>
+	
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	void RespawnMove(Vector3& position, Quaternion& rotation, CharacterController& charCon);
 
 	/// <summary>
 	/// 座標を設定
@@ -288,5 +293,10 @@ protected:
 	Status m_Status;                                      //ステータス
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUPStatus = { 30,5,10.0f };
+
+	//スポーン、リスポーンして塔から地上に降りたかの判定
+	bool m_TowerToGroundFlag = false;
+	bool m_RespawnJumpFlag = false;
+	int Count=0;
 };
 

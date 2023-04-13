@@ -23,10 +23,6 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	/*Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();*/
-
 	//カメラの前方向と右方向のベクトルを持ってくる。
 	Vector3 forward = g_camera3D->GetForward();
 	Vector3 right = g_camera3D->GetRight();
@@ -47,14 +43,25 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 
 	//移動速度にスティックの入力量を加算する。
 	m_moveSpeed += right + forward;
+	//重力を付与する
+	m_moveSpeed.y -= 980.0f * g_gameTime->GetFrameDeltaTime();
+
 	//キャラクターコントローラーを使って座標を移動させる。
 	position = charcon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//地面についた。
+	if (charcon.IsOnGround()) {
+		m_moveSpeed.y = 0.0f;
+	}
+	//キャラクターコントローラーを使って座標を移動させる。早くなってしまう
+	//position = charcon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//m_modelRender.SetPosition(position);
+
 }
 
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
-	m_respawnLevel.Init("Assets/level3D/CharRespawnLevel.tkl", [&](LevelObjectData& objData) {
+	m_respawnLevel.Init("Assets/level3D/CharRespawn2Level.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
@@ -257,6 +264,39 @@ void Actor::COOlTIME(float SkillCooltimer, bool& skillstate,float& timer)
 	
 }
 
+/// <summary>
+/// リスポーンしたときに塔から飛び降りる処理
+/// </summary>
+void Actor::RespawnMove(Vector3& position, Quaternion& rotation, CharacterController& charCon)
+{
+	float jump = 10.0f;
+	//飛び降りる
+	//ジャンプする
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		m_RespawnJumpFlag = true;
+	}
+	
+	if (m_RespawnJumpFlag == true)
+	{
+		if (Count < 20)
+		{
+			m_moveSpeed = Vector3::AxisZ;
+			rotation.Apply(m_moveSpeed);
+			//飛ぶ方向を決める
+			m_moveSpeed *= 400.0f;
 
+			position.y += jump;
+			position += m_moveSpeed * g_gameTime->GetFrameDeltaTime();
+
+			Count++;
+		}
+	}
+	
+	charCon.SetPosition(position);
+	
+
+	//m_TowerToGroundFlag = true;
+}
 
 

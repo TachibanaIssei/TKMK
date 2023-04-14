@@ -23,6 +23,8 @@ public:
 		enWizardState_UltimateSkill,
 		enWizardState_Avoidance,
 		enWizardState_Pause,
+		enWizardState_Jump,
+		enWizardState_Fall,
 		enWizardState_Num,
 	};
 
@@ -126,11 +128,12 @@ public:
 	bool IsEnableMove() const
 	{
 		return m_wizardState != enWizardState_Attack &&
-			m_wizardState != enAnimationClip_Damege &&
-			m_wizardState != enAnimationClip_Death &&
-			m_wizardState != enAnimationClip_Avoidance &&
-			m_wizardState != enAnimationClip_Skill &&
-			m_wizardState != enAnimationClip_UltimateSkill;
+			m_wizardState != enWizardState_Damege &&
+			m_wizardState != enWizardState_Death &&
+			m_wizardState != enWizardState_Avoidance &&
+			m_wizardState != enWizardState_Skill &&
+			m_wizardState != enWizardState_UltimateSkill
+			;
 	}
 
 	/// <summary>
@@ -210,6 +213,10 @@ protected:
 	void OnProcessIdleStateTransition();
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
+	//ジャンプのステートの遷移処理
+	void OnProcessJumpStateTransition();
+	//落下中のステートの遷移処理
+	void OnProcessFallStateTransition();
 	//アタックのステートの遷移処理
 	void OnProcessAttackStateTransition();
 	//スキルのステートの遷移処理
@@ -234,6 +241,8 @@ protected:
 		enAnimationClip_Skill,
 		enAnimationClip_UltimateSkill,
 		enAnimationClip_Avoidance,
+		enAnimationClip_Jump,
+		enAnimationClip_Fall,
 		enAnimationClip_Num,
 	};
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ

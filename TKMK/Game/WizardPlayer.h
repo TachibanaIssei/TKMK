@@ -98,7 +98,7 @@ private:
 	//スキルを使った時の移動速度
 	float SkillSpeed = 270.0f;
 	//回避を使った時の移動速度
-	float AvoidanceSpeed = 170.0f;
+	float AvoidanceSpeed = 150.0f;
 
 	bool m_spriteFlag = true;
 

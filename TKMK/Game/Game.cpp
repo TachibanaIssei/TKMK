@@ -346,9 +346,23 @@ void Game::GoResult()
 //ポーズステートからゲームステートに移るときの間の処理
 void Game::Between()
 {
-	m_BetweenTimer += g_gameTime->GetFrameDeltaTime();
-	if (m_BetweenTimer > 1)
+	m_BetweenTimer++;
+	if (m_BetweenTimer>=1)
 	{
+		//生成されているキャラのステートをゲームステートに戻す
+		for (auto character : m_Actors)
+		{
+			character->ChangeGameState(character->enGame);
+		}
+		//UIのステートをゲームステートに戻す
+		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
+		//カメラのステートをゲームステートに戻す
+		m_gamecamera->SetCameraState(m_gamecamera->enGameState);
+		//生成されている中立の敵のステートをゲームステートに戻す
+		for (auto seutral_Enemy : m_neutral_Enemys)
+		{
+			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
+		}
 		m_GameState = enGameState_Battle;
 	}
 }
@@ -639,20 +653,7 @@ void Game::Menu_Back()
 	if (g_pad[0]->IsTrigger(enButtonA)) {
 		//ステートをバトルステートに戻す
 		m_GameState = enGameState_BetweenGameAndPause;
-		//生成されているキャラのステートをゲームステートに戻す
-		for (auto character : m_Actors)
-		{
-			character->ChangeGameState(character->enGame);
-		}
-		//UIのステートをゲームステートに戻す
-		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
-		//カメラのステートをゲームステートに戻す
-		m_gamecamera->SetCameraState(m_gamecamera->enGameState);
-		//生成されている中立の敵のステートをゲームステートに戻す
-		for (auto seutral_Enemy : m_neutral_Enemys)
-		{
-			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Idle);
-		}
+		
 	}
 }
 //HowToPlayの処理

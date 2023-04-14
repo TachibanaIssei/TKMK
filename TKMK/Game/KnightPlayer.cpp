@@ -174,6 +174,11 @@ void KnightPlayer::Update()
 		AvoidanceSprite();
 	}
 
+	//キャラクターコントローラーを使って座標を移動させる。
+	//ワープする時はキャラコンを移動させない
+	if (IsEnableMove() == true) {
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();

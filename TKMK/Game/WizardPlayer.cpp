@@ -33,7 +33,7 @@ WizardPlayer::WizardPlayer()
 	m_respawnPos[respawnNumber].y = m_position_YUp;
 	//
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
-	//m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 
 	//m_position=m_respawnPos[respawnNumber];
 	
@@ -112,16 +112,30 @@ void WizardPlayer::Update()
 		Dameged(dddd);
 	}*/
 
-	//移動処理
+	//リスポーンしたときしか使えない
+	//飛び降りる処理
+	//地上にいないならジャンプしかしないようにする
+	if (m_position.y > 1.0f) {
+		if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+		{
+			pushFlag = true;
+
+			m_wizardState = enWizardState_Jump;
+		}
+	}
+	else
+	{
+		Attack();
+		//回避処理
+		Avoidance();
+	}
+	
 	//移動処理
 	Vector3 stickL;
 	stickL.x = g_pad[0]->GetLStickXF();
 	stickL.y = g_pad[0]->GetLStickYF();
 	Move(m_position, m_charCon, m_Status, stickL);
-
-	Attack();
-	//回避処理
-	Avoidance();
+	
 	//回転処理
 	Rotation();
 	//当たり判定
@@ -138,14 +152,18 @@ void WizardPlayer::Update()
 		AvoidanceSprite();
 	}
 
-	//スポーン、リスポーンして地面についていないなら処理をしない
-	if (m_TowerToGroundFlag == false)
-	{
-		//飛び降りる処理
-		RespawnMove(m_position, m_rot, m_charCon);
+	//キャラクターコントローラーを使って座標を移動させる。
+	//ワープする時はキャラコンを移動させない
+	if (IsEnableMove() == true ) {
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
-
-	//m_position.y = m_position_YUp;
+	
+	//ジャンプ中ではないかつ落下中なら
+	if (m_wizardState != enWizardState_Jump && m_charCon.IsOnGround()==false)
+	{
+		m_wizardState = enWizardState_Fall;
+	}
+	
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 }
@@ -228,7 +246,13 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_modelRender.SetPosition(m_position);
 	}
 
-	//
+	//ジャンプが始まったら
+	if (wcscmp(eventName, L"Jump_Start") == 0)
+	{
+		m_RespawnJumpFlag = true;
+	}
+
+	//必殺技が打たれたら
 	if (wcscmp(eventName, L"UltAttack_Start") == 0)
 	{
 		//雷の生成

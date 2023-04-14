@@ -24,26 +24,17 @@ WizardPlayer::WizardPlayer()
 	//リスポーンする座標2番の取得
 	GetRespawnPos();
 	respawnNumber = 2;        //リスポーンする座標の番号
-
-	//m_position.y = m_position_YUp;
 	
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	m_respawnPos[respawnNumber].y = m_position_YUp;
+	//m_respawnPos[respawnNumber].y = m_position_YUp;
 	//
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 
-	//m_position=m_respawnPos[respawnNumber];
-	
+	Quaternion ddf = m_respawnRotation[respawnNumber];
 
-	//m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	//剣士のY座標が腰なのでY座標を上げる
-	//m_position.y = m_position_YUp;
-
-	//m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定

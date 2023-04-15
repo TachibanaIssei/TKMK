@@ -4,6 +4,7 @@
 #include "Neutral_Enemy.h"
 #include "MagicBall.h"
 #include "WizardUlt.h"
+#include "GameUI.h"
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f, 1.0f);
@@ -51,6 +52,8 @@ WizardPlayer::WizardPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
+	gameUI = FindGO<GameUI>("m_gameUI");
 }
 
 WizardPlayer::~WizardPlayer()
@@ -64,6 +67,14 @@ void WizardPlayer::Update()
 	if (m_GameState == enPause) {
 		return;
 	}
+
+	//今のフレームと前のフレームのレベルが違っていたら
+	if (oldLv != Lv) {
+		//レベルに合わせてGameUIのレベルの画像を変更する
+		gameUI->LevelFontChange(Lv);
+	}
+
+	oldLv = Lv;
 
 	//関数にする
 	int SkillCoolTime = SkillTimer;

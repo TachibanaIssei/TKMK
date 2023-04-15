@@ -7,6 +7,7 @@ class Game;
 class Neutral_Enemy;
 class MagicBall;
 class WizardUlt;
+class GameUI;
 
 class WizardPlayer:public WizardBase
 {
@@ -78,6 +79,7 @@ public:
 
 private:
 	Game* m_game = nullptr;
+	GameUI* gameUI = nullptr;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 	//MagicBall* magicBall = nullptr;
 
@@ -104,5 +106,7 @@ private:
 
 	int exp = 5;
 	int dddd = 10;
+
+	int oldLv = 0;
 };
 

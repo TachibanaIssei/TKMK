@@ -1,0 +1,8 @@
+7
+13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,738.0,-493.0,420,84,10,0.7,0.7,0.5,0.5,17,ExperienceBar.dds
+18,ExperienceBar_back,54,../../Game/Assets/sprite/gameUI/ExperienceBar_back.png,738.0,-493.0,420,84,10,0.7,0.7,0.5,0.5,22,ExperienceBar_back.dds
+5,timer,41,../../Game/Assets/sprite/gameUI/timer.png,0.0,478.0,372,120,10,0.3384615384615383,0.3020104895104895,0.5,0.5,9,timer.dds
+13,HPBar_HP_back,49,../../Game/Assets/sprite/gameUI/HPBar_HP_back.png,-660.0,-477.0,600,120,10,1.0,1.0,0.5,0.5,17,HPBar_HP_back.dds
+8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,857.0,-429.0,1103,500,10,0.9193589743589745,1.0,0.5,0.5,12,LevelBar.dds
+8,HPBar_HP,44,../../Game/Assets/sprite/gameUI/HPBar_HP.png,-660.0,-477.0,580,90,10,1.0,1.0,0.5,0.5,12,HPBar_HP.dds
+11,HPBar_flame,47,../../Game/Assets/sprite/gameUI/HPBar_flame.png,-660.0,-477.0,600,120,10,1.0,1.0,0.5,0.5,15,HPBar_flame.dds

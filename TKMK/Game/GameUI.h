@@ -113,7 +113,7 @@ private:
 	//UI
 	SpriteRender			m_hpBar;				//HPバーの画像
 	SpriteRender			m_statusBar;			//ステータスの画像
-	SpriteRender			m_playerFaceFrame;		//プレイヤーの顔画像の枠
+	SpriteRender			m_HPFrame;		//プレイヤーの顔画像の枠
 	SpriteRender			m_playerFaceBack;		//プレイヤーの顔画像の背景
 	SpriteRender            m_SkillRender;          //スキルアイコン
 	SpriteRender            m_UltRender;            //必殺アイコン
@@ -122,6 +122,8 @@ private:
 	SpriteRender            m_LvNumber;
 	SpriteRender            m_Flame;                //制限時間と獲得ポイントやHPバーの画像を
 	SpriteRender            m_Point;                //ポイント
+	SpriteRender            m_ExperienceFlame;        //経験値のフレーム
+	SpriteRender            m_ExperienceBar_flont;    //経験値バーの表
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション

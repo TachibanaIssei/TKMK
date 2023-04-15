@@ -269,6 +269,24 @@ public:
 	}
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	int GetExperience()
+	{
+		return GetExp;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	int GetExpTable()
+	{
+		return ExpTable;
+	}
+
+	/// <summary>
 	/// キャラコンが空中にあるか判定する
 	/// </summary>
 	/// <param name="">キャラコン</param>

@@ -205,6 +205,22 @@ void Actor::ExpReset(int& Lv, int& getExp)
 	case 4:
 		getExp = 20;
 		break;
+	case 5:
+		getExp = 30;
+		break;
+	case 6:
+		getExp = 40;
+		break;
+	case 7:
+		getExp = 50;
+		break;
+	case 8:
+		getExp = 60;
+		break;
+	case 9:
+		getExp = 70;
+		break;
+		
 	default:
 		break;
 	}

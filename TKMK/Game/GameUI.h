@@ -36,23 +36,34 @@ public:
 		switch (lv)
 		{
 		case 1:
-			m_LvNumber.Init("Assets/sprite/Lv1.DDS", 320.0f, 150.0f);
-
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv10.DDS", 200.0f, 200.0f);
 			break;
 		case 2:
-			m_LvNumber.Init("Assets/sprite/Lv2.DDS", 320.0f, 150.0f);
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv2.DDS", 150.0f, 150.0f);
 			break;
 		case 3:
-			m_LvNumber.Init("Assets/sprite/Lv3.DDS", 320.0f, 150.0f);
-
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv3.DDS", 150.0f, 150.0f);
 			break;
 		case 4:
-			m_LvNumber.Init("Assets/sprite/Lv4.DDS", 320.0f, 150.0f);
-
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv4.DDS", 150.0f, 150.0f);
 			break;
 		case 5:
-			m_LvNumber.Init("Assets/sprite/Lv5.DDS", 320.0f, 150.0f);
-
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv5.DDS", 150.0f, 150.0f);
+			break;
+		case 6:
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv6.DDS", 150.0f, 150.0f);
+			break;
+		case 7:
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv7.DDS", 150.0f, 150.0f);
+			break;
+		case 8:
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv8.DDS", 150.0f, 150.0f);
+			break;
+		case 9:
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv9.DDS", 150.0f, 150.0f);
+			break;
+		case 10:
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv10.DDS", 150.0f, 150.0f);
 			break;
 		default:
 			break;
@@ -120,6 +131,7 @@ private:
 	SpriteRender            m_TimeAndPointRender;   //制限時間と獲得ポイント
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;
+	SpriteRender            m_MaxLv;
 	SpriteRender            m_Flame;                //制限時間と獲得ポイントやHPバーの画像を
 	SpriteRender            m_Point;                //ポイント
 	SpriteRender            m_ExperienceFlame;        //経験値のフレーム

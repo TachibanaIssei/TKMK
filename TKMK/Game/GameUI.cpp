@@ -10,7 +10,7 @@ namespace
 {
 	const Vector2 GAUGE_PIVOT = Vector2(0.5f, 0.5f);				//ゲージのピボット
 	const Vector2 HPGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//HPゲージのピボット
-	const Vector2 EXPERIENCEGAUGE_PIVOT = Vector2(1.0f, 1.0f);				//経験値ゲージのピボット
+	const Vector2 EXPERIENCEGAUGE_PIVOT = Vector2(0.0f, 1.0f);				//経験値ゲージのピボット
 
 	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ステータスバーポジション
 	const Vector3 TIME_POS = Vector3(0.0,470.0f, 0.0f);	//制限時間の座標
@@ -26,8 +26,9 @@ namespace
 	const Vector3 Skill_Pos = Vector3(520.0f, -280.0f, 0.0f);   //スキルアイコンポジション
 	const Vector3 Ult_Pos = Vector3(470.0f, -445.0f, 0.0f);     //必殺技アイコンポジション
 
-	const Vector3 LV_NUBER_POS = Vector3(750.0f, -360.0f, 0.0f);
+	const Vector3 LV_NUBER_POS = Vector3(770.0f, -360.0f, 0.0f);
 	const Vector3 LvPos = Vector3(640.0f, -310.0f, 0.0f);       //Lv
+	const Vector3 MaxLvPos = Vector3(920.0f, -400.0f, 0.0f);       // /10
 
 	const Vector3 FLAME_POS = Vector3(920.0f,-480.0f,0.0f);    //レベルや経験値のフレーム
 
@@ -78,19 +79,24 @@ bool GameUI::Start()
 
 		//経験値バーの表ピボットにするtodo
 		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
-		m_ExperienceBar_flont.SetPosition(EXPERIENCE_POS);
+		m_ExperienceBar_flont.SetPosition(Vector3::Zero);
 		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
 
 		//Lvの画像を読み込む
-		m_Lv.Init("Assets/sprite/Lv.DDS", 200.0f, 150.0f);
+		m_Lv.Init("Assets/sprite/gameUI/Lv.DDS", 196.0f, 150.0f);
 		m_Lv.SetPosition(LvPos);
 		m_Lv.SetScale(0.4, 0.4, 1.0);
 
 		//Lv1の画像を読み込む
-		m_LvNumber.Init("Assets/sprite/Lv1.DDS", 320.0f, 150.0f);
+		m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
 		m_LvNumber.SetPosition(LV_NUBER_POS);
-		m_LvNumber.SetScale(0.4, 1.0, 1.0);
+		m_LvNumber.SetScale(1.4, 1.4, 1.0);
+
+		// /10の画像を読み込む
+		m_MaxLv.Init("Assets/sprite/gameUI/maxLv.DDS", 196.0f, 150.0f);
+		m_MaxLv.SetPosition(MaxLvPos);
+		m_MaxLv.SetScale(0.5, 0.5, 1.0);
 
 		//スキルのアイコン
 		m_SkillRender.Init("Assets/sprite/skill_flame.DDS", 162, 162);
@@ -103,6 +109,7 @@ bool GameUI::Start()
 
 		m_Lv.Update();
 		m_LvNumber.Update();
+		m_MaxLv.Update();
 		m_Flame.Update();
 		m_ExperienceFlame.Update();
 		m_ExperienceBar_flont.Update();
@@ -282,6 +289,7 @@ void GameUI::Render(RenderContext& rc)
 		m_HpFont.Draw(rc);
 		m_Lv.Draw(rc);
 		m_LvNumber.Draw(rc);
+		m_MaxLv.Draw(rc);
 		m_LevelFont.Draw(rc);
 
 		m_PointFont.Draw(rc);

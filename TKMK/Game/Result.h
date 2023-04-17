@@ -15,5 +15,10 @@ public:
 	SpriteRender m_spriteRender;
 	Tittle* tittle=nullptr;
 
+private:
+	int charPoints[2];
+
+	FontRender moji;
+
 };
 

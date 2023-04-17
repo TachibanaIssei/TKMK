@@ -140,6 +140,8 @@ public:
 		SelectCharNumber = select;
 	}
 
+	void GetActorPoints(int charPoints[]);
+
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する

@@ -29,8 +29,19 @@ public:
 		enGameState_Pause,
 		enGamestate_End,
 		enGameState_Rezult,
+		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
+
+	enum EnPauseMenu
+	{
+		enPauseMenuState_Back,
+		enPauseMenuState_HowToPlay,
+		enPauseMenuState_BGM,
+		enPauseMenuState_SE,
+		enPauseMenuState_QuitGame,
+	};
+	EnPauseMenu m_EnPauseMenu = enPauseMenuState_Back;
 
 	bool Start();
 	void Update();
@@ -38,35 +49,56 @@ public:
 	void Battle();
 	void Pause();
 	void End();
+	void Between();
+	void GoResult();
 	void GameState();
 	
 	/// <summary>
-	/// 
+	/// ポーズ時の移動処理
+	/// </summary>
+	void PauseMove();
+
+	/// <summary>
+	/// 選んだ番号に対応したステートにする処理
+	/// </summary>
+	void SelectMenu();
+
+	/// <summary>
+	/// メニュー時のステートの管理
+	/// </summary>
+	void MenuState();
+	
+	void Menu_Back();
+	void Menu_HowToPlay();
+	void Menu_BGM();
+	void Menu_SE();
+	void Menu_QuitGame();
+
+	/// <summary>
+	/// ゲーム中に再生される音の読み込み
+	/// </summary>
+	void SetMusic();
+
+	/// <summary>
+	/// 効果音の音量を返す
+	/// </summary>
+	/// <returns>効果音の音量</returns>
+	const float SetSoundEffectVolume()const
+	{
+		return SoundEffectVolume;
+	}
+
+	/// <summary>
+	/// 中立の敵のリスポーン
 	/// </summary>
 	void Respawn();
 
-	/*std::vector<Neutral_Enemy*> GetNeutral_EnemyContaier() {
-		return m_enemyCounter;
-	}*/
-
 	/// <summary>
-	/// �G�l�~�[�̐���炷����
+	/// リスポーンする座標の設定
 	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
-	int SubNeutral_EnemyContaier() {
-		return enemyNumber--;
-	}
-
-	/// <summary>
-	/// �G�l�~�[�̐���炷����
-	/// </summary>
-	/// <returns>�G�l�~�[�̐�</returns>
-	int GetNeutral_EnemyContaier() {
-		return enemyNumber;
-	}
-
 	void SetEnemyRespawnPos();
 
+	//リスポーンする座標を格納する
 	void SetRespawnPosition(Vector3 pos, Quaternion rot, int number) {
 		EnemyRespawnPosition[number] = pos;
 		EnemyReapawnPot[number] = rot;
@@ -74,28 +106,27 @@ public:
 
 	void Render(RenderContext& rc);
 
+	/// <summary>
+	/// 中立の敵の情報をリストから削除する
+	/// </summary>
+	/// <param name="enemy">消したい中立の敵</param>
 	void RemoveEnemyFromList(Neutral_Enemy* enemy)
 	{
 		std::vector<Neutral_Enemy*>::iterator it = std::find(
-			m_neutral_Enemys.begin(), // ����J�n�ʒu����C�e���[�^
-			m_neutral_Enemys.end(),   // ����I���ʒu����C�e���[�^
-			enemy                     // ��������v�f
+			m_neutral_Enemys.begin(), // 中立の敵のリストの最初
+			m_neutral_Enemys.end(),   // 中立の敵のリストの最後
+			enemy                     // 消したい中立の敵
 		);
 		if (it != m_neutral_Enemys.end()) {
 			m_neutral_Enemys.erase(it);
 		}
 	}
-	//�x�N�^�^��Neutral_Enemy��Ԃ�
+	//中立の敵のリストを返す
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
 
-	void Enemys()
-	{
-		m_neutral_Enemys.pop_back();
-	}
-
-	//Actor��Ԃ�
+	//Actorのリストを返す
 	std::vector<Actor*>& GetActors() {
 		return m_Actors;
 	}
@@ -111,7 +142,7 @@ public:
 
 private:
 	/// <summary>
-	/// �����̓G�̖��O����
+	/// 中立の敵の名前を設定する
 	/// </summary>
 	char* CreateEnemyName() {
 		enemyNum++;
@@ -122,15 +153,13 @@ private:
 		return enemyName;
 	}
 	/// <summary>
-	/// �����̓G����
+	/// 中立の敵の生成
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
-	//
+	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
 
-
-	//AnimationClip m_animationClips[enAnimationClip_Num];
 	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;
@@ -140,8 +169,22 @@ private:
 	Quaternion m_sRotation = Quaternion::Identity;
 	Vector3 EnemyRespawnPosition[9];
 	Quaternion EnemyReapawnPot[9];
-	SpriteRender m_Pause_Front;    //�|�[�Y���
-	SpriteRender m_Pause_Back;     //�|�[�Y�̗����
+	//ポーズの画像
+	SpriteRender m_Pause_Front;    //ポーズのメイン
+	SpriteRender m_Pause_Back;     //背景
+	SpriteRender m_Menu_Back;        //Back
+	SpriteRender m_Menu_HowToPlay;   //HowToPlay
+	SpriteRender m_Menu_BGM;         //BGM
+	SpriteRender m_Menu_SE;          //SE
+	SpriteRender m_Menu_QuitGame;    //QuitGame
+	SpriteRender m_Menu_SelectBar_BGM;   //SelectBar_BGM
+	SpriteRender m_Menu_SelectBar_SE;   //SelectBar_SE
+
+	Vector3 SelectBar_BGMPos = Vector3::AxisX;
+	Vector3 SelectBar_SEPos = Vector3::AxisX;
+
+	float m_nuwBGMPos=10.0f;
+	float m_nuwSEPos=10.0f;
 
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
@@ -171,21 +214,26 @@ private:
 	int SearchRespawnPosNumber = 0;
 	int RandamRespawnPosNumber;
 	bool EnemyRespawnFlag[10];
+	//リスポーンタイマー
+	float m_RespawnTimer = 0.0f;
+	//
+	float m_BetweenTimer = 0.0f;
+	
+	//BGMの初期音量
+	float BGMVolume = 2.0f;
+	//効果音の初期音量
+	float SoundEffectVolume = 1.0f;
 
-	float m_Timer = 0.0f;
+	//プレイヤーの使うキャラの番号
+	//０…剣士
+	//１…魔法使い
+	//２…ゾンビ
+	//３…魔物
+	int SelectCharNumber = 1;
 
-	//BGM�̉��ʒ����Ɏg�p����ϐ�
-	float musicVolume = 1.0f;
-
-	//���U���g��ʂ��̃t���O
-	bool RezultFlag = false;
-	//�|�[�Y��ʂ��̃t���O
-	bool PauseOpenFlag = false;
-	bool PauseCloseFlag = true;
-
-	//�L�����̔ԍ�
-	int SelectCharNumber = 0;		//0剣士１魔法使い
-
+	//メニュー
+	int MenuNumber = 0;
+	int MenuNumber_old = 0;
 
 	int enemyNum = 0;
 	char* enemyName;

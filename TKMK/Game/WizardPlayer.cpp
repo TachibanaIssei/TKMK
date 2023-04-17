@@ -4,6 +4,7 @@
 #include "Neutral_Enemy.h"
 #include "MagicBall.h"
 #include "WizardUlt.h"
+#include "GameUI.h"
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f, 1.0f);
@@ -24,26 +25,17 @@ WizardPlayer::WizardPlayer()
 	//リスポーンする座標2番の取得
 	GetRespawnPos();
 	respawnNumber = 2;        //リスポーンする座標の番号
-
-	m_position.y = m_position_YUp;
 	
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	m_respawnPos[respawnNumber].y = m_position_YUp;
+	//m_respawnPos[respawnNumber].y = m_position_YUp;
 	//
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 
-	//m_position=m_respawnPos[respawnNumber];
-	
+	Quaternion ddf = m_respawnRotation[respawnNumber];
 
-	//m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-
-	//剣士のY座標が腰なのでY座標を上げる
-	//m_position.y = m_position_YUp;
-
-	//m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定
@@ -60,6 +52,8 @@ WizardPlayer::WizardPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
+	gameUI = FindGO<GameUI>("m_gameUI");
 }
 
 WizardPlayer::~WizardPlayer()
@@ -73,6 +67,14 @@ void WizardPlayer::Update()
 	if (m_GameState == enPause) {
 		return;
 	}
+
+	//今のフレームと前のフレームのレベルが違っていたら
+	if (oldLv != Lv) {
+		//レベルに合わせてGameUIのレベルの画像を変更する
+		gameUI->LevelFontChange(Lv);
+	}
+
+	oldLv = Lv;
 
 	//関数にする
 	int SkillCoolTime = SkillTimer;
@@ -112,16 +114,31 @@ void WizardPlayer::Update()
 		Dameged(dddd);
 	}*/
 
-	//移動処理
+	//リスポーンしたときしか使えない
+	//飛び降りる処理
+	//地上にいないならジャンプしかしないようにする
+	if (m_position.y > 1.0f) {
+		if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+		{
+			pushFlag = true;
+
+			m_wizardState = enWizardState_Jump;
+		}
+	}
+	else
+	{
+		Attack();
+		//回避処理
+		Avoidance();
+	}
+	
+	//if(jampAccumulateflag)
 	//移動処理
 	Vector3 stickL;
 	stickL.x = g_pad[0]->GetLStickXF();
 	stickL.y = g_pad[0]->GetLStickYF();
 	Move(m_position, m_charCon, m_Status, stickL);
-
-	Attack();
-	//回避処理
-	Avoidance();
+	
 	//回転処理
 	Rotation();
 	//当たり判定
@@ -138,7 +155,18 @@ void WizardPlayer::Update()
 		AvoidanceSprite();
 	}
 
-	m_position.y = m_position_YUp;
+	//キャラクターコントローラーを使って座標を移動させる。
+	//ワープする時はキャラコンを移動させない
+	if (IsEnableMove() == true ) {
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+	
+	//ジャンプ中ではないかつ落下中なら
+	if (m_wizardState != enWizardState_Jump && m_charCon.IsOnGround()==false)
+	{
+		m_wizardState = enWizardState_Fall;
+	}
+	
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 }
@@ -185,11 +213,6 @@ void WizardPlayer::Attack()
 		
 		//必殺技発動時の処理
 		UltimateSkill();
-		//レベルに合わせてGameUIのレベルの画像を変更する
-		//m_gameUI->LevelFontChange(Lv);
-
-		//必殺技発動フラグをセット
-		//UltimateSkillFlag = true;
 	}
 }
 
@@ -226,7 +249,13 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_modelRender.SetPosition(m_position);
 	}
 
-	//
+	//ジャンプが始まったら
+	if (wcscmp(eventName, L"Jump_Start") == 0)
+	{
+		m_RespawnJumpFlag = true;
+	}
+
+	//必殺技が打たれたら
 	if (wcscmp(eventName, L"UltAttack_Start") == 0)
 	{
 		//雷の生成
@@ -244,7 +273,7 @@ void WizardPlayer::MakeMagicBall()
 	//製作者の名前を入れる
 	magicBall->SetCreatorName(GetName());
 	Vector3 MagicBallPos = m_position;
-	MagicBallPos.y += 15.0f;
+	MagicBallPos.y += 25.0f;
 
 	magicBall->SetPosition(MagicBallPos);
 	magicBall->SetRotation(m_rot);

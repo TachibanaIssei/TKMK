@@ -25,7 +25,7 @@ namespace nsK2EngineLow {
 		int numBone = m_skeleton->GetNumBones();
 		for (int boneNo = 0; boneNo < numBone; boneNo++) {
 			auto bone = m_skeleton->GetBone(boneNo);
-			if (wcscmp(bone->GetName(), L"footstep") == 0) {
+			if (wcscmp(bone->GetName(), L"footsteppppp") == 0) {
 				//footstepƒ{[ƒ“‚ªŒ©‚Â‚©‚Á‚½B
 				footstepBoneNo = boneNo;
 				break;

@@ -18,6 +18,7 @@ namespace {
 KnightPlayer::KnightPlayer()
 {
 	m_gameUI = FindGO<GameUI>("m_gameUI");
+	m_game = FindGO<Game>("game");
 
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
@@ -172,10 +173,12 @@ void KnightPlayer::Update()
 		//回避のスプライトの表示の処理
 		AvoidanceSprite();
 	}
-	
 
-	//剣士のY座標が腰なのでY座標を上げる
-	m_position.y = m_position_YUp;
+	//キャラクターコントローラーを使って座標を移動させる。
+	//ワープする時はキャラコンを移動させない
+	if (IsEnableMove() == true) {
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
@@ -230,7 +233,6 @@ void KnightPlayer::Attack()
 	{
 
 		//移動速度を上げる
-		m_Status.Speed += 120.0f;
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
@@ -253,7 +255,7 @@ void KnightPlayer::Attack()
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 
 		//必殺技発動フラグをセット
 		UltimateSkillFlag = true;
@@ -318,7 +320,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(13);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
@@ -330,7 +332,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0); 
 		se->Init(14);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
@@ -342,7 +344,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(15);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
@@ -356,7 +358,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(11);
 		se->Play(false);
-		se->SetVolume(0.3f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 	}
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
@@ -426,7 +428,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//スキルの移動処理をしないようにする
 		SkillState = false;
-		m_Status.Speed -= 120.0f;
+		//m_Status.Speed -= 120.0f;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}

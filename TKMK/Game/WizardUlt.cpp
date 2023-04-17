@@ -17,10 +17,10 @@ WizardUlt::~WizardUlt()
 bool WizardUlt::Start()
 {
 	CreatCollision();
-	//�쐬�����A�N�^�[�̖��O�̃C���X�^���X��T��
+	//必殺技を打ったキャラの名前
 	m_CreatMeActor = FindGO<Actor>(UltCollision->GetCreatorName());
 
-	//�^�[�Q�b�g�̃A�N�^�[�̃C���X�^���X��T��
+	//攻撃対象のキャラの名前
 	m_targetActor = FindGO<Actor>(SetTargetActorName());
 
 	return true;
@@ -28,15 +28,13 @@ bool WizardUlt::Start()
 
 void WizardUlt::Update()
 {
-	//�^�C�}�[���Z����B
 	m_timer += g_gameTime->GetFrameDeltaTime();
-	//�^�C�}�[��10�b�𒴂����
+	//タイマーが３より大きくなったら
 	if (m_timer > 3)
 	{
-		//�_���[�W��󂯂邩�󂯂Ȃ������߂�
+		//攻撃対象のキャラにダメージを与える処理
 		Damege();
-		//�|�C���g�𑝂₷
-
+		//自身を消す
 		DeleteGO(this);
 	}
 
@@ -55,14 +53,14 @@ void WizardUlt::Damege()
 {
 	int Randam = rand() % 100;
 	int Damege = 0;
-	//���Q�O�ȉ��Ȃ瑦��
+	//5分の1の確率で即死
 	if (Randam < 20)
 	{
 		Damege = 1000;
-		//�^�[�Q�b�g�̃L�����Ƀ_���[�W��^����(����)
+		//攻撃対象のキャラにダメージを与える
 		m_targetActor->Dameged(Damege, m_CreatMeActor);
 		int downlevel = 1;
-		//���̋Z��ł���L�����̃��x�������
+		//必殺技を打ったキャラのレベルを下げる
 		m_CreatMeActor->levelDown(
 			m_CreatMeActor->GetLvUPStatus(), 
 			m_CreatMeActor->GetStatus(), 

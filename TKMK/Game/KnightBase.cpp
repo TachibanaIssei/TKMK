@@ -38,7 +38,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
+	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack2.tka");
 	m_animationClips[enAnimationClip_ChainAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Knight/Knight_Skill.tka");
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
@@ -156,7 +156,7 @@ void KnightBase::AtkCollisiton()
 	//ボックス状のコリジョンを作成する。
 	collisionObject->CreateBox(collisionPosition, //座標。
 		Quaternion::Identity, //回転。
-		Vector3(70.0f, 15.0f, 15.0f) //大きさ。
+		Vector3(70.0f, 15.0f, 30.0f) //大きさ。
 	);
 	collisionObject->SetName("player_attack");
 	collisionObject->SetCreatorName(GetName());
@@ -284,7 +284,7 @@ void KnightBase::Collition()
 		{
 			//剣士の攻撃力分HPを減らす。
 			//倒された相手のポイントを増やす
-			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+			//Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 		}
 	}
 
@@ -415,12 +415,13 @@ void KnightBase::AnimationMove(float moveSpeed,Vector3 stickL)
 //直線移動させる
 void KnightBase::MoveStraight(Vector3& right, Vector3& forward)
 {
+	Vector3 SkillSpeed = Vector3::Zero;
 	//移動処理
 	//移動速度にスティックの入力量を加算する。
 	//Vector3 m_SkillSpeed; 
-	m_moveSpeed = right + forward;
+	SkillSpeed = right + forward;
 	//キャラクターコントローラーを使って座標を移動させる。
-	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	m_position = m_charCon.Execute(SkillSpeed, 1.0f / 60.0f);
 }
 
 /// <summary>
@@ -575,6 +576,7 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 		SkillEndFlag = true;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
+		SkillState = false;
 		//待機ステート
 		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();

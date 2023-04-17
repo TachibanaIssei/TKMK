@@ -19,13 +19,9 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 		//抜け出す　移動処理を行わない
 		return;
 	}
-
+	
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
-
-	/*Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();*/
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
 	Vector3 forward = g_camera3D->GetForward();
@@ -42,19 +38,36 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(forward.x) >= 0.001f || fabsf(forward.z) >= 0.001f)
 	{
-		m_Forward = forward+ right;
+		m_Forward = forward + right;
 	}
 
 	//移動速度にスティックの入力量を加算する。
 	m_moveSpeed += right + forward;
+	//重力を付与する
+	m_moveSpeed.y -= 600.0f * g_gameTime->GetFrameDeltaTime();
+
+	//地面についた。
+	if (charcon.IsOnGround()) {
+
+		m_moveSpeed.y = 0.0f;
+
+		//ジャンプフラグがtrueだったら
+		if (m_RespawnJumpFlag == true)
+		{
+			RespawnMove();
+			m_RespawnJumpFlag = false;
+		}
+	}
+
+	//↓生成するクラスでキャラコンを更新する
 	//キャラクターコントローラーを使って座標を移動させる。
-	position = charcon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	//position = charcon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
 
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
-	m_respawnLevel.Init("Assets/level3D/CharRespawnLevel.tkl", [&](LevelObjectData& objData) {
+	m_respawnLevel.Init("Assets/level3D/CharRespawn2Level.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
@@ -192,6 +205,22 @@ void Actor::ExpReset(int& Lv, int& getExp)
 	case 4:
 		getExp = 20;
 		break;
+	case 5:
+		getExp = 30;
+		break;
+	case 6:
+		getExp = 40;
+		break;
+	case 7:
+		getExp = 50;
+		break;
+	case 8:
+		getExp = 60;
+		break;
+	case 9:
+		getExp = 70;
+		break;
+		
 	default:
 		break;
 	}
@@ -257,6 +286,16 @@ void Actor::COOlTIME(float SkillCooltimer, bool& skillstate,float& timer)
 	
 }
 
-
+/// <summary>
+/// リスポーンしたときに塔から飛び降りる処理
+/// </summary>
+void Actor::RespawnMove()
+{
+	//飛び降りる
+	//ジャンプする
+		m_moveSpeed.y = 350.0f;
+		//position.y += jump;
+		//m_RespawnJumpFlag = true;
+}
 
 

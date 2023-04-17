@@ -132,6 +132,7 @@ void WizardPlayer::Update()
 		Avoidance();
 	}
 	
+	//if(jampAccumulateflag)
 	//移動処理
 	Vector3 stickL;
 	stickL.x = g_pad[0]->GetLStickXF();

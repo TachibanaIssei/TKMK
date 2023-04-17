@@ -290,6 +290,8 @@ protected:
 
 	//中立の敵から受けるダメージ
 	int Enemy_atk = 10;
+	//ジャンプしたかのフラグ
+	bool jampAccumulateflag = false;
 
 	btCollisionWorld::LocalConvexResult* m_localConvexResult = nullptr;
 };

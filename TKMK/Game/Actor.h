@@ -19,6 +19,13 @@ protected:
 		float LvSpeed;             //レベルアップ時の移動速度
 	};
 
+	enum EnJumpState
+	{
+		enIsGround,
+		enIsAir
+	};
+	EnJumpState m_JumpState;
+
 public:
 
 	//ゲームクラスの現在の状態を示すステート
@@ -83,12 +90,6 @@ public:
 	/// <returns></returns>
 	inline int& GetLevel() { return Lv; }
 
-	///// <summary>
-	///// 現在のGPを返す
-	///// </summary>
-	///// <returns></returns>
-	//inline int GetHP() { return Hp; }
-
 	/// <summary>
 	/// レベルアップの処理
 	/// </summary>
@@ -149,6 +150,17 @@ public:
 		m_respawnPos[number] = pos;
 		m_respawnRotation[number] = rot;
 	};
+
+	/// <summary>
+	/// リスポーンしたときに塔から飛び降りる処理
+	/// </summary>
+	
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	void RespawnMove();
 
 	/// <summary>
 	/// 座標を設定
@@ -256,10 +268,45 @@ public:
 		return LvUPStatus;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	int GetExperience()
+	{
+		return GetExp;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	int GetExpTable()
+	{
+		return ExpTable;
+	}
+
+	/// <summary>
+	/// キャラコンが空中にあるか判定する
+	/// </summary>
+	/// <param name="">キャラコン</param>
+	/// <returns>空中にあるか判定したフラグ</returns>
+	EnJumpState IsAir(CharacterController& charcon)
+	{
+		if (charcon.IsJump())
+		{
+			m_JumpState = enIsAir;
+		}
+		else
+		{
+			m_JumpState = enIsGround;
+		}
+		return m_JumpState;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
-	
 
 protected:
 	int Lv;                    //レベル
@@ -288,5 +335,13 @@ protected:
 	Status m_Status;                                      //ステータス
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUPStatus = { 30,5,10.0f };
+
+	//スポーン、リスポーンして塔から地上に降りたか
+	//空中にいるかの判定
+	bool m_AirFlag = false;
+	//ジャンプフラグ
+	bool m_RespawnJumpFlag = false;
+
+	int Count=0;
 };
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CharacterSelect.h"
+#include "Tittle.h"
 #include "Game.h"
 
 CharacterSelect::CharacterSelect()
@@ -21,13 +22,13 @@ bool CharacterSelect::Start()
 	m_CharacterSelectPic.Update();
 
 	//剣士の画像
-	m_KnightPic.Init("Assets/sprite/Knight.DDS", 300.0f, 300.0f); 
+	m_KnightPic.Init("Assets/sprite/Select/Knight.DDS", 300.0f, 300.0f); 
 	m_KnightPic.SetPosition(-510.0f, 75.0f, 0.0f);
 	m_KnightPic.SetScale(1.0f, 1.0f, 1.0f);
 	m_KnightPic.Update();
 
 	//魔法使いの画像
-	m_WizardPic.Init("Assets/sprite/Wizard.DDS", 300.0f, 300.0f);
+	m_WizardPic.Init("Assets/sprite/Select/Wizard.DDS", 300.0f, 300.0f);
 	m_WizardPic.SetPosition(-40.0f, 75.0f, 0.0f );
 	m_WizardPic.SetScale(1.0f, 1.0f, 1.0f);
 	m_WizardPic.Update();
@@ -43,7 +44,9 @@ bool CharacterSelect::Start()
 
 void CharacterSelect::Update()
 {
+	//カーソル
 	Cursor();
+	
 	//Aボタンを押した時
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
@@ -53,14 +56,14 @@ void CharacterSelect::Update()
 		{
 			//剣士だったら
 		case enCharacterSelect_Knight:
-			game->SetCharacterSelect(enCharacterSelect_Knight);
+			game->SetCharacterSelect(m_characterSelect);
 			break;
 			//魔法使いだったら
 		case enCharacterSelect_Wizard:
-			game->SetCharacterSelect(enCharacterSelect_Wizard);
+			game->SetCharacterSelect(m_characterSelect);
 			break;
-			//未定
-		case enCharacterSelect_Mitei:
+			//ゾンビ(予定)だったら
+		case enCharacterSelect_Zombie:
 			game->SetCharacterSelect(enCharacterSelect_Knight);
 			break;
 			//未定
@@ -68,6 +71,11 @@ void CharacterSelect::Update()
 			game->SetCharacterSelect(enCharacterSelect_Wizard);
 			break;
 		}
+		DeleteGO(this);
+	}
+	if (g_pad[0]->IsTrigger(enButtonB))
+	{
+		Tittle* tittle = NewGO<Tittle>(0, "tittle");
 		DeleteGO(this);
 	}
 
@@ -81,19 +89,43 @@ void CharacterSelect::Cursor()
 {
 	//上下左右移動
 	if (g_pad[0]->IsTrigger(enButtonUp) && CursorNum > 1)
-	{			
+	{
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//移動
 		CursorNum -= 2;
 	}
 	if (g_pad[0]->IsTrigger(enButtonDown) && CursorNum < 2)
 	{
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//移動
 		CursorNum += 2;
 	}
 	if (g_pad[0]->IsTrigger(enButtonLeft) && CursorNum != 0 && CursorNum != 2)
 	{
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//移動
 		CursorNum -= 1;
 	}
 	if (g_pad[0]->IsTrigger(enButtonRight) && CursorNum != 3 && CursorNum != 1)
 	{
+		//選択音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
+		//移動
 		CursorNum += 1;
 	}
 
@@ -108,8 +140,8 @@ void CharacterSelect::Cursor()
 		curPosition = { -40.0f,75.0f,0.0f };
 		break;
 	case 2:
-		m_characterSelect = enCharacterSelect_Mitei;
-		curPosition = { -510.0f,-270.0f,0.0f };
+		m_characterSelect = enCharacterSelect_Zombie;
+		curPosition = { -510.0f,-275.0f,0.0f };
 		break;
 	case 3:
 		m_characterSelect = enCharacterSelect_Mitei2;

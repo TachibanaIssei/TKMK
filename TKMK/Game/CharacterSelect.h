@@ -18,7 +18,7 @@ public:
 	enum EnCharacterSelect {
 		enCharacterSelect_Knight,		//剣士
 		enCharacterSelect_Wizard,		//魔法使い
-		enCharacterSelect_Mitei,		//未定
+		enCharacterSelect_Zombie,		//ゾンビ
 		enCharacterSelect_Mitei2,		//未定
 		enCharacterSelect_Num,			//キャラクターの種類の数
 	};

@@ -13,6 +13,7 @@ public:
 	void Render(RenderContext& rc);
 	void Select();
 	void Operation();
+	void CharacterOp();
 
 	enum EnSelectPosition {
 		enSelectPosition_Start,						//スタートポジション
@@ -22,12 +23,27 @@ public:
 	};
 	
 	//操作説明画面が見えるか見えないか
-	enum EnOperationPosition {
-		enOperationPosition_UnSeem,					//見えない
-		enOperationPosition_Seem,					//見える
-		enOperationPosition_Num,
+	enum EnOperationLook {
+		enOperationLook_UnSeem,						//見えない
+		enOperationLook_Seem,						//見える
+		enOperationLook_Num,
 	};
 
+	//キャラクター説明画面が見えるか見えないか
+	enum EnCharacterOpLook {
+		enCharacterOpLook_UnSeem,					//見えない
+		enCharacterOpLook_Seem,						//見える
+		enCharacterOpLook_Num,
+	};
+
+	//どのキャラクター説明を表示するか
+	enum EnCharacterOpPosition {
+		enCharacterOpPosition_Knight,				//剣士の説明
+		enCharacterOpPosition_Wizard,				//魔法使いの説明
+		enCharacterOpPosition_Zombie,				//ゾンビの説明
+		enCharacterOpPosition_Mitei,				//キャラ未定
+		enCharacterOpPosition_Num,
+	};
 
 private:
 	Quaternion m_sRotation;
@@ -38,17 +54,25 @@ private:
 	SpriteRender m_charaExplanation;			//"キャラクター説明"
 	SpriteRender m_choice;						//セレクト
 	SpriteRender m_operationPic;				//操作説明の画像
+	SpriteRender m_KnightOp;					//剣士の説明画像
+	SpriteRender m_WizardOp;					//魔法使いの説明画像
+	SpriteRender m_ZombieOp;					//ゾンビの説明画像
+	SpriteRender m_Opchoice;					//キャラ説明のセレクト画像
 
 	EnSelectPosition m_tSelectPosition;			//セレクトのポジション
-	EnOperationPosition m_operationPosition;	//操作説明画像のポジション
+	EnOperationLook m_operationLook;			//操作説明画像の表示
+	EnCharacterOpLook m_characterOpLook;		//キャラクター説明の表示
+	EnCharacterOpPosition m_characterOpPosition;//キャラクター説明のポジション
 
 	Game* game=nullptr;
 	SoundSource* m_bgm = nullptr;
 
-	Vector3 m_sPosition = { 0.0f,-150.0f,0.0f };	//セレクトのポジション
-	Vector3 m_opPosition = { 0.0f,2000.0f,0.0f };	//コントローラーの画像のポジション
+	Vector3 m_sPosition = { 0.0f,-150.0f,0.0f };		//セレクトのポジション
+	Vector3 m_firstPosition = { 0.0f,2000.0f,0.0f };	//読み込むときのポジション
+	Vector3 m_opPosition = { 0.0f,0.0f,0.0f };			//画像を表示するポジション
+	//Vector3 m_charaOpPosition = { 0.0f,0.0f,0.0f };		//キャラ説明画像のポジション
 
 	int selectPosition = 0;
-	int opPosition = 0;
+	int characterOpPosition = 0;
 };
 

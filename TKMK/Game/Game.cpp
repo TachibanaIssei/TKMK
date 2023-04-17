@@ -340,7 +340,7 @@ void Game::End()
 void Game::GoResult()
 {
 	Result* result = NewGO<Result>(0, "Result");
-	DeleteGO(this);
+	//DeleteGO(this);
 }
 
 //ポーズステートからゲームステートに移るときの間の処理
@@ -486,6 +486,16 @@ void Game::GameState()
 		break;
 	/*default:
 		break;*/
+	}
+}
+
+void Game::GetActorPoints(int charPoints[])
+{
+	int count = 0;
+	for (auto actor : m_Actors)
+	{
+		charPoints[count] = actor->GetPoint();
+		count++;
 	}
 }
 

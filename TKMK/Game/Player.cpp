@@ -21,11 +21,11 @@ void Player::CreaetPlayer()
 	game = FindGO<Game>("game");
 	gameUI = FindGO<GameUI>("m_gameUI");
 
-	//é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã‚’ç”Ÿæˆã™ã‚‹
+	//‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ğ¶¬‚·‚é
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		//å‰£å£«ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç”Ÿæˆ
+		//Œ•mƒvƒŒƒCƒ„[‚ğ¶¬
 		knightPlayer = NewGO<KnightPlayer>(0, "knightplayer");
 		knightPlayer->SetSGame(game);
 		knightPlayer->SetGameUI(gameUI);
@@ -34,7 +34,7 @@ void Player::CreaetPlayer()
 		break;
 
 	case enWizard:
-		//é­”æ³•ä½¿ã„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç”Ÿæˆ
+		//–‚–@g‚¢ƒvƒŒƒCƒ„[‚Ì¶¬
 		wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
 		wizardPlayer->SetSGame(game);
 		wizardPlayer->SetGameUI(gameUI);
@@ -48,9 +48,9 @@ void Player::CreaetPlayer()
 }
 
 /// <summary>
-	/// ç”Ÿæˆã™ã‚‹ã‚­ãƒ£ãƒ©ã‚’é¸ã¶
+	/// ¶¬‚·‚éƒLƒƒƒ‰‚ğ‘I‚Ô
 	/// </summary>
-	/// <param name="number">ã‚­ãƒ£ãƒ©ã®ç•ªå·</param>
+	/// <param name="number">ƒLƒƒƒ‰‚Ì”Ô†</param>
 void Player::CharSelect(int number)
 {
 	switch (number)
@@ -74,9 +74,9 @@ void Player::CharSelect(int number)
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®åº§æ¨™ã‚’å–å¾—
+/// ƒLƒƒƒ‰‚ÌÀ•W‚ğæ“¾ƒJƒƒ‰‚Åg‚¤
 /// </summary>
-/// <returns>é¸æŠã•ã‚Œã¦ã„ã‚‹ã‚­ãƒ£ãƒ©ã®åº§æ¨™</returns>
+/// <returns>‘I‘ğ‚³‚ê‚Ä‚¢‚éƒLƒƒƒ‰‚ÌÀ•W</returns>
 Vector3 Player::GetCharPosition()const
 {
 	switch (m_selectCharctar)
@@ -101,33 +101,18 @@ Vector3 Player::GetCharPosition()const
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™
+/// ƒLƒƒƒ‰‚ÌŒ»İ‚ÌƒŒƒxƒ‹‚ğ•Ô‚·
 /// </summary>
-/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«ã‚’è¿”ã™é–¢æ•°</returns>
+/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌŒ»İ‚ÌƒŒƒxƒ‹‚ğ•Ô‚·ŠÖ”</returns>
 int Player::CharSetLevel()const
 {
-	switch (m_selectCharctar)
-	{
-	case enKnight:
-		return knightPlayer->SetLevel();
-		break;
-	case enWizard:
-		return wizardPlayer->SetLevel();
-		break;
-	case enZombie:
-		break;
-	case enMonster:
-		break;
-
-	default:
-		break;
-	}
+	return playerActor->GetLevel();
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
+/// ƒLƒƒƒ‰‚ÌŒ»İ‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·
 /// </summary>
-/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ç¾åœ¨ã®ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™é–¢æ•°</returns>
+/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌŒ»İ‚Ìƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·ŠÖ”</returns>
 int Player::CharSetHp()const
 {
 	switch (m_selectCharctar)
@@ -153,9 +138,9 @@ int Player::CharSetHp()const
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®æœ€å¤§ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™
+/// ƒLƒƒƒ‰‚ÌÅ‘åƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·
 /// </summary>
-/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®æœ€å¤§ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆã‚’è¿”ã™é–¢æ•°</returns>
+/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌÅ‘åƒqƒbƒgƒ|ƒCƒ“ƒg‚ğ•Ô‚·ŠÖ”</returns>
 int Player::CharSetMaxHp()const
 {
 	switch (m_selectCharctar)
@@ -181,9 +166,9 @@ int Player::CharSetMaxHp()const
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®å›è»¢é‡ã‚’è¿”ã™
+/// ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ğ•Ô‚·
 /// </summary>
-/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®å›è»¢é‡ã‚’è¿”ã™é–¢æ•°</returns>
+/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚Ì‰ñ“]—Ê‚ğ•Ô‚·ŠÖ”</returns>
 Quaternion Player::CharSetRot()const
 {
 	switch (m_selectCharctar)
@@ -209,24 +194,24 @@ Quaternion Player::CharSetRot()const
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´ã™ã‚‹
+/// ƒLƒƒƒ‰‚ÌƒXƒe[ƒg‚ğ•ÏX‚·‚é
 /// </summary>
-/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´ã™ã‚‹é–¢æ•°</returns>
+/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌƒXƒe[ƒg‚ğ•ÏX‚·‚éŠÖ”</returns>
 void Player::CharSetState(EnPlayerStateChange gameState)const
 {
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		//ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆãŒãƒãƒ¼ã‚ºãªã‚‰
+		//ƒQ[ƒ€‚ÌƒXƒe[ƒg‚ªƒ|[ƒY‚È‚ç
 		if (gameState == enPause)knightPlayer->SetPlayerState(KnightPlayer::enKnightState_Pause);
-		//ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆãŒã‚²ãƒ¼ãƒ ãªã‚‰
+		//ƒQ[ƒ€‚ÌƒXƒe[ƒg‚ªƒQ[ƒ€‚È‚ç
 		if (gameState == enGame)knightPlayer->SetPlayerState(KnightPlayer::enKnightState_Idle);
 		break;
 
 	case enWizard:
-		//ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆãŒãƒãƒ¼ã‚ºãªã‚‰
+		//ƒQ[ƒ€‚ÌƒXƒe[ƒg‚ªƒ|[ƒY‚È‚ç
 		if (gameState == enPause)wizardPlayer->SetPlayerState(WizardPlayer::enWizardState_Pause);
-		//ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆãŒã‚²ãƒ¼ãƒ ãªã‚‰
+		//ƒQ[ƒ€‚ÌƒXƒe[ƒg‚ªƒQ[ƒ€‚È‚ç
 		if (gameState == enGame)wizardPlayer->SetPlayerState(WizardPlayer::enWizardState_Idle);
 		break;
 
@@ -243,9 +228,9 @@ void Player::CharSetState(EnPlayerStateChange gameState)const
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®å‰æ–¹å‘ã‚’å–å¾—ã™ã‚‹
+/// ƒLƒƒƒ‰‚Ì‘O•ûŒü‚ğæ“¾‚·‚éƒJƒƒ‰‚Åg‚¤
 /// </summary>
-/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®å‰æ–¹å‘ã‚’å–å¾—ã™ã‚‹é–¢æ•°</returns>
+/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚Ì‘O•ûŒü‚ğæ“¾‚·‚éŠÖ”</returns>
 Vector3 Player::CharSetForward()const
 {
 	switch (m_selectCharctar)
@@ -271,9 +256,9 @@ Vector3 Player::CharSetForward()const
 }
 
 /// <summary>
-/// ã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ãƒ©ã‚°ã‚’è¿”ã™
+/// ƒLƒƒƒ‰‚ÌƒXƒvƒ‰ƒCƒgƒtƒ‰ƒO‚ğ•Ô‚·
 /// </summary>
-/// <returns>é¸æŠã•ã‚ŒãŸã‚­ãƒ£ãƒ©ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ•ãƒ©ã‚°ã‚’è¿”ã™é–¢æ•°</returns>
+/// <returns>‘I‘ğ‚³‚ê‚½ƒLƒƒƒ‰‚ÌƒXƒvƒ‰ƒCƒgƒtƒ‰ƒO‚ğ•Ô‚·ŠÖ”</returns>
 bool Player::CharSetSpriteFlag()const
 {
 	switch (m_selectCharctar)
@@ -299,56 +284,28 @@ bool Player::CharSetSpriteFlag()const
 }
 
 /// <summary>
-/// ?L??????U???????
+/// ƒvƒŒƒCƒ„[‚Ìƒ|ƒCƒ“ƒg‚ğ•Ô‚·
 /// </summary>
-/// <returns>?I????L??????U??????????</returns>
-//int Player::CharSetAttack()const
-//{
-//	//switch (m_selectCharctar)
-//	//{
-//	//case enKnight:
-//	//	return knightPlayer->SetKnightAtk();
-//	//	break;
-//
-//	////???@?g????}?W?b?N?{?[????U??????????K?v???
-//
-//	//case enZombie:
-//	//	break;
-//
-//	//case enMonster:
-//	//	break;
-//
-//
-//	//default:
-//	//	break;
-//	//}
-//}
-
-/// <summary>
-/// ?L??????exp?????
-/// </summary>
-/// <param name="exp">??????G??o???l</param>
-void Player::CharSetExpProcess(int exp)const
+/// <returns>ƒvƒŒƒCƒ„[‚ÌŒ»İ‚Ìƒ|ƒCƒ“ƒg</returns>
+int Player::CharSetPoint()const
 {
-	switch (m_selectCharctar)
-	{
-	case enKnight:
-		return knightPlayer->ExpProcess(exp);
-		break;
-
-	case enWizard:
-		return wizardPlayer->ExpProcess(exp);
-		break;
-
-	case enZombie:
-		break;
-
-	case enMonster:
-		break;
-
-
-	default:
-		break;
-	}
+	return playerActor->GetPoint();
 }
 
+/// <summary>
+/// ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌŒoŒ±’l‚ğæ“¾
+/// </summary>
+/// <returns>ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌŒoŒ±’l‚Ì—Ê</returns>
+int Player::CharSetEXP() const
+{
+	return playerActor->GetExperience();
+}
+
+/// <summary>
+/// ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌŒoŒ±’lƒe[ƒuƒ‹‚ğæ“¾
+/// </summary>
+/// <returns>ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌŒoŒ±’lƒe[ƒuƒ‹</returns>
+int Player::CharSetEXPTable() const
+{
+	return playerActor->GetExpTable();
+}

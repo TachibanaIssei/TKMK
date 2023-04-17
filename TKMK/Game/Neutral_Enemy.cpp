@@ -27,12 +27,16 @@ Neutral_Enemy::Neutral_Enemy()
 
 Neutral_Enemy::~Neutral_Enemy()
 {
-	
+	m_game = FindGO<Game>("game");
+	//m_game->Enemys();
+	if (m_game != nullptr) {
+		m_game->RemoveEnemyFromList(this);
+	}
 }
 
 bool Neutral_Enemy::Start()
 {
-	//アニメーションを読み込む。
+//アニメーションを読み込む。
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Neutral_Enemy/Idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Neutral_Enemy/Run.tka");
@@ -43,27 +47,29 @@ bool Neutral_Enemy::Start()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-
-	//モデルを読み込む。
 	enemyColorRam = rand() % 10;
 
-	if (enemyColorRam <= 2)
-	{
-		//緑
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
-	}
-	else if (enemyColorRam >= 4)
+	if (enemyColorRam <= 5)
 	{
 		//白
 		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
+		m_enemyKinds = enEnemyKinds_White;
 	}
-	else if (enemyColorRam = 3)
+	else if (enemyColorRam <= 7)
+	{
+		//緑
+		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
+		m_enemyKinds = enEnemyKinds_Green;
+	}
+	else if (enemyColorRam <= 9)
 	{
 		//赤
 		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
+		m_enemyKinds = enEnemyKinds_Red;
 	}
 
-	//座標を設定
+
+//座標を設定
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
 	m_modelRender.SetRotation(m_rot);
@@ -105,6 +111,7 @@ bool Neutral_Enemy::Start()
 	//巡回用のパスを読み込む
 	m_EnemyPoslevel.Init("Assets/level3D/enemyPos.tkl", [&](LevelObjectData& objData) {
 
+
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			SetPatrolPos(objData.position, objData.number);
 			RadiusPos = objData.position;
@@ -124,7 +131,7 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
-	//探索処理。
+    //探索処理。
 	//Search();
 	//追跡処理。
 	//Chase();
@@ -166,7 +173,7 @@ void Neutral_Enemy::Move()
 void Neutral_Enemy::Rotation()
 {
 	
-	if (fabsf(m_moveSpeed.x) < 0.001f
+if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
 		//このフレームではキャラは移動していないので旋回する必要はない。
@@ -188,7 +195,6 @@ void Neutral_Enemy::Rotation()
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
-
 //衝突したときに呼ばれる関数オブジェクト(壁用)
 struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 {
@@ -233,7 +239,6 @@ void Neutral_Enemy::Chase()
 	m_modelRender.SetPosition(modelPosition);
 
 }
-
 void Neutral_Enemy::Collision()
 {
 	//攻撃中、デス中は当たり判定の処理を行わない
@@ -272,7 +277,7 @@ void Neutral_Enemy::Collision()
 			}
 		}
 	}
-	//敵の攻撃用のコリジョンを取得する
+//敵の攻撃用のコリジョンを取得する
 	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
 	//子リジョンの配列をfor文で回す
 	for (auto collision : Ultcollisions)
@@ -318,11 +323,11 @@ void Neutral_Enemy::Collision()
 			//プレイヤーの攻撃力を取得
 			//何故かm_knightAIがnull
 			//HPを減らす
+			// //HPを減らす
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
 			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 
-
-			//HPが0になったら
+				//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
 				//相手に経験値を渡す
@@ -332,7 +337,7 @@ void Neutral_Enemy::Collision()
 				//倒した時の報酬を倒した人に渡す
 				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
 				//緑の場合
-				if (enemyColorRam <= 2)
+				if (m_enemyKinds == enEnemyKinds_Green)
 				{
 					m_lastAttackActor->HpUp(HpPass);
 					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
@@ -341,23 +346,23 @@ void Neutral_Enemy::Collision()
 					}
 				}
 				//赤の場合
-				else if (enemyColorRam = 3)
+				else if (m_enemyKinds == enEnemyKinds_Red)
 				{
 					m_lastAttackActor->AtkUp(AtkPass);
 				}
 				//Deathflag = true;
-				//死亡ステートに遷移する。
+				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
 			else {
-				//被ダメージステートに遷移する。
+				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
+				//��ʉ��Đ�
 			}
 		}
 	}
 
-	//攻撃中、デス中は当たり判定の処理を行わない
+//攻撃中、デス中は当たり判定の処理を行わない
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
@@ -399,12 +404,11 @@ void Neutral_Enemy::Collision()
 
 void Neutral_Enemy::Attack()
 {
-	//攻撃ステートではなかったら
+    //攻撃ステートではなかったら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Attack)
 	{
 		return;
 	}
-
 }
 
 bool Neutral_Enemy::Search()
@@ -444,7 +448,6 @@ void Neutral_Enemy::MakeAttackCollision()
 	collisionObject->SetName("enemy_attack");
 	collisionObject->SetCreatorName(GetName());
 }
-
 void Neutral_Enemy::ProcessCommonStateTransition()
 {
 	
@@ -497,7 +500,6 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
 	}
 }
-
 void Neutral_Enemy::ProcessIdleStateTransition()
 {
 	m_idleTimer += g_gameTime->GetFrameDeltaTime();
@@ -581,23 +583,20 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 	//ダウンアニメーションの再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//m_game->GetNeutral_EnemyContaier().erase(std::remove(m_game->GetNeutral_EnemyContaier().begin(),
-		//	m_game->GetNeutral_EnemyContaier().end(), this), m_game->GetNeutral_EnemyContaier().end()/*std::cend(m_game->GetNeutral_EnemyContaier()*/);
-		m_game->SubNeutral_EnemyContaier();
 		//自身を削除する。
 		DeleteGO(this);
 	}
 }
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
-	//�G�l�~�[�����̏���擾����
+	//エネミーたちの情報を取得する
 	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
 	for (auto Enemys : enemys)
 	{
 	/*	if (Enemys == this) {
 			continue;
 		}*/
-		//�擾�����G�l�~�[�����̍�W��擾
+		//取得したエネミーたちの座標を取得
 		Vector3 enemyPos = Enemys->GetPosition();
 		Vector3 diff = m_position - enemyPos;
 		if (diff.Length() < 50.0f)
@@ -645,7 +644,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		if (distance.Length() <= 10.0f)
 		{
 
-			//1����ɂ��������+�P����
+			//1からにしかったら+１しろ
 			
 
 		}
@@ -1004,7 +1003,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(21);
 		se->Play(false);
-		se->SetVolume(0.5f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 
 		//効果音を再生する
 

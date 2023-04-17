@@ -6,6 +6,8 @@
 class Game;
 class Neutral_Enemy;
 class MagicBall;
+class WizardUlt;
+class GameUI;
 
 class WizardPlayer:public WizardBase
 {
@@ -25,19 +27,19 @@ public:
 	void AvoidanceSprite();
 
 	/// <summary>
-	/// ƒ}ƒWƒbƒNƒ{[ƒ‹‚Ì¶¬
+	/// ãƒã‚¸ãƒƒã‚¯ãƒœãƒ¼ãƒ«ã®ç”Ÿæˆ
 	/// </summary>
 	void MakeMagicBall();
 
 	/// <summary>
-	/// •KE‹Z‚Ì—‹‚Ì¶¬
+	/// å¿…æ®ºæŠ€ã®é›·ã®ç”Ÿæˆ
 	/// </summary>
-	void UltimateSkill();
+	void MakeUltimateSkill();
 
 	/// <summary>
-	/// ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg‚ğ•ÏX
+	/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´
 	/// </summary>
-	/// <param name="gamescene">•ÏX‚µ‚½‚¢ƒXƒe[ƒg‚Ì–¼‘O</param>
+	/// <param name="gamescene">å¤‰æ›´ã—ãŸã„ã‚¹ãƒ†ãƒ¼ãƒˆã®åå‰</param>
 	void SetPlayerState(WizardState gamescene) {
 		m_wizardState = gamescene;
 
@@ -54,18 +56,18 @@ public:
 
 	//void Death()
 	//{
-	//	////€–SƒXƒe[ƒg
+	//	////æ­»äº¡ã‚¹ãƒ†ãƒ¼ãƒˆ
 	//	//m_knightState = enKnightState_Death;
-	//	//ƒŒƒxƒ‹‚ğ‚P‰º‚°‚é
+	//	//ãƒ¬ãƒ™ãƒ«ã‚’ï¼‘ä¸‹ã’ã‚‹
 	//	levelDown(LvUpStatus, m_Status, Lv, 1);
-	//	//HP‚ğÅ‘å‚É‚·‚é
+	//	//HPã‚’æœ€å¤§ã«ã™ã‚‹
 	//	m_Status.Hp = m_Status.MaxHp;
-	//	//ŒoŒ±’l‚ğƒŠƒZƒbƒg
+	//	//çµŒé¨“å€¤ã‚’ãƒªã‚»ãƒƒãƒˆ
 	//	ExpReset(Lv, GetExp);
-	//	//ˆê‚Â‰º‚ÌƒŒƒxƒ‹‚ÌŒoŒ±’lƒe[ƒuƒ‹‚É‚·‚é
+	//	//ä¸€ã¤ä¸‹ã®ãƒ¬ãƒ™ãƒ«ã®çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã™ã‚‹
 	//	ExpTableChamge(Lv, ExpTable);
 
-	//	//ƒŒƒxƒ‹‚É‡‚í‚¹‚ÄƒŒƒxƒ‹‚Ì‰æ‘œ‚ğ•ÏX‚·‚é
+	//	//ãƒ¬ãƒ™ãƒ«ã«åˆã‚ã›ã¦ãƒ¬ãƒ™ãƒ«ã®ç”»åƒã‚’å¤‰æ›´ã™ã‚‹
 	//	m_gameUI->LevelFontChange(Lv);
 	//}
 
@@ -77,10 +79,11 @@ public:
 
 private:
 	Game* m_game = nullptr;
-	Neutral_Enemy* m_Neutral_Enemy = nullptr; //’†—§‚Ì“G
+	GameUI* gameUI = nullptr;
+	Neutral_Enemy* m_Neutral_Enemy = nullptr; //ä¸­ç«‹ã®æ•µ
 	//MagicBall* magicBall = nullptr;
 
-	CollisionObject* AtkCollision;                   //ƒAƒ^ƒbƒN‚ÌƒRƒŠƒWƒ‡ƒ“
+	CollisionObject* AtkCollision;                   //ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³
 	Vector3 AtkCollisionPos = Vector3::Zero;
 	Vector3 AtkCollisionVec = Vector3::Zero;
 	
@@ -88,20 +91,22 @@ private:
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
 
-	//ƒAƒ^ƒbƒN‚ÌƒRƒŠƒWƒ‡ƒ“‚ğì¬‚µ‚½‚©‚Ì”»’è
+	//ã‚¢ã‚¿ãƒƒã‚¯ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ã‚’ä½œæˆã—ãŸã‹ã®åˆ¤å®š
 	bool AtkCollisionSetFlag = false;
 	bool AttackFlag = false;
 	float AttackTimer = 0.0f;
 
 
-	//ƒXƒLƒ‹‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	//ã‚¹ã‚­ãƒ«ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
 	float SkillSpeed = 270.0f;
-	//‰ñ”ğ‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
-	float AvoidanceSpeed = 170.0f;
+	//å›é¿ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
+	float AvoidanceSpeed = 150.0f;
 
 	bool m_spriteFlag = true;
 
 	int exp = 5;
 	int dddd = 10;
+
+	int oldLv = 0;
 };
 

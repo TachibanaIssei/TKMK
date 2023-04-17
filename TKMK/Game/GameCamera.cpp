@@ -31,20 +31,14 @@ bool GameCamera::Start()
 	//プレイヤーのインスタンスを探す
 	player = FindGO<Player>("player");
 
-	//
-	/*wizardPlayer = FindGO<WizardPlayer>("wizardPlayer");
-	m_knightplayer= FindGO<KnightPlayer>("m_knightplayer");*/
-
 	//注視点から視点までのベクトルを設定。80-160
-	m_toCameraPos.Set(0.0f, 80.0f, -160.0f);
+	m_toCameraPos.Set(0.0f, 50.0f, -160.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
 
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
-
 	m_cameraCollisionSolver.Init(1.0f);
-
 	m_cameraState = enGameState;
 
 	return true;
@@ -56,8 +50,21 @@ void GameCamera::Update()
 	if (m_cameraState == enPauseState) {
 		return;
 	}
+	//スタート前のカメラワーク
+	/*if (ok == false)
+	{
+		StartCameraSet();
 
-	if (g_pad[0]->IsTrigger/*IsPress*/(enButtonY))
+		if (rotamount >= 180.0f)
+		{
+			ok = true;
+		}
+		else
+		return;
+	}*/
+
+
+	if (g_pad[0]->IsTrigger(enButtonY))
 	{
 		CameraReset();
 	}
@@ -173,5 +180,61 @@ void GameCamera::CameraReset()
 	g_camera3D->Update();
 }
 
+/// <summary>
+/// スタート時のカメラワーク
+/// </summary>
+void GameCamera::StartCameraSet()
+{
+	////注視点の計算
+	//Vector3 TargetPos;
+	TargetPos = player->GetCharPosition();
 
+	TargetPos.y += 40.0f;
+
+	Vector3 toCameraPosOld = m_toCameraPos;
+
+	float x = 1.0f;
+	float y = 0.0f;
+
+	rotamount += 1.0f;
+
+	//Y軸周りの回転
+	Quaternion qRot;
+	qRot.SetRotationDeg(Vector3::AxisY, 1.0f * x);
+	qRot.Apply(m_toCameraPos);
+
+	//X軸周りの回転。
+	Vector3 axisX;
+	axisX.Cross(Vector3::AxisY, m_toCameraPos);
+	axisX.Normalize();
+	qRot.SetRotationDeg(axisX, 1.3f * y);
+	qRot.Apply(m_toCameraPos);
+
+	//カメラの回転の上限をチェックする。
+	Vector3 toPosDir = m_toCameraPos;
+	toPosDir.Normalize();
+	if (toPosDir.y < MAX_CAMERA_TOP) {
+		//カメラが上向きすぎ。
+		m_toCameraPos = toCameraPosOld;
+	}
+	else if (toPosDir.y > MAX_CAMERA_UNDER) {
+		//カメラが下向きすぎ。
+		m_toCameraPos = toCameraPosOld;
+	}
+
+	//カメラの位置の衝突解決する
+	Vector3 newCamPos;
+	m_cameraCollisionSolver.Execute(
+		newCamPos,
+		TargetPos + m_toCameraPos,
+		TargetPos
+	);
+
+	//視点と注視点を設定
+	g_camera3D->SetTarget(TargetPos);
+	g_camera3D->SetPosition(newCamPos);
+
+	//カメラの更新。
+	g_camera3D->Update();
+}
 

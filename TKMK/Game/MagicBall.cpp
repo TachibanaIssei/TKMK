@@ -17,7 +17,7 @@ bool MagicBall::Start()
 	m_moveSpeed = Vector3::AxisZ;
 	m_rotation.Apply(m_moveSpeed);
 
-	m_position += m_moveSpeed * 50.0f;
+	m_position += m_moveSpeed * 30.0f;
 	m_moveSpeed *= 250.0f;
 	m_rotation.AddRotationDegY(360.0f);
 

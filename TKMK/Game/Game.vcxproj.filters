@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BackGround.cpp" />
-    <ClCompile Include="Enemy_Respawn.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameUI.cpp" />
@@ -25,11 +24,12 @@
     <ClCompile Include="WizardUlt.cpp" />
     <ClCompile Include="KnightAI.cpp" />
     <ClCompile Include="CharUltFlag.cpp" />
+    <ClCompile Include="Lamp.cpp" />
+    <ClCompile Include="CharacterSelect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BackGround.h" />
-    <ClInclude Include="Enemy_Respawn.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameUI.h" />
@@ -50,5 +50,7 @@
     <ClInclude Include="WizardUlt.h" />
     <ClInclude Include="KnightAI.h" />
     <ClInclude Include="CharUltFlag.h" />
+    <ClInclude Include="Lamp.h" />
+    <ClInclude Include="CharacterSelect.h" />
   </ItemGroup>
 </Project>

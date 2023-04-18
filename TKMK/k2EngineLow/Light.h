@@ -65,6 +65,7 @@ namespace nsK2EngineLow {
 		Vector3 cameraEyePos;	//カメラ座標
 		float pad4;
 		Vector4 ambientLight;	//環境光
+		Matrix viewProjInvMatrix;	//ビュープロジェクション行列の逆行列
 		Matrix mLVP;			//ライトビュープロジェクション行列
 	};
 
@@ -74,6 +75,15 @@ namespace nsK2EngineLow {
 		Light& GetSceneLight()
 		{
 			return m_light;
+		}
+
+		/// <summary>
+		/// ビュープロジェクション行列の逆行列を設定
+		/// </summary>
+		/// <param name="viewProjInvMatrix">ビュープロジェクション行列の逆行列</param>
+		void SetViewProjInvMatrix(Matrix viewProjInvMatrix)
+		{
+			m_light.viewProjInvMatrix = viewProjInvMatrix;
 		}
 
 		/// <summary>

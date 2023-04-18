@@ -6,7 +6,7 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	//tkmファイルパスを設定
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
 	//シェーダーファイルパスを設定
-	m_modelInitData.m_fxFilePath = "Assets/shader/model.fx";
+	m_modelInitData.m_fxFilePath = "Assets/shader/defferdModel.fx";
 	//モデルの上方向を設定
 	m_modelInitData.m_modelUpAxis = enModelUpAxis;
 
@@ -25,19 +25,19 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	}
 	
 	//ディレクションライトの情報を作成
-	MakeDirectionData();
+	MakeLightData();
 
 	//モデルクラスの初期化
 	m_model.Init(m_modelInitData);
 
 	//シャドウマップ描画用のモデルの初期化
-	if (shadow)
+	/*if (shadow)
 	{
 		m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
 		m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
 
 		m_shadowModel.Init(m_modelInitData);
-	}
+	}*/
 
 }
 
@@ -51,7 +51,7 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 	//ライトカメラのビュープロジェクション行列を設定する
 	g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 
-	MakeDirectionData();
+	MakeLightData();
 
 	m_model.Init(m_modelInitData);
 }
@@ -79,7 +79,7 @@ void nsK2EngineLow::ModelRender::Update()
 	m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
 }
 
-void nsK2EngineLow::ModelRender::MakeDirectionData()
+void nsK2EngineLow::ModelRender::MakeLightData()
 {
 	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
 	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());

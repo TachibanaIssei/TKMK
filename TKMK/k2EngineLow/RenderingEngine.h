@@ -15,9 +15,6 @@ namespace nsK2EngineLow {
 	public:
 		void Init();
 
-		void InitRenderTargets();
-		void InitCopyToFrameBufferSprite();
-
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
 		/// </summary>
@@ -59,9 +56,9 @@ namespace nsK2EngineLow {
 		/// シーンライトを取得
 		/// </summary>
 		/// <returns>シーンライト</returns>
-		SceneLight& GetSceneLight()
+		Light& GetSceneLight()
 		{
-			return m_sceneLight;
+			return m_sceneLight.GetSceneLight();
 		}
 
 		/// <summary>
@@ -458,6 +455,9 @@ namespace nsK2EngineLow {
 		}
 
 	private:
+		void InitRenderTargets();
+		void InitSprits();
+
 		/// <summary>
 		/// モデルを描画する
 		/// </summary>
@@ -482,7 +482,12 @@ namespace nsK2EngineLow {
 		SceneLight					m_sceneLight;				//シーンライト
 
 		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
+		RenderTarget				m_albedRenderTarget;		//アルベドカラー書き込み用のレンダーターゲット
+		RenderTarget				m_normalRenderTarget;		//法線書き込み用のレンダーターゲット
+		RenderTarget				m_depthRenderTarget;		//深度書き込み用のレンダーターゲット
+
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
+		Sprite						m_defferdLightingSpr;
 
 		Shadow						m_shadow;					//シャドウマップ
 		PostEffect					m_postEffect;				//ポストエフェクト

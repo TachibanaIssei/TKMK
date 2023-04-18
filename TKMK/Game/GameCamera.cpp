@@ -41,6 +41,9 @@ bool GameCamera::Start()
 	m_cameraCollisionSolver.Init(1.0f);
 	m_cameraState = enGameState;
 
+
+	CameraReset();
+
 	return true;
 }
 

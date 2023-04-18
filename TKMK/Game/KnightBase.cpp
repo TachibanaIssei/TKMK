@@ -50,6 +50,10 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Avoidance].Load("Assets/animData/Knight/Knight_Avoidance.tka");
 	m_animationClips[enAnimationClip_Avoidance].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/Knight/Knight_Jump.tka");
+	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Knight/Knight_fall.tka");
+	m_animationClips[enAnimationClip_Fall].SetLoopFlag(false);
 
 	//剣士モデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -153,10 +157,10 @@ void KnightBase::AtkCollisiton()
 	Vector3 collisionPosition = m_position;
 	//座標をプレイヤーの少し前に設定する。
 	//collisionPosition += forward * 50.0f;
-	//ボックス状のコリジョンを作成する。
-	collisionObject->CreateBox(collisionPosition, //座標。
-		Quaternion::Identity, //回転。
-		Vector3(70.0f, 15.0f, 30.0f) //大きさ。
+	//�{�b�N�X��̃R���W������쐬����B
+	collisionObject->CreateBox(collisionPosition, //��W�B
+		Quaternion::Identity, //��]�B
+		Vector3(85.0f, 15.0f, 30.0f) //�傫���B
 	);
 	collisionObject->SetName("player_attack");
 	collisionObject->SetCreatorName(GetName());
@@ -279,14 +283,12 @@ void KnightBase::Collition()
 	{
 		//このコリジョンを作ったアクターを検索
 		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
-		//コリジョンが自身のキャラコンに当たったら
-		if (knightcollision->IsHit(m_charCon))
+		//�R���W���������g�̃L�����R���ɓ��������
+		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
-			//剣士の攻撃力分HPを減らす。
-			//倒された相手のポイントを増やす
-
-			//Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
-
+			//���m�̍U���͕�HP��炷�B
+			//�|���ꂽ����̃|�C���g�𑝂₷
+			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 		}
 	}
 
@@ -444,6 +446,12 @@ void KnightBase::PlayAnimation()
 	case enKnightState_Run:
 		m_modelRender.PlayAnimation(enAnimationClip_Run,0.2f);
 		break;
+	case enKnightState_Jump:
+		m_modelRender.PlayAnimation(enAnimationClip_Jump, 0.2f);
+		break;
+	case enKnightState_Fall:
+		m_modelRender.PlayAnimation(enAnimationClip_Fall, 0.2f);
+		break;
 	case enKnightState_ChainAtk:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
 		break;
@@ -484,6 +492,12 @@ void KnightBase::ManageState()
 		break;
 	case enKnightState_Run:
 		OnProcessRunStateTransition();
+		break;
+	case enKnightState_Jump:
+		OnProcessJumpStateTransition();
+		break;
+	case enKnightState_Fall:
+		OnProcessFallStateTransition();
 		break;
 	case enKnightState_ChainAtk:
 		OnProcessChainAtkStateTransition();
@@ -546,6 +560,31 @@ void KnightBase::OnProcessIdleStateTransition()
 void KnightBase::OnProcessRunStateTransition()
 {
 	OnProcessCommonStateTransition();
+}
+
+void KnightBase::OnProcessJumpStateTransition()
+{
+	//��ŏ��
+	pushFlag = false;
+	//�t���O�ŋ󒆂ɂ��邩����
+	//�󒆂ɂ���
+	if (IsAir(m_charCon) == enIsAir && m_charCon.IsOnGround() == false)
+	{
+		m_AirFlag = true;
+	}
+
+	if (m_AirFlag == true)
+	{
+		if (m_charCon.IsOnGround() == true)
+		{
+			//�{�^���v�b�V���t���O��false�ɂ���
+			pushFlag = false;
+			m_AirFlag = false;
+			m_knightState = enKnightState_Idle;
+			OnProcessCommonStateTransition();
+		}
+
+	}
 }
 
 /// <summary>
@@ -646,6 +685,16 @@ void KnightBase::OnProcessDeathStateTransition()
 		SetRespawn();
 		Death();
 		//待機ステート
+		m_knightState = enKnightState_Idle;
+		OnProcessCommonStateTransition();
+	}
+}
+
+void KnightBase::OnProcessFallStateTransition()
+{
+	if (m_charCon.IsOnGround())
+	{
+		//�ҋ@�X�e�[�g
 		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}

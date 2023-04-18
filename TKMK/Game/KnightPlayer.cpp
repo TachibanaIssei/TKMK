@@ -27,7 +27,7 @@ KnightPlayer::KnightPlayer()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	respawnNumber = 0;        //リスポーンする座標の番号
+	respawnNumber = 2;        //リスポーンする座標の番号0
 	//m_respawnPos[respawnNumber].y += m_position_YUp;
 
 	//m_position=
@@ -42,12 +42,13 @@ KnightPlayer::KnightPlayer()
 
 	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	
-	//剣士のY座標が腰なのでY座標を上げる
-	//m_position.y = m_position_YUp;
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 	//m_modelRender.Update();
+
+	//リスポーン時に向いている方向の前方向を取得
+	ForwardSet();
 
 	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
@@ -86,14 +87,35 @@ void KnightPlayer::Update()
 
 	oldLv = Lv;
 
+	//前フレームの座標を取得
+	OldPosition = m_position;
+
 	int SkillCoolTime = SkillTimer;
 	wchar_t Skill[255];
 	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 	Skillfont.SetText(Skill);
 
-
-	//前フレームの座標を取得
-	OldPosition = m_position;
+	//リスポーンしたときしか使えない
+	//飛び降りる処理
+	//地上にいないならジャンプしかしないようにする
+	if (m_position.y > 1.0f) {
+		if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+		{
+			pushFlag = true;
+			jampAccumulateflag = true;
+			m_knightState = enKnightState_Jump;
+		}
+	}
+	else
+	{
+		//ステートがデスのときボタンを押せないようにする
+		if (m_knightState!=enKnightState_Death) {
+			//攻撃処理
+			Attack();
+			//回避処理
+			Avoidance();
+		}
+	}
 
 	//移動処理
 	Vector3 stickL;
@@ -117,13 +139,7 @@ void KnightPlayer::Update()
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
 
-	//ステートがデスのときボタンを押せないようにする
-	if (m_knightState != enKnightState_Death) {
-		//攻撃処理
-		Attack();
-		//回避処理
-		Avoidance();
-	}
+	
 	
 
 	//スキル使用中なら
@@ -177,7 +193,14 @@ void KnightPlayer::Update()
 	//キャラクターコントローラーを使って座標を移動させる。
 	//ワープする時はキャラコンを移動させない
 	if (IsEnableMove() == true) {
+
 		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+
+	//ジャンプ中ではないかつ落下中なら
+	if (m_knightState != enKnightState_Jump && m_charCon.IsOnGround() == false)
+	{
+		m_knightState = enKnightState_Fall;
 	}
 
 	m_modelRender.SetPosition(m_position);
@@ -365,6 +388,11 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	{
 		//必殺技の当たり判定のクラスを作成
 		MakeUltSkill();
+	}
+	//ジャンプのアニメーションが始まったら
+	if (wcscmp(eventName, L"Jump_Start") == 0)
+	{
+		m_RespawnJumpFlag = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら

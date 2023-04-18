@@ -22,6 +22,8 @@ struct SVSIn
     float4 pos : POSITION;
     float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
+    float3 tangent : TANGENT;
+    float3 biNormal : BINORMAL;
 
     SSkinVSIn skinVert;				//スキン用のデータ。
 };
@@ -33,6 +35,8 @@ struct SPSIn
     float3 normal : NORMAL;
     float2 uv : TEXCOORD0;
     float3 worldPos :TEXCOORD1; //ワールド座標
+    float3 tangent : TANGENT;
+    float3 biNormal : BINORMAL;
 };
 
 // ピクセルシェーダーからの出力
@@ -45,10 +49,16 @@ struct SPSOut
 
 // モデルテクスチャ
 Texture2D<float4> g_texture : register(t0);
+Texture2D<float4> g_normalMap : register(t1);
 StructuredBuffer<float4x4> g_boneMatrix : register(t3);	//ボーン行列。
 
 // サンプラーステート
 sampler g_sampler : register(s0);
+
+/////////////////////////////////////////////////////////////////////////
+//  関数を宣言
+/////////////////////////////////////////////////////////////////////////
+float3 CalcNormalMap(SPSIn psIn);
 
 /// <summary>
 //スキン行列を計算する。
@@ -88,6 +98,9 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
     psIn.pos = mul(mProj, psIn.pos);    // 3. カメラ座標系からスクリーン座標系に変換
     psIn.normal = normalize(mul(m, vsIn.normal));
     psIn.uv = vsIn.uv;
+    
+    psIn.tangent = normalize(mul(mWorld,vsIn.tangent));
+    psIn.biNormal = normalize(mul(mWorld,vsIn.biNormal));
 
     return psIn;
 }
@@ -118,6 +131,8 @@ SPSOut PSMain(SPSIn psIn)
     // アルベドカラーを出力
     psOut.albedo = g_texture.Sample(g_sampler, psIn.uv);
 
+    psIn.normal = CalcNormalMap(psIn);
+
     // 法線を出力
     // 出力は0～1に丸められてしまうのでマイナスの値が失われてしまう
     // なので-1～1を0～1に変換する
@@ -130,4 +145,18 @@ SPSOut PSMain(SPSIn psIn)
     psOut.worldPos.w = 1.0f;
 
     return psOut;
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  法線を計算
+/////////////////////////////////////////////////////////////////////////
+float3 CalcNormalMap(SPSIn psIn)
+{
+    float3 localNormal = g_normalMap.Sample(g_sampler,psIn.uv).xyz;
+    //タンジェントスペースの法線を0~1の範囲から-1~1の範囲に復元する
+    localNormal = (localNormal - 0.5f) * 2.0f;
+
+    float3 normal = psIn.tangent * localNormal.x + psIn.biNormal * localNormal.y + psIn.normal * localNormal.z;
+
+    return normal;
 }

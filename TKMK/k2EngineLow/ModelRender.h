@@ -192,7 +192,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの情報を作成
 		/// </summary>
-		void MakeDirectionData();
+		void MakeLightData();
 
 	//メンバ変数
 	private:

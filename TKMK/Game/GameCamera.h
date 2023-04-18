@@ -57,6 +57,8 @@ public:
 	Vector3 TargetPos;
 	//Quaternion oldgetRot;
 
+	bool PlayerCameraSet = false;
+
 	bool ok = false;
 	float rotamount = 0;
 };

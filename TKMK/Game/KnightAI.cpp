@@ -303,7 +303,7 @@ void KnightAI::Attack()
 				m_knightState == enKnightState_Avoidance)
 			{
 				return;
-			}j
+			}
 			//スキルを打つ
 			SkillState = true;
 			pushFlag = true;

@@ -50,6 +50,10 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Avoidance].Load("Assets/animData/Knight/Knight_Avoidance.tka");
 	m_animationClips[enAnimationClip_Avoidance].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/Knight/Knight_Jump.tka");
+	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Knight/Knight_fall.tka");
+	m_animationClips[enAnimationClip_Fall].SetLoopFlag(false);
 
 	//剣士モデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -156,7 +160,7 @@ void KnightBase::AtkCollisiton()
 	//ボックス状のコリジョンを作成する。
 	collisionObject->CreateBox(collisionPosition, //座標。
 		Quaternion::Identity, //回転。
-		Vector3(70.0f, 15.0f, 30.0f) //大きさ。
+		Vector3(85.0f, 15.0f, 30.0f) //大きさ。
 	);
 	collisionObject->SetName("player_attack");
 	collisionObject->SetCreatorName(GetName());
@@ -442,6 +446,12 @@ void KnightBase::PlayAnimation()
 	case enKnightState_Run:
 		m_modelRender.PlayAnimation(enAnimationClip_Run,0.2f);
 		break;
+	case enKnightState_Jump:
+		m_modelRender.PlayAnimation(enAnimationClip_Jump, 0.2f);
+		break;
+	case enKnightState_Fall:
+		m_modelRender.PlayAnimation(enAnimationClip_Fall, 0.2f);
+		break;
 	case enKnightState_ChainAtk:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
 		break;
@@ -482,6 +492,12 @@ void KnightBase::ManageState()
 		break;
 	case enKnightState_Run:
 		OnProcessRunStateTransition();
+		break;
+	case enKnightState_Jump:
+		OnProcessJumpStateTransition();
+		break;
+	case enKnightState_Fall:
+		OnProcessFallStateTransition();
 		break;
 	case enKnightState_ChainAtk:
 		OnProcessChainAtkStateTransition();
@@ -544,6 +560,31 @@ void KnightBase::OnProcessIdleStateTransition()
 void KnightBase::OnProcessRunStateTransition()
 {
 	OnProcessCommonStateTransition();
+}
+
+void KnightBase::OnProcessJumpStateTransition()
+{
+	//後で消す
+	pushFlag = false;
+	//フラグで空中にいるか判定
+	//空中にいる
+	if (IsAir(m_charCon) == enIsAir && m_charCon.IsOnGround() == false)
+	{
+		m_AirFlag = true;
+	}
+
+	if (m_AirFlag == true)
+	{
+		if (m_charCon.IsOnGround() == true)
+		{
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			m_AirFlag = false;
+			m_knightState = enKnightState_Idle;
+			OnProcessCommonStateTransition();
+		}
+
+	}
 }
 
 /// <summary>
@@ -643,6 +684,16 @@ void KnightBase::OnProcessDeathStateTransition()
 		//リスポーンする座標に自身の座標をセット
 		SetRespawn();
 		Death();
+		//待機ステート
+		m_knightState = enKnightState_Idle;
+		OnProcessCommonStateTransition();
+	}
+}
+
+void KnightBase::OnProcessFallStateTransition()
+{
+	if (m_charCon.IsOnGround())
+	{
 		//待機ステート
 		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();

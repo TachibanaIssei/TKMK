@@ -22,7 +22,7 @@ public:
 		enTitlePosition_Num,
 	};
 
-
+	//
 	enum EnSelectPosition {
 		enSelectPosition_Start,						//スタートポジション
 		enSelectPosition_Operation,					//操作説明のポジション

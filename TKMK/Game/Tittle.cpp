@@ -40,7 +40,7 @@ bool Tittle::Start()
 	m_charaExplanation.Update();
 
 	m_choice.Init("Assets/sprite/Choice.DDS", 200.0f, 100.0f);
-	m_choice.SetPosition(m_CentralPosition);
+	m_choice.SetPosition(m_sPosition);
 	m_choice.SetScale(1.7f, 1.0f, 1.0f);
 	m_choice.Update();
 
@@ -106,14 +106,15 @@ void Tittle::Update()
 		m_operation.SetPosition(m_firstPosition);
 		m_charaExplanation.SetPosition(m_firstPosition);
 	}
-	/*else
+	else
 	{
-		m_start.SetPosition(0.0f, -150.0f, 0.0f);
+		m_choice.SetScale(1.7f, 1.0f, 1.0f);
+		/*m_start.SetPosition(0.0f, -150.0f, 0.0f);
 		m_operation.SetPosition(0.0f, -250.0f, 0.0f);
 		m_charaExplanation.SetPosition(0.0f, -350.0f, 0.0f);
-		m_choice.SetPosition(m_sPosition);
-		m_choice.SetScale(1.7f, 1.0f, 1.0f);
-	}*/
+		m_choice.SetPosition(m_CentralPosition);
+		m_choice.SetScale(1.7f, 1.0f, 1.0f);*/
+	}
 
 	m_spriteRender.Update();
 	m_choice.Update();
@@ -171,6 +172,9 @@ void Tittle::Select()
 		m_charaExplanation.SetPosition(m_TopPosition);
 		break;
 	}
+	//セレクトカーソルを中央に持ってくる
+	m_sPosition = m_CentralPosition;
+
 	m_choice.SetPosition(m_CentralPosition);
 	m_choice.Update();
 	m_start.Update();
@@ -295,7 +299,7 @@ void Tittle::CharacterOp()
 		m_KnightOp.SetPosition(m_firstPosition);
 		m_WizardOp.SetPosition(m_firstPosition);
 		m_Opchoice.SetPosition(m_firstPosition);
-		m_choice.SetPosition(m_firstPosition);
+		m_choice.SetPosition(m_CentralPosition);
 	}
 	m_KnightOp.Update();
 	m_WizardOp.Update();

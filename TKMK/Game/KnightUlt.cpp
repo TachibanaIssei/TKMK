@@ -20,7 +20,6 @@ bool KnightUlt::Start()
 	//ˆÚ“®‘¬“x‚ğŒvZB
 	m_moveSpeed = Vector3::AxisZ;
 	m_rotation.Apply(m_moveSpeed);
-
 	m_position += m_moveSpeed * 20.0f;
 	m_moveSpeed *= 200.0f;
 	m_rotation.AddRotationDegY(360.0f);

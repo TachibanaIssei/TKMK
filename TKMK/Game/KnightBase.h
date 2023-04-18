@@ -283,12 +283,10 @@ protected:
 	CharacterController m_charCon;                        //キャラクターコントロール
 	
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
-	PlayerState m_knightState/* = enKnightState_Num*/;
+	PlayerState m_knightState = enKnightState_Idle/* = enKnightState_Num*/;
 	
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
-
-	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ
 	int ComboState = 0;
 	//コンボが継続する時間を記録する

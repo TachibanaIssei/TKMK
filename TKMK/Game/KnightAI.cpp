@@ -18,7 +18,7 @@ KnightAI::KnightAI()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	respawnNumber = 1;        //リスポーンする座標の番号
+	respawnNumber = 0;        //リスポーンする座標の番号
 	m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
 	//リスポーンする座標のセット
 	//キャラコン
@@ -95,6 +95,10 @@ int KnightAI::CalculateTargetAI(Actor* actor)
 	if (actor == this)
 	{
 		eval = -9999999;
+	}
+	if (actorPos.y >= 100)
+	{
+		eval = -9999;
 	}
 	return eval;
 }
@@ -228,7 +232,6 @@ void KnightAI::Update()
 
 	//回避クールタイムの処理
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-	m_position.y = m_position_YUp;
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rot);
 	m_modelRender.Update();
@@ -303,7 +306,7 @@ void KnightAI::Attack()
 				m_knightState == enKnightState_Avoidance)
 			{
 				return;
-			}j
+			}
 			//スキルを打つ
 			SkillState = true;
 			pushFlag = true;

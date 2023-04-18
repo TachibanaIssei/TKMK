@@ -38,10 +38,16 @@ public:
 		enNeutral_Enemy_ReceiveDamage,			//被ダメージ。
 		enNeutral_Enemy_Death,					//ダウン。
 		enNeutral_Enemy_Pause,                  //ポーズ画面
-		enNEutral_Enemy_Patrol,                 //巡回
+		enNeutral_Enemy_Patrol,                 //巡回
+		enNeutral_Enemy_BackPatrol
 	};
 
-		
+	enum EnEnemyKinds {
+		enEnemyKinds_White,						//白
+		enEnemyKinds_Red,						//赤
+		enEnemyKinds_Green,						//緑
+		enEnemyKinds_Num,						//敵の種類
+	};
 
 
 	void SetNeutral_EnemyGame(Game* NEgame)
@@ -73,6 +79,10 @@ public:
 		m_rot = rotation;
 	}
 
+	EnEnemyKinds GetenemyColor()
+	{
+		return m_enemyKinds;
+	}
 	/// <summary>
 	/// 座標を取得
 	/// </summary>
@@ -174,7 +184,10 @@ public:
 	/// 被ダメージステートの遷移処理。
 	/// </summary>
 	void ProcessReceiveDamageStateTransition();
-
+	/// <summary>
+	/// 巡回に戻れステート遷移処理
+	/// </summary>
+	void ProcessBackPatrolStateTransition();
 	/// <summary>
 	/// ダウンステートの遷移処理。
 	/// </summary>
@@ -226,8 +239,7 @@ public:
 	void SetPlayerActor(Actor* actor) {
 		m_player = actor;
 	}
-
-	enum EnAnimationClip {                      //アニメーション。
+		enum EnAnimationClip {                      //アニメーション。
 		enAnimationClip_Idle,					//待機アニメーション。
 		enAnimationClip_Run,					//走りアニメーション。
 		enAnimationClip_Attack,					//攻撃アニメーション。
@@ -236,12 +248,7 @@ public:
 		enAnimationClip_Num,					//アニメーションの数。
 	};
 
-	enum EnEnemyKinds {
-		enEnemyKinds_White,						//白
-		enEnemyKinds_Red,						//赤
-		enEnemyKinds_Green,						//緑
-		enEnemyKinds_Num,						//敵の種類
-	};
+
 
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
@@ -266,7 +273,9 @@ private:
 
 	Game* m_game = nullptr;                               
 	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
-
+	Neutral_Enemy* m_EnemyRed = nullptr;
+	Neutral_Enemy* m_EnemyGreen = nullptr;
+	Neutral_Enemy* m_EnemyWhile = nullptr;
 
 	GameCamera* m_gameCamera = nullptr;
 	Player* player = nullptr;
@@ -279,7 +288,7 @@ private:
 	SpriteRender		m_HPFrame;		//HP枠画像
 	SpriteRender		m_HPBack;		//HP背景画像	
 	
-	FontRender				m_fontRender;
+	FontRender              m_Name;
 	SphereCollider			m_sphereCollider;
 	RigidBody				m_rigidBody;
 	Vector3                 m_inRespawnPosition[12];
@@ -306,6 +315,10 @@ private:
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
 	int P = -1;
+	int randam;
 	
+	bool m_backPatrol = false;
+	bool m_backPatrolFarst = false;
+
 };
 

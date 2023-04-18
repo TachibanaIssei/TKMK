@@ -9,6 +9,8 @@
 #include "Player.h"
 #include "MagicBall.h"
 #include "Actor.h"
+#include <cstring>
+#include <cwchar>
 //#include <vector>
 //#include <algorithm>
 
@@ -109,7 +111,7 @@ bool Neutral_Enemy::Start()
 	m_Status.Init("Enemy");
 
 	//巡回用のパスを読み込む
-	m_EnemyPoslevel.Init("Assets/level3D/enemyPos.tkl", [&](LevelObjectData& objData) {
+	m_EnemyPoslevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
 
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
@@ -120,6 +122,8 @@ bool Neutral_Enemy::Start()
 		}
 
 	});
+
+	randam = rand() % 8 + 1;
 
 	return true;
 }
@@ -195,21 +199,21 @@ if (fabsf(m_moveSpeed.x) < 0.001f
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
+//衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
+struct SweepResultSlipThroughWall :public btCollisionWorld::ConvexResultCallback
 {
 	bool isHit = false;						//衝突フラグ。
-
+	const btCollisionObject* hitObject = nullptr;
 	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
 	{
 		//壁とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_SlipThroughWall) {
 			//衝突したのは壁ではない。
 			return 0.0f;
 		}
-
 		//壁とぶつかったら。
 		//フラグをtrueに。
+		hitObject = convexResult.m_hitCollisionObject;
 		isHit = true;
 		return 0.0f;
 	}
@@ -222,9 +226,29 @@ void Neutral_Enemy::Chase()
 	{
 		return;
 	}
-	//Vector3 diff = player->GetCharPosition() - m_position;
+	Vector3 m_targetActorPos = m_targetActor->GetPosition();
+	Vector3 diff = m_targetActorPos - m_position;
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
 
-	Vector3 diff = m_targetActor->GetPosition() - m_position;
+		//始点は自分の座標。
+		start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+		//終点はランダムの座標。
+		end.setOrigin(btVector3(m_targetActorPos.x, m_targetActorPos.y + 70.0f, m_targetActorPos.z));
+		SweepResultSlipThroughWall callback;
+		//コライダーを始点から終点まで動かして。
+		//衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+		//壁と衝突した！
+		if (callback.isHit == true)
+		{
+			// 目的地に辿り着くまで敵を無視する
+			m_backPatrol = true;
+			m_backPatrolFarst = false;
+			m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
+		}
+	
 	diff.Normalize();
 	//移動速度を設定する。
 	m_moveSpeed = diff * m_Status.Speed;
@@ -235,7 +259,7 @@ void Neutral_Enemy::Chase()
 	}
 	Vector3 modelPosition = m_position;
 	//ちょっとだけモデルの座標を挙げる。
-	modelPosition.y += 2.5f;
+	modelPosition.y += 3.0f;
 	m_modelRender.SetPosition(modelPosition);
 
 }
@@ -497,7 +521,7 @@ void Neutral_Enemy::ProcessCommonStateTransition()
 	//敵を見つけられなければ。
 	else
 	{
-		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
+		m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
 	}
 }
 void Neutral_Enemy::ProcessIdleStateTransition()
@@ -524,7 +548,7 @@ void Neutral_Enemy::ProcessChaseStateTransition()
 	Chase();
 
 	if (Search() == false) {
-		m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
+		m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
 	}
 	else {
 		//攻撃できる距離なら。
@@ -563,7 +587,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 	{
 		if (m_lastAttackActor == nullptr) {
 			//対象が居ないので巡回する。
-			m_Neutral_EnemyState = enNEutral_Enemy_Patrol;
+			m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
 
 			return;
 		}
@@ -590,235 +614,79 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 		DeleteGO(this);
 	}
 }
+
+void Neutral_Enemy::ProcessBackPatrolStateTransition()
+{
+	m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
+}
+
 void Neutral_Enemy::ProcessPatrolStateTransition()
 {
 	//エネミーたちの情報を取得する
 	std::vector<Neutral_Enemy*>& enemys = m_game->GetNeutral_Enemys();
 	for (auto Enemys : enemys)
 	{
-	/*	if (Enemys == this) {
-			continue;
-		}*/
 		//取得したエネミーたちの座標を取得
 		Vector3 enemyPos = Enemys->GetPosition();
 		Vector3 diff = m_position - enemyPos;
 		if (diff.Length() < 50.0f)
 		{
 			diff.Normalize();
-			m_hagikiPower += diff * 20.0f;
+			m_hagikiPower += diff * 50.0f;
 		}
 	}
-	if (P < 0 || P > 8)
-	{
-		Vector3 newForward = m_patrolPos[0] - m_position;
-		Vector3 distance = newForward;
-		newForward.Normalize();
-		m_forward = newForward;
-		Move();
-		if (distance.Length() <= 100.0f)
-		{
-			int ram = rand() % 100 /*+ 1*/;
-			if (ram >= 0)
-			{
-				P = 1;
-			}
-			if (ram > 25)
-			{
-				P = 3;
-			}
-			if (ram > 50)
-			{
-				P = 5;
-			}
-			if (ram > 75)
-			{
-				P = 7;
-			}
-		}
-
-	}
-	if (P == 1)
-	{
-		Vector3 newForward2 = m_patrolPos[1] - m_position;
+		Vector3 newForward2 = m_patrolPos[randam] - m_position;
 		Vector3 distance2 = newForward2;
 		newForward2.Normalize();
 		m_forward = newForward2;
 		Move();
 		if (distance2.Length() <= 10.0f)
 		{
-
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 2;
-			}
-			if (ram > 50)
-			{
-				P = 9;
-			}
-
-		}
-
-	}
-	if (P == 2)
-	{
-		Vector3 newForward3 = m_patrolPos[2] - m_position;
-		Vector3 distance3 = newForward3;
-		newForward3.Normalize();
-		m_forward = newForward3;
-		Move();
-		if (distance3.Length() <= 10.0f)
-		{
-
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 1;
-			}
-			if (ram > 50)
-			{
-				P = 3;
+			// バックパトロール（追加）
+			if (m_backPatrol) {
+				if (m_backPatrolFarst == false) {
+					m_backPatrolFarst = true;
+				}
+				else {
+					m_backPatrolFarst = false;
+					m_backPatrol = false;
+				}
 			}
 
-		}
-
-	}
-	if (P == 3)
-	{
-		Vector3 newForward4 = m_patrolPos[3] - m_position;
-		Vector3 distance4 = newForward4;
-		newForward4.Normalize();
-		m_forward = newForward4;
-		Move();
-		if (distance4.Length() <= 10.0f)
-		{
-
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 2;
-			}
-			if (ram > 50)
-			{
-				P = 4;
-			}
-
-		}
-	}
-	if (P == 4)
-	{
-		Vector3 newForward5 = m_patrolPos[4] - m_position;
-		Vector3 distance5 = newForward5;
-		newForward5.Normalize();
-		m_forward = newForward5;
-		Move();
-		if (distance5.Length() <= 10.0f)
-		{
-
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 3;
-			}
-			if (ram > 50)
-			{
-				P = 5;
-			}
-
-		}
-	}
-	if (P == 5)
-	{
-		Vector3 newForward6 = m_patrolPos[5] - m_position;
-		Vector3 distance6 = newForward6;
-		newForward6.Normalize();
-		m_forward = newForward6;
-		Move();
-		if (distance6.Length() <= 10.0f)
-		{
-
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 4;
-			}
-	
-			if (ram > 50)
-			{
-				P = 6;
-			}
-
-		}
-	}
-	if (P == 6)
-	{
-		Vector3 newForward7 = m_patrolPos[6] - m_position;
-		Vector3 distance7 = newForward7;
-		newForward7.Normalize();
-		m_forward = newForward7;
-		Move();
-		if (distance7.Length() <= 10.0f)
-		{
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 5;
-			}
-			if (ram > 50)
-			{
-				P = 7;
-			}
-
-		}
-	}
-	if (P == 7)
-	{
-		Vector3 newForward8 = m_patrolPos[7] - m_position;
-		Vector3 distance8 = newForward8;
-		newForward8.Normalize();
-		m_forward = newForward8;
-		Move();
-		if (distance8.Length() <= 10.0f)
-		{
-
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 6;
-			}
+			randam = rand() % 8 + 1;
+			btTransform start, end;
+			start.setIdentity();
+			end.setIdentity();
 			
-			if (ram > 50)
+			while (true)
 			{
-				P = 8;
+				//始点は自分の座標。
+				start.setOrigin(btVector3(m_position.x, 70.0f, m_position.z));
+				//終点はランダムの座標。
+				end.setOrigin(btVector3(m_patrolPos[randam].x, 70.0f, m_patrolPos[randam].z));
+				SweepResultSlipThroughWall callback;
+				//コライダーを始点から終点まで動かして。
+				//衝突するかどうかを調べる。
+				PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+				//壁と衝突した！
+				if (callback.isHit == true)
+				{
+					
+					randam = rand() % 8 + 1;
+					//プレイヤーは見つかっていない。
+					continue;
+				}
+				break;
 			}
-
+			Vector3 newForward2 = m_patrolPos[randam] - m_position;
+			Vector3 distance2 = newForward2;
+			newForward2.Normalize();
+			m_forward = newForward2;
+			Move();
+			
 		}
-	}
-	if (P == 8)
-	{
-		Vector3 newForward9 = m_patrolPos[8] - m_position;
-		Vector3 distance9 = newForward9;
-		newForward9.Normalize();
-		m_forward = newForward9;
-		Move();
-		if (distance9.Length() <= 10.0f)
-		{
-
-			int ram = rand() % 100;
-			if (ram < 50)
-			{
-				P = 7;
-			}
-			if (ram > 50)
-			{
-				P = 1;
-			}
-
-		}
-	}
-
 	//対象を探す
-	if (Search())
+	if (Search() && m_backPatrol == false)
 	{
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
@@ -848,8 +716,11 @@ void Neutral_Enemy::ManageState()
 	case enNeutral_Enemy_Death:
 		ProcessDeathStateTransition();
 		break;
-	case enNEutral_Enemy_Patrol:
+	case enNeutral_Enemy_Patrol:
 		ProcessPatrolStateTransition();
+		break;
+	case enNeutral_Enemy_BackPatrol:
+		ProcessBackPatrolStateTransition();
 		break;
 	}
 }
@@ -880,8 +751,8 @@ void Neutral_Enemy::PlayAnimation()
 	case enNeutral_Enemy_Death:
 		m_modelRender.PlayAnimation(enNeutral_Enemy_Death, 0.5f);
 		break;
-	case enNEutral_Enemy_Patrol:
-		m_modelRender.PlayAnimation(enNEutral_Enemy_Patrol, 0.5f);
+	case enNeutral_Enemy_Patrol:
+		m_modelRender.PlayAnimation(enNeutral_Enemy_Patrol, 0.5f);
 		break;
 	}
 }
@@ -908,7 +779,17 @@ void Neutral_Enemy::HPBar()
 	//HPバー画像を左寄せに表示する
 	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
 	m_HPBerPos.x -= BerSizeSubtraction.x;
-
+	wchar_t wcsbuf[256];
+	std::size_t len = std::strlen(GetName());
+	std::size_t converted = 0;
+	wchar_t* wcstr = new wchar_t[len + 1];
+	mbstowcs_s(&converted, wcstr, len + 1, GetName(), _TRUNCATE);
+	m_Name.SetText(wcstr);
+	m_Name.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
+	//フォントの大きさを設定。
+	m_Name.SetScale(0.5f);
+	//フォントの色を設定。
+	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
 	m_HPBar.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
 	m_HPFrame.SetPosition(Vector3(m_HPWindowPos.x, m_HPWindowPos.y, 0.0f));
 	m_HPBack.SetPosition(Vector3(m_HPBackPos.x, m_HPBackPos.y, 0.0f));
@@ -1013,7 +894,8 @@ void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
-
+	//フォントを描画する。
+	m_Name.Draw(rc);
 	//ステートがポーズステートでないなら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
 		//スプライトフラグがtureなら

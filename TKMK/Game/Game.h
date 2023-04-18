@@ -81,10 +81,12 @@ public:
 			m_neutral_Enemys.end(),   // ����I���ʒu����C�e���[�^
 			enemy                     // ��������v�f
 		);
+
 		if (it != m_neutral_Enemys.end()) {
 			m_neutral_Enemys.erase(it);
 		}
 	}
+
 	//�x�N�^�^��Neutral_Enemy��Ԃ�
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
@@ -175,7 +177,7 @@ private:
 	bool PauseCloseFlag = true;
 
 	//�L�����̔ԍ�
-	int SelectCharNumber = 1;
+	int SelectCharNumber = 0;
 
 
 	int enemyNum = 0;

@@ -54,6 +54,10 @@ void WizardBase::SetModel()
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Wizard/Wizard_UltimateSkill.tka");
 	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/Wizard/Wizard_Jump.tka");
+	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Wizard/Wizard_fall.tka");
+	m_animationClips[enAnimationClip_Fall].SetLoopFlag(false);
 
 	//魔法使いのモデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Wizard/Wizard.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -148,7 +152,8 @@ void WizardBase::Collision()
 		m_wizardState == enWizardState_UltimateSkill ||
 		m_wizardState == enWizardState_Attack ||
 		m_wizardState == enWizardState_Skill ||
-		m_wizardState == enWizardState_Avoidance)
+		m_wizardState == enWizardState_Avoidance ||
+		m_wizardState == enWizardState_Jump)
 	{
 		return;
 	}
@@ -176,7 +181,8 @@ void WizardBase::Collision()
 		m_wizardState == enWizardState_UltimateSkill ||
 		m_wizardState == enWizardState_Attack ||
 		m_wizardState == enWizardState_Skill ||
-		m_wizardState == enWizardState_Avoidance)
+		m_wizardState == enWizardState_Avoidance ||
+		m_wizardState == enWizardState_Jump)
 	{
 		return;
 	}
@@ -300,6 +306,7 @@ struct SweepResultSlipThroughWall :public btCollisionWorld::ConvexResultCallback
 /// <param name="charCon">キャラクターコントローラー</param>
 void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterController& charCon)
 {
+	m_wizardState = enWizardState_Skill;
 	//ワープ先の座標を格納する
 	Vector3 WarpPos = position;
 
@@ -465,14 +472,17 @@ void WizardBase::PlayAnimation()
 	switch (m_wizardState)
 	{
 	case enWizardState_Idle:
-		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.4f);
+		m_modelRender.PlayAnimation(enAnimationClip_Idle, 0.2f);
 		break;
 	case enWizardState_Walk:
 		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	case enWizardState_Run:
-		m_modelRender.SetAnimationSpeed(0.9f);
+		m_modelRender.SetAnimationSpeed(0.8f);
 		m_modelRender.PlayAnimation(enAnimationClip_Run, 0.2f);
+		break;
+	case enWizardState_Jump:
+		m_modelRender.PlayAnimation(enAnimationClip_Jump, 0.4f);
 		break;
 	case enWizardState_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_Atk, 0.2f);
@@ -494,6 +504,10 @@ void WizardBase::PlayAnimation()
 	case enWizardState_Death:
 		m_modelRender.SetAnimationSpeed(1.2f);
 		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.4f);
+		break;
+	case enWizardState_Fall:
+		m_modelRender.PlayAnimation(enAnimationClip_Fall, 0.7f);
+		break;
 	default:
 		break;
 	}
@@ -515,6 +529,9 @@ void WizardBase::ManageState()
 	case enWizardState_Run:
 		OnProcessRunStateTransition();
 		break;
+	case enWizardState_Jump:
+		OnProcessJumpStateTransition();
+		break;
 	case enWizardState_Attack:
 		OnProcessAttackStateTransition();
 		break;
@@ -533,7 +550,9 @@ void WizardBase::ManageState()
 	case enWizardState_Death:
 		OnProcessDeathStateTransition();
 		break;
-
+	case enWizardState_Fall:
+		OnProcessFallStateTransition();
+		break;
 	}
 }
 
@@ -572,6 +591,29 @@ void WizardBase::OnProcessRunStateTransition()
 	OnProcessCommonStateTransition();
 }
 
+void WizardBase::OnProcessJumpStateTransition()
+{
+	//フラグで空中にいるか判定
+	//空中にいる
+	if (IsAir(m_charCon) == enIsAir&&m_charCon.IsOnGround()==false)
+	{
+		m_AirFlag = true;
+	}
+
+	if (m_AirFlag == true)
+	{
+		if (m_charCon.IsOnGround() == true)
+		{
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			m_AirFlag = false;
+			m_wizardState = enWizardState_Idle;
+			OnProcessCommonStateTransition();
+		}
+		
+	}
+}
+
 void WizardBase::OnProcessAttackStateTransition()
 {
 	//アタックのアニメーション再生が終わったら。
@@ -604,7 +646,15 @@ void WizardBase::OnProcessSkillAtkStateTransition()
 
 void WizardBase::OnProcessUltimateSkillAtkStateTransition()
 {
-
+	//必殺技のアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		//待機ステート
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 }
 
 void WizardBase::OnProcessAvoidanceStateTransition()
@@ -649,4 +699,15 @@ void WizardBase::OnProcessDeathStateTransition()
 	}
 }
 
+void WizardBase::OnProcessFallStateTransition()
+{
+	if (m_charCon.IsOnGround())
+	{
+		//待機ステート
+		m_wizardState = enWizardState_Idle;
+		OnProcessCommonStateTransition();
+	}
 
+		
+	
+}

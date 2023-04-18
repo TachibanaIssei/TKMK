@@ -2,6 +2,7 @@
 #include "Result.h"
 
 #include "Tittle.h"
+#include "Game.h"
 
 Result::Result()
 {
@@ -15,6 +16,18 @@ Result::~Result()
 
 bool Result::Start()
 {
+	Game* game = FindGO<Game>("game");
+
+	game->GetActorPoints(charPoints);
+
+	wchar_t moji2[256];
+	swprintf(moji2, L"%d,%d", charPoints[0], charPoints[1]);
+	moji.SetText(moji2);
+	moji.SetPosition(Vector3::Zero);
+	moji.SetColor(g_vec4Black);
+
+	DeleteGO(game);
+
 	//ResultÇÃèâä˙âª
 	m_spriteRender.Init("Assets/sprite/result.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
@@ -39,4 +52,5 @@ void Result::Update()
 void Result::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
+	moji.Draw(rc);
 }

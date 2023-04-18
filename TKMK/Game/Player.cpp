@@ -293,30 +293,19 @@ int Player::CharSetPoint()const
 }
 
 /// <summary>
-/// ?L??????exp?????
+/// プレイヤーの現在の経験値を取得
 /// </summary>
-/// <param name="exp">??????G??o???l</param>
-//void Player::CharSetExpProcess(int exp)const
-//{
-//	switch (m_selectCharctar)
-//	{
-//	case enKnight:
-//		return knightPlayer->ExpProcess(exp);
-//		break;
-//
-//	case enWizard:
-//		return wizardPlayer->ExpProcess(exp);
-//		break;
-//
-//	case enZombie:
-//		break;
-//
-//	case enMonster:
-//		break;
-//
-//
-//	default:
-//		break;
-//	}
-//}
+/// <returns>プレイヤーの現在の経験値の量</returns>
+int Player::CharSetEXP() const
+{
+	return playerActor->GetExperience();
+}
 
+/// <summary>
+/// プレイヤーの現在の経験値テーブルを取得
+/// </summary>
+/// <returns>プレイヤーの現在の経験値テーブル</returns>
+int Player::CharSetEXPTable() const
+{
+	return playerActor->GetExpTable();
+}

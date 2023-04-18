@@ -607,9 +607,6 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 	//ダウンアニメーションの再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//m_game->GetNeutral_EnemyContaier().erase(std::remove(m_game->GetNeutral_EnemyContaier().begin(),
-		//	m_game->GetNeutral_EnemyContaier().end(), this), m_game->GetNeutral_EnemyContaier().end()/*std::cend(m_game->GetNeutral_EnemyContaier()*/);
-		m_game->SubNeutral_EnemyContaier();
 		//自身を削除する。
 		DeleteGO(this);
 	}
@@ -861,7 +858,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(21);
 		se->Play(false);
-		se->SetVolume(0.5f);
+		se->SetVolume(m_game->SetSoundEffectVolume());
 
 		//効果音を再生する
 

@@ -203,7 +203,9 @@ void KnightAI::Update()
 	Attack();
     //ステート
 	ManageState();
+  
 	//アニメーションの再生
+
 	PlayAnimation();
 	Collition();
 	Rotation();

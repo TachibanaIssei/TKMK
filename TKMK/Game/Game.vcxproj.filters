@@ -25,6 +25,7 @@
     <ClCompile Include="KnightAI.cpp" />
     <ClCompile Include="CharUltFlag.cpp" />
     <ClCompile Include="Lamp.cpp" />
+    <ClCompile Include="CharacterSelect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -50,5 +51,6 @@
     <ClInclude Include="KnightAI.h" />
     <ClInclude Include="CharUltFlag.h" />
     <ClInclude Include="Lamp.h" />
+    <ClInclude Include="CharacterSelect.h" />
   </ItemGroup>
 </Project>

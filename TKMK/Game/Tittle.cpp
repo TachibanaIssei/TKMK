@@ -18,55 +18,55 @@ bool Tittle::Start()
 	//tittleの初期化
 	m_spriteRender.Init("Assets/sprite/tittle.DDS",1920.0f,1080.0f);
 	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
-	m_spriteRender.SetScale(1.0f, 1.0f, 1.0f);
+	m_spriteRender.SetScale(g_vec3One);
 	m_sRotation.SetRotationZ(0.0f);
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
 
 	//Selectの初期化
 	m_start.Init("Assets/sprite/Start.DDS", 200.0f, 100.0f);
-	m_start.SetPosition(0.0f, -150.0f, 0.0f);
-	m_start.SetScale(1.0f, 1.0f, 1.0f);
+	m_start.SetPosition(m_CentralPosition);
+	m_start.SetScale(g_vec3One);
 	m_start.Update();
 
 	m_operation.Init("Assets/sprite/Operation.DDS", 300.0f, 100.0f);
-	m_operation.SetPosition(0.0f, -250.0f, 0.0f);
+	m_operation.SetPosition(m_TopPosition);
 	m_operation.SetScale(0.7f, 1.0f, 1.0f);
 	m_operation.Update();
 
 	m_charaExplanation.Init("Assets/sprite/CharaExplanation.DDS", 200.0f, 100.0f);
-	m_charaExplanation.SetPosition(0.0f, -350.0f, 0.0f);
+	m_charaExplanation.SetPosition(m_UnderPosition);
 	m_charaExplanation.SetScale(1.7f, 1.7f, 1.0f);
 	m_charaExplanation.Update();
 
 	m_choice.Init("Assets/sprite/Choice.DDS", 200.0f, 100.0f);
-	m_choice.SetPosition(m_sPosition);
+	m_choice.SetPosition(m_CentralPosition);
 	m_choice.SetScale(1.7f, 1.0f, 1.0f);
 	m_choice.Update();
 
 	//操作説明画像
 	m_operationPic.Init("Assets/sprite/Controller.DDS", 1920.0f, 1080.0f);
 	m_operationPic.SetPosition(m_firstPosition);
-	m_operationPic.SetScale(1.0f, 1.0f, 1.0f);
+	m_operationPic.SetScale(g_vec3One);
 	m_operationPic.Update();
 
 	//キャラクター説明画像
 	//セレクト画像
 	m_Opchoice.Init("Assets/sprite/CharaExplanation/CharaOpSelect.DDS", 1000.0f, 100.0f);
 	m_Opchoice.SetPosition(m_firstPosition);
-	m_Opchoice.SetScale(1.0f, 1.0f, 1.0f);
+	m_Opchoice.SetScale(g_vec3One);
 	m_Opchoice.Update();
 
 	//剣士
 	m_KnightOp.Init("Assets/sprite/CharaExplanation/KnightOP.DDS", 1920.0f, 1080.0f);
 	m_KnightOp.SetPosition(m_firstPosition);
-	m_KnightOp.SetScale(1.0f, 1.0f, 1.0f);
+	m_KnightOp.SetScale(g_vec3One);
 	m_KnightOp.Update();
 
 	//魔法使い
 	m_WizardOp.Init("Assets/sprite/CharaExplanation/wizardOP.DDS", 1920.0f, 1080.0f);
 	m_WizardOp.SetPosition(m_firstPosition);
-	m_WizardOp.SetScale(1.0f, 1.0f, 1.0f);
+	m_WizardOp.SetScale(g_vec3One);
 	m_WizardOp.Update();
 
 	//BGMの設定
@@ -106,14 +106,14 @@ void Tittle::Update()
 		m_operation.SetPosition(m_firstPosition);
 		m_charaExplanation.SetPosition(m_firstPosition);
 	}
-	else
+	/*else
 	{
 		m_start.SetPosition(0.0f, -150.0f, 0.0f);
 		m_operation.SetPosition(0.0f, -250.0f, 0.0f);
 		m_charaExplanation.SetPosition(0.0f, -350.0f, 0.0f);
 		m_choice.SetPosition(m_sPosition);
 		m_choice.SetScale(1.7f, 1.0f, 1.0f);
-	}
+	}*/
 
 	m_spriteRender.Update();
 	m_choice.Update();
@@ -123,21 +123,26 @@ void Tittle::Update()
 	m_operationPic.Update();
 	
 }
+//セレクトカーソル
 void Tittle::Select()
 {
 	if (m_operationLook == enOperationLook_UnSeem && m_characterOpLook == enCharacterOpLook_UnSeem)
 	{
-		if (g_pad[0]->IsTrigger(enButtonUp) && selectPosition != 0)
+		if (g_pad[0]->IsTrigger(enButtonUp) )
 		{
 			selectPosition--;
+			if (selectPosition < 0)
+				selectPosition = 2;
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(5);
 			se->Play(false);
 			se->SetVolume(1.0f);
 		}
-		if (g_pad[0]->IsTrigger(enButtonDown) && selectPosition < 2)
+		if (g_pad[0]->IsTrigger(enButtonDown))
 		{
 			selectPosition++;
+			if (selectPosition > 2)
+				selectPosition = 0;
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(5);
 			se->Play(false);
@@ -149,21 +154,30 @@ void Tittle::Select()
 	{
 	case 0:
 		m_tSelectPosition = enSelectPosition_Start;
-		m_sPosition = { 0.0f, -150.0f, 0.0f };
+		m_start.SetPosition(m_CentralPosition);
+		m_operation.SetPosition(m_TopPosition);
+		m_charaExplanation.SetPosition(m_UnderPosition);
 		break;
 	case 1:
-		m_tSelectPosition = enSelectPosition_Operation;
-		m_sPosition = { 0.0f, -250.0f, 0.0f };
+		m_tSelectPosition = enSelectPosition_CharaExplanation;
+		m_start.SetPosition(m_TopPosition);
+		m_operation.SetPosition(m_UnderPosition);
+		m_charaExplanation.SetPosition(m_CentralPosition);
 		break;
 	case 2:
-		m_tSelectPosition = enSelectPosition_CharaExplanation;
-		m_sPosition = { 0.0f, -350.0f, 0.0f };
+		m_tSelectPosition = enSelectPosition_Operation;
+		m_start.SetPosition(m_UnderPosition);
+		m_operation.SetPosition(m_CentralPosition);
+		m_charaExplanation.SetPosition(m_TopPosition);
 		break;
 	}
-	m_choice.SetPosition(m_sPosition);
+	m_choice.SetPosition(m_CentralPosition);
 	m_choice.Update();
+	m_start.Update();
+	m_operation.Update();
+	m_charaExplanation.Update();
 }
-
+//操作説明
 void Tittle::Operation()
 {
 	//説明画面からタイトル画面への遷移
@@ -199,6 +213,7 @@ void Tittle::Operation()
 	
 }
 
+//キャラクター説明
 void Tittle::CharacterOp()
 {
 	//キャラクター説明画面からタイトルへの遷移
@@ -280,6 +295,7 @@ void Tittle::CharacterOp()
 		m_KnightOp.SetPosition(m_firstPosition);
 		m_WizardOp.SetPosition(m_firstPosition);
 		m_Opchoice.SetPosition(m_firstPosition);
+		m_choice.SetPosition(m_firstPosition);
 	}
 	m_KnightOp.Update();
 	m_WizardOp.Update();

@@ -18,7 +18,7 @@ KnightAI::KnightAI()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	respawnNumber = 1;        //リスポーンする座標の番号
+	respawnNumber = 0;        //リスポーンする座標の番号
 	m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
 	//リスポーンする座標のセット
 	//キャラコン
@@ -95,6 +95,10 @@ int KnightAI::CalculateTargetAI(Actor* actor)
 	if (actor == this)
 	{
 		eval = -9999999;
+	}
+	if (actorPos.y >= 100)
+	{
+		eval = -9999;
 	}
 	return eval;
 }
@@ -203,9 +207,8 @@ void KnightAI::Update()
 	Attack();
     //ステート
 	ManageState();
-  
+	AvoidanceSprite();
 	//アニメーションの再生
-
 	PlayAnimation();
 	Collition();
 	Rotation();
@@ -228,7 +231,6 @@ void KnightAI::Update()
 
 	//回避クールタイムの処理
 	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-	m_position.y = m_position_YUp;
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rot);
 	m_modelRender.Update();
@@ -548,7 +550,41 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 
 void KnightAI::AvoidanceSprite()
 {
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_knightState == enKnightState_Damege ||
+		m_knightState == enKnightState_Death ||
+		m_knightState == enKnightState_UltimateSkill ||
+		m_knightState == enKnightState_ChainAtk ||
+		m_knightState == enKnightState_Skill ||
+		m_knightState == enKnightState_Avoidance)
+	{
+		return;
+	}
 
+	const auto& atkcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//コリジョンの配列をfor文で回す
+	for (auto atkcollision : atkcollisions)
+	{
+		Vector3 atkPos = atkcollision->GetPosition();
+		Vector3 diff = atkPos - m_position;
+		diff.Normalize();
+		float angle = acosf(diff.Dot(m_forward));
+
+		atkPos.y = m_position.y;
+		Vector3 kyori = atkPos - m_position;
+
+		//プレイヤーが視界内に居たら
+		if (Math::PI * 0.5f >= fabsf(angle) && kyori.Length()<=100)
+		{
+			AvoidanceFlag = false;
+			AvoidanceEndFlag = true;
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			//待機ステート
+			m_knightState = enKnightState_Avoidance;
+			return;
+		}
+	}
 }
 void KnightAI::Rotation()
 {

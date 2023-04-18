@@ -286,9 +286,11 @@ void KnightBase::Collition()
 		//�R���W���������g�̃L�����R���ɓ��������
 		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
-			//���m�̍U���͕�HP��炷�B
-			//�|���ꂽ����̃|�C���g�𑝂₷
-			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+			//剣士の攻撃力分HPを減らす。
+			//倒された相手のポイントを増やす
+
+			//Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+
 		}
 	}
 

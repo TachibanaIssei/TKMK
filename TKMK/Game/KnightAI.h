@@ -39,21 +39,18 @@ public:
 	/// 攻撃できるならtrue
 	/// </summary>
 	/// <returns></returns>
-	const bool CanAttackenemy();
-	/// <summary>
+	const bool CanAttack();
 
-	/// </summary>
-	/// <returns></returns>
-	const bool CanAttackActor();
+	const bool CanSkill();
+
 
 private:
 	void LotNextAction();
-	int CalculatAIAttackEvaluationValue();
-	int CalculatEnemyAttackEvaluationValue();
-	void LotNextTargetAI();
-	void LotNextTargetEnemy();
+	void CalculatAIAttackEvaluationValue();
+	void CalculatEnemyAttackEvaluationValue();
 	int CalculateTargetEnemy(Neutral_Enemy* enemy);
 	int CalculateTargetAI(Actor* actor);
+
 	enum Action {
 		AttackAI,
 		AttackEnemy,
@@ -68,11 +65,6 @@ private:
 		Num_State,
 
 	};
-	/// <summary>
-	/// ?_?????????
-	/// </summary>
-	/// <returns>?_????????W</returns>
-	const Vector3 TargetChange();
 	AtkTimingState m_AtkTmingState = Num_State;
 	Game* m_game;//ゲーム
 	KnightPlayer* m_knightPlayer;//剣士プレイヤーvoid Rotation();
@@ -84,23 +76,32 @@ private:
 	FontRender				m_fontRender;
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
-	Neutral_Enemy* m_targetEnemy = nullptr;					// 今追いかけているエネミー      
-	Actor* m_targetActor = nullptr;
 	Actor* Lvactor = nullptr;
 	bool UltimateSkillFlag = false;
 	bool AIget = false;
 	bool Enemyget = false;
 	bool UltFlug = false;
-	float SkillSpeed = 270.0f;
 	float UltimateSkillTimer = 0;
 	Level3DRender m_knightAIPoslevel;      //剣士AIのポジションレベル
 	Vector3                 m_patrolPos[5];
 	int P = -1;
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	int enemyAmount = 0;
-	Vector3 nearPos = Vector3::Zero;
-	Vector3 AItargetPos = Vector3::Zero;
-	Vector3 EnemytargePos = Vector3::Zero;
 
+	Vector3 TargePos = Vector3::Zero;
+	Vector3 m_aiForward  = Vector3::Zero;
+	Neutral_Enemy* m_targetEnemy = nullptr;					// 今追いかけているエネミー      
+	Actor* m_targetActor = nullptr;
+
+	std::vector<Neutral_Enemy*> neutral_enemys;
+
+	//エネミーの評価値
+	std::vector<int> Evaluation_valueEnemy;
+	//アクターの評価値
+	std::vector<int> Evaluation_valueActor;
+
+
+	///////////////
+	bool SkillFlag = false;
 };
 

@@ -151,7 +151,6 @@ bool Game::Start()
 				enemyNumber++;
 				ENEMY_AMOUNT;
 				CreateEnemy(objData.position, objData.rotation);
-				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 6) {

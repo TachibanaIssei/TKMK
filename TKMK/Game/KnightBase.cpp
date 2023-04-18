@@ -284,11 +284,11 @@ void KnightBase::Collition()
 		//このコリジョンを作ったアクターを検索
 		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
 		//コリジョンが自身のキャラコンに当たったら
-		if (knightcollision->IsHit(m_charCon))
+		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
 			//剣士の攻撃力分HPを減らす。
 			//倒された相手のポイントを増やす
-			//Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 		}
 	}
 

@@ -29,12 +29,11 @@ WizardPlayer::WizardPlayer()
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	//m_respawnPos[respawnNumber].y = m_position_YUp;
-	//
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
-
-	Quaternion ddf = m_respawnRotation[respawnNumber];
+	
+	//リスポーン時に向いている方向の前方向を取得
+	ForwardSet();
 
 	m_modelRender.Update();
 
@@ -121,23 +120,28 @@ void WizardPlayer::Update()
 		if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
 		{
 			pushFlag = true;
-
+			jampAccumulateflag = true;
 			m_wizardState = enWizardState_Jump;
 		}
 	}
 	else
 	{
-		Attack();
-		//回避処理
-		Avoidance();
+		if (IsEnableMove() != false)
+		{
+			Attack();
+			//回避処理
+			Avoidance();
+		}
+		
 	}
 	
-	//if(jampAccumulateflag)
-	//移動処理
-	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
-	Move(m_position, m_charCon, m_Status, stickL);
+	
+		//移動処理
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		Move(m_position, m_charCon, m_Status, stickL);
+	
 	
 	//回転処理
 	Rotation();
@@ -157,8 +161,14 @@ void WizardPlayer::Update()
 
 	//キャラクターコントローラーを使って座標を移動させる。
 	//ワープする時はキャラコンを移動させない
-	if (IsEnableMove() == true ) {
-		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	if (IsEnableMove() == true)
+	{
+		//ジャンプの溜め中でないなら
+		if (jampAccumulateflag == false)
+		{
+			m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+		}
+		
 	}
 	
 	//ジャンプ中ではないかつ落下中なら
@@ -253,6 +263,7 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	if (wcscmp(eventName, L"Jump_Start") == 0)
 	{
 		m_RespawnJumpFlag = true;
+		jampAccumulateflag = false;
 	}
 
 	//必殺技が打たれたら

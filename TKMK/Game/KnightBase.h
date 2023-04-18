@@ -23,6 +23,8 @@ public:
 		enKnightState_Skill,
 		enKnightState_UltimateSkill,
 		enKnightState_Avoidance,
+		enKnightState_Jump,
+		enKnightState_Fall,
 		enKnightState_Num,
 		enKnightState_Pause,        //ゲームの状態を受け取る
 	};
@@ -219,6 +221,10 @@ protected:
 	void OnProcessIdleStateTransition();
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
+	//ジャンプのステートの遷移処理
+	void OnProcessJumpStateTransition();
+	//落下中のステートの遷移処理
+	void OnProcessFallStateTransition();
 	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
 	//スキルのステートの遷移処理
@@ -254,6 +260,8 @@ protected:
 		enAnimationClip_Skill,
 		enAnimationClip_UltimateSkill,
 		enAnimationClip_Avoidance,
+		enAnimationClip_Jump,
+		enAnimationClip_Fall,
 		enAnimationClip_Num,
 	};
 
@@ -312,6 +320,7 @@ protected:
 	bool AtkCollistionFlag = false;
 
 
+	bool jampAccumulateflag = false;
 
 };
 

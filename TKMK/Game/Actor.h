@@ -304,6 +304,18 @@ public:
 		return m_JumpState;
 	}
 
+	/// <summary>
+	/// リスポーン時に前方向を設定する(カメラの座標を決めるときに使う)
+	/// </summary>
+	void ForwardSet()
+	{
+		Vector3 center = Vector3::One;
+		Vector3 biff = center - m_position;
+		biff.y = 0.0f;
+		biff *= -1.0f;
+		m_Forward = biff;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 

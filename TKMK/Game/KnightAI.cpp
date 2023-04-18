@@ -207,9 +207,8 @@ void KnightAI::Update()
 	Attack();
     //ステート
 	ManageState();
-  
+	AvoidanceSprite();
 	//アニメーションの再生
-
 	PlayAnimation();
 	Collition();
 	Rotation();
@@ -551,7 +550,41 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 
 void KnightAI::AvoidanceSprite()
 {
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	if (m_knightState == enKnightState_Damege ||
+		m_knightState == enKnightState_Death ||
+		m_knightState == enKnightState_UltimateSkill ||
+		m_knightState == enKnightState_ChainAtk ||
+		m_knightState == enKnightState_Skill ||
+		m_knightState == enKnightState_Avoidance)
+	{
+		return;
+	}
 
+	const auto& atkcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//コリジョンの配列をfor文で回す
+	for (auto atkcollision : atkcollisions)
+	{
+		Vector3 atkPos = atkcollision->GetPosition();
+		Vector3 diff = atkPos - m_position;
+		diff.Normalize();
+		float angle = acosf(diff.Dot(m_forward));
+
+		atkPos.y = m_position.y;
+		Vector3 kyori = atkPos - m_position;
+
+		//プレイヤーが視界内に居たら
+		if (Math::PI * 0.5f >= fabsf(angle) && kyori.Length()<=100)
+		{
+			AvoidanceFlag = false;
+			AvoidanceEndFlag = true;
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			//待機ステート
+			m_knightState = enKnightState_Avoidance;
+			return;
+		}
+	}
 }
 void KnightAI::Rotation()
 {

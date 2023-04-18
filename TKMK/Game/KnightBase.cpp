@@ -286,7 +286,6 @@ void KnightBase::Collition()
 			//倒された相手のポイントを増やす
 
 			//Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
-
 		}
 	}
 

@@ -76,97 +76,97 @@ void KnightPlayer::Update()
 		m_gameUI->LevelFontChange(Lv);
 	}
 
-	oldLv = Lv;
+	//ゲームのステートがスタート,エンド、リザルトでないなら
+	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
+	{
+		oldLv = Lv;
 
-	//前フレームの座標を取得
-	OldPosition = m_position;
+		//前フレームの座標を取得
+		OldPosition = m_position;
 
-	int SkillCoolTime = SkillTimer;
-	wchar_t Skill[255];
-	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
-	Skillfont.SetText(Skill);
+		int SkillCoolTime = SkillTimer;
+		wchar_t Skill[255];
+		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+		Skillfont.SetText(Skill);
 
-	//リスポーンしたときしか使えない
-	//飛び降りる処理
-	//地上にいないならジャンプしかしないようにする
-	if (m_position.y > 1.0f) {
-		if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
-		{
-			pushFlag = true;
-			jampAccumulateflag = true;
-			m_knightState = enKnightState_Jump;
+		//リスポーンしたときしか使えない
+		//飛び降りる処理
+		//地上にいないならジャンプしかしないようにする
+		if (m_position.y > 1.0f) {
+			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+			{
+				pushFlag = true;
+				jampAccumulateflag = true;
+				m_knightState = enKnightState_Jump;
+			}
 		}
+		else
+		{
+			//ステートがデスのときボタンを押せないようにする
+			if (m_knightState != enKnightState_Death) {
+				//攻撃処理
+				Attack();
+				//回避処理
+				Avoidance();
+			}
+		}
+
+		//移動処理
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		Move(m_position, m_charCon, m_Status, stickL);
+
+		//回避中なら
+		if (AvoidanceFlag == true) {
+			m_knightState = enKnightState_Avoidance;
+			//移動処理を行う(直線移動のみ)。
+			MoveStraight(m_Skill_Right, m_Skill_Forward);
+		}
+
+
+
+
+		//スキル使用中なら
+		if (SkillState == true) {
+			//スキルステート
+			m_knightState = enKnightState_Skill;
+			//移動処理を行う(直線移動のみ)。
+			MoveStraight(m_Skill_Right, m_Skill_Forward);
+		}
+
+		//回転処理
+		Rotation();
+
+		//スキルクールタイムの処理
+		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+
+		//回避クールタイムの処理
+		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
+		//レベルアップする
+		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+		//{
+		//	if(Lv!=10)
+		//	ExpProcess(exp);
+		//	//m_Status.GetExp += 5;
+		//	//m_gameUI->LevelFontChange(Lv);
+		//}
+
+		//ダメージを受ける
+		/*if (g_pad[0]->IsTrigger(enButtonX))
+		{
+			Dameged(dddd);
+		}*/
+
+		//当たり判定
+		Collition();
 	}
 	else
 	{
-		//ステートがデスのときボタンを押せないようにする
-		if (m_knightState!=enKnightState_Death) {
-			//攻撃処理
-			Attack();
-			//回避処理
-			Avoidance();
-		}
+		m_moveSpeed = Vector3::Zero;
 	}
-
-	//移動処理
-	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF();
-	stickL.y = g_pad[0]->GetLStickYF();
-	Move(m_position, m_charCon, m_Status, stickL);
 	
-	////RBボタンが押されたら。
-	////回避
-	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
-	//	//回避ステート
-	//	//m_knightState = enKnightState_Avoidance;
-	//	AnimationMove();
-	//	AvoidanceFlag = true;
-	//}
-	
-	//回避中なら
-	if (AvoidanceFlag == true) {
-		m_knightState = enKnightState_Avoidance;
-		//移動処理を行う(直線移動のみ)。
-		MoveStraight(m_Skill_Right, m_Skill_Forward);
-	}
-
-	
-	
-
-	//スキル使用中なら
-	if (SkillState == true) {
-		//スキルステート
-		m_knightState = enKnightState_Skill;
-		//移動処理を行う(直線移動のみ)。
-		MoveStraight(m_Skill_Right, m_Skill_Forward);
-	}
-
-	//回転処理
-	Rotation();
-
-	//スキルクールタイムの処理
-	COOlTIME(Cooltime, SkillEndFlag,SkillTimer);
-
-	//回避クールタイムの処理
-	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-
-	//レベルアップする
-	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-	//{
-	//	if(Lv!=10)
-	//	ExpProcess(exp);
-	//	//m_Status.GetExp += 5;
-	//	//m_gameUI->LevelFontChange(Lv);
-	//}
-
-	//ダメージを受ける
-	/*if (g_pad[0]->IsTrigger(enButtonX))
-	{
-		Dameged(dddd);
-	}*/
-
-	//当たり判定
-	Collition();
 
 	
 
@@ -193,6 +193,8 @@ void KnightPlayer::Update()
 	{
 		m_knightState = enKnightState_Fall;
 	}
+
+	
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();

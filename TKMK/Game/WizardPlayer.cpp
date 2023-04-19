@@ -52,6 +52,7 @@ WizardPlayer::WizardPlayer()
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 
+	game = FindGO<Game>("game");
 	gameUI = FindGO<GameUI>("m_gameUI");
 }
 
@@ -73,80 +74,80 @@ void WizardPlayer::Update()
 		gameUI->LevelFontChange(Lv);
 	}
 
-	oldLv = Lv;
-
-	//関数にする
-	int SkillCoolTime = SkillTimer;
-	wchar_t Skill[255];
-	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
-	Skillfont.SetText(Skill);
-
-	//前フレームの座標
-	oldPosition = m_position;
-
-	//回避中なら
-	if (AvoidanceFlag == true) {
-		m_wizardState = enWizardState_Avoidance;
-		//移動処理を行う(直線移動のみ)。
-		MoveStraight(m_Skill_Right, m_Skill_Forward);
-	}
-
-
-	//スキルクールタイムの処理
-	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
-	
-	//回避クールタイムの処理
-	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-
-	//レベルアップする
-	//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-	//{
-	//	if (Lv != 10)
-	//		ExpProcess(exp);
-	//	//m_Status.GetExp += 5;
-	//	//m_gameUI->LevelFontChange(Lv);
-	//}
-
-	//ダメージを受ける
-	/*if (g_pad[0]->IsTrigger(enButtonX))
+	//ゲームのステートがスタート,エンド、リザルトでないなら
+	if (game->NowGameState() < 3 && game->NowGameState() != 0)
 	{
-		Dameged(dddd);
-	}*/
+		oldLv = Lv;
 
-	//リスポーンしたときしか使えない
-	//飛び降りる処理
-	//地上にいないならジャンプしかしないようにする
-	if (m_position.y > 1.0f) {
-		if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
-		{
-			pushFlag = true;
-			jampAccumulateflag = true;
-			m_wizardState = enWizardState_Jump;
-		}
-	}
-	else
-	{
-		if (IsEnableMove() != false)
-		{
-			Attack();
-			//回避処理
-			Avoidance();
-		}
-		
-	}
-	
-	
+		//関数にする
+		int SkillCoolTime = SkillTimer;
+		wchar_t Skill[255];
+		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+		Skillfont.SetText(Skill);
+
+		//前フレームの座標
+		oldPosition = m_position;
+
 		//移動処理
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
 		Move(m_position, m_charCon, m_Status, stickL);
+
+		//回避中なら
+		if (AvoidanceFlag == true) {
+			m_wizardState = enWizardState_Avoidance;
+			//移動処理を行う(直線移動のみ)。
+			MoveStraight(m_Skill_Right, m_Skill_Forward);
+		}
+
+		//スキルクールタイムの処理
+		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+
+		//回避クールタイムの処理
+		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
+		//レベルアップする
+		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+		//{
+		//	if (Lv != 10)
+		//		ExpProcess(exp);
+		//	//m_Status.GetExp += 5;
+		//	//m_gameUI->LevelFontChange(Lv);
+		//}
+
+		//リスポーンしたときしか使えない
+		//飛び降りる処理
+		//地上にいないならジャンプしかしないようにする
+		if (m_position.y > 1.0f) {
+			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+			{
+				pushFlag = true;
+				jampAccumulateflag = true;
+				m_wizardState = enWizardState_Jump;
+			}
+		}
+		else
+		{
+			if (IsEnableMove() != false)
+			{
+				Attack();
+				//回避処理
+				Avoidance();
+			}
+
+		}
+
+		//回転処理
+		Rotation();
+		//当たり判定
+		Collision();
+	}
+	else
+	{
+		m_moveSpeed = Vector3::Zero;
+	}
 	
-	
-	//回転処理
-	Rotation();
-	//当たり判定
-	Collision();
 	//ステート
 	ManageState();
 	//アニメーションの再生

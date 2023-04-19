@@ -245,7 +245,7 @@ bool Game::Start()
 	
 
 	//ゲームの状態をゲームステートにする
-	m_GameState = enGameState_Battle;
+	m_GameState = enGameState_Start;
 
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
@@ -264,20 +264,38 @@ bool Game::Start()
 
 void Game::Update()
 {
+	//制限時間に達したら
+	if (GameEndFlag == true)
+	{
+		m_GameState=enGamestate_End;
+		GameState();
+	}
+
 	GameState();
 
 	m_modelRender.Update();
-	//m_Pause_Back.Update();
 }
 
 void Game::BattleStart()
 {
+	m_StartToGameTimer += g_gameTime->GetFrameDeltaTime();
 
+	if (m_StartToGameTimer >= 10)
+	{
+		m_GameState = enGameState_Battle;
+	}
 }
 
 //バトルステートの処理
 void Game::Battle()
 {
+	//時間切れではないなら
+	if (GameEndFlag == false) {
+		CountDown();
+	}
+	
+	
+
 	if (m_GameState == enGameState_Battle) {
 		//CTRLを押したら
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
@@ -333,7 +351,12 @@ void Game::Pause()
 //タイムアップになったあとの処理
 void Game::End()
 {
+	m_EndtoResultTimer+= g_gameTime->GetFrameDeltaTime();
 
+	if (m_EndtoResultTimer >= 10)
+	{
+		m_GameState=enGameState_Rezult;
+	}
 }
 
 void Game::GoResult()
@@ -732,6 +755,25 @@ void Game::Menu_QuitGame()
 		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
 		DeleteGO(this);
 	}
+}
+
+//制限時間の処理
+void Game::CountDown()
+{
+	//0秒以下なら
+	if (SecondsTimer <= 0) {
+		//1分減らす
+		MinutesTimer--;
+		//もし0分なら、秒も0にする
+		if (MinutesTimer < 0) {
+			SecondsTimer = 0.0f;
+			MinutesTimer = 0.0f;
+			GameEndFlag = true;
+		}
+		//60秒に戻す
+		else SecondsTimer = 60.0f;
+	}
+	else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
 }
 
 void Game::Render(RenderContext& rc)

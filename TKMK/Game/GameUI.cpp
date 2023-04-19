@@ -50,6 +50,7 @@ bool GameUI::Start()
 {
 	player = FindGO<Player>("player");
 
+
 	//Level
 	m_LevelFont.SetPosition(LV_NUBER_POS);
 	m_LevelFont.SetScale(2.0f);
@@ -164,16 +165,6 @@ bool GameUI::Start()
 
 		m_TimeAndPointRender.Update();
 	}
-	
-
-
-
-	
-	//m_hp = PLAYER_MAXHP;
-	
-	
-	
-	
 
 	m_GameUIState = m_GameState;
 
@@ -200,13 +191,9 @@ void GameUI::Update()
 	swprintf_s(P, 255, L"%dポイント", POINT);
 	m_PointFont.SetText(P);
 	
-	//時間切れではないなら
-	if (GameEndFlag == false) {
-		Timer();
-	}
 	//制限時間の表示
 	wchar_t wcsbuf[256];
-	swprintf_s(wcsbuf, 256, L"%d:%02d", int(MinutesTimer),int(SecondsTimer));
+	swprintf_s(wcsbuf, 256, L"%d:%02d", int(m_game->GetMinutesTimer()),int(m_game->GetSecondsTimer()));
 	//表示するテキストを設定。
 	m_time_left.SetText(wcsbuf);
 	
@@ -225,7 +212,6 @@ void GameUI::Update()
 
 void GameUI::HPBar()
 {
-	//int HP = m_knightplayer->SetHp();
 	int HP = player->CharSetHp();
 	wchar_t hp[255];
 	swprintf_s(hp, 255, L"%d", HP);
@@ -241,8 +227,6 @@ void GameUI::HPBar()
 
 void GameUI::Timer()
 {
-	//0分でないなら
-
 		//0秒以下なら
 		if (SecondsTimer <= 0) {
 			//1分減らす

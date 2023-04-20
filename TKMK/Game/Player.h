@@ -104,11 +104,11 @@ public:
 	int CharSetEXPTable() const;
 
 	//プレイヤーのステートを取得
-	void CharGetState()
+	//auto CharGetState() const;
+	auto CharGetState() const
 	{
-		//playerActor.
+		return playerActor->NowCharState();
 	}
-
 private:
 
 	Game* game = nullptr;

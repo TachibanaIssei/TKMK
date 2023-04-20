@@ -7,6 +7,7 @@
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "Game.h"
+#include "KnightUlt.h"
 
 namespace
 {
@@ -41,8 +42,8 @@ bool GameCamera::Start()
 	m_cameraCollisionSolver.Init(1.0f);
 	m_cameraState = enGameState;
 
-
-	CameraReset();
+	//最初にキャラの背中を映すようにする
+	CameraTarget();
 
 	return true;
 }
@@ -53,33 +54,26 @@ void GameCamera::Update()
 	if (m_cameraState == enPauseState) {
 		return;
 	}
-	//スタート前のカメラワーク
-	/*if (ok == false)
-	{
-		StartCameraSet();
 
-		if (rotamount >= 180.0f)
-		{
-			ok = true;
-		}
-		else
-		return;
-	}*/
+	//もし剣士が必殺技を打ったら
 
 
+	//Yボタンが押されたら
+	//カメラの視点を最初の状態に戻す
 	if (g_pad[0]->IsTrigger(enButtonY))
 	{
-		CameraReset();
+		CameraTarget();
 	}
+	//何も押されていないなら
 	else
 	{
 		//カメラの視点を設定
-		Target();
+		FollowThePlayer();
 	}
 
 }
 
-void GameCamera::Target()
+void GameCamera::FollowThePlayer()
 {
 	////注視点の計算
 	//Vector3 TargetPos;
@@ -136,7 +130,7 @@ void GameCamera::Target()
 /// <summary>
 /// カメラの視点をプレイヤーの背中を捉えるものに変更する
 /// </summary>
-void GameCamera::CameraReset()
+void GameCamera::CameraTarget()
 {
 	//プレイヤーの前方向を取得
 	Vector3 toCameraPosXZ = player->CharSetForward();
@@ -184,60 +178,12 @@ void GameCamera::CameraReset()
 }
 
 /// <summary>
-/// スタート時のカメラワーク
+/// 剣士が必殺技を打った時のカメラワーク
 /// </summary>
-void GameCamera::StartCameraSet()
+void GameCamera::KnightUltCamera()
 {
-	////注視点の計算
-	//Vector3 TargetPos;
-	TargetPos = player->GetCharPosition();
+	//カメラを剣士の正面にセット
 
-	TargetPos.y += 40.0f;
-
-	Vector3 toCameraPosOld = m_toCameraPos;
-
-	float x = 1.0f;
-	float y = 0.0f;
-
-	rotamount += 1.0f;
-
-	//Y軸周りの回転
-	Quaternion qRot;
-	qRot.SetRotationDeg(Vector3::AxisY, 1.0f * x);
-	qRot.Apply(m_toCameraPos);
-
-	//X軸周りの回転。
-	Vector3 axisX;
-	axisX.Cross(Vector3::AxisY, m_toCameraPos);
-	axisX.Normalize();
-	qRot.SetRotationDeg(axisX, 1.3f * y);
-	qRot.Apply(m_toCameraPos);
-
-	//カメラの回転の上限をチェックする。
-	Vector3 toPosDir = m_toCameraPos;
-	toPosDir.Normalize();
-	if (toPosDir.y < MAX_CAMERA_TOP) {
-		//カメラが上向きすぎ。
-		m_toCameraPos = toCameraPosOld;
-	}
-	else if (toPosDir.y > MAX_CAMERA_UNDER) {
-		//カメラが下向きすぎ。
-		m_toCameraPos = toCameraPosOld;
-	}
-
-	//カメラの位置の衝突解決する
-	Vector3 newCamPos;
-	m_cameraCollisionSolver.Execute(
-		newCamPos,
-		TargetPos + m_toCameraPos,
-		TargetPos
-	);
-
-	//視点と注視点を設定
-	g_camera3D->SetTarget(TargetPos);
-	g_camera3D->SetPosition(newCamPos);
-
-	//カメラの更新。
-	g_camera3D->Update();
+	//回転
 }
 

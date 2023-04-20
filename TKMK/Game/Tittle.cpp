@@ -16,31 +16,37 @@ Tittle::~Tittle()
 bool Tittle::Start()
 {
 	//tittleの初期化
-	m_spriteRender.Init("Assets/sprite/tittle.DDS",1920.0f,1080.0f);
+	m_spriteRender.Init("Assets/sprite/Title/title.DDS",1920.0f,1080.0f);
 	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
 	m_spriteRender.SetScale(g_vec3One);
 	m_sRotation.SetRotationZ(0.0f);
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
+	
+	//titleのロゴ
+	m_titleLogo.Init("Assets/sprite/Title/titleLogo.DDS", 400.0f,200.0f);
+	m_titleLogo.SetPosition(m_titleLogoPosition);
+	m_titleLogo.SetScale(m_titleLogoScale);
+	m_titleLogo.Update();
 
 	//Selectの初期化
-	m_start.Init("Assets/sprite/Start.DDS", 200.0f, 100.0f);
-	m_start.SetPosition(m_CentralPosition);
+	m_start.Init("Assets/sprite/Title/Start.DDS", 200.0f, 100.0f);
+	m_start.SetPosition(m_firstPosition);
 	m_start.SetScale(g_vec3One);
 	m_start.Update();
 
-	m_operation.Init("Assets/sprite/Operation.DDS", 300.0f, 100.0f);
-	m_operation.SetPosition(m_TopPosition);
+	m_operation.Init("Assets/sprite/Title/Operation.DDS", 300.0f, 100.0f);
+	m_operation.SetPosition(m_firstPosition);
 	m_operation.SetScale(0.7f, 1.0f, 1.0f);
 	m_operation.Update();
 
-	m_charaExplanation.Init("Assets/sprite/CharaExplanation.DDS", 200.0f, 100.0f);
-	m_charaExplanation.SetPosition(m_UnderPosition);
+	m_charaExplanation.Init("Assets/sprite/Title/CharaExplanation.DDS", 200.0f, 100.0f);
+	m_charaExplanation.SetPosition(m_firstPosition);
 	m_charaExplanation.SetScale(1.7f, 1.7f, 1.0f);
 	m_charaExplanation.Update();
 
 	m_choice.Init("Assets/sprite/Choice.DDS", 200.0f, 100.0f);
-	m_choice.SetPosition(m_sPosition);
+	m_choice.SetPosition(m_firstPosition);
 	m_choice.SetScale(1.7f, 1.0f, 1.0f);
 	m_choice.Update();
 
@@ -84,52 +90,115 @@ bool Tittle::Start()
 
 void Tittle::Update()
 {
-	Select();
-	Operation();
-	CharacterOp();
-	//ゲーム画面への遷移
-	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
-		//選択音
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
-		se->Play(false);
-		se->SetVolume(1.0f);
-		//game画面へ遷移
-		CharacterSelect* characterSelect = NewGO<CharacterSelect>(0, "game");
-		DeleteGO(this);
-		DeleteGO(m_bgm);
-	}
-
-	if (m_operationLook != enOperationLook_UnSeem || m_characterOpLook != enCharacterOpLook_UnSeem)
+	//もし最初のPressAの画面だったら
+	if (m_titleScene == enTitleScene_PressAScene)
 	{
+		//タイトル画面の時の場所に移動する
+		m_titleLogo.SetPosition(m_titleLogoPosition);
+		m_titleLogo.SetScale(m_titleLogoScale);
+		//画面外の下に移動する
 		m_start.SetPosition(m_firstPosition);
 		m_operation.SetPosition(m_firstPosition);
 		m_charaExplanation.SetPosition(m_firstPosition);
+		m_choice.SetPosition(m_firstPosition);
 	}
-	else
+	//もしSelect画面だったら
+	if(m_titleScene == enTitleScene_Select)
 	{
-		m_choice.SetScale(1.7f, 1.0f, 1.0f);
-		/*m_start.SetPosition(0.0f, -150.0f, 0.0f);
-		m_operation.SetPosition(0.0f, -250.0f, 0.0f);
-		m_charaExplanation.SetPosition(0.0f, -350.0f, 0.0f);
-		m_choice.SetPosition(m_CentralPosition);
-		m_choice.SetScale(1.7f, 1.0f, 1.0f);*/
+		m_titleLogo.SetScale(m_selectLogoScale);
+		Select();
+		Operation();
+		CharacterOp();
+		//ゲーム画面への遷移
+		if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(5);
+			se->Play(false);
+			se->SetVolume(1.0f);
+		//game画面へ遷移
+			CharacterSelect* characterSelect = NewGO<CharacterSelect>(0, "game");
+			DeleteGO(this);
+			DeleteGO(m_bgm);
+		}
+		//もし操作説明画面やキャラクター説明画面が見えず、またセレクト画面だったら表示する
+		/*if (m_operationLook == enOperationLook_UnSeem || m_characterOpLook == enCharacterOpLook_UnSeem)
+		{
+			m_start.SetPosition(m_Central);
+			m_operation.SetPosition(m_Top);
+			m_charaExplanation.SetPosition(m_Under);
+			m_choice.SetPosition(m_Central);
+			m_choice.SetScale(1.7f, 1.0f, 1.0f);
+		}
+		else
+		{
+			m_start.SetPosition(m_firstPosition);
+			m_operation.SetPosition(m_firstPosition);
+			m_charaExplanation.SetPosition(m_firstPosition);
+		}*/
 	}
 
+	Scene();
+
+	m_timer++;
+
 	m_spriteRender.Update();
+	m_titleLogo.Update();
 	m_choice.Update();
 	m_start.Update();
 	m_operation.Update();
 	m_charaExplanation.Update();
 	m_operationPic.Update();
-	
 }
+
+//シーンセレクト
+void Tittle::Scene()
+{
+	//最初の画面でAボタンを押されたら
+	if (m_titleScene == enTitleScene_PressAScene && g_pad[0]->IsTrigger(enButtonA))
+	{
+		//セレクト画面に移る
+		titleScene = 1;
+		if(m_timer%15 == 0)
+		{
+			//線形補完
+			m_operationPosition.Lerp(LogoComplement, m_firstPosition, m_Top);
+			m_startPosition.Lerp(LogoComplement, m_firstPosition, m_Central);
+			m_charaExplanationPosition.Lerp(LogoComplement, m_firstPosition, m_Under);
+			m_LogoPosition.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
+
+			//線形補完したものをSetPositionに入れる
+			m_operation.SetPosition(m_operationPosition);
+			m_start.SetPosition(m_startPosition);
+			m_charaExplanation.SetPosition(m_charaExplanationPosition);
+			m_titleLogo.SetPosition(m_LogoPosition);
+			
+			//補完率
+			LogoComplement++;
+		}
+	}
+	//TitleSelectの画面でAボタンを押されたら
+	if (m_titleScene == enTitleScene_Select && g_pad[0]->IsTrigger(enButtonB))
+	{
+		//セレクト画面に移る
+		titleScene = 0;
+	}
+	switch (titleScene)
+	{
+	case 0:
+		m_titleScene = enTitleScene_PressAScene;
+		break;
+	case 1:
+		m_titleScene = enTitleScene_Select;
+		break;
+	}
+}
+
 //セレクトカーソル
 void Tittle::Select()
 {
 	if (m_operationLook == enOperationLook_UnSeem && m_characterOpLook == enCharacterOpLook_UnSeem)
 	{
-		if (g_pad[0]->IsTrigger(enButtonUp) )
+		if (g_pad[0]->IsTrigger(enButtonUp))
 		{
 			selectPosition--;
 			if (selectPosition < 0)
@@ -155,27 +224,36 @@ void Tittle::Select()
 	{
 	case 0:
 		m_tSelectPosition = enSelectPosition_Start;
-		m_start.SetPosition(m_CentralPosition);
-		m_operation.SetPosition(m_TopPosition);
-		m_charaExplanation.SetPosition(m_UnderPosition);
+		//中央に移動させる
+		m_choice.SetPosition(m_Central);
+		//薄くする
+		m_operation.SetMulColor(m_color);
+		m_charaExplanation.SetMulColor(m_color);
+		//通常の透明度に戻す
+		m_start.SetMulColor(g_vec3One);
 		break;
 	case 1:
 		m_tSelectPosition = enSelectPosition_CharaExplanation;
-		m_start.SetPosition(m_TopPosition);
-		m_operation.SetPosition(m_UnderPosition);
-		m_charaExplanation.SetPosition(m_CentralPosition);
+		//下に移動させる
+		m_choice.SetPosition(m_Under);
+		//薄くする
+		m_start.SetMulColor(m_color);
+		m_operation.SetMulColor(m_color);
+		//通常の透明度に戻す
+		m_charaExplanation.SetMulColor(g_vec3One);
 		break;
 	case 2:
 		m_tSelectPosition = enSelectPosition_Operation;
-		m_start.SetPosition(m_UnderPosition);
-		m_operation.SetPosition(m_CentralPosition);
-		m_charaExplanation.SetPosition(m_TopPosition);
+		//上に移動させる
+		m_choice.SetPosition(m_Top);
+		//薄くする
+		m_start.SetMulColor(m_color);
+		m_charaExplanation.SetMulColor(m_color);
+		//通常の透明度に戻す
+		m_operation.SetMulColor(g_vec3One);
 		break;
-	}
-	//セレクトカーソルを中央に持ってくる
-	m_sPosition = m_CentralPosition;
+	}	
 
-	m_choice.SetPosition(m_CentralPosition);
 	m_choice.Update();
 	m_start.Update();
 	m_operation.Update();
@@ -205,11 +283,12 @@ void Tittle::Operation()
 		//説明画面を表示
 		m_operationLook = enOperationLook_Seem;
 	}
-
+	//操作画面を表示
 	if (m_operationLook == enOperationLook_Seem)
 	{
 		m_operationPic.SetPosition(m_opPosition);
 	}
+	//操作画面を非表示
 	if (m_operationLook == enOperationLook_UnSeem)
 	{
 		m_operationPic.SetPosition(m_firstPosition);
@@ -248,6 +327,9 @@ void Tittle::CharacterOp()
 	if (m_characterOpLook == enCharacterOpLook_Seem)
 	{
 		m_choice.SetScale(1.2f, 1.6f, 0.0f);
+		m_start.SetPosition(m_firstPosition);
+		m_operation.SetPosition(m_firstPosition);
+		m_charaExplanation.SetPosition(m_firstPosition);
 		//十字キー左を押したら
 		if (g_pad[0]->IsTrigger(enButtonLeft) && characterOpPosition != 0)
 		{
@@ -292,14 +374,12 @@ void Tittle::CharacterOp()
 		}
 		m_Opchoice.SetPosition(0.0f, 450.0f, 0.0f);
 	}
-
-	//非表示にするときの処理
+	//キャラ説明画面を非表示にするときの処理
 	if (m_characterOpLook == enCharacterOpLook_UnSeem)
 	{
 		m_KnightOp.SetPosition(m_firstPosition);
 		m_WizardOp.SetPosition(m_firstPosition);
 		m_Opchoice.SetPosition(m_firstPosition);
-		m_choice.SetPosition(m_CentralPosition);
 	}
 	m_KnightOp.Update();
 	m_WizardOp.Update();
@@ -310,6 +390,7 @@ void Tittle::CharacterOp()
 void Tittle::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
+	m_titleLogo.Draw(rc);
 	m_KnightOp.Draw(rc);
 	m_WizardOp.Draw(rc);
 	m_choice.Draw(rc);

@@ -194,40 +194,6 @@ Quaternion Player::CharSetRot()const
 }
 
 /// <summary>
-/// キャラのステートを変更する
-/// </summary>
-/// <returns>選択されたキャラのステートを変更する関数</returns>
-void Player::CharSetState(EnPlayerStateChange gameState)const
-{
-	switch (m_selectCharctar)
-	{
-	case enKnight:
-		//ゲームのステートがポーズなら
-		if (gameState == enPause)knightPlayer->SetPlayerState(KnightPlayer::enKnightState_Pause);
-		//ゲームのステートがゲームなら
-		if (gameState == enGame)knightPlayer->SetPlayerState(KnightPlayer::enKnightState_Idle);
-		break;
-
-	case enWizard:
-		//ゲームのステートがポーズなら
-		if (gameState == enPause)wizardPlayer->SetPlayerState(WizardPlayer::enWizardState_Pause);
-		//ゲームのステートがゲームなら
-		if (gameState == enGame)wizardPlayer->SetPlayerState(WizardPlayer::enWizardState_Idle);
-		break;
-
-	case enZombie:
-		break;
-
-	case enMonster:
-		break;
-
-
-	default:
-		break;
-	}
-}
-
-/// <summary>
 /// キャラの前方向を取得するカメラで使う
 /// </summary>
 /// <returns>選択されたキャラの前方向を取得する関数</returns>
@@ -309,3 +275,4 @@ int Player::CharSetEXPTable() const
 {
 	return playerActor->GetExpTable();
 }
+

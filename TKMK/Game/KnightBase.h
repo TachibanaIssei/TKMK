@@ -155,6 +155,13 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
+		return m_charState != enCharState_Attack &&
+			m_charState != enCharState_UltimateSkill &&
+			m_charState != enCharState_Skill &&
+			m_charState != enCharState_Avoidance &&
+			m_charState != enCharState_Damege &&
+			m_charState != enCharState_Death;
+
 		return m_knightState != enKnightState_ChainAtk &&
 			m_knightState != enKnightState_UltimateSkill &&
 			m_knightState != enKnightState_Skill &&
@@ -162,6 +169,8 @@ public:
 			m_knightState != enKnightState_Damege&&
 			m_knightState != enKnightState_Death;
 	}
+
+
 
 	/// <summary>
 	/// 現在のレベルを返す
@@ -200,15 +209,15 @@ public:
 	int& SetMaxHp() {
 		return m_Status.MaxHp;
 	}
-
+	//////////////////////////////////////////////////////////////////////////////
 	/// <summary>
 	/// プレイヤーのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
-	void SetPlayerState(PlayerState gamescene) {
+	/*void SetPlayerState(PlayerState gamescene) {
 		m_knightState = gamescene;
-
-	}
+		m_charState = gamescene;
+	}*/
 
 protected:
 	void PlayAnimation();
@@ -235,18 +244,6 @@ protected:
 	//HPが0になったときのステートの遷移処理
 	void OnProcessDeathStateTransition();
 
-	//enum PlayerState {
-	//	enKnightState_Idle,
-	//	enKnightState_Run,
-	//	enKnightState_ChainAtk,
-	//	enKnightState_Damege,
-	//	enKnightState_Death,
-	//	enKnightState_Skill,
-	//	enKnightState_UltimateSkill,
-	//	enKnightState_Avoidance,
-	//	enKnightState_Num,
-	//	enKnightState_GameScene,        //ゲームの状態を受け取る
-	//};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
 		enAnimationClip_Walk,

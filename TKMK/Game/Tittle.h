@@ -102,6 +102,7 @@ private:
 	Vector3 m_titleLogoScale = { 3.0f, 1.5f, 1.0f };				//起動時のタイトルロゴの大きさ
 	Vector3 m_selectLogoScale = { 1.7f, 0.7f, 1.0f };				//セレクト画面のタイトルロゴの大きさ
 	Vector3 m_LogoPosition;											//ロゴを線形補完するときに使う
+	Vector3 m_LogoScale;
 
 	//セレクトの項目ごとの位置
 	Vector3 m_Top = { -500.0f,-150.0f,0.0f };						//上

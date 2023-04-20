@@ -105,36 +105,62 @@ void Tittle::Update()
 	//もしSelect画面だったら
 	if(m_titleScene == enTitleScene_Select)
 	{
-		m_titleLogo.SetScale(m_selectLogoScale);
-		Select();
-		Operation();
-		CharacterOp();
-		//ゲーム画面への遷移
-		if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(5);
-			se->Play(false);
-			se->SetVolume(1.0f);
-		//game画面へ遷移
-			CharacterSelect* characterSelect = NewGO<CharacterSelect>(0, "game");
-			DeleteGO(this);
-			DeleteGO(m_bgm);
-		}
-		//もし操作説明画面やキャラクター説明画面が見えず、またセレクト画面だったら表示する
-		/*if (m_operationLook == enOperationLook_UnSeem || m_characterOpLook == enCharacterOpLook_UnSeem)
+		if (LogoComplement < 1.0f)
 		{
-			m_start.SetPosition(m_Central);
-			m_operation.SetPosition(m_Top);
-			m_charaExplanation.SetPosition(m_Under);
-			m_choice.SetPosition(m_Central);
-			m_choice.SetScale(1.7f, 1.0f, 1.0f);
+			if (m_timer % 2 == 0)
+			{
+				//線形補完
+				m_operationPosition.Lerp(LogoComplement, m_firstPosition, m_Top);
+				m_startPosition.Lerp(LogoComplement, m_firstPosition, m_Central);
+				m_charaExplanationPosition.Lerp(LogoComplement, m_firstPosition, m_Under);
+				m_LogoPosition.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
+				m_LogoScale.Lerp(LogoComplement, m_titleLogoScale, m_selectLogoScale);
+
+				//線形補完したものをSetPositionに入れる
+				m_choice.SetPosition(m_startPosition);
+				m_operation.SetPosition(m_operationPosition);
+				m_start.SetPosition(m_startPosition);
+				m_charaExplanation.SetPosition(m_charaExplanationPosition);
+				m_titleLogo.SetPosition(m_LogoPosition);
+				m_titleLogo.SetScale(m_LogoScale);
+
+				//補完率
+				LogoComplement += 0.01f;
+
+			}
 		}
 		else
 		{
-			m_start.SetPosition(m_firstPosition);
-			m_operation.SetPosition(m_firstPosition);
-			m_charaExplanation.SetPosition(m_firstPosition);
-		}*/
+			Select();
+			Operation();
+			CharacterOp();
+			//ゲーム画面への遷移
+			if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(5);
+				se->Play(false);
+				se->SetVolume(1.0f);
+				//game画面へ遷移
+				CharacterSelect* characterSelect = NewGO<CharacterSelect>(0, "game");
+				DeleteGO(this);
+				DeleteGO(m_bgm);
+			}
+			//もし操作説明画面やキャラクター説明画面が見えず、またセレクト画面だったら表示する
+			if (m_operationLook == enOperationLook_UnSeem || m_characterOpLook == enCharacterOpLook_UnSeem || LogoComplement < 1.0f)
+			{
+				m_start.SetPosition(m_Central);
+				m_operation.SetPosition(m_Top);
+				m_charaExplanation.SetPosition(m_Under);
+				//m_choice.SetPosition(m_Central);
+				m_choice.SetScale(1.7f, 1.0f, 1.0f);
+			}
+			else
+			{
+				m_start.SetPosition(m_firstPosition);
+				m_operation.SetPosition(m_firstPosition);
+				m_charaExplanation.SetPosition(m_firstPosition);
+			}
+		}
 	}
 
 	Scene();
@@ -158,30 +184,13 @@ void Tittle::Scene()
 	{
 		//セレクト画面に移る
 		titleScene = 1;
-		if(m_timer%15 == 0)
-		{
-			//線形補完
-			m_operationPosition.Lerp(LogoComplement, m_firstPosition, m_Top);
-			m_startPosition.Lerp(LogoComplement, m_firstPosition, m_Central);
-			m_charaExplanationPosition.Lerp(LogoComplement, m_firstPosition, m_Under);
-			m_LogoPosition.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
-
-			//線形補完したものをSetPositionに入れる
-			m_operation.SetPosition(m_operationPosition);
-			m_start.SetPosition(m_startPosition);
-			m_charaExplanation.SetPosition(m_charaExplanationPosition);
-			m_titleLogo.SetPosition(m_LogoPosition);
-			
-			//補完率
-			LogoComplement++;
-		}
 	}
 	//TitleSelectの画面でAボタンを押されたら
-	if (m_titleScene == enTitleScene_Select && g_pad[0]->IsTrigger(enButtonB))
+	/*if (m_titleScene == enTitleScene_Select && g_pad[0]->IsTrigger(enButtonB))
 	{
 		//セレクト画面に移る
 		titleScene = 0;
-	}
+	}*/
 	switch (titleScene)
 	{
 	case 0:

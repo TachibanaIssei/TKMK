@@ -28,6 +28,9 @@ public:
 		enWizardState_Num,
 	};
 
+	/// <summary>
+	/// モデルのInit、キャラコンの初期化
+	/// </summary>
 	void SetModel();
 
 	/// <summary>

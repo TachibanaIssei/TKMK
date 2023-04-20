@@ -32,9 +32,6 @@ public:
 	/// <summary>
 	/// モデルのInit、キャラコンの初期化
 	/// </summary>
-	/// <param name="Model"></param>
-	/// <param name="charCon"></param>
-	/// bool Start()
 	void SetModel();
 
 	/// <summary>

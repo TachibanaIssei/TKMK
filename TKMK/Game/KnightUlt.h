@@ -15,6 +15,7 @@ public:
 
 	bool Start();
 	void Update();
+	void Render(RenderContext& rc);
 
 	/// <summary>
 		/// 座標を設定する。
@@ -76,16 +77,43 @@ public:
 		UltCollision->SetIsEnableAutoDelete(false);
 	}
 
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
+	const Vector3& GetPosition() const
+	{
+		return m_position;
+	}
+
+	/// <summary>
+	/// プレイヤーの前方向を取得。
+	/// </summary>
+	const Vector3& GetForward() const
+	{
+		return m_forward;
+	}
+
 private:
+	ModelRender model;
+
+
 	Vector3 m_position = Vector3::Zero;
+	Vector3 m_position_judge = Vector3::Zero;
 	Quaternion m_rotation;
 	Vector3 m_scale;
 	Vector3	m_moveSpeed;
+	Vector3 m_forward;
+	//エフェクトの当たり判定
 	CollisionObject* UltCollision;
+	//この当たり判定が壁に当たったら消す
+	CollisionObject* UltDeleteJudgeCollision;
 
 	//char m_collisionName;
 
 	float m_timer = 0.0f;
+
+	//bool Ultflag = true;
 
 };
 

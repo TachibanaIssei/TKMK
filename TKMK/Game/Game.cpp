@@ -279,7 +279,7 @@ void Game::BattleStart()
 {
 	m_StartToGameTimer += g_gameTime->GetFrameDeltaTime();
 
-	if (m_StartToGameTimer >= 10)
+	if (m_StartToGameTimer >= 3)
 	{
 		m_GameState = enGameState_Battle;
 	}

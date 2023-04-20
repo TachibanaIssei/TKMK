@@ -335,6 +335,15 @@ public:
 		m_Forward = biff;
 	}
 
+	/// <summary>
+	/// キャラの現在のステート
+	/// </summary>
+	/// <returns></returns>
+	EnCharState NowCharState() const
+	{
+		return m_charState;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -374,5 +383,7 @@ protected:
 	bool m_RespawnJumpFlag = false;
 
 	int Count=0;
+
+	bool UltFlag = false;
 };
 

@@ -76,11 +76,6 @@ public:
 	/// </summary>
 	/// <returns>選択されたキャラの回転量を返す関数</returns>
 	Quaternion CharSetRot()const;
-	/// <summary>
-	/// キャラのステートを変更する
-	/// </summary>
-	/// <returns>選択されたキャラのステートを変更する関数</returns>
-	void CharSetState(EnPlayerStateChange gameState)const;
 	
 	/// <summary>
 	/// キャラの前方向を返す
@@ -107,6 +102,12 @@ public:
 	int CharSetEXP() const;
 
 	int CharSetEXPTable() const;
+
+	//プレイヤーのステートを取得
+	void CharGetState()
+	{
+		//playerActor.
+	}
 
 private:
 

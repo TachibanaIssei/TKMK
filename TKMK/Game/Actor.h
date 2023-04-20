@@ -26,6 +26,25 @@ protected:
 	};
 	EnJumpState m_JumpState;
 
+	//キャラの状態
+	enum EnCharState
+	{
+		enCharState_Idle,
+		enCharState_Walk,
+		enCharState_Run,
+		enCharState_Attack,
+		enCharState_Damege,
+		enCharState_Death,
+		enCharState_Skill,
+		enCharState_UltimateSkill,
+		enCharState_Avoidance,
+		enCharState_Pause,
+		enCharState_Jump,
+		enCharState_Fall,
+		enCharState_Num,
+	};
+	EnCharState m_charState = enCharState_Idle;
+
 public:
 
 	//ゲームクラスの現在の状態を示すステート

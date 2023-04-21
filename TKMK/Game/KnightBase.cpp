@@ -409,7 +409,7 @@ void KnightBase::PlayAnimation()
 		break;
 	case enCharState_UltimateSkill:
 		//ここ調整必要！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-		m_modelRender.SetAnimationSpeed(1.2f);
+		m_modelRender.SetAnimationSpeed(0.8f);
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1);
 		break;
 	case enCharState_Avoidance:

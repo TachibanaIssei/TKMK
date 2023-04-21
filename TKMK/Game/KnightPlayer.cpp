@@ -379,6 +379,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
+
 		//必殺技の当たり判定のクラスを作成
 		MakeUltSkill();
 	}

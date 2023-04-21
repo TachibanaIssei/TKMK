@@ -23,6 +23,8 @@ public:
 		enKnightState_Skill,
 		enKnightState_UltimateSkill,
 		enKnightState_Avoidance,
+		enKnightState_Jump,
+		enKnightState_Fall,
 		enKnightState_Num,
 		enKnightState_Pause,        //ゲームの状態を受け取る
 	};
@@ -219,6 +221,10 @@ protected:
 	void OnProcessIdleStateTransition();
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
+	//ジャンプのステートの遷移処理
+	void OnProcessJumpStateTransition();
+	//落下中のステートの遷移処理
+	void OnProcessFallStateTransition();
 	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
 	//スキルのステートの遷移処理
@@ -254,6 +260,8 @@ protected:
 		enAnimationClip_Skill,
 		enAnimationClip_UltimateSkill,
 		enAnimationClip_Avoidance,
+		enAnimationClip_Jump,
+		enAnimationClip_Fall,
 		enAnimationClip_Num,
 	};
 
@@ -275,12 +283,10 @@ protected:
 	CharacterController m_charCon;                        //キャラクターコントロール
 	
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
-	PlayerState m_knightState/* = enKnightState_Num*/;
+	PlayerState m_knightState = enKnightState_Idle/* = enKnightState_Num*/;
 	
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
-
-	PlayerState m_animState = enKnightState_Idle;
 	//現在のコンボ
 	int ComboState = 0;
 	//コンボが継続する時間を記録する
@@ -314,6 +320,7 @@ protected:
 	bool AtkCollistionFlag = false;
 
 
+	bool jampAccumulateflag = false;
 
 };
 

@@ -59,6 +59,7 @@ void WizardBase::SetModel()
 	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Wizard/Wizard_fall.tka");
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(false);
 
+
 	//魔法使いのモデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Wizard/Wizard.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 
@@ -707,7 +708,4 @@ void WizardBase::OnProcessFallStateTransition()
 		m_wizardState = enWizardState_Idle;
 		OnProcessCommonStateTransition();
 	}
-
-		
-	
 }

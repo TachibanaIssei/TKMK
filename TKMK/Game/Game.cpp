@@ -151,7 +151,6 @@ bool Game::Start()
 				enemyNumber++;
 				ENEMY_AMOUNT;
 				CreateEnemy(objData.position, objData.rotation);
-				CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 6) {
@@ -258,7 +257,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }

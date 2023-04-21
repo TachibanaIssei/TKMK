@@ -257,7 +257,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 /// スキルを使用した後のクールタイムの処理
 /// </summary>
 /// <param name="SkillCooltimer">スキルのクールタイム</param>
-/// <param name="skillstate">スキルを使用したかの判定</param>
+/// <param name="skillstate">スキルを使い終ったの判定</param>
 /// <param name="timer">クールタイムを計算する変数</param>
 void Actor::COOlTIME(float SkillCooltimer, bool& skillstate,float& timer)
 {

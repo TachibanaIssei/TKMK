@@ -36,7 +36,7 @@ public:
 		switch (lv)
 		{
 		case 1:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv10.DDS", 200.0f, 200.0f);
+			m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
 			break;
 		case 2:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv2.DDS", 150.0f, 150.0f);

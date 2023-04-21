@@ -117,11 +117,13 @@ public:
 			m_neutral_Enemys.end(),   // 中立の敵のリストの最後
 			enemy                     // 消したい中立の敵
 		);
+
 		if (it != m_neutral_Enemys.end()) {
 			m_neutral_Enemys.erase(it);
 		}
 	}
 	//中立の敵のリストを返す
+
 	std::vector<Neutral_Enemy*>& GetNeutral_Enemys() {
 		return m_neutral_Enemys;
 	}
@@ -216,6 +218,7 @@ private:
 	int SearchRespawnPosNumber = 0;
 	int RandamRespawnPosNumber;
 	bool EnemyRespawnFlag[10];
+
 	//リスポーンタイマー
 	float m_RespawnTimer = 0.0f;
 	//
@@ -232,6 +235,7 @@ private:
 	//２…ゾンビ
 	//３…魔物
 	int SelectCharNumber = 1;
+
 
 	//メニュー
 	int MenuNumber = 0;

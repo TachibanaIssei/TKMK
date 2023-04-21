@@ -77,10 +77,11 @@ void GameCamera::Update()
 	if (KnightUltMoveFlag)
 	{
 		m_timer += g_gameTime->GetFrameDeltaTime();
-		if (m_timer < 1) {
+		if (m_timer < 1.45) {
 			KnightUltCamera();
 		}
 		//knightUltが生成されている間
+		//生成されないとnullptrが出る
 		else if (knightUlt->IsActive()==true)
 		{
 			//カメラがエフェクトを追うようにする
@@ -236,13 +237,13 @@ void GameCamera::KnightUltCamera()
 	//Vector3 TargetPos;
 		TargetPos = player->GetCharPosition();
 
-		TargetPos.y += 60.0f;
+		TargetPos.y += 50.0f;
 
 		Vector3 toCameraPosOld = m_toCameraPos;
 
-		//パッドの入力を使ってカメラを回す。
-		float x = 2.8f;
-		float y = 0.3f;
+		//パッドの入力を使ってカメラを回す。x2.8
+		float x = 2.4f;
+		float y = 0.1f;
 
 		//Y軸周りの回転
 		Quaternion qRot;

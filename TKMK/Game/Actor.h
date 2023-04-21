@@ -373,6 +373,7 @@ protected:
 	Quaternion m_rot = Quaternion::Identity;              //回転
 	bool m_spriteFlag = true;
 	Status m_Status;                                      //ステータス
+	Status m_InitialStatus;                                //初期ステータス
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUPStatus = { 30,5,10.0f };
 

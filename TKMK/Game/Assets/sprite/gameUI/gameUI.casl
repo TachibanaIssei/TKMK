@@ -1,4 +1,4 @@
-19
+20
 13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,738.0,-493.0,420,84,10,0.7,0.7,0.5,0.5,17,ExperienceBar.dds
 18,ExperienceBar_back,54,../../Game/Assets/sprite/gameUI/ExperienceBar_back.png,738.0,-493.0,420,84,10,0.7,0.7,0.5,0.5,22,ExperienceBar_back.dds
 5,timer,41,../../Game/Assets/sprite/gameUI/timer.png,0.0,478.0,372,120,10,0.3384615384615383,0.3020104895104895,0.5,0.5,9,timer.dds
@@ -18,3 +18,4 @@
 3,Lv8,39,../../Game/Assets/sprite/gameUI/Lv8.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,7,Lv8.dds
 3,Lv9,39,../../Game/Assets/sprite/gameUI/Lv9.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,7,Lv9.dds
 4,Lv10,40,../../Game/Assets/sprite/gameUI/Lv10.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,8,Lv10.dds
+5,crown,41,../../Game/Assets/sprite/gameUI/crown.png,-881.7307692307692,90.38461538461536,80,80,10,1.0,1.0,0.5365853658536586,0.5,9,crown.dds

@@ -94,12 +94,15 @@ public:
 		return m_forward;
 	}
 
+	bool MakeCheck();
+
 private:
 	ModelRender model;
 
-
+	Vector3 m_firstposition = Vector3::Zero;
 	Vector3 m_position = Vector3::Zero;
-	Vector3 m_position_judge = Vector3::Zero;
+	Vector3 m_Checkposition = Vector3::Zero;
+
 	Quaternion m_rotation;
 	Vector3 m_scale;
 	Vector3	m_moveSpeed;
@@ -108,6 +111,10 @@ private:
 	CollisionObject* UltCollision;
 	//この当たり判定が壁に当たったら消す
 	CollisionObject* UltDeleteJudgeCollision;
+
+
+	RigidBody				m_rigidBody;						//剛体。
+	SphereCollider			m_sphereCollider;							//コライダー。
 
 	//char m_collisionName;
 

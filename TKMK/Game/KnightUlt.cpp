@@ -8,7 +8,8 @@ namespace {
 
 KnightUlt::KnightUlt()
 {
-
+	//スフィアコライダーを初期化。
+	m_sphereCollider.Create(1.0f);
 }
 
 KnightUlt::~KnightUlt()
@@ -19,22 +20,32 @@ KnightUlt::~KnightUlt()
 
 bool KnightUlt::Start()
 {
+	//最初の座標
+	m_firstposition = m_position;
 	//移動速度を計算。
 	m_moveSpeed = Vector3::AxisZ;
 	m_rotation.Apply(m_moveSpeed);
+	//生成する座標(剣士の少し前)
 	m_position += m_moveSpeed * 20.0f;
-	m_moveSpeed *= 180.0f;
+	
 	m_rotation.AddRotationDegY(360.0f);
+
+	//もし生成する座標が壁に当たっているか壁の向こうなら生成しない
+	if (MakeCheck() == true)
+	{
+		DeleteGO(this);
+	}
+
+	//移動速度を決める
+	m_moveSpeed *= 180.0f;
+
 
 	SetCollision(CollsionSize);
 
-	model.Init("Assets/modelData/character/Knight/Knight_Ult.tkm");
+	model.InitBackGround("Assets/modelData/character/Knight/Knight_Ult.tkm");
 	model.SetPosition(m_position);
 	model.SetRotation(m_rotation);
 	model.Update();
-
-
-	//m_position_judge = m_moveSpeed * 20.0f;
 
 	//コリジョンオブジェクトを作成する。
 	UltDeleteJudgeCollision = NewGO<CollisionObject>(0);
@@ -51,8 +62,6 @@ void KnightUlt::Update()
 {
 	//座標を移動させる。
 	m_position += m_moveSpeed * g_gameTime->GetFrameDeltaTime();
-
-	m_position_judge = m_position;
 	//前方向
 	m_forward = m_moveSpeed;
 
@@ -75,6 +84,54 @@ void KnightUlt::Update()
 
 	UltCollision->Update();
 	UltDeleteJudgeCollision->Update();
+}
+
+//衝突したときに呼ばれる関数オブジェクト(壁用)
+struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
+
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//壁とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Wall) {
+			//衝突したのは壁ではない。
+			return 0.0f;
+		}
+
+		//壁とぶつかったら。
+		//フラグをtrueに。
+		isHit = true;
+		return 0.0f;
+	}
+};
+
+//生成するかチェックする(壁があったら生成しない)
+bool KnightUlt::MakeCheck()
+{
+	m_Checkposition = m_position;
+	m_Checkposition += m_moveSpeed * 30.0f;
+
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はキャラの座標。
+	start.setOrigin(btVector3(m_firstposition.x, m_firstposition.y + 70.0f, m_firstposition.z));
+	//終点は必殺技の座標。
+	end.setOrigin(btVector3(m_Checkposition.x, m_Checkposition.y + 70.0f, m_Checkposition.z));
+
+	//壁の判定を返す
+	SweepResultWall callback_Wall;
+	//コライダーを始点から終点まで動かして。
+	//壁と衝突するかどうかを調べる。
+	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback_Wall);
+	//壁と衝突した！
+	if (callback_Wall.isHit == true)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void KnightUlt::Render(RenderContext& rc)

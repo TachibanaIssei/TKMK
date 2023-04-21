@@ -7,7 +7,8 @@ KnightBase::KnightBase()
 {
 	//ステータスを読み込む
 	m_Status.Init("Knight");
-	Lv=4;                    //レベル
+	m_InitialStatus = m_Status;  //初期ステータスのセット
+	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
 	Cooltime=5;            //スキルのクールタイム
@@ -38,7 +39,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack2.tka");
+	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
 	m_animationClips[enAnimationClip_ChainAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Knight/Knight_Skill.tka");
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
@@ -52,8 +53,8 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Avoidance].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/Knight/Knight_Jump.tka");
 	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Knight/Knight_fall.tka");
-	m_animationClips[enAnimationClip_Fall].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Knight/Knight_fall2.tka");
+	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
 
 	//剣士モデルを読み込み
 	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -284,16 +285,60 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 /// </summary>
 void KnightBase::UltimateSkill()
 {
+	//
+	int DownLv=0;
+	//レベルが5以下なら
+	//必殺技強化なし
+	if (Lv < 6)
+	{
+		//レベルを3下げる
+		DownLv = 3;
+	}
+	//レベルが7以下なら
+	//必殺技一段階強化
+	else if (Lv < 8)
+	{
+		switch (Lv)
+		{
+		case 6:
+			DownLv = 5;
+			break;
+		case 7:
+			DownLv = 6;
+			break;
+		default:
+			break;
+		}
+	}
+	//レベルが10以下なら
+	//必殺技二段階強化
+	else if (Lv <= 10)
+	{
+		switch (Lv)
+		{
+		case 8:
+			DownLv = 7;
+			break;
+		case 9:
+			DownLv = 8;
+			break;
+		case 10:
+			DownLv = 9;
+			break;
+		default:
+			break;
+		}
+		
+	}
+
 	//レベルを3下げる
-levelDown(LvUPStatus, m_Status, Lv, 3);
+	levelDown(LvUPStatus, m_Status, Lv, DownLv);
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//レベルの経験値テーブルにする
 	ExpTableChamge(Lv, ExpTable);
 
-	//レベルに合わせてレベルの画像を変更する
-	//m_gameUI->LevelFontChange(Lv);
-
+	//必殺技ステート
 	m_charState = enCharState_UltimateSkill;
 
 }
@@ -399,10 +444,11 @@ void KnightBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Jump, 0.2f);
 		break;
 	case enCharState_Fall:
-		m_modelRender.PlayAnimation(enAnimationClip_Fall, 0.2f);
+		m_modelRender.SetAnimationSpeed(0.9f);
+		m_modelRender.PlayAnimation(enAnimationClip_Fall, 0.0f);
 		break;
 	case enCharState_Attack:
-		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.3f);
+		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.1f);
 		break;
 	case enCharState_Skill:
 		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
@@ -584,6 +630,8 @@ void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
+		//レベルを下げる
+		UltimateSkill();
 		//待機ステート
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();

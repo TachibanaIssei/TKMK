@@ -12,8 +12,6 @@ public:
 	void Update();
 	void Cursor();
 	void Render(RenderContext& rc);
-
-	
 	
 	enum EnCharacterSelect {
 		enCharacterSelect_Knight,		//Œ•Žm
@@ -35,5 +33,6 @@ private:
 	Vector3 curPosition = { -510.0f,75.0f,0.0f };
 
 	int CursorNum = 0;
+	int TitleScene = 1;
 };
 

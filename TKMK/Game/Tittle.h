@@ -110,6 +110,17 @@ private:
 	Vector3 m_Central = { -500.0f,-250.0f,0.0f };					//中央
 	Vector3 m_Under = {-500.0f,-350.0f,0.0f };						//下
 
+	//キャラ選択の時のカーソルの位置
+	Vector3 m_KnightCursor = { -400.0f, 450.0f, 0.0f };
+	Vector3 m_WizardCursor = { -130.0f, 450.0f, 0.0f };
+	Vector3 m_ZombieCursor = { 145.0f, 450.0f, 0.0f };
+	Vector3 m_MiteiCursor = { 425.0f, 450.0f, 0.0f };
+
+	//セレクト画面でカーソルを左側に表示させるときに足すためのポジション
+	Vector3 m_LeftCursor = { -200.0f,0.0f,0.0f };
+	//キャラクター説明画面でカーソルを左側に表示させるときに足すためのポジション
+	Vector3 m_charaLeftCursor = { -130.0f,0.0f,0.0f };
+
 	Vector4 m_color = { 1.0f,1.0f,1.0f,0.3f };		//選択されてないときに透明度を高くして強調しないようにする時に使う
 
 	int selectPosition = 0;							//タイトルのセレクト画面でカーソルを移動するときに使う変数

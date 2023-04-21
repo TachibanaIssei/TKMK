@@ -67,7 +67,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
-	m_respawnLevel.Init("Assets/level3D/CharRespawn2Level.tkl", [&](LevelObjectData& objData) {
+	m_respawnLevel.Init("Assets/level3D/AIPOS.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
@@ -270,7 +270,6 @@ void Actor::COOlTIME(float SkillCooltimer, bool& skillstate,float& timer)
 			//スキル使用可能
 			skillstate = false;
 			timer = SkillCooltimer;
-
 		}
 		else timer -= g_gameTime->GetFrameDeltaTime();   //timerを進める
 
@@ -297,5 +296,7 @@ void Actor::RespawnMove()
 		//position.y += jump;
 		//m_RespawnJumpFlag = true;
 }
+
+
 
 

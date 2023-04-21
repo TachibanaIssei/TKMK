@@ -1,6 +1,7 @@
 #pragma once
 #include "Status.h"
 #include "Level3DRender.h"
+class Neutral_Enemy;
 
 class Actor:public IGameObject
 {
@@ -37,6 +38,21 @@ public:
 		enEnd
 	};
 	EnGameState m_GameState= enGame;
+
+	//AIかプレイヤーか
+	enum EnAIorPlayer
+	{
+		enAI,
+		enPlayer
+	};
+	void SetAIorPlayer(EnAIorPlayer aiorplayer)
+	{
+		m_AIorPlayer = aiorplayer;
+	}
+	EnAIorPlayer GetAIorPlayer()
+	{
+		return m_AIorPlayer;
+	}
 
 	/// <summary>
 	/// 移動処理
@@ -316,6 +332,48 @@ public:
 		m_Forward = biff;
 	}
 
+	virtual void SetRespawnNumber(int number)=0;
+
+	/// <summary>
+	/// アクターの情報を追加する
+	/// </summary>
+	/// <param name="actor">加えたいアクター</param>
+	void AddActorFromList(Actor* actor) {
+		be_target.push_back(actor);
+	}
+
+	/// <summary>
+	/// アクターの情報をリストから削除する
+	/// </summary>
+	/// <param name="actor">消したいアクター</param>
+	void RemoveActorFromList(Actor* actor)
+	{
+		std::vector<Actor*>::iterator it = std::find(
+			be_target.begin(), // アクターのリストの最初
+			be_target.end(),   // アクターのリストの最後
+			actor                     // 消したいアクター
+		);
+
+		if (it != be_target.end()) {
+			be_target.erase(it);
+		}
+	}
+
+	/// <summary>
+	/// 中立の敵が死亡したときに呼ばれる
+	/// 今狙っている敵が死亡した場合
+	/// </summary>
+	/// <param name="enemy"></param>
+	void ClearEnemyTarget(Neutral_Enemy* enemy) {
+
+		// 狙っている敵が死んだ！
+		if (m_targetEnemy == enemy) {
+			m_targetEnemy = nullptr;
+			//評価値を再計算する
+			EvalTimer = 0.0f;
+		}
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -354,6 +412,25 @@ protected:
 	//ジャンプフラグ
 	bool m_RespawnJumpFlag = false;
 
+	//自分をターゲットしてるアクターのリスト
+	std::vector<Actor*> be_target;
+	
+	EnAIorPlayer m_AIorPlayer = enAI;
+
 	int Count=0;
+
+	///////////////////////////////
+	//////ここから下はAI専用///////
+	///////////////////////////////
+	//評価値計算のタイマー
+	float EvalTimer = 0.0f;
+
+	Actor* m_targetActor = nullptr;
+	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
+	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）
+
+	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
+
+
 };
 

@@ -140,7 +140,8 @@ void KnightPlayer::Update()
 		//移動処理を行う(直線移動のみ)。
 		MoveStraight(m_Skill_Right, m_Skill_Forward);
 	}
-
+	//無敵時間
+	Invincible();
 	//回転処理
 	Rotation();
 
@@ -167,8 +168,6 @@ void KnightPlayer::Update()
 
 	//当たり判定
 	Collition();
-
-	
 
 	//ステート
 	ManageState();

@@ -128,6 +128,7 @@ public:
 	/// </summary>
 	/// <param name="PS"></param>
 	inline void SetPosition(Vector3 PS) { m_position = PS; }
+	inline void SetCharaconPosition(Vector3 PS) { m_charCon.SetPosition(PS); }
 
 	/// <summary>
 	/// 剣士の座標を返り値として返す
@@ -213,7 +214,19 @@ public:
 
 	}
 
+	/// <summary>
+	/// リスポーンする番号を決める
+	/// </summary>
+	void SetRespawnNumber(int number)
+	{
+		respawnNumber = number;
+	}
+	
 protected:
+	/// <summary>
+	///無敵時間用
+	/// </summary>
+	void Invincible();
 	void PlayAnimation();
 	//共通のステートの遷移処理
 	void OnProcessCommonStateTransition();
@@ -287,6 +300,18 @@ protected:
 	
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
+
+	enum AtkTimingState
+	{
+		FirstAtk_State,
+		SecondAtk_State,
+		SecondAtkStart_State,
+		LastAtk_State,
+		Num_State,
+
+	};
+	AtkTimingState m_AtkTmingState = Num_State;
+
 	//現在のコンボ
 	int ComboState = 0;
 	//コンボが継続する時間を記録する
@@ -309,7 +334,8 @@ protected:
 	float SkillTimer = 0;
 	//回避のクールタイムを計算するタイマー
 	float AvoidanceTimer = 0;
-
+	//無敵時間を計算するタイマー
+	float invincibleTimer = 0;
 	//獲得した経験値仮
 	int exp=5;
 	//Newtral_Enemyの攻撃力
@@ -318,7 +344,6 @@ protected:
 	bool UltCollisionSetFlag = false;
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
-
 
 	bool jampAccumulateflag = false;
 

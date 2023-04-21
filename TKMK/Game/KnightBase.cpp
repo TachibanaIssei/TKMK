@@ -147,6 +147,13 @@ void KnightBase::Rotation()
 	}
 }
 
+void KnightBase::Invincible()
+{
+	if (invincibleTimer > 0)
+	{
+		invincibleTimer -= g_gameTime->GetFrameDeltaTime();
+	}
+}
 /// <summary>
 /// 攻撃時の当たり判定の処理
 /// </summary>
@@ -237,45 +244,37 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 
 void KnightBase::Collition()
 {
+	if (invincibleTimer > 0)
+	{
+		return;
+	}
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_knightState == enKnightState_Damege || 
+	if (/*m_knightState == enKnightState_Damege || */
 		m_knightState == enKnightState_Death ||
-		m_knightState == enKnightState_UltimateSkill ||
-		m_knightState == enKnightState_ChainAtk ||
-		m_knightState == enKnightState_Skill ||
+		//m_knightState == enKnightState_UltimateSkill ||
+		//m_knightState == enKnightState_ChainAtk ||
+		//m_knightState == enKnightState_Skill ||
 		m_knightState == enKnightState_Avoidance)
 	{
 		return;
 	}
 	
-		//敵の攻撃用のコリジョンを取得する名前一緒にする
-		const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
-		//コリジョンの配列をfor文で回す
-		for (auto collision : collisions)
+	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : collisions)
+	{
+		//コリジョンが自身のキャラコンに当たったら
+		if (collision->IsHit(m_charCon))
 		{
-			//コリジョンが自身のキャラコンに当たったら
-			if (collision->IsHit(m_charCon))
-			{
-				//エネミーの攻撃力を取ってくる
+			//エネミーの攻撃力を取ってくる
 
-				//hpを10減らす
-				Dameged(Enemy_atk, m_Neutral_enemy);
+			//hpを10減らす
+			Dameged(Enemy_atk, m_Neutral_enemy);
 
-			}
 		}
-	
-	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_knightState == enKnightState_Damege ||
-		m_knightState == enKnightState_Death ||
-		m_knightState == enKnightState_UltimateSkill ||
-		m_knightState == enKnightState_ChainAtk ||
-		m_knightState == enKnightState_Skill ||
-		m_knightState == enKnightState_Avoidance)
-	{
-		return;
 	}
-	//自分の剣の当たり判定に当たっている
-	//当たり判定の名前を変えないといけない
+
 	//敵の攻撃用のコリジョンを取得する名前一緒にする
 	const auto& Knightcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
 	//コリジョンの配列をfor文で回す
@@ -289,7 +288,7 @@ void KnightBase::Collition()
 			//剣士の攻撃力分HPを減らす。
 			//倒された相手のポイントを増やす
 
-			//Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 
 		}
 	}
@@ -303,6 +302,7 @@ void KnightBase::Collition()
 void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
+	invincibleTimer = 2.0f;
 	//自身のHPが0以下なら
 	if (m_Status.Hp <= 0) {
 		//倒されたときの処理に遷移
@@ -323,6 +323,13 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 	else {
 		//ダメージステート
 		m_knightState = enKnightState_Damege;
+
+		// 攻撃関連の初期化
+		AtkState = false;
+		AtkCollistionFlag = false;
+		m_AtkTmingState = Num_State;
+		pushFlag = false;
+
 		SoundSource * se = NewGO<SoundSource>(0);
 		se->Init(12);
 		se->Play(false);
@@ -359,6 +366,7 @@ void KnightBase::SetRespawn()
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	//リスポーンする座標のセット
+	m_position = m_respawnPos[respawnNumber];
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
@@ -654,7 +662,6 @@ void KnightBase::OnProcessAvoidanceStateTransition()
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
 		//待機ステート
-		m_knightState = enKnightState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -667,10 +674,6 @@ void KnightBase::OnProcessDamegeStateTransition()
 	//ダメージを受けたときのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//待機ステート
-		m_knightState = enKnightState_Idle;
-		//無敵時間ステート
-		//invincibleFlag = false;
 		OnProcessCommonStateTransition();
 	}
 }
@@ -680,7 +683,7 @@ void KnightBase::OnProcessDamegeStateTransition()
 /// </summary>
 void KnightBase::OnProcessDeathStateTransition()
 {
-	//ダメージを受けたときのアニメーション再生が終わったら。
+	//Deathアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//リスポーンする座標に自身の座標をセット

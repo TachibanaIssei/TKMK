@@ -140,12 +140,26 @@ private:
 	SpriteRender            m_Point;                //ポイント
 	SpriteRender            m_ExperienceFlame;        //経験値のフレーム
 	SpriteRender            m_ExperienceBar_flont;    //経験値バーの表
+	SpriteRender			m_Crown;                 //ポイントが一番多いキャラにつける王冠マーク
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
-	Vector3 PointPos = Vector3(-850.0f, 230.0f, 0.0f);  //ポイント
+
+	Vector3 PointPos[4] = {
+		Vector3(-850.0f, 200.0f, 0.0f),
+		Vector3(-850.0f, 100.0f, 0.0f), 
+		Vector3(-850.0f, 0.0f, 0.0f), 
+		Vector3(-850.0f, -100.0f, 0.0f), 
+	};  //ポイント
 	
+	Vector3 CrownPos[4] = {
+		Vector3(-920.0f, 180.0f, 0.0f),
+		Vector3(-920.0f, 80.0f, 0.0f),
+		Vector3(-920.0f, -20.0f, 0.0f),
+		Vector3(-920.0f, -120.0f, 0.0f),
+	};  //ポイント
+
 	FontRender m_time_left;
 
 	//秒を計るタイマー
@@ -165,6 +179,8 @@ private:
 	int oldEXPTable;
 	//キャラのポイント
 	int charPoint[4];
+
+	int MaxPoint = 0;
 
 	//int LEVEL;
 };

@@ -67,22 +67,21 @@ void GameCamera::Update()
 
 
 	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
-	if (player->CharGetState() == 7/*&& KnightUltMoveFlag==false*/)
+	if (player->CharGetState() == 7)
 	{
 		KnightUltMoveFlag = true;
-		knightUlt = FindGO<KnightUlt>("knightUlt");
 	}
 
 	//必殺技フラグが立ったら
 	if (KnightUltMoveFlag)
 	{
+		knightUlt = FindGO<KnightUlt>("knightUlt");
 		m_timer += g_gameTime->GetFrameDeltaTime();
 		if (m_timer < 1.45) {
 			KnightUltCamera();
 		}
 		//knightUltが生成されている間
-		//生成されないとnullptrが出る
-		else if (knightUlt->IsActive()==true)
+		else if (knightUlt!=nullptr)
 		{
 			//カメラがエフェクトを追うようにする
 			ChaseUltEff();
@@ -220,7 +219,7 @@ void GameCamera::CameraTarget(float X, float Y)
 }
 
 /// <summary>
-/// 剣士が必殺技を打った時のカメラワーク
+/// 剣士が必殺技を打った時のカメラワーク　　回りながら遠ざけたい
 /// </summary>
 void GameCamera::KnightUltCamera()
 {
@@ -233,6 +232,7 @@ void GameCamera::KnightUltCamera()
 	//剣士に合わせてカメラを回転させる
 	else
 	{
+		
 		////注視点の計算
 	//Vector3 TargetPos;
 		TargetPos = player->GetCharPosition();
@@ -256,6 +256,8 @@ void GameCamera::KnightUltCamera()
 		axisX.Normalize();
 		qRot.SetRotationDeg(axisX, -1.3f * y);
 		qRot.Apply(m_toCameraPos);
+
+		//m_toCameraPos.z -= 2.0f;
 
 		//カメラの位置の衝突解決する
 		Vector3 newCamPos;

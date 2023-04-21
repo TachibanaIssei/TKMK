@@ -105,6 +105,7 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
+
 	//プレイヤーの生成
 	player = NewGO<Player>(0, "player");
 	player->CharSelect(SelectCharNumber);
@@ -257,7 +258,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	return true;
 }
 

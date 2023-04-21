@@ -4,6 +4,7 @@
 //class WizardPlayer;
 class Player;
 class Game;
+class Actor;
 
 class GameUI:public IGameObject
 {
@@ -92,6 +93,16 @@ public:
 	/// </summary>
 	void CountDown();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	void EXPBar();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void CharPoint();
+
 private:
 	FontRender m_CountDownFont;
 
@@ -104,12 +115,16 @@ private:
 	FontRender m_AtkFont;
 	FontRender m_SpeedFont;
 
-	FontRender m_PointFont;
+	FontRender m_PointFont[4];
 
 	/*KnightPlayer* m_knightplayer=nullptr;
 	WizardPlayer* wizardPlayer = nullptr;*/
 	Player* player = nullptr;
 	Game* m_game = nullptr;
+	Actor* actor = nullptr;
+
+	std::vector<Actor*> m_Actors;
+
 	//UI
 	SpriteRender			m_hpBar;				//HPバーの画像
 	SpriteRender			m_statusBar;			//ステータスの画像
@@ -129,7 +144,7 @@ private:
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
-	
+	Vector3 PointPos = Vector3(-850.0f, 230.0f, 0.0f);  //ポイント
 	
 	FontRender m_time_left;
 
@@ -140,6 +155,17 @@ private:
 	float m_timer = 300.0f;
 
 	bool GameEndFlag=false;
+
+	int nowEXP;
+	//前フレームの経験値
+	int oldEXP=0;
+
+	int nowEXPTable=0;
+	//前フレームの経験値テーブル
+	int oldEXPTable;
+	//キャラのポイント
+	int charPoint[4];
+
 	//int LEVEL;
 };
 

@@ -247,7 +247,6 @@ void KnightPlayer::Attack()
 	//Bボタンが押されたら
 	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
-
 		//移動速度を上げる
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
@@ -256,7 +255,6 @@ void KnightPlayer::Attack()
 		AnimationMove(SkillSpeed, stickL);
 		pushFlag = true;
 		SkillState = true;
-		//AtkCollistionFlag = true;
 	}
 
 	//必殺技を発動する処理
@@ -264,9 +262,9 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//アニメーション再生、レベルを３下げる
-		UltimateSkill();
-
+		//アニメーション再生
+		//必殺技ステート
+		m_charState = enCharState_UltimateSkill;
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);
@@ -293,7 +291,6 @@ void KnightPlayer::Avoidance()
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
-		//m_charState = enCharState_Avoidance;
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
@@ -311,7 +308,9 @@ void KnightPlayer::MakeUltSkill()
 	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
 	//製作者の名前を入れる
 	knightUlt->SetCreatorName(GetName());
-
+	//キャラのレベルを入れる
+	knightUlt->GetCharLevel(Lv);
+	//座標の設定
 	Vector3 UltPos = m_position;
 	UltPos.y += 60.0f;
 	knightUlt->SetPosition(UltPos);
@@ -379,7 +378,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
-
 		//必殺技の当たり判定のクラスを作成
 		MakeUltSkill();
 	}

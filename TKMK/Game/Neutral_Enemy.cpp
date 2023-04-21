@@ -36,6 +36,26 @@ Neutral_Enemy::~Neutral_Enemy()
 	}
 }
 
+//衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
+struct SweepResultSlipThroughWall :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
+	const btCollisionObject* hitObject = nullptr;
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//壁とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_SlipThroughWall) {
+			//衝突したのは壁ではない。
+			return 0.0f;
+		}
+		//壁とぶつかったら。
+		//フラグをtrueに。
+		hitObject = convexResult.m_hitCollisionObject;
+		isHit = true;
+		return 0.0f;
+	}
+};
+
 bool Neutral_Enemy::Start()
 {
 //アニメーションを読み込む。
@@ -104,6 +124,7 @@ bool Neutral_Enemy::Start()
 
 	//乱数を初期化。
 	srand((unsigned)time(NULL));
+
 	m_forward = Vector3::AxisY;
 	m_rot.Apply(m_forward);
 
@@ -112,7 +133,6 @@ bool Neutral_Enemy::Start()
 
 	//巡回用のパスを読み込む
 	m_EnemyPoslevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
-
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			SetPatrolPos(objData.position, objData.number);
@@ -123,7 +143,39 @@ bool Neutral_Enemy::Start()
 
 	});
 
-	randam = rand() % 8 + 1;
+	//最初に行くポジションを決める
+	randam = rand() % 16;
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//行こうしてる場所の間に壁があるかどうか
+	while (true)
+	{
+		//始点は自分の座標。
+		start.setOrigin(btVector3(m_position.x, 20.0f, m_position.z));
+		//終点はランダムの座標。
+		end.setOrigin(btVector3(m_patrolPos[randam].x, 20.0f, m_patrolPos[randam].z));
+
+		// 始点と終点が近すぎる
+		if ((start.getOrigin() - end.getOrigin()).length() <= 0.01f) {
+			randam = rand() % 16;
+			continue;
+		}
+
+		SweepResultSlipThroughWall callback;
+		//コライダーを始点から終点まで動かして。
+		//衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+		//壁と衝突した！
+		if (callback.isHit == true)
+		{
+			randam = rand() % 16;
+			//プレイヤーは見つかっていない。
+			continue;
+		}
+
+		break;
+	}
 
 	return true;
 }
@@ -199,25 +251,6 @@ if (fabsf(m_moveSpeed.x) < 0.001f
 	m_forward = Vector3::AxisZ;
 	m_rot.Apply(m_forward);
 }
-//衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
-struct SweepResultSlipThroughWall :public btCollisionWorld::ConvexResultCallback
-{
-	bool isHit = false;						//衝突フラグ。
-	const btCollisionObject* hitObject = nullptr;
-	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-	{
-		//壁とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_SlipThroughWall) {
-			//衝突したのは壁ではない。
-			return 0.0f;
-		}
-		//壁とぶつかったら。
-		//フラグをtrueに。
-		hitObject = convexResult.m_hitCollisionObject;
-		isHit = true;
-		return 0.0f;
-	}
-};
 
 void Neutral_Enemy::Chase()
 {
@@ -232,22 +265,22 @@ void Neutral_Enemy::Chase()
 	start.setIdentity();
 	end.setIdentity();
 
-		//始点は自分の座標。
-		start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
-		//終点はランダムの座標。
-		end.setOrigin(btVector3(m_targetActorPos.x, m_targetActorPos.y + 70.0f, m_targetActorPos.z));
-		SweepResultSlipThroughWall callback;
-		//コライダーを始点から終点まで動かして。
-		//衝突するかどうかを調べる。
-		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
-		//壁と衝突した！
-		if (callback.isHit == true)
-		{
-			// 目的地に辿り着くまで敵を無視する
-			m_backPatrol = true;
-			m_backPatrolFarst = false;
-			m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
-		}
+	//始点は自分の座標。
+	start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+	//終点はランダムの座標。
+	end.setOrigin(btVector3(m_targetActorPos.x, m_targetActorPos.y + 70.0f, m_targetActorPos.z));
+	SweepResultSlipThroughWall callback;
+	//コライダーを始点から終点まで動かして。
+	//衝突するかどうかを調べる。
+	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
+	//壁と衝突した！
+	if (callback.isHit == true)
+	{
+		// 目的地に辿り着くまで敵を無視する
+		m_backPatrol = true;
+		m_backPatrolFarst = false;
+		m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
+	}
 	
 	diff.Normalize();
 	//移動速度を設定する。
@@ -272,35 +305,58 @@ void Neutral_Enemy::Collision()
 	}
 
 	//敵の攻撃用のコリジョンを取得する
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
 	//子リジョンの配列をfor文で回す
-	for (auto collision : collisions)
+	for (auto AIcollision : AIcollisions)
 	{
-		if (collision->IsHit(m_charaCon))
+		if (AIcollision->IsHit(m_charaCon))
 		{
 			//このコリジョンを作ったアクターを検索
-			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
+			m_lastAttackActor = FindGO<Actor>(AIcollision->GetCreatorName());
 
+			//プレイヤーの攻撃力を取得
+			//何故かm_knightAIがnull
 			//HPを減らす
+			// //HPを減らす
 			m_Status.Hp -= m_lastAttackActor->GetAtk();
+			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 
-			//HPが0になったら
+				//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
 				//相手に経験値を渡す
 				m_lastAttackActor->ExpProcess(Exp);
+				//剣士に経験値を渡す
+				//m_knightAI->ExpProcess(Exp);
+				// 
+				//倒した時の報酬を倒した人に渡す
+				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
+				//緑の場合
+				if (m_enemyKinds == enEnemyKinds_Green)
+				{
+					m_lastAttackActor->HpUp(HpPass);
+					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
+					{
+						m_lastAttackActor->HpReset(m_lastAttackActor->GetMaxHp());
+					}
+				}
+				//赤の場合
+				else if (m_enemyKinds == enEnemyKinds_Red)
+				{
+					m_lastAttackActor->AtkUp(AtkPass);
+				}
 				//Deathflag = true;
-				//死亡ステートに遷移する。
+				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
-				m_Neutral_Enemy = nullptr;
 			}
 			else {
-				//被ダメージステートに遷移する。
+				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//効果音再生
+				//��ʉ��Đ�
 			}
 		}
 	}
+
 //敵の攻撃用のコリジョンを取得する
 	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
 	//子リジョンの配列をfor文で回す
@@ -332,58 +388,6 @@ void Neutral_Enemy::Collision()
 	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
 	{
 		return;
-	}
-
-	//敵の攻撃用のコリジョンを取得する
-	const auto& AIcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
-	//子リジョンの配列をfor文で回す
-	for (auto AIcollision : AIcollisions)
-	{
-		if (AIcollision->IsHit(m_charaCon))
-		{
-			//このコリジョンを作ったアクターを検索
-			m_lastAttackActor = FindGO<Actor>(AIcollision->GetCreatorName());
-
-			//プレイヤーの攻撃力を取得
-			//何故かm_knightAIがnull
-			//HPを減らす
-			// //HPを減らす
-			m_Status.Hp -= m_lastAttackActor->GetAtk();
-			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
-
-				//HPが0になったら
-			if (m_Status.Hp <= 0)
-			{
-				//相手に経験値を渡す
-				m_lastAttackActor->ExpProcess(Exp);
-				//剣士に経験値を渡す
-				//m_knightAI->ExpProcess(Exp);
-				//倒した時の報酬を倒した人に渡す
-				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
-				//緑の場合
-				if (m_enemyKinds == enEnemyKinds_Green)
-				{
-					m_lastAttackActor->HpUp(HpPass);
-					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
-					{
-						m_lastAttackActor->HpReset(m_lastAttackActor->GetMaxHp());
-					}
-				}
-				//赤の場合
-				else if (m_enemyKinds == enEnemyKinds_Red)
-				{
-					m_lastAttackActor->AtkUp(AtkPass);
-				}
-				//Deathflag = true;
-				//���S�X�e�[�g�ɑJ�ڂ���B
-				m_Neutral_EnemyState = enNeutral_Enemy_Death;
-			}
-			else {
-				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
-				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//��ʉ��Đ�
-			}
-		}
 	}
 
 //攻撃中、デス中は当たり判定の処理を行わない
@@ -607,6 +611,16 @@ void Neutral_Enemy::ProcessDeathStateTransition()
 	//ダウンアニメーションの再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+
+		//全てのアクターに自分が死んだことを通知する
+		for (Actor* actor : m_game->GetActors()) {
+			//それがAIだったらターゲットから外させる
+			if (actor->GetAIorPlayer() == Actor::EnAIorPlayer::enAI) {
+
+				actor->ClearEnemyTarget(this);
+			}
+		}
+
 		//自身を削除する。
 		DeleteGO(this);
 	}
@@ -626,12 +640,13 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		//取得したエネミーたちの座標を取得
 		Vector3 enemyPos = Enemys->GetPosition();
 		Vector3 diff = m_position - enemyPos;
-		if (diff.Length() < 50.0f)
+		if (diff.Length() <= 50.0f)
 		{
 			diff.Normalize();
 			m_hagikiPower += diff * 50.0f;
 		}
 	}
+	    
 		Vector3 newForward2 = m_patrolPos[randam] - m_position;
 		Vector3 distance2 = newForward2;
 		newForward2.Normalize();
@@ -650,7 +665,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 				}
 			}
 
-			randam = rand() % 8 + 1;
+			randam = rand() % 16;
 			btTransform start, end;
 			start.setIdentity();
 			end.setIdentity();
@@ -658,18 +673,24 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			while (true)
 			{
 				//始点は自分の座標。
-				start.setOrigin(btVector3(m_position.x, 70.0f, m_position.z));
+				start.setOrigin(btVector3(m_position.x, 20.0f, m_position.z));
 				//終点はランダムの座標。
-				end.setOrigin(btVector3(m_patrolPos[randam].x, 70.0f, m_patrolPos[randam].z));
+				end.setOrigin(btVector3(m_patrolPos[randam].x, 20.0f, m_patrolPos[randam].z));
+
+				// 始点と終点が近すぎる
+				if ((start.getOrigin() - end.getOrigin()).length() <= 0.01f) {
+					randam = rand() % 16;
+					continue;
+				}
+
 				SweepResultSlipThroughWall callback;
 				//コライダーを始点から終点まで動かして。
 				//衝突するかどうかを調べる。
 				PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback);
 				//壁と衝突した！
 				if (callback.isHit == true)
-				{
-					
-					randam = rand() % 8 + 1;
+				{				
+					randam = rand() % 16;
 					//プレイヤーは見つかっていない。
 					continue;
 				}
@@ -682,6 +703,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 			Move();
 			
 		}
+
 	//対象を探す
 	if (Search() && m_backPatrol == false)
 	{
@@ -737,7 +759,7 @@ void Neutral_Enemy::PlayAnimation()
 		break;
 		//攻撃ステート
 	case enNeutral_Enemy_Attack:
-		m_modelRender.SetAnimationSpeed(1.0f);
+		m_modelRender.SetAnimationSpeed(0.5f);
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
 		break;
 		//被ダメージステート
@@ -878,7 +900,7 @@ const bool Neutral_Enemy::CanAttack()const
 	//中立の敵からプレイヤーに向かうベクトルを計算する
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
 	//距離が近かったら
-	if (diff.LengthSq() <= 50.0f * 50.0f)
+	if (diff.LengthSq() <= 70.0f * 70.0f)
 	{
 		//攻撃できる
 		return true;
@@ -892,7 +914,7 @@ void Neutral_Enemy::Render(RenderContext& rc)
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
 	//フォントを描画する。
-	m_Name.Draw(rc);
+	//m_Name.Draw(rc);
 	//ステートがポーズステートでないなら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
 		//スプライトフラグがtureなら

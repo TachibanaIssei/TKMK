@@ -42,64 +42,75 @@ public:
 	const bool CanAttack();
 
 	const bool CanSkill();
-
-
+	
 private:
-	void LotNextAction();
-	void CalculatAIAttackEvaluationValue();
-	void CalculatEnemyAttackEvaluationValue();
-	int CalculateTargetEnemy(Neutral_Enemy* enemy);
-	int CalculateTargetAI(Actor* actor);
+	// 評価値用の構造体
+	struct EvalData
+	{
+		int eval;
+		bool chaseOrEscape;
+	};
 
+
+	//逃げてる時にターゲットを変える
+	void EscapeChange(EvalData& evaldata, Vector3 targetPos);
+	//追跡と逃げる
+	void ChaseAndEscape();
+	void Rotation();
+	void LotNextAction();
+
+	//アクターの評価値の計算
+	void CalculatAIAttackEvaluationValue();
+	//中立の敵の評価値の計算
+	void CalculatEnemyAttackEvaluationValue();
+
+	EvalData CalculateTargetEnemy(Neutral_Enemy* enemy);
+	EvalData CalculateTargetAI(Actor* actor);
+	
 	enum Action {
 		AttackAI,
 		AttackEnemy,
 
 	};
-	enum AtkTimingState
-	{
-		FirstAtk_State,
-		SecondAtk_State,
-		SecondAtkStart_State,
-		LastAtk_State,
-		Num_State,
 
-	};
-	AtkTimingState m_AtkTmingState = Num_State;
-	Game* m_game;//ゲーム
-	KnightPlayer* m_knightPlayer;//剣士プレイヤーvoid Rotation();
-	void SearchEnemy();
-	void Rotation();
+	Game*                   m_game;//ゲーム
+	Actor*                  Lvactor = nullptr; 
+
+	KnightPlayer* m_knightPlayer;		//剣士プレイヤーvoid Rotation();
+
+	Vector3                 TargePos = Vector3::Zero;
+	Vector3                 m_aiForward = Vector3::Zero;
+	Vector3                 m_patrolPos[5];
 	Vector3					m_forward;
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
+	FontRender              m_Name;
 	FontRender				m_fontRender;
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
-	Actor* Lvactor = nullptr;
-	bool UltimateSkillFlag = false;
-	bool AIget = false;
-	bool Enemyget = false;
-	bool UltFlug = false;
-	float UltimateSkillTimer = 0;
-	Level3DRender m_knightAIPoslevel;      //剣士AIのポジションレベル
-	Vector3                 m_patrolPos[5];
-	int P = -1;
-	std::vector<Neutral_Enemy*> m_neutral_Enemys;
-	int enemyAmount = 0;
+	
+	//falseだったら追いかける、trueだったら逃げる
+	bool                    m_ChaseOrEscape = false;
 
-	Vector3 TargePos = Vector3::Zero;
-	Vector3 m_aiForward  = Vector3::Zero;
-	Neutral_Enemy* m_targetEnemy = nullptr;					// 今追いかけているエネミー      
-	Actor* m_targetActor = nullptr;
+	//どうしようもない配置の時に逃げるタイマー
+	float					m_EscapeTimer = 0.0f;
+
+	bool                    UltimateSkillFlag = false;
+	bool                    UltFlug = false;
+	float                   UltimateSkillTimer = 0.0f;
+
+	Level3DRender           m_knightAIPoslevel;      //剣士AIのポジションレベル
 
 	std::vector<Neutral_Enemy*> neutral_enemys;
-
 	//エネミーの評価値
-	std::vector<int> Evaluation_valueEnemy;
+	std::vector<EvalData> Evaluation_valueEnemy;
 	//アクターの評価値
-	std::vector<int> Evaluation_valueActor;
-
+	std::vector<EvalData> Evaluation_valueActor;
+	//今自分の近くにいるエネミーのリスト
+	std::vector<Neutral_Enemy*> be_Enemy;
+	
+	//スキル発射時の移動量
+	Vector3 m_skillMove = Vector3::Zero;
 
 	///////////////
 	bool SkillFlag = false;

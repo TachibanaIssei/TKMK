@@ -88,24 +88,13 @@ public:
 	void Timer();
 
 	/// <summary>
-	/// ゲージを左寄せする処理
+	/// 
 	/// </summary>
-	/// <param name="size">画像の元の大きさ</param>
-	/// <param name="scale">現在のスケール倍率</param>
-	/// <returns>変換前と変換後の差</returns>
-	//Vector3 HPBerSend(Vector3 size, Vector3 scale)
-	//{
-	//	Vector3 hpBerSize = size;								//画像の元の大きさ
-	//	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
-	//	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
+	void CountDown();
 
-	//	changeBerSize.x = hpBerSize.x * scale.x;
-	//	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
-	//	BerSizeSubtraction.x /= 2.0f;
-
-	//	return BerSizeSubtraction;
-	//}
 private:
+	FontRender m_CountDownFont;
+
 	FontRender m_LevelFont;
 	FontRender m_LevelNameFont;
 

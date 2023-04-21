@@ -64,7 +64,12 @@ bool GameUI::Start()
 	m_PointFont.SetRotation(0.0f);
 	m_PointFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
-	
+	//カウントダウン
+	m_CountDownFont.SetPosition(Vector3::Zero);
+	m_CountDownFont.SetScale(8.0f);
+	m_CountDownFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_CountDownFont.SetRotation(0.0f);
+	m_CountDownFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 	//右下のフレーム
 	{
@@ -178,6 +183,14 @@ void GameUI::Update()
 		return;
 	}
 
+	if (m_game->NowGameState() == 0)
+	{
+		CountDown();
+	}
+	
+
+
+
 	//レベルの表示
 	//int LEVEL=m_knightplayer->SetLevel();
 	int LEVEL = player->CharSetLevel();
@@ -208,6 +221,23 @@ void GameUI::Update()
 	
 	//回避バー
 	
+}
+
+void GameUI::CountDown()
+{
+	//カウントダウン
+	int COUNTDOWNTIMER = m_game->CountDownMinutes();
+	wchar_t CDT[255];
+	if (m_game->CountDownMinutes() <= 0)
+	{
+		swprintf_s(CDT, 255, L"Fight!");
+	}
+	else
+	{
+		swprintf_s(CDT, 255, L"%d", COUNTDOWNTIMER);
+	}
+
+	m_CountDownFont.SetText(CDT);
 }
 
 void GameUI::HPBar()
@@ -277,6 +307,11 @@ void GameUI::Render(RenderContext& rc)
 		m_LevelFont.Draw(rc);
 
 		m_PointFont.Draw(rc);
+
+		if (m_game->NowGameState() == 0) {
+			m_CountDownFont.Draw(rc);
+		}
+		
 	}
 	
 }

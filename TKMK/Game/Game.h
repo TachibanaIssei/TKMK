@@ -140,7 +140,6 @@ public:
 		SelectCharNumber = select;
 	}
 
-	//各キャラのポイントを渡す
 	void GetActorPoints(int charPoints[]);
 
 private:

@@ -149,6 +149,15 @@ public:
 	/// </summary>
 	void CountDown();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	int CountDownMinutes() const
+	{
+		return m_StartToGameTimer;
+	}
+
 	float GetSecondsTimer()
 	{
 		return SecondsTimer;
@@ -247,7 +256,7 @@ private:
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
 
-	float m_StartToGameTimer = 0.0f;
+	float m_StartToGameTimer = 4.0f;
 
 	float m_EndtoResultTimer = 0.0f;
 

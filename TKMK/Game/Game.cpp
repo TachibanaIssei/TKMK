@@ -115,62 +115,64 @@ bool Game::Start()
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 
 	//中立の敵の生成
-	m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
+	{
+		m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.ForwardMatchName(L"Pos") == true) {
-			if (objData.number == 0) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 1) {
+			if (objData.ForwardMatchName(L"Pos") == true) {
+				if (objData.number == 0) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
+				if (objData.number == 1) {
 
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-			if (objData.number == 2) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 3) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-			if (objData.number == 4) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 5) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					enemyNumber++;
+					ENEMY_AMOUNT;
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+				if (objData.number == 2) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
+				if (objData.number == 3) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					enemyNumber++;
+					ENEMY_AMOUNT;
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+				if (objData.number == 4) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
+				if (objData.number == 5) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
+					enemyNumber++;
+					ENEMY_AMOUNT;
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+				if (objData.number == 6) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
+				if (objData.number == 7) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					enemyNumber++;
+					ENEMY_AMOUNT;
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+				if (objData.number == 8) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
 			}
-			if (objData.number == 6) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 7) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-			if (objData.number == 8) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-		}
-		return true;
-	});
+			return true;
+			});
+	}
 
 	//剣士AIの生成
 	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
@@ -242,8 +244,6 @@ bool Game::Start()
 		SelectBar_SEPos = Menu_SelectBar_SEPos;
 	}
 	
-	
-
 	//ゲームの状態をゲームステートにする
 	m_GameState = enGameState_Start;
 
@@ -257,7 +257,7 @@ bool Game::Start()
 
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	return true;
 }
 
@@ -277,9 +277,9 @@ void Game::Update()
 
 void Game::BattleStart()
 {
-	m_StartToGameTimer += g_gameTime->GetFrameDeltaTime();
+	m_StartToGameTimer -= g_gameTime->GetFrameDeltaTime();
 
-	if (m_StartToGameTimer >= 3)
+	if (m_StartToGameTimer < 0)
 	{
 		m_GameState = enGameState_Battle;
 	}

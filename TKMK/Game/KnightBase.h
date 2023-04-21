@@ -305,7 +305,7 @@ protected:
 	float AvoidanceTimer = 0;
 
 	//獲得した経験値仮
-	int exp=5;
+	int exp=1;
 	//Newtral_Enemyの攻撃力
 	int Enemy_atk = 10;
 	//必殺技使用のフラグ

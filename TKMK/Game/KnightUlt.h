@@ -135,6 +135,7 @@ private:
 	Vector3 m_scale;
 	Vector3	m_moveSpeed;
 	Vector3 m_forward;
+	EffectEmitter* Ulteffect;
 	//エフェクトの当たり判定
 	CollisionObject* UltCollision;
 	//この当たり判定が壁に当たったら消す

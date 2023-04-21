@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KnightUlt.h"
-
+#include "graphics/effect/EffectEmitter.h"
+//壁に当たったら消すようにするtodo
 namespace {
 	const Vector3 CollsionSize = Vector3(300.0f, 120.0f, 15.0f);//強化なし
 	const Vector3 CollsionSize2 = Vector3(360.0f, 120.0f, 15.0f);//強化1
@@ -17,6 +18,8 @@ KnightUlt::KnightUlt()
 
 KnightUlt::~KnightUlt()
 {
+	Ulteffect->Stop();
+	DeleteGO(Ulteffect);
 	DeleteGO(UltCollision);
 	DeleteGO(UltDeleteJudgeCollision);
 }
@@ -30,7 +33,7 @@ bool KnightUlt::Start()
 	m_rotation.Apply(m_moveSpeed);
 	//生成する座標(剣士の少し前)
 	m_position += m_moveSpeed * 20.0f;
-	
+	Quaternion effectRot = m_rotation;
 	m_rotation.AddRotationDegY(360.0f);
 
 	//もし生成する座標が壁に当たっているか壁の向こうなら生成しない
@@ -57,6 +60,16 @@ bool KnightUlt::Start()
 	//懲り所オブジェクトが自動で削除されないようにする。
 	UltDeleteJudgeCollision->SetIsEnableAutoDelete(false);
 
+	//エフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/Knight/Knight_Ultimate.efk");
+	//斬撃エフェクトの再生。
+	Ulteffect = NewGO<EffectEmitter>(1);
+	Ulteffect->Init(1);
+	Ulteffect->SetScale({ 4.0f,4.0f,4.0f });
+	Ulteffect->SetPosition(m_position);
+	Ulteffect->SetRotation(effectRot);
+	Ulteffect->Play();
+	//Ulteffect->Update();
 	return true;
 }
 
@@ -67,10 +80,6 @@ void KnightUlt::Update()
 	//前方向
 	m_forward = m_moveSpeed;
 
-	//コリジョンオブジェクトに座標を設定する
-	UltCollision->SetPosition(m_position);
-	//壁判定用の当たり判定の座標を設定する
-	UltDeleteJudgeCollision->SetPosition(m_position);
 	//タイマーを加算する。
 	m_timer += g_gameTime->GetFrameDeltaTime();
 
@@ -80,12 +89,22 @@ void KnightUlt::Update()
 	}
 
 
+	//コリジョンオブジェクトに座標を設定する
+	UltCollision->SetPosition(m_position);
+	UltCollision->Update();
+	//壁判定用の当たり判定の座標を設定する
+	UltDeleteJudgeCollision->SetPosition(m_position);
+	UltDeleteJudgeCollision->Update();
+	//エフェクトの座標を設定
+	Ulteffect->SetPosition(m_position);
+	Ulteffect->Update();
+	//モデルの座標を設定
 	model.SetPosition(m_position);
 	model.Update();
 
 
-	UltCollision->Update();
-	UltDeleteJudgeCollision->Update();
+	
+	
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -112,7 +131,7 @@ struct SweepResultWall :public btCollisionWorld::ConvexResultCallback
 bool KnightUlt::MakeCheck()
 {
 	m_Checkposition = m_position;
-	m_Checkposition += m_moveSpeed * 30.0f;
+	m_Checkposition += m_moveSpeed * 60.0f;
 
 	btTransform start, end;
 	start.setIdentity();
@@ -178,7 +197,7 @@ void KnightUlt::MakeUlt()
 	//必殺技一段階強化
 	else if (CharLevel < 8)
 	{
-		UltScale = Vector3(5.0f, 1.0f, 1.0f);
+		UltScale = Vector3(1.2f, 1.0f, 1.0f);
 	}
 	//レベルが10以下なら
 	//必殺技二段階強化
@@ -196,5 +215,5 @@ void KnightUlt::MakeUlt()
 
 void KnightUlt::Render(RenderContext& rc)
 {
-	model.Draw(rc);
+	//model.Draw(rc);
 }

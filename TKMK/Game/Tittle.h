@@ -28,6 +28,7 @@ public:
 	//どの画面が表示されているか
 	enum EnTitleScene {
 		enTitleScene_PressAScene,					//最初のpressAボタンの画面
+		enTitleScene_Change,						//線形補完のタイミング
 		enTitleScene_Select,						//操作説明などの画面
 		enTitleScene_Num,
 	};

@@ -65,17 +65,12 @@ public:
 	/// <summary>
 	/// 当たり判定の設定
 	/// </summary>
-	void SetCollision(Vector3 collisionsize)
-	{
-		
-		//球状のコリジョンを作成する。
-		UltCollision->CreateBox(m_position, m_rotation, collisionsize);
-		//コリジョンの名前
-		UltCollision->SetName("player_UltimateSkill");
+	void SetCollision();
 
-		//懲り所オブジェクトが自動で削除されないようにする。
-		UltCollision->SetIsEnableAutoDelete(false);
-	}
+	/// <summary>
+	/// モデル、エフェクトの生成
+	/// </summary>
+	void MakeUlt();
 
 	/// <summary>
 	/// 座標を取得
@@ -94,7 +89,40 @@ public:
 		return m_forward;
 	}
 
+	/// <summary>
+	/// 当たり判定が生成できるか調べる
+	/// </summary>
+	/// <returns></returns>
 	bool MakeCheck();
+
+	/// <summary>
+	/// キャラのレベルを取得する
+	/// </summary>
+	/// <param name="level">必殺技を打ったキャラのレベル</param>
+	void GetCharLevel(int level)
+	{
+		CharLevel = level;
+	}
+
+	void SetDeletetime()
+	{
+		if (CharLevel < 6)
+		{
+			DeleteTime = 4;
+		}
+		//レベルが7以下なら
+		//必殺技一段階強化
+		else if (CharLevel < 8)
+		{
+			DeleteTime = 4.5;
+		}
+		//レベルが10以下なら
+		//必殺技二段階強化
+		else if (CharLevel <= 10)
+		{
+			DeleteTime = 5;
+		}
+	}
 
 private:
 	ModelRender model;
@@ -120,6 +148,11 @@ private:
 
 	float m_timer = 0.0f;
 
+	//当たり判定を消す時間
+	float DeleteTime;
+
+	//生成したキャラのレベル
+	int CharLevel = 0;
 	//bool Ultflag = true;
 
 };

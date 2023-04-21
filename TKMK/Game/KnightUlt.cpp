@@ -2,7 +2,10 @@
 #include "KnightUlt.h"
 
 namespace {
-	const Vector3 CollsionSize = Vector3(300.0f, 120.0f, 15.0f);
+	const Vector3 CollsionSize = Vector3(300.0f, 120.0f, 15.0f);//強化なし
+	const Vector3 CollsionSize2 = Vector3(360.0f, 120.0f, 15.0f);//強化1
+	const Vector3 CollsionSize3 = Vector3(420.0f, 120.0f, 15.0f);//強化2
+
 	const float SphereSize = 20.0f;
 }
 
@@ -39,15 +42,14 @@ bool KnightUlt::Start()
 	//移動速度を決める
 	m_moveSpeed *= 180.0f;
 
+	//当たり判定の生成
+	SetCollision();
+	//消去する時間の設定
+	SetDeletetime();
+	//エフェクトの生成
+	MakeUlt();
 
-	SetCollision(CollsionSize);
-
-	model.InitBackGround("Assets/modelData/character/Knight/Knight_Ult.tkm");
-	model.SetPosition(m_position);
-	model.SetRotation(m_rotation);
-	model.Update();
-
-	//コリジョンオブジェクトを作成する。
+	//壁の当たり判定コリジョンオブジェクトを作成する。
 	UltDeleteJudgeCollision = NewGO<CollisionObject>(0);
 	UltDeleteJudgeCollision->CreateSphere(m_position, m_rotation, SphereSize);
 	//コリジョンの名前
@@ -72,7 +74,7 @@ void KnightUlt::Update()
 	//タイマーを加算する。
 	m_timer += g_gameTime->GetFrameDeltaTime();
 
-	if (m_timer > 4.0f) {
+	if (m_timer > DeleteTime) {
 		//自身を削除する。
 		DeleteGO(this);
 	}
@@ -132,6 +134,64 @@ bool KnightUlt::MakeCheck()
 	}
 
 	return false;
+}
+
+/// <summary>
+	/// 当たり判定の設定
+	/// </summary>
+void KnightUlt::SetCollision()
+{
+	Vector3 UltCollisionSize;
+	if (CharLevel < 6)
+	{
+		UltCollisionSize = CollsionSize;
+	}
+	//レベルが7以下なら
+	//必殺技一段階強化
+	else if (CharLevel < 8)
+	{
+		UltCollisionSize = CollsionSize2;
+	}
+	//レベルが10以下なら
+	//必殺技二段階強化
+	else if (CharLevel <= 10)
+	{
+		UltCollisionSize = CollsionSize3;
+	}
+	//球状のコリジョンを作成する。
+	UltCollision->CreateBox(m_position, m_rotation, UltCollisionSize);
+	//コリジョンの名前
+	UltCollision->SetName("player_UltimateSkill");
+
+	//懲り所オブジェクトが自動で削除されないようにする。
+	UltCollision->SetIsEnableAutoDelete(false);
+}
+
+void KnightUlt::MakeUlt()
+{
+	Vector3 UltScale = Vector3::Zero;
+	if (CharLevel < 6)
+	{
+		UltScale = Vector3::One;
+	}
+	//レベルが7以下なら
+	//必殺技一段階強化
+	else if (CharLevel < 8)
+	{
+		UltScale = Vector3(5.0f, 1.0f, 1.0f);
+	}
+	//レベルが10以下なら
+	//必殺技二段階強化
+	else if (CharLevel <= 10)
+	{
+		UltScale = Vector3(1.4f, 1.0f, 1.0f);
+	}
+
+	model.InitBackGround("Assets/modelData/character/Knight/Knight_Ult.tkm");
+	model.SetPosition(m_position);
+	model.SetRotation(m_rotation);
+	model.SetScale(UltScale);
+	model.Update();
 }
 
 void KnightUlt::Render(RenderContext& rc)

@@ -30,18 +30,19 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	forward.y = 0.0f;
 	right.y = 0.0f;
 	forward.Normalize();
-	//左スティックの入力量とstatusのスピードを乗算。
+	//移動の入力量とstatusのスピードを乗算。
 	right *= stickL.x * status.Speed;
 	forward *= stickL.y * status.Speed;
 
 	//プレイヤーの前方向の情報を更新
-	//xかzの移動速度があったら(スティックの入力があったら)。
+	//xかzの移動速度があったら
 	if (fabsf(forward.x) >= 0.001f || fabsf(forward.z) >= 0.001f)
 	{
+		//前方向を計算する
 		m_Forward = forward + right;
 	}
 
-	//移動速度にスティックの入力量を加算する。
+	//移動速度に前方向と右方向の入力量を加算する。
 	m_moveSpeed += right + forward;
 	//重力を付与する
 	m_moveSpeed.y -= 600.0f * g_gameTime->GetFrameDeltaTime();
@@ -54,7 +55,9 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 		//ジャンプフラグがtrueだったら
 		if (m_RespawnJumpFlag == true)
 		{
+			//座標を上げる
 			RespawnMove();
+			//フラグをfalseにする
 			m_RespawnJumpFlag = false;
 		}
 	}
@@ -256,34 +259,26 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 }
 
 /// <summary>
-/// スキルを使用した後のクールタイムの処理
+/// クールタイムの処理
 /// </summary>
-/// <param name="SkillCooltimer">スキルのクールタイム</param>
-/// <param name="skillstate">スキルを使い終ったの判定</param>
+/// <param name="SkillCooltimer">クールタイム</param>
+/// <param name="skillstate">スキルや回避が終わったかの判定</param>
 /// <param name="timer">クールタイムを計算する変数</param>
-void Actor::COOlTIME(float SkillCooltimer, bool& skillstate,float& timer)
+void Actor::COOlTIME(float Cooltime, bool& skillEndFlag,float& timer)
 {
 
 	//スキルのアニメーション再生が終わったら
-	if (skillstate==true)
+	if (skillEndFlag ==true)
 	{
 		if (timer <= 0)
 		{
 			//スキル使用可能
-			skillstate = false;
-			timer = SkillCooltimer;
+			skillEndFlag = false;
+			timer = Cooltime;
 
 		}
 		else timer -= g_gameTime->GetFrameDeltaTime();   //timerを進める
 
-		//timerがスキルのクールタイムより大きくなったら。
-		//if (timer >= SkillCooltimer)
-		//{
-		//	//スキル使用可能
-		//	skillstate = false;
-		//	timer = 0;
-		//}
-		//else timer += g_gameTime->GetFrameDeltaTime();   //timerを進める
 	}
 	
 }

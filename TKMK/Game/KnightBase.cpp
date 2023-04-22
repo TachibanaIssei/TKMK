@@ -233,11 +233,10 @@ void KnightBase::Collition()
 	{
 		//このコリジョンを作ったアクターを検索
 		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
-		//�R���W���������g�̃L�����R���ɓ��������
+		//コリジョンを作ったアクターが自分でないなら
 		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
-			//���m�̍U���͕�HP��炷�B
-			//�|���ꂽ����̃|�C���g�𑝂₷
+			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 		}
 	}
@@ -681,6 +680,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		//リスポーンする座標に自身の座標をセット
 		SetRespawn();
 		Death();
+
 		//待機ステート
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();

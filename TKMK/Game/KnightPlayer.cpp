@@ -55,7 +55,6 @@ KnightPlayer::KnightPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
-
 }
 
 KnightPlayer::~KnightPlayer()
@@ -144,6 +143,20 @@ void KnightPlayer::Update()
 		//回避クールタイムの処理
 		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
+
+		//if (m_swordEffectFlag ==true)
+		//{
+		//	Vector3 m_SwordPos = Vector3::Zero;
+		//	Quaternion m_SwordRot;
+		//	//「Sword」ボーンのワールド行列を取得する。
+		//	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+		//	matrix.Apply(m_SwordPos);
+		//	m_SwordRot.SetRotation(matrix);
+		//	Ult_Swordeffect->SetPosition(m_SwordPos);
+		//	Ult_Swordeffect->SetRotation(m_SwordRot);
+		//	Ult_Swordeffect->Update();
+		//}
+
 		//レベルアップする
 		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
 		//{
@@ -167,9 +180,6 @@ void KnightPlayer::Update()
 		m_moveSpeed = Vector3::Zero;
 	}
 	
-
-	
-
 	//ステート
 	ManageState();
 	//アニメーションの再生
@@ -265,6 +275,23 @@ void KnightPlayer::Attack()
 		//アニメーション再生
 		//必殺技ステート
 		m_charState = enCharState_UltimateSkill;
+
+		Vector3 m_SwordPos = Vector3::Zero;
+		Quaternion m_SwordRot;
+		//「Sword」ボーンのワールド行列を取得する。
+		/*Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+		matrix.Apply(m_SwordPos);
+		m_SwordRot.SetRotation(matrix);*/
+		EffectEmitter*Ult_Swordeffect = NewGO<EffectEmitter>(2);
+		Ult_Swordeffect->Init(2);
+		Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
+		Ult_Swordeffect->SetPosition(m_position);
+		//Ult_Swordeffect->SetRotation(m_SwordRot);
+		//Ult_Swordeffect->Update();
+			//エフェクトを再生
+		Ult_Swordeffect->Play();
+		m_swordEffectFlag = true;
+
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);
@@ -380,6 +407,9 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	{
 		//必殺技の当たり判定のクラスを作成
 		MakeUltSkill();
+		//エフェクトを移動
+		//m_swordEffectFlag = false;
+		
 	}
 	//ジャンプのアニメーションが始まったら
 	if (wcscmp(eventName, L"Jump_Start") == 0)

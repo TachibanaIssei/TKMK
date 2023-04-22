@@ -8,7 +8,7 @@ KnightBase::KnightBase()
 	//ステータスを読み込む
 	m_Status.Init("Knight");
 	m_InitialStatus = m_Status;  //初期ステータスのセット
-	Lv=1;                    //レベル
+	Lv=4;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
 	Cooltime=5;            //スキルのクールタイム

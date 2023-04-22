@@ -97,12 +97,12 @@ public:
 	virtual void UltimateSkill() = 0;
 
 	/// <summary>
-	/// スキルが使用された後のクールタイムの処理
+	/// クールタイムの処理
 	/// </summary>
-	/// <param name="SkillCooltimer">スキルのクールタイム</param>
-	/// <param name="skillstate">スキルを使用したかの判定</param>
+	/// <param name="SkillCooltimer">クールタイム</param>
+	/// <param name="skillstate">スキルや回避が終わったかの判定</param>
 	/// <param name="timer">クールタイムを計算する変数</param>
-	void COOlTIME(float SkillCooltimer,bool& skillstate,float& timer);
+	void COOlTIME(float Cooltime, bool& skillEndFlag, float& timer);
 	
 	/// <summary>
 	/// 現在のレベルを返す
@@ -173,12 +173,6 @@ public:
 	/// <summary>
 	/// リスポーンしたときに塔から飛び降りる処理
 	/// </summary>
-	
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
 	void RespawnMove();
 
 	/// <summary>
@@ -199,9 +193,9 @@ public:
 		return m_position;
 	}
 	/// <summary>
-/// knightPlayer
-/// </summary>
-/// <returns>false????????</returns>
+	/// m_spriteFlagを返す
+	/// </summary>
+	/// <returns>判定</returns>
 	const bool GetSpriteFlag() const
 	{
 		return m_spriteFlag;

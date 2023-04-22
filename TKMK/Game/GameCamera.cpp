@@ -14,6 +14,9 @@ namespace
 	const float MAX_CAMERA_TOP = -0.1f;		//カメラの上向きの最大値
 	const float MAX_CAMERA_UNDER = 0.6f;	//カメラの下向きの最大値
 
+	const float TARGETPOS_YUP = 45.0f;
+	const float TARGETPOS_ULT_YUP = 50.0f;
+
 	///注視点から視点までのベクトルを設定。
 	const float CAMERA_POS_X = -160.0f;
 	const float CAMERA_POS_Y = 80.0f;
@@ -52,6 +55,14 @@ bool GameCamera::Start()
 	m_cameraCollisionSolver.Init(1.0f);
 	m_cameraState = enGameState;
 
+	//ばねカメラの初期化。
+	m_springCamera.Init(
+		*g_camera3D,		//ばねカメラの処理を行うカメラを指定する。
+		1000.0f,			//カメラの移動速度の最大値。
+		true,				//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
+		1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
+	);
+
 	//最初にキャラの背中を映すようにする
 	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
 
@@ -69,6 +80,7 @@ void GameCamera::Update()
 	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
 	if (player->CharGetState() == 7)
 	{
+		m_springCamera.Refresh();
 		KnightUltMoveFlag = true;
 	}
 
@@ -88,6 +100,7 @@ void GameCamera::Update()
 		}
 		else 
 		{
+			m_springCamera.Refresh();
 			//全てリセット
 			KnightUltMoveFlag = false;
 			SetCameraCharFrontFlag = false;
@@ -120,7 +133,7 @@ void GameCamera::FollowThePlayer()
 	//Vector3 TargetPos;
 	TargetPos = player->GetCharPosition();
 
-	TargetPos.y += 40.0f;
+	TargetPos.y += TARGETPOS_YUP;
 
 	Vector3 toCameraPosOld = m_toCameraPos;
 
@@ -161,11 +174,11 @@ void GameCamera::FollowThePlayer()
 	);
 
 	//視点と注視点を設定
-	g_camera3D->SetTarget(TargetPos);
-	g_camera3D->SetPosition(newCamPos);
+	m_springCamera.SetTarget(TargetPos);
+	m_springCamera.SetPosition(newCamPos);
 
 	//カメラの更新。
-	g_camera3D->Update();
+	m_springCamera.Update();
 }
 
 /// <summary>
@@ -198,7 +211,7 @@ void GameCamera::CameraTarget(float X, float Y)
 	//注視点の計算
 	Vector3 TargetPos;
 	TargetPos = player->GetCharPosition();
-	TargetPos.y += 40.0f;
+	TargetPos.y += TARGETPOS_YUP;
 	//視点から注視点へのベクトルを求める
 	newCameraPos += TargetPos;
 
@@ -210,12 +223,14 @@ void GameCamera::CameraTarget(float X, float Y)
 		TargetPos
 	);
 
+	
+
 	//視点と注視点を設定
-	g_camera3D->SetTarget(TargetPos);
-	g_camera3D->SetPosition(newCamPos);
+	m_springCamera.SetTarget(TargetPos);
+	m_springCamera.SetPosition(newCamPos);
 
 	//カメラの更新。
-	g_camera3D->Update();
+	m_springCamera.Update();
 }
 
 /// <summary>
@@ -237,7 +252,7 @@ void GameCamera::KnightUltCamera()
 	//Vector3 TargetPos;
 		TargetPos = player->GetCharPosition();
 
-		TargetPos.y += 50.0f;
+		TargetPos.y += TARGETPOS_ULT_YUP;
 
 		Vector3 toCameraPosOld = m_toCameraPos;
 
@@ -268,11 +283,11 @@ void GameCamera::KnightUltCamera()
 		);
 
 		//視点と注視点を設定
-		g_camera3D->SetTarget(TargetPos);
-		g_camera3D->SetPosition(newCamPos);
+		m_springCamera.SetTarget(TargetPos);
+		m_springCamera.SetPosition(newCamPos);
 
 		//カメラの更新。
-		g_camera3D->Update();
+		m_springCamera.Update();
 	}
 }
 
@@ -303,11 +318,11 @@ void GameCamera::ChaseUltEff()
 	newCameraPos += TargetPos;
 
 	//視点と注視点を設定
-	g_camera3D->SetTarget(TargetPos);
-	g_camera3D->SetPosition(newCameraPos);
+	m_springCamera.SetTarget(TargetPos);
+	m_springCamera.SetPosition(newCameraPos);
 
 	//カメラの更新。
-	g_camera3D->Update();
+	m_springCamera.Update();
 
 
 

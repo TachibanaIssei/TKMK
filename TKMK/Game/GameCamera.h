@@ -1,5 +1,6 @@
 #pragma once
 #include "CameraCollisionSolver.h"
+#include "SpringCamera.h"
 
 class KnightPlayer;
 class WizardPlayer;
@@ -63,6 +64,7 @@ public:
 	}
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
+	SpringCamera			m_springCamera;
 
 	KnightPlayer*			m_knightplayer	= nullptr;
 	WizardPlayer* wizardPlayer = nullptr;

@@ -23,6 +23,11 @@ KnightBase::KnightBase()
 	//respawnNumber = 0;        //リスポーンする座標の番号
 
 	
+
+	//斬撃エフェクトの再生。
+	/*Ult_Swordeffect = NewGO<EffectEmitter>(2);
+	Ult_Swordeffect->Init(2);
+	Ult_Swordeffect->SetScale({ 20.0f,20.0f,20.0f });*/
 }
 
 KnightBase::~KnightBase()
@@ -77,6 +82,9 @@ void KnightBase::SetModel()
 		35.0f,
 		m_position
 	);
+
+	//剣のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 }
 
 /// <summary>
@@ -680,9 +688,10 @@ void KnightBase::OnProcessDeathStateTransition()
 		//リスポーンする座標に自身の座標をセット
 		SetRespawn();
 		Death();
-
+		//リスポーン待機フラグを立てる
+		m_RespwanTimeFlag = true;
 		//待機ステート
-		m_charState = enCharState_Idle;
+		//m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();
 	}
 }

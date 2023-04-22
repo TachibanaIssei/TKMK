@@ -274,8 +274,11 @@ protected:
 	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
 	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
+	//Vector3 m_SwordPos = Vector3::Zero;						//剣の座標
 	CharacterController m_charCon;                        //キャラクターコントロール
 	
+	
+
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	PlayerState m_knightState = enKnightState_Idle/* = enKnightState_Num*/;
 	

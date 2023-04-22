@@ -13,7 +13,7 @@ bool BackGround::Start()
 {
 
 	//�X�^�W�A���̏��̐���
-	m_modelRender.InitBackGround("Assets/modelData/background/stadium05_ground.tkm");
+	m_modelRender.Init("Assets/modelData/background/testStadium.tkm");
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rotation);
@@ -24,7 +24,7 @@ bool BackGround::Start()
 	m_physicsStaticObject.GetbtCollisionObject()->setUserIndex(enCollisionAttr_SlipThroughWall);
 
 	//�X�^�W�A���̕ǂ̐���
-	m_modelRender_Wall.InitBackGround("Assets/modelData/background/stadium05_Wall.tkm");
+	m_modelRender_Wall.Init("Assets/modelData/background/stadium05_Wall.tkm");
 	m_modelRender_Wall.SetPosition(m_position);
 	m_modelRender_Wall.SetRotation(m_rotation);
 	m_scale.y = 0.7f;
@@ -55,5 +55,5 @@ void BackGround::Update()
 void BackGround::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-	m_modelRender_Wall.Draw(rc);
+	//m_modelRender_Wall.Draw(rc);
 }

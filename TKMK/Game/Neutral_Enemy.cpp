@@ -1038,7 +1038,7 @@ const bool Neutral_Enemy::CanAttack()const
 void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。
-	m_modelRender.Draw(rc);
+	//m_modelRender.Draw(rc);
 
 	//ステートがポーズステートでないなら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {

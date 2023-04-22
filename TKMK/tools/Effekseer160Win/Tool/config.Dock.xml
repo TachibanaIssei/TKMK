@@ -10,9 +10,11 @@
     <Effekseer.GUI.Dock.NodeTreeView>Open</Effekseer.GUI.Dock.NodeTreeView>
     <Effekseer.GUI.Dock.CommonValues>Open</Effekseer.GUI.Dock.CommonValues>
     <Effekseer.GUI.Dock.LocationValues>Open</Effekseer.GUI.Dock.LocationValues>
+    <Effekseer.GUI.Dock.GenerationLocationValues>Open</Effekseer.GUI.Dock.GenerationLocationValues>
     <Effekseer.GUI.Dock.RotationValues>Open</Effekseer.GUI.Dock.RotationValues>
     <Effekseer.GUI.Dock.ScaleValues>Open</Effekseer.GUI.Dock.ScaleValues>
     <Effekseer.GUI.Dock.RendererCommonValues>Open</Effekseer.GUI.Dock.RendererCommonValues>
     <Effekseer.GUI.Dock.RendererValues>Open</Effekseer.GUI.Dock.RendererValues>
+    <Effekseer.GUI.Dock.FileViewer>Open</Effekseer.GUI.Dock.FileViewer>
   </Docks>
 </Root>

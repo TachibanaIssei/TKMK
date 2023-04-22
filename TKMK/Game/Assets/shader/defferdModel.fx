@@ -50,6 +50,7 @@ struct SPSOut
 // モデルテクスチャ
 Texture2D<float4> g_texture : register(t0);
 Texture2D<float4> g_normalMap : register(t1);
+Texture2D<float4> g_specularMap : register(t2);
 StructuredBuffer<float4x4> g_boneMatrix : register(t3);	//ボーン行列。
 
 // サンプラーステート
@@ -139,7 +140,8 @@ SPSOut PSMain(SPSIn psIn)
     // (-1 ～ 1) ÷ 2.0       = (-0.5 ～ 0.5)
     // (-0.5 ～ 0.5) + 0.5  = (0.0 ～ 1.0)
     psOut.normal.xyz = (psIn.normal / 2.0f) + 0.5f;
-    psOut.normal.w = 0.0f;
+    //psOut.normal.w = g_specularMap.Sample(g_sampler, psIn.uv).r;
+    psOut.normal.w = 5.0f;
 
     psOut.worldPos.xyz = psIn.worldPos;
     psOut.worldPos.w = 1.0f;

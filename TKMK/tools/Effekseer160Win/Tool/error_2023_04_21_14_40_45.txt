@@ -1,0 +1,12 @@
+System.UnauthorizedAccessException: パス 'C:\Documents and Settings' へのアクセスが拒否されました。
+   場所 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   場所 System.IO.FileSystemEnumerableIterator`1.CommonInit()
+   場所 System.IO.FileSystemEnumerableIterator`1..ctor(String path, String originalUserPath, String searchPattern, SearchOption searchOption, SearchResultHandler`1 resultHandler, Boolean checkHost)
+   場所 System.IO.Directory.EnumerateDirectories(String path)
+   場所 Effekseer.GUI.Dock.FileViewer.UpdateFileList(String path)
+   場所 Effekseer.GUI.Dock.FileViewer.UpdateInternal()
+   場所 Effekseer.GUI.Dock.DockPanel.Update()
+   場所 Effekseer.GUI.Dock.DockManager.Update()
+   場所 Effekseer.GUI.Manager.Update()
+   場所 Effekseer.Program.Exec(Boolean gui, String input, String output, String export, String format, Single magnification, Boolean materialCache)
+   場所 Effekseer.Program.Main(String[] args)

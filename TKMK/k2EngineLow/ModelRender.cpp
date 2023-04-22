@@ -7,6 +7,11 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
 	//シェーダーファイルパスを設定
 	m_modelInitData.m_fxFilePath = "Assets/shader/defferdModel.fx";
+
+	m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	m_modelInitData.m_colorBufferFormat[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	m_modelInitData.m_colorBufferFormat[2] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
 	//モデルの上方向を設定
 	m_modelInitData.m_modelUpAxis = enModelUpAxis;
 

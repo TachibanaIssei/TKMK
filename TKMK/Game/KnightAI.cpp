@@ -627,7 +627,7 @@ const Vector3 KnightAI::TargetChange()
 }
 void KnightAI::Render(RenderContext& rc)
 {
-	m_modelRender.Draw(rc);
+	//m_modelRender.Draw(rc);
 
 }
 

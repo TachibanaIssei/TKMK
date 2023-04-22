@@ -69,12 +69,15 @@ bool Game::Start()
 	directionLightDir.Normalize();
 	Vector4 directionLightColor = Vector4{ 0.5f, 0.5f, 0.5f, 1.0f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f,1.0f });
+	g_renderingEngine->SetAmbient({ 0.4f,0.4f,0.4f,1.0f });
+
 
 	//�X�^�W�A���̐���
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.EqualObjectName(L"stadium05_ground") == true) {
+			//�v���C���[�̐���
+			player = NewGO<Player>(0, "player");
 			m_backGround = NewGO<BackGround>(0, "backGround");
 			m_backGround->SetPosition(objData.position);
 			m_backGround->SetRotation(objData.rotation);
@@ -101,8 +104,6 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//�v���C���[�̐���
-	player = NewGO<Player>(0, "player");
 	//��������L�����I��
 
 	player->CharSelect(SelectCharNumber);

@@ -3,4 +3,13 @@
   <Option>
     <LanguageSelector>ja</LanguageSelector>
   </Option>
+  <Environment>
+    <Background>
+      <BackgroundColor>
+        <R>45</R>
+        <G>45</G>
+        <B>45</B>
+      </BackgroundColor>
+    </Background>
+  </Environment>
 </EffekseerProject>

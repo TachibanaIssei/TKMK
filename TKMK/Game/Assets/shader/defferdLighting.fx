@@ -101,7 +101,7 @@ float4 PSMain(PSInput In) : SV_Target0
 {
     // G-Bufferの内容を使ってライティング
     float4 albedo = albedoTexture.Sample(Sampler, In.uv);
-    float3 normal = normalTexture.Sample(Sampler, In.uv).rgb;
+    float3 normal = normalTexture.Sample(Sampler, In.uv).xyz;
     normal = (normal * 2.0f) - 1.0f;
     float3 worldPos = depthTexture.Sample(Sampler,In.uv).xyz;
 
@@ -149,14 +149,13 @@ float3 CalcPhongSpecular(float3 lightDirection, float4 lightColor, float3 worldP
 
     // 鏡面反射の強さを絞る
     t = pow(t, 5.0f);
-    t *= 10.0f;
 
     // 鏡面反射光を求める
     float3 specularLig = lightColor.rgb * t;
     
-    //スペキュラマップからスペキュラ反射の強さをサンプリング
-    // float specPower = g_specularMap.Sample(g_sampler, uv).r;
-    // specularLig *= specPower * 2.0f;
+    //ノーマルマップのwからスペキュラ反射の強さをサンプリング
+    float specPower = normalTexture.Sample(Sampler, uv).w;
+    specularLig *= specPower * 5.0f;
     
     return specularLig;
 }

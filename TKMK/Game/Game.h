@@ -267,8 +267,8 @@ private:
 	
 	//BGMの初期音量
 	float BGMVolume = 2.0f;
-	//効果音の初期音量
-	float SoundEffectVolume = 1.0f;
+	//効果音の初期音量1
+	float SoundEffectVolume = 0.0f;
 
 	//プレイヤーの使うキャラの番号
 	//０…剣士

@@ -21,7 +21,7 @@ namespace
 	const float CAMERA_POS_X = -160.0f;
 	const float CAMERA_POS_Y = 80.0f;
 
-	const float KNIGHT_CAMERA_POS_X = 50.0f;
+	const float KNIGHT_CAMERA_POS_X = 80.0f;
 	const float KNIGHT_CAMERA_POS_Y = 0.0f;
 
 	const float KNIGHT_ULT_POS_X = -130.0f;

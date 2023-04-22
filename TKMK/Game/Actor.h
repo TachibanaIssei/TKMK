@@ -338,6 +338,15 @@ public:
 		return m_charState;
 	}
 
+	/// <summary>
+	/// やられたときの
+	/// </summary>
+	/// <returns></returns>
+	bool RespawnFlag() const
+	{
+		return m_RespwanTimeFlag;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -379,6 +388,11 @@ protected:
 
 	int Count=0;
 
-	bool UltFlag = false;
+	//やられた後のリスポーンするまで時間を計る処理をするかのフラグ
+	//falseでしない、trueでする
+	bool m_RespwanTimeFlag = false;
+
+	float m_respwanTimer = 2.0f;
+
 };
 

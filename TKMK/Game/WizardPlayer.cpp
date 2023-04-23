@@ -53,7 +53,6 @@ WizardPlayer::WizardPlayer()
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 
 	game = FindGO<Game>("game");
-	gameUI = FindGO<GameUI>("m_gameUI");
 }
 
 WizardPlayer::~WizardPlayer()
@@ -68,15 +67,20 @@ void WizardPlayer::Update()
 		return;
 	}
 
-	//今のフレームと前のフレームのレベルが違っていたら
-	if (oldLv != Lv) {
-		//レベルに合わせてGameUIのレベルの画像を変更する
-		gameUI->LevelFontChange(Lv);
+	if (gameUI == nullptr)
+	{
+		gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (game->NowGameState() < 3 && game->NowGameState() != 0)
 	{
+		//今のフレームと前のフレームのレベルが違っていたら
+		if (oldLv != Lv) {
+			//レベルに合わせてGameUIのレベルの画像を変更する
+			gameUI->LevelFontChange(Lv);
+		}
+
 		oldLv = Lv;
 
 		//関数にする

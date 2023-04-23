@@ -69,15 +69,21 @@ void KnightPlayer::Update()
 	if (m_GameState == enPause) {
 		return;
 	}
-	//今のフレームと前のフレームのレベルが違っていたら
-	if (oldLv != Lv) {
-		//レベルに合わせてGameUIのレベルの画像を変更する
-		m_gameUI->LevelFontChange(Lv);
+	
+	if (m_gameUI == nullptr)
+	{
+		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
+		//今のフレームと前のフレームのレベルが違っていたら
+		if (oldLv != Lv) {
+			//レベルに合わせてGameUIのレベルの画像を変更する
+			m_gameUI->LevelFontChange(Lv);
+		}
+
 		oldLv = Lv;
 
 		//前フレームの座標を取得
@@ -225,7 +231,7 @@ void KnightPlayer::Attack()
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_charState = enCharState_Attack;
-			
+			Point++;
 			//FirstAtkFlag = true;
 			//コンボを1増やす
 			//ComboState++;

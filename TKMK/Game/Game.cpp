@@ -100,12 +100,6 @@ bool Game::Start()
 
 	});
 
-
-	//GameUIの生成
-	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
-	m_gameUI->SetSGame(this);
-
-
 	//プレイヤーの生成
 	player = NewGO<Player>(0, "player");
 	player->CharSelect(SelectCharNumber);
@@ -180,6 +174,10 @@ bool Game::Start()
 	m_KnightAI->SetGame(this);
 	m_Actors.push_back(m_KnightAI);
 	
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
+	m_gameUI->SetSGame(this);
+
 	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
 

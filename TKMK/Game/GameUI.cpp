@@ -62,20 +62,47 @@ bool GameUI::Start()
 
 	//ポイント関連
 	{
-		for (int num = 0; num < Characters; num++)
+		//キャラのポイントを表示
+		m_Actors = m_game->GetActors();
+		int num = 0;
+		for (auto actor: m_Actors)
 		{
+			//ポイントを表示
 			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFont[num].SetScale(1.5f);
 			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 			m_PointFont[num].SetRotation(0.0f);
 			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
+
+			//プレイヤーが剣士なら
+			if (actor->IsMatchName(knightname))
+			{
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+			}
+			//プレイヤーが魔法使いなら
+			else if (actor->IsMatchName(wizardname))
+			{
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+			}
+			//それ以外(AI)なら
+			else
+			{
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}
+			
+			m_PointFlame[num].SetPosition(PointFlamePos[num]);
+			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
+			m_PointFlame[num].Update();
+
+			num++;
 		}
 
-		//レベルや経験値のフレーム
+		//王冠マーク
 		m_Crown.Init("Assets/sprite/gameUI/crown.DDS", 80.0f, 80.0f);
 		//m_Crown.SetPosition(FLAME_POS);
 		m_Crown.SetScale(1.0, 1.0, 1.0);
 		m_Crown.Update();
+
 	}
 	
 	
@@ -247,6 +274,7 @@ void GameUI::CountDown()
 	m_CountDownFont.SetText(CDT);
 }
 
+//プレイヤーのHPの表示の処理
 void GameUI::HPBar()
 {
 	int HP = player->CharSetHp();
@@ -262,6 +290,7 @@ void GameUI::HPBar()
 	m_hpBar.Update();
 }
 
+//制限時間の表示の処理
 void GameUI::Timer()
 {
 		//0秒以下なら
@@ -281,6 +310,7 @@ void GameUI::Timer()
 	
 }
 
+//プレイヤーの経験値の表示の処理todo
 void GameUI::EXPBar()
 {
 	//経験値の表示
@@ -297,6 +327,7 @@ void GameUI::EXPBar()
 	m_ExperienceBar_flont.Update();
 }
 
+//キャラのポイントと。ポイントが一番多いキャラに王冠マークをつける表示の処理
 void GameUI::CharPoint()
 {
 	//キャラのポイントを表示
@@ -314,16 +345,27 @@ void GameUI::CharPoint()
 		swprintf_s(P, 255, L"%dP", POINT);
 		m_PointFont[num].SetText(P);
 
-		if (charPoint[num] >= MaxPoint)
+		//一番ポイントが多いキャラに王冠マークをつける
+		//フレームを大きくする
+		if (charPoint[num]>0&&charPoint[num] >= MaxPoint)
 		{
 			MaxPoint = charPoint[num];
 			m_Crown.SetPosition(CrownPos[num]);
+			m_PointFlame[num].SetScale(2.0f, 1.3f, 1.0f);
+
+			m_Crown.Update();
+			m_PointFlame[num].Update();
+		}
+		else
+		{
+			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
+			m_PointFlame[num].Update();
 		}
 
 		num++;
 	}
 
-	m_Crown.Update();
+	
 	//誰に王冠マークつけるか決める
 
 }
@@ -361,8 +403,11 @@ void GameUI::Render(RenderContext& rc)
 		m_LevelFont.Draw(rc);
 
 		//ポイントを描画
-		for (int num = 0; num < Characters; num++) {
+		int num = 0;
+		for (auto actor:m_Actors/*int num = 0; num < Characters; num++*/) {
+			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
+			num++;
 		}
 		//王冠マーク
 		if (MaxPoint != 0)

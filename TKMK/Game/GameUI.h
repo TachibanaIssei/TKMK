@@ -126,41 +126,52 @@ private:
 	std::vector<Actor*> m_Actors;
 
 	//UI
-	SpriteRender			m_hpBar;				//HPバーの画像
-	SpriteRender			m_statusBar;			//ステータスの画像
-	SpriteRender			m_HPFrame;		//プレイヤーの顔画像の枠
-	SpriteRender			m_playerFaceBack;		//プレイヤーの顔画像の背景
-	SpriteRender            m_SkillRender;          //スキルアイコン
-	SpriteRender            m_UltRender;            //必殺アイコン
-	SpriteRender            m_TimeAndPointRender;   //制限時間と獲得ポイント
+	SpriteRender			m_hpBar;							//HPバーの画像
+	SpriteRender			m_statusBar;						//ステータスの画像
+	SpriteRender			m_HPFrame;							//プレイヤーの顔画像の枠
+	SpriteRender			m_playerFaceBack;					//プレイヤーの顔画像の背景
+	SpriteRender            m_SkillRender;						//スキルアイコン
+	SpriteRender            m_UltRender;						//必殺アイコン
+	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;
 	SpriteRender            m_MaxLv;
-	SpriteRender            m_Flame;                //制限時間と獲得ポイントやHPバーの画像を
-	SpriteRender            m_Point;                //ポイント
-	SpriteRender            m_ExperienceFlame;        //経験値のフレーム
-	SpriteRender            m_ExperienceBar_flont;    //経験値バーの表
-	SpriteRender			m_Crown;                 //ポイントが一番多いキャラにつける王冠マーク
+	SpriteRender            m_Flame;							//制限時間と獲得ポイントやHPバーの画像を
+	SpriteRender            m_Point;							//ポイント
+	SpriteRender            m_ExperienceFlame;					//経験値のフレーム
+	SpriteRender            m_ExperienceBar_flont;				//経験値バーの表
+	SpriteRender			m_Crown;							//ポイントが一番多いキャラにつける王冠マーク
+	SpriteRender			m_PointFlame[4];					//ポイントを表示するフレーム
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
 
 	Vector3 PointPos[4] = {
-		Vector3(-850.0f, 200.0f, 0.0f),
-		Vector3(-850.0f, 100.0f, 0.0f), 
-		Vector3(-850.0f, 0.0f, 0.0f), 
-		Vector3(-850.0f, -100.0f, 0.0f), 
-	};  //ポイント
+		Vector3(-850.0f, 150.0f, 0.0f),
+		Vector3(-850.0f, 50.0f, 0.0f), 
+		Vector3(-850.0f, -50.0f, 0.0f), 
+		Vector3(-850.0f, -150.0f, 0.0f), 
+	};															//ポイント
+
+	Vector3 PointFlamePos[4] = {
+		Vector3(-850.0f, 120.0f, 0.0f),
+		Vector3(-850.0f, 20.0f, 0.0f),
+		Vector3(-850.0f, -80.0f, 0.0f),
+		Vector3(-850.0f, -180.0f, 0.0f),
+	};															//ポイント
 	
 	Vector3 CrownPos[4] = {
-		Vector3(-920.0f, 180.0f, 0.0f),
-		Vector3(-920.0f, 80.0f, 0.0f),
-		Vector3(-920.0f, -20.0f, 0.0f),
-		Vector3(-920.0f, -120.0f, 0.0f),
-	};  //ポイント
+		Vector3(-920.0f, 120.0f, 0.0f),
+		Vector3(-920.0f, 20.0f, 0.0f),
+		Vector3(-920.0f, -80.0f, 0.0f),
+		Vector3(-920.0f, -180.0f, 0.0f),
+	};															//王冠マーク
 
 	FontRender m_time_left;
+
+	const char* knightname = "knightplayer";
+	const char* wizardname = "wizardplayer";
 
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;

@@ -7,8 +7,8 @@ class Result:public IGameObject
 public:
 	Result();
 	~Result();
-	bool Start();
 	void Update();
+	bool Start();
 	void Render(RenderContext& rc);
 
 	Quaternion m_sRotation;
@@ -17,6 +17,7 @@ public:
 
 private:
 	int charPoints[2];
+	int titleScene = 1;
 
 	FontRender moji;
 

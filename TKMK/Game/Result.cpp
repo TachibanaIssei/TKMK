@@ -45,6 +45,7 @@ void Result::Update()
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
+		tittle->SetTitleScene(titleScene);
 		DeleteGO(this);
 	}
 }

@@ -42,10 +42,10 @@ void WizardBase::SetModel()
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Wizard/Wizard_Run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enWizardState_Attack].Load("Assets/animData/Wizard/Wizard_Attack.tka");
-	m_animationClips[enWizardState_Attack].SetLoopFlag(false);
-	m_animationClips[enWizardState_Avoidance].Load("Assets/animData/Wizard/Wizard_Avoidance.tka");
-	m_animationClips[enWizardState_Avoidance].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Atk].Load("Assets/animData/Wizard/Wizard_Attack.tka");
+	m_animationClips[enAnimationClip_Atk].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Avoidance].Load("Assets/animData/Wizard/Wizard_Avoidance.tka");
+	m_animationClips[enAnimationClip_Avoidance].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Wizard/Wizard_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Wizard/Wizard_Death.tka");

@@ -24,7 +24,7 @@ public:
 	~Game();
 
 	enum EnGameState {
-		enGameState_Start,
+		enGameState_Start=0,
 		enGameState_Battle,
 		enGameState_Pause,
 		enGamestate_End,
@@ -144,6 +144,36 @@ public:
 
 	void GetActorPoints(int charPoints[]);
 
+	/// <summary>
+	/// 制限時間の処理
+	/// </summary>
+	void CountDown();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	int CountDownMinutes() const
+	{
+		return m_StartToGameTimer;
+	}
+
+	float GetSecondsTimer()
+	{
+		return SecondsTimer;
+	}
+
+	float GetMinutesTimer()
+	{
+		return MinutesTimer;
+	}
+
+	EnGameState NowGameState()
+	{
+		return m_GameState;
+	}
+
+
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する
@@ -222,6 +252,17 @@ private:
 	int RandamRespawnPosNumber;
 	bool EnemyRespawnFlag[10];
 
+	//秒を計るタイマー
+	float SecondsTimer = 0.0f;
+	//分を計るタイマー5
+	float MinutesTimer = 5.0f;
+	//制限時間に達したかの判定
+	bool GameEndFlag = false;
+
+	float m_StartToGameTimer = 4.0f;
+
+	float m_EndtoResultTimer = 0.0f;
+
 	//リスポーンタイマー
 	float m_RespawnTimer = 0.0f;
 	//
@@ -229,8 +270,8 @@ private:
 	
 	//BGMの初期音量
 	float BGMVolume = 2.0f;
-	//効果音の初期音量
-	float SoundEffectVolume = 1.0f;
+	//効果音の初期音量1
+	float SoundEffectVolume = 0.0f;
 
 	//プレイヤーの使うキャラの番号
 	//０…剣士

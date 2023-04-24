@@ -4,6 +4,7 @@
 //class WizardPlayer;
 class Player;
 class Game;
+class Actor;
 
 class GameUI:public IGameObject
 {
@@ -88,24 +89,23 @@ public:
 	void Timer();
 
 	/// <summary>
-	/// ゲージを左寄せする処理
+	/// 
 	/// </summary>
-	/// <param name="size">画像の元の大きさ</param>
-	/// <param name="scale">現在のスケール倍率</param>
-	/// <returns>変換前と変換後の差</returns>
-	//Vector3 HPBerSend(Vector3 size, Vector3 scale)
-	//{
-	//	Vector3 hpBerSize = size;								//画像の元の大きさ
-	//	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
-	//	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
+	void CountDown();
 
-	//	changeBerSize.x = hpBerSize.x * scale.x;
-	//	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
-	//	BerSizeSubtraction.x /= 2.0f;
+	/// <summary>
+	/// 
+	/// </summary>
+	void EXPBar();
 
-	//	return BerSizeSubtraction;
-	//}
+	/// <summary>
+	/// 
+	/// </summary>
+	void CharPoint();
+
 private:
+	FontRender m_CountDownFont;
+
 	FontRender m_LevelFont;
 	FontRender m_LevelNameFont;
 
@@ -115,34 +115,63 @@ private:
 	FontRender m_AtkFont;
 	FontRender m_SpeedFont;
 
-	FontRender m_PointFont;
+	FontRender m_PointFont[4];
 
 	/*KnightPlayer* m_knightplayer=nullptr;
 	WizardPlayer* wizardPlayer = nullptr;*/
 	Player* player = nullptr;
 	Game* m_game = nullptr;
+	Actor* actor = nullptr;
+
+	std::vector<Actor*> m_Actors;
+
 	//UI
-	SpriteRender			m_hpBar;				//HPバーの画像
-	SpriteRender			m_statusBar;			//ステータスの画像
-	SpriteRender			m_HPFrame;		//プレイヤーの顔画像の枠
-	SpriteRender			m_playerFaceBack;		//プレイヤーの顔画像の背景
-	SpriteRender            m_SkillRender;          //スキルアイコン
-	SpriteRender            m_UltRender;            //必殺アイコン
-	SpriteRender            m_TimeAndPointRender;   //制限時間と獲得ポイント
+	SpriteRender			m_hpBar;							//HPバーの画像
+	SpriteRender			m_statusBar;						//ステータスの画像
+	SpriteRender			m_HPFrame;							//プレイヤーの顔画像の枠
+	SpriteRender			m_playerFaceBack;					//プレイヤーの顔画像の背景
+	SpriteRender            m_SkillRender;						//スキルアイコン
+	SpriteRender            m_UltRender;						//必殺アイコン
+	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;
 	SpriteRender            m_MaxLv;
-	SpriteRender            m_Flame;                //制限時間と獲得ポイントやHPバーの画像を
-	SpriteRender            m_Point;                //ポイント
-	SpriteRender            m_ExperienceFlame;        //経験値のフレーム
-	SpriteRender            m_ExperienceBar_flont;    //経験値バーの表
+	SpriteRender            m_Flame;							//制限時間と獲得ポイントやHPバーの画像を
+	SpriteRender            m_Point;							//ポイント
+	SpriteRender            m_ExperienceFlame;					//経験値のフレーム
+	SpriteRender            m_ExperienceBar_flont;				//経験値バーの表
+	SpriteRender			m_Crown;							//ポイントが一番多いキャラにつける王冠マーク
+	SpriteRender			m_PointFlame[4];					//ポイントを表示するフレーム
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
+
+	Vector3 PointPos[4] = {
+		Vector3(-850.0f, 150.0f, 0.0f),
+		Vector3(-850.0f, 50.0f, 0.0f), 
+		Vector3(-850.0f, -50.0f, 0.0f), 
+		Vector3(-850.0f, -150.0f, 0.0f), 
+	};															//ポイント
+
+	Vector3 PointFlamePos[4] = {
+		Vector3(-850.0f, 120.0f, 0.0f),
+		Vector3(-850.0f, 20.0f, 0.0f),
+		Vector3(-850.0f, -80.0f, 0.0f),
+		Vector3(-850.0f, -180.0f, 0.0f),
+	};															//ポイント
 	
-	
+	Vector3 CrownPos[4] = {
+		Vector3(-920.0f, 120.0f, 0.0f),
+		Vector3(-920.0f, 20.0f, 0.0f),
+		Vector3(-920.0f, -80.0f, 0.0f),
+		Vector3(-920.0f, -180.0f, 0.0f),
+	};															//王冠マーク
+
 	FontRender m_time_left;
+
+	const char* knightname = "knightplayer";
+	const char* wizardname = "wizardplayer";
 
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;
@@ -151,6 +180,19 @@ private:
 	float m_timer = 300.0f;
 
 	bool GameEndFlag=false;
+
+	int nowEXP;
+	//前フレームの経験値
+	int oldEXP=0;
+
+	int nowEXPTable=0;
+	//前フレームの経験値テーブル
+	int oldEXPTable;
+	//キャラのポイント
+	int charPoint[4];
+
+	int MaxPoint = 0;
+
 	//int LEVEL;
 };
 

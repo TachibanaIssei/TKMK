@@ -13,79 +13,82 @@ Actor::~Actor()
 
 void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
 {
-	//“Á’è‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªÄ¶’†‚È‚ç
+	//ç‰¹å®šã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒå†ç”Ÿä¸­ãªã‚‰
 	if (IsEnableMove() == false)
 	{
-		//”²‚¯o‚·@ˆÚ“®ˆ—‚ğs‚í‚È‚¢
+		//æŠœã‘å‡ºã™ã€€ç§»å‹•å‡¦ç†ã‚’è¡Œã‚ãªã„
 		return;
 	}
 	
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	//ƒJƒƒ‰‚Ì‘O•ûŒü‚Æ‰E•ûŒü‚ÌƒxƒNƒgƒ‹‚ğ‚Á‚Ä‚­‚éB
+	//ã‚«ãƒ¡ãƒ©ã®å‰æ–¹å‘ã¨å³æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒã£ã¦ãã‚‹ã€‚
 	Vector3 forward = g_camera3D->GetForward();
 	Vector3 right = g_camera3D->GetRight();
-	//y•ûŒü‚É‚ÍˆÚ“®‚³‚¹‚È‚¢B
+	//yæ–¹å‘ã«ã¯ç§»å‹•ã•ã›ãªã„ã€‚
 	forward.y = 0.0f;
 	right.y = 0.0f;
 	forward.Normalize();
-	//¶ƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚Æstatus‚ÌƒXƒs[ƒh‚ğæZB
+	//ç§»å‹•ã®å…¥åŠ›é‡ã¨statusã®ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’ä¹—ç®—ã€‚
 	right *= stickL.x * status.Speed;
 	forward *= stickL.y * status.Speed;
 
-	//ƒvƒŒƒCƒ„[‚Ì‘O•ûŒü‚Ìî•ñ‚ğXV
-	//x‚©z‚ÌˆÚ“®‘¬“x‚ª‚ ‚Á‚½‚ç(ƒXƒeƒBƒbƒN‚Ì“ü—Í‚ª‚ ‚Á‚½‚ç)B
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰æ–¹å‘ã®æƒ…å ±ã‚’æ›´æ–°
+	//xã‹zã®ç§»å‹•é€Ÿåº¦ãŒã‚ã£ãŸã‚‰
 	if (fabsf(forward.x) >= 0.001f || fabsf(forward.z) >= 0.001f)
 	{
+		//å‰æ–¹å‘ã‚’è¨ˆç®—ã™ã‚‹
 		m_Forward = forward + right;
 	}
 
-	//ˆÚ“®‘¬“x‚ÉƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚ğ‰ÁZ‚·‚éB
+	//ç§»å‹•é€Ÿåº¦ã«å‰æ–¹å‘ã¨å³æ–¹å‘ã®å…¥åŠ›é‡ã‚’åŠ ç®—ã™ã‚‹ã€‚
 	m_moveSpeed += right + forward;
-	//d—Í‚ğ•t—^‚·‚é
+	//é‡åŠ›ã‚’ä»˜ä¸ã™ã‚‹
 	m_moveSpeed.y -= 600.0f * g_gameTime->GetFrameDeltaTime();
 
-	//’n–Ê‚É‚Â‚¢‚½B
+	//åœ°é¢ã«ã¤ã„ãŸã€‚
 	if (charcon.IsOnGround()) {
 
 		m_moveSpeed.y = 0.0f;
 
-		//ƒWƒƒƒ“ƒvƒtƒ‰ƒO‚ªtrue‚¾‚Á‚½‚ç
+		//ã‚¸ãƒ£ãƒ³ãƒ—ãƒ•ãƒ©ã‚°ãŒtrueã ã£ãŸã‚‰
 		if (m_RespawnJumpFlag == true)
 		{
+			//åº§æ¨™ã‚’ä¸Šã’ã‚‹
 			RespawnMove();
+			//ãƒ•ãƒ©ã‚°ã‚’falseã«ã™ã‚‹
 			m_RespawnJumpFlag = false;
 		}
 	}
 
-	//«¶¬‚·‚éƒNƒ‰ƒX‚ÅƒLƒƒƒ‰ƒRƒ“‚ğXV‚·‚é
-	//ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚ğg‚Á‚ÄÀ•W‚ğˆÚ“®‚³‚¹‚éB
+	//â†“ç”Ÿæˆã™ã‚‹ã‚¯ãƒ©ã‚¹ã§ã‚­ãƒ£ãƒ©ã‚³ãƒ³ã‚’æ›´æ–°ã™ã‚‹
+	//ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’ä½¿ã£ã¦åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹ã€‚
 	//position = charcon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
 
-//ƒŠƒXƒ|[ƒ“‚·‚éÀ•W‚ğİ’è‚·‚é
+//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹åº§æ¨™ã‚’è¨­å®šã™ã‚‹
 void Actor::GetRespawnPos()
 {
 	m_respawnLevel.Init("Assets/level3D/AIPOS.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"CharPos") == true) {
-			//¶ã‚ÌÀ•W
+			//å·¦ä¸Šã®åº§æ¨™
 			if (objData.number == 0) {
 				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//‰Eã‚ÌÀ•W
+			//å³ä¸Šã®åº§æ¨™
 			if (objData.number == 1) {
 				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//‰E‰º‚ÌÀ•W
+			//å³ä¸‹ã®åº§æ¨™
 			if (objData.number == 2) {
 				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
 			}
-			//¶‰º‚ÌÀ•W
+			//å·¦ä¸‹ã®åº§æ¨™
 			if (objData.number == 3) {
 				SetRespawnPos(objData.position, objData.rotation, objData.number);
 				return true;
@@ -96,11 +99,11 @@ void Actor::GetRespawnPos()
 }
 
 /// <summary>
-/// ƒŒƒxƒ‹ƒAƒbƒv‚Ìˆ—
+/// ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã®å‡¦ç†
 /// </summary>
-/// <param name="lus">ƒŒƒxƒ‹ƒAƒbƒv‚É‘‰Á‚·‚éƒXƒe[ƒ^ƒX</param>
-/// <param name="nowStatus">Œ»İ‚ÌƒXƒe[ƒ^ƒX</param>
-/// <param name="Level">Œ»İ‚ÌƒŒƒxƒ‹</param>
+/// <param name="lus">ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+/// <param name="nowStatus">ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+/// <param name="Level">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
 void Actor::LevelUp(LvUpStatus& lus,Status& nowStatus,int& Level)
 {
 	nowStatus.MaxHp+= lus.LvHp;
@@ -111,47 +114,49 @@ void Actor::LevelUp(LvUpStatus& lus,Status& nowStatus,int& Level)
 }
 
 /// <summary>
-/// ƒŒƒxƒ‹ƒ_ƒEƒ“‚Ìˆ—
+/// ãƒ¬ãƒ™ãƒ«ãƒ€ã‚¦ãƒ³ã®å‡¦ç†
 /// </summary>
-/// /// <param name="lus">ƒŒƒxƒ‹ƒAƒbƒv‚É‘‰Á‚·‚éƒXƒe[ƒ^ƒX</param>
-/// <param name="nowStatus">Œ»İ‚ÌƒXƒe[ƒ^ƒX</param>
-/// <param name="Level">Œ»İ‚ÌƒŒƒxƒ‹</param>
-/// <param name="downLevel">‰º‚°‚éƒŒƒxƒ‹‚Ì”</param>
+/// /// <param name="lus">ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+/// <param name="nowStatus">ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹</param>
+/// <param name="Level">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
+/// <param name="downLevel">ä¸‹ã’ã‚‹ãƒ¬ãƒ™ãƒ«ã®æ•°</param>
 void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level, int downLevel)
 {
 	Level-= downLevel;
-	//‚à‚µƒŒƒxƒ‹‚ª0‚È‚ç1‚É‚·‚é
+	//ã‚‚ã—ãƒ¬ãƒ™ãƒ«ãŒ0ãªã‚‰1ã«ã™ã‚‹
 	if (Level == 0) {
 		Level = 1; 
 		return;
 	}
 
 	nowStatus.MaxHp-= downLevel*lus.LvHp;
-	//‚à‚µHP‚ªMaxHp‚ğã‰ñ‚é‚È‚ç
+	//ã‚‚ã—HPãŒMaxHpã‚’ä¸Šå›ã‚‹ãªã‚‰
 	if (nowStatus.Hp > nowStatus.MaxHp)
-		//HP‚ÆMaxHp‚ğ“¯‚¶‚É‚·‚é
+	{
+		//HPã¨MaxHpã‚’åŒã˜ã«ã™ã‚‹
 		nowStatus.Hp = nowStatus.MaxHp;
+	}
 
 	nowStatus.Atk -= downLevel*lus.LvAtk;
 	nowStatus.Speed -= downLevel*lus.LvSpeed;
 }
 /// <summary>
-/// ’†—§‚Ì“G‚ğ“|‚µ‚½‚Æ‚«‚ÌŒoŒ±’l‚Ìˆ—
+/// ä¸­ç«‹ã®æ•µã‚’å€’ã—ãŸã¨ãã®çµŒé¨“å€¤ã®å‡¦ç†
 /// </summary>
-/// <param name="GetExp">’†—§‚Ì“G‚ÌŒoŒ±’l</param>
+/// <param name="GetExp">ä¸­ç«‹ã®æ•µã®çµŒé¨“å€¤</param>
 void Actor::ExpProcess(int Exp)
 {
-	//‚à‚µƒŒƒxƒ‹‚ª10(Max)‚È‚ç
+	//ã‚‚ã—ãƒ¬ãƒ™ãƒ«ãŒ10(Max)ãªã‚‰
 	if (Lv == 10)return;
-	//©g‚ÌŒoŒ±’l‚É“G‚ğ“|‚µ‚½‚Æ‚«‚Éè‚É“ü‚ê‚éŒoŒ±’l‚ğ‘«‚·
+	//è‡ªèº«ã®çµŒé¨“å€¤ã«æ•µã‚’å€’ã—ãŸã¨ãã«æ‰‹ã«å…¥ã‚Œã‚‹çµŒé¨“å€¤ã‚’è¶³ã™
 	GetExp += Exp;
-	//è‚É“ü‚ê‚½ŒoŒ±’l‚æ‚èŒoŒ±’lƒe[ƒuƒ‹‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚ç
-	if (GetExp < ExpTable) return;      //”²‚¯o‚·
+	//æ‰‹ã«å…¥ã‚ŒãŸçµŒé¨“å€¤ã‚ˆã‚ŠçµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã®ã»ã†ãŒå¤§ãã‹ã£ãŸã‚‰
+	if (GetExp < ExpTable) return;      //æŠœã‘å‡ºã™
 	else {
-		//ŒoŒ±’lƒe[ƒuƒ‹‚æ‚èè‚É“ü‚ê‚½ŒoŒ±’l‚Ì‚Ù‚¤‚ª‘å‚«‚©‚Á‚½‚ç
-		//ƒŒƒxƒ‹ƒAƒbƒv
+		//çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã‚ˆã‚Šæ‰‹ã«å…¥ã‚ŒãŸçµŒé¨“å€¤ã®ã»ã†ãŒå¤§ãã‹ã£ãŸã‚‰
+		//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—
 		LevelUp(LvUPStatus, m_Status, Lv);
-		//ƒŒƒxƒ‹‚É‡‚í‚¹‚ÄƒŒƒxƒ‹‚Ì‰æ‘œ‚ğ•ÏX‚·‚é
+		//ãƒ¬ãƒ™ãƒ«ã«åˆã‚ã›ã¦ãƒ¬ãƒ™ãƒ«ã®ç”»åƒã‚’å¤‰æ›´ã™ã‚‹
 		switch (Lv)
 		{
 		case 2:
@@ -184,13 +189,13 @@ void Actor::ExpProcess(int Exp)
 	}
 }
 /// <summary>
-/// ƒŠƒXƒ|[ƒ“‚µ‚½‚Æ‚«‚ÌƒŒƒxƒ‹‚É‚æ‚Á‚ÄŒoŒ±’l‚ğ•ÏX‚·‚é
+/// ãƒªã‚¹ãƒãƒ¼ãƒ³ã—ãŸã¨ãã®ãƒ¬ãƒ™ãƒ«ã«ã‚ˆã£ã¦çµŒé¨“å€¤ã‚’å¤‰æ›´ã™ã‚‹
 /// </summary>
-/// <param name="Lv">Œ»İ‚ÌƒŒƒxƒ‹</param>
-/// <param name="getExp">ŒoŒ±’l</param>
+/// <param name="Lv">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
+/// <param name="getExp">çµŒé¨“å€¤</param>
 void Actor::ExpReset(int& Lv, int& getExp)
 {
-	//ŒoŒ±’l‚ğƒŠƒZƒbƒg
+	//çµŒé¨“å€¤ã‚’ãƒªã‚»ãƒƒãƒˆ
 	switch (Lv)
 	{
 	case 1:
@@ -227,10 +232,10 @@ void Actor::ExpReset(int& Lv, int& getExp)
 }
 
 /// <summary>
-/// ŒoŒ±’lƒe[ƒuƒ‹‚ğ•ÏX‚·‚é
+/// çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å¤‰æ›´ã™ã‚‹
 /// </summary>
-/// <param name="Lv">Œ»İ‚ÌƒŒƒxƒ‹</param>
-/// <param name="expTable">ŒoŒ±’lƒe[ƒuƒ‹</param>
+/// <param name="Lv">ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
+/// <param name="expTable">çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«</param>
 void Actor::ExpTableChamge(int& Lv, int& expTable)
 {
 	switch (Lv)
@@ -254,44 +259,36 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 }
 
 /// <summary>
-/// ƒXƒLƒ‹‚ğg—p‚µ‚½Œã‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚Ìˆ—
+/// ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®å‡¦ç†
 /// </summary>
-/// <param name="SkillCooltimer">ƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€</param>
-/// <param name="skillstate">ƒXƒLƒ‹‚ğg‚¢I‚Á‚½‚Ì”»’è</param>
-/// <param name="timer">ƒN[ƒ‹ƒ^ƒCƒ€‚ğŒvZ‚·‚é•Ï”</param>
-void Actor::COOlTIME(float SkillCooltimer, bool& skillstate,float& timer)
+/// <param name="SkillCooltimer">ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ </param>
+/// <param name="skillstate">ã‚¹ã‚­ãƒ«ã‚„å›é¿ãŒçµ‚ã‚ã£ãŸã‹ã®åˆ¤å®š</param>
+/// <param name="timer">ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã‚’è¨ˆç®—ã™ã‚‹å¤‰æ•°</param>
+void Actor::COOlTIME(float Cooltime, bool& skillEndFlag,float& timer)
 {
 
-	//ƒXƒLƒ‹‚ÌƒAƒjƒ[ƒVƒ‡ƒ“Ä¶‚ªI‚í‚Á‚½‚ç
-	if (skillstate==true)
+	//ã‚¹ã‚­ãƒ«ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”ŸãŒçµ‚ã‚ã£ãŸã‚‰
+	if (skillEndFlag ==true)
 	{
 		if (timer <= 0)
 		{
-			//ƒXƒLƒ‹g—p‰Â”\
-			skillstate = false;
-			timer = SkillCooltimer;
+			//ã‚¹ã‚­ãƒ«ä½¿ç”¨å¯èƒ½
+			skillEndFlag = false;
+			timer = Cooltime;
 		}
-		else timer -= g_gameTime->GetFrameDeltaTime();   //timer‚ği‚ß‚é
+		else timer -= g_gameTime->GetFrameDeltaTime();   //timerã‚’é€²ã‚ã‚‹
 
-		//timer‚ªƒXƒLƒ‹‚ÌƒN[ƒ‹ƒ^ƒCƒ€‚æ‚è‘å‚«‚­‚È‚Á‚½‚çB
-		//if (timer >= SkillCooltimer)
-		//{
-		//	//ƒXƒLƒ‹g—p‰Â”\
-		//	skillstate = false;
-		//	timer = 0;
-		//}
-		//else timer += g_gameTime->GetFrameDeltaTime();   //timer‚ği‚ß‚é
 	}
 	
 }
 
 /// <summary>
-/// ƒŠƒXƒ|[ƒ“‚µ‚½‚Æ‚«‚É“ƒ‚©‚ç”ò‚Ñ~‚è‚éˆ—
+/// ãƒªã‚¹ãƒãƒ¼ãƒ³ã—ãŸã¨ãã«å¡”ã‹ã‚‰é£›ã³é™ã‚Šã‚‹å‡¦ç†
 /// </summary>
 void Actor::RespawnMove()
 {
-	//”ò‚Ñ~‚è‚é
-	//ƒWƒƒƒ“ƒv‚·‚é
+	//é£›ã³é™ã‚Šã‚‹
+	//ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹
 		m_moveSpeed.y = 350.0f;
 		//position.y += jump;
 		//m_RespawnJumpFlag = true;

@@ -32,9 +32,6 @@ public:
 	/// <summary>
 	/// モデルのInit、キャラコンの初期化
 	/// </summary>
-	/// <param name="Model"></param>
-	/// <param name="charCon"></param>
-	/// bool Start()
 	void SetModel();
 
 	/// <summary>
@@ -159,6 +156,13 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
+		return m_charState != enCharState_Attack &&
+			m_charState != enCharState_UltimateSkill &&
+			m_charState != enCharState_Skill &&
+			m_charState != enCharState_Avoidance &&
+			m_charState != enCharState_Damege &&
+			m_charState != enCharState_Death;
+
 		return m_knightState != enKnightState_ChainAtk &&
 			m_knightState != enKnightState_UltimateSkill &&
 			m_knightState != enKnightState_Skill &&
@@ -166,6 +170,8 @@ public:
 			m_knightState != enKnightState_Damege&&
 			m_knightState != enKnightState_Death;
 	}
+
+
 
 	/// <summary>
 	/// 現在のレベルを返す
@@ -204,15 +210,15 @@ public:
 	int& SetMaxHp() {
 		return m_Status.MaxHp;
 	}
-
+	//////////////////////////////////////////////////////////////////////////////
 	/// <summary>
 	/// プレイヤーのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
-	void SetPlayerState(PlayerState gamescene) {
+	/*void SetPlayerState(PlayerState gamescene) {
 		m_knightState = gamescene;
-
-	}
+		m_charState = gamescene;
+	}*/
 
 	/// <summary>
 	/// リスポーンする番号を決める
@@ -251,18 +257,6 @@ protected:
 	//HPが0になったときのステートの遷移処理
 	void OnProcessDeathStateTransition();
 
-	//enum PlayerState {
-	//	enKnightState_Idle,
-	//	enKnightState_Run,
-	//	enKnightState_ChainAtk,
-	//	enKnightState_Damege,
-	//	enKnightState_Death,
-	//	enKnightState_Skill,
-	//	enKnightState_UltimateSkill,
-	//	enKnightState_Avoidance,
-	//	enKnightState_Num,
-	//	enKnightState_GameScene,        //ゲームの状態を受け取る
-	//};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
 		enAnimationClip_Walk,
@@ -293,8 +287,11 @@ protected:
 	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
 	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
+	//Vector3 m_SwordPos = Vector3::Zero;						//剣の座標
 	CharacterController m_charCon;                        //キャラクターコントロール
 	
+	
+
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	PlayerState m_knightState = enKnightState_Idle/* = enKnightState_Num*/;
 	
@@ -337,7 +334,7 @@ protected:
 	//無敵時間を計算するタイマー
 	float invincibleTimer = 0;
 	//獲得した経験値仮
-	int exp=5;
+	int exp=1;
 	//Newtral_Enemyの攻撃力
 	int Enemy_atk = 10;
 	//必殺技使用のフラグ

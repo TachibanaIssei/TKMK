@@ -101,11 +101,6 @@ bool Game::Start()
 
 	});
 
-
-	//GameUIの生成
-	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
-	m_gameUI->SetSGame(this);
-
 	//プレイヤーの生成
 	player = NewGO<Player>(0, "player");
 	player->CharSelect(SelectCharNumber);
@@ -116,15 +111,15 @@ bool Game::Start()
 	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
 
 	//中立の敵の生成
-	m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
+	{
+		m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
 
-		if (objData.ForwardMatchName(L"Pos") == true) {
-			if (objData.number == 0) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 1) {
-
+			if (objData.ForwardMatchName(L"Pos") == true) {
+				if (objData.number == 0) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
+				if (objData.number == 1) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 				//enemyNumber++;
 				//ENEMY_AMOUNT;
@@ -149,29 +144,30 @@ bool Game::Start()
 			if (objData.number == 5) {
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
+					enemyNumber++;
+					ENEMY_AMOUNT;
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+				if (objData.number == 6) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
+				if (objData.number == 7) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					enemyNumber++;
+					ENEMY_AMOUNT;
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+				if (objData.number == 8) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+					return true;
+				}
 			}
-			if (objData.number == 6) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 7) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-			if (objData.number == 8) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-		}
-		return true;
-	});
+			return true;
+			});
+	}
 
 	
 
@@ -218,6 +214,10 @@ bool Game::Start()
 		});
 	
 	
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
+	m_gameUI->SetSGame(this);
+
 	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
 
@@ -283,42 +283,57 @@ bool Game::Start()
 		SelectBar_SEPos = Menu_SelectBar_SEPos;
 	}
 	
-	
-
 	//ゲームの状態をゲームステートにする
-	m_GameState = enGameState_Battle;
+	m_GameState = enGameState_Start;
 
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
-	
-	m_bgm = NewGO<SoundSource>(0);
+	//BGMの再生
+	/*m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(2);
 	m_bgm->Play(true);
-	m_bgm->SetVolume(BGMVolume);
+	m_bgm->SetVolume(BGMVolume);*/
 
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
-
 	return true;
 }
 
 void Game::Update()
 {
+	//制限時間に達したら
+	if (GameEndFlag == true)
+	{
+		m_GameState=enGamestate_End;
+		GameState();
+	}
+
 	GameState();
 
 	m_modelRender.Update();
-	//m_Pause_Back.Update();
 }
 
 void Game::BattleStart()
 {
+	m_StartToGameTimer -= g_gameTime->GetFrameDeltaTime();
 
+	if (m_StartToGameTimer < 0)
+	{
+		m_GameState = enGameState_Battle;
+	}
 }
 
 //バトルステートの処理
 void Game::Battle()
 {
+	//時間切れではないなら
+	if (GameEndFlag == false) {
+		CountDown();
+	}
+	
+	
+
 	if (m_GameState == enGameState_Battle) {
 		//CTRLを押したら
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
@@ -374,7 +389,12 @@ void Game::Pause()
 //タイムアップになったあとの処理
 void Game::End()
 {
+	m_EndtoResultTimer+= g_gameTime->GetFrameDeltaTime();
 
+	if (m_EndtoResultTimer >= 10)
+	{
+		m_GameState=enGameState_Rezult;
+	}
 }
 
 void Game::GoResult()
@@ -773,6 +793,25 @@ void Game::Menu_QuitGame()
 		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
 		DeleteGO(this);
 	}
+}
+
+//制限時間の処理
+void Game::CountDown()
+{
+	//0秒以下なら
+	if (SecondsTimer <= 0) {
+		//1分減らす
+		MinutesTimer--;
+		//もし0分なら、秒も0にする
+		if (MinutesTimer < 0) {
+			SecondsTimer = 0.0f;
+			MinutesTimer = 0.0f;
+			GameEndFlag = true;
+		}
+		//60秒に戻す
+		else SecondsTimer = 60.0f;
+	}
+	else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
 }
 
 void Game::Render(RenderContext& rc)

@@ -191,6 +191,11 @@ private:
 	/// </summary>
 	void CreateEnemy(Vector3 pos, Quaternion rot);
 
+	/// <summary>
+	/// スカイキューブの初期化処理
+	/// </summary>
+	void InitSkyCube();
+
 	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
 
@@ -221,6 +226,7 @@ private:
 	float m_nuwBGMPos=10.0f;
 	float m_nuwSEPos=10.0f;
 
+	SkyCube* m_skyCube = nullptr;
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;

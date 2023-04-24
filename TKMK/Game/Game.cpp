@@ -17,7 +17,7 @@
 //#include <algorithm>
 
 namespace {
-	int ENEMY_AMOUNT = 5;
+	int ENEMY_AMOUNT = 10;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
 	const Vector3 Menu_HowToPlayPos = Vector3(0.0f, 60.0f, 0.0f);
 	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);
@@ -66,6 +66,7 @@ Game::~Game()
 
 bool Game::Start()
 {
+
 	g_renderingEngine->UnUseHemiLight();
 
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
@@ -125,9 +126,9 @@ bool Game::Start()
 			if (objData.number == 1) {
 
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
+				//enemyNumber++;
+				//ENEMY_AMOUNT;
+				//CreateEnemy(objData.position, objData.rotation);
 				return true;
 			}
 			if (objData.number == 2) {
@@ -172,10 +173,50 @@ bool Game::Start()
 		return true;
 	});
 
-	//剣士AIの生成
-	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-	m_KnightAI->SetGame(this);
-	m_Actors.push_back(m_KnightAI);
+	
+
+	m_AIPos.Init("Assets/level3D/AIPOS.tkl", [&](LevelObjectData& objData) {
+
+		
+
+			if (objData.ForwardMatchName(L"CharPos") == true) {
+				//左上の座標
+				if (objData.number == 0) {
+					m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+					m_KnightAI->SetGame(this);
+					m_Actors.push_back(m_KnightAI);
+					m_KnightAI->SetPosition(objData.position);
+					m_KnightAI->SetCharaconPosition(objData.position);
+					int Number = 0;
+					m_KnightAI->SetRespawnNumber(Number);
+					return true;
+				}
+				//右上の座標
+				if (objData.number == 1) {
+					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+					m_KnightAI1->SetGame(this);
+					m_Actors.push_back(m_KnightAI1);
+					m_KnightAI1->SetPosition(objData.position);
+					m_KnightAI1->SetCharaconPosition(objData.position);
+					int Number = 1;
+					m_KnightAI1->SetRespawnNumber(Number);
+					return true;
+				}
+				//左下の座標
+				if (objData.number == 3) {
+					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
+					m_KnightAI2->SetGame(this);
+					m_Actors.push_back(m_KnightAI2);
+					m_KnightAI2->SetPosition(objData.position);
+					m_KnightAI2->SetCharaconPosition(objData.position);
+					int Number = 3;
+					m_KnightAI2->SetRespawnNumber(Number);
+					return true;
+				}
+			}
+		return true;
+		});
+	
 	
 	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
@@ -308,7 +349,7 @@ void Game::Battle()
 	}
 
 	m_RespawnTimer += g_gameTime->GetFrameDeltaTime();
-	if (m_RespawnTimer >= 20) {
+	if (m_RespawnTimer >= 5) {
 		Respawn();
 		m_RespawnTimer = 0.0f;
 	}
@@ -504,7 +545,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 	enemyNumber++;
 	ENEMY_AMOUNT;
 
-	Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(0, CreateEnemyName());
+	Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(1, CreateEnemyName());
 	neutral_Enemy->SetNeutral_EnemyGame(this);
 	neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 	neutral_Enemy->SetPosition(pos);

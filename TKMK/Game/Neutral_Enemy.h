@@ -49,7 +49,14 @@ public:
 		enEnemyKinds_Num,						//敵の種類
 	};
 
-
+	enum EnAnimationClip {                      //アニメーション。
+		enAnimationClip_Idle,					//待機アニメーション。
+		enAnimationClip_Run,					//走りアニメーション。
+		enAnimationClip_Attack,					//攻撃アニメーション。
+		enAnimationClip_Damage,					//被ダメージアニメーション。
+		enAnimationClip_Death,					//ダウンアニメーション。
+		enAnimationClip_Num,					//アニメーションの数。
+	};
 	void SetNeutral_EnemyGame(Game* NEgame)
 	{
 		m_game = NEgame;
@@ -239,16 +246,37 @@ public:
 	void SetPlayerActor(Actor* actor) {
 		m_player = actor;
 	}
-		enum EnAnimationClip {                      //アニメーション。
-		enAnimationClip_Idle,					//待機アニメーション。
-		enAnimationClip_Run,					//走りアニメーション。
-		enAnimationClip_Attack,					//攻撃アニメーション。
-		enAnimationClip_Damage,					//被ダメージアニメーション。
-		enAnimationClip_Death,					//ダウンアニメーション。
-		enAnimationClip_Num,					//アニメーションの数。
-	};
 
+	/// <summary>
+	/// アクターの情報を追加する
+	/// </summary>
+	/// <param name="actor">加えたいアクター</param>
+	void AddActorFromList(Actor* actor) {
+		be_target.push_back(actor);
+	}
 
+	/// <summary>
+	/// アクターの情報をリストから削除する
+	/// </summary>
+	/// <param name="actor">消したいアクター</param>
+	void RemoveActorFromList(Actor* actor)
+	{
+		std::vector<Actor*>::iterator it = std::find(
+			be_target.begin(), // アクターのリストの最初
+			be_target.end(),   // アクターのリストの最後
+			actor                     // 消したいアクター
+		);
+
+		if (it != be_target.end()) {
+			be_target.erase(it);
+		}
+	}
+
+	//自分を狙っている敵を返す
+	int GetBetargetCount()
+	{
+		return be_target.size();
+	}
 
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
@@ -292,7 +320,7 @@ private:
 	SphereCollider			m_sphereCollider;
 	RigidBody				m_rigidBody;
 	Vector3                 m_inRespawnPosition[12];
-	Vector3                 m_patrolPos[9];
+	Vector3                 m_patrolPos[17];
 	Vector3 nowPos = Vector3::Zero;
 	Vector3 m_hagikiPower;
 	bool m_UnderAttack = false;              //攻撃判定
@@ -316,9 +344,12 @@ private:
 	//std::vector<Neutral_Enemy*>::iterator m_number;
 	int P = -1;
 	int randam;
-	
 	bool m_backPatrol = false;
 	bool m_backPatrolFarst = false;
+
+	//自分をターゲットしてるアクターのリスト
+	std::vector<Actor*> be_target;
+
 
 };
 

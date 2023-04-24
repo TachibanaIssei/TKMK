@@ -76,6 +76,8 @@ bool Game::Start()
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
 	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f,1.0f });
 
+	InitSkyCube();
+
 	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
 
@@ -572,6 +574,12 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 	neutral_Enemy->SetRotation(rot);
 
 	m_neutral_Enemys.push_back(neutral_Enemy);
+}
+
+void Game::InitSkyCube()
+{
+	m_skyCube = NewGO<SkyCube>(0, "skyCube");
+	m_skyCube->SetScale(600.0f);
 }
 
 /// <summary>

@@ -62,7 +62,7 @@ void KnightAI::Update()
 	Invincible();
 	if (SkillState == true)
 	{
-		m_knightState = enKnightState_Skill;
+		m_charState = enCharState_Skill;
 		//スキルを使うときのスピードを使う
 		Vector3 move = m_skillMove;
 		m_rot.SetRotationYFromDirectionXZ(move);
@@ -470,12 +470,12 @@ void KnightAI::LotNextAction()
 void KnightAI::ChaseAndEscape()
 {
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_knightState == enKnightState_Damege ||
-		m_knightState == enKnightState_Death ||
-		m_knightState == enKnightState_UltimateSkill ||
-		m_knightState == enKnightState_ChainAtk ||
-		m_knightState == enKnightState_Skill ||
-		m_knightState == enKnightState_Avoidance)
+	if (m_charState == enCharState_Damege ||
+		m_charState == enCharState_Death ||
+		m_charState == enCharState_UltimateSkill ||
+		m_charState == enCharState_Attack ||
+		m_charState == enCharState_Skill ||
+		m_charState == enCharState_Avoidance)
 	{
 		return;
 	}
@@ -583,12 +583,12 @@ void KnightAI::Attack()
 	if (AtkCollistionFlag == true) AtkCollisiton();
 
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_knightState == enKnightState_Damege ||
-		m_knightState == enKnightState_Death ||
-		m_knightState == enKnightState_UltimateSkill ||
-		m_knightState == enKnightState_ChainAtk ||
-		m_knightState == enKnightState_Skill ||
-		m_knightState == enKnightState_Avoidance)
+	if (m_charState == enCharState_Damege ||
+		m_charState == enCharState_Death ||
+		m_charState == enCharState_UltimateSkill ||
+		m_charState == enCharState_Attack ||
+		m_charState == enCharState_Skill ||
+		m_charState == enCharState_Avoidance)
 	{
 		return;
 	}
@@ -655,7 +655,7 @@ void KnightAI::Attack()
 		{
 			Vector3 diff = TargePos - m_position;
 			m_rot.SetRotationYFromDirectionXZ(diff);
-			m_knightState = enKnightState_ChainAtk;
+			m_charState = enCharState_Attack;
 
 			//FirstAtkFlag = true;
 			//コンボを1増やす
@@ -781,7 +781,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_knightState = enKnightState_Idle;
+			m_charState = enCharState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -798,7 +798,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_knightState = enKnightState_Idle;
+			m_charState = enCharState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -812,7 +812,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	}
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_knightState = enKnightState_Idle;
+		m_charState = enCharState_Idle;
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
@@ -844,12 +844,12 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 void KnightAI::AvoidanceSprite()
 {
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_knightState == enKnightState_Damege ||
-		m_knightState == enKnightState_Death ||
-		m_knightState == enKnightState_UltimateSkill ||
-		m_knightState == enKnightState_ChainAtk ||
-		m_knightState == enKnightState_Skill ||
-		m_knightState == enKnightState_Avoidance)
+	if (m_charState == enCharState_Damege ||
+		m_charState == enCharState_Death ||
+		m_charState == enCharState_UltimateSkill ||
+		m_charState == enCharState_Attack ||
+		m_charState == enCharState_Skill ||
+		m_charState == enCharState_Avoidance)
 	{
 		return;
 	}
@@ -886,7 +886,7 @@ void KnightAI::AvoidanceSprite()
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			//回避ステート
-			m_knightState = enKnightState_Avoidance;
+			m_charState = enCharState_Avoidance;
 			return;
 		}
 	}

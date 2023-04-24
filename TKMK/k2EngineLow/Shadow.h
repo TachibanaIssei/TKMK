@@ -27,6 +27,6 @@ namespace nsK2EngineLow {
 		RenderTarget m_shadowMap;
 		Camera m_lightCamera;
 
-		Vector3 m_lightCameraPosition = Vector3(0.0f,600.0f,300.0f);
+		Vector3 m_lightCameraPosition = Vector3(0.0f,1200.0f,300.0f);
 	};
 }

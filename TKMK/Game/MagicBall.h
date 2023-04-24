@@ -91,7 +91,7 @@ public:
 		//球状のコリジョンを作成する。
 		BallCollision->CreateSphere(m_position, Quaternion::Identity, 20.0f);
 		//名前をplayer_fireballにする。
-		BallCollision->SetName("Wizard_MagicBall");
+		BallCollision->SetName("player_attack");
 		//懲り所オブジェクトが自動で削除されないようにする。
 		BallCollision->SetIsEnableAutoDelete(false);
 	}

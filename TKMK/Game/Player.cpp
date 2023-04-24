@@ -29,7 +29,7 @@ void Player::CreaetPlayer()
 		knightPlayer = NewGO<KnightPlayer>(0, "knightplayer");
 		knightPlayer->SetSGame(game);
 		knightPlayer->SetGameUI(gameUI);
-
+		knightPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
 		playerActor = knightPlayer;
 		break;
 
@@ -38,7 +38,7 @@ void Player::CreaetPlayer()
 		wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
 		wizardPlayer->SetSGame(game);
 		wizardPlayer->SetGameUI(gameUI);
-
+		wizardPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
 		playerActor = wizardPlayer;
 		break;
 

@@ -208,6 +208,14 @@ public:
 
 	}
 
+	/// <summary>
+	/// リスポーンする番号を決める
+	/// </summary>
+	void SetRespawnNumber(int number)
+	{
+		respawnNumber = number;
+	}
+
 protected:
 	void PlayAnimation();
 	//共通のステートの遷移処理

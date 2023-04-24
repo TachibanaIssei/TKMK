@@ -197,6 +197,7 @@ private:
 	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;
+	Level3DRender m_AIPos;
 	FontRender m_fontRender;
 
 	Quaternion m_rotation = Quaternion::Identity;
@@ -227,6 +228,8 @@ private:
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	KnightAI* m_KnightAI = nullptr;
+	KnightAI* m_KnightAI1 = nullptr;
+	KnightAI* m_KnightAI2 = nullptr;
 	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
 	SoundSource* m_bgm = nullptr;	//

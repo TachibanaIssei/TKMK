@@ -693,7 +693,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		SetRespawn();
 		Death();
 		//リスポーン待機フラグを立てる
-		m_RespwanTimeFlag = true;
+		m_DeathToRespwanFlag = true;
 		//待機ステート
 		//m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();

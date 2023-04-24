@@ -77,11 +77,17 @@ bool GameUI::Start()
 			//プレイヤーが剣士なら
 			if (actor->IsMatchName(knightname))
 			{
+				//アイコンを剣士にする
+				
+				//フレームをプレイヤー用にする
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
 			}
 			//プレイヤーが魔法使いなら
 			else if (actor->IsMatchName(wizardname))
 			{
+				//アイコンを魔法使いにする
+				
+				//フレームをプレイヤー用にする
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
 			}
 			//それ以外(AI)なら
@@ -178,10 +184,10 @@ bool GameUI::Start()
 		//HPゲージ裏の画像を読み込む
 		m_statusBar.Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", 600.0f, 120.0f);
 		m_statusBar.SetPosition(HP_BAR_POS);
-		m_statusBar.SetScale(1.0, 1.0, 1.0);
+		m_statusBar.SetScale(1.0, 0.7, 1.0);
 
 		//HPゲージの表の画像を読み込む
-		m_hpBar.Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 90.0f);
+		m_hpBar.Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 80.0f);
 		//ピボットを設定する
 		m_hpBar.SetPivot(HPGAUGE_PIVOT);
 		m_hpBar.SetPosition(HP_BAR_FLONT_POS);
@@ -189,7 +195,7 @@ bool GameUI::Start()
 		//HPゲージのフレームの画像を読み込む
 		m_HPFrame.Init("Assets/sprite/gameUI/HPBar_flame.DDS", 600.0f, 120.0f);
 		m_HPFrame.SetPosition(HP_BAR_POS);
-		m_HPFrame.SetScale(1.0, 1.0, 1.0);
+		m_HPFrame.SetScale(1.0, 0.7, 1.0);
 
 		//更新処理
 		m_statusBar.Update();

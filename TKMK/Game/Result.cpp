@@ -21,7 +21,7 @@ bool Result::Start()
 	game->GetActorPoints(charPoints);
 
 	wchar_t moji2[256];
-	swprintf(moji2, L"%d,%d", charPoints[0], charPoints[1]);
+	swprintf(moji2, L"%d,%d,%d,%d", charPoints[0], charPoints[1], charPoints[2], charPoints[3]);
 	moji.SetText(moji2);
 	moji.SetPosition(Vector3::Zero);
 	moji.SetColor(g_vec4Black);
@@ -50,8 +50,26 @@ void Result::Update()
 	}
 }
 
+void Result::Rank()
+{
+	
+	/*wchar_t moji3[256];
+	if (charPoints[0] > charPoints[1] && charPoints[0] > charPoints[2] && charPoints[0] > charPoints[3])
+	{
+		swprintf(moji3, L"Win");
+	}
+	else
+	{
+		swprintf(moji3, L"Lose");
+	}
+	jiji.SetText(moji3);
+	jiji.SetPosition(90.0f, 90.0f, 90.0f);
+	jiji.SetColor(g_vec4Black);*/
+}
+
 void Result::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
 	moji.Draw(rc);
+	jiji.Draw(rc);
 }

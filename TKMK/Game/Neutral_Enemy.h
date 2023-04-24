@@ -339,6 +339,7 @@ private:
 	//やられたかのフラグ
 	bool Deathflag = false;
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	//中立の敵がやられたときに渡す経験値
 	int Exp = 5;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;

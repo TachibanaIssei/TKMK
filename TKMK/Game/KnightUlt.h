@@ -15,6 +15,7 @@ public:
 
 	bool Start();
 	void Update();
+	void Render(RenderContext& rc);
 
 	/// <summary>
 		/// 座標を設定する。
@@ -64,28 +65,96 @@ public:
 	/// <summary>
 	/// 当たり判定の設定
 	/// </summary>
-	void SetCollision(Vector3 collisionsize)
-	{
-		
-		//球状のコリジョンを作成する。
-		UltCollision->CreateBox(m_position, m_rotation, collisionsize);
-		//コリジョンの名前
-		UltCollision->SetName("player_UltimateSkill");
+	void SetCollision();
 
-		//懲り所オブジェクトが自動で削除されないようにする。
-		UltCollision->SetIsEnableAutoDelete(false);
+	/// <summary>
+	/// モデル、エフェクトの生成
+	/// </summary>
+	void MakeUlt();
+
+	/// <summary>
+	/// 座標を取得
+	/// </summary>
+	/// <returns>座標</returns>
+	const Vector3& GetPosition() const
+	{
+		return m_position;
+	}
+
+	/// <summary>
+	/// プレイヤーの前方向を取得。
+	/// </summary>
+	const Vector3& GetForward() const
+	{
+		return m_forward;
+	}
+
+	/// <summary>
+	/// 当たり判定が生成できるか調べる
+	/// </summary>
+	/// <returns></returns>
+	bool MakeCheck();
+
+	/// <summary>
+	/// キャラのレベルを取得する
+	/// </summary>
+	/// <param name="level">必殺技を打ったキャラのレベル</param>
+	void GetCharLevel(int level)
+	{
+		CharLevel = level;
+	}
+
+	void SetDeletetime()
+	{
+		if (CharLevel < 6)
+		{
+			DeleteTime = 4;
+		}
+		//レベルが7以下なら
+		//必殺技一段階強化
+		else if (CharLevel < 8)
+		{
+			DeleteTime = 4.5;
+		}
+		//レベルが10以下なら
+		//必殺技二段階強化
+		else if (CharLevel <= 10)
+		{
+			DeleteTime = 5;
+		}
 	}
 
 private:
+	ModelRender model;
+
+	Vector3 m_firstposition = Vector3::Zero;
 	Vector3 m_position = Vector3::Zero;
+	Vector3 m_Checkposition = Vector3::Zero;
+
 	Quaternion m_rotation;
 	Vector3 m_scale;
 	Vector3	m_moveSpeed;
+	Vector3 m_forward;
+	EffectEmitter* Ulteffect;
+	//エフェクトの当たり判定
 	CollisionObject* UltCollision;
+	//この当たり判定が壁に当たったら消す
+	CollisionObject* UltDeleteJudgeCollision;
+
+
+	RigidBody				m_rigidBody;						//剛体。
+	SphereCollider			m_sphereCollider;							//コライダー。
 
 	//char m_collisionName;
 
 	float m_timer = 0.0f;
+
+	//当たり判定を消す時間
+	float DeleteTime;
+
+	//生成したキャラのレベル
+	int CharLevel = 0;
+	//bool Ultflag = true;
 
 };
 

@@ -27,6 +27,25 @@ protected:
 	};
 	EnJumpState m_JumpState;
 
+	//キャラの状態
+	enum EnCharState
+	{
+		enCharState_Idle,
+		enCharState_Walk,
+		enCharState_Run,
+		enCharState_Attack,
+		enCharState_Damege,
+		enCharState_Death,
+		enCharState_Skill,
+		enCharState_UltimateSkill,
+		enCharState_Avoidance,
+		enCharState_Pause,
+		enCharState_Jump,
+		enCharState_Fall,
+		enCharState_Num,
+	};
+	EnCharState m_charState = enCharState_Idle;
+
 public:
 
 	//ゲームクラスの現在の状態を示すステート
@@ -94,12 +113,12 @@ public:
 	virtual void UltimateSkill() = 0;
 
 	/// <summary>
-	/// スキルが使用された後のクールタイムの処理
+	/// クールタイムの処理
 	/// </summary>
-	/// <param name="SkillCooltimer">スキルのクールタイム</param>
-	/// <param name="skillstate">スキルを使用したかの判定</param>
+	/// <param name="SkillCooltimer">クールタイム</param>
+	/// <param name="skillstate">スキルや回避が終わったかの判定</param>
 	/// <param name="timer">クールタイムを計算する変数</param>
-	void COOlTIME(float SkillCooltimer,bool& skillstate,float& timer);
+	void COOlTIME(float Cooltime, bool& skillEndFlag, float& timer);
 	
 	/// <summary>
 	/// 現在のレベルを返す
@@ -170,12 +189,6 @@ public:
 	/// <summary>
 	/// リスポーンしたときに塔から飛び降りる処理
 	/// </summary>
-	
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns></returns>
 	void RespawnMove();
 
 	/// <summary>
@@ -196,9 +209,9 @@ public:
 		return m_position;
 	}
 	/// <summary>
-/// knightPlayer
-/// </summary>
-/// <returns>false????????</returns>
+	/// m_spriteFlagを返す
+	/// </summary>
+	/// <returns>判定</returns>
 	const bool GetSpriteFlag() const
 	{
 		return m_spriteFlag;
@@ -332,6 +345,24 @@ public:
 		m_Forward = biff;
 	}
 
+	/// <summary>
+	/// キャラの現在のステート
+	/// </summary>
+	/// <returns></returns>
+	EnCharState NowCharState() const
+	{
+		return m_charState;
+	}
+
+	/// <summary>
+	/// やられたときの
+	/// </summary>
+	/// <returns></returns>
+	bool RespawnFlag() const
+	{
+		return m_RespwanTimeFlag;
+  }
+
 	virtual void SetRespawnNumber(int number)=0;
 
 	/// <summary>
@@ -403,6 +434,7 @@ protected:
 	Quaternion m_rot = Quaternion::Identity;              //回転
 	bool m_spriteFlag = true;
 	Status m_Status;                                      //ステータス
+	Status m_InitialStatus;                                //初期ステータス
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUPStatus = { 30,5,10.0f };
 
@@ -419,6 +451,11 @@ protected:
 
 	int Count=0;
 
+	//やられた後のリスポーンするまで時間を計る処理をするかのフラグ
+	//falseでしない、trueでする
+	bool m_RespwanTimeFlag = false;
+
+	float m_respwanTimer = 2.0f;
 	///////////////////////////////
 	//////ここから下はAI専用///////
 	///////////////////////////////

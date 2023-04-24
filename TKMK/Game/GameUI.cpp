@@ -1,16 +1,18 @@
 #include "stdafx.h"
 #include "GameUI.h"
 #include "Game.h"
-
+#include "Actor.h"
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 #include "Player.h"
 
 namespace
 {
+	const int Characters = 4;
+
 	const Vector2 GAUGE_PIVOT = Vector2(0.5f, 0.5f);				//ゲージのピボット
 	const Vector2 HPGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//HPゲージのピボット
-	const Vector2 EXPERIENCEGAUGE_PIVOT = Vector2(0.0f, 1.0f);				//経験値ゲージのピボット
+	const Vector2 EXPERIENCEGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//経験値ゲージのピボット
 
 	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ステータスバーポジション
 	const Vector3 TIME_POS = Vector3(0.0,470.0f, 0.0f);	//制限時間の座標
@@ -32,7 +34,7 @@ namespace
 
 	const Vector3 FLAME_POS = Vector3(920.0f,-480.0f,0.0f);    //レベルや経験値のフレーム
 
-	const Vector3 PointPos = Vector3(-850.0f, -260.0f, 0.0f);  //ポイント
+	const float DownPointPosY = 100.0f;
 
 	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //ポイント
 }
@@ -50,6 +52,7 @@ bool GameUI::Start()
 {
 	player = FindGO<Player>("player");
 
+
 	//Level
 	m_LevelFont.SetPosition(LV_NUBER_POS);
 	m_LevelFont.SetScale(2.0f);
@@ -57,13 +60,65 @@ bool GameUI::Start()
 	m_LevelFont.SetRotation(0.0f);
 	m_LevelFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
-	m_PointFont.SetPosition(PointPos);
-	m_PointFont.SetScale(2.0f);
-	m_PointFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_PointFont.SetRotation(0.0f);
-	m_PointFont.SetShadowParam(true, 2.0f, g_vec4Black);
+	//ポイント関連
+	{
+		//キャラのポイントを表示
+		m_Actors = m_game->GetActors();
+		int num = 0;
+		for (auto actor: m_Actors)
+		{
+			//ポイントを表示
+			m_PointFont[num].SetPosition(PointPos[num]);
+			m_PointFont[num].SetScale(1.5f);
+			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+			m_PointFont[num].SetRotation(0.0f);
+			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
 
+			//プレイヤーが剣士なら
+			if (actor->IsMatchName(knightname))
+			{
+				//アイコンを剣士にする
+				
+				//フレームをプレイヤー用にする
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+			}
+			//プレイヤーが魔法使いなら
+			else if (actor->IsMatchName(wizardname))
+			{
+				//アイコンを魔法使いにする
+				
+				//フレームをプレイヤー用にする
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+			}
+			//それ以外(AI)なら
+			else
+			{
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}
+			
+			m_PointFlame[num].SetPosition(PointFlamePos[num]);
+			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
+			m_PointFlame[num].Update();
+
+			num++;
+		}
+
+		//王冠マーク
+		m_Crown.Init("Assets/sprite/gameUI/crown.DDS", 80.0f, 80.0f);
+		//m_Crown.SetPosition(FLAME_POS);
+		m_Crown.SetScale(1.0, 1.0, 1.0);
+		m_Crown.Update();
+
+	}
 	
+	
+
+	//カウントダウン
+	m_CountDownFont.SetPosition(Vector3::Zero);
+	m_CountDownFont.SetScale(8.0f);
+	m_CountDownFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_CountDownFont.SetRotation(0.0f);
+	m_CountDownFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 	//右下のフレーム
 	{
@@ -129,10 +184,10 @@ bool GameUI::Start()
 		//HPゲージ裏の画像を読み込む
 		m_statusBar.Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", 600.0f, 120.0f);
 		m_statusBar.SetPosition(HP_BAR_POS);
-		m_statusBar.SetScale(1.0, 1.0, 1.0);
+		m_statusBar.SetScale(1.0, 0.7, 1.0);
 
 		//HPゲージの表の画像を読み込む
-		m_hpBar.Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 90.0f);
+		m_hpBar.Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 80.0f);
 		//ピボットを設定する
 		m_hpBar.SetPivot(HPGAUGE_PIVOT);
 		m_hpBar.SetPosition(HP_BAR_FLONT_POS);
@@ -140,7 +195,7 @@ bool GameUI::Start()
 		//HPゲージのフレームの画像を読み込む
 		m_HPFrame.Init("Assets/sprite/gameUI/HPBar_flame.DDS", 600.0f, 120.0f);
 		m_HPFrame.SetPosition(HP_BAR_POS);
-		m_HPFrame.SetScale(1.0, 1.0, 1.0);
+		m_HPFrame.SetScale(1.0, 0.7, 1.0);
 
 		//更新処理
 		m_statusBar.Update();
@@ -164,16 +219,6 @@ bool GameUI::Start()
 
 		m_TimeAndPointRender.Update();
 	}
-	
-
-
-
-	
-	//m_hp = PLAYER_MAXHP;
-	
-	
-	
-	
 
 	m_GameUIState = m_GameState;
 
@@ -187,6 +232,14 @@ void GameUI::Update()
 		return;
 	}
 
+	if (m_game->NowGameState() == 0)
+	{
+		CountDown();
+	}
+	
+
+
+
 	//レベルの表示
 	//int LEVEL=m_knightplayer->SetLevel();
 	int LEVEL = player->CharSetLevel();
@@ -194,28 +247,15 @@ void GameUI::Update()
 	swprintf_s(Lv, 255, L"%d", LEVEL);
 	m_LevelFont.SetText(Lv);
 
-	//ポイントの表示
-	int POINT = player->CharSetPoint();
-	wchar_t P[255];
-	swprintf_s(P, 255, L"%dポイント", POINT);
-	m_PointFont.SetText(P);
+	CharPoint();
 	
-	//時間切れではないなら
-	if (GameEndFlag == false) {
-		Timer();
-	}
 	//制限時間の表示
 	wchar_t wcsbuf[256];
-	swprintf_s(wcsbuf, 256, L"%d:%02d", int(MinutesTimer),int(SecondsTimer));
+	swprintf_s(wcsbuf, 256, L"%d:%02d", int(m_game->GetMinutesTimer()),int(m_game->GetSecondsTimer()));
 	//表示するテキストを設定。
 	m_time_left.SetText(wcsbuf);
 	
-	//経験値の表示
-	Vector3 EXPScale = Vector3::One;
-	//HPバーの減っていく割合。
-	EXPScale.x = (float)player->CharSetEXP() / (float)player->CharSetEXPTable();
-	m_ExperienceBar_flont.SetScale(EXPScale);
-	m_ExperienceBar_flont.Update();
+	EXPBar();
 
 	HPBar();
 	
@@ -223,9 +263,26 @@ void GameUI::Update()
 	
 }
 
+void GameUI::CountDown()
+{
+	//カウントダウン
+	int COUNTDOWNTIMER = m_game->CountDownMinutes();
+	wchar_t CDT[255];
+	if (m_game->CountDownMinutes() <= 0)
+	{
+		swprintf_s(CDT, 255, L"Fight!");
+	}
+	else
+	{
+		swprintf_s(CDT, 255, L"%d", COUNTDOWNTIMER);
+	}
+
+	m_CountDownFont.SetText(CDT);
+}
+
+//プレイヤーのHPの表示の処理
 void GameUI::HPBar()
 {
-	//int HP = m_knightplayer->SetHp();
 	int HP = player->CharSetHp();
 	wchar_t hp[255];
 	swprintf_s(hp, 255, L"%d", HP);
@@ -239,10 +296,9 @@ void GameUI::HPBar()
 	m_hpBar.Update();
 }
 
+//制限時間の表示の処理
 void GameUI::Timer()
 {
-	//0分でないなら
-
 		//0秒以下なら
 		if (SecondsTimer <= 0) {
 			//1分減らす
@@ -258,6 +314,66 @@ void GameUI::Timer()
 		}
 		else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
 	
+}
+
+//プレイヤーの経験値の表示の処理todo
+void GameUI::EXPBar()
+{
+	//経験値の表示
+	Vector3 EXPScale = Vector3::One;
+
+	nowEXP = player->CharSetEXP();
+
+	nowEXPTable = player->CharSetEXPTable();
+
+	
+	//HPバーの減っていく割合。
+	EXPScale.x = (float)nowEXP / (float)nowEXPTable;
+	m_ExperienceBar_flont.SetScale(EXPScale);
+	m_ExperienceBar_flont.Update();
+}
+
+//キャラのポイントと。ポイントが一番多いキャラに王冠マークをつける表示の処理
+void GameUI::CharPoint()
+{
+	//キャラのポイントを表示
+	m_Actors = m_game->GetActors();
+
+	MaxPoint = 0;
+	int num = 0;
+	for (auto actor:m_Actors)
+	{
+		charPoint[num] = actor->GetPoint();
+
+		//ポイントの表示
+		int POINT = charPoint[num];
+		wchar_t P[255];
+		swprintf_s(P, 255, L"%dP", POINT);
+		m_PointFont[num].SetText(P);
+
+		//一番ポイントが多いキャラに王冠マークをつける
+		//フレームを大きくする
+		if (charPoint[num]>0&&charPoint[num] >= MaxPoint)
+		{
+			MaxPoint = charPoint[num];
+			m_Crown.SetPosition(CrownPos[num]);
+			m_PointFlame[num].SetScale(2.0f, 1.3f, 1.0f);
+
+			m_Crown.Update();
+			m_PointFlame[num].Update();
+		}
+		else
+		{
+			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
+			m_PointFlame[num].Update();
+		}
+
+		num++;
+	}
+
+	
+	//誰に王冠マークつけるか決める
+
 }
 
 void GameUI::Render(RenderContext& rc)
@@ -292,7 +408,25 @@ void GameUI::Render(RenderContext& rc)
 		m_MaxLv.Draw(rc);
 		m_LevelFont.Draw(rc);
 
-		m_PointFont.Draw(rc);
+		//ポイントを描画
+		int num = 0;
+		for (auto actor:m_Actors/*int num = 0; num < Characters; num++*/) {
+			m_PointFlame[num].Draw(rc);
+			m_PointFont[num].Draw(rc);
+			num++;
+		}
+		//王冠マーク
+		if (MaxPoint != 0)
+		{
+			m_Crown.Draw(rc);
+		}
+		
+		
+
+		if (m_game->NowGameState() == 0) {
+			m_CountDownFont.Draw(rc);
+		}
+		
 	}
 	
 }

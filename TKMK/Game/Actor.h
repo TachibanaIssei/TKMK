@@ -360,7 +360,7 @@ public:
 	/// <returns></returns>
 	bool RespawnFlag() const
 	{
-		return m_RespwanTimeFlag;
+		return m_DeathToRespwanFlag;
   }
 
 	virtual void SetRespawnNumber(int number)=0;
@@ -403,6 +403,30 @@ public:
 			//評価値を再計算する
 			EvalTimer = 0.0f;
 		}
+	}
+
+	/// <summary>
+	/// キャラがやられてから
+	/// </summary>
+	/// /// <param name="DeathToRespwanFlag"></param>
+	bool DeathToRespawnTimer(bool DeathToRespwanFlag)
+	{
+		//キャラがやられたら
+		if (m_DeathToRespwanFlag == true)
+		{
+			//タイマー減少
+			m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
+			//2秒以上経ったら
+			if (m_respwanTimer <= 0.0f)
+			{
+				m_DeathToRespwanFlag = false;
+				m_respwanTimer = 2.0f;
+			}
+			//やられている
+			return true;
+		}
+		//やられていない
+		return false;
 	}
 
 private:
@@ -453,8 +477,8 @@ protected:
 
 	//やられた後のリスポーンするまで時間を計る処理をするかのフラグ
 	//falseでしない、trueでする
-	bool m_RespwanTimeFlag = false;
-
+	bool m_DeathToRespwanFlag = false;
+	//やられた後にもう一度復帰するまでの時間
 	float m_respwanTimer = 2.0f;
 	///////////////////////////////
 	//////ここから下はAI専用///////

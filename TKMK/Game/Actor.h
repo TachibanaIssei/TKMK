@@ -406,7 +406,7 @@ public:
 	}
 
 	/// <summary>
-	/// キャラがやられてから
+	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
 	/// /// <param name="DeathToRespwanFlag"></param>
 	bool DeathToRespawnTimer(bool DeathToRespwanFlag)

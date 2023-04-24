@@ -76,6 +76,8 @@ void GameCamera::Update()
 		return;
 	}
 
+	//プレイヤーがやられたら　がtrueの間カメラをその場で動かさない
+
 
 	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
 	if (player->CharGetState() == 7)

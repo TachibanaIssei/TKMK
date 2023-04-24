@@ -482,7 +482,7 @@ void KnightBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
 		break;
 	case enCharState_Death:
-		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.4f);
+		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.1f);
 	default:
 		break;
 	}

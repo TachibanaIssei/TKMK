@@ -66,7 +66,7 @@ void KnightPlayer::Update()
 {
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause) {
+	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag)==true) {
 		return;
 	}
 	
@@ -75,8 +75,10 @@ void KnightPlayer::Update()
 		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
+
+
 	//ゲームのステートがスタート,エンド、リザルトでないなら
-	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
+	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0/*|| DeathToRespawnTimer(m_DeathToRespwanFlag)==false*/)
 	{
 		//今のフレームと前のフレームのレベルが違っていたら
 		if (oldLv != Lv) {
@@ -84,8 +86,8 @@ void KnightPlayer::Update()
 			m_gameUI->LevelFontChange(Lv);
 		}
 
+		//前フレームのレベルを取得
 		oldLv = Lv;
-
 		//前フレームの座標を取得
 		OldPosition = m_position;
 
@@ -107,13 +109,10 @@ void KnightPlayer::Update()
 		}
 		else
 		{
-			//ステートがデスのときボタンを押せないようにする
-			if (m_charState != enCharState_Death) {
 				//攻撃処理
 				Attack();
 				//回避処理
 				Avoidance();
-			}
 		}
 
 		//移動処理
@@ -162,24 +161,10 @@ void KnightPlayer::Update()
 		//	Ult_Swordeffect->Update();
 		//}
 
-		//レベルアップする
-		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-		//{
-		//	if(Lv!=10)
-		//	ExpProcess(exp);
-		//	//m_Status.GetExp += 5;
-		//	//m_gameUI->LevelFontChange(Lv);
-		//}
-
-		//ダメージを受ける
-		/*if (g_pad[0]->IsTrigger(enButtonX))
-		{
-			Dameged(dddd);
-		}*/
-
 		//当たり判定
 		Collition();
 	}
+	//速度を0にする(動かないようにする)
 	else
 	{
 		m_moveSpeed = Vector3::Zero;
@@ -220,8 +205,11 @@ void KnightPlayer::Update()
 //攻撃処理
 void KnightPlayer::Attack()
 {
-	
-	//連打で攻撃できなくなる
+	//ステートがデスのとき
+	if (m_charState == enCharState_Death)
+	{
+		return;
+	}
 
 	//一段目のアタックをしていないなら
 	if (pushFlag==false&&AtkState == false)
@@ -319,6 +307,11 @@ void KnightPlayer::Attack()
 /// </summary>
 void KnightPlayer::Avoidance()
 {
+	//ステートがデスのとき
+	if (m_charState == enCharState_Death)
+	{
+		return;
+	}
 	//RBボタンが押されたら。
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {

@@ -56,6 +56,14 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 	m_model.Init(m_modelInitData);
 }
 
+void nsK2EngineLow::ModelRender::InitSkyCube(ModelInitData& initData)
+{
+	initData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	m_model.Init(initData);
+
+	m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+}
+
 void nsK2EngineLow::ModelRender::Update()
 {
 	//ワールド行列の更新(座標、回転、大きさ)

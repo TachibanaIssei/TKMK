@@ -7,6 +7,7 @@ class WizardPlayer;
 class Player;
 class Game;
 class KnightUlt;
+class Actor;
 
 class GameCamera:public IGameObject
 {
@@ -20,12 +21,12 @@ public:
 	/// <summary>
 	/// カメラの視点を最初の状態に戻す
 	/// </summary>
-	void CameraTarget(float X,float Y);
+	void CameraTarget(float X,float Y,Actor*actor);
 
 	/// <summary>
 	/// 剣士が必殺技を打った時のカメラワーク
 	/// </summary>
-	void KnightUltCamera();
+	void KnightUltCamera(Actor* actor);
 
 	/// <summary>
 	/// 剣士の斬撃エフェクトを追いかける
@@ -63,6 +64,8 @@ public:
 		knightUlt = ultobj;
 	}
 
+	bool UltTime(bool UltMoveFlag);
+
 	CameraCollisionSolver	m_cameraCollisionSolver;
 	SpringCamera			m_springCamera;
 
@@ -71,7 +74,9 @@ public:
 	Player* player = nullptr;
 	Game* game = nullptr;
 	KnightUlt* knightUlt = nullptr;
-
+	Actor* ultactor = nullptr;
+	Actor* player_actor = nullptr;
+	
 	Vector3					m_toCameraPos			= Vector3::Zero;		//カメラ位置から注視点に向かうベクトル
 	Vector3					m_position				= Vector3::Zero;		//カメラ座標
 	Vector3					m_target				= Vector3::Zero;		//カメラ注視点
@@ -91,5 +96,8 @@ public:
 	bool SetCameraCharFrontFlag = false;
 
 	float m_timer = 0.0f;
+	const char* player_name = nullptr;
+	//アクターの情報
+	std::vector<Actor*> m_actors;
 };
 

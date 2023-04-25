@@ -1,4 +1,5 @@
 #pragma once
+class Game;
 class KnightUlt:public IGameObject
 {
 public:
@@ -141,7 +142,7 @@ private:
 	//この当たり判定が壁に当たったら消す
 	CollisionObject* UltDeleteJudgeCollision;
 
-
+	Game* m_game;
 	RigidBody				m_rigidBody;						//剛体。
 	SphereCollider			m_sphereCollider;							//コライダー。
 

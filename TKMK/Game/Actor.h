@@ -208,6 +208,16 @@ public:
 	{
 		return m_position;
 	}
+
+
+	/// <summary>
+	/// プレイヤーの前方向を取得。
+	/// </summary>
+	const Vector3& GetForward() const
+	{
+		return m_Forward;
+	}
+
 	/// <summary>
 	/// m_spriteFlagを返す
 	/// </summary>

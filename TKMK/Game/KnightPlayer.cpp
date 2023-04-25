@@ -64,6 +64,10 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
+	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
+	{
+		return;
+	}
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
@@ -137,8 +141,8 @@ void KnightPlayer::Update()
 			MoveStraight(m_Skill_Right, m_Skill_Forward);
 		}
 
-    //無敵時間
-	  Invincible();
+        //無敵時間
+	    Invincible();
 		//回転処理
 		Rotation();
 
@@ -277,6 +281,8 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
+		m_game->SetStopFlag(true);
+		m_game->SetUltActor(this);
 		//アニメーション再生
 		//必殺技ステート
 		m_charState = enCharState_UltimateSkill;

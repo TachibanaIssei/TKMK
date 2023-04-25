@@ -30,6 +30,7 @@ void Player::CreaetPlayer()
 		knightPlayer->SetSGame(game);
 		knightPlayer->SetGameUI(gameUI);
 		knightPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
+		player_name = knightPlayer->GetName();
 		playerActor = knightPlayer;
 		break;
 

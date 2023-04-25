@@ -40,6 +40,10 @@ KnightAI::~KnightAI()
 
 void KnightAI::Update()
 {
+	if(m_game->GetStopFlag()==true&&m_game->GetUltActor()!=this)
+	{
+		return;
+	}
 	//スキルクールタイムの処理
 	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
 	// 次のアクションを抽選 
@@ -106,7 +110,7 @@ void KnightAI::Update()
 //アクターたちの情報を計算
 void KnightAI::CalculatAIAttackEvaluationValue()
 {
-	//エネミーたちの情報を取得する
+	//アクターたちの情報を取得する
 	std::vector<Actor*>& actors = m_game->GetActors();
 
 	for (auto actor : actors)
@@ -562,7 +566,16 @@ const bool KnightAI::CanSkill()
 	
 	return false;
 }
+const bool KnightAI::CanUlt()
+{
+	Vector3 diff = TargePos - m_position;
 
+	if (diff.LengthSq() <= 450.0f * 450.0f)
+	{
+		return true;
+	}
+	return false;
+}
 
 const bool KnightAI::CanAttack()
 {
@@ -577,10 +590,7 @@ const bool KnightAI::CanAttack()
 
 
 void KnightAI::Attack()
-{	
-	//攻撃かスキルを使用しているなら
-	//コリジョン作成
-	if (AtkCollistionFlag == true) AtkCollisiton();
+{
 
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
 	if (m_charState == enCharState_Damege ||
@@ -608,47 +618,6 @@ void KnightAI::Attack()
 	}
 
 	if (CanAttack()) {
-		
-		//必殺技を発動する処理
-		if (m_Status.Hp < m_Status.MaxHp / 2 && m_targetActor != nullptr && Lv >= 4)
-		{
-			//アニメーション再生、レベルを３
-			UltimateSkill();
-
-
-
-			//アルティメットSE
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(16);
-			se->Play(false);
-			se->SetVolume(0.3f);
-
-			//必殺技発動フラグをセット
-			UltimateSkillFlag = true;
-		}
-
-		//必殺技発動フラグがセットされているなら
-		if (UltimateSkillFlag == true)
-		{
-			UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-			//必殺技タイマーが3.0fまでの間
-			if (UltimateSkillTimer <= 3.0f)
-			{
-				//コリジョンの作成、移動処理
-				UltimateSkillCollistion(OldPosition, m_position);
-			}
-			else
-			{
-				//攻撃が有効な時間をリセット
-				UltimateSkillTimer = 0;
-				//必殺技発動フラグをリセット
-				UltimateSkillFlag = false;
-				//コリジョン削除
-				DeleteGO(collisionObject);
-				//コリジョン作成フラグをリセット
-				UltCollisionSetFlag = false;
-			}
-		}
 
 		//一段目のアタックをしていないなら
 		if (AtkState == false&&pushFlag == false)
@@ -683,6 +652,49 @@ void KnightAI::Attack()
 		}
 	}
 	
+	if (CanUlt())
+	{
+		//必殺技を発動する処理
+	//Xボタンが押されたら
+		if (pushFlag == false && Lv >= 4)
+		{
+			pushFlag = true;
+			m_game->SetStopFlag(true);
+			m_game->SetUltActor(this);
+			//アニメーション再生
+			//必殺技ステート
+			m_charState = enCharState_UltimateSkill;
+
+			Vector3 m_SwordPos = Vector3::Zero;
+			Quaternion m_SwordRot;
+			//「Sword」ボーンのワールド行列を取得する。
+			/*Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+			matrix.Apply(m_SwordPos);
+			m_SwordRot.SetRotation(matrix);*/
+			EffectEmitter* Ult_Swordeffect = NewGO<EffectEmitter>(2);
+			Ult_Swordeffect->Init(2);
+			Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
+			Ult_Swordeffect->SetPosition(m_position);
+			//Ult_Swordeffect->SetRotation(m_SwordRot);
+			//Ult_Swordeffect->Update();
+				//エフェクトを再生
+			Ult_Swordeffect->Play();
+			m_swordEffectFlag = true;
+
+			//アルティメットSE
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(16);
+			se->Play(false);
+			se->SetVolume(m_game->SetSoundEffectVolume());
+
+			//必殺技発動フラグをセット
+			UltimateSkillFlag = true;
+		}
+	}
+
+	//攻撃かスキルを使用しているなら
+	//コリジョン作成
+	if (AtkCollistionFlag == true) AtkCollisiton();
 }
 
 

@@ -189,13 +189,7 @@ public:
 		return m_Status.Hp;
 	}
 
-	/// <summary>
-	/// プレイヤーの前方向を取得。
-	/// </summary>
-	const Vector3& GetForward() const
-	{
-		return m_Forward;
-	}
+	
 
 	Quaternion& GetRot()
 	{

@@ -331,8 +331,6 @@ void Game::Battle()
 	if (GameEndFlag == false) {
 		CountDown();
 	}
-	
-	
 
 	if (m_GameState == enGameState_Battle) {
 		//CTRLを押したら

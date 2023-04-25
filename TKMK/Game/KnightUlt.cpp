@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "KnightUlt.h"
 #include "graphics/effect/EffectEmitter.h"
+#include "Game.h"
 //•Ç‚É“–‚½‚Á‚½‚çÁ‚·‚æ‚¤‚É‚·‚étodo
 namespace {
 	const Vector3 CollsionSize = Vector3(300.0f, 120.0f, 15.0f);//‹­‰»‚È‚µ
@@ -22,6 +23,7 @@ KnightUlt::~KnightUlt()
 	DeleteGO(Ulteffect);
 	DeleteGO(UltCollision);
 	DeleteGO(UltDeleteJudgeCollision);
+	m_game->SetStopFlag(false);
 }
 
 bool KnightUlt::Start()

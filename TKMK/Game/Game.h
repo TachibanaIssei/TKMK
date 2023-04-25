@@ -173,6 +173,23 @@ public:
 		return m_GameState;
 	}
 
+	void SetUltActor(Actor* actor)
+	{
+		Ultactor = actor;
+	}
+	Actor* GetUltActor()
+	{
+		return Ultactor;
+	}
+	void SetStopFlag(bool ultstop)
+	{
+		UltStopFlag = ultstop;
+	}
+
+	bool GetStopFlag()
+	{
+		return UltStopFlag;
+	}
 
 private:
 	/// <summary>
@@ -258,6 +275,9 @@ private:
 	float MinutesTimer = 5.0f;
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
+	//必殺技中みんな止まる
+	bool UltStopFlag = false;
+	Actor* Ultactor = nullptr;
 
 	float m_StartToGameTimer = 4.0f;
 
@@ -288,5 +308,7 @@ private:
 	int enemyNum = 0;
 	char* enemyName;
 	wchar_t name_t[255];
+	
+	std::vector<Actor*>m_ultActor;
 };
 

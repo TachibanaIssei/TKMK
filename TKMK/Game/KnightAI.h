@@ -42,6 +42,8 @@ public:
 	const bool CanAttack();
 
 	const bool CanSkill();
+
+	const bool CanUlt();
 	
 private:
 	// •]‰¿’l—p‚Ì\‘¢‘Ì
@@ -114,5 +116,6 @@ private:
 
 	///////////////
 	bool SkillFlag = false;
+	bool m_swordEffectFlag = false;
 };
 

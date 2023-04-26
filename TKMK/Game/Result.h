@@ -35,10 +35,18 @@ public:
 		enRankPoint_Num,
 	};
 
+	struct Score{
+		int Point;
+		int NameNum;
+	};
+
 private:
 	int charPoints[PLAYER];
 	int titleScene = 1;
 	int playerpoint[PLAYER];
+	int tmp = 0;
+
+	Score Player[4];
 
 	FontRender PlayerRank1;
 	FontRender PlayerRank2;
@@ -47,11 +55,11 @@ private:
 	EnRankPoint m_rankPoint;
 	EnPlayerNum m_playerNum;
 	
-	Vector3 RankPos[PLAYER] = {
-		Vector3(0.0f, 120.0f, 0.0f),
-		Vector3(0.0f, 20.0f, 0.0f),
-		Vector3(0.0f, -80.0f, 0.0f),
-		Vector3(0.0f, -180.0f, 0.0f),
+	Vector3 RankPos[4] = {
+		Vector3(100.0f, 200.0f, 0.0f),
+		Vector3(50.0f, 100.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(-50.0f, -100.0f, 0.0f),
 	};
 };
 

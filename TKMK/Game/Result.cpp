@@ -17,14 +17,14 @@ Result::~Result()
 bool Result::Start()
 {
 	Game* game = FindGO<Game>("game");
-
+	//K2EngineLow* g_k2EngineLow = nullptr;
+	//g_k2EngineLow->~K2EngineLow();
 	game->GetActorPoints(charPoints);
 
-	wchar_t moji2[256];
-	swprintf(moji2, L"%d,%d,%d,%d", charPoints[0], charPoints[1], charPoints[2], charPoints[3]);
-	moji.SetText(moji2);
-	moji.SetPosition(Vector3::Zero);
-	moji.SetColor(g_vec4Black);
+	for (int i = 0; i < 4; i++)
+	{
+		playerpoint[i] = charPoints[i];
+	}
 
 	DeleteGO(game);
 
@@ -41,6 +41,8 @@ bool Result::Start()
 
 void Result::Update()
 {
+	Rank();
+
 	//リザルト画面からタイトル画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
@@ -52,24 +54,122 @@ void Result::Update()
 
 void Result::Rank()
 {
-	
-	/*wchar_t moji3[256];
-	if (charPoints[0] > charPoints[1] && charPoints[0] > charPoints[2] && charPoints[0] > charPoints[3])
+	/*wchar_t moji2[256];
+	swprintf(moji2, L"%d pt", playerpoint[0]);
+	moji.SetText(moji2);
+	moji.SetPosition(g_vec3Zero);
+	moji.SetColor(g_vec4Black);*/
+
+	wchar_t Player1[256];
+	wchar_t Player2[256];
+	wchar_t Player3[256];
+	wchar_t Player4[256];
+
+	int i, j, k;
+
+	int rank[PLAYER];
+
+	for (j = 0; j < PLAYER; j++)
 	{
-		swprintf(moji3, L"Win");
+		rank[j] = 1;
+		for (k = 0; k < PLAYER; k++)
+		{
+			if (playerpoint[j] < playerpoint[k])rank[j]++;
+		}
 	}
-	else
+	for (i = 0; i < PLAYER; i++)
 	{
-		swprintf(moji3, L"Lose");
+		switch (playerpoint[i])
+		{
+		case 0:
+			swprintf(Player1, L"%d,%d pt", rank[i], playerpoint[i]);
+			PlayerRank1.SetText(Player1);
+			PlayerRank1.SetColor(g_vec4Black);
+			switch (rank[i])
+			{
+			case 0:
+				PlayerRank1.SetPosition(RankPos[i]);
+				break;
+			case 1:
+				PlayerRank1.SetPosition(RankPos[i]);
+				break;
+			case 2:
+				PlayerRank1.SetPosition(RankPos[i]);
+				break;
+			case 3:
+				PlayerRank1.SetPosition(RankPos[i]);
+				break;
+			}
+			break;
+		case 1:
+			swprintf(Player1, L"%d,%3d pt", rank[i], playerpoint[i]);
+			PlayerRank2.SetText(Player1);
+			PlayerRank2.SetColor(g_vec4Black);
+			switch (rank[i])
+			{
+			case 0:
+				PlayerRank2.SetPosition(RankPos[i]);
+				break;
+			case 1:
+				PlayerRank2.SetPosition(RankPos[i]);
+				break;
+			case 2:
+				PlayerRank2.SetPosition(RankPos[i]);
+				break;
+			case 3:
+				PlayerRank2.SetPosition(RankPos[i]);
+				break;
+			}
+			break;
+		case 2:
+			swprintf(Player1, L"%d,%3d pt", rank[i], playerpoint[i]);
+			PlayerRank3.SetText(Player1);
+			PlayerRank3.SetColor(g_vec4Black);
+			switch (rank[i])
+			{
+			case 0:
+				PlayerRank3.SetPosition(RankPos[i]);
+				break;
+			case 1:
+				PlayerRank3.SetPosition(RankPos[i]);
+				break;
+			case 2:
+				PlayerRank3.SetPosition(RankPos[i]);
+				break;
+			case 3:
+				PlayerRank3.SetPosition(RankPos[i]);
+				break;
+			}
+			break;
+		case 3:
+			swprintf(Player1, L"%d,%3d pt", rank[i], playerpoint[i]);
+			PlayerRank4.SetText(Player1);
+			PlayerRank4.SetColor(g_vec4Black);
+			switch (rank[i])
+			{
+			case 0:
+				PlayerRank4.SetPosition(RankPos[i]);
+				break;
+			case 1:
+				PlayerRank4.SetPosition(RankPos[i]);
+				break;
+			case 2:
+				PlayerRank4.SetPosition(RankPos[i]);
+				break;
+			case 3:
+				PlayerRank4.SetPosition(RankPos[i]);
+				break;
+			}
+			break;
+		}
 	}
-	jiji.SetText(moji3);
-	jiji.SetPosition(90.0f, 90.0f, 90.0f);
-	jiji.SetColor(g_vec4Black);*/
 }
 
 void Result::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
-	moji.Draw(rc);
-	jiji.Draw(rc);
+	PlayerRank1.Draw(rc);
+	PlayerRank2.Draw(rc);
+	PlayerRank3.Draw(rc);
+	PlayerRank4.Draw(rc);
 }

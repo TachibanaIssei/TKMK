@@ -1,4 +1,5 @@
 #pragma once
+#define PLAYER 4
 
 class Tittle;
 
@@ -16,22 +17,41 @@ public:
 	SpriteRender m_spriteRender;
 	Tittle* tittle=nullptr;
 
+	//ƒvƒŒƒCƒ„[‚Ì”Ô†
+	enum EnPlayerNum {
+		enPlayerNum_play,		//©•ª‚ª‘€ì‚µ‚Ä‚¢‚½ƒLƒƒƒ‰
+		enPlayerNum_enm1,		//ƒGƒlƒ~[‚P
+		enPlayerNum_enm2,		//ƒGƒlƒ~[‚Q
+		enPlayerNum_enm3,		//ƒGƒlƒ~[‚R
+		enPlayerNum_Num
+	};
+
 	//‡ˆÊ
 	enum EnRankPoint {
-		enRankPoint_1st = 1,	//‚PˆÊ
-		enRankPoint_2st,	//‚QˆÊ
-		enRankPoint_3st,	//‚RˆÊ
-		enRankPoint_4st,	//‚SˆÊ
+		enRankPoint_1st,		//‚PˆÊ
+		enRankPoint_2st,		//‚QˆÊ
+		enRankPoint_3st,		//‚RˆÊ
+		enRankPoint_4st,		//‚SˆÊ
 		enRankPoint_Num,
 	};
 
 private:
-	int charPoints[2];
+	int charPoints[PLAYER];
 	int titleScene = 1;
+	int playerpoint[PLAYER];
 
-	FontRender moji;
-	FontRender jiji;
+	FontRender PlayerRank1;
+	FontRender PlayerRank2;
+	FontRender PlayerRank3;
+	FontRender PlayerRank4;
 	EnRankPoint m_rankPoint;
-
+	EnPlayerNum m_playerNum;
+	
+	Vector3 RankPos[PLAYER] = {
+		Vector3(0.0f, 120.0f, 0.0f),
+		Vector3(0.0f, 20.0f, 0.0f),
+		Vector3(0.0f, -80.0f, 0.0f),
+		Vector3(0.0f, -180.0f, 0.0f),
+	};
 };
 

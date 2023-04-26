@@ -1,5 +1,8 @@
 #pragma once
 class Game;
+class GameCamera;
+class Actor;
+
 class KnightUlt:public IGameObject
 {
 public:
@@ -109,20 +112,32 @@ public:
 	{
 		if (CharLevel < 6)
 		{
-			DeleteTime = 4;
+			DeleteTime = 1;
 		}
 		//ƒŒƒxƒ‹‚ª7ˆÈ‰º‚È‚ç
 		//•KE‹Zˆê’iŠK‹­‰»
 		else if (CharLevel < 8)
 		{
-			DeleteTime = 4.5;
+			DeleteTime = 1;
 		}
 		//ƒŒƒxƒ‹‚ª10ˆÈ‰º‚È‚ç
 		//•KE‹Z“ñ’iŠK‹­‰»
 		else if (CharLevel <= 10)
 		{
-			DeleteTime = 5;
+			DeleteTime = 1;
 		}
+	}
+
+	void SetGame(Game* game)
+	{
+		m_game = game;
+	}
+	
+	/// <summary>
+	/// ¶¬Ò‚ğİ’è
+	/// </summary>
+	void SetActor(Actor* actor) {
+		m_actor = actor;
 	}
 
 private:
@@ -157,5 +172,9 @@ private:
 	int CharLevel = 0;
 	//bool Ultflag = true;
 
+	// ¶¬Ò
+	Actor* m_actor = nullptr;
+	// ƒQ[ƒ€ƒJƒƒ‰
+	GameCamera* m_gameCamera = nullptr;
 };
 

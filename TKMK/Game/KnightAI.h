@@ -26,7 +26,11 @@ public:
 	void AtkCollisiton();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
-
+	void Move();
+	/// <summary>
+	/// •KE‹Z‚Ì“–‚½‚è”»’è¶¬‚·‚é
+	/// </summary>
+	void MakeUltSkill();
 	void AvoidanceSprite();
 	void SetGame(Game* game)
 	{
@@ -40,7 +44,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttack();
-
+	
 	const bool CanSkill();
 
 	const bool CanUlt();

@@ -4,6 +4,7 @@
 #include "Neutral_Enemy.h"
 #include "KnightUlt.h"
 #include "GameUI.h"
+
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
 //for文、findGO使う
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -64,8 +65,19 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
+
+	
+	//アニメーションの再生
+	PlayAnimation();
+	//当たり判定
+	Collition();
+
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
+		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
+		{
+			m_modelRender.Update();
+		}
 		return;
 	}
 	//todo
@@ -140,7 +152,8 @@ void KnightPlayer::Update()
 			//移動処理を行う(直線移動のみ)。
 			MoveStraight(m_Skill_Right, m_Skill_Forward);
 		}
-
+		//ステート
+		ManageState();
         //無敵時間
 	    Invincible();
 		//回転処理
@@ -181,18 +194,14 @@ void KnightPlayer::Update()
 			Dameged(dddd);
 		}*/
 
-		//当たり判定
-		Collition();
+		
 	}
 	else
 	{
 		m_moveSpeed = Vector3::Zero;
 	}
 
-	//ステート
-	ManageState();
-	//アニメーションの再生
-	PlayAnimation();
+
 
 	if (AvoidanceTimer != AvoidanceCoolTime)
 	{
@@ -310,7 +319,7 @@ void KnightPlayer::Attack()
 		se->SetVolume(m_game->SetSoundEffectVolume());
 
 		//必殺技発動フラグをセット
-		UltimateSkillFlag = true;
+	/*	UltimateSkillFlag = true;*/
 	}
 
 	
@@ -346,6 +355,8 @@ void KnightPlayer::MakeUltSkill()
 	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
 	//製作者の名前を入れる
 	knightUlt->SetCreatorName(GetName());
+	// 制作者を教える
+	knightUlt->SetActor(this);
 	//キャラのレベルを入れる
 	knightUlt->GetCharLevel(Lv);
 	//座標の設定
@@ -354,6 +365,8 @@ void KnightPlayer::MakeUltSkill()
 	knightUlt->SetPosition(UltPos);
 	knightUlt->SetRotation(m_rot);
 	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	knightUlt->SetGame(m_game);
+
 }
 
 /// <summary>

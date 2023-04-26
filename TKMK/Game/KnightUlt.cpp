@@ -2,6 +2,9 @@
 #include "KnightUlt.h"
 #include "graphics/effect/EffectEmitter.h"
 #include "Game.h"
+#include "Actor.h"
+#include "GameCamera.h"
+
 //壁に当たったら消すようにするtodo
 namespace {
 	const Vector3 CollsionSize = Vector3(300.0f, 120.0f, 15.0f);//強化なし
@@ -15,6 +18,8 @@ KnightUlt::KnightUlt()
 {
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
+	// ゲームカメラを探す
+	m_gameCamera = FindGO<GameCamera>("gamecamera");
 }
 
 KnightUlt::~KnightUlt()
@@ -23,7 +28,10 @@ KnightUlt::~KnightUlt()
 	DeleteGO(Ulteffect);
 	DeleteGO(UltCollision);
 	DeleteGO(UltDeleteJudgeCollision);
+	// 全てを終わらせる！！！！！！！
 	m_game->SetStopFlag(false);
+	m_actor->UltEnd();
+	m_gameCamera->GameCameraUltEnd();
 }
 
 bool KnightUlt::Start()
@@ -45,7 +53,7 @@ bool KnightUlt::Start()
 	}
 
 	//移動速度を決める
-	m_moveSpeed *= 180.0f;
+	m_moveSpeed *= 940.0f;
 
 	//当たり判定の生成
 	SetCollision();

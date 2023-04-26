@@ -29,12 +29,31 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// スカイキューブを初期化する
+		/// </summary>
+		/// <param name="initData"></param>
+		void InitSkyCube(ModelInitData& initData);
+
+		/// <summary>
 		/// モデルを取得する
 		/// </summary>
 		/// <returns>モデル</returns>
 		Model& GetModel()
 		{
 			return m_model;
+		}
+
+		/// <summary>
+		/// 座標、回転、拡大をすべて設定
+		/// </summary>
+		/// <param name="pos">座標</param>
+		/// <param name="rotation">回転</param>
+		/// <param name="scale">拡大</param>
+		void SetTRS(const Vector3& pos, const Quaternion& rotation, const Vector3& scale)
+		{
+			SetPosition(pos);
+			SetRotation(rotation);
+			SetScale(scale);
 		}
 
 		/// <summary>

@@ -5,6 +5,7 @@
 #include "Neutral_Enemy.h"
 #include "Actor.h"
 #include "WizardUlt.h"
+#include "KnightUlt.h"
 
 KnightAI::KnightAI()
 {
@@ -40,47 +41,82 @@ KnightAI::~KnightAI()
 
 void KnightAI::Update()
 {
-	//スキルクールタイムの処理
-	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
-	// 次のアクションを抽選 
-	LotNextAction();
-	//追跡
-	ChaseAndEscape();
-	//攻撃
-	Attack();
-	//ステート
-	ManageState();
-	//回避
-	AvoidanceSprite();
-	//アニメーションの再生
-	PlayAnimation();
+
 	//当たり判定
 	Collition();
-	//反転
-	Rotation();
-	//無敵時間
-	Invincible();
-	if (SkillState == true)
+	//アニメーションの再生
+	PlayAnimation();
+	//自分の以外の必殺中は止まります
+	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
-		m_charState = enCharState_Skill;
-		//スキルを使うときのスピードを使う
-		Vector3 move = m_skillMove;
-		m_rot.SetRotationYFromDirectionXZ(move);
-		////スキルを使うときのスピードを使う
-		////AnimationMove(SkillSpeed, m_forward);
-		move.y = 0.0f;
-		move *= 300.0f;
-
-		m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
-
+		//ステートは死亡と被ダメの時アニメーションは再生する
+		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
+		{
+			m_modelRender.Update();
+		}
+		return;
 	}
 
-	//回避クールタイムの処理
-	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+	//重力
+	Move();
+	//カントダウン中だったら
+	if (m_game->NowGameState() == 0)
+	{
+		m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 
-	m_modelRender.SetPosition(m_position);
-	m_modelRender.SetRotation(m_rot);
-	m_modelRender.Update();
+		//ステート
+		ManageState();
+	}
+		
+	//ゲームのステートがスタート,エンド、リザルトでないなら
+	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
+	{
+		//リスポーンしたときしか使えない
+		//飛び降りる処理
+		//地上にいないならジャンプしかしないようにする
+		if (m_position.y > 150.0f) {
+			if (m_charCon.IsOnGround())
+			{
+				
+				m_charState = enCharState_Jump;
+			}
+		}
+		//ステート
+		ManageState();
+		//回避
+		AvoidanceSprite();
+		//スキルクールタイムの処理
+		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+		// 次のアクションを抽選 
+		LotNextAction();
+		//追跡
+		ChaseAndEscape();
+		//攻撃
+		Attack();
+		//反転
+		Rotation();
+		//無敵時間
+		Invincible();
+		if (SkillState == true)
+		{
+			m_charState = enCharState_Skill;
+			//スキルを使うときのスピードを使う
+			Vector3 move = m_skillMove;
+			m_rot.SetRotationYFromDirectionXZ(move);
+			////スキルを使うときのスピードを使う
+			////AnimationMove(SkillSpeed, m_forward);
+			move.y = 0.0f;
+			move *= 300.0f;
+
+			m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
+
+		}
+
+		//回避クールタイムの処理
+		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
+
+	}
 
 	// 名前描画
 	Vector2 namePos = Vector2::Zero;
@@ -100,13 +136,16 @@ void KnightAI::Update()
 	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
 
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_rot);
+	m_modelRender.Update();
 }
 
 
 //アクターたちの情報を計算
 void KnightAI::CalculatAIAttackEvaluationValue()
 {
-	//エネミーたちの情報を取得する
+	//アクターたちの情報を取得する
 	std::vector<Actor*>& actors = m_game->GetActors();
 
 	for (auto actor : actors)
@@ -185,9 +224,9 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	start.setIdentity();
 	end.setIdentity();
 	//始点は自分の座標。
-	start.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
+	start.setOrigin(btVector3(m_position.x, 20.0f, m_position.z));
 	//終点はランダムの座標。
-	end.setOrigin(btVector3(actorPos.x, actorPos.y, actorPos.z));
+	end.setOrigin(btVector3(actorPos.x, 20.0f, actorPos.z));
 	SweepResultSlipThroughWall callback;
 	//コライダーを始点から終点まで動かして。
 	//衝突するかどうかを調べる。
@@ -299,9 +338,9 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	start.setIdentity();
 	end.setIdentity();
 	//始点は自分の座標。
-	start.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
+	start.setOrigin(btVector3(m_position.x, 20.0f, m_position.z));
 	//終点はランダムの座標。
-	end.setOrigin(btVector3(enemyPos.x, enemyPos.y, enemyPos.z));
+	end.setOrigin(btVector3(enemyPos.x, 20.0f, enemyPos.z));
 	SweepResultSlipThroughWall callback;
 	//コライダーを始点から終点まで動かして。
 	//衝突するかどうかを調べる。
@@ -400,7 +439,8 @@ void KnightAI::LotNextAction()
 	{
 		// 追いかける判定
 		if (Evaluation_valueActor[i].eval > noweval_Target &&
-			Evaluation_valueEnemy[i].chaseOrEscape == false)
+			Evaluation_valueActor[i].chaseOrEscape == false &&
+			actors[i] != this)
 		{
 			noweval_Target = Evaluation_valueActor[i].eval;
 			m_nowActorTarget = actors[i];
@@ -488,7 +528,7 @@ void KnightAI::ChaseAndEscape()
 
 	Vector3 diffTarget = TargePos - m_position;
 
-	if (m_escapeActor != nullptr)
+	if (m_escapeActor != nullptr && m_position.y < 1.0f)
 	{
 		Vector3 diffEscape = m_escapeActor->GetPosition() - m_position;
 
@@ -533,11 +573,19 @@ void KnightAI::ChaseAndEscape()
 			m_moveSpeed = diffTarget * m_Status.Speed;
 		}
 	}
-	else {
+	else if (m_position.y < 1.0f){
 		diffTarget.Normalize();
 
 		//移動速度を設定する。
 		m_moveSpeed = diffTarget * m_Status.Speed;
+	}
+
+	//リスポーン中なら特殊な計算
+	if (m_position.y >= 0.0f)
+	{
+		diffTarget.Normalize();
+		m_moveSpeed.x = diffTarget.x * (m_Status.Speed * 1.5);
+		m_moveSpeed.z = diffTarget.z * (m_Status.Speed * 1.5);
 	}
 
 	// 移動する（衝突解決）
@@ -545,7 +593,26 @@ void KnightAI::ChaseAndEscape()
 	
 }
 
+void KnightAI::Move()
+{
+	//重力を付与する
+	m_moveSpeed.y -= 600.0f * g_gameTime->GetFrameDeltaTime();
 
+	//地面についた。
+	if (m_charCon.IsOnGround()) {
+
+		m_moveSpeed.y = 0.0f;
+
+		//ジャンプフラグがtrueだったら
+		if (m_RespawnJumpFlag == true)
+		{
+			//座標を上げる
+			RespawnMove();
+			//フラグをfalseにする
+			m_RespawnJumpFlag = false;
+		}
+	}
+}
 const bool KnightAI::CanSkill()
 {
 	if (SkillState == false)
@@ -562,7 +629,16 @@ const bool KnightAI::CanSkill()
 	
 	return false;
 }
+const bool KnightAI::CanUlt()
+{
+	Vector3 diff = TargePos - m_position;
 
+	if (diff.LengthSq() <= 450.0f * 450.0f)
+	{
+		return true;
+	}
+	return false;
+}
 
 const bool KnightAI::CanAttack()
 {
@@ -577,10 +653,12 @@ const bool KnightAI::CanAttack()
 
 
 void KnightAI::Attack()
-{	
+{
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
-	if (AtkCollistionFlag == true) AtkCollisiton();
+	if (AtkCollistionFlag == true) {
+		AtkCollisiton();
+	}
 
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
 	if (m_charState == enCharState_Damege ||
@@ -608,47 +686,6 @@ void KnightAI::Attack()
 	}
 
 	if (CanAttack()) {
-		
-		//必殺技を発動する処理
-		if (m_Status.Hp < m_Status.MaxHp / 2 && m_targetActor != nullptr && Lv >= 4)
-		{
-			//アニメーション再生、レベルを３
-			UltimateSkill();
-
-
-
-			//アルティメットSE
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(16);
-			se->Play(false);
-			se->SetVolume(0.3f);
-
-			//必殺技発動フラグをセット
-			UltimateSkillFlag = true;
-		}
-
-		//必殺技発動フラグがセットされているなら
-		if (UltimateSkillFlag == true)
-		{
-			UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-			//必殺技タイマーが3.0fまでの間
-			if (UltimateSkillTimer <= 3.0f)
-			{
-				//コリジョンの作成、移動処理
-				UltimateSkillCollistion(OldPosition, m_position);
-			}
-			else
-			{
-				//攻撃が有効な時間をリセット
-				UltimateSkillTimer = 0;
-				//必殺技発動フラグをリセット
-				UltimateSkillFlag = false;
-				//コリジョン削除
-				DeleteGO(collisionObject);
-				//コリジョン作成フラグをリセット
-				UltCollisionSetFlag = false;
-			}
-		}
 
 		//一段目のアタックをしていないなら
 		if (AtkState == false&&pushFlag == false)
@@ -683,6 +720,46 @@ void KnightAI::Attack()
 		}
 	}
 	
+	if (CanUlt())
+	{
+		//必殺技を発動する処理
+	//Xボタンが押されたら
+		if (pushFlag == false && Lv >= 4)
+		{
+			pushFlag = true;
+			m_game->SetStopFlag(true);
+			m_game->SetUltActor(this);
+			//アニメーション再生
+			//必殺技ステート
+			m_charState = enCharState_UltimateSkill;
+
+			Vector3 m_SwordPos = Vector3::Zero;
+			Quaternion m_SwordRot;
+			//「Sword」ボーンのワールド行列を取得する。
+			/*Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+			matrix.Apply(m_SwordPos);
+			m_SwordRot.SetRotation(matrix);*/
+			EffectEmitter* Ult_Swordeffect = NewGO<EffectEmitter>(2);
+			Ult_Swordeffect->Init(2);
+			Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
+			Ult_Swordeffect->SetPosition(m_position);
+			//Ult_Swordeffect->SetRotation(m_SwordRot);
+			//Ult_Swordeffect->Update();
+				//エフェクトを再生
+			Ult_Swordeffect->Play	();
+			m_swordEffectFlag = true;
+
+			//アルティメットSE
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(16);
+			se->Play(false);
+			se->SetVolume(m_game->SetSoundEffectVolume());
+
+			//必殺技発動フラグをセット
+			UltimateSkillFlag = true;
+		}
+	}
+
 }
 
 
@@ -710,6 +787,28 @@ void KnightAI::AtkCollisiton()
 	//matrix.MakeRotationZ(90.0f);
 	//「Sword」ボーンのワールド行列をコリジョンに適用する。
 	collisionObject->SetWorldMatrix(matrix);
+}
+
+/// <summary>
+/// 必殺技の当たり判定生成する
+/// </summary>
+void KnightAI::MakeUltSkill()
+{
+	KnightUlt* knightUlt = NewGO<KnightUlt>(0, "knightUlt");
+	//製作者の名前を入れる
+	knightUlt->SetCreatorName(GetName());
+	// 制作者を教える
+	knightUlt->SetActor(this);
+	//キャラのレベルを入れる
+	knightUlt->GetCharLevel(Lv);
+	//座標の設定
+	Vector3 UltPos = m_position;
+	UltPos.y += 60.0f;
+	knightUlt->SetPosition(UltPos);
+	knightUlt->SetRotation(m_rot);
+	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	knightUlt->SetGame(m_game);
+
 }
 
 
@@ -764,6 +863,20 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		se->Init(11);
 		se->Play(false);
 		se->SetVolume(0.3f);
+	}
+	//必殺技のアニメーションが始まったら
+	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
+	{
+		//必殺技の当たり判定のクラスを作成
+		MakeUltSkill();
+		//エフェクトを移動
+		//m_swordEffectFlag = false;
+
+	}
+	//ジャンプのアニメーションが始まったら
+	if (wcscmp(eventName, L"Jump_Start") == 0)
+	{
+		m_RespawnJumpFlag = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら
@@ -924,7 +1037,7 @@ void KnightAI::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 
 	//フォントを描画する。
-	//m_Name.Draw(rc);
+	m_Name.Draw(rc);
 
 }
 

@@ -1,4 +1,8 @@
 #pragma once
+class Game;
+class GameCamera;
+class Actor;
+
 class KnightUlt:public IGameObject
 {
 public:
@@ -108,20 +112,32 @@ public:
 	{
 		if (CharLevel < 6)
 		{
-			DeleteTime = 4;
+			DeleteTime = 1;
 		}
 		//レベルが7以下なら
 		//必殺技一段階強化
 		else if (CharLevel < 8)
 		{
-			DeleteTime = 4.5;
+			DeleteTime = 1;
 		}
 		//レベルが10以下なら
 		//必殺技二段階強化
 		else if (CharLevel <= 10)
 		{
-			DeleteTime = 5;
+			DeleteTime = 1;
 		}
+	}
+
+	void SetGame(Game* game)
+	{
+		m_game = game;
+	}
+	
+	/// <summary>
+	/// 生成者を設定
+	/// </summary>
+	void SetActor(Actor* actor) {
+		m_actor = actor;
 	}
 
 private:
@@ -141,7 +157,7 @@ private:
 	//この当たり判定が壁に当たったら消す
 	CollisionObject* UltDeleteJudgeCollision;
 
-
+	Game* m_game;
 	RigidBody				m_rigidBody;						//剛体。
 	SphereCollider			m_sphereCollider;							//コライダー。
 
@@ -156,5 +172,9 @@ private:
 	int CharLevel = 0;
 	//bool Ultflag = true;
 
+	// 生成者
+	Actor* m_actor = nullptr;
+	// ゲームカメラ
+	GameCamera* m_gameCamera = nullptr;
 };
 

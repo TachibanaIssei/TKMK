@@ -6,8 +6,8 @@
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 #include "Player.h"
-#include "Game.h"
 #include "KnightUlt.h"
+#include "Actor.h"
 
 namespace
 {
@@ -44,6 +44,16 @@ bool GameCamera::Start()
 	game = FindGO<Game>("game");
 	//プレイヤーのインスタンスを探す
 	player = FindGO<Player>("player");
+	player_name = player->GetName();
+
+	m_actors = game->GetActors();
+	for (auto player : m_actors)
+	{
+		if (player->IsMatchName(player_name) == true)
+		{
+			player_actor = player;
+		}
+	}
 
 	//注視点から視点までのベクトルを設定。80-160
 	m_toCameraPos.Set(0.0f, 50.0f, -160.0f);
@@ -64,7 +74,9 @@ bool GameCamera::Start()
 	);
 
 	//最初にキャラの背中を映すようにする
-	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
+	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+
+	
 
 	return true;
 }
@@ -76,39 +88,40 @@ void GameCamera::Update()
 		return;
 	}
 
+	StateControl();
+}
 
-	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
-	if (player->CharGetState() == 7)
+void GameCamera::StateControl()
+{
+	switch (m_enCameraState)
 	{
-		m_springCamera.Refresh();
-		KnightUltMoveFlag = true;
+	case m_enNomarlCameraState:
+		NomarlCamera();
+		break;
+	case m_enUltRotCameraState:
+		UltRotCamera();
+		break;
+	case m_enChaseCameraState:
+		ChaseCamera();
+		break;
+	default:
+		break;
 	}
+}
 
-	//必殺技フラグが立ったら
-	if (KnightUltMoveFlag)
-	{
-		knightUlt = FindGO<KnightUlt>("knightUlt");
-		m_timer += g_gameTime->GetFrameDeltaTime();
-		if (m_timer < 1.45) {
-			KnightUltCamera();
-		}
-		//knightUltが生成されている間
-		else if (knightUlt!=nullptr)
+void GameCamera::NomarlCamera()
+{
+	for (auto actor : m_actors) {
+		//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
+		if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag==false)
 		{
-			//カメラがエフェクトを追うようにする
-			ChaseUltEff();
+			KnightUltFlag = true;
+			//カメラステートを回転ステートに移る
+			m_enCameraState = m_enUltRotCameraState;
+			ultactor = actor;
+
+			return;
 		}
-		else 
-		{
-			m_springCamera.Refresh();
-			//全てリセット
-			KnightUltMoveFlag = false;
-			SetCameraCharFrontFlag = false;
-			m_timer = 0;
-			CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
-		}
-		
-		return;
 	}
 
 
@@ -116,7 +129,7 @@ void GameCamera::Update()
 	//カメラの視点を最初の状態に戻す
 	if (g_pad[0]->IsTrigger(enButtonY))
 	{
-		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
+		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
 	}
 	//何も押されていないなら
 	else
@@ -125,6 +138,78 @@ void GameCamera::Update()
 		FollowThePlayer();
 	}
 
+
+}
+
+void GameCamera::UltRotCamera()
+{
+	//カメラを剣士の正面にセットしていないなら
+	if (SetCameraCharFrontFlag == false)
+	{
+		m_springCamera.Refresh();
+		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, ultactor);
+		//キャラの正面からカメラに向かうベクトル
+		m_keepDiff = m_toCameraPos;
+
+		SetCameraCharFrontFlag = true;
+
+		KnightUltCamera(ultactor,true);
+	}
+
+	//プレイヤーからカメラに向かうベクトルを計算する
+	Vector3 start = m_keepDiff;
+	Vector3 end = m_CameraFromActorDiff;
+	start.y = 0.0f;
+	end.y = 0.0f;
+	//内積
+	float nai;
+	nai = start.Dot(end);
+	//成す角
+	float Start = start.Length();
+	float End = end.Length();
+
+	float cos_sita = nai / (Start * End);
+	sita = acos(cos_sita);
+	sita = Math::RadToDeg(sita);
+
+	if (sita < 175.0f) {
+		KnightUltCamera(ultactor,false);
+	}
+	else
+	{
+		m_springCamera.Refresh();
+		m_enCameraState = m_enChaseCameraState;
+	}
+
+
+}
+
+void GameCamera::ChaseCamera()
+{
+	knightUlt = FindGO<KnightUlt>("knightUlt");
+	//knightUltが生成されている間
+	    if (knightUlt != nullptr)
+		{
+			//カメラがエフェクトを追うようにする
+			ChaseUltEff();
+		}
+		else
+		{
+			//m_springCamera.Refresh();
+			////全てリセット
+			//SetCameraCharFrontFlag = false;
+			//KnightUltFlag = false;
+
+			////必殺技を撃ったActorのステートを戻す
+			////ultactor->UltSkillEnd();
+
+			////CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
+			////プレイヤーのカメラをリセットする
+			//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+
+			//m_enCameraState = m_enNomarlCameraState;
+		
+		}
 }
 
 void GameCamera::FollowThePlayer()
@@ -184,10 +269,11 @@ void GameCamera::FollowThePlayer()
 /// <summary>
 /// カメラの視点をプレイヤーの背中を捉えるものに変更する
 /// </summary>
-void GameCamera::CameraTarget(float X, float Y)
+void GameCamera::CameraTarget(float X, float Y,Actor*actor)
 {
+
 	//プレイヤーの前方向を取得
-	Vector3 toCameraPosXZ = player->CharSetForward();
+	Vector3 toCameraPosXZ = actor->GetForward();
 	//移動していないなら抜け出す
 	if (toCameraPosXZ.x == 0.0f && toCameraPosXZ.y == 0.0f)
 	{
@@ -210,7 +296,7 @@ void GameCamera::CameraTarget(float X, float Y)
 
 	//注視点の計算
 	Vector3 TargetPos;
-	TargetPos = player->GetCharPosition();
+	TargetPos = actor->GetPosition();
 	TargetPos.y += TARGETPOS_YUP;
 	//視点から注視点へのベクトルを求める
 	newCameraPos += TargetPos;
@@ -236,28 +322,21 @@ void GameCamera::CameraTarget(float X, float Y)
 /// <summary>
 /// 剣士が必殺技を打った時のカメラワーク　　回りながら遠ざけたい
 /// </summary>
-void GameCamera::KnightUltCamera()
+void GameCamera::KnightUltCamera(Actor*actor, bool reset)
 {
-	//カメラを剣士の正面にセットしていないなら
-	if (SetCameraCharFrontFlag == false)
-	{
-		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y);
-		SetCameraCharFrontFlag = true;
-	}
+	
 	//剣士に合わせてカメラを回転させる
-	else
-	{
 		
 		////注視点の計算
 	//Vector3 TargetPos;
-		TargetPos = player->GetCharPosition();
+		TargetPos = actor->GetPosition();
 
 		TargetPos.y += TARGETPOS_ULT_YUP;
 
 		Vector3 toCameraPosOld = m_toCameraPos;
 
 		//パッドの入力を使ってカメラを回す。x2.8
-		float x = 2.4f;
+		float x = 1.9f;
 		float y = 0.1f;
 
 		//Y軸周りの回転
@@ -282,13 +361,19 @@ void GameCamera::KnightUltCamera()
 			TargetPos
 		);
 
-		//視点と注視点を設定
-		m_springCamera.SetTarget(TargetPos);
-		m_springCamera.SetPosition(newCamPos);
+		//アクターからカメラに向かうベクトル
+		m_CameraFromActorDiff = newCamPos - TargetPos;
 
-		//カメラの更新。
-		m_springCamera.Update();
-	}
+		if (reset == false) {
+			//視点と注視点を設定
+			m_springCamera.SetTarget(TargetPos);
+			m_springCamera.SetPosition(newCamPos);
+
+			//カメラの更新。
+			m_springCamera.Update();
+
+		}
+	
 }
 
 void GameCamera::ChaseUltEff()
@@ -328,3 +413,20 @@ void GameCamera::ChaseUltEff()
 
 }
 
+void GameCamera::GameCameraUltEnd() {
+
+	m_springCamera.Refresh();
+	//全てリセット
+	SetCameraCharFrontFlag = false;
+	KnightUltFlag = false;
+
+	//必殺技を撃ったActorのステートを戻す
+	//ultactor->UltSkillEnd();
+
+	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
+	//プレイヤーのカメラをリセットする
+	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+
+	m_enCameraState = m_enNomarlCameraState;
+
+}

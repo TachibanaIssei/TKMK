@@ -9,6 +9,32 @@ public:
 	Actor();
 	virtual ~Actor();
 	
+	//キャラの状態
+	enum EnCharState
+	{
+		enCharState_Idle,
+		enCharState_Walk,
+		enCharState_Run,
+		enCharState_Attack,
+		enCharState_Damege,
+		enCharState_Death,
+		enCharState_Skill,
+		enCharState_UltimateSkill,
+		enCharState_Avoidance,
+		enCharState_Pause,
+		enCharState_Jump,
+		enCharState_Fall,
+		enCharState_Num,
+	};
+
+	// 必殺技の終了
+	void UltSkillEnd() {
+		m_charState = enCharState_Idle;
+	}
+
+	// 必殺技終了用の純粋仮想関数
+	virtual void UltEnd() = 0;
+
 protected:
 
 	/// <summary>
@@ -27,23 +53,6 @@ protected:
 	};
 	EnJumpState m_JumpState;
 
-	//キャラの状態
-	enum EnCharState
-	{
-		enCharState_Idle,
-		enCharState_Walk,
-		enCharState_Run,
-		enCharState_Attack,
-		enCharState_Damege,
-		enCharState_Death,
-		enCharState_Skill,
-		enCharState_UltimateSkill,
-		enCharState_Avoidance,
-		enCharState_Pause,
-		enCharState_Jump,
-		enCharState_Fall,
-		enCharState_Num,
-	};
 	EnCharState m_charState = enCharState_Idle;
 
 public:
@@ -208,6 +217,16 @@ public:
 	{
 		return m_position;
 	}
+
+
+	/// <summary>
+	/// プレイヤーの前方向を取得。
+	/// </summary>
+	const Vector3& GetForward() const
+	{
+		return m_Forward;
+	}
+
 	/// <summary>
 	/// m_spriteFlagを返す
 	/// </summary>

@@ -177,29 +177,37 @@ bool Neutral_Enemy::Start()
 		break;
 	}
 
+	// 準備完了
+	isStart = true;
+
 	return true;
 }
 
 void Neutral_Enemy::Update()
 {
+	if (isStart == false) {
+		return;
+	}
+
+	//当たり判定。
+	Collision();
+	//アニメーションの再生。
+	PlayAnimation();
+	if (m_game->GetStopFlag() == true)
+	{
+		if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
+		{
+			m_modelRender.Update();
+		}
+		return;
+	}
 	// ポーズ中は何もしない
 	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
 		return;
 	}
 
-    //探索処理。
-	//Search();
-	//追跡処理。
-	//Chase();
-
 	//回転処理。
 	Rotation();
-	//当たり判定。
-	Collision();
-	//攻撃処理。
-	//Attack();
-	//アニメーションの再生。
-	PlayAnimation();
 	//ステートの遷移処理。
 	ManageState();
 	HPBar();
@@ -254,6 +262,8 @@ if (fabsf(m_moveSpeed.x) < 0.001f
 
 void Neutral_Enemy::Chase()
 {
+
+
 	//追跡ステートでないなら、追跡処理はしない。
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Chase)
 	{
@@ -357,7 +367,7 @@ void Neutral_Enemy::Collision()
 		}
 	}
 
-//敵の攻撃用のコリジョンを取得する
+    //敵の攻撃用のコリジョンを取得する
 	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
 	//子リジョンの配列をfor文で回す
 	for (auto collision : Ultcollisions)
@@ -384,17 +394,11 @@ void Neutral_Enemy::Collision()
 			}
 		}
 	}
-	//攻撃中、デス中は当たり判定の処理を行わない
-	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
-	{
-		return;
-	}
-
-//攻撃中、デス中は当たり判定の処理を行わない
-	if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
-	{
-		return;
-	}
+	////攻撃中、デス中は当たり判定の処理を行わない
+	//if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
+	//{
+	//	return;
+	//}
 	//魔法使いの攻撃用のコリジョンを取得する
 	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("Wizard_MagicBall");
 	//コリジョンの配列をfor文で回す
@@ -759,7 +763,7 @@ void Neutral_Enemy::PlayAnimation()
 		break;
 		//攻撃ステート
 	case enNeutral_Enemy_Attack:
-		m_modelRender.SetAnimationSpeed(0.5f);
+		m_modelRender.SetAnimationSpeed(0.8f);
 		m_modelRender.PlayAnimation(enAnimationClip_Attack, 0.5f);
 		break;
 		//被ダメージステート
@@ -900,7 +904,7 @@ const bool Neutral_Enemy::CanAttack()const
 	//中立の敵からプレイヤーに向かうベクトルを計算する
 	Vector3 diff = m_targetActor->GetPosition() - m_position;
 	//距離が近かったら
-	if (diff.LengthSq() <= 70.0f * 70.0f)
+	if (diff.LengthSq() <= 50.0f * 50.0f)
 	{
 		//攻撃できる
 		return true;
@@ -908,13 +912,28 @@ const bool Neutral_Enemy::CanAttack()const
 	//攻撃できない
 	return false;
 }
+void Neutral_Enemy::modelUpdate()
+{
+	//座標を設定
+	m_modelRender.SetPosition(m_position);
+	//回転を設定する。
+	m_modelRender.SetRotation(m_rot);
+	//大きさを設定する。
+	m_modelRender.SetScale(m_scale);
 
+	//モデルの更新。
+	m_modelRender.Update();
+}
 void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
 	//フォントを描画する。
 	//m_Name.Draw(rc);
+	if (m_game->GetStopFlag() == true)
+	{
+		return;
+	}
 	//ステートがポーズステートでないなら
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
 		//スプライトフラグがtureなら

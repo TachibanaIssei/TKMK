@@ -55,6 +55,14 @@ KnightPlayer::KnightPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
+	//3Dサウンド
+	
+	//m_soundEngine->SetListenerPosition(m_position);
+	//
+	//m_soundEngine->SetListenerFront(g_camera3D->GetForward());
+	//m_soundEngine->SetListenerUp(Vector3::AxisY);
+	//m_soundEngine->Update();
 }
 
 KnightPlayer::~KnightPlayer()
@@ -75,10 +83,18 @@ void KnightPlayer::Update()
 		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
+	//やられたらリスポーンするまで実行する
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag) == true)
+	{
+
+		m_charState = enCharState_Idle;
+
+		return;
+	}
 
 
 	//ゲームのステートがスタート,エンド、リザルトでないなら
-	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0/*|| DeathToRespawnTimer(m_DeathToRespwanFlag)==false*/)
+	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
 		//今のフレームと前のフレームのレベルが違っていたら
 		if (oldLv != Lv) {
@@ -193,9 +209,7 @@ void KnightPlayer::Update()
 	{
 		m_charState = enCharState_Fall;
 	}
-
 	
-
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 

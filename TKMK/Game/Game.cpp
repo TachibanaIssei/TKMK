@@ -173,7 +173,7 @@ bool Game::Start()
 
 	
 
-	m_AIPos.Init("Assets/level3D/AIPOS.tkl", [&](LevelObjectData& objData) {
+	m_AIPos.Init("Assets/level3D/AIPOS2.tkl", [&](LevelObjectData& objData) {
 
 		
 
@@ -333,8 +333,6 @@ void Game::Battle()
 	if (GameEndFlag == false) {
 		CountDown();
 	}
-	
-	
 
 	if (m_GameState == enGameState_Battle) {
 		//CTRLを押したら
@@ -364,7 +362,10 @@ void Game::Battle()
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
 			}
 	}
-
+	if (UltStopFlag == true)
+	{
+		return;
+	}
 	m_RespawnTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_RespawnTimer >= 5) {
 		Respawn();
@@ -572,6 +573,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
 	neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 	neutral_Enemy->SetPosition(pos);
 	neutral_Enemy->SetRotation(rot);
+	neutral_Enemy->modelUpdate();
 
 	m_neutral_Enemys.push_back(neutral_Enemy);
 }

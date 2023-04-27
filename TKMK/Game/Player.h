@@ -109,6 +109,14 @@ public:
 	{
 		return playerActor->NowCharState();
 	}
+
+	/// <summary>
+	/// プレイヤーの名前を取得する
+	/// </summary>
+	/// <returns></returns>
+	const char* GetName() {
+		return player_name;
+	}
 private:
 
 	Game* game = nullptr;
@@ -119,5 +127,7 @@ private:
 
 	Actor* playerActor = nullptr;
 
+
+	const char* player_name = nullptr;
 };
 

@@ -13,21 +13,21 @@ public:
 	KnightBase();
 	virtual ~KnightBase();
 
-	enum PlayerState {
-		enKnightState_Idle,
-		enKnightState_Walk,
-		enKnightState_Run,
-		enKnightState_ChainAtk,
-		enKnightState_Damege,
-		enKnightState_Death,
-		enKnightState_Skill,
-		enKnightState_UltimateSkill,
-		enKnightState_Avoidance,
-		enKnightState_Jump,
-		enKnightState_Fall,
-		enKnightState_Num,
-		enKnightState_Pause,        //ゲームの状態を受け取る
-	};
+	//enum PlayerState {
+	//	enKnightState_Idle,
+	//	enKnightState_Walk,
+	//	enKnightState_Run,
+	//	enKnightState_ChainAtk,
+	//	enKnightState_Damege,
+	//	enKnightState_Death,
+	//	enKnightState_Skill,
+	//	enKnightState_UltimateSkill,
+	//	enKnightState_Avoidance,
+	//	enKnightState_Jump,
+	//	enKnightState_Fall,
+	//	enKnightState_Num,
+	//	enKnightState_Pause,        //ゲームの状態を受け取る
+	//};
 
 	/// <summary>
 	/// モデルのInit、キャラコンの初期化
@@ -163,12 +163,12 @@ public:
 			m_charState != enCharState_Damege &&
 			m_charState != enCharState_Death;
 
-		return m_knightState != enKnightState_ChainAtk &&
-			m_knightState != enKnightState_UltimateSkill &&
-			m_knightState != enKnightState_Skill &&
-			m_knightState != enKnightState_Avoidance &&
-			m_knightState != enKnightState_Damege&&
-			m_knightState != enKnightState_Death;
+		/*return m_charState != enKnightState_ChainAtk &&
+			m_charState != enKnightState_UltimateSkill &&
+			m_charState != enKnightState_Skill &&
+			m_charState != enKnightState_Avoidance &&
+			m_charState != enKnightState_Damege&&
+			m_charState != enKnightState_Death;*/
 	}
 
 
@@ -189,13 +189,7 @@ public:
 		return m_Status.Hp;
 	}
 
-	/// <summary>
-	/// プレイヤーの前方向を取得。
-	/// </summary>
-	const Vector3& GetForward() const
-	{
-		return m_Forward;
-	}
+	
 
 	Quaternion& GetRot()
 	{
@@ -216,7 +210,7 @@ public:
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
 	/*void SetPlayerState(PlayerState gamescene) {
-		m_knightState = gamescene;
+		m_charState = gamescene;
 		m_charState = gamescene;
 	}*/
 
@@ -256,6 +250,8 @@ protected:
 	void OnProcessDamegeStateTransition();
 	//HPが0になったときのステートの遷移処理
 	void OnProcessDeathStateTransition();
+	//必殺技の終了
+	void UltEnd();
 
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -293,7 +289,7 @@ protected:
 	
 
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
-	PlayerState m_knightState = enKnightState_Idle/* = enKnightState_Num*/;
+	//PlayerState m_charState = enKnightState_Idle/* = enKnightState_Num*/;
 	
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする

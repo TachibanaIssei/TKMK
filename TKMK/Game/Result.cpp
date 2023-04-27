@@ -21,10 +21,37 @@ bool Result::Start()
 	//g_k2EngineLow->~K2EngineLow();
 	game->GetActorPoints(charPoints);
 
-	for (int i = 0; i < 4; i++)
+	int i, j, k, l, m;
+	//ポイントを代入
+	for (i = 0; i < 4; i++)
 	{
-		Score Player[4];
 		Player[i] = { charPoints[i],i};
+	}
+	//順位付け
+	for (j = 0; j < PLAYER; j++)
+	{
+		for (k = 0; k < PLAYER; k++)
+		{
+			if (Player[j].Point < Player[k].Point)
+			{
+				Player[j].Rank += 1;
+			}
+		}
+	}
+
+	for (l = 0; l < PLAYER; l++)
+	{
+		for (m = 0; m < PLAYER; m++)
+		{
+			if (Player[l].Point == Player[m].Point)
+			{
+				if (Player[l].NameNum < Player[m].NameNum)
+				{
+					Player[m].Rank += 1;
+				}
+				
+			}
+		}
 	}
 
 	DeleteGO(game);
@@ -55,65 +82,39 @@ void Result::Update()
 
 void Result::Rank()
 {
-	/*wchar_t moji2[256];
-	swprintf(moji2, L"%d pt", playerpoint[0]);
-	moji.SetText(moji2);
-	moji.SetPosition(g_vec3Zero);
-	moji.SetColor(g_vec4Black);*/
-
 	wchar_t Player1[256];
 	wchar_t Player2[256];
 	wchar_t Player3[256];
 	wchar_t Player4[256];
 
-	int i, j, k;
-
-	int rank[PLAYER];
-
-	for (i = 0; i < PLAYER; i++)
+	for (int i = 1; i <= PLAYER; i++)
 	{
-		rank[i] = 1;
-		for (j = 0; j < PLAYER; j++)
+		switch (Player[i].Rank)
 		{
-			if (playerpoint[i] < playerpoint[j])rank[i]++;
-		}
-	}
-	for (k = 0; k < PLAYER; k++)
-	{
-		switch (k)
-		{
-		case 0:
-			m_playerNum = enPlayerNum_play;
-			swprintf(Player1, L"%d,%d pt", rank[i], playerpoint[i]);
-			PlayerRank1.SetText(Player1);
-			PlayerRank1.SetColor(g_vec4Black);
-			PlayerRank1.SetPosition(RankPos[0]);
-			break;
 		case 1:
-			m_playerNum = enPlayerNum_enm1;
-			swprintf(Player2, L"%d,%3d pt", rank[i], playerpoint[i]);
-			PlayerRank2.SetText(Player2);
-			PlayerRank2.SetColor(g_vec4Black);
-			PlayerRank2.SetPosition(RankPos[1]);
+			swprintf(Player1, L"%d,%d,%d pt", Player[i].Rank,Player[i].NameNum, Player[i].Point);
+			PlayerRank1.SetText(Player1);
+			PlayerRank1.SetPosition(RankPos[i]);
+			PlayerRank1.SetColor(g_vec4Black);
 			break;
 		case 2:
-			m_playerNum = enPlayerNum_enm2;
-			swprintf(Player3, L"%d,%3d pt", rank[i], playerpoint[i]);
-			PlayerRank3.SetText(Player3);
-			PlayerRank3.SetColor(g_vec4Black);
-			PlayerRank3.SetPosition(RankPos[2]);
+			swprintf(Player2, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			PlayerRank2.SetText(Player2);
+			PlayerRank2.SetPosition(RankPos[i]);
+			PlayerRank2.SetColor(g_vec4Black);
 			break;
 		case 3:
-			m_playerNum = enPlayerNum_enm3;
-			swprintf(Player4, L"%d,%3d pt", rank[i], playerpoint[i]);
-			PlayerRank4.SetText(Player4);
-			PlayerRank4.SetColor(g_vec4Black);
-			PlayerRank4.SetPosition(RankPos[3]);
+			swprintf(Player3, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			PlayerRank3.SetText(Player3);
+			PlayerRank3.SetPosition(RankPos[i]);
+			PlayerRank3.SetColor(g_vec4Black);
 			break;
-		}
-		switch (m_playerNum)
-		{
-		
+		case 4:
+			swprintf(Player4, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			PlayerRank4.SetText(Player4);
+			PlayerRank4.SetPosition(RankPos[i]);
+			PlayerRank4.SetColor(g_vec4Black);
+			break;
 		}
 	}
 	

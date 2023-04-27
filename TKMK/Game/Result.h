@@ -1,4 +1,5 @@
 #pragma once
+
 #define PLAYER 4
 
 class Tittle;
@@ -38,6 +39,7 @@ public:
 	struct Score{
 		int Point;
 		int NameNum;
+		int Rank =1;
 	};
 
 private:
@@ -56,10 +58,10 @@ private:
 	EnPlayerNum m_playerNum;
 	
 	Vector3 RankPos[4] = {
-		Vector3(100.0f, 200.0f, 0.0f),
-		Vector3(50.0f, 100.0f, 0.0f),
+		Vector3(0.0f, 200.0f, 0.0f),
+		Vector3(0.0f, 100.0f, 0.0f),
 		Vector3(0.0f, 0.0f, 0.0f),
-		Vector3(-50.0f, -100.0f, 0.0f),
+		Vector3(0.0f, -100.0f, 0.0f),
 	};
 };
 

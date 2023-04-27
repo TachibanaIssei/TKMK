@@ -37,6 +37,12 @@ namespace
 	const float DownPointPosY = 100.0f;
 
 	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //ポイント
+
+	const Vector3 RESPWANCOUNT_POS = Vector3(0.0f, 0.0f, 0.0f);		//リスポーンした後のカウント
+
+	const Vector3 SmallScale = Vector3(0.1f, 0.1f, 0.0f);
+
+	const Vector3 FightSmallScale = Vector3(1.0f, 1.0f, 0.0f);
 }
 GameUI::GameUI()
 {
@@ -60,6 +66,17 @@ bool GameUI::Start()
 	m_LevelFont.SetRotation(0.0f);
 	m_LevelFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
+
+	//キャラのアイコン
+	//ブルー
+	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 80.0f, 80.0f);
+	//レッド
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Red.DDS", 80.0f, 80.0f);
+	//グリーン
+	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", 80.0f, 80.0f);
+	//イエロー
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 80.0f, 80.0f);
+
 	//ポイント関連
 	{
 		//キャラのポイントを表示
@@ -77,8 +94,9 @@ bool GameUI::Start()
 			//プレイヤーが剣士なら
 			if (actor->IsMatchName(knightname))
 			{
-				//アイコンを剣士にする
+				//アイコンを剣士にする(ブルー)
 				
+				m_CharIcon[num].SetPosition(CharIconPos[num]);
 				//フレームをプレイヤー用にする
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
 			}
@@ -93,12 +111,15 @@ bool GameUI::Start()
 			//それ以外(AI)なら
 			else
 			{
+				m_CharIcon[num].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
 			
 			m_PointFlame[num].SetPosition(PointFlamePos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
 			m_PointFlame[num].Update();
+			//
+			m_CharIcon[num].Update();
 
 			num++;
 		}
@@ -111,14 +132,22 @@ bool GameUI::Start()
 
 	}
 	
-	
+	//リスポーンするまでのカウント
+	m_RespawnCount.SetPosition(RESPWANCOUNT_POS);
+	m_RespawnCount.SetScale(m_GameCountScale);
+	m_RespawnCount.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_RespawnCount.SetRotation(0.0f);
+	m_RespawnCount.SetShadowParam(true, 2.0f, g_vec4Black);
 
-	//カウントダウン
-	m_CountDownFont.SetPosition(Vector3::Zero);
-	m_CountDownFont.SetScale(8.0f);
-	m_CountDownFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_CountDownFont.SetRotation(0.0f);
-	m_CountDownFont.SetShadowParam(true, 2.0f, g_vec4Black);
+
+
+	m_CountNumper.Init("Assets/sprite/gameUI/count3.DDS", 1920.0f, 1080.0f);
+
+	m_CountNumper.SetPosition(Vector3::Zero);
+	m_CountNumper.SetScale(m_gameCountScale);
+	m_CountNumper.Update();
+
+
 
 	//右下のフレーム
 	{
@@ -133,7 +162,7 @@ bool GameUI::Start()
 		m_ExperienceFlame.SetScale(0.5, 0.5, 1.0);
 
 		//経験値バーの表ピボットにするtodo
-		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
+		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", 600.0f, 120.0f);
 		m_ExperienceBar_flont.SetPosition(Vector3::Zero);
 		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
@@ -237,7 +266,11 @@ void GameUI::Update()
 		CountDown();
 	}
 	
-
+	if (player->CharGetRespawnTime() > 0)
+	{
+		RespawnCountDown();
+	}
+	
 
 
 	//レベルの表示
@@ -263,21 +296,77 @@ void GameUI::Update()
 	
 }
 
+//ゲームスタートのカウントダウン
 void GameUI::CountDown()
 {
 	//カウントダウン
-	int COUNTDOWNTIMER = m_game->CountDownMinutes();
-	wchar_t CDT[255];
-	if (m_game->CountDownMinutes() <= 0)
+	//int COUNTDOWNTIMER = m_game->CountDownMinutes();
+	int StartCountDown= m_game->CountDownMinutes();
+
+	if(m_game->CountDownMinutes() <= 0)
 	{
-		swprintf_s(CDT, 255, L"Fight!");
-	}
-	else
-	{
-		swprintf_s(CDT, 255, L"%d", COUNTDOWNTIMER);
+		m_CountNumper.Init("Assets/sprite/gameUI/fight!.DDS", 1920.0f, 1080.0f);
+		m_gameCountScale = Vector3(5.0f, 5.0f, 0.0f);
+		m_Color = 1.0f;
+		m_fightFlag = true;
 	}
 
-	m_CountDownFont.SetText(CDT);
+	if (oldtStartCount != StartCountDown)
+	{
+		switch (StartCountDown)
+		{
+		case 1:
+			m_CountNumper.Init("Assets/sprite/gameUI/count1.DDS", 1920.0f, 1080.0f);
+			m_gameCountScale = Vector3(0.2f, 0.2f, 0.0f);
+			m_Color = 1.0f;
+			break;
+		case 2:
+			m_CountNumper.Init("Assets/sprite/gameUI/count2.DDS", 1920.0f, 1080.0f);
+			m_gameCountScale = Vector3(0.2f, 0.2f, 0.0f);
+			m_Color = 1.0f;
+			break;
+		default:
+			break;
+		}
+	}
+	else if(m_gameCountScale.x<100.0f)
+	{
+		m_gameCountScale += SmallScale;
+		m_Color -= 0.02f;
+		
+		//徐々に文字を小さくする
+		m_CountNumper.SetScale(m_gameCountScale);
+		//
+		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
+	}
+
+	if(m_fightFlag==true)
+	{
+		m_gameCountScale -= FightSmallScale;
+		//m_Color += 2.0f;
+
+		//徐々に文字を大きくする
+		m_CountNumper.SetScale(m_gameCountScale);
+		//
+		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
+	}
+
+	
+	m_CountNumper.Update();
+
+	oldtStartCount = StartCountDown;
+}
+
+//リスポーンするまでのカウントダウン
+void GameUI::RespawnCountDown()
+{
+	//カウントダウン
+	int RESPAWNCOUNTDOWN = player->CharGetRespawnTime();
+	wchar_t RCD[255];
+	
+	swprintf_s(RCD, 255, L"%d", RESPAWNCOUNTDOWN);
+
+	m_RespawnCount.SetText(RCD);
 }
 
 //プレイヤーのHPの表示の処理
@@ -339,7 +428,6 @@ void GameUI::CharPoint()
 	//キャラのポイントを表示
 	m_Actors = m_game->GetActors();
 
-	MaxPoint = 0;
 	int num = 0;
 	for (auto actor:m_Actors)
 	{
@@ -385,8 +473,13 @@ void GameUI::Render(RenderContext& rc)
 		//経験値
 		m_ExperienceFlame.Draw(rc);
 		m_ExperienceBar_flont.Draw(rc);
+		//リスポーンするまでの時間
+		if (player->CharGetRespawnTime() > 0)
+		{
+			m_RespawnCount.Draw(rc);
+		}
+		
 
-	//m_LevelNameFont.Draw(rc);
 		m_HpNameFont.Draw(rc);
 
 		m_TimeAndPointRender.Draw(rc);
@@ -410,21 +503,22 @@ void GameUI::Render(RenderContext& rc)
 
 		//ポイントを描画
 		int num = 0;
-		for (auto actor:m_Actors/*int num = 0; num < Characters; num++*/) {
+		for (auto actor:m_Actors) {
 			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
+			m_CharIcon[num].Draw(rc);
 			num++;
 		}
 		//王冠マーク
-		if (MaxPoint != 0)
+		/*if (MaxPoint != 0)
 		{
 			m_Crown.Draw(rc);
-		}
+		}*/
 		
 		
 
 		if (m_game->NowGameState() == 0) {
-			m_CountDownFont.Draw(rc);
+			m_CountNumper.Draw(rc);
 		}
 		
 	}

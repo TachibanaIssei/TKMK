@@ -96,6 +96,11 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
+	void RespawnCountDown();
+
+	/// <summary>
+	/// 
+	/// </summary>
 	void EXPBar();
 
 	/// <summary>
@@ -116,6 +121,8 @@ private:
 	FontRender m_SpeedFont;
 
 	FontRender m_PointFont[4];
+
+	FontRender m_RespawnCount;
 
 	/*KnightPlayer* m_knightplayer=nullptr;
 	WizardPlayer* wizardPlayer = nullptr;*/
@@ -142,10 +149,19 @@ private:
 	SpriteRender            m_ExperienceBar_flont;				//経験値バーの表
 	SpriteRender			m_Crown;							//ポイントが一番多いキャラにつける王冠マーク
 	SpriteRender			m_PointFlame[4];					//ポイントを表示するフレーム
+	SpriteRender            m_CharIcon[4];                      //キャラのアイコン
+	SpriteRender			m_CountNumper;					//カウントダウン
+
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
+
+	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);
+	Vector3				m_FightScale = Vector3(7.0f, 7.0f, 0.0f);
+	bool				m_fightFlag = false;
+	float				m_GameCountScale = 20.0f;
+	float               m_Color = 1.0f;
 
 	Vector3 PointPos[4] = {
 		Vector3(-850.0f, 150.0f, 0.0f),
@@ -160,6 +176,13 @@ private:
 		Vector3(-850.0f, -80.0f, 0.0f),
 		Vector3(-850.0f, -180.0f, 0.0f),
 	};															//ポイント
+
+	Vector3 CharIconPos[4] = {
+		Vector3(-920.0f, 120.0f, 0.0f),
+		Vector3(-920.0f, 20.0f, 0.0f),
+		Vector3(-920.0f, -80.0f, 0.0f),
+		Vector3(-920.0f, -180.0f, 0.0f),
+	};															//アイコン
 	
 	Vector3 CrownPos[4] = {
 		Vector3(-920.0f, 120.0f, 0.0f),
@@ -172,6 +195,8 @@ private:
 
 	const char* knightname = "knightplayer";
 	const char* wizardname = "wizardplayer";
+
+	int oldtStartCount = 0;
 
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;
@@ -192,6 +217,8 @@ private:
 	int charPoint[4];
 
 	int MaxPoint = 0;
+
+	//float StartCountDown = 4.0f;
 
 	//int LEVEL;
 };

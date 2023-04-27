@@ -63,8 +63,10 @@ bool GameCamera::Start()
 		1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
 	);
 
+	
 	//最初にキャラの背中を映すようにする
 	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
+	m_springCamera.Refresh();
 
 	return true;
 }
@@ -77,6 +79,7 @@ void GameCamera::Update()
 	}
 
 	//プレイヤーがやられたら　がtrueの間カメラをその場で動かさない
+	
 
 
 	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)

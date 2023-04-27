@@ -14,6 +14,7 @@ public:
 
 	enum GameUIState
 	{
+		m_GameStartState,
 		m_GameState,
 		m_PauseState,
 		m_BattleEndState,
@@ -158,7 +159,7 @@ private:
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP”wŒi‚Ìƒ|ƒWƒVƒ‡ƒ“
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);
-	Vector3				m_FightScale = Vector3(7.0f, 7.0f, 0.0f);
+	Vector3				m_FightScale = Vector3(1.0f, 1.0f, 0.0f);
 	bool				m_fightFlag = false;
 	float				m_GameCountScale = 20.0f;
 	float               m_Color = 1.0f;

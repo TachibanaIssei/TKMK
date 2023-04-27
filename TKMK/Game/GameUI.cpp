@@ -42,7 +42,7 @@ namespace
 
 	const Vector3 SmallScale = Vector3(0.1f, 0.1f, 0.0f);
 
-	const Vector3 FightSmallScale = Vector3(1.0f, 1.0f, 0.0f);
+	const Vector3 FightSmallScale = Vector3(0.5f, 0.5f, 0.0f);
 }
 GameUI::GameUI()
 {
@@ -249,7 +249,7 @@ bool GameUI::Start()
 		m_TimeAndPointRender.Update();
 	}
 
-	m_GameUIState = m_GameState;
+	m_GameUIState = m_GameStartState;
 
 	return true;
 }
@@ -271,7 +271,10 @@ void GameUI::Update()
 		RespawnCountDown();
 	}
 	
-
+	//gameクラスのスタートのフラグが立っている間処理を行わない
+	if (m_GameUIState == m_GameStartState) {
+		return;
+	}
 
 	//レベルの表示
 	//int LEVEL=m_knightplayer->SetLevel();
@@ -306,7 +309,7 @@ void GameUI::CountDown()
 	if(m_game->CountDownMinutes() <= 0)
 	{
 		m_CountNumper.Init("Assets/sprite/gameUI/fight!.DDS", 1920.0f, 1080.0f);
-		m_gameCountScale = Vector3(5.0f, 5.0f, 0.0f);
+		//m_gameCountScale = Vector3(5.0f, 5.0f, 0.0f);
 		m_Color = 1.0f;
 		m_fightFlag = true;
 	}
@@ -329,23 +332,28 @@ void GameUI::CountDown()
 			break;
 		}
 	}
-	else if(m_gameCountScale.x<100.0f)
+	//画像がFight!でないかつスケールが100以下なら
+	else if(m_fightFlag == false&&m_gameCountScale.x<100.0f)
 	{
+		//徐々に文字を大きくする
 		m_gameCountScale += SmallScale;
+		//少しずつ透明にする
 		m_Color -= 0.02f;
 		
-		//徐々に文字を小さくする
 		m_CountNumper.SetScale(m_gameCountScale);
 		//
 		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
 	}
 
+	//画像がFight!なら
 	if(m_fightFlag==true)
 	{
-		m_gameCountScale -= FightSmallScale;
-		//m_Color += 2.0f;
-
-		//徐々に文字を大きくする
+		if (m_FightScale.x < m_gameCountScale.x)
+		{
+			//徐々に文字を小さくする
+			m_gameCountScale -= FightSmallScale;
+		}
+		
 		m_CountNumper.SetScale(m_gameCountScale);
 		//
 		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
@@ -467,11 +475,12 @@ void GameUI::CharPoint()
 void GameUI::Render(RenderContext& rc)
 {
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameUIState != m_PauseState) {
+	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
 		//レベルや経験値のフレーム
 		m_Flame.Draw(rc);
 		//経験値
 		m_ExperienceFlame.Draw(rc);
+		//変動する
 		m_ExperienceBar_flont.Draw(rc);
 		//リスポーンするまでの時間
 		if (player->CharGetRespawnTime() > 0)
@@ -479,18 +488,15 @@ void GameUI::Render(RenderContext& rc)
 			m_RespawnCount.Draw(rc);
 		}
 		
-
 		m_HpNameFont.Draw(rc);
 
 		m_TimeAndPointRender.Draw(rc);
 
 		m_time_left.Draw(rc);
 
-		/*m_AtkFont.Draw(rc);
-		m_SpeedFont.Draw(rc);*/
 		m_statusBar.Draw(rc);
 		m_hpBar.Draw(rc);
-		//m_playerFaceBack.Draw(rc);
+		
 		m_HPFrame.Draw(rc);
 		m_SkillRender.Draw(rc);
 		m_UltRender.Draw(rc);
@@ -509,18 +515,14 @@ void GameUI::Render(RenderContext& rc)
 			m_CharIcon[num].Draw(rc);
 			num++;
 		}
-		//王冠マーク
-		/*if (MaxPoint != 0)
-		{
-			m_Crown.Draw(rc);
-		}*/
 		
 		
-
+	}
+	else
+	{
 		if (m_game->NowGameState() == 0) {
 			m_CountNumper.Draw(rc);
 		}
-		
 	}
 	
 }

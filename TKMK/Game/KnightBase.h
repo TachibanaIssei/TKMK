@@ -290,7 +290,6 @@ protected:
 	//Vector3 m_SwordPos = Vector3::Zero;						//剣の座標
 	CharacterController m_charCon;                        //キャラクターコントロール
 	
-	
 
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	PlayerState m_knightState = enKnightState_Idle/* = enKnightState_Num*/;
@@ -343,6 +342,9 @@ protected:
 	bool AtkCollistionFlag = false;
 
 	bool jampAccumulateflag = false;
+
+	//プレイヤーとの内積を求めて線形補間で音量調整
+	float SEVolume = 0;
 
 };
 

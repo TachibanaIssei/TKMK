@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Actor.h"
+#include "Player.h"
 
 Actor::Actor()
 {

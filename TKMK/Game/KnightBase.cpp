@@ -83,6 +83,9 @@ void KnightBase::SetModel()
 		m_position
 	);
 
+	//
+
+	
 	//剣のエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 }
@@ -285,6 +288,9 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Init(17);
 		se->Play(false);
 		se->SetVolume(0.5f);
+		
+		se->SetPosition(m_position);
+
 		m_Status.Hp = 0;
 		//攻撃された相手が中立の敵以外なら
 		if (CharGivePoints != nullptr)
@@ -500,7 +506,7 @@ void KnightBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
 		break;
 	case enCharState_Death:
-		m_modelRender.PlayAnimation(enAnimationClip_Death, 0.4f);
+		m_modelRender.PlayAnimation(enAnimationClip_Death);
 	default:
 		break;
 	}
@@ -717,8 +723,11 @@ void KnightBase::OnProcessDeathStateTransition()
 		//リスポーンする座標に自身の座標をセット
 		SetRespawn();
 		Death();
+		pushFlag = false;
 		//リスポーン待機フラグを立てる
-		m_RespwanTimeFlag = true;
+		m_DeathToRespwanFlag = true;
+		//リスポーンするまでの時間を設定
+		m_respwanTimer = 3.0f;
 		//待機ステート
 		//m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();

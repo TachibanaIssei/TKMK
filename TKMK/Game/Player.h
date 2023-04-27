@@ -95,6 +95,12 @@ public:
 	/// <returns>プレイヤーの現在のポイント</returns>
 	int CharSetPoint()const;
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	float CharGetRespawnTime()const;
+
 	Actor* GetPlayerActor() {
 		return playerActor;
 	}

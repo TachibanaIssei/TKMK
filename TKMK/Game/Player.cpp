@@ -277,7 +277,7 @@ int Player::CharSetEXPTable() const
 	return playerActor->GetExpTable();
 }
 
-//auto Player::CharGetState() const
-//{
-//	return playerActor->NowCharState();
-//}
+float Player::CharGetRespawnTime() const
+{
+	return playerActor->GetRespawnTimer();
+}

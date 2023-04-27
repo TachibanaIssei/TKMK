@@ -56,6 +56,14 @@ KnightPlayer::KnightPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
+	//3Dサウンド
+	
+	//m_soundEngine->SetListenerPosition(m_position);
+	//
+	//m_soundEngine->SetListenerFront(g_camera3D->GetForward());
+	//m_soundEngine->SetListenerUp(Vector3::AxisY);
+	//m_soundEngine->Update();
 }
 
 KnightPlayer::~KnightPlayer()
@@ -82,7 +90,7 @@ void KnightPlayer::Update()
 	}
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause) {
+	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag)==true) {
 		return;
 	}
 	
@@ -90,6 +98,16 @@ void KnightPlayer::Update()
 	{
 		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
+
+	//やられたらリスポーンするまで実行する
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag) == true)
+	{
+
+		m_charState = enCharState_Idle;
+
+		return;
+	}
+
 
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -100,8 +118,8 @@ void KnightPlayer::Update()
 			m_gameUI->LevelFontChange(Lv);
 		}
 
+		//前フレームのレベルを取得
 		oldLv = Lv;
-
 		//前フレームの座標を取得
 		OldPosition = m_position;
 
@@ -123,13 +141,10 @@ void KnightPlayer::Update()
 		}
 		else
 		{
-			//ステートがデスのときボタンを押せないようにする
-			if (m_charState != enCharState_Death) {
 				//攻撃処理
 				Attack();
 				//回避処理
 				Avoidance();
-			}
 		}
 
 		//移動処理
@@ -165,7 +180,6 @@ void KnightPlayer::Update()
 		//回避クールタイムの処理
 		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
-
 		//if (m_swordEffectFlag ==true)
 		//{
 		//	Vector3 m_SwordPos = Vector3::Zero;
@@ -194,8 +208,8 @@ void KnightPlayer::Update()
 			Dameged(dddd);
 		}*/
 
-		
 	}
+	//速度を0にする(動かないようにする)
 	else
 	{
 		m_moveSpeed = Vector3::Zero;
@@ -221,9 +235,7 @@ void KnightPlayer::Update()
 	{
 		m_charState = enCharState_Fall;
 	}
-
 	
-
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
@@ -233,8 +245,11 @@ void KnightPlayer::Update()
 //攻撃処理
 void KnightPlayer::Attack()
 {
-	
-	//連打で攻撃できなくなる
+	//ステートがデスのとき
+	if (m_charState == enCharState_Death)
+	{
+		return;
+	}
 
 	//一段目のアタックをしていないなら
 	if (pushFlag==false&&AtkState == false)
@@ -334,6 +349,11 @@ void KnightPlayer::Attack()
 /// </summary>
 void KnightPlayer::Avoidance()
 {
+	//ステートがデスのとき
+	if (m_charState == enCharState_Death)
+	{
+		return;
+	}
 	//RBボタンが押されたら。
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {

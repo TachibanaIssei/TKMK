@@ -323,6 +323,8 @@ void Game::BattleStart()
 	if (m_StartToGameTimer < 0)
 	{
 		m_GameState = enGameState_Battle;
+		//ゲームUIのステートをgameStateにする
+		m_gameUI->SetGameUIState(GameUI::m_GameState);
 	}
 }
 

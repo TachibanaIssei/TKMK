@@ -7,6 +7,7 @@ class WizardPlayer;
 class Player;
 class Game;
 class KnightUlt;
+class Actor;
 
 class GameCamera:public IGameObject
 {
@@ -16,16 +17,28 @@ public:
 	bool Start();
 	void Update();
 	void FollowThePlayer();
+	void StateControl();
+	void NomarlCamera();
+	void UltRotCamera();
+	void ChaseCamera();
+
+	enum EnCameraState {
+		m_enNomarlCameraState,
+		m_enUltRotCameraState,
+		m_enChaseCameraState
+	};
+	EnCameraState  m_enCameraState = m_enNomarlCameraState;
+	
 
 	/// <summary>
 	/// カメラの視点を最初の状態に戻す
 	/// </summary>
-	void CameraTarget(float X,float Y);
+	void CameraTarget(float X,float Y,Actor*actor);
 
 	/// <summary>
 	/// 剣士が必殺技を打った時のカメラワーク
 	/// </summary>
-	void KnightUltCamera();
+	void KnightUltCamera(Actor* actor, bool reset);
 
 	/// <summary>
 	/// 剣士の斬撃エフェクトを追いかける
@@ -63,6 +76,13 @@ public:
 		knightUlt = ultobj;
 	}
 
+	bool UltTime(bool UltMoveFlag);
+
+	// 必殺カメラの終了
+	void GameCameraUltEnd();
+
+private:
+
 	CameraCollisionSolver	m_cameraCollisionSolver;
 	SpringCamera			m_springCamera;
 
@@ -71,6 +91,11 @@ public:
 	Player* player = nullptr;
 	Game* game = nullptr;
 	KnightUlt* knightUlt = nullptr;
+	Actor* ultactor = nullptr;
+	Actor* player_actor = nullptr;
+	
+	Vector3					m_keepDiff				= Vector3::Zero;
+	Vector3					m_CameraFromActorDiff   = Vector3::One;
 
 	Vector3					m_toCameraPos			= Vector3::Zero;		//カメラ位置から注視点に向かうベクトル
 	Vector3					m_position				= Vector3::Zero;		//カメラ座標
@@ -87,9 +112,15 @@ public:
 	float rotamount = 0;
 
 	//剣士のフラグ
-	bool KnightUltMoveFlag = false;
+	bool KnightUltFlag = false;
 	bool SetCameraCharFrontFlag = false;
 
 	float m_timer = 0.0f;
+	const char* player_name = nullptr;
+
+	float sita = 0.0f;
+
+	//アクターの情報
+	std::vector<Actor*> m_actors;
 };
 

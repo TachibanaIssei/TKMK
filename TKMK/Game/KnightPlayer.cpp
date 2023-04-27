@@ -4,6 +4,7 @@
 #include "Neutral_Enemy.h"
 #include "KnightUlt.h"
 #include "GameUI.h"
+
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
 //for文、findGO使う
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -72,6 +73,21 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
+
+	
+	//アニメーションの再生
+	PlayAnimation();
+	//当たり判定
+	Collition();
+
+	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
+	{
+		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
+		{
+			m_modelRender.Update();
+		}
+		return;
+	}
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag)==true) {
@@ -151,9 +167,10 @@ void KnightPlayer::Update()
 			//移動処理を行う(直線移動のみ)。
 			MoveStraight(m_Skill_Right, m_Skill_Forward);
 		}
-
-    //無敵時間
-	  Invincible();
+		//ステート
+		ManageState();
+        //無敵時間
+	    Invincible();
 		//回転処理
 		Rotation();
 
@@ -162,7 +179,6 @@ void KnightPlayer::Update()
 
 		//回避クールタイムの処理
 		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-
 
 		//if (m_swordEffectFlag ==true)
 		//{
@@ -177,8 +193,21 @@ void KnightPlayer::Update()
 		//	Ult_Swordeffect->Update();
 		//}
 
-		//当たり判定
-		Collition();
+		//レベルアップする
+		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+		//{
+		//	if(Lv!=10)
+		//	ExpProcess(exp);
+		//	//m_Status.GetExp += 5;
+		//	//m_gameUI->LevelFontChange(Lv);
+		//}
+
+		//ダメージを受ける
+		/*if (g_pad[0]->IsTrigger(enButtonX))
+		{
+			Dameged(dddd);
+		}*/
+
 	}
 	//速度を0にする(動かないようにする)
 	else
@@ -186,10 +215,7 @@ void KnightPlayer::Update()
 		m_moveSpeed = Vector3::Zero;
 	}
 
-	//ステート
-	ManageState();
-	//アニメーションの再生
-	PlayAnimation();
+
 
 	if (AvoidanceTimer != AvoidanceCoolTime)
 	{
@@ -279,6 +305,8 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
+		m_game->SetStopFlag(true);
+		m_game->SetUltActor(this);
 		//アニメーション再生
 		//必殺技ステート
 		m_charState = enCharState_UltimateSkill;
@@ -306,7 +334,7 @@ void KnightPlayer::Attack()
 		se->SetVolume(m_game->SetSoundEffectVolume());
 
 		//必殺技発動フラグをセット
-		UltimateSkillFlag = true;
+	/*	UltimateSkillFlag = true;*/
 	}
 
 	
@@ -347,6 +375,8 @@ void KnightPlayer::MakeUltSkill()
 	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
 	//製作者の名前を入れる
 	knightUlt->SetCreatorName(GetName());
+	// 制作者を教える
+	knightUlt->SetActor(this);
 	//キャラのレベルを入れる
 	knightUlt->GetCharLevel(Lv);
 	//座標の設定
@@ -355,6 +385,8 @@ void KnightPlayer::MakeUltSkill()
 	knightUlt->SetPosition(UltPos);
 	knightUlt->SetRotation(m_rot);
 	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	knightUlt->SetGame(m_game);
+
 }
 
 /// <summary>

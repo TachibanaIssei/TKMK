@@ -240,7 +240,11 @@ protected:
 	void OnProcessDamegeStateTransition();
 	//HPが0になったときのステートの遷移処理
 	void OnProcessDeathStateTransition();
-
+	//必殺技の終了
+	void UltEnd() {
+		// とりあえず仮
+		int hoge = 0;
+	}
 
 	enum EnAnimationClip {
 		enAnimationClip_Idle,

@@ -8,7 +8,7 @@ KnightBase::KnightBase()
 	//ステータスを読み込む
 	m_Status.Init("Knight");
 	m_InitialStatus = m_Status;  //初期ステータスのセット
-	Lv=4;                    //レベル
+	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
 	Cooltime=5;            //スキルのクールタイム
@@ -210,12 +210,12 @@ void KnightBase::Collition()
 		return;
 	}
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (/*m_knightState == enKnightState_Damege || */
-		m_knightState == enKnightState_Death ||
-		//m_knightState == enKnightState_UltimateSkill ||
-		//m_knightState == enKnightState_ChainAtk ||
-		//m_knightState == enKnightState_Skill ||
-		m_knightState == enKnightState_Avoidance)
+	if (/*m_charState == enKnightState_Damege || */
+		m_charState == enCharState_Death ||
+		//m_charState == enKnightState_UltimateSkill ||
+		//m_charState == enKnightState_ChainAtk ||
+		//m_charState == enKnightState_Skill ||
+		m_charState == enCharState_Avoidance)
 	{
 		return;
 	}
@@ -251,7 +251,24 @@ void KnightBase::Collition()
 
 		}
 	}
+	//敵の攻撃用のコリジョンを取得する
+	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
+	//子リジョンの配列をfor文で回す
+	for (auto collision : Ultcollisions)
+	{
+		if (collision->IsHit(m_charCon))
+		{
+			//このコリジョンを作ったアクターを検索
+			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
+			//コリジョンを作ったアクターが自分でないなら
+			if (collision->IsHit(m_charCon) && m_lastAttackActor != this)
+			{
+				//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
+				Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 
+			}
+		}
+	}
 }
 
 /// <summary>
@@ -471,6 +488,7 @@ void KnightBase::PlayAnimation()
 		break;
 	case enCharState_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.1f);
+		m_modelRender.SetAnimationSpeed(1.5f);
 		break;
 	case enCharState_Skill:
 		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
@@ -495,7 +513,7 @@ void KnightBase::PlayAnimation()
 }
 
 /// <summary>
-/// アニメーションのステートの処理 m_charStateとm_knightState両方あったらアニメーション可
+/// アニメーションのステートの処理 m_charStateとm_charState両方あったらアニメーション可
 /// </summary>
 void KnightBase::ManageState()
 {
@@ -602,6 +620,13 @@ void KnightBase::OnProcessJumpStateTransition()
 		}
 
 	}
+
+	// 応急処置
+	if (m_position.y < 10) {
+		m_charState = enCharState_Idle;
+		OnProcessCommonStateTransition();
+	}
+
 }
 
 /// <summary>
@@ -649,14 +674,14 @@ void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 	//必殺技アニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		AtkState = false;
-		//ボタンプッシュフラグをfalseにする
-		pushFlag = false;
-		//レベルを下げる
-		UltimateSkill();
-		//待機ステート
-		m_charState = enCharState_Idle;
-		OnProcessCommonStateTransition();
+		//AtkState = false;
+		////ボタンプッシュフラグをfalseにする
+		//pushFlag = false;
+		////レベルを下げる
+		//UltimateSkill();
+		////待機ステート
+		//m_charState = enCharState_Idle;
+		//OnProcessCommonStateTransition();
 	}
 }
 
@@ -717,4 +742,15 @@ void KnightBase::OnProcessFallStateTransition()
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();
 	}
+}
+
+void KnightBase::UltEnd() {
+	AtkState = false;
+	//ボタンプッシュフラグをfalseにする
+	pushFlag = false;
+	//レベルを下げる
+	UltimateSkill();
+	//待機ステート
+	m_charState = enCharState_Idle;
+	OnProcessCommonStateTransition();
 }

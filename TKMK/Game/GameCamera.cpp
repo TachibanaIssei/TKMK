@@ -6,18 +6,18 @@
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 #include "Player.h"
-#include "Game.h"
 #include "KnightUlt.h"
+#include "Actor.h"
 
 namespace
 {
-	const float MAX_CAMERA_TOP = -0.1f;		//ƒJƒƒ‰‚ÌãŒü‚«‚ÌÅ‘å’l
-	const float MAX_CAMERA_UNDER = 0.6f;	//ƒJƒƒ‰‚Ì‰ºŒü‚«‚ÌÅ‘å’l
+	const float MAX_CAMERA_TOP = -0.1f;		//ã‚«ãƒ¡ãƒ©ã®ä¸Šå‘ãã®æœ€å¤§å€¤
+	const float MAX_CAMERA_UNDER = 0.6f;	//ã‚«ãƒ¡ãƒ©ã®ä¸‹å‘ãã®æœ€å¤§å€¤
 
 	const float TARGETPOS_YUP = 45.0f;
 	const float TARGETPOS_ULT_YUP = 50.0f;
 
-	///’‹“_‚©‚ç‹“_‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ğİ’èB
+	///æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã¾ã§ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨­å®šã€‚
 	const float CAMERA_POS_X = -160.0f;
 	const float CAMERA_POS_Y = 80.0f;
 
@@ -40,14 +40,24 @@ GameCamera::~GameCamera()
 
 bool GameCamera::Start()
 {
-	//ƒQ[ƒ€‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ’T‚·
+	//ã‚²ãƒ¼ãƒ ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æ¢ã™
 	game = FindGO<Game>("game");
-	//ƒvƒŒƒCƒ„[‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ’T‚·
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æ¢ã™
 	player = FindGO<Player>("player");
+	player_name = player->GetName();
 
-	//’‹“_‚©‚ç‹“_‚Ü‚Å‚ÌƒxƒNƒgƒ‹‚ğİ’èB80-160
+	m_actors = game->GetActors();
+	for (auto player : m_actors)
+	{
+		if (player->IsMatchName(player_name) == true)
+		{
+			player_actor = player;
+		}
+	}
+
+	//æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã¾ã§ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨­å®šã€‚80-160
 	m_toCameraPos.Set(0.0f, 50.0f, -160.0f);
-	//ƒJƒƒ‰‚ğƒvƒŒƒCƒ„[‚ÌŒã‚ë‚É‚·‚é‚Æ‚«‚Ég‚¤
+	//ã‚«ãƒ¡ãƒ©ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å¾Œã‚ã«ã™ã‚‹ã¨ãã«ä½¿ã†
 	m_position = m_toCameraPos;
 
 	g_camera3D->SetNear(1.0f);
@@ -55,16 +65,16 @@ bool GameCamera::Start()
 	m_cameraCollisionSolver.Init(1.0f);
 	m_cameraState = enGameState;
 
-	//‚Î‚ËƒJƒƒ‰‚Ì‰Šú‰»B
+	//ã°ã­ã‚«ãƒ¡ãƒ©ã®åˆæœŸåŒ–ã€‚
 	m_springCamera.Init(
-		*g_camera3D,		//‚Î‚ËƒJƒƒ‰‚Ìˆ—‚ğs‚¤ƒJƒƒ‰‚ğw’è‚·‚éB
-		1000.0f,			//ƒJƒƒ‰‚ÌˆÚ“®‘¬“x‚ÌÅ‘å’lB
-		false,				//ƒJƒƒ‰‚Æ’nŒ`‚Æ‚Ì‚ ‚½‚è”»’è‚ğæ‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒOBtrue‚¾‚Æ‚ ‚½‚è”»’è‚ğs‚¤B
-		1.0f				//ƒJƒƒ‰‚Éİ’è‚³‚ê‚é‹…‘ÌƒRƒŠƒWƒ‡ƒ“‚Ì”¼ŒaB‘æ‚Rˆø”‚ªtrue‚Ì‚É—LŒø‚É‚È‚éB
+		*g_camera3D,		//ã°ã­ã‚«ãƒ¡ãƒ©ã®å‡¦ç†ã‚’è¡Œã†ã‚«ãƒ¡ãƒ©ã‚’æŒ‡å®šã™ã‚‹ã€‚
+		1000.0f,			//ã‚«ãƒ¡ãƒ©ã®ç§»å‹•é€Ÿåº¦ã®æœ€å¤§å€¤ã€‚
+		false,				//ã‚«ãƒ¡ãƒ©ã¨åœ°å½¢ã¨ã®ã‚ãŸã‚Šåˆ¤å®šã‚’å–ã‚‹ã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°ã€‚trueã ã¨ã‚ãŸã‚Šåˆ¤å®šã‚’è¡Œã†ã€‚
+		1.0f				//ã‚«ãƒ¡ãƒ©ã«è¨­å®šã•ã‚Œã‚‹çƒä½“ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®åŠå¾„ã€‚ç¬¬ï¼“å¼•æ•°ãŒtrueã®æ™‚ã«æœ‰åŠ¹ã«ãªã‚‹ã€‚
 	);
 
 	
-	//Å‰‚ÉƒLƒƒƒ‰‚Ì”w’†‚ğ‰f‚·‚æ‚¤‚É‚·‚é
+	//æœ€åˆã«ã‚­ãƒ£ãƒ©ã®èƒŒä¸­ã‚’æ˜ ã™ã‚ˆã†ã«ã™ã‚‹
 	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
 	m_springCamera.Refresh();
 
@@ -73,68 +83,138 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
-	//ƒ|[ƒYƒXƒe[ƒg‚Ì‚Æ‚«‚Íˆ—‚ğ‚µ‚È‚¢
+	//ãƒãƒ¼ã‚ºã‚¹ãƒ†ãƒ¼ãƒˆã®ã¨ãã¯å‡¦ç†ã‚’ã—ãªã„
 	if (m_cameraState == enPauseState) {
 		return;
 	}
 
-	//ƒvƒŒƒCƒ„[‚ª‚â‚ç‚ê‚½‚ç@‚ªtrue‚ÌŠÔƒJƒƒ‰‚ğ‚»‚Ìê‚Å“®‚©‚³‚È‚¢
-	
+	StateControl();
+}
 
-
-	//‚à‚µƒvƒŒƒCƒ„[‚ª•KE‹Z‚ğ‘Å‚Á‚½‚ç(7=•KE‹ZƒXƒe[ƒg)
-	if (player->CharGetState() == 7)
+void GameCamera::StateControl()
+{
+	switch (m_enCameraState)
 	{
-		m_springCamera.Refresh();
-		KnightUltMoveFlag = true;
+	case m_enNomarlCameraState:
+		NomarlCamera();
+		break;
+	case m_enUltRotCameraState:
+		UltRotCamera();
+		break;
+	case m_enChaseCameraState:
+		ChaseCamera();
+		break;
+	default:
+		break;
+	}
+}
+
+void GameCamera::NomarlCamera()
+{
+	for (auto actor : m_actors) {
+		//ã‚‚ã—ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå¿…æ®ºæŠ€ã‚’æ‰“ã£ãŸã‚‰(7=å¿…æ®ºæŠ€ã‚¹ãƒ†ãƒ¼ãƒˆ)
+		if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag==false)
+		{
+			KnightUltFlag = true;
+			//ã‚«ãƒ¡ãƒ©ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å›è»¢ã‚¹ãƒ†ãƒ¼ãƒˆã«ç§»ã‚‹
+			m_enCameraState = m_enUltRotCameraState;
+			ultactor = actor;
+
+			return;
+		}
 	}
 
-	//•KE‹Zƒtƒ‰ƒO‚ª—§‚Á‚½‚ç
-	if (KnightUltMoveFlag)
-	{
-		knightUlt = FindGO<KnightUlt>("knightUlt");
-		m_timer += g_gameTime->GetFrameDeltaTime();
-		if (m_timer < 1.45) {
-			KnightUltCamera();
-		}
-		//knightUlt‚ª¶¬‚³‚ê‚Ä‚¢‚éŠÔ
-		else if (knightUlt!=nullptr)
-		{
-			//ƒJƒƒ‰‚ªƒGƒtƒFƒNƒg‚ğ’Ç‚¤‚æ‚¤‚É‚·‚é
-			ChaseUltEff();
-		}
-		else 
-		{
-			m_springCamera.Refresh();
-			//‘S‚ÄƒŠƒZƒbƒg
-			KnightUltMoveFlag = false;
-			SetCameraCharFrontFlag = false;
-			m_timer = 0;
-			CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
-		}
-		
-		return;
-	}
 
-
-	//Yƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚ç
-	//ƒJƒƒ‰‚Ì‹“_‚ğÅ‰‚Ìó‘Ô‚É–ß‚·
+	//Yãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰
+	//ã‚«ãƒ¡ãƒ©ã®è¦–ç‚¹ã‚’æœ€åˆã®çŠ¶æ…‹ã«æˆ»ã™
 	if (g_pad[0]->IsTrigger(enButtonY))
 	{
-		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
+		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
 	}
-	//‰½‚à‰Ÿ‚³‚ê‚Ä‚¢‚È‚¢‚È‚ç
+	//ä½•ã‚‚æŠ¼ã•ã‚Œã¦ã„ãªã„ãªã‚‰
 	else
 	{
-		//ƒJƒƒ‰‚Ì‹“_‚ğİ’è
+		//ã‚«ãƒ¡ãƒ©ã®è¦–ç‚¹ã‚’è¨­å®š
 		FollowThePlayer();
 	}
 
+
+}
+
+void GameCamera::UltRotCamera()
+{
+	//ã‚«ãƒ¡ãƒ©ã‚’å‰£å£«ã®æ­£é¢ã«ã‚»ãƒƒãƒˆã—ã¦ã„ãªã„ãªã‚‰
+	if (SetCameraCharFrontFlag == false)
+	{
+		m_springCamera.Refresh();
+		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, ultactor);
+		//ã‚­ãƒ£ãƒ©ã®æ­£é¢ã‹ã‚‰ã‚«ãƒ¡ãƒ©ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«
+		m_keepDiff = m_toCameraPos;
+
+		SetCameraCharFrontFlag = true;
+
+		KnightUltCamera(ultactor,true);
+	}
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‹ã‚‰ã‚«ãƒ¡ãƒ©ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’è¨ˆç®—ã™ã‚‹
+	Vector3 start = m_keepDiff;
+	Vector3 end = m_CameraFromActorDiff;
+	start.y = 0.0f;
+	end.y = 0.0f;
+	//å†…ç©
+	float nai;
+	nai = start.Dot(end);
+	//æˆã™è§’
+	float Start = start.Length();
+	float End = end.Length();
+
+	float cos_sita = nai / (Start * End);
+	sita = acos(cos_sita);
+	sita = Math::RadToDeg(sita);
+
+	if (sita < 175.0f) {
+		KnightUltCamera(ultactor,false);
+	}
+	else
+	{
+		m_springCamera.Refresh();
+		m_enCameraState = m_enChaseCameraState;
+	}
+
+
+}
+
+void GameCamera::ChaseCamera()
+{
+	knightUlt = FindGO<KnightUlt>("knightUlt");
+	//knightUltãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹é–“
+	    if (knightUlt != nullptr)
+		{
+			//ã‚«ãƒ¡ãƒ©ãŒã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¿½ã†ã‚ˆã†ã«ã™ã‚‹
+			ChaseUltEff();
+		}
+		else
+		{
+			//m_springCamera.Refresh();
+			////å…¨ã¦ãƒªã‚»ãƒƒãƒˆ
+			//SetCameraCharFrontFlag = false;
+			//KnightUltFlag = false;
+
+			////å¿…æ®ºæŠ€ã‚’æ’ƒã£ãŸActorã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æˆ»ã™
+			////ultactor->UltSkillEnd();
+
+			////CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
+			////ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+			//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+
+			//m_enCameraState = m_enNomarlCameraState;
+		
+		}
 }
 
 void GameCamera::FollowThePlayer()
 {
-	////’‹“_‚ÌŒvZ
+	////æ³¨è¦–ç‚¹ã®è¨ˆç®—
 	//Vector3 TargetPos;
 	TargetPos = player->GetCharPosition();
 
@@ -142,35 +222,35 @@ void GameCamera::FollowThePlayer()
 
 	Vector3 toCameraPosOld = m_toCameraPos;
 
-	//ƒpƒbƒh‚Ì“ü—Í‚ğg‚Á‚ÄƒJƒƒ‰‚ğ‰ñ‚·B
+	//ãƒ‘ãƒƒãƒ‰ã®å…¥åŠ›ã‚’ä½¿ã£ã¦ã‚«ãƒ¡ãƒ©ã‚’å›ã™ã€‚
 	float x = g_pad[0]->GetRStickXF();
 	float y = g_pad[0]->GetRStickYF();
 
-	//Y²ü‚è‚Ì‰ñ“]
+	//Yè»¸å‘¨ã‚Šã®å›è»¢
 	Quaternion qRot;
 	qRot.SetRotationDeg(Vector3::AxisY, 1.3f * x);
 	qRot.Apply(m_toCameraPos);
 
-	//X²ü‚è‚Ì‰ñ“]B
+	//Xè»¸å‘¨ã‚Šã®å›è»¢ã€‚
 	Vector3 axisX;
 	axisX.Cross(Vector3::AxisY, m_toCameraPos);
 	axisX.Normalize();
 	qRot.SetRotationDeg(axisX, 1.3f * y);
 	qRot.Apply(m_toCameraPos);
 
-	//ƒJƒƒ‰‚Ì‰ñ“]‚ÌãŒÀ‚ğƒ`ƒFƒbƒN‚·‚éB
+	//ã‚«ãƒ¡ãƒ©ã®å›è»¢ã®ä¸Šé™ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã€‚
 	Vector3 toPosDir = m_toCameraPos;
 	toPosDir.Normalize();
 	if (toPosDir.y < MAX_CAMERA_TOP) {
-		//ƒJƒƒ‰‚ªãŒü‚«‚·‚¬B
+		//ã‚«ãƒ¡ãƒ©ãŒä¸Šå‘ãã™ãã€‚
 		m_toCameraPos = toCameraPosOld;
 	}
 	else if (toPosDir.y > MAX_CAMERA_UNDER) {
-		//ƒJƒƒ‰‚ª‰ºŒü‚«‚·‚¬B
+		//ã‚«ãƒ¡ãƒ©ãŒä¸‹å‘ãã™ãã€‚
 		m_toCameraPos = toCameraPosOld;
 	}
 
-	//ƒJƒƒ‰‚ÌˆÊ’u‚ÌÕ“Ë‰ğŒˆ‚·‚é
+	//ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã®è¡çªè§£æ±ºã™ã‚‹
 	Vector3 newCamPos;
 	m_cameraCollisionSolver.Execute(
 		newCamPos,
@@ -178,49 +258,50 @@ void GameCamera::FollowThePlayer()
 		TargetPos
 	);
 
-	//‹“_‚Æ’‹“_‚ğİ’è
+	//è¦–ç‚¹ã¨æ³¨è¦–ç‚¹ã‚’è¨­å®š
 	m_springCamera.SetTarget(TargetPos);
 	m_springCamera.SetPosition(newCamPos);
 
-	//ƒJƒƒ‰‚ÌXVB
+	//ã‚«ãƒ¡ãƒ©ã®æ›´æ–°ã€‚
 	m_springCamera.Update();
 }
 
 /// <summary>
-/// ƒJƒƒ‰‚Ì‹“_‚ğƒvƒŒƒCƒ„[‚Ì”w’†‚ğ‘¨‚¦‚é‚à‚Ì‚É•ÏX‚·‚é
+/// ã‚«ãƒ¡ãƒ©ã®è¦–ç‚¹ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®èƒŒä¸­ã‚’æ‰ãˆã‚‹ã‚‚ã®ã«å¤‰æ›´ã™ã‚‹
 /// </summary>
-void GameCamera::CameraTarget(float X, float Y)
+void GameCamera::CameraTarget(float X, float Y,Actor*actor)
 {
-	//ƒvƒŒƒCƒ„[‚Ì‘O•ûŒü‚ğæ“¾
-	Vector3 toCameraPosXZ = player->CharSetForward();
-	//ˆÚ“®‚µ‚Ä‚¢‚È‚¢‚È‚ç”²‚¯o‚·
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰æ–¹å‘ã‚’å–å¾—
+	Vector3 toCameraPosXZ = actor->GetForward();
+	//ç§»å‹•ã—ã¦ã„ãªã„ãªã‚‰æŠœã‘å‡ºã™
 	if (toCameraPosXZ.x == 0.0f && toCameraPosXZ.y == 0.0f)
 	{
 		return;
 	}
-	//³‹K‰»
+	//æ­£è¦åŒ–
 	toCameraPosXZ.Normalize();
-	//’‹“_‚©‚ç‹“_‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ÌXZ•ûŒü‚ğ‚©‚¯‚é
+	//æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã®XZæ–¹å‘ã‚’ã‹ã‘ã‚‹
 	toCameraPosXZ *= (X);
-	//’‹“_‚©‚ç‹“_‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ÌY•ûŒü‚Ìİ’è
+	//æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã®Yæ–¹å‘ã®è¨­å®š
 	Vector3 toCameraPosY=Vector3::AxisY;
-	//’‹“_‚©‚ç‹“_‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ÌY•ûŒü‚ğ‚©‚¯‚é
+	//æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã®Yæ–¹å‘ã‚’ã‹ã‘ã‚‹
 	toCameraPosY.y *= Y;
 
-	//‹“_‚ğŒvZ‚·‚é
+	//è¦–ç‚¹ã‚’è¨ˆç®—ã™ã‚‹
 	Vector3 newCameraPos = toCameraPosXZ + toCameraPosY;
 
-	//‹“_(m_toCameraPos)‚ğ‘‚«Š·‚¦‚é
+	//è¦–ç‚¹(m_toCameraPos)ã‚’æ›¸ãæ›ãˆã‚‹
 	m_toCameraPos.Set(newCameraPos);
 
-	//’‹“_‚ÌŒvZ
+	//æ³¨è¦–ç‚¹ã®è¨ˆç®—
 	Vector3 TargetPos;
-	TargetPos = player->GetCharPosition();
+	TargetPos = actor->GetPosition();
 	TargetPos.y += TARGETPOS_YUP;
-	//‹“_‚©‚ç’‹“_‚Ö‚ÌƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	//è¦–ç‚¹ã‹ã‚‰æ³¨è¦–ç‚¹ã¸ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	newCameraPos += TargetPos;
 
-	//ƒJƒƒ‰‚ÌˆÊ’u‚ÌÕ“Ë‰ğŒˆ‚·‚é
+	//ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã®è¡çªè§£æ±ºã™ã‚‹
 	Vector3 newCamPos;
 	m_cameraCollisionSolver.Execute(
 		newCamPos,
@@ -230,47 +311,40 @@ void GameCamera::CameraTarget(float X, float Y)
 
 	
 
-	//‹“_‚Æ’‹“_‚ğİ’è
+	//è¦–ç‚¹ã¨æ³¨è¦–ç‚¹ã‚’è¨­å®š
 	m_springCamera.SetTarget(TargetPos);
 	m_springCamera.SetPosition(newCamPos);
 
-	//ƒJƒƒ‰‚ÌXVB
+	//ã‚«ãƒ¡ãƒ©ã®æ›´æ–°ã€‚
 	m_springCamera.Update();
 }
 
 /// <summary>
-/// Œ•m‚ª•KE‹Z‚ğ‘Å‚Á‚½‚ÌƒJƒƒ‰ƒ[ƒN@@‰ñ‚è‚È‚ª‚ç‰“‚´‚¯‚½‚¢
+/// å‰£å£«ãŒå¿…æ®ºæŠ€ã‚’æ‰“ã£ãŸæ™‚ã®ã‚«ãƒ¡ãƒ©ãƒ¯ãƒ¼ã‚¯ã€€ã€€å›ã‚ŠãªãŒã‚‰é ã–ã‘ãŸã„
 /// </summary>
-void GameCamera::KnightUltCamera()
+void GameCamera::KnightUltCamera(Actor*actor, bool reset)
 {
-	//ƒJƒƒ‰‚ğŒ•m‚Ì³–Ê‚ÉƒZƒbƒg‚µ‚Ä‚¢‚È‚¢‚È‚ç
-	if (SetCameraCharFrontFlag == false)
-	{
-		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y);
-		SetCameraCharFrontFlag = true;
-	}
-	//Œ•m‚É‡‚í‚¹‚ÄƒJƒƒ‰‚ğ‰ñ“]‚³‚¹‚é
-	else
-	{
+	
+	//å‰£å£«ã«åˆã‚ã›ã¦ã‚«ãƒ¡ãƒ©ã‚’å›è»¢ã•ã›ã‚‹
 		
-		////’‹“_‚ÌŒvZ
+		////æ³¨è¦–ç‚¹ã®è¨ˆç®—
 	//Vector3 TargetPos;
-		TargetPos = player->GetCharPosition();
+		TargetPos = actor->GetPosition();
 
 		TargetPos.y += TARGETPOS_ULT_YUP;
 
 		Vector3 toCameraPosOld = m_toCameraPos;
 
-		//ƒpƒbƒh‚Ì“ü—Í‚ğg‚Á‚ÄƒJƒƒ‰‚ğ‰ñ‚·Bx2.8
-		float x = 2.4f;
+		//ãƒ‘ãƒƒãƒ‰ã®å…¥åŠ›ã‚’ä½¿ã£ã¦ã‚«ãƒ¡ãƒ©ã‚’å›ã™ã€‚x2.8
+		float x = 1.9f;
 		float y = 0.1f;
 
-		//Y²ü‚è‚Ì‰ñ“]
+		//Yè»¸å‘¨ã‚Šã®å›è»¢
 		Quaternion qRot;
 		qRot.SetRotationDeg(Vector3::AxisY, x);
 		qRot.Apply(m_toCameraPos);
 
-		//X²ü‚è‚Ì‰ñ“]B
+		//Xè»¸å‘¨ã‚Šã®å›è»¢ã€‚
 		Vector3 axisX;
 		axisX.Cross(Vector3::AxisY, m_toCameraPos);
 		axisX.Normalize();
@@ -279,7 +353,7 @@ void GameCamera::KnightUltCamera()
 
 		//m_toCameraPos.z -= 2.0f;
 
-		//ƒJƒƒ‰‚ÌˆÊ’u‚ÌÕ“Ë‰ğŒˆ‚·‚é
+		//ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã®è¡çªè§£æ±ºã™ã‚‹
 		Vector3 newCamPos;
 		m_cameraCollisionSolver.Execute(
 			newCamPos,
@@ -287,49 +361,72 @@ void GameCamera::KnightUltCamera()
 			TargetPos
 		);
 
-		//‹“_‚Æ’‹“_‚ğİ’è
-		m_springCamera.SetTarget(TargetPos);
-		m_springCamera.SetPosition(newCamPos);
+		//ã‚¢ã‚¯ã‚¿ãƒ¼ã‹ã‚‰ã‚«ãƒ¡ãƒ©ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«
+		m_CameraFromActorDiff = newCamPos - TargetPos;
 
-		//ƒJƒƒ‰‚ÌXVB
-		m_springCamera.Update();
-	}
+		if (reset == false) {
+			//è¦–ç‚¹ã¨æ³¨è¦–ç‚¹ã‚’è¨­å®š
+			m_springCamera.SetTarget(TargetPos);
+			m_springCamera.SetPosition(newCamPos);
+
+			//ã‚«ãƒ¡ãƒ©ã®æ›´æ–°ã€‚
+			m_springCamera.Update();
+
+		}
+	
 }
 
 void GameCamera::ChaseUltEff()
 {
-	//ƒvƒŒƒCƒ„[‚Ì‘O•ûŒü‚ğæ“¾
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‰æ–¹å‘ã‚’å–å¾—
 	Vector3 toCameraPosXZ = knightUlt->GetForward();
-	//³‹K‰»
+	//æ­£è¦åŒ–
 	toCameraPosXZ.Normalize();
-	//’‹“_‚©‚ç‹“_‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ÌXZ•ûŒü‚ğ‚©‚¯‚é
+	//æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã®XZæ–¹å‘ã‚’ã‹ã‘ã‚‹
 	toCameraPosXZ *= (KNIGHT_ULT_POS_X);
-	//’‹“_‚©‚ç‹“_‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ÌY•ûŒü‚Ìİ’è
+	//æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã®Yæ–¹å‘ã®è¨­å®š
 	Vector3 toCameraPosY = Vector3::AxisY;
-	//’‹“_‚©‚ç‹“_‚ÉŒü‚©‚¤ƒxƒNƒgƒ‹‚ÌY•ûŒü‚ğ‚©‚¯‚é
+	//æ³¨è¦–ç‚¹ã‹ã‚‰è¦–ç‚¹ã«å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã®Yæ–¹å‘ã‚’ã‹ã‘ã‚‹
 	toCameraPosY.y *= KNIGHT_ULT_POS_Y;
 
-	//‹“_‚ğŒvZ‚·‚é
+	//è¦–ç‚¹ã‚’è¨ˆç®—ã™ã‚‹
 	Vector3 newCameraPos = toCameraPosXZ + toCameraPosY;
 
-	//‹“_(m_toCameraPos)‚ğ‘‚«Š·‚¦‚é
+	//è¦–ç‚¹(m_toCameraPos)ã‚’æ›¸ãæ›ãˆã‚‹
 	m_toCameraPos.Set(newCameraPos);
 
-	//’‹“_‚ÌŒvZ
+	//æ³¨è¦–ç‚¹ã®è¨ˆç®—
 	Vector3 TargetPos;
 	TargetPos = knightUlt->GetPosition();
 	TargetPos.y += 10.0f;
-	//‹“_‚©‚ç’‹“_‚Ö‚ÌƒxƒNƒgƒ‹‚ğ‹‚ß‚é
+	//è¦–ç‚¹ã‹ã‚‰æ³¨è¦–ç‚¹ã¸ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ±‚ã‚ã‚‹
 	newCameraPos += TargetPos;
 
-	//‹“_‚Æ’‹“_‚ğİ’è
+	//è¦–ç‚¹ã¨æ³¨è¦–ç‚¹ã‚’è¨­å®š
 	m_springCamera.SetTarget(TargetPos);
 	m_springCamera.SetPosition(newCameraPos);
 
-	//ƒJƒƒ‰‚ÌXVB
+	//ã‚«ãƒ¡ãƒ©ã®æ›´æ–°ã€‚
 	m_springCamera.Update();
 
 
 
 }
 
+void GameCamera::GameCameraUltEnd() {
+
+	m_springCamera.Refresh();
+	//å…¨ã¦ãƒªã‚»ãƒƒãƒˆ
+	SetCameraCharFrontFlag = false;
+	KnightUltFlag = false;
+
+	//å¿…æ®ºæŠ€ã‚’æ’ƒã£ãŸActorã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æˆ»ã™
+	//ultactor->UltSkillEnd();
+
+	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
+	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+
+	m_enCameraState = m_enNomarlCameraState;
+
+}

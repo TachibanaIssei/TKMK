@@ -1,7 +1,9 @@
 #pragma once
 #include "Status.h"
 #include "Level3DRender.h"
+
 class Neutral_Enemy;
+class Player;
 
 class Actor:public IGameObject
 {
@@ -420,13 +422,22 @@ public:
 			if (m_respwanTimer <= 0.0f)
 			{
 				m_DeathToRespwanFlag = false;
-				m_respwanTimer = 2.0f;
 			}
 			//やられている
 			return true;
 		}
 		//やられていない
 		return false;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
+	float GetRespawnTimer()const
+	{
+		return m_respwanTimer;
 	}
 
 private:
@@ -478,14 +489,15 @@ protected:
 	//やられた後のリスポーンするまで時間を計る処理をするかのフラグ
 	//falseでしない、trueでする
 	bool m_DeathToRespwanFlag = false;
-	//やられた後にもう一度復帰するまでの時間
-	float m_respwanTimer = 2.0f;
+	//やられた後にもう一度復帰するまでの時間2
+	float m_respwanTimer = 0.0f;
 	///////////////////////////////
 	//////ここから下はAI専用///////
 	///////////////////////////////
 	//評価値計算のタイマー
 	float EvalTimer = 0.0f;
 
+	Player* m_player = nullptr;
 	Actor* m_targetActor = nullptr;
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
 	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）

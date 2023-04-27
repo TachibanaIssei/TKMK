@@ -246,6 +246,7 @@ private:
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
+	std::vector<SoundSource*> m_soundSources;
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
@@ -265,7 +266,7 @@ private:
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
 
-	float m_StartToGameTimer = 4.0f;
+	float m_StartToGameTimer = 4.5f;
 
 	float m_EndtoResultTimer = 0.0f;
 
@@ -275,7 +276,7 @@ private:
 	float m_BetweenTimer = 0.0f;
 	
 	//BGMの初期音量
-	float BGMVolume = 2.0f;
+	float BGMVolume = 0.0f;
 	//効果音の初期音量1
 	float SoundEffectVolume = 0.0f;
 

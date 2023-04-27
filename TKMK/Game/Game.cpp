@@ -291,10 +291,10 @@ bool Game::Start()
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
 	//BGMの再生
-	/*m_bgm = NewGO<SoundSource>(0);
+	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(2);
 	m_bgm->Play(true);
-	m_bgm->SetVolume(BGMVolume);*/
+	m_bgm->SetVolume(BGMVolume);
 
 
 	//当たり判定の可視化

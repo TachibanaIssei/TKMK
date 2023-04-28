@@ -151,42 +151,52 @@ void Actor::ExpProcess(int Exp)
 	if (Lv == 10)return;
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
 	GetExp += Exp;
-	//手に入れた経験値より経験値テーブルのほうが大きかったら
-	if (GetExp < ExpTable) return;      //抜け出す
-	else {
-		//経験値テーブルより手に入れた経験値のほうが大きかったら
-		//レベルアップ
-		LevelUp(LvUPStatus, m_Status, Lv);
-		//レベルに合わせてレベルの画像を変更する
-		switch (Lv)
-		{
-		case 2:
-			ExpTable = 10;
-			break;
-		case 3:
-			ExpTable = 20;
-			break;
-		case 4:
-			ExpTable = 30;
-			break;
-		case 5:
-			ExpTable = 40;
-			break;
-		case 6:
-			ExpTable = 50;
-			break;
-		case 7:
-			ExpTable = 60;
-			break;
-		case 8:
-			ExpTable = 70;
-			break;
-		case 9:
-			ExpTable = 80;
-			break;
-		default:
-			break;
+
+	while (true)
+	{
+		//もしレベルが10(Max)なら
+		if (Lv == 10)return;
+
+		//手に入れた経験値より経験値テーブルのほうが大きかったら
+		if (GetExp < ExpTable) {
+			break;      //抜け出す
 		}
+		else {
+			//経験値テーブルより手に入れた経験値のほうが大きかったら
+			//レベルアップ
+			LevelUp(LvUPStatus, m_Status, Lv);
+			//レベルに合わせてレベルの画像を変更する
+			switch (Lv)
+			{
+			case 2:
+				ExpTable = 10;
+				break;
+			case 3:
+				ExpTable = 20;
+				break;
+			case 4:
+				ExpTable = 30;
+				break;
+			case 5:
+				ExpTable = 40;
+				break;
+			case 6:
+				ExpTable = 50;
+				break;
+			case 7:
+				ExpTable = 60;
+				break;
+			case 8:
+				ExpTable = 70;
+				break;
+			case 9:
+				ExpTable = 80;
+				break;
+			default:
+				break;
+			}
+		}
+
 	}
 }
 /// <summary>

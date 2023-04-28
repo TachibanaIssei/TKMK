@@ -92,7 +92,10 @@ public:
 	/// 中立の敵のリスポーン
 	/// </summary>
 	void Respawn();
-
+	/// <summary>
+	/// ウサギのリスポーン
+	/// </summary>
+	void RabbitRespawn();
 	/// <summary>
 	/// リスポーンする座標の設定
 	/// </summary>
@@ -191,6 +194,10 @@ public:
 		return UltStopFlag;
 	}
 
+	void SetRabbitFlag(bool rabbit)
+	{
+		RabbitFlag = rabbit;
+	}
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する
@@ -206,7 +213,7 @@ private:
 	/// <summary>
 	/// 中立の敵の生成
 	/// </summary>
-	void CreateEnemy(Vector3 pos, Quaternion rot);
+	void CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit = false);
 
 	/// <summary>
 	/// スカイキューブの初期化処理
@@ -255,7 +262,7 @@ private:
 	KnightAI* m_KnightAI2 = nullptr;
 	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
-	SoundSource* m_bgm = nullptr;	//
+	SoundSource* m_bgm = nullptr;	
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
 	CharUltFlag* charUltFlag = nullptr;
@@ -292,9 +299,13 @@ private:
 
 	//リスポーンタイマー
 	float m_RespawnTimer = 0.0f;
+	//リスポーンタイマー（ウサギ用）
+	float m_RabbitRespawnTimer = 0.0f;
 	//
 	float m_BetweenTimer = 0.0f;
 	
+	bool RabbitFlag = false;
+
 	//BGMの初期音量
 	float BGMVolume = 0.0f;
 	//効果音の初期音量1
@@ -317,5 +328,6 @@ private:
 	wchar_t name_t[255];
 	
 	std::vector<Actor*>m_ultActor;
+	
 };
 

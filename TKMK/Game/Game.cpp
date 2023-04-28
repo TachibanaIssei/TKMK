@@ -23,8 +23,10 @@ namespace {
 	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);
 	const Vector3 Menu_SEPos = Vector3(-245.0f, -185.0f, 0.0f);
 	const Vector3 Menu_QuitGamePos = Vector3(0.0f, -320.0f, 0.0f);
-	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
-	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
+	const Vector3 Menu_SelectBar_BGMPos = Vector3(0.0f, -68.0f, 0.0f);
+	const Vector3 Menu_SelectBar_SEPos = Vector3(0.0f, -183.0f, 0.0f);
+
+	const float AddSE = 0.5f;
 }
 
 Game::Game()
@@ -290,11 +292,7 @@ bool Game::Start()
 
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
-	//BGMの再生
-	m_bgm = NewGO<SoundSource>(0);
-	m_bgm->Init(2);
-	m_bgm->Play(true);
-	m_bgm->SetVolume(BGMVolume);
+	
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -324,6 +322,12 @@ void Game::BattleStart()
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);
+
+		//BGMの再生
+		m_bgm = NewGO<SoundSource>(0);
+		m_bgm->Init(2);
+		m_bgm->Play(true);
+		m_bgm->SetVolume(BGMVolume);
 	}
 }
 
@@ -663,14 +667,22 @@ void Game::SetMusic()
 
 void Game::PauseMove()
 {
-	if (g_pad[0]->IsTrigger(enButtonDown))
+	if (MenuNumber < 4)
 	{
-		MenuNumber++;
+		if (g_pad[0]->IsTrigger(enButtonDown))
+		{
+			MenuNumber++;
+		}
 	}
-	if (g_pad[0]->IsTrigger(enButtonUp))
+	
+	if (MenuNumber > 0)
 	{
-		MenuNumber--;
+		if (g_pad[0]->IsTrigger(enButtonUp))
+		{
+			MenuNumber--;
+		}
 	}
+	
 
 }
 
@@ -774,10 +786,11 @@ void Game::Menu_BGM()
 {
 	//音量を上げる
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if (BGMVolume < 8.0f)
+		if (BGMVolume < 7.0f)
 		{
-			BGMVolume += 0.5f;
+			BGMVolume += AddSE;
 			m_bgm->SetVolume(BGMVolume);
+			//バーの座標を移動
 			SelectBar_BGMPos.x += m_nuwBGMPos;
 		}
 		
@@ -786,8 +799,9 @@ void Game::Menu_BGM()
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if (BGMVolume > 0)
 		{
-			BGMVolume -= 0.2f;
+			BGMVolume -= AddSE;
 			m_bgm->SetVolume(BGMVolume);
+			//バーの座標を移動
 			SelectBar_BGMPos.x -= m_nuwBGMPos;
 		}
 	
@@ -801,9 +815,21 @@ void Game::Menu_SE()
 {
 	//音量を上げる
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if (SoundEffectVolume < 4.0f)
+		if (SoundEffectVolume < 7.0f)
 		{
-			SoundEffectVolume += 0.4f;
+			SoundEffectVolume += AddSE;
+
+			//それぞれのキャラの効果音を上げる
+			for (auto character : m_Actors)
+			{
+				character->SetSE(AddSE);
+			}
+			//中立の敵の効果音を上げる
+			for (auto enemy:m_neutral_Enemys)
+			{
+				enemy->SetSE(AddSE);
+			}
+			//バーの座標を移動
 			SelectBar_SEPos.x += m_nuwSEPos;
 		}
 		
@@ -812,7 +838,19 @@ void Game::Menu_SE()
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if (SoundEffectVolume > 0)
 		{
-			SoundEffectVolume -= 0.1f;
+			SoundEffectVolume -= AddSE;
+
+			//それぞれのキャラの効果音を下げる
+			for (auto character : m_Actors)
+			{
+				character->SetSE(-AddSE);
+			}
+			//中立の敵の効果音を下げる
+			for (auto enemy : m_neutral_Enemys)
+			{
+				enemy->SetSE(-AddSE);
+			}
+			//バーの座標を移動
 			SelectBar_SEPos.x -= m_nuwSEPos;
 		}
 		

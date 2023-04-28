@@ -125,8 +125,6 @@ private:
 
 	FontRender m_RespawnCount;
 
-	/*KnightPlayer* m_knightplayer=nullptr;
-	WizardPlayer* wizardPlayer = nullptr;*/
 	Player* player = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
@@ -152,6 +150,9 @@ private:
 	SpriteRender			m_PointFlame[4];					//ポイントを表示するフレーム
 	SpriteRender            m_CharIcon[4];                      //キャラのアイコン
 	SpriteRender			m_CountNumper;					//カウントダウン
+	SpriteRender			m_RespawnIn;						//Respawn inの画像
+	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
+	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
 
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
@@ -198,6 +199,8 @@ private:
 	const char* wizardname = "wizardplayer";
 
 	int oldtStartCount = 0;
+
+	int oldRespawnCount = 0;
 
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;

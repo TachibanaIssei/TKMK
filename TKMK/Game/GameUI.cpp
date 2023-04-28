@@ -43,6 +43,10 @@ namespace
 	const Vector3 SmallScale = Vector3(0.1f, 0.1f, 0.0f);
 
 	const Vector3 FightSmallScale = Vector3(0.5f, 0.5f, 0.0f);
+
+	const Vector3 RespawnInPos = Vector3(0.0f, 300.0f, 0.0f);		//Respawn inの座標
+
+	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//の座標
 }
 GameUI::GameUI()
 {
@@ -132,22 +136,33 @@ bool GameUI::Start()
 
 	}
 	
-	//リスポーンするまでのカウント
-	m_RespawnCount.SetPosition(RESPWANCOUNT_POS);
-	m_RespawnCount.SetScale(m_GameCountScale);
-	m_RespawnCount.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_RespawnCount.SetRotation(0.0f);
-	m_RespawnCount.SetShadowParam(true, 2.0f, g_vec4Black);
+	//リスポーン関連
+	{
+		//Respawn inの画像
+		m_RespawnIn.Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
+		m_RespawnIn.SetPosition(RespawnInPos);
+		m_RespawnIn.SetScale(Vector3::One);
 
+		//リスポーンの背景の画像
+		m_Respawn_Back.Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
+		m_Respawn_Back.SetPosition(Vector3::Zero);
+		m_Respawn_Back.SetScale(Vector3::One);
 
+		//リスポーンのカウントダウンの画像
+		m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+		m_RespawnCountNumber.SetPosition(RespawnCountPos);
+		m_RespawnCountNumber.SetScale(Vector3::One);
 
+		m_RespawnIn.Update();
+		m_Respawn_Back.Update();
+		m_RespawnCountNumber.Update();
+	}
+
+	//スタートまでのカウントダウン
 	m_CountNumper.Init("Assets/sprite/gameUI/count3.DDS", 1920.0f, 1080.0f);
-
 	m_CountNumper.SetPosition(Vector3::Zero);
 	m_CountNumper.SetScale(m_gameCountScale);
 	m_CountNumper.Update();
-
-
 
 	//右下のフレーム
 	{
@@ -187,7 +202,7 @@ bool GameUI::Start()
 		m_SkillRender.SetPosition(Skill_Pos);
 		m_SkillRender.SetScale(1.1, 1.1);
 		//必殺技のアイコン
-		m_UltRender.Init("Assets/sprite/ult_flame.DDs", 162, 162);
+		m_UltRender.Init("Assets/sprite/gameUI/Ult_Icon.DDs", 162, 162);
 		m_UltRender.SetPosition(Ult_Pos);
 		m_UltRender.SetScale(1.2, 1.2);
 
@@ -261,11 +276,13 @@ void GameUI::Update()
 		return;
 	}
 
+	//ゲームのステートがgameStartなら
 	if (m_game->NowGameState() == 0)
 	{
 		CountDown();
 	}
 	
+	//プレイヤーがリスポーン待機中なら
 	if (player->CharGetRespawnTime() > 0)
 	{
 		RespawnCountDown();
@@ -370,11 +387,28 @@ void GameUI::RespawnCountDown()
 {
 	//カウントダウン
 	int RESPAWNCOUNTDOWN = player->CharGetRespawnTime();
-	wchar_t RCD[255];
-	
-	swprintf_s(RCD, 255, L"%d", RESPAWNCOUNTDOWN);
 
-	m_RespawnCount.SetText(RCD);
+	if (oldRespawnCount != RESPAWNCOUNTDOWN)
+	{
+		switch (RESPAWNCOUNTDOWN)
+		{
+		case 0:
+			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
+			break;
+		case 1:
+			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);
+			break;
+		case 2:
+			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+			break;
+		default:
+			break;
+		}
+	}
+
+	oldRespawnCount = RESPAWNCOUNTDOWN;
+
+	m_RespawnCountNumber.Update();
 }
 
 //プレイヤーのHPの表示の処理
@@ -482,11 +516,6 @@ void GameUI::Render(RenderContext& rc)
 		m_ExperienceFlame.Draw(rc);
 		//変動する
 		m_ExperienceBar_flont.Draw(rc);
-		//リスポーンするまでの時間
-		if (player->CharGetRespawnTime() > 0)
-		{
-			m_RespawnCount.Draw(rc);
-		}
 		
 		m_HpNameFont.Draw(rc);
 
@@ -516,7 +545,13 @@ void GameUI::Render(RenderContext& rc)
 			num++;
 		}
 		
-		
+		//リスポーンするまでの時間
+		if (player->CharGetRespawnTime() > 0)
+		{
+			m_Respawn_Back.Draw(rc);
+			m_RespawnIn.Draw(rc);
+			m_RespawnCountNumber.Draw(rc);
+		}
 	}
 	else
 	{

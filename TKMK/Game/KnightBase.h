@@ -6,6 +6,7 @@
 //class Status;
 class Game;
 class GameUI;
+class Player;
 
 class KnightBase:public Actor
 {
@@ -270,6 +271,7 @@ protected:
 
 	Game* m_game=nullptr;
 	GameUI* m_gameUI = nullptr;
+	Player* m_player = nullptr;
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
 	

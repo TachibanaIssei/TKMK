@@ -21,6 +21,7 @@ namespace {
 	const float HP_BER_HEIGHT = 22.0f;
 	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
 	const float RADIUS = 100.0f;
+	const int POS = 40;
 }
 Neutral_Enemy::Neutral_Enemy()
 {
@@ -29,11 +30,21 @@ Neutral_Enemy::Neutral_Enemy()
 
 Neutral_Enemy::~Neutral_Enemy()
 {
+	// ゲームを取得
 	m_game = FindGO<Game>("game");
+
 	//m_game->Enemys();
 	if (m_game != nullptr) {
 		m_game->RemoveEnemyFromList(this);
+
+
+		//自分がウサギなら、ウサギ生成フラグを戻す
+		if (m_enemyKinds == enEnemyKinds_Rabbit)
+		{
+			m_game->SetRabbitFlag(false);
+		}
 	}
+
 }
 
 //衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
@@ -59,39 +70,60 @@ struct SweepResultSlipThroughWall :public btCollisionWorld::ConvexResultCallback
 bool Neutral_Enemy::Start()
 {
 //アニメーションを読み込む。
-	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Neutral_Enemy/Idle.tka");
-	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Neutral_Enemy/Run.tka");
-	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Neutral_Enemy/Attack.tka");
-	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_Death].Load("Assets/animData/Neutral_Enemy/Death.tka");
-	m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
-	m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-	enemyColorRam = rand() % 10;
-
-	if (enemyColorRam <= 5)
+	if (m_enemyKinds == enEnemyKinds_Rabbit)
 	{
-		//白
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
-		m_enemyKinds = enEnemyKinds_White;
+		m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Rabbit/Run.tka");
+		m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+		m_animationClips[enAnimationClip_Run].Load("Assets/animData/Rabbit/Run.tka");
+		m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
+		m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Rabbit/Run.tka");
+		m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
+		m_animationClips[enAnimationClip_Death].Load("Assets/animData/Rabbit/Death.tka");
+		m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Rabbit/Damage.tka");
+		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
+
+		m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit.tkm", m_animationClips, enAnimationClip_Num);
+	
+		m_scale = { 40.0f,40.0f,40.0f };
+
 	}
-	else if (enemyColorRam <= 7)
+	else
 	{
-		//緑
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
-		m_enemyKinds = enEnemyKinds_Green;
-	}
-	else if (enemyColorRam <= 9)
-	{
-		//赤
-		m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
-		m_enemyKinds = enEnemyKinds_Red;
+		m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Neutral_Enemy/Idle.tka");
+		m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+		m_animationClips[enAnimationClip_Run].Load("Assets/animData/Neutral_Enemy/Run.tka");
+		m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
+		m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Neutral_Enemy/Attack.tka");
+		m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
+		m_animationClips[enAnimationClip_Death].Load("Assets/animData/Neutral_Enemy/Death.tka");
+		m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
+		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
+		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
+
+		enemyColorRam = rand() % 10;
+
+		if (enemyColorRam <= 5)
+		{
+			//白
+			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
+			m_enemyKinds = enEnemyKinds_White;
+		}
+		else if (enemyColorRam <= 7)
+		{
+			//緑
+			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
+			m_enemyKinds = enEnemyKinds_Green;
+		}
+		else if (enemyColorRam <= 9)
+		{
+			//赤
+			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
+			m_enemyKinds = enEnemyKinds_Red;
+		}
 	}
 
-
-//座標を設定
+    //座標を設定
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
 	m_modelRender.SetRotation(m_rot);
@@ -130,9 +162,12 @@ bool Neutral_Enemy::Start()
 
 	//ステータスを読み込む
 	m_Status.Init("Enemy");
-
+	if (m_enemyKinds == enEnemyKinds_Rabbit)
+	{
+		m_Status.Hp = 15;
+	}
 	//巡回用のパスを読み込む
-	m_EnemyPoslevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
+	m_EnemyPoslevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			SetPatrolPos(objData.position, objData.number);
@@ -146,7 +181,7 @@ bool Neutral_Enemy::Start()
 	player = FindGO<Player>("player");
 
 	//最初に行くポジションを決める
-	randam = rand() % 16;
+	randam = rand() % POS;
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();
@@ -160,7 +195,7 @@ bool Neutral_Enemy::Start()
 
 		// 始点と終点が近すぎる
 		if ((start.getOrigin() - end.getOrigin()).length() <= 0.01f) {
-			randam = rand() % 16;
+			randam = rand() % POS;
 			continue;
 		}
 
@@ -171,7 +206,7 @@ bool Neutral_Enemy::Start()
 		//壁と衝突した！
 		if (callback.isHit == true)
 		{
-			randam = rand() % 16;
+			randam = rand() % POS;
 			//プレイヤーは見つかっていない。
 			continue;
 		}
@@ -213,6 +248,12 @@ void Neutral_Enemy::Update()
 	//ステートの遷移処理。
 	ManageState();
 	HPBar();
+
+	// タイマーを減らす
+	if (isPatrolTimer > 0.0f) {
+		isPatrolTimer -= g_gameTime->GetFrameDeltaTime();
+	}
+
 	//モデルの更新。
 	m_modelRender.Update();
 }
@@ -264,8 +305,6 @@ if (fabsf(m_moveSpeed.x) < 0.001f
 
 void Neutral_Enemy::Chase()
 {
-
-
 	//追跡ステートでないなら、追跡処理はしない。
 	if (m_Neutral_EnemyState != enNeutral_Enemy_Chase)
 	{
@@ -330,17 +369,30 @@ void Neutral_Enemy::Collision()
 			//何故かm_knightAIがnull
 			//HPを減らす
 			// //HPを減らす
-			m_Status.Hp -= m_lastAttackActor->GetAtk();
-			//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
+			if (m_enemyKinds == enEnemyKinds_Rabbit)
+			{
+				m_Status.Hp -= 1;
+			}
+			else
+			{
+				m_Status.Hp -= m_lastAttackActor->GetAtk();
+				//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
+			}
 
 				//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
-				//相手に経験値を渡す
-				m_lastAttackActor->ExpProcess(Exp);
-				//剣士に経験値を渡す
-				//m_knightAI->ExpProcess(Exp);
-				// 
+				if (m_enemyKinds == enEnemyKinds_Rabbit)
+				{
+					//相手に経験値を渡す
+					m_lastAttackActor->ExpProcess(60);
+				}
+				else
+				{
+					//相手に経験値を渡す
+					m_lastAttackActor->ExpProcess(Exp);
+				}				
+
 				//倒した時の報酬を倒した人に渡す
 				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
 				//緑の場合
@@ -352,6 +404,7 @@ void Neutral_Enemy::Collision()
 						m_lastAttackActor->HpReset(m_lastAttackActor->GetMaxHp());
 					}
 				}
+
 				//赤の場合
 				else if (m_enemyKinds == enEnemyKinds_Red)
 				{
@@ -380,14 +433,21 @@ void Neutral_Enemy::Collision()
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
 			//hpを減らす
-			m_Status.Hp -= 100;
+			if (m_enemyKinds == enEnemyKinds_Rabbit)
+			{
+				m_Status.Hp -= 1;
+			}
+			else
+			{
+				m_Status.Hp -= 100;
+			}
+			
 			if (m_Status.Hp < 0)
 			{
 				//相手に経験値を渡す
-				m_lastAttackActor->ExpProcess(Exp);
+				m_lastAttackActor->ExpProcess(Exp/2);
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
-				m_Neutral_Enemy = nullptr;
 			}
 			else {
 				//被ダメージステートに遷移する。
@@ -443,6 +503,28 @@ void Neutral_Enemy::Attack()
 	{
 		return;
 	}
+}
+
+bool Neutral_Enemy::RabbitSearch()
+{
+	//全てのActorを調べる
+	for (Actor* actor : m_game->GetActors()) {
+
+		Vector3 ActorPosition = actor->GetPosition();
+		Vector3 diff = ActorPosition - m_position;
+		diff.y = 0.0f;
+
+		//Actorが視界内に居たら。
+		if ((ActorPosition - m_position).LengthSq() <= 100.0f * 100.0f)
+		{
+			m_targetActor = actor;
+
+			return true;
+		}
+	}
+
+	m_targetActor = nullptr;
+	return false;
 }
 
 bool Neutral_Enemy::Search()
@@ -555,6 +637,31 @@ void Neutral_Enemy::ProcessRunStateTransition()
 
 void Neutral_Enemy::ProcessChaseStateTransition()
 {
+	if (m_enemyKinds == enEnemyKinds_Rabbit) {
+
+		if (RabbitSearch() == false) {
+			m_Neutral_EnemyState = enNeutral_Enemy_Patrol;
+
+			if (isPatrolTimer <= 0.0f) {
+				isPatrolRandom = true;
+				isPatrolTimer = 3.0f;
+			}
+		}
+		else {
+			// 逃げる
+			Vector3 Escapediff = m_targetActor->GetPosition() - m_position;
+			Escapediff.y = 0.0f;
+
+			Escapediff.Normalize();
+			m_moveSpeed = Escapediff * (m_Status.Speed * -1);
+			m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+
+			m_modelRender.SetPosition(m_position);
+		}
+
+		return;
+	}
+
 	Chase();
 
 	if (Search() == false) {
@@ -609,6 +716,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 		//移動速度を設定する。
 		//m_moveSpeed = diff * m_Status.Speed;
 		m_targetActor = m_lastAttackActor;
+
 	}
 }
 
@@ -657,11 +765,16 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		Vector3 distance2 = newForward2;
 		newForward2.Normalize();
 		m_forward = newForward2;
-		Move();
-		if (distance2.Length() <= 10.0f)
+
+		if (isPatrolRandom == false) {
+			Move();
+		}
+
+		if (distance2.Length() <= 10.0f || isPatrolRandom == true)
 		{
+			isPatrolRandom = false;
 			// バックパトロール（追加）
-			if (m_backPatrol) {
+			/*if (m_backPatrol) {
 				if (m_backPatrolFarst == false) {
 					m_backPatrolFarst = true;
 				}
@@ -669,9 +782,9 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 					m_backPatrolFarst = false;
 					m_backPatrol = false;
 				}
-			}
+			}*/
 
-			randam = rand() % 16;
+			randam = rand() % POS;
 			btTransform start, end;
 			start.setIdentity();
 			end.setIdentity();
@@ -685,7 +798,7 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 
 				// 始点と終点が近すぎる
 				if ((start.getOrigin() - end.getOrigin()).length() <= 0.01f) {
-					randam = rand() % 16;
+					randam = rand() % POS;
 					continue;
 				}
 
@@ -696,26 +809,61 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 				//壁と衝突した！
 				if (callback.isHit == true)
 				{				
-					randam = rand() % 16;
+					randam = rand() % POS;
 					//プレイヤーは見つかっていない。
 					continue;
 				}
+
+				//自分がウサギの場合、TargetActorと目的地のなす角が小さかったらやり直す
+				if (m_enemyKinds == enEnemyKinds_Rabbit&& m_targetActor != nullptr)
+				{
+					Vector3 a = m_position - m_targetActor->GetPosition();
+					Vector3 b = m_position - m_patrolPos[randam];
+
+					//内積
+					float nai;
+					nai = a.Dot(b);
+					//なす角
+					float A = a.Length();
+					float B = b.Length();
+
+					float cos_sita = nai / (A * B);
+					float sita = acos(cos_sita);
+					sita = Math::RadToDeg(sita);
+
+					if (sita < 90.0f)
+					{
+						randam = rand() % POS;
+						continue;
+					}
+				}
+
 				break;
 			}
+
 			Vector3 newForward2 = m_patrolPos[randam] - m_position;
 			Vector3 distance2 = newForward2;
 			newForward2.Normalize();
 			m_forward = newForward2;
 			Move();
-			
+
 		}
 
-	//対象を探す
-	if (Search() && m_backPatrol == false)
-	{
-		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
-	}
-	ProcessCommonStateTransition();
+		if (m_enemyKinds == enEnemyKinds_Rabbit)
+		{
+			RabbitSearch();
+			EscapeSearch();
+
+			return;
+		}
+
+		//対象を探す
+		if (Search() && m_backPatrol == false)
+		{
+			m_Neutral_EnemyState = enNeutral_Enemy_Chase;
+		}
+
+		ProcessCommonStateTransition();
 }
 void Neutral_Enemy::ManageState()
 {
@@ -912,6 +1060,25 @@ const bool Neutral_Enemy::CanAttack()const
 	//攻撃できない
 	return false;
 }
+
+void Neutral_Enemy::EscapeSearch()
+{
+	if (m_targetActor == nullptr)
+	{
+		return;
+	}
+
+	//ウサギからプレイヤーに向かうベクトルを計算する
+	Vector3 Escapediff = m_targetActor->GetPosition() - m_position;
+	Escapediff.y = 0.0f;
+
+	if (Escapediff.Length() <= 200.0f && isPatrolTimer <= 0.0f)
+	{
+		// Chase(逃げステートに変更）
+		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
+	}	
+
+}
 void Neutral_Enemy::modelUpdate()
 {
 	//座標を設定
@@ -959,7 +1126,7 @@ void Neutral_Enemy::Render(RenderContext& rc)
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
 	//フォントを描画する。
-	//m_Name.Draw(rc);
+	m_Name.Draw(rc);
 	if (m_game->GetStopFlag() == true)
 	{
 		return;

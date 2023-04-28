@@ -41,6 +41,10 @@ KnightAI::~KnightAI()
 
 void KnightAI::Update()
 {
+	//gameクラスのポーズのフラグが立っている間処理を行わない
+	if (m_GameState == enPause) {
+		return;
+	}
 	//当たり判定
 	Collition();
 	//アニメーションの再生

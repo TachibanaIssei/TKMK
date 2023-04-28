@@ -466,7 +466,7 @@ public:
 	/// </summary>
 	void SetSE(float addSE)
 	{
-		SEVolume += addSE;
+		//SEVolume += addSE;
 		MaxVolume += addSE;
 	}
 

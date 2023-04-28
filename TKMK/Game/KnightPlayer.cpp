@@ -75,7 +75,10 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
-
+	//gameクラスのポーズのフラグが立っている間またはリスポーン待機中なら処理を行わない
+	if (m_GameState == enPause || DeathToRespawnTimer(m_DeathToRespwanFlag) == true) {
+		return;
+	}
 	
 	//アニメーションの再生
 	PlayAnimation();
@@ -91,10 +94,7 @@ void KnightPlayer::Update()
 		return;
 	}
 	//todo
-	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag)==true) {
-		return;
-	}
+	
 	
 	if (m_gameUI == nullptr)
 	{

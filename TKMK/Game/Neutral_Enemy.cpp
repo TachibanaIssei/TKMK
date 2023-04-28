@@ -885,10 +885,11 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//攻撃の声
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(21);
+		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
-		se->Play(false);
+		
 	}
 	//キーの名前がattack_endの時
 	else if (wcscmp(eventName,L"Attack_end")==0){
@@ -934,6 +935,11 @@ void Neutral_Enemy::modelUpdate()
 /// <returns>音量</returns>
 float Neutral_Enemy::SoundSet(Player* player, float Max, float Min)
 {
+	if (Max <= 0.0f)
+	{
+		return 0.0f;
+	}
+
 	Vector3 diff = player->GetCharPosition() - m_position;
 
 	float Len = diff.Length();

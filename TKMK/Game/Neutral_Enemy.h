@@ -369,6 +369,6 @@ private:
 	//Œø‰Ê‰¹
 	float SEVolume = 0.0f;
 	float MaxVolume = 2.0f;
-	float MinVolume = 0.0f;
+	const float MinVolume = 0.0f;
 };
 

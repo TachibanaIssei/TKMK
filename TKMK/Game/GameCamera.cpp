@@ -75,7 +75,7 @@ bool GameCamera::Start()
 
 	
 	//最初にキャラの背中を映すようにする
-	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y);
+	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
 	m_springCamera.Refresh();
 
 	return true;

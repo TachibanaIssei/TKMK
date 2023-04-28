@@ -296,8 +296,13 @@ public:
 	/// </summary>
 	void SetSE(float addSE)
 	{
-		SEVolume += addSE;
+		//SEVolume += addSE;
 		MaxVolume += addSE;
+	}
+
+	void GetSE(float nowSEsixe)
+	{
+		MaxVolume = nowSEsixe;
 	}
 
 private:

@@ -42,9 +42,10 @@ KnightAI::~KnightAI()
 void KnightAI::Update()
 {
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause) {
+	if (m_GameState == enPause || DeathToRespawnTimer(m_DeathToRespwanFlag) == true) {
 		return;
 	}
+
 	//当たり判定
 	Collition();
 	//アニメーションの再生

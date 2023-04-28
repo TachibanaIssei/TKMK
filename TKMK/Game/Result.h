@@ -34,9 +34,9 @@ public:
 	
 	//各プレイヤーのスコアを保存するためのもの
 	struct Score {
-		int Point;		//獲得ポイント
-		int NameNum;	//プレイヤーネーム
-		int Rank = 1;	//順位
+		int Point = 0;		//獲得ポイント
+		int NameNum = 0;	//プレイヤーネーム
+		int Rank = 1;		//順位
 	};
 
 private:
@@ -59,7 +59,7 @@ private:
 	Quaternion m_sRotation;
 	SpriteRender m_spriteRender;	//背景
 	SpriteRender m_GOtitle;			//"タイトルへ戻る"
-	SpriteRender m_gameover;		//ゲーム終了
+	SpriteRender m_gameover;		//"ゲーム終了"
 	SpriteRender m_choice;			//選択カーソル
 	Tittle* tittle = nullptr;
 

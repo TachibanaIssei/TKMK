@@ -63,8 +63,6 @@ private:
 	SpriteRender m_choice;			//選択カーソル
 	Tittle* tittle = nullptr;
 
-	K2EngineLow* g_k2EngineLow = nullptr;
-
 	//線形補間でここまで動かす
 	Vector3 RankPos[MOVE] = {
 		Vector3(-250.0f, 500.0f, 0.0f),		//順位、１位

@@ -3,6 +3,8 @@
 #include "Tittle.h"
 #include "Game.h"
 
+#include "system/system.h"
+
 Result::Result()
 {
 
@@ -233,7 +235,7 @@ void Result::Select()
 	//ƒQ[ƒ€‚ðI—¹
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_exit)
 	{
-		
+		g_gameLoop.m_isLoop = false;
 	}
 
 	m_choice.Update();

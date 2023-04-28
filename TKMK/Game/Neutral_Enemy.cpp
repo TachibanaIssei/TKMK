@@ -369,7 +369,7 @@ void Neutral_Enemy::Collision()
 			// //HPを減らす
 			if (m_enemyKinds == enEnemyKinds_Rabbit)
 			{
-				m_Status.Hp -= 80;
+				m_Status.Hp -= 1;
 			}
 			else
 			{
@@ -431,7 +431,15 @@ void Neutral_Enemy::Collision()
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
 			//hpを減らす
-			m_Status.Hp -= 100;
+			if (m_enemyKinds == enEnemyKinds_Rabbit)
+			{
+				m_Status.Hp -= 1;
+			}
+			else
+			{
+				m_Status.Hp -= 100;
+			}
+			
 			if (m_Status.Hp < 0)
 			{
 				//相手に経験値を渡す

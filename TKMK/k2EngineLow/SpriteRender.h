@@ -156,6 +156,7 @@ namespace nsK2EngineLow {
 		Vector3 m_position = Vector3::Zero;				//À•W
 		Vector3	m_scale = Vector3::One;					//‘å‚«‚³
 		Quaternion m_rotation = Quaternion::Identity;	//‰ñ“]
+		bool isInit = 0;
 	};
 }
 

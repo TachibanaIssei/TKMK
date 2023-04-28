@@ -33,7 +33,7 @@ public:
 	//中立の敵のステート
 	enum EnNEState {
 		enNeutral_Enemy_Idle,					//待機。
-		enNeutral_Enemy_Chase,					//追跡。
+		enNeutral_Enemy_Chase,					//追跡（ウサギなら逃げ）
 		enNeutral_Enemy_Attack,			        //攻撃
 		enNeutral_Enemy_ReceiveDamage,			//被ダメージ。
 		enNeutral_Enemy_Death,					//ダウン。
@@ -46,6 +46,7 @@ public:
 		enEnemyKinds_White,						//白
 		enEnemyKinds_Red,						//赤
 		enEnemyKinds_Green,						//緑
+		enEnemyKinds_Rabbit,                    //ウサギ
 		enEnemyKinds_Num,						//敵の種類
 	};
 
@@ -66,7 +67,10 @@ public:
 		return m_game;
 	}
 
-
+	void ChangeRabbit()
+	{
+		m_enemyKinds = enEnemyKinds_Rabbit;
+	}
 
 	/// <summary>
 	/// 座標を設定
@@ -125,6 +129,8 @@ public:
 	/// 見つかったらtrueを返す
 	/// </summary>
 	bool Search();
+
+	bool RabbitSearch();
 
 	void SetKnightPlayer(Actor* knightPlayer)
 	{
@@ -209,7 +215,11 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttack() const;
-
+	/// <summary>
+	/// ウサギが逃げる距離
+	/// </summary>
+	/// <returns></returns>
+    void EscapeSearch();
 	/// <summary>
 	/// ゲージを左寄せする処理
 	/// </summary>
@@ -301,10 +311,6 @@ private:
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 
 	Game* m_game = nullptr;                               
-	Neutral_Enemy* m_Neutral_Enemy=nullptr; 
-	Neutral_Enemy* m_EnemyRed = nullptr;
-	Neutral_Enemy* m_EnemyGreen = nullptr;
-	Neutral_Enemy* m_EnemyWhile = nullptr;
 
 	GameCamera* m_gameCamera = nullptr;
 	Player* player = nullptr;
@@ -320,8 +326,7 @@ private:
 	FontRender              m_Name;
 	SphereCollider			m_sphereCollider;
 	RigidBody				m_rigidBody;
-	Vector3                 m_inRespawnPosition[12];
-	Vector3                 m_patrolPos[17];
+	Vector3                 m_patrolPos[41];
 	Vector3 nowPos = Vector3::Zero;
 	Vector3 m_hagikiPower;
 	bool m_UnderAttack = false;              //攻撃判定
@@ -354,5 +359,9 @@ private:
 	std::vector<Actor*> be_target;
 
 	bool isStart = false;
+
+	// ウサギ専用
+	bool isPatrolRandom = false;
+	float isPatrolTimer = 0.0f;
 };
 

@@ -294,7 +294,6 @@ bool Game::Start()
 	m_bgm->Play(true);
 	m_bgm->SetVolume(BGMVolume);*/
 
-
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	return true;
@@ -327,11 +326,6 @@ void Game::BattleStart()
 //バトルステートの処理
 void Game::Battle()
 {
-	//時間切れではないなら
-	if (GameEndFlag == false) {
-		CountDown();
-	}
-
 	if (m_GameState == enGameState_Battle) {
 		//CTRLを押したら
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
@@ -360,14 +354,26 @@ void Game::Battle()
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
 			}
 	}
+
 	if (UltStopFlag == true)
 	{
 		return;
 	}
+
+	//時間切れではないなら
+	if (GameEndFlag == false) {
+		CountDown();
+	}
 	m_RespawnTimer += g_gameTime->GetFrameDeltaTime();
-	if (m_RespawnTimer >= 5) {
+	if (m_RespawnTimer >= 5.0f) {
 		Respawn();
 		m_RespawnTimer = 0.0f;
+	}
+	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
+	if (m_RabbitRespawnTimer >= 30.0f)
+	{
+		RabbitRespawn();
+		m_RabbitRespawnTimer = 0.0f;
 	}
 }
 
@@ -392,7 +398,7 @@ void Game::End()
 {
 	m_EndtoResultTimer+= g_gameTime->GetFrameDeltaTime();
 
-	if (m_EndtoResultTimer >= 10)
+	if (m_EndtoResultTimer >= 10.0f)
 	{
 		m_GameState=enGameState_Rezult;
 	}
@@ -452,9 +458,23 @@ void Game::Respawn()
 			//中立の敵のリスポーンする座標を決める
 			SetEnemyRespawnPos();
 			//中立の敵を生成
-			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber]);
+			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber],false);
 		}
 	}
+}
+
+void Game::RabbitRespawn()
+{
+	//　乱数を初期化。
+	srand((unsigned)time(NULL));
+	RabbitFlag = true;
+
+	//ランダムに番号を決める(0以外)
+	RandamRespawnPosNumber = rand() % 8 + 1;	//中立の敵のリスポーンする座標を決める
+	SetEnemyRespawnPos();
+	//中立の敵を生成
+	CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber],true);
+	
 }
 
 /// <summary>
@@ -561,17 +581,23 @@ void Game::GetActorPoints(int charPoints[])
 }
 
 //中立の敵の生成処理
-void Game::CreateEnemy(Vector3 pos, Quaternion rot) {
+void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 
+	
 	enemyNumber++;
-	ENEMY_AMOUNT;
 
+	ENEMY_AMOUNT;
+	
 	Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(1, CreateEnemyName());
 	neutral_Enemy->SetNeutral_EnemyGame(this);
 	neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
 	neutral_Enemy->SetPosition(pos);
 	neutral_Enemy->SetRotation(rot);
 	neutral_Enemy->modelUpdate();
+	if (isRabiit == true)
+	{
+		neutral_Enemy->ChangeRabbit();
+	}
 
 	m_neutral_Enemys.push_back(neutral_Enemy);
 }

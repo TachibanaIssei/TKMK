@@ -143,6 +143,8 @@ bool Neutral_Enemy::Start()
 
 	});
 
+	player = FindGO<Player>("player");
+
 	//最初に行くポジションを決める
 	randam = rand() % 16;
 	btTransform start, end;
@@ -883,12 +885,10 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//攻撃の声
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(21);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 		se->Play(false);
-		se->SetVolume(m_game->SetSoundEffectVolume());
-
-		//効果音を再生する
-
-
 	}
 	//キーの名前がattack_endの時
 	else if (wcscmp(eventName,L"Attack_end")==0){
@@ -924,6 +924,36 @@ void Neutral_Enemy::modelUpdate()
 	//モデルの更新。
 	m_modelRender.Update();
 }
+
+/// <summary>
+/// プレイヤーとの距離によって音量調整する
+/// </summary>
+/// <param name="player">プレイヤー</param>
+/// <param name="Max">音量の最大値</param>
+/// <param name="Min">音量の最低値</param>
+/// <returns>音量</returns>
+float Neutral_Enemy::SoundSet(Player* player, float Max, float Min)
+{
+	Vector3 diff = player->GetCharPosition() - m_position;
+
+	float Len = diff.Length();
+
+	const float min = 0.1f;
+	const float max = 1500.0f;
+
+	float nomalizeValue = (abs(Len) - min) / (max - min);
+
+
+	float Vol = Math::Lerp(nomalizeValue, Max, Min);
+
+	if (Vol < 0)
+	{
+		Vol *= -1.0f;
+	}
+
+	return Vol;
+}
+
 void Neutral_Enemy::Render(RenderContext& rc)
 {
 	//モデルを描画する。

@@ -279,6 +279,17 @@ public:
 	}
 	void modelUpdate();
 
+	float SoundSet(Player* player, float Max, float Min);
+
+	/// <summary>
+	/// 効果音を上げたり下げたりする
+	/// </summary>
+	void SetSE(float addSE)
+	{
+		SEVolume += addSE;
+		MaxVolume += addSE;
+	}
+
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
@@ -354,5 +365,10 @@ private:
 	std::vector<Actor*> be_target;
 
 	bool isStart = false;
+
+	//効果音
+	float SEVolume = 0.0f;
+	float MaxVolume = 2.0f;
+	float MinVolume = 0.0f;
 };
 

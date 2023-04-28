@@ -240,8 +240,8 @@ private:
 	Vector3 SelectBar_BGMPos = Vector3::AxisX;
 	Vector3 SelectBar_SEPos = Vector3::AxisX;
 
-	float m_nuwBGMPos=10.0f;
-	float m_nuwSEPos=10.0f;
+	float m_nuwBGMPos=30.0f;
+	float m_nuwSEPos=30.0f;
 
 	SkyCube* m_skyCube = nullptr;
 	BackGround* m_backGround = nullptr;
@@ -296,9 +296,9 @@ private:
 	float m_BetweenTimer = 0.0f;
 	
 	//BGMの初期音量
-	float BGMVolume = 0.0f;
+	float BGMVolume = 2.0f;
 	//効果音の初期音量1
-	float SoundEffectVolume = 0.0f;
+	float SoundEffectVolume = 2.0f;
 
 	//プレイヤーの使うキャラの番号
 	//０…剣士

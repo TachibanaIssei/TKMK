@@ -91,7 +91,6 @@ void GameCamera::Update()
 	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
 	if (player_actor->RespawnFlag()==true)
 	{
-		m_springCamera.Refresh();
 		return;
 	}
 

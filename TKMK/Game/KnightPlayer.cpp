@@ -5,7 +5,9 @@
 #include "KnightUlt.h"
 #include "GameUI.h"
 
+//todo
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
+//おそらく必殺技を使った後に攻撃力が上がったままになっている
 //for文、findGO使う
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
 
@@ -331,7 +333,9 @@ void KnightPlayer::Attack()
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);
 		se->Play(false);
-		se->SetVolume(m_game->SetSoundEffectVolume());
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 
 		//必殺技発動フラグをセット
 	/*	UltimateSkillFlag = true;*/
@@ -406,7 +410,9 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(13);
 		se->Play(false);
-		se->SetVolume(m_game->SetSoundEffectVolume());
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
@@ -418,7 +424,9 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0); 
 		se->Init(14);
 		se->Play(false);
-		se->SetVolume(m_game->SetSoundEffectVolume());
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
@@ -430,7 +438,9 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(15);
 		se->Play(false);
-		se->SetVolume(m_game->SetSoundEffectVolume());
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
@@ -444,7 +454,9 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(11);
 		se->Play(false);
-		se->SetVolume(m_game->SetSoundEffectVolume());
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)

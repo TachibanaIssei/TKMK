@@ -41,7 +41,6 @@ KnightAI::~KnightAI()
 
 void KnightAI::Update()
 {
-
 	//当たり判定
 	Collition();
 	//アニメーションの再生

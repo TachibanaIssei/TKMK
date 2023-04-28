@@ -602,6 +602,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	neutral_Enemy->SetPosition(pos);
 	neutral_Enemy->SetRotation(rot);
 	neutral_Enemy->modelUpdate();
+	neutral_Enemy->GetSE(SoundEffectVolume);
 	if (isRabiit == true)
 	{
 		neutral_Enemy->ChangeRabbit();

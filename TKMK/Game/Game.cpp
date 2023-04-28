@@ -637,14 +637,22 @@ void Game::SetMusic()
 
 void Game::PauseMove()
 {
-	if (g_pad[0]->IsTrigger(enButtonDown))
+	if (MenuNumber < 4)
 	{
-		MenuNumber++;
+		if (g_pad[0]->IsTrigger(enButtonDown))
+		{
+			MenuNumber++;
+		}
 	}
-	if (g_pad[0]->IsTrigger(enButtonUp))
+	
+	if (MenuNumber > 0)
 	{
-		MenuNumber--;
+		if (g_pad[0]->IsTrigger(enButtonUp))
+		{
+			MenuNumber--;
+		}
 	}
+	
 
 }
 

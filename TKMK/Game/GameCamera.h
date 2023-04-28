@@ -120,6 +120,8 @@ private:
 
 	float sita = 0.0f;
 
+	bool oldRespawnFlag = false;
+
 	//アクターの情報
 	std::vector<Actor*> m_actors;
 };

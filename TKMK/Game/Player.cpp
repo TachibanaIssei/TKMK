@@ -80,7 +80,8 @@ void Player::CharSelect(int number)
 /// <returns>‘I‘ğ‚³‚ê‚Ä‚¢‚éƒLƒƒƒ‰‚ÌÀ•W</returns>
 Vector3 Player::GetCharPosition()const
 {
-	switch (m_selectCharctar)
+	return playerActor->GetPosition();
+	/*switch (m_selectCharctar)
 	{
 	case enKnight:
 		return knightPlayer->GetPosition();
@@ -98,7 +99,7 @@ Vector3 Player::GetCharPosition()const
 
 	default:
 		break;
-	}
+	}*/
 }
 
 /// <summary>

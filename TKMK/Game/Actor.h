@@ -459,6 +459,17 @@ public:
 		return m_respwanTimer;
 	}
 
+	float SoundSet(Player* player, float Max, float Min);
+
+	/// <summary>
+	/// 効果音を上げたり下げたりする
+	/// </summary>
+	void SetSE(float addSE)
+	{
+		SEVolume += addSE;
+		MaxVolume += addSE;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -515,6 +526,11 @@ protected:
 	///////////////////////////////
 	//評価値計算のタイマー
 	float EvalTimer = 0.0f;
+
+	//効果音
+	float SEVolume = 0.0f;
+	float MaxVolume = 2.0f;
+	const float MinVolume = 0.0f;
 
 	Player* m_player = nullptr;
 	Actor* m_targetActor = nullptr;

@@ -442,7 +442,7 @@ void Neutral_Enemy::Collision()
 				m_Status.Hp -= 100;
 			}
 			
-			if (m_Status.Hp < 0)
+			if (m_Status.Hp <= 0)
 			{
 				//相手に経験値を渡す
 				m_lastAttackActor->ExpProcess(Exp/2);

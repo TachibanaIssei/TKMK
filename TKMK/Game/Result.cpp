@@ -121,28 +121,28 @@ void Result::Rank()
 		switch (Player[i].Rank)
 		{
 		case 1:
-			swprintf_s(Rank1, L"%d,%d,%d pt", Player[i].Rank,Player[i].NameNum, Player[i].Point);
+			swprintf(Rank1, L"%d,%d,%d pt", Player[i].Rank,Player[i].NameNum, Player[i].Point);
 			m_PlayerRank1.SetText(Rank1);
 			m_PlayerRank1.SetPosition(FirstPos[i]);
 			m_PlayerRank1.SetColor(g_vec4Black);
 			m_PlayerRank1.SetScale(WordScale);
 			break;
 		case 2:
-			swprintf_s(Rank2, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			swprintf(Rank2, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
 			m_PlayerRank2.SetText(Rank2);
 			m_PlayerRank2.SetPosition(FirstPos[i]);
 			m_PlayerRank2.SetColor(g_vec4Black);
 			m_PlayerRank2.SetScale(WordScale);
 			break;
 		case 3:
-			swprintf_s(Rank3, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			swprintf(Rank3, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
 			m_PlayerRank3.SetText(Rank3);
 			m_PlayerRank3.SetPosition(FirstPos[i]);
 			m_PlayerRank3.SetColor(g_vec4Black);
 			m_PlayerRank3.SetScale(WordScale);
 			break;
 		case 4:
-			swprintf_s(Rank4, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			swprintf(Rank4, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
 			m_PlayerRank4.SetText(Rank4);
 			m_PlayerRank4.SetPosition(FirstPos[i]);
 			m_PlayerRank4.SetColor(g_vec4Black);

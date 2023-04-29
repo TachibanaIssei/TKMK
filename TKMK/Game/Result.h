@@ -35,7 +35,8 @@ public:
 	//各プレイヤーのスコアを保存するためのもの
 	struct Score {
 		int Point = 0;		//獲得ポイント
-		int NameNum = 0;	//プレイヤーネーム
+		int NameNum = 1;	
+		char Name[30];		//プレイヤーネーム
 		int Rank = 1;		//順位
 	};
 
@@ -46,6 +47,11 @@ private:
 	int select = 0;				//セレクトポジ
 	float Complement = 0.01f;	//線形補間の補完率
 	float WordScale = 3.0f;
+
+	char playername1[30] = "Player1";
+	char playername2[30] = "CPU1";
+	char playername3[30] = "CPU2";
+	char playername4[30] = "CPU3";
 
 	Score Player[PLAYER];
 

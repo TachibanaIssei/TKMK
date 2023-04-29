@@ -210,13 +210,13 @@ private:
 
 	bool GameEndFlag=false;
 
-	int nowEXP;
+	//int nowEXP;
 	//前フレームの経験値
 	int oldEXP=0;
 
-	int nowEXPTable=0;
+	//int nowEXPTable=0;
 	//前フレームの経験値テーブル
-	int oldEXPTable;
+	//int oldEXPTable;
 	//キャラのポイント
 	int charPoint[4];
 

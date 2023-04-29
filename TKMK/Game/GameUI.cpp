@@ -452,14 +452,19 @@ void GameUI::EXPBar()
 {
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
+	//プレイヤーの経験値を取得
+	float nowEXP = player->CharSetEXP();
+	//今の経験値テーブルを取得
+	float nowEXPTable = player->CharSetEXPTable();
+	//前のレベルの経験値テーブルを取得
+	float oldEXPTable = player->CharSetOldEXPTable();
 
-	nowEXP = player->CharSetEXP();
-
-	nowEXPTable = player->CharSetEXPTable();
+	//線形補間
+	float finalEXP = Math::Lerp(nowEXP, oldEXPTable, oldEXPTable);
 
 	
 	//HPバーの減っていく割合。
-	EXPScale.x = (float)nowEXP / (float)nowEXPTable;
+	EXPScale.x = finalEXP/*(float)nowEXP / (float)nowEXPTable*/;
 	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 }

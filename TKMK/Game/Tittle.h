@@ -104,11 +104,14 @@ private:
 	Vector3 m_selectLogoScale = { 1.7f, 0.7f, 1.0f };				//セレクト画面のタイトルロゴの大きさ
 	Vector3 m_LogoPosition;											//ロゴを線形補完するときに使う
 	Vector3 m_LogoScale;
+	Vector3 m_titlefireScale = { 1.0f, 1.0f, 1.0f };				//起動時の火花の大きさ
+	Vector3 m_selectfireScale = { 0.6f, 0.6f, 1.0f };
+	Vector3 m_fireScale;											//火花の線形補間
 
 	//セレクトの項目ごとの位置
-	Vector3 m_Top = { -500.0f,-150.0f,0.0f };						//上
+	Vector3 m_Top = { -500.0f,-130.0f,0.0f };						//上
 	Vector3 m_Central = { -500.0f,-250.0f,0.0f };					//中央
-	Vector3 m_Under = {-500.0f,-350.0f,0.0f };						//下
+	Vector3 m_Under = {-500.0f,-370.0f,0.0f };						//下
 
 	//キャラ選択の時のカーソルの位置
 	Vector3 m_KnightCursor = { -400.0f, 450.0f, 0.0f };

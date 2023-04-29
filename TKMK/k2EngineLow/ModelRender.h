@@ -16,8 +16,23 @@ namespace nsK2EngineLow {
 			const char* tkmFilepath,
 			AnimationClip* animationClips = nullptr,
 			int numAnimationClips = 0,
-			EnModelUpAxis enModelUpAxis = enModelUpAxisZ
+			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
+			bool shadow = true
 		);
+
+		/// <summary>
+		/// 影を受けるモデルの初期化
+		/// </summary>
+		/// <param name="tkmFilepath"></param>
+		void InitBackGround(
+			const char* tkmFilepath
+		);
+
+		/// <summary>
+		/// スカイキューブを初期化する
+		/// </summary>
+		/// <param name="initData"></param>
+		void InitSkyCube(ModelInitData& initData);
 
 		/// <summary>
 		/// モデルを取得する
@@ -26,6 +41,19 @@ namespace nsK2EngineLow {
 		Model& GetModel()
 		{
 			return m_model;
+		}
+
+		/// <summary>
+		/// 座標、回転、拡大をすべて設定
+		/// </summary>
+		/// <param name="pos">座標</param>
+		/// <param name="rotation">回転</param>
+		/// <param name="scale">拡大</param>
+		void SetTRS(const Vector3& pos, const Quaternion& rotation, const Vector3& scale)
+		{
+			SetPosition(pos);
+			SetRotation(rotation);
+			SetScale(scale);
 		}
 
 		/// <summary>
@@ -91,9 +119,18 @@ namespace nsK2EngineLow {
 			g_renderingEngine->AddModelList(this);
 		};
 
+		/// <summary>
+		/// モデルを描画する
+		/// </summary>
+		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
 		{
 			m_model.Draw(rc);
+		}
+
+		void OnRenderShadowModel(RenderContext& rc,Camera& camera)
+		{
+			m_shadowModel.Draw(rc,camera);
 		}
 
 		/// <summary>
@@ -152,11 +189,6 @@ namespace nsK2EngineLow {
 			m_animationSpeed = animationSpeed;
 		}
 
-		/// <summary>
-		/// ディレクションライトの情報を作成
-		/// </summary>
-		void MakeDirectionData();	
-
 	private:
 		/// <summary>
 		/// スケルトンの初期化。
@@ -176,6 +208,11 @@ namespace nsK2EngineLow {
 			EnModelUpAxis enModelUpAxis
 		);
 
+		/// <summary>
+		/// ディレクションライトの情報を作成
+		/// </summary>
+		void MakeDirectionData();
+
 	//メンバ変数
 	private:
 		Skeleton					m_skeleton;									//スケルトン
@@ -190,6 +227,8 @@ namespace nsK2EngineLow {
 
 		Model						m_model;									//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
+
+		Model						m_shadowModel;								//シャドウマップ描画用
 	};
 
 }

@@ -1,10 +1,28 @@
 #include "stdafx.h"
 #include "KnightPlayer.h"
+#include "Game.h"
+#include "Neutral_Enemy.h"
+#include "KnightUlt.h"
+#include "GameUI.h"
 
+//todo
+//スキル使ったときに範囲内に敵がいたらその方向に向かっていく
+//おそらく必殺技を使った後に攻撃力が上がったままになっている
+//for文、findGO使う
+//HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
+
+namespace {
+	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
+	const Vector3 AVOIDANCE_BAR_POS = Vector3(98.0f, -397.0f, 0.0f);
+
+	const Vector3 AVOIDANCE_FLAME_POS = Vector3(0.0f, -410.0f, 0.0f);
+}
 
 KnightPlayer::KnightPlayer()
 {
-	
+	m_gameUI = FindGO<GameUI>("m_gameUI");
+	m_game = FindGO<Game>("game");
+
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -12,20 +30,42 @@ KnightPlayer::KnightPlayer()
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	m_respawnPos[respawnNumber].y += m_position_YUp;
+	respawnNumber = 2;        //リスポーンする座標の番号0
+	
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
 
-	
+	//リスポーン時に向いている方向の前方向を取得
+	ForwardSet();
+
+	m_modelRender.Update();
+
+	//スキルのクールタイムを表示するフォントの設定
 	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);
 	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
 
+	//回避のフレームの設定
+	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
+	m_Avoidance_flameRender.SetPosition(AVOIDANCE_FLAME_POS);
+	//回避のバーの設定
+	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
+	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
+	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
+
+	//3Dサウンド
+	
+	//m_soundEngine->SetListenerPosition(m_position);
+	//
+	//m_soundEngine->SetListenerFront(g_camera3D->GetForward());
+	//m_soundEngine->SetListenerUp(Vector3::AxisY);
+	//m_soundEngine->Update();
 }
 
 KnightPlayer::~KnightPlayer()
@@ -36,91 +76,182 @@ KnightPlayer::~KnightPlayer()
 void KnightPlayer::Update()
 {
 
-	int SkillCoolTime = SkillTimer;
-	wchar_t Skill[255];
-	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
-	Skillfont.SetText(Skill);
-
-
-	//前フレームの座標を取得
-	OldPosition = m_position;
-
-	//移動処理ステータスの値が入っていない
-	Move(m_position, m_charCon, m_Status);
 	
-	////RBボタンが押されたら。
-	////回避
-	//if (AvoidanceEndFlag==false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
-	//	//回避ステート
-	//	//m_animState = enKnightState_Avoidance;
-	//	AnimationMove();
-	//	AvoidanceFlag = true;
-	//}
-	
-	//回避中なら
-	if (AvoidanceFlag == true) {
-		m_animState = enKnightState_Avoidance;
-		//移動処理を行う(直線移動のみ)。
-		MoveStraight(m_Skill_Right, m_Skill_Forward);
-	}
-
-	//攻撃処理
-	Attack();
-
-	//回避処理
-	Avoidance();
-
-	//スキル使用中なら
-	if (SkillState == true) {
-		//スキルステート
-		m_animState = enKnightState_Skill;
-		//移動処理を行う(直線移動のみ)。
-		MoveStraight(m_Skill_Right, m_Skill_Forward);
-	}
-
-	//回転処理
-	Rotation();
-
-	//スキルクールタイムの処理
-	COOlTIME(Cooltime, SkillEndFlag,SkillTimer);
-
-	//回避クールタイムの処理
-	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-
-	//レベルアップする
-	/*if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		if(Lv!=5)
-		ExpProcess(exp);
-	}*/
-
-	//ダメージを受ける
-	/*if (g_pad[0]->IsTrigger(enButtonX))
-	{
-		Dameged(dddd);
-	}*/
-
+	//アニメーションの再生
+	PlayAnimation();
 	//当たり判定
 	Collition();
 
-	//ステート
-	ManageState();
-	//アニメーションの再生
-	PlayAnimation();
+	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
+	{
+		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
+		{
+			m_modelRender.Update();
+		}
+		return;
+	}
+	//todo
+	//gameクラスのポーズのフラグが立っている間処理を行わない
+	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag)==true) {
+		return;
+	}
+	
+	if (m_gameUI == nullptr)
+	{
+		m_gameUI = FindGO<GameUI>("m_gameUI");
+	}
+
+	//やられたらリスポーンするまで実行する
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag) == true)
+	{
+
+		m_charState = enCharState_Idle;
+
+		return;
+	}
+
+
+	//ゲームのステートがスタート,エンド、リザルトでないなら
+	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
+	{
+		//今のフレームと前のフレームのレベルが違っていたら
+		if (oldLv != Lv) {
+			//レベルに合わせてGameUIのレベルの画像を変更する
+			m_gameUI->LevelFontChange(Lv);
+		}
+
+		//前フレームのレベルを取得
+		oldLv = Lv;
+		//前フレームの座標を取得
+		OldPosition = m_position;
+
+		int SkillCoolTime = SkillTimer;
+		wchar_t Skill[255];
+		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+		Skillfont.SetText(Skill);
+
+		//リスポーンしたときしか使えない
+		//飛び降りる処理
+		//地上にいないならジャンプしかしないようにする
+		if (m_position.y > 1.0f) {
+			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+			{
+				pushFlag = true;
+				jampAccumulateflag = true;
+				m_charState = enCharState_Jump;
+			}
+		}
+		else
+		{
+				//攻撃処理
+				Attack();
+				//回避処理
+				Avoidance();
+		}
+
+		//移動処理
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		Move(m_position, m_charCon, m_Status, stickL);
+
+		//回避中なら
+		if (AvoidanceFlag == true) {
+			m_charState = enCharState_Avoidance;
+			//移動処理を行う(直線移動のみ)。
+			MoveStraight(m_Skill_Right, m_Skill_Forward);
+		}
+
+		//スキル使用中なら
+		if (SkillState == true) {
+			//スキルステート
+			m_charState = enCharState_Skill;
+			//移動処理を行う(直線移動のみ)。
+			MoveStraight(m_Skill_Right, m_Skill_Forward);
+		}
+		//ステート
+		ManageState();
+        //無敵時間
+	    Invincible();
+		//回転処理
+		Rotation();
+
+		//スキルクールタイムの処理
+		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+
+		//回避クールタイムの処理
+		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
+		//if (m_swordEffectFlag ==true)
+		//{
+		//	Vector3 m_SwordPos = Vector3::Zero;
+		//	Quaternion m_SwordRot;
+		//	//「Sword」ボーンのワールド行列を取得する。
+		//	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+		//	matrix.Apply(m_SwordPos);
+		//	m_SwordRot.SetRotation(matrix);
+		//	Ult_Swordeffect->SetPosition(m_SwordPos);
+		//	Ult_Swordeffect->SetRotation(m_SwordRot);
+		//	Ult_Swordeffect->Update();
+		//}
+
+		//レベルアップする
+		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
+		//{
+		//	if(Lv!=10)
+		//	ExpProcess(exp);
+		//	//m_Status.GetExp += 5;
+		//	//m_gameUI->LevelFontChange(Lv);
+		//}
+
+		//ダメージを受ける
+		/*if (g_pad[0]->IsTrigger(enButtonX))
+		{
+			Dameged(dddd);
+		}*/
+
+	}
+	//速度を0にする(動かないようにする)
+	else
+	{
+		m_moveSpeed = Vector3::Zero;
+	}
 
 
 
-	//剣士のY座標が腰なのでY座標を上げる
-	m_position.y = m_position_YUp;
+	if (AvoidanceTimer != AvoidanceCoolTime)
+	{
+		//回避のスプライトの表示の処理
+		AvoidanceSprite();
+	}
 
+	//キャラクターコントローラーを使って座標を移動させる。
+	//ワープする時はキャラコンを移動させない
+	if (IsEnableMove() == true) {
+
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+
+	//ジャンプ中ではないかつ落下中なら
+	if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
+	{
+		m_charState = enCharState_Fall;
+	}
+	
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
+
+	
 }
 
 //攻撃処理
 void KnightPlayer::Attack()
 {
-	//連打で攻撃できなくなる
+	//ステートがデスのとき
+	if (m_charState == enCharState_Death)
+	{
+		return;
+	}
 
 	//一段目のアタックをしていないなら
 	if (pushFlag==false&&AtkState == false)
@@ -128,8 +259,8 @@ void KnightPlayer::Attack()
 		//Bボタン押されたら攻撃する
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			m_animState = enKnightState_ChainAtk;
-			
+			m_charState = enCharState_Attack;
+			Point++;
 			//FirstAtkFlag = true;
 			//コンボを1増やす
 			//ComboState++;
@@ -162,12 +293,13 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
 	{
 		//移動速度を上げる
-		m_Status.Speed += 120.0f;
-		
-		AnimationMove();
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		//スキルを使うときのスピードを使う
+		AnimationMove(SkillSpeed, stickL);
 		pushFlag = true;
 		SkillState = true;
-		//AtkCollistionFlag = true;
 	}
 
 	//必殺技を発動する処理
@@ -175,38 +307,45 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		//アニメーション再生、レベルを３下げる
-		UltimateSkill();
+		m_game->SetStopFlag(true);
+		m_game->SetUltActor(this);
+		//アニメーション再生
+		//必殺技ステート
+		m_charState = enCharState_UltimateSkill;
+
+		Vector3 m_SwordPos = Vector3::Zero;
+		Quaternion m_SwordRot;
+		//「Sword」ボーンのワールド行列を取得する。
+		/*Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+		matrix.Apply(m_SwordPos);
+		m_SwordRot.SetRotation(matrix);*/
+		EffectEmitter*Ult_Swordeffect = NewGO<EffectEmitter>(2);
+		Ult_Swordeffect->Init(2);
+		Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
+		Ult_Swordeffect->SetPosition(m_position);
+		//Ult_Swordeffect->SetRotation(m_SwordRot);
+		//Ult_Swordeffect->Update();
+			//エフェクトを再生
+		Ult_Swordeffect->Play();
+		m_swordEffectFlag = true;
+
+		//アルティメットSE
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(16);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
+
 		//必殺技発動フラグをセット
-		UltimateSkillFlag = true;
+	/*	UltimateSkillFlag = true;*/
 	}
 
-	//必殺技発動フラグがセットされているなら
-	if (UltimateSkillFlag == true)
-	{
-		UltimateSkillTimer += g_gameTime->GetFrameDeltaTime();
-		//必殺技タイマーが3.0fまでの間
-		if (UltimateSkillTimer <= 3.0f)
-		{
-			//コリジョンの作成、移動処理
-			UltimateSkillCollistion(OldPosition, m_position);
-		}
-		else
-		{
-			//攻撃が有効な時間をリセット
-			UltimateSkillTimer = 0;
-			//必殺技発動フラグをリセット
-			UltimateSkillFlag = false;
-			//コリジョン削除
-			DeleteGO(collisionObject);
-			//コリジョン作成フラグをリセット
-			UltCollisionSetFlag = false;
-		}
-	}
-
+	
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
-	if(AtkCollistionFlag ==true)AtkCollisiton();
+	if (AtkCollistionFlag == true) AtkCollisiton();
+	
 }
 
 /// <summary>
@@ -214,15 +353,44 @@ void KnightPlayer::Attack()
 /// </summary>
 void KnightPlayer::Avoidance()
 {
+	//ステートがデスのとき
+	if (m_charState == enCharState_Death)
+	{
+		return;
+	}
 	//RBボタンが押されたら。
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
-		//m_animState = enKnightState_Avoidance;
-		AnimationMove();
+		Vector3 stickL;
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		AnimationMove(AvoidanceSpeed, stickL);
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}
+}
+
+/// <summary>
+/// 必殺技の当たり判定生成する
+/// </summary>
+void KnightPlayer::MakeUltSkill()
+{
+	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
+	//製作者の名前を入れる
+	knightUlt->SetCreatorName(GetName());
+	// 制作者を教える
+	knightUlt->SetActor(this);
+	//キャラのレベルを入れる
+	knightUlt->GetCharLevel(Lv);
+	//座標の設定
+	Vector3 UltPos = m_position;
+	UltPos.y += 60.0f;
+	knightUlt->SetPosition(UltPos);
+	knightUlt->SetRotation(m_rot);
+	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	knightUlt->SetGame(m_game);
+
 }
 
 /// <summary>
@@ -238,6 +406,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState =FirstAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+		//剣１段目音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(13);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
@@ -245,6 +420,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState = SecondAtkStart_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+		//剣２段目音
+		SoundSource* se = NewGO<SoundSource>(0); 
+		se->Init(14);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
@@ -252,6 +434,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+		//剣３段目音
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(15);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
@@ -260,6 +449,28 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+
+		//スキル音を発生
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(11);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
+	}
+	//必殺技のアニメーションが始まったら
+	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
+	{
+		//必殺技の当たり判定のクラスを作成
+		MakeUltSkill();
+		//エフェクトを移動
+		//m_swordEffectFlag = false;
+		
+	}
+	//ジャンプのアニメーションが始まったら
+	if (wcscmp(eventName, L"Jump_Start") == 0)
+	{
+		m_RespawnJumpFlag = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//一段目のアタックのアニメーションで剣を振り終わったら
@@ -278,7 +489,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_animState = enKnightState_Idle;
+			m_charState = enCharState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -295,7 +506,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
 			AtkState = false;
-			m_animState = enKnightState_Idle;
+			m_charState = enCharState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
@@ -309,7 +520,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_animState = enKnightState_Idle;
+		m_charState = enCharState_Idle;
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
@@ -323,7 +534,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//スキルの移動処理をしないようにする
 		SkillState = false;
-		m_Status.Speed -= 120.0f;
+		//m_Status.Speed -= 120.0f;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}
@@ -338,8 +549,28 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	}
 }
 
+void KnightPlayer::AvoidanceSprite()
+{
+	Vector3 AvoidanceScale = Vector3::One;
+	//HPバーの減っていく割合。
+	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
+	m_Avoidance_barRender.SetScale(AvoidanceScale);
+
+	m_Avoidance_flameRender.Update();
+	m_Avoidance_barRender.Update();
+}
+
 void KnightPlayer::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+	//スキルのクールタイムとタイマーが違う時だけ表示
+	if(SkillTimer!=Cooltime)
 	Skillfont.Draw(rc);
+	//回避のクールタイムとタイマーが違う時だけ表示
+	if (AvoidanceTimer != AvoidanceCoolTime)
+	{
+		m_Avoidance_flameRender.Draw(rc);
+		m_Avoidance_barRender.Draw(rc);
+	}
+	
 }

@@ -4,12 +4,20 @@
 #include "AI/PathFinding/Path.h"
 #include "AI/PathFinding/PathFinding.h"
 #include "Status.h"
-//ƒNƒ‰ƒXéŒ¾
+#include "Level3DRender.h"
+//ã‚¯ãƒ©ã‚¹å®£è¨€
 class KnightPlayer;
 class Game;
 class GameCamera;
+class Neutral_Enemy;
+class Patrolnumb;
+class KnightAI;
+class Player;
+class MagicBall;
+class Actor;
+
 /// <summary>
-/// ’†—§‚Ì“G
+/// ä¸­ç«‹ã®æ•µ
 /// </summary>
 class Neutral_Enemy : public IGameObject
 {
@@ -21,15 +29,35 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	void HPBar();
-	//’†—§‚Ì“G‚ÌƒXƒe[ƒg
+
+	//ä¸­ç«‹ã®æ•µã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 	enum EnNEState {
-		enNeutral_Enemy_Idle,					//‘Ò‹@B
-		enNeutral_Enemy_Chase,					//’ÇÕB
-		enNeutral_Enemy_Attack,			        //UŒ‚
-		enNeutral_Enemy_ReceiveDamage,			//”íƒ_ƒ[ƒWB
-		enNeutral_Enemy_Death,					//ƒ_ƒEƒ“B
+		enNeutral_Enemy_Idle,					//å¾…æ©Ÿã€‚
+		enNeutral_Enemy_Chase,					//è¿½è·¡ï¼ˆã‚¦ã‚µã‚®ãªã‚‰é€ƒã’ï¼‰
+		enNeutral_Enemy_Attack,			        //æ”»æ’ƒ
+		enNeutral_Enemy_ReceiveDamage,			//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã€‚
+		enNeutral_Enemy_Death,					//ãƒ€ã‚¦ãƒ³ã€‚
+		enNeutral_Enemy_Pause,                  //ãƒãƒ¼ã‚ºç”»é¢
+		enNeutral_Enemy_Patrol,                 //å·¡å›
+		enNeutral_Enemy_BackPatrol
 	};
 
+	enum EnEnemyKinds {
+		enEnemyKinds_White,						//ç™½
+		enEnemyKinds_Red,						//èµ¤
+		enEnemyKinds_Green,						//ç·‘
+		enEnemyKinds_Rabbit,                    //ã‚¦ã‚µã‚®
+		enEnemyKinds_Num,						//æ•µã®ç¨®é¡
+	};
+
+	enum EnAnimationClip {                      //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€‚
+		enAnimationClip_Idle,					//å¾…æ©Ÿã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€‚
+		enAnimationClip_Run,					//èµ°ã‚Šã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€‚
+		enAnimationClip_Attack,					//æ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€‚
+		enAnimationClip_Damage,					//è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€‚
+		enAnimationClip_Death,					//ãƒ€ã‚¦ãƒ³ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€‚
+		enAnimationClip_Num,					//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ•°ã€‚
+	};
 	void SetNeutral_EnemyGame(Game* NEgame)
 	{
 		m_game = NEgame;
@@ -38,130 +66,318 @@ public:
 	{
 		return m_game;
 	}
-private:
+
+	void ChangeRabbit()
+	{
+		m_enemyKinds = enEnemyKinds_Rabbit;
+	}
+
 	/// <summary>
-	/// ’ÇÕ
+	/// åº§æ¨™ã‚’è¨­å®š
+	/// </summary>
+	/// <param name="position">åº§æ¨™</param>
+	void SetPosition(const Vector3& position)
+	{
+		m_position = position;
+	}
+
+	void SetScale(Vector3 scale)
+	{
+		m_scale = scale;
+	}
+	void SetRotation(Quaternion rotation)
+	{
+		m_rot = rotation;
+	}
+
+	EnEnemyKinds GetenemyColor()
+	{
+		return m_enemyKinds;
+	}
+	/// <summary>
+	/// åº§æ¨™ã‚’å–å¾—
+	/// </summary>
+	/// <returns>åº§æ¨™</returns>
+	const Vector3& GetPosition() const
+	{
+		return m_position;
+	}
+	
+
+
+	void Move();
+	/// <summary>
+	/// è¿½è·¡
 	/// </summary>
 	void Chase();
 	/// <summary>
-	/// ‰ñ“]
+	/// å›è»¢
 	/// </summary>
 	void Rotation();
+
 	/// <summary>
-	/// UŒ‚
+	/// æ”»æ’ƒ
 	/// </summary>
 	void Attack();
+
 	/// <summary>
-	/// “–‚½‚è”»’è
+	/// å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	void Collision();
 	/// <summary>
-	/// ƒvƒŒƒCƒ„[‚ªŒ©‚Â‚©‚Á‚½‚ç
+	/// è¿½ã„ã‹ã‘ã‚‹å¯¾è±¡ã‚’æ¢ã™
+	/// è¦‹ã¤ã‹ã£ãŸã‚‰trueã‚’è¿”ã™
 	/// </summary>
-	const bool SearchEnemy()const;
+	bool Search();
+
+	bool RabbitSearch();
+
+	void SetKnightPlayer(Actor* knightPlayer)
+	{
+		m_targetActor = knightPlayer;
+	}
+	Actor* GetKnightPlayer()
+	{
+		return m_targetActor;
+	}
+
 	/// <summary>
-	/// UŒ‚—p‚Ì“–‚½‚è”»’è
+	/// æ”»æ’ƒç”¨ã®å½“ãŸã‚Šåˆ¤å®š
 	/// </summary>
 	void MakeAttackCollision();
+
 	/// <summary>
-	/// ƒXƒe[ƒg
+	/// ãƒªã‚¹ãƒãƒ¼ãƒ³
+	/// </summary>
+	//void Respawn();
+
+	/// <summary>
+	/// ã‚¹ãƒ†ãƒ¼ãƒˆ
 	/// </summary>
 	void ManageState();
+
 	/// <summary>
-	/// ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+	/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿ
 	/// </summary>
 	void PlayAnimation();
+
 	/// <summary>
-	/// ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg—p‚ÌŠÖ”B
+	/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆç”¨ã®é–¢æ•°ã€‚
 	/// </summary>
-	/// <param name="clipName">ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì–¼‘OB</param>
-	/// <param name="eventName">ƒAƒjƒ[ƒVƒ‡ƒ“ƒCƒxƒ“ƒg‚ÌƒL[‚Ì–¼‘OB</param>
+	/// <param name="clipName">ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åå‰ã€‚</param>
+	/// <param name="eventName">ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆã®ã‚­ãƒ¼ã®åå‰ã€‚</param>
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+	/// <summary>
+	/// 
 	/// </summary>
 	void ProcessCommonStateTransition();
+
 	/// <summary>
-	/// ‘Ò‹@ƒXƒe[ƒg‚Ì‘JˆÚˆ—B
+	/// å¾…æ©Ÿã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†ã€‚
 	/// </summary>
 	void ProcessIdleStateTransition();
+
 	/// <summary>
-	/// ‘–‚èƒXƒe[ƒg‚Ì‘JˆÚˆ—B
+	/// èµ°ã‚Šã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†ã€‚
 	/// </summary>
 	void ProcessRunStateTransition();
+
 	/// <summary>
-	/// ’ÇÕƒXƒe[ƒg‚Ì”w‘JˆÚˆ—B
+	/// è¿½è·¡ã‚¹ãƒ†ãƒ¼ãƒˆã®èƒŒé·ç§»å‡¦ç†ã€‚
 	/// </summary>
 	void ProcessChaseStateTransition();
+
 	/// <summary>
-	/// UŒ‚ƒXƒe[ƒg‚Ì‘JˆÚˆ—B
+	/// æ”»æ’ƒã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†ã€‚
 	/// </summary>
 	void ProcessAttackStateTransition();
+
 	/// <summary>
-	/// ”íƒ_ƒ[ƒWƒXƒe[ƒg‚Ì‘JˆÚˆ—B
+	/// è¢«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†ã€‚
 	/// </summary>
 	void ProcessReceiveDamageStateTransition();
 	/// <summary>
-	/// ƒ_ƒEƒ“ƒXƒe[ƒg‚Ì‘JˆÚˆ—B
+	/// å·¡å›ã«æˆ»ã‚Œã‚¹ãƒ†ãƒ¼ãƒˆé·ç§»å‡¦ç†
+	/// </summary>
+	void ProcessBackPatrolStateTransition();
+	/// <summary>
+	/// ãƒ€ã‚¦ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†ã€‚
 	/// </summary>
 	void ProcessDeathStateTransition();
+
 	/// <summary>
-	/// UŒ‚‚Å‚«‚é‚È‚çtrue
+	/// å·¡å›ã‚¹ãƒ†ãƒ¼ãƒˆã®é·ç§»å‡¦ç†
+	/// </summary>
+	void ProcessPatrolStateTransition();
+	/// <summary>
+	/// æ”»æ’ƒã§ãã‚‹ãªã‚‰true
 	/// </summary>
 	/// <returns></returns>
 	const bool CanAttack() const;
 	/// <summary>
-	/// ƒQ[ƒW‚ğ¶Šñ‚¹‚·‚éˆ—
+	/// ã‚¦ã‚µã‚®ãŒé€ƒã’ã‚‹è·é›¢
 	/// </summary>
-	/// <param name="size">‰æ‘œ‚ÌŒ³‚Ì‘å‚«‚³</param>
-	/// <param name="scale">Œ»İ‚ÌƒXƒP[ƒ‹”{—¦</param>
-	/// <returns>•ÏŠ·‘O‚Æ•ÏŠ·Œã‚Ì·</returns>
-	Vector3 HPBerSend(Vector3 size, Vector3 scale);
+	/// <returns></returns>
+    void EscapeSearch();
 	/// <summary>
-	/// HPƒQ[ƒW‚Ì•`‰æƒtƒ‰ƒO
+	/// ã‚²ãƒ¼ã‚¸ã‚’å·¦å¯„ã›ã™ã‚‹å‡¦ç†
 	/// </summary>
-	/// <returns>•`‰æ‚Å‚«‚é”ÍˆÍ‚É‚ ‚é‚Æ‚«true</returns>
+	/// <param name="size">ç”»åƒã®å…ƒã®å¤§ãã•</param>
+	/// <param name="scale">ç¾åœ¨ã®ã‚¹ã‚±ãƒ¼ãƒ«å€ç‡</param>
+	/// <returns>å¤‰æ›å‰ã¨å¤‰æ›å¾Œã®å·®</returns>
+	Vector3 HPBerSend(Vector3 size, Vector3 scale);
+
+	/// <summary>
+	/// HPã‚²ãƒ¼ã‚¸ã®æç”»ãƒ•ãƒ©ã‚°
+	/// </summary>
+	/// <returns>æç”»ã§ãã‚‹ç¯„å›²ã«ã‚ã‚‹ã¨ãtrue</returns>
 	bool DrawHP();
 
-	
-
-	enum EnAnimationClip {                      //ƒAƒjƒ[ƒVƒ‡ƒ“B
-		enAnimationClip_Idle,					//‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“B
-		enAnimationClip_Run,					//‘–‚èƒAƒjƒ[ƒVƒ‡ƒ“B
-		enAnimationClip_Attack,					//UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“B
-		enAnimationClip_Damage,					//”íƒ_ƒ[ƒWƒAƒjƒ[ƒVƒ‡ƒ“B
-		enAnimationClip_Death,					//ƒ_ƒEƒ“ƒAƒjƒ[ƒVƒ‡ƒ“B
-		enAnimationClip_Num,					//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì”B
+	/// <summary>
+	/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´
+	/// </summary>
+	/// <param name="gamescene">å¤‰æ›´ã—ãŸã„ã‚¹ãƒ†ãƒ¼ãƒˆã®åå‰</param>
+	void SetNeutral_EnemyState(EnNEState gamescene) {
+		m_Neutral_EnemyState = gamescene;
+	}
+	/// <summary>
+	/// å·¡å›ã™ã‚‹åº§æ¨™ã‚’è¨­å®šã™ã‚‹
+	/// </summary>
+	/// <param name="pos">å·¡å›ã™ã‚‹åº§æ¨™</param>
+	/// <param name="number">åº§æ¨™ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ç•ªå·</param>
+	void SetPatrolPos(Vector3 pos, int number) {
+		m_patrolPos[number] = pos;
 	};
 
-	AnimationClip m_animationClips[enAnimationClip_Num];//ƒAƒjƒ[ƒVƒ‡ƒ“ƒNƒŠƒbƒv
-	ModelRender   m_modelRender;              //ƒ‚ƒfƒ‹ƒŒƒ“ƒ_[
-	Vector2				m_HPBerPos = Vector2::Zero;				//HPƒo[‚Ìƒ|ƒWƒVƒ‡ƒ“
-	Vector2				m_HPWindowPos = Vector2::Zero;			//HP˜g‚Ìƒ|ƒWƒVƒ‡ƒ“
-	Vector2				m_HPBackPos = Vector2::Zero;			//HP”wŒi‚Ìƒ|ƒWƒVƒ‡ƒ“
-	Vector3 m_position;                       //À•W
-	Vector3 m_moveSpeed;                      //ˆÚ“®‘¬“x
-	Vector3 m_forward = Vector3::AxisZ;      //³–Ê‚ÌƒxƒNƒgƒ‹
-	Quaternion m_rot;                        //ƒNƒH[ƒ^ƒjƒIƒ“
-	Vector3 m_scale = Vector3{0.2f,0.2f,0.2f};          //‘å‚«‚³
-	CharacterController m_charaCon;          //ƒLƒƒƒ‰ƒRƒ“
-	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;    //’†—§‚Ì“G‚ÌƒXƒe[ƒgB
-	bool m_UnderAttack = false;              //UŒ‚”»’è
-	int m_AttackBoneId = 1;                  //“ª‚Ìƒ{[ƒ“‚ÌID
-	Game* m_game = nullptr;                  //ƒQ[ƒ€
-	KnightPlayer* m_knightPlayer;                        //Œ•m
-	float					m_chaseTimer = 0.0f;						//’ÇÕƒ^ƒCƒ}[B
-	float					m_idleTimer = 0.0f;		                    //‘Ò‹@ƒ^ƒCƒ}[B
-	GameCamera* m_gameCamera = nullptr;
-	Status m_Status;                           //ƒXƒe[ƒ^ƒX
-	SpriteRender		m_HPBar;		//HPƒo[‰æ‘œ
-	SpriteRender		m_HPFrame;		//HP˜g‰æ‘œ
-	SpriteRender		m_HPBack;		//HP”wŒi‰æ‘œ
+	/// <summary>
+	/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¢ã‚¯ã‚¿ãƒ¼ã‚’è¨­å®šã™ã‚‹
+	/// </summary>
+	void SetPlayerActor(Actor* actor) {
+		m_player = actor;
+	}
 
-	//ƒiƒrƒQ[ƒVƒ‡ƒ“ƒƒbƒVƒ…
-	TknFile m_tknFile;
-	PhysicsStaticObject m_bgObject;
-	nsAI::NaviMesh m_nvmMesh;
-	nsAI::Path m_path;
-	nsAI::PathFinding m_pathFiding;
-	Vector3 m_targetPointPosition;
+	/// <summary>
+	/// ã‚¢ã‚¯ã‚¿ãƒ¼ã®æƒ…å ±ã‚’è¿½åŠ ã™ã‚‹
+	/// </summary>
+	/// <param name="actor">åŠ ãˆãŸã„ã‚¢ã‚¯ã‚¿ãƒ¼</param>
+	void AddActorFromList(Actor* actor) {
+		be_target.push_back(actor);
+	}
+
+	/// <summary>
+	/// ã‚¢ã‚¯ã‚¿ãƒ¼ã®æƒ…å ±ã‚’ãƒªã‚¹ãƒˆã‹ã‚‰å‰Šé™¤ã™ã‚‹
+	/// </summary>
+	/// <param name="actor">æ¶ˆã—ãŸã„ã‚¢ã‚¯ã‚¿ãƒ¼</param>
+	void RemoveActorFromList(Actor* actor)
+	{
+		std::vector<Actor*>::iterator it = std::find(
+			be_target.begin(), // ã‚¢ã‚¯ã‚¿ãƒ¼ã®ãƒªã‚¹ãƒˆã®æœ€åˆ
+			be_target.end(),   // ã‚¢ã‚¯ã‚¿ãƒ¼ã®ãƒªã‚¹ãƒˆã®æœ€å¾Œ
+			actor                     // æ¶ˆã—ãŸã„ã‚¢ã‚¯ã‚¿ãƒ¼
+		);
+
+		if (it != be_target.end()) {
+			be_target.erase(it);
+		}
+	}
+
+	//è‡ªåˆ†ã‚’ç‹™ã£ã¦ã„ã‚‹æ•µã‚’è¿”ã™
+	int GetBetargetCount()
+	{
+		return be_target.size();
+	}
+	void modelUpdate();
+
+	float SoundSet(Player* player, float Max, float Min);
+
+	/// <summary>
+	/// åŠ¹æœéŸ³ã‚’ä¸Šã’ãŸã‚Šä¸‹ã’ãŸã‚Šã™ã‚‹
+	/// </summary>
+	void SetSE(float addSE)
+	{
+		SEVolume += addSE;
+		MaxVolume += addSE;
+	}
+
+private:
+	AnimationClip m_animationClips[enAnimationClip_Num];       //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¯ãƒªãƒƒãƒ—
+	ModelRender   m_modelRender;                               //ãƒ¢ãƒ‡ãƒ«ãƒ¬ãƒ³ãƒ€ãƒ¼
+	Vector2		  m_HPBerPos = Vector2::Zero;				   //HPãƒãƒ¼ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
+	Vector2	   	  m_HPWindowPos = Vector2::Zero;			   //HPæ ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
+	Vector2		  m_HPBackPos = Vector2::Zero;			       //HPèƒŒæ™¯ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
+	Vector3       m_position;                                  //åº§æ¨™
+	Vector3       m_moveSpeed;                                 //ç§»å‹•é€Ÿåº¦
+	Vector3       m_forward = Vector3::AxisZ;                  //æ­£é¢ã®ãƒ™ã‚¯ãƒˆãƒ«
+	Quaternion    m_rot;                                       //ã‚¯ã‚©ãƒ¼ã‚¿ãƒ‹ã‚ªãƒ³
+	Vector3       m_scale = Vector3{0.2f,0.2f,0.2f};           //å¤§ãã•
+	CharacterController m_charaCon;                            //ã‚­ãƒ£ãƒ©ã‚³ãƒ³
+	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //ä¸­ç«‹ã®æ•µã®ã‚¹ãƒ†ãƒ¼ãƒˆã€‚
+	EnEnemyKinds m_enemyKinds;								   //ä¸­ç«‹ã®æ•µã®ç¨®é¡
+	Vector3   RadiusPos;
+	SoundSource* m_se = nullptr;
+
+	Actor* m_targetActor = nullptr;
+	Actor* m_player = nullptr;
+	Actor* m_lastAttackActor = nullptr;		// æœ€å¾Œã«è‡ªåˆ†ã‚’æ”»æ’ƒã—ãŸã‚„ã¤
+
+	Game* m_game = nullptr;                               
+
+	GameCamera* m_gameCamera = nullptr;
+	Player* player = nullptr;
+	MagicBall* magicBall = nullptr;
+	KnightAI* m_knightAI = nullptr;
+
+	Level3DRender m_EnemyPoslevel;      //ã‚¨ãƒãƒŸãƒ¼ã®ãƒã‚¸ã‚·ãƒ§ãƒ³ãƒ¬ãƒ™ãƒ«
+	Status m_Status;                    //ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+	SpriteRender		m_HPBar;		//HPãƒãƒ¼ç”»åƒ
+	SpriteRender		m_HPFrame;		//HPæ ç”»åƒ
+	SpriteRender		m_HPBack;		//HPèƒŒæ™¯ç”»åƒ	
+	
+	FontRender              m_Name;
+	SphereCollider			m_sphereCollider;
+	RigidBody				m_rigidBody;
+	Vector3                 m_patrolPos[41];
+	Vector3 nowPos = Vector3::Zero;
+	Vector3 m_hagikiPower;
+	bool m_UnderAttack = false;              //æ”»æ’ƒåˆ¤å®š
+	int m_AttackBoneId = 1;                  //é ­ã®ãƒœãƒ¼ãƒ³ã®ID
+	//ä¸­ç«‹ã®æ•µ
+	float	m_chaseTimer = 0.0f;			//è¿½è·¡ã‚¿ã‚¤ãƒãƒ¼ã€‚
+	float	m_idleTimer = 0.0f;		        //å¾…æ©Ÿã‚¿ã‚¤ãƒãƒ¼ã€‚
+	float   m_stopTimer = 1.0f;             //æ­¢ã¾ã£ã¦ã—ã¾ã£ãŸã‚¿ã‚¤ãƒãƒ¼
+
+	int enemyColorRam = 0;					//ã‚¨ãƒãƒŸãƒ¼ã®ã‚«ãƒ©ãƒ¼ã‚’æ±ºã‚ã‚‹
+	int AtkPass = 10;						//æ¸¡ã™æ”»æ’ƒåŠ›ã®é‡
+	int HpPass = 30;						//å›å¾©é‡
+
+	//æ”»æ’ƒã‚’å—ã‘ãŸã¨ãã«ç›¸æ‰‹ã®æ”»æ’ƒåŠ›ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+	int GetAtk=0;
+	//ã‚„ã‚‰ã‚ŒãŸã‹ã®ãƒ•ãƒ©ã‚°
+	bool Deathflag = false;
+
+	std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	//ä¸­ç«‹ã®æ•µãŒã‚„ã‚‰ã‚ŒãŸã¨ãã«æ¸¡ã™çµŒé¨“å€¤
+	int Exp = 5;
+
+	//std::vector<Neutral_Enemy*>::iterator m_number;
+	int P = -1;
+	int randam;
+	bool m_backPatrol = false;
+	bool m_backPatrolFarst = false;
+
+	//è‡ªåˆ†ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã—ã¦ã‚‹ã‚¢ã‚¯ã‚¿ãƒ¼ã®ãƒªã‚¹ãƒˆ
+	std::vector<Actor*> be_target;
+
+	bool isStart = false;
+
+	//åŠ¹æœéŸ³
+	float SEVolume = 0.0f;
+	float MaxVolume = 2.0f;
+	float MinVolume = 0.0f;
+
+	// ã‚¦ã‚µã‚®å°‚ç”¨
+	bool isPatrolRandom = false;
+	float isPatrolTimer = 0.0f;
 };
 

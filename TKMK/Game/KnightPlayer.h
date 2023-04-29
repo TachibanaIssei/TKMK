@@ -4,6 +4,9 @@
 #include "Status.h"
 
 class Game;
+class Neutral_Enemy;
+class KnightUlt;
+class GameUI;
 
 class KnightPlayer:public KnightBase
 {
@@ -20,54 +23,73 @@ public:
 
 	inline Vector3 GetPosition() { return m_position; }
 
-	void SetSGame(Game* Cgame)
-	{
-		m_game = Cgame;
-	}
-	Game* GetSGame()
-	{
-		return m_game;
-	}
+	void AvoidanceSprite();
+
 	/// <summary>
-	/// ï¿½æ‘œï¿½\ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
+	/// •KE‹Z‚Ì“–‚½‚è”»’è¶¬‚·‚é
 	/// </summary>
-	/// <returns>falseï¿½È‚ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½</returns>
-	const bool GetSpriteFlag() const
-	{
-		return m_spriteFlag;
-	}
+	void MakeUltSkill();
+
+	/// <summary>
+	/// ƒXƒLƒ‹‚ğ”­“®‚µ‚½‚Æ‚«‚É”ÍˆÍ“à‚Åˆê”Ô‹ß‚¢“G‚ğ‚Ë‚ç‚¤ˆ—
+	/// </summary>
+	//void SkillTarget()
+	//{
+	//	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
+
+	//	Vector3 nearPos = Vector3::Zero;
+	//	//ˆê”Ô‹ß‚¢‹——£
+	//	float Near = nearPos.Length();
+	//	for (auto enemy : m_neutral_Enemys)
+	//	{
+	//		Vector3 toEnemy = enemy->GetPosition() - m_position;
+	//		//ƒGƒlƒ~[‚Æ‚Ì‹——£‚ğŒvZ‚·‚é
+	//		float newNear = toEnemy.Length();
+	//		//ŒvZ‚µ‚½‹——£‚ªˆê”Ô‹ß‚¢‹——£‚æ‚è¬‚³‚¢‚È‚çã‘‚«
+	//		if (Near > newNear) {
+	//			Near = newNear;
+	//		}
+	//	}
+	//	if (Near < 300) {
+
+	//	}
+	//}
+
+
 private:
 	Game* m_game=nullptr;
 	
+	GameUI* m_gameUI = nullptr;
+	
+	//CollisionObject* collisionObject;                     //ƒRƒŠƒWƒ‡ƒ“
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
+
+	Vector2 Avoidance_FlamePos = Vector2::Zero;
+	Vector2 Avoidance_BarPos = Vector2::Zero;
+
+	bool m_swordEffectFlag = false;
+
 	float UltimateSkillTimer = 0;
-
-	enum AtkTimingState
-	{
-		FirstAtk_State,
-		SecondAtk_State,
-		SecondAtkStart_State,
-		LastAtk_State,
-		Num_State,
-
-	};
-	AtkTimingState m_AtkTmingState = Num_State;
 
 	//bool AtkCollistionFlag = false;
 	
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
-	FontRender Avoidancefont;
+	SpriteRender m_Avoidance_flameRender;
+	SpriteRender m_Avoidance_barRender;
 
-	//Status m_Status;                           //ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+	//ƒXƒLƒ‹‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	float SkillSpeed = 270.0f;
+	//‰ñ”ğ‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	float AvoidanceSpeed = 170.0f;
 
-	bool m_spriteFlag = true;
-	//Vector3 m_position = Vector3::Zero;
-	////åˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ æœ€å¤§HPã€HPã€æ”»æ’ƒåŠ›ã€ã‚¹ãƒ”ãƒ¼ãƒ‰
-	//Status status = { 150,150,35,150.0f };
-	////ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—æ™‚ã«å¢—åŠ ã™ã‚‹ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
-	//LvUpStatus LvUpStatus = { 30,10,30.0f };
+	int oldLv;
+
+	int dddd = 20;
+
+	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
+	Neutral_Enemy* m_Neutral_Enemy = nullptr; //’†—§‚Ì“G
 };
 

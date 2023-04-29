@@ -36,7 +36,7 @@ struct SPSIn{
 struct DirectionLight
 {
     float3 direction;   //ライトの方向
-    float3 color;       //ライトの色
+    float4 color;       //ライトの色
 };
 
 //ポイントライト構造体
@@ -44,7 +44,7 @@ struct PointLight
 {
     float3  position;   //ライトの座標
     int     isUse;      //使用中フラグ
-    float3  color;      //ライトの色
+    float4  color;      //ライトの色
     float3  range;      //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
 };
 
@@ -53,9 +53,9 @@ struct SpotLight
 {
     float3  position;    //ライトの座標
     float3  angle;       //照射角度
-    float3  color;       //色
-    int     isUse;       //使用中フラグ
+    float4  color;       //色
     float3  range;       //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
+    int isUse;           //使用中フラグ
     float3  direction;   //照射方向
 };
 
@@ -85,7 +85,7 @@ cbuffer LightCB : register(b1)
     SpotLight       spotLight;
     HemisphereLight hemisphereLight;
     float3          CameraEyePos;   //カメラの座標
-    float3          ambient;        //環境光
+    float4          ambient;        //環境光
 }
 
 ////////////////////////////////////////////////
@@ -100,8 +100,8 @@ sampler g_sampler : register(s0);	                    //サンプラステート
 ////////////////////////////////////////////////
 // 関数宣言
 ////////////////////////////////////////////////
-float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 normal);
-float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal,float2 uv);
+float3 CalcLambertDiffuse(float3 lightDirection, float4 lightColor, float3 normal);
+float3 CalcPhongSpecular(float3 lightDirection, float4 lightColor, float3 worldPos, float3 normal,float2 uv);
 float3 CalcLigFromDirectionLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromPointLight(SPSIn psIn,float3 normal);
 float3 CalcLigFromSpotLight(SPSIn psIn,float3 normal);
@@ -214,10 +214,19 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 	return albedoColor;
 }
 
+/// <summary>
+/// シャドウマップ描画用のピクセルシェーダー
+/// </summary>
+float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
+{
+    //シャドウマップにZ値を書き込む
+    return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
+}
+
 /////////////////////////////////////////////////////////////////////////
 //  Lambert拡散反射を計算
 /////////////////////////////////////////////////////////////////////////
-float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 normal)
+float3 CalcLambertDiffuse(float3 lightDirection, float4 lightColor, float3 normal)
 {
     // ピクセルの法線とライトの方向の内積を計算する
     float t = dot(normal, lightDirection) * -1.0f;
@@ -232,7 +241,7 @@ float3 CalcLambertDiffuse(float3 lightDirection, float3 lightColor, float3 norma
 /////////////////////////////////////////////////////////////////////////
 //  Phong鏡面反射を計算
 /////////////////////////////////////////////////////////////////////////
-float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldPos, float3 normal,float2 uv)
+float3 CalcPhongSpecular(float3 lightDirection, float4 lightColor, float3 worldPos, float3 normal,float2 uv)
 {
     // 反射ベクトルを求める
     float3 refVec = reflect(lightDirection, normal);

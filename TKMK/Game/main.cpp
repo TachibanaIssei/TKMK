@@ -4,7 +4,7 @@
 #include "Tittle.h"
 
 // K2EngineLowのグローバルアクセスポイント。
-K2EngineLow* g_k2EngineLow = nullptr;
+//K2EngineLow* g_k2EngineLow = nullptr;
 
 /// <summary>
 /// メイン関数
@@ -12,7 +12,7 @@ K2EngineLow* g_k2EngineLow = nullptr;
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	// ゲームの初期化。
-	InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("Game"));
+	InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("FightingStadium"));
 	
 	// k2EngineLowの初期化。
 	g_k2EngineLow = new K2EngineLow();
@@ -24,7 +24,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//Game* game = NewGO<Game>(0,"game");
 
 	// ここからゲームループ。
-	while (DispatchWindowMessage())
+	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)
 	{
 		// フレームの開始時に呼び出す必要がある処理を実行
 		g_k2EngineLow->BeginFrame();
@@ -33,7 +33,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		g_k2EngineLow->ExecuteUpdate();
 
 		// ゲームオブジェクトマネージャーの描画処理を呼び出す。
-		g_k2EngineLow->ExecuteRender();
+    	g_k2EngineLow->ExecuteRender();
 
 		// デバッグ描画処理を実行する。
 		g_k2EngineLow->DebubDrawWorld();

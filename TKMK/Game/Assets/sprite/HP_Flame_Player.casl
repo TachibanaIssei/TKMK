@@ -1,0 +1,6 @@
+5
+5,Flame,34,../../Game/Assets/sprite/Flame.png,-259.6153846153845,-363.46153846153834,1531,480,10,0.8800884955752212,1.0,0.5,0.5,9,Flame.dds
+10,HP_bar_ura,39,../../Game/Assets/sprite/HP_bar_ura.png,-300.0,-430.0000000000001,1400,200,10,1.0,1.0,0.5,0.5,14,HP_bar_ura.dds
+8,HP_flame,37,../../Game/Assets/sprite/HP_flame.png,-300.0,-430.0000000000001,1400,200,10,1.0,1.0,0.5,0.5,12,HP_flame.dds
+10,time_point,39,../../Game/Assets/sprite/time_point.png,-600.0,-275.0,600,140,10,1.0,1.0,0.5,0.5,14,time_point.dds
+6,HP_bar,35,../../Game/Assets/sprite/HP_bar.png,-300.0,-430.0000000000001,1234,115,10,1.0,1.0,0.5,0.5,10,HP_bar.dds

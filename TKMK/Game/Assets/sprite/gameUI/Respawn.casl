@@ -1,0 +1,6 @@
+5
+12,Respawn_back,48,../../Game/Assets/sprite/gameUI/Respawn_back.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,16,Respawn_back.dds
+9,RespawnIn,45,../../Game/Assets/sprite/gameUI/RespawnIn.png,-1.9230769230769056,175.0,900,200,10,1.0,1.0,0.5,0.5,13,RespawnIn.dds
+13,RespawnConut0,49,../../Game/Assets/sprite/gameUI/RespawnConut0.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,RespawnConut0.dds
+13,RespawnConut1,49,../../Game/Assets/sprite/gameUI/RespawnConut1.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,RespawnConut1.dds
+13,RespawnConut2,49,../../Game/Assets/sprite/gameUI/RespawnConut2.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,RespawnConut2.dds

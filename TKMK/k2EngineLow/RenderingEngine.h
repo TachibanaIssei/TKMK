@@ -1,6 +1,8 @@
 #pragma once
 
+#include "PostEffect.h"
 #include "Light.h"
+#include "Shadow.h"
 
 namespace nsK2EngineLow {
 	class ModelRender;
@@ -12,6 +14,9 @@ namespace nsK2EngineLow {
 	{
 	public:
 		void Init();
+
+		void InitRenderTargets();
+		void InitCopyToFrameBufferSprite();
 
 		/// <summary>
 		/// モデルレンダークラスをリストに追加する
@@ -39,20 +44,10 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// モデルを描画する
+		/// シャドウモデルを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void ModelRendering(RenderContext& rc);
-		/// <summary>
-		/// スプライトを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void SpriteRendering(RenderContext& rc);
-		/// <summary>
-		/// フォントを描画する
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void FontRendering(RenderContext& rc);
+		void ShadowModelRendering(RenderContext& rc, Camera& camera);
 
 		/// <summary>
 		/// 描画処理を実行
@@ -60,9 +55,43 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Execute(RenderContext& rc);
 
+		/// <summary>
+		/// シーンライトを取得
+		/// </summary>
+		/// <returns>シーンライト</returns>
 		SceneLight& GetSceneLight()
 		{
 			return m_sceneLight;
+		}
+
+		/// <summary>
+		/// ライトビュープロジェクション行列を設定する
+		/// </summary>
+		/// <param name="LVP">ライトビュープロジェクション行列</param>
+		void SetmLVP(Matrix LVP)
+		{
+			m_sceneLight.SetmLVP(LVP);
+		}
+
+	////////////////////////////////////////////////////////////////////////////////
+	///シャドウマップの関数
+	////////////////////////////////////////////////////////////////////////////////
+		/// <summary>
+		/// シャドウマップのテクスチャを取得
+		/// </summary>
+		/// <returns>シャドウマップのテクスチャ</returns>
+		Texture& GetShadowMapTexture()
+		{
+			return m_shadow.GetShadowMapTexture();
+		}
+
+		/// <summary>
+		/// ライトカメラを取得
+		/// </summary>
+		/// <returns>ライトカメラ</returns>
+		Camera& GetLightCamera()
+		{
+			return m_shadow.GetLightCamera();
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +103,7 @@ namespace nsK2EngineLow {
 		/// <param name="lightNo">ライト番号</param>
 		/// <param name="direction">ライト方向</param>
 		/// <param name="color">ライト色</param>
-		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
+		void SetDirectionLight(int lightNo, Vector3 direction, Vector4 color)
 		{
 			m_sceneLight.SetDirectionLight(lightNo, direction, color);
 		}
@@ -90,7 +119,7 @@ namespace nsK2EngineLow {
 		/// ディレクションライトの光の色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetDirLightColor(Vector3 color)
+		void SetDirLightColor(Vector4 color)
 		{
 			m_sceneLight.SetDirLightColor(color);
 		}
@@ -107,7 +136,7 @@ namespace nsK2EngineLow {
 		/// ディレクションライトの光の色を取得する
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetDirLigColor() const
+		const Vector4& GetDirLigColor() const
 		{
 			return m_sceneLight.GetDirLigColor();
 		}
@@ -119,7 +148,7 @@ namespace nsK2EngineLow {
 		/// 環境光を設定
 		/// </summary>
 		/// <param name="ambient">環境光</param>
-		void SetAmbient(Vector3 ambient)
+		void SetAmbient(Vector4 ambient)
 		{
 			m_sceneLight.SetAmbient(ambient);
 		}
@@ -145,7 +174,7 @@ namespace nsK2EngineLow {
 		/// <param name="pos">ライトの位置</param>
 		/// <param name="color">ライトの色</param>
 		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
-		void SetPointLight(Vector3 pos, Vector3 color, Vector3 range)
+		void SetPointLight(Vector3 pos, Vector4 color, Vector3 range)
 		{
 			m_sceneLight.SetPointLight(pos, color, range);
 		}
@@ -161,7 +190,7 @@ namespace nsK2EngineLow {
 		/// ポイントライトの色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetPointLightColor(Vector3 color)
+		void SetPointLightColor(Vector4 color)
 		{
 			m_sceneLight.SetPointLightColor(color);
 		}
@@ -200,7 +229,7 @@ namespace nsK2EngineLow {
 		/// ポイントライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetPointLightColor() const
+		const Vector4& GetPointLightColor() const
 		{
 			return m_sceneLight.GetPointLightColor();
 		}
@@ -232,7 +261,7 @@ namespace nsK2EngineLow {
 		/// <param name="range">xに影響範囲,yに影響範囲に累乗するパラメータ</param>
 		/// <param name="direction">照射方向</param>
 		/// <param name="angle">xは照射角度,ｙは影響に累乗するパラメータ</param>
-		void SetSpotLight(Vector3 pos, Vector3 color, Vector3 attn, Vector3 direction, Vector3 angle)
+		void SetSpotLight(Vector3 pos, Vector4 color, Vector3 attn, Vector3 direction, Vector3 angle)
 		{
 			m_sceneLight.SetSpotLight(pos, color, attn, direction, angle);
 		}
@@ -248,7 +277,7 @@ namespace nsK2EngineLow {
 		/// スポットライトのライト色の設定
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetSpotLightColor(Vector3 color)
+		void SetSpotLightColor(Vector4 color)
 		{
 			m_sceneLight.SetSpotLightColor(color);
 		}
@@ -303,7 +332,7 @@ namespace nsK2EngineLow {
 		/// スポットライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetSpotLightColor() const
+		const Vector4& GetSpotLightColor() const
 		{
 			return m_sceneLight.GetSpotLightColor();
 		}
@@ -429,10 +458,33 @@ namespace nsK2EngineLow {
 		}
 
 	private:
+		/// <summary>
+		/// モデルを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void ModelRendering(RenderContext& rc);
+		/// <summary>
+		/// スプライトを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void SpriteRendering(RenderContext& rc);
+		/// <summary>
+		/// フォントを描画する
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void FontRendering(RenderContext& rc);
+
+	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
 		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
 
 		SceneLight					m_sceneLight;				//シーンライト
+
+		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
+		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
+
+		Shadow						m_shadow;					//シャドウマップ
+		PostEffect					m_postEffect;				//ポストエフェクト
 	};
 }

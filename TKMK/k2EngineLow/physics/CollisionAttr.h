@@ -10,6 +10,8 @@ namespace nsK2EngineLow {
 	enum EnCollisionAttr {
 		enCollisionAttr_Ground,
 		enCollisionAttr_Character,
-		enCollisionAttr_User,		//以下にユーザー定義のコリジョン属性を設定する。
+		enCollisionAttr_User,		
+		enCollisionAttr_Wall,      //以下にユーザー定義のコリジョン属性を設定する。
+		enCollisionAttr_SlipThroughWall	// すり抜け可能な壁
 	};
 }

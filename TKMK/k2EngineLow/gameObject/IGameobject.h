@@ -100,6 +100,15 @@ namespace nsK2EngineLow {
 				m_name = name;
 			}
 		}
+
+		/// <summary>
+		/// ゲームオブジェクトの名前を返す。
+		/// </summary>
+		/// <returns>名前</returns>
+		const char* GetName() {
+			return m_name.c_str();
+		}
+
 		/// <summary>
 		/// 引数で渡された名前が、このゲームオブジェクトの名前とマッチするか判定。
 		/// </summary>

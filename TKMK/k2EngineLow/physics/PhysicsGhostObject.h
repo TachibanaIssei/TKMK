@@ -69,10 +69,22 @@ namespace nsK2EngineLow {
 		/// <param name="pos">座標。</param>
 		void SetPosition(const Vector3& pos)
 		{
+			// 【追加】
+			m_position = pos;
+
 			auto& btTrans = m_ghostObject.getWorldTransform();
 			btVector3 btPos;
 			btPos = btVector3(pos.x, pos.y, pos.z);
 			btTrans.setOrigin(btPos);
+		}
+		/// <summary>
+		/// 【追加】
+		/// 座標を取得
+		/// </summary>
+		/// <returns>座標。</returns>
+		const Vector3& GetPosition()
+		{
+			return m_position;
 		}
 		/// <summary>
 		/// 回転を設定。
@@ -100,5 +112,6 @@ namespace nsK2EngineLow {
 		bool							m_isRegistPhysicsWorld = false;	//物理ワールドに登録しているかどうかのフラグ。
 		btGhostObject					m_ghostObject;					//ゴースト
 		std::unique_ptr<ICollider>		m_collider;						//コライダー。
+		Vector3							m_position = Vector3::Zero;
 	};
 }

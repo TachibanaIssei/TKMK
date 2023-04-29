@@ -5,6 +5,8 @@
 
 //class Status;
 class Game;
+class GameUI;
+class Player;
 
 class KnightBase:public Actor
 {
@@ -12,12 +14,25 @@ public:
 	KnightBase();
 	virtual ~KnightBase();
 
+	//enum PlayerState {
+	//	enKnightState_Idle,
+	//	enKnightState_Walk,
+	//	enKnightState_Run,
+	//	enKnightState_ChainAtk,
+	//	enKnightState_Damege,
+	//	enKnightState_Death,
+	//	enKnightState_Skill,
+	//	enKnightState_UltimateSkill,
+	//	enKnightState_Avoidance,
+	//	enKnightState_Jump,
+	//	enKnightState_Fall,
+	//	enKnightState_Num,
+	//	enKnightState_Pause,        //ゲームの状態を受け取る
+	//};
+
 	/// <summary>
 	/// モデルのInit、キャラコンの初期化
 	/// </summary>
-	/// <param name="Model"></param>
-	/// <param name="charCon"></param>
-	/// bool Start()
 	void SetModel();
 
 	/// <summary>
@@ -40,7 +55,8 @@ public:
 	/// ダメージを受けたときの処理
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
-	void Dameged(int damege);
+	/// <param name="playerGivePoints">ポイントを与えるキャラ</param>
+	void Dameged(int damege,Actor* CharGivePoints);
 
 	/// <summary>
 	/// 自身が倒されたときの処理
@@ -52,10 +68,12 @@ public:
 	/// </summary>
 	//void Skill(Vector3& right,Vector3& forward);
 
+	/////////////////////////////////////////////////////////////////////////////////////////////
 	/// <summary>
 	/// 必殺技を発動したときの処理
 	/// </summary>
 	void UltimateSkill();
+	//////////////////////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
 	/// リスポーンする座標のセット
@@ -63,7 +81,7 @@ public:
 	void SetRespawn();
 
 	/// <summary>
-	/// 自身が倒されたときの処理
+	/// 回転処理
 	/// </summary>
 	void Rotation();
 
@@ -83,9 +101,11 @@ public:
 	void ManageState();
 
 	/// <summary>
-	/// 
+	/// アニメーション再生時の移動方向、移動速度を決める
 	/// </summary>
-	void AnimationMove();
+	/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
+	/// <param name="stickL">スティックの移動の入力量</param>
+	void AnimationMove(float moveSpeed,Vector3 stickL);
 
 	/// <summary>
 	/// 
@@ -106,6 +126,7 @@ public:
 	/// </summary>
 	/// <param name="PS"></param>
 	inline void SetPosition(Vector3 PS) { m_position = PS; }
+	inline void SetCharaconPosition(Vector3 PS) { m_charCon.SetPosition(PS); }
 
 	/// <summary>
 	/// 剣士の座標を返り値として返す
@@ -120,6 +141,15 @@ public:
 	{
 		return m_game;
 	}
+	//
+	void SetGameUI(GameUI* gameUI)
+	{
+		m_gameUI = gameUI;
+	}
+	GameUI* GetSGameUI()
+	{
+		return m_gameUI;
+	}
 
 	/// <summary>
 	/// 特定のアニメーションが再生中ならfalseを返す
@@ -127,13 +157,22 @@ public:
 	/// <returns></returns>
 	bool IsEnableMove() const
 	{
-		return m_animState != enKnightState_ChainAtk &&
-			m_animState != enKnightState_UltimateSkill &&
-			m_animState != enKnightState_Skill &&
-			m_animState != enKnightState_Avoidance &&
-			m_animState!= enKnightState_Damege&&
-			m_animState != enKnightState_Death;
+		return m_charState != enCharState_Attack &&
+			m_charState != enCharState_UltimateSkill &&
+			m_charState != enCharState_Skill &&
+			m_charState != enCharState_Avoidance &&
+			m_charState != enCharState_Damege &&
+			m_charState != enCharState_Death;
+
+		/*return m_charState != enKnightState_ChainAtk &&
+			m_charState != enKnightState_UltimateSkill &&
+			m_charState != enKnightState_Skill &&
+			m_charState != enKnightState_Avoidance &&
+			m_charState != enKnightState_Damege&&
+			m_charState != enKnightState_Death;*/
 	}
+
+
 
 	/// <summary>
 	/// 現在のレベルを返す
@@ -151,8 +190,44 @@ public:
 		return m_Status.Hp;
 	}
 
+	
 
+	Quaternion& GetRot()
+	{
+		return m_rot;
+  }
+
+
+	/// <summary>
+	/// 現在のマックスヒットポイントを返す
+	/// </summary>
+	/// <returns></returns>
+	int& SetMaxHp() {
+		return m_Status.MaxHp;
+	}
+	//////////////////////////////////////////////////////////////////////////////
+	/// <summary>
+	/// プレイヤーのステートを変更
+	/// </summary>
+	/// <param name="gamescene">変更したいステートの名前</param>
+	/*void SetPlayerState(PlayerState gamescene) {
+		m_charState = gamescene;
+		m_charState = gamescene;
+	}*/
+
+	/// <summary>
+	/// リスポーンする番号を決める
+	/// </summary>
+	void SetRespawnNumber(int number)
+	{
+		respawnNumber = number;
+	}
+	
 protected:
+	/// <summary>
+	///無敵時間用
+	/// </summary>
+	void Invincible();
 	void PlayAnimation();
 	//共通のステートの遷移処理
 	void OnProcessCommonStateTransition();
@@ -160,6 +235,10 @@ protected:
 	void OnProcessIdleStateTransition();
 	//歩きのステートの遷移処理
 	void OnProcessRunStateTransition();
+	//ジャンプのステートの遷移処理
+	void OnProcessJumpStateTransition();
+	//落下中のステートの遷移処理
+	void OnProcessFallStateTransition();
 	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
 	//スキルのステートの遷移処理
@@ -172,19 +251,12 @@ protected:
 	void OnProcessDamegeStateTransition();
 	//HPが0になったときのステートの遷移処理
 	void OnProcessDeathStateTransition();
+	//必殺技の終了
+	void UltEnd();
 
-	enum PlayerState {
-		enKnightState_Idle,
-		enKnightState_Run,
-		enKnightState_ChainAtk,
-		enKnightState_Damege,
-		enKnightState_Death,
-		enKnightState_Skill,
-		enKnightState_UltimateSkill,
-		enKnightState_Avoidance,
-	};
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
+		enAnimationClip_Walk,
 		enAnimationClip_Run,
 		enAnimationClip_ChainAtk,
 		enAnimationClip_Damege,
@@ -192,32 +264,48 @@ protected:
 		enAnimationClip_Skill,
 		enAnimationClip_UltimateSkill,
 		enAnimationClip_Avoidance,
+		enAnimationClip_Jump,
+		enAnimationClip_Fall,
 		enAnimationClip_Num,
 	};
 
 	Game* m_game=nullptr;
+	GameUI* m_gameUI = nullptr;
+	Player* m_player = nullptr;
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
-	Status m_Status;
+	
 
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
-	Vector3 m_position = Vector3::Zero;                   //座標
-	float m_position_YUp = 36.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
+	float m_position_YUp = 33.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
 	Vector3 collisionRot= Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン
 	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
 	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
+	//Vector3 m_SwordPos = Vector3::Zero;						//剣の座標
 	CharacterController m_charCon;                        //キャラクターコントロール
-	Quaternion m_rot = Quaternion::Identity;              //クォータニオン
-	ModelRender m_modelRender;                            //モデルレンダー
-	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	
-	//レベルアップ時に増加するステータス
-	LvUpStatus LvUpStatus = { 30,10,30.0f };
-	PlayerState m_animState = enKnightState_Idle;
+
+	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
+	//PlayerState m_charState = enKnightState_Idle/* = enKnightState_Num*/;
+	
+	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
+	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
+
+	enum AtkTimingState
+	{
+		FirstAtk_State,
+		SecondAtk_State,
+		SecondAtkStart_State,
+		LastAtk_State,
+		Num_State,
+
+	};
+	AtkTimingState m_AtkTmingState = Num_State;
+
 	//現在のコンボ
 	int ComboState = 0;
 	//コンボが継続する時間を記録する
@@ -236,19 +324,25 @@ protected:
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
 	int AtkEndPosId= -1;
-
+	//スキルのクールタイムを計算するタイマー
 	float SkillTimer = 0;
-
+	//回避のクールタイムを計算するタイマー
 	float AvoidanceTimer = 0;
-
+	//無敵時間を計算するタイマー
+	float invincibleTimer = 0;
 	//獲得した経験値仮
-	int exp=5;
+	int exp=1;
 	//Newtral_Enemyの攻撃力
 	int Enemy_atk = 10;
 	//必殺技使用のフラグ
 	bool UltCollisionSetFlag = false;
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
+
+	bool jampAccumulateflag = false;
+
+	//プレイヤーとの内積を求めて線形補間で音量調整
+	float SEVolume = 0;
 
 };
 

@@ -4,7 +4,7 @@
 #include "Tittle.h"
 
 // K2EngineLowのグローバルアクセスポイント。
-K2EngineLow* g_k2EngineLow = nullptr;
+//K2EngineLow* g_k2EngineLow = nullptr;
 
 /// <summary>
 /// メイン関数
@@ -24,7 +24,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//Game* game = NewGO<Game>(0,"game");
 
 	// ここからゲームループ。
-	while (DispatchWindowMessage())
+	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)
 	{
 		// フレームの開始時に呼び出す必要がある処理を実行
 		g_k2EngineLow->BeginFrame();

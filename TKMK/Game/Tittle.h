@@ -126,7 +126,7 @@ private:
 	int selectPosition = 0;							//タイトルのセレクト画面でカーソルを移動するときに使う変数
 	int characterOpPosition = 0;					//キャラ説明画面でカーソルを移動するときに使う変数
 	int titleScene = 0;								//タイトルのシーン変換するときの変数
-	float LogoComplement = 0.01f;					//補完率
+	float LogoComplement = 0.04f;					//補完率
 	int m_timer = 0;
 };
 

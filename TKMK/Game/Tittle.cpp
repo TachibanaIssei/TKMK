@@ -143,7 +143,7 @@ void Tittle::Scene()
 				m_titleLogo.SetScale(m_LogoScale);
 
 				//•âŠ®—¦
-				LogoComplement += 0.01f;
+				LogoComplement += 0.03f;
 
 			}
 		}

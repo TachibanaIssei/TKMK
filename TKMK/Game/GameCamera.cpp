@@ -25,7 +25,7 @@ namespace
 	const float KNIGHT_CAMERA_POS_Y = 0.0f;
 
 	const float KNIGHT_ULT_POS_X = -130.0f;
-	const float KNIGHT_ULT_POS_Y = 100.0f;
+	const float KNIGHT_ULT_POS_Y = 40.0f;
 }
 
 GameCamera::GameCamera()
@@ -85,6 +85,12 @@ void GameCamera::Update()
 {
 	//ポーズステートのときは処理をしない
 	if (m_cameraState == enPauseState) {
+		return;
+	}
+
+	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
+	if (player_actor->RespawnFlag()==true)
+	{
 		return;
 	}
 

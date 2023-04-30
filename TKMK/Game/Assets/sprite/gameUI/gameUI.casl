@@ -27,7 +27,7 @@
 6,count2,42,../../Game/Assets/sprite/gameUI/count2.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,10,count2.dds
 6,count1,42,../../Game/Assets/sprite/gameUI/count1.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,10,count1.dds
 6,fight!,42,../../Game/Assets/sprite/gameUI/fight!.png,-3.846153846153811,-5.769230769230717,1920,1080,10,1.0,1.0,0.5,0.5,10,fight!.dds
-13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,651.9230769230769,-465.38461538461524,600,120,10,1.0,1.0,0.5,0.5,17,ExperienceBar.dds
 19,ExperienceBar_front,55,../../Game/Assets/sprite/gameUI/ExperienceBar_front.png,650.0,-465.38461538461524,600,120,10,1.0,1.0,0.5,0.5,23,ExperienceBar_front.dds
 8,attackUP,44,../../Game/Assets/sprite/gameUI/attackUP.png,-890.3846153846152,-359.61538461538464,103,103,10,0.20150375939849613,0.20150375939849613,0.5,0.5,12,attackUP.dds
 8,Ult_Icon,44,../../Game/Assets/sprite/gameUI/Ult_Icon.png,421.1538461538462,-411.53846153846143,272,272,10,0.2524064171122994,0.2524064171122994,0.5,0.5,12,Ult_Icon.dds
+13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,651.9230769230769,-465.38461538461524,600,120,10,1.0,1.0,0.5,0.5,17,ExperienceBar.dds

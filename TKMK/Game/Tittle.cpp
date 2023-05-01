@@ -188,6 +188,7 @@ void Tittle::Scene()
 	//もし最初のPressAの画面だったら
 	if (m_titleScene == enTitleScene_PressAScene)
 	{
+		m_fadeSeem = false;
 		if (swordright < 1.0f)
 		{
 			if (m_timer % 2 == 0)
@@ -219,12 +220,21 @@ void Tittle::Scene()
 			m_titlefadeSeem = true;
 			if (m_timer % 2 == 0)
 			{
+				//線形補間
 				m_firsttitleScale.Lerp(firstLogo, m_firsttitleScale, m_titleLogoScale);
-				m_titleLogo.SetScale(m_firsttitleScale);
-				m_fire.SetScale(m_firsttitleScale);
+				m_fireScale.Lerp(firstLogo, m_firsttitleScale, m_titleLogoScale);
 
-				firstLogo += 0.03f;
+				//線形補間したものをSetPositionに入れる
+				m_titleLogo.SetScale(m_firsttitleScale);
+				m_fire.SetScale(m_fireScale);
+				//補完率
+				firstLogo += 0.01f;
 			}
+		}
+		else
+		{
+			m_fadeSeem = true;
+			m_titleanim = true;
 		}
 		//タイトル画面の時の場所に移動する
 		/*m_titleLogo.SetPosition(m_titleLogoPosition);
@@ -240,8 +250,11 @@ void Tittle::Scene()
 	{
 		if (LogoComplement < 1.0f)
 		{
-			m_fadeSeem = false;
-			if (m_timer % 2 == 0)
+			if (fadetime > 90)
+			{
+				m_fadeSeem = false;
+			}
+			if (m_timer % 2 == 0 && m_fadeSeem == false)
 			{
 				//線形補完
 				m_operationPosition.Lerp(LogoComplement, m_firstPosition, m_Central);
@@ -273,8 +286,8 @@ void Tittle::Scene()
 
 				//補完率
 				LogoComplement += 0.03f;
-
 			}
+			fadetime += 1;
 		}
 	}
 	if (m_titleScene == enTitleScene_Select)
@@ -305,7 +318,7 @@ void Tittle::Scene()
 		}
 	}
 	//最初の画面でAボタンを押されたら
-	if (m_titleScene == enTitleScene_PressAScene && g_pad[0]->IsTrigger(enButtonA))
+	if (m_titleScene == enTitleScene_PressAScene && m_titleanim == true && g_pad[0]->IsTrigger(enButtonA))
 	{
 		//線形変換に移る
 		titleScene = 1;

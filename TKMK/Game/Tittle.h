@@ -160,9 +160,11 @@ private:
 	float swordright = 0.0f;						//剣の補完率(右)
 	float swordleft = 0.0f;							//剣の補完率(左)
 	int m_timer = 0;
+	int fadetime = 0;
 	float m_alpha = 0.0f;
-	bool m_isWaitFadeout = false;
-	bool m_fadeSeem = true;
-	bool m_titlefadeSeem = false;
+	bool m_isWaitFadeout = false;					//PressAButtonの表示する間隔
+	bool m_fadeSeem = true;							//PressAButtonを表示するか
+	bool m_titlefadeSeem = false;					//タイトルの
+	bool m_titleanim = false;						//タイトルのアニメーション中か
 };
 

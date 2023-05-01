@@ -37,7 +37,7 @@ namespace
 	const float DownPointPosY = 100.0f;
 
 	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //経験値テーブル
-	const Vector3 EXPERIENCE_BAR_POS = Vector3(595.0f, -500.0f, 0.0f);	//経験値バー
+	const Vector3 EXPERIENCE_BAR_POS = Vector3(603.0f, -500.0f, 0.0f);	//経験値バー
 	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//レベルアップまでに必要な経験値の量
 
 	const Vector3 RESPWANCOUNT_POS = Vector3(0.0f, 0.0f, 0.0f);		//リスポーンした後のカウント

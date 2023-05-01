@@ -88,6 +88,9 @@ private:
 	SpriteRender m_ilusthowtoplayOp;			//"HOWTOPLAY"の時の説明文
 	SpriteRender m_ilustoption;					//"OPTION"の時のイラスト
 	SpriteRender m_ilustoptionOp;				//"OPTION"の時の説明文
+	SpriteRender m_titleswordwhite;				//白い剣
+	SpriteRender m_titleswordbrack;				//黒い剣
+
 
 	EnTitleScene m_titleScene;					//タイトルのポジション
 	EnSelectPosition m_tSelectPosition;			//セレクトのポジション
@@ -100,7 +103,8 @@ private:
 
 	Vector3 m_sPosition = { g_vec3Zero };					//セレクトのポジション
 	Vector3 m_firstPosition = { 0.0f,-2000.0f,0.0f };		//下に読み込むときのポジション
-	Vector3 m_Topfirstposition = { 0.0f,2000.0f,0.0f };		//上に読み込むときのポジション
+	Vector3 m_Toprightfirstposition = { 1000.0f,2000.0f,0.0f };//右上に読み込むときのポジション
+	Vector3 m_Topleftfirstposition = { -1000.0f,2000.0f,0.0f };	//左上に読み込むときのポジション
 	Vector3 m_RightfirstPosition = { 2000.0f,0.0f,0.0f };	//右に読み込むときのポジション
 	Vector3 m_opPosition = { g_vec3Zero };					//画像を表示するポジション
 
@@ -122,6 +126,11 @@ private:
 	Vector3 m_ilust;												//イラストの線形補間
 	Vector3 m_selectilustOp = { 500.0f,-400.0f,0.0f };				//セレクト画面の説明文の場所
 	Vector3 m_ilustOp;												//説明文の線形補間
+	Vector3 m_swordright;											//白い剣の線形補間
+	Vector3 m_swordleft;											//黒い剣の線形補間
+	Vector3 m_titleswordscale = { g_vec3One };						//起動時の大きさ
+	Vector3 m_selectswordscale = { 0.6f, 0.6f, 1.0f };				//セレクト画面の剣の大きさ
+	Vector3 m_swordscale;											//剣のスケール
 
 	//セレクトの項目ごとの位置
 	Vector3 m_Top = { -500.0f,-130.0f,0.0f };						//上
@@ -144,6 +153,8 @@ private:
 	int characterOpPosition = 0;					//キャラ説明画面でカーソルを移動するときに使う変数
 	int titleScene = 0;								//タイトルのシーン変換するときの変数
 	float LogoComplement = 0.04f;					//補完率
+	float swordright = 0.0f;						//剣の補完率(右)
+	float swordleft = 0.0f;							//剣の補完率(左)
 	int m_timer = 0;
 };
 

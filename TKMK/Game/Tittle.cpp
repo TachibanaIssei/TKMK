@@ -24,10 +24,22 @@ bool Tittle::Start()
 	m_spriteRender.Update();
 	
 	//titleのロゴ
-	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo.DDS", 400.0f,200.0f);
+	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo.DDS", 400.0f,150.0f);
 	m_titleLogo.SetPosition(m_firstPosition);
 	m_titleLogo.SetScale(m_titleLogoScale);
 	m_titleLogo.Update();
+
+	//titleの剣(右)
+	m_titleswordwhite.Init("Assets/sprite/Title/first_Title/sword_right.DDS", 300.0f,400.0f);
+	m_titleswordwhite.SetPosition(m_Toprightfirstposition);
+	m_titleswordwhite.SetScale(g_vec3One);
+	m_titleswordwhite.Update();
+
+	//titleの剣(左)
+	m_titleswordbrack.Init("Assets/sprite/Title/first_Title/sword_left.DDS", 300.0f, 400.0f);
+	m_titleswordbrack.SetPosition(m_Topleftfirstposition);
+	m_titleswordbrack.SetScale(g_vec3One);
+	m_titleswordbrack.Update();
 
 	//火花
 	m_fire.Init("Assets/sprite/Title/first_title/fireFlower.DDS", 1500.0f, 400.0f);
@@ -156,6 +168,8 @@ void Tittle::Update()
 	m_ilusthowtoplayOp.Update();
 	m_ilustoption.Update();
 	m_ilustoptionOp.Update();
+	m_titleswordwhite.Update();
+	m_titleswordbrack.Update();
 }
 
 //シーンセレクト
@@ -176,7 +190,33 @@ void Tittle::Scene()
 	//もしSelect画面だったら
 	if (m_titleScene == enTitleScene_Change)
 	{
-		if (LogoComplement < 1.0f)
+		if (swordright < 1.0f)
+		{
+			if (m_timer % 2 == 0)
+			{
+				//線形補間
+				m_swordright.Lerp(swordright, m_Toprightfirstposition, m_titleLogoPosition);
+				//線形補完したものをSetPositionに入れる
+				m_titleswordwhite.SetPosition(m_swordright);
+
+				//補完率
+				swordright += 0.03f;
+			}
+		}
+		else if (swordleft < 1.0f)
+		{
+			if (m_timer % 2 == 0)
+			{
+				//線形補間
+				m_swordleft.Lerp(swordleft, m_Topleftfirstposition, m_titleLogoPosition);
+				//線形補完したものをSetPositionに入れる
+				m_titleswordbrack.SetPosition(m_swordleft);
+
+				//補完率
+				swordleft += 0.04f;
+			}
+		}
+		else if (LogoComplement < 1.0f)
 		{
 			if (m_timer % 2 == 0)
 			{
@@ -189,6 +229,9 @@ void Tittle::Scene()
 				m_fireScale.Lerp(LogoComplement, m_titlefireScale, m_selectfireScale);
 				m_ilust.Lerp(LogoComplement, m_RightfirstPosition, m_selectilust);
 				m_ilustOp.Lerp(LogoComplement, m_RightfirstPosition, m_selectilustOp);
+				m_swordright.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
+				m_swordleft.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
+				m_swordscale.Lerp(LogoComplement, m_titleswordscale, m_selectswordscale);
 
 				//線形補完したものをSetPositionに入れる
 				m_fire.SetPosition(m_LogoPosition);
@@ -200,6 +243,10 @@ void Tittle::Scene()
 				m_titleLogo.SetScale(m_LogoScale);
 				m_iluststart.SetPosition(m_ilust);
 				m_iluststartOp.SetPosition(m_ilustOp);
+				m_titleswordwhite.SetPosition(m_swordright);
+				m_titleswordbrack.SetPosition(m_swordleft);
+				m_titleswordwhite.SetScale(m_swordscale);
+				m_titleswordbrack.SetScale(m_swordscale);
 
 				//補完率
 				LogoComplement += 0.03f;
@@ -504,6 +551,8 @@ void Tittle::Render(RenderContext& rc)
 	m_ilusthowtoplayOp.Draw(rc);
 	m_ilustoption.Draw(rc);
 	m_ilustoptionOp.Draw(rc);
+	m_titleswordwhite.Draw(rc);
+	m_titleswordbrack.Draw(rc);
 	m_fire.Draw(rc);
 	m_titleLogo.Draw(rc);
 	m_start.Draw(rc);

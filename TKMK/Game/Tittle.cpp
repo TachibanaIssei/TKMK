@@ -29,7 +29,7 @@ bool Tittle::Start()
 	m_pressAButton.Update();
 	
 	//titleÇÃÉçÉS
-	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo.DDS", 400.0f,150.0f);
+	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo.DDS", 1200.0f,200.0f);
 	m_titleLogo.SetPosition(m_firstPosition);
 	m_titleLogo.SetScale(m_titleLogoScale);
 	m_titleLogo.Update();
@@ -207,7 +207,7 @@ void Tittle::Scene()
 				m_titleswordwhite.SetPosition(m_swordright);
 
 				//ï‚äÆó¶
-				swordright += 0.03f;
+				swordright += 0.01f;
 			}
 		}
 		else if (swordleft < 1.0f)
@@ -220,7 +220,7 @@ void Tittle::Scene()
 				m_titleswordbrack.SetPosition(m_swordleft);
 
 				//ï‚äÆó¶
-				swordleft += 0.04f;
+				swordleft += 0.09f;
 			}
 		}
 		else if (LogoComplement < 1.0f)

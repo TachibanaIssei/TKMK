@@ -116,7 +116,9 @@ private:
 	const Vector3 m_titleLogoPosition = { 0.0f,200.0f,0.0f };				//起動時の画面のタイトルロゴのポジション
 	const Vector3 m_selectLogoPosition = { -500.0f,400.0f,0.0f };			//セレクト画面のタイトルロゴのポジション
 	
-	Vector3 m_titleLogoScale = { g_vec3One };				//起動時のタイトルロゴの大きさ
+	Vector3 m_firsttitleScale = {5.0f,5.0f,1.0f };					//タイトルロゴの最初の大きさ
+	Vector3 m_changeLogoScale;
+	Vector3 m_titleLogoScale = { g_vec3One };						//起動時のタイトルロゴの大きさ
 	Vector3 m_selectLogoScale = { 0.6f, 0.6f, 1.0f };				//セレクト画面のタイトルロゴの大きさ
 	Vector3 m_LogoPosition;											//ロゴを線形補完するときに使う
 	Vector3 m_LogoScale;
@@ -147,12 +149,13 @@ private:
 	//キャラクター説明画面でカーソルを左側に表示させるときに足すためのポジション
 	Vector3 m_charaLeftCursor = { -130.0f,0.0f,0.0f };
 
-	Vector4 m_color = { 1.0f,1.0f,1.0f,0.3f };		//選択されてないときに透明度を低くして強調しないようにする時に使う
+	Vector4 m_color = { 1.0f,1.0f,1.0f,0.0f };		//選択されてないときに透明度を低くして強調しないようにする時に使う
 	Vector4 m_colorST = { g_vec4White };			//通常の透明度
 
 	int selectPosition = 0;							//タイトルのセレクト画面でカーソルを移動するときに使う変数
 	int characterOpPosition = 0;					//キャラ説明画面でカーソルを移動するときに使う変数
 	int titleScene = 0;								//タイトルのシーン変換するときの変数
+	float firstLogo = 0.0f;
 	float LogoComplement = 0.04f;					//補完率
 	float swordright = 0.0f;						//剣の補完率(右)
 	float swordleft = 0.0f;							//剣の補完率(左)
@@ -160,5 +163,6 @@ private:
 	float m_alpha = 0.0f;
 	bool m_isWaitFadeout = false;
 	bool m_fadeSeem = true;
+	bool m_titlefadeSeem = false;
 };
 

@@ -30,7 +30,8 @@ bool Tittle::Start()
 	
 	//titleのロゴ
 	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo.DDS", 1200.0f,200.0f);
-	m_titleLogo.SetPosition(m_firstPosition);
+	m_titleLogo.SetPosition(m_titleLogoPosition);
+	m_titleLogo.SetMulColor(m_color);
 	m_titleLogo.SetScale(m_titleLogoScale);
 	m_titleLogo.Update();
 
@@ -48,7 +49,8 @@ bool Tittle::Start()
 
 	//火花
 	m_fire.Init("Assets/sprite/Title/first_title/fireFlower.DDS", 1500.0f, 400.0f);
-	m_fire.SetPosition(m_firstPosition);
+	m_fire.SetPosition(m_titleLogoPosition);
+	m_fire.SetMulColor(m_color);
 	m_fire.SetScale(g_vec3One);
 	m_fire.Update();
 
@@ -162,6 +164,7 @@ void Tittle::Update()
 	m_timer++;
 
 	m_spriteRender.Update();
+	m_titleLogo.Update();
 	m_pressAButton.Update();
 	m_titleLogo.Update();
 	m_fire.Update();
@@ -185,18 +188,6 @@ void Tittle::Scene()
 	//もし最初のPressAの画面だったら
 	if (m_titleScene == enTitleScene_PressAScene)
 	{
-		//タイトル画面の時の場所に移動する
-		m_titleLogo.SetPosition(m_titleLogoPosition);
-		m_titleLogo.SetScale(m_titleLogoScale);
-		m_fire.SetPosition(m_titleLogoPosition);
-		//画面外の下に移動する
-		m_start.SetPosition(m_firstPosition);
-		m_operation.SetPosition(m_firstPosition);
-		m_option.SetPosition(m_firstPosition);
-	}
-	//もしSelect画面だったら
-	if (m_titleScene == enTitleScene_Change)
-	{
 		if (swordright < 1.0f)
 		{
 			if (m_timer % 2 == 0)
@@ -207,7 +198,7 @@ void Tittle::Scene()
 				m_titleswordwhite.SetPosition(m_swordright);
 
 				//補完率
-				swordright += 0.01f;
+				swordright += 0.03f;
 			}
 		}
 		else if (swordleft < 1.0f)
@@ -223,7 +214,31 @@ void Tittle::Scene()
 				swordleft += 0.09f;
 			}
 		}
-		else if (LogoComplement < 1.0f)
+		else if (firstLogo < 1.0f)
+		{
+			m_titlefadeSeem = true;
+			if (m_timer % 2 == 0)
+			{
+				m_firsttitleScale.Lerp(firstLogo, m_firsttitleScale, m_titleLogoScale);
+				m_titleLogo.SetScale(m_firsttitleScale);
+				m_fire.SetScale(m_firsttitleScale);
+
+				firstLogo += 0.03f;
+			}
+		}
+		//タイトル画面の時の場所に移動する
+		/*m_titleLogo.SetPosition(m_titleLogoPosition);
+		m_titleLogo.SetScale(m_titleLogoScale);*/
+		m_fire.SetPosition(m_titleLogoPosition);
+		//画面外の下に移動する
+		m_start.SetPosition(m_firstPosition);
+		m_operation.SetPosition(m_firstPosition);
+		m_option.SetPosition(m_firstPosition);
+	}
+	//もしSelect画面だったら
+	if (m_titleScene == enTitleScene_Change)
+	{
+		if (LogoComplement < 1.0f)
 		{
 			m_fadeSeem = false;
 			if (m_timer % 2 == 0)
@@ -475,19 +490,16 @@ void Tittle::CharacterOp()
 		{
 		case 0:
 			m_characterOpPosition = enCharacterOpPosition_Knight;
-			m_fire.SetPosition(m_KnightCursor + m_charaLeftCursor);
 			m_WizardOp.SetPosition(m_firstPosition);
 			m_KnightOp.SetPosition(m_opPosition);
 			break;
 		case 1:
 			m_characterOpPosition = enCharacterOpPosition_Wizard;
-			m_fire.SetPosition(m_WizardCursor + m_charaLeftCursor);
 			m_KnightOp.SetPosition(m_firstPosition);
 			m_WizardOp.SetPosition(m_opPosition);
 			break;
 		case 2:
 			m_characterOpPosition = enCharacterOpPosition_Zombie;
-			m_fire.SetPosition(m_ZombieCursor + m_charaLeftCursor);
 			break;
 		case 3:
 			m_characterOpPosition = enCharacterOpPosition_Mitei;
@@ -571,6 +583,16 @@ void Tittle::Fade()
 	{
 		//透明にして見えなくする
 		m_pressAButton.SetMulColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+	}
+	if (m_titlefadeSeem == true)
+	{
+		m_titleLogo.SetMulColor(m_colorST);
+		m_fire.SetMulColor(m_colorST);
+	}
+	else
+	{
+		m_titleLogo.SetMulColor(m_color);
+		m_fire.SetMulColor(m_color);
 	}
 }
 

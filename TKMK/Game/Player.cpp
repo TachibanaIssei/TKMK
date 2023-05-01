@@ -278,6 +278,15 @@ int Player::CharSetEXPTable() const
 	return playerActor->GetExpTable();
 }
 
+/// <summary>
+/// プレイヤーの前のレベルの経験値テーブルを取得
+/// </summary>
+/// <returns></returns>
+int Player::CharSetOldEXPTable() const
+{
+	return playerActor->GetOldExpTable();
+}
+
 float Player::CharGetRespawnTime() const
 {
 	return playerActor->GetRespawnTimer();

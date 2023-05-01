@@ -296,8 +296,13 @@ public:
 	/// </summary>
 	void SetSE(float addSE)
 	{
-		SEVolume += addSE;
+		//SEVolume += addSE;
 		MaxVolume += addSE;
+	}
+
+	void GetSE(float nowSEsixe)
+	{
+		MaxVolume = nowSEsixe;
 	}
 
 private:
@@ -358,7 +363,7 @@ private:
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	//中立の敵がやられたときに渡す経験値
-	int Exp = 5;
+	int Exp = 2;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
 	int P = -1;

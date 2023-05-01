@@ -161,11 +161,13 @@ void Actor::ExpProcess(int Exp)
 		if (GetExp < ExpTable) {
 			break;      //抜け出す
 		}
+		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		else {
-			//経験値テーブルより手に入れた経験値のほうが大きかったら
 			//レベルアップ
 			LevelUp(LvUPStatus, m_Status, Lv);
-			//レベルに合わせてレベルの画像を変更する
+			//今の経験値テーブルを代入
+			m_oldExpTable = ExpTable;
+			//経験値テーブルを更新する
 			switch (Lv)
 			{
 			case 2:

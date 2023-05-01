@@ -109,6 +109,8 @@ public:
 
 	int CharSetEXPTable() const;
 
+	int CharSetOldEXPTable() const;
+
 	//プレイヤーのステートを取得
 	//auto CharGetState() const;
 	auto CharGetState() const

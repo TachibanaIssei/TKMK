@@ -28,7 +28,7 @@ namespace
 	const Vector3 Skill_Pos = Vector3(520.0f, -280.0f, 0.0f);   //スキルアイコンポジション
 	const Vector3 Ult_Pos = Vector3(470.0f, -445.0f, 0.0f);     //必殺技アイコンポジション
 
-	const Vector3 LV_NUBER_POS = Vector3(770.0f, -360.0f, 0.0f);
+	const Vector3 LV_NUBER_POS = Vector3(780.0f, -360.0f, 0.0f);
 	const Vector3 LvPos = Vector3(640.0f, -310.0f, 0.0f);       //Lv
 	const Vector3 MaxLvPos = Vector3(920.0f, -400.0f, 0.0f);       // /10
 
@@ -36,7 +36,9 @@ namespace
 
 	const float DownPointPosY = 100.0f;
 
-	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //ポイント
+	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //経験値テーブル
+	const Vector3 EXPERIENCE_BAR_POS = Vector3(603.0f, -500.0f, 0.0f);	//経験値バー
+	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//レベルアップまでに必要な経験値の量
 
 	const Vector3 RESPWANCOUNT_POS = Vector3(0.0f, 0.0f, 0.0f);		//リスポーンした後のカウント
 
@@ -61,15 +63,6 @@ GameUI::~GameUI()
 bool GameUI::Start()
 {
 	player = FindGO<Player>("player");
-
-
-	//Level
-	m_LevelFont.SetPosition(LV_NUBER_POS);
-	m_LevelFont.SetScale(2.0f);
-	m_LevelFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_LevelFont.SetRotation(0.0f);
-	m_LevelFont.SetShadowParam(true, 2.0f, g_vec4Black);
-
 
 	//キャラのアイコン
 	//ブルー
@@ -177,10 +170,22 @@ bool GameUI::Start()
 		m_ExperienceFlame.SetScale(0.5, 0.5, 1.0);
 
 		//経験値バーの表ピボットにするtodo
-		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", 600.0f, 120.0f);
-		m_ExperienceBar_flont.SetPosition(Vector3::Zero);
+		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", 300.0f, 70.0f);
+		m_ExperienceBar_flont.SetPosition(EXPERIENCE_BAR_POS);
 		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
+
+		//経験値バーの裏
+		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
+		m_ExperienceBar_back.SetPosition(EXPERIENCE_POS);
+		m_ExperienceBar_back.SetScale(0.5, 0.5, 1.0);
+
+		//レベルアップまでに必要な経験値の量
+		m_ExpFont.SetPosition(UPTOLEVEL_POS);
+		m_ExpFont.SetScale(1.0f);
+		m_ExpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+		m_ExpFont.SetRotation(0.0f);
+		m_ExpFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 		//Lvの画像を読み込む
 		m_Lv.Init("Assets/sprite/gameUI/Lv.DDS", 196.0f, 150.0f);
@@ -212,6 +217,7 @@ bool GameUI::Start()
 		m_Flame.Update();
 		m_ExperienceFlame.Update();
 		m_ExperienceBar_flont.Update();
+		m_ExperienceBar_back.Update();
 		m_SkillRender.Update();
 		m_UltRender.Update();
 	}
@@ -219,7 +225,7 @@ bool GameUI::Start()
 	//HP関連
 	{
 		//HPのフォント
-		m_HpFont.SetPosition(-540.0f, -465.0f, 0.0f);
+		m_HpFont.SetPosition(-650.0f, -465.0f, 0.0f);
 		m_HpFont.SetScale(1.0f);
 		m_HpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_HpFont.SetRotation(0.0f);
@@ -292,13 +298,6 @@ void GameUI::Update()
 	if (m_GameUIState == m_GameStartState) {
 		return;
 	}
-
-	//レベルの表示
-	//int LEVEL=m_knightplayer->SetLevel();
-	int LEVEL = player->CharSetLevel();
-	wchar_t Lv[255];
-	swprintf_s(Lv, 255, L"%d", LEVEL);
-	m_LevelFont.SetText(Lv);
 
 	CharPoint();
 	
@@ -415,8 +414,9 @@ void GameUI::RespawnCountDown()
 void GameUI::HPBar()
 {
 	int HP = player->CharSetHp();
+	int MaxHP = player->CharSetMaxHp();
 	wchar_t hp[255];
-	swprintf_s(hp, 255, L"%d", HP);
+	swprintf_s(hp, 255, L"%d/%d", HP, MaxHP);
 	m_HpFont.SetText(hp);
 
 	Vector3 HpScale = Vector3::One;
@@ -452,14 +452,27 @@ void GameUI::EXPBar()
 {
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
+	//プレイヤーの経験値を取得
+	float nowEXP = player->CharSetEXP();
+	//今の経験値テーブルを取得
+	float nowEXPTable = player->CharSetEXPTable();
+	//前のレベルの経験値テーブルを取得
+	float oldEXPTable = player->CharSetOldEXPTable();
 
-	nowEXP = player->CharSetEXP();
+	//最終的な経験値テーブル
+	float finalEXPTable = nowEXPTable - oldEXPTable;
+	//最終的な経験値
+	float finalEXP = nowEXP - oldEXPTable;
 
-	nowEXPTable = player->CharSetEXPTable();
+	//HPバーの増えていく割合。
+	EXPScale.x = (float)/*4.99*/finalEXP / (float)finalEXPTable;
 
-	
-	//HPバーの減っていく割合。
-	EXPScale.x = (float)nowEXP / (float)nowEXPTable;
+	//レベルアップまでに必要な経験値の量
+	int UpToLevel = nowEXPTable - nowEXP;
+	wchar_t UTL[255];
+	swprintf_s(UTL, 255, L"%d", UpToLevel);
+	m_ExpFont.SetText(UTL);
+
 	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 }
@@ -512,10 +525,14 @@ void GameUI::Render(RenderContext& rc)
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
 		//レベルや経験値のフレーム
 		m_Flame.Draw(rc);
-		//経験値
-		m_ExperienceFlame.Draw(rc);
-		//変動する
+		//経験値の裏
+		m_ExperienceBar_back.Draw(rc);
+		//経験値の表 変動する
 		m_ExperienceBar_flont.Draw(rc);
+		//経験値フレーム
+		m_ExperienceFlame.Draw(rc);
+		//
+		m_ExpFont.Draw(rc);
 		
 		m_HpNameFont.Draw(rc);
 
@@ -534,7 +551,7 @@ void GameUI::Render(RenderContext& rc)
 		m_Lv.Draw(rc);
 		m_LvNumber.Draw(rc);
 		m_MaxLv.Draw(rc);
-		m_LevelFont.Draw(rc);
+		
 
 		//ポイントを描画
 		int num = 0;

@@ -2,6 +2,7 @@
 #include "system/system.h"
 #include "Game.h"
 #include "Tittle.h"
+#include "Fade.h"
 
 // K2EngineLowのグローバルアクセスポイント。
 //K2EngineLow* g_k2EngineLow = nullptr;
@@ -21,6 +22,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	g_camera3D->SetTarget({ 0.0f, 50.0f, 0.0f });
 
 	Tittle* tittle = NewGO<Tittle>(0, "tittle");
+	//フェードクラス生成
+	Fade* fade = NewGO<Fade>(5, "fade");
 	//Game* game = NewGO<Game>(0,"game");
 
 	// ここからゲームループ。

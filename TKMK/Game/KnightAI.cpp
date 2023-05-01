@@ -336,6 +336,10 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	{
 		eval += 600;
 	}
+	if (ColorEnemy == Neutral_Enemy::enEnemyKinds_Rabbit)
+	{
+
+	}
 	// 壁の向こうに対象がいるなら評価値を下げる
 	btTransform start, end;
 	start.setIdentity();
@@ -1040,7 +1044,7 @@ void KnightAI::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 
 	//フォントを描画する。
-	m_Name.Draw(rc);
+	//m_Name.Draw(rc);
 
 }
 

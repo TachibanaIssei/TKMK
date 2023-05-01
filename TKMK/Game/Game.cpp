@@ -374,7 +374,7 @@ void Game::Battle()
 		m_RespawnTimer = 0.0f;
 	}
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
-	if (m_RabbitRespawnTimer >= 30.0f)
+	if (m_RabbitRespawnTimer >= 5.0f)
 	{
 		RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
@@ -601,6 +601,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	if (isRabiit == true)
 	{
 		neutral_Enemy->ChangeRabbit();
+		neutral_Enemy->SetRabbitLifeFlag(true);
 	}
 
 	m_neutral_Enemys.push_back(neutral_Enemy);

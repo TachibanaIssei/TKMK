@@ -29,7 +29,7 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	void HPBar();
-
+	void HPreductionbytime();
 	//中立の敵のステート
 	enum EnNEState {
 		enNeutral_Enemy_Idle,					//待機。
@@ -72,6 +72,10 @@ public:
 		m_enemyKinds = enEnemyKinds_Rabbit;
 	}
 
+	void SetRabbitLifeFlag(bool rabbit)
+	{
+		rabbitLife = rabbit;
+	}
 	/// <summary>
 	/// 座標を設定
 	/// </summary>
@@ -351,7 +355,7 @@ private:
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
 	int P = -1;
-	int randam;
+	int randam = 0;
 	bool m_backPatrol = false;
 	bool m_backPatrolFarst = false;
 
@@ -359,9 +363,11 @@ private:
 	std::vector<Actor*> be_target;
 
 	bool isStart = false;
-
+	
 	// ウサギ専用
 	bool isPatrolRandom = false;
 	float isPatrolTimer = 0.0f;
+	float HPreductionbyTimer = 0.0f;
+	bool rabbitLife = false;
 };
 

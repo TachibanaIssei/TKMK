@@ -22,6 +22,8 @@ namespace {
 	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
 	const float RADIUS = 100.0f;
 	const int POS = 40;
+	const float HP_BER_RABBIT = 1.9f;
+	const float HP_BER_RABBIT_HEIGHT = 505.0f;
 }
 Neutral_Enemy::Neutral_Enemy()
 {
@@ -42,6 +44,7 @@ Neutral_Enemy::~Neutral_Enemy()
 		if (m_enemyKinds == enEnemyKinds_Rabbit)
 		{
 			m_game->SetRabbitFlag(false);
+			rabbitLife = false;
 		}
 	}
 
@@ -84,9 +87,6 @@ bool Neutral_Enemy::Start()
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 
 		m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit.tkm", m_animationClips, enAnimationClip_Num);
-	
-		m_scale = { 40.0f,40.0f,40.0f };
-
 	}
 	else
 	{
@@ -121,7 +121,17 @@ bool Neutral_Enemy::Start()
 			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
 			m_enemyKinds = enEnemyKinds_Red;
 		}
+
+		//頭のボーンのIDを取得する
+		m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 	}
+
+	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
+	//m_HPBar.SetPivot(PIVOT);
+
+	m_HPBack.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
+
+	m_HPFrame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
 
     //座標を設定
 	m_modelRender.SetPosition(m_position);
@@ -139,16 +149,6 @@ bool Neutral_Enemy::Start()
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
 
-	//頭のボーンのIDを取得する
-	m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
-
-	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
-	//m_HPBar.SetPivot(PIVOT);
-
-	m_HPBack.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
-
-	m_HPFrame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
-
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -161,10 +161,12 @@ bool Neutral_Enemy::Start()
 	m_rot.Apply(m_forward);
 
 	//ステータスを読み込む
-	m_Status.Init("Enemy");
 	if (m_enemyKinds == enEnemyKinds_Rabbit)
 	{
-		m_Status.Hp = 15;
+		m_Status.Init("Rabbit");
+	}
+	else {
+		m_Status.Init("Enemy");
 	}
 	//巡回用のパスを読み込む
 	m_EnemyPoslevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
@@ -241,12 +243,17 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
+	HPreductionbyTimer -= g_gameTime->GetFrameDeltaTime();
+	if (HPreductionbyTimer >= 10)
+	{
+		HPreductionbytime();
+	}
 	//回転処理。
 	Rotation();
 	//ステートの遷移処理。
 	ManageState();
 	HPBar();
-
+	
 	// タイマーを減らす
 	if (isPatrolTimer > 0.0f) {
 		isPatrolTimer -= g_gameTime->GetFrameDeltaTime();
@@ -273,6 +280,17 @@ void Neutral_Enemy::Move()
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 	m_modelRender.SetPosition(m_position);
 
+}
+
+void Neutral_Enemy::HPreductionbytime()
+{
+	
+	//if (m_enemyKinds == enEnemyKinds_Rabbit)
+	//{
+	//	m_Status.Hp -= 1;
+	//	HPreductionbyTimer = 0.0f;
+	//}
+	
 }
 
 void Neutral_Enemy::Rotation()
@@ -552,6 +570,10 @@ bool Neutral_Enemy::Search()
 
 void Neutral_Enemy::MakeAttackCollision()
 {
+	if (m_enemyKinds == enEnemyKinds_Rabbit) {
+		return;
+	}
+
 	//攻撃判定用のコリジョンオブジェクトを作成する。
 	auto collisionObject = NewGO<CollisionObject>(0);
 	//頭のボーンのワールド行列を取得する。
@@ -635,6 +657,7 @@ void Neutral_Enemy::ProcessRunStateTransition()
 
 void Neutral_Enemy::ProcessChaseStateTransition()
 {
+	// ウサギの追尾
 	if (m_enemyKinds == enEnemyKinds_Rabbit) {
 
 		if (RabbitSearch() == false) {
@@ -961,6 +984,7 @@ void Neutral_Enemy::HPBar()
 	m_Name.SetScale(0.5f);
 	//フォントの色を設定。
 	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
+
 	m_HPBar.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
 	m_HPFrame.SetPosition(Vector3(m_HPWindowPos.x, m_HPWindowPos.y, 0.0f));
 	m_HPBack.SetPosition(Vector3(m_HPBackPos.x, m_HPBackPos.y, 0.0f));
@@ -981,6 +1005,7 @@ Vector3 Neutral_Enemy::HPBerSend(Vector3 size, Vector3 scale)
 
 	return BerSizeSubtraction;
 }
+
 bool Neutral_Enemy::DrawHP()
 {
 	Vector3 toCameraTarget = g_camera3D->GetTarget() - g_camera3D->GetPosition();
@@ -1096,22 +1121,28 @@ void Neutral_Enemy::Render(RenderContext& rc)
 	//モデルを描画する。
 	m_modelRender.Draw(rc);
 	//フォントを描画する。
-	m_Name.Draw(rc);
+	//m_Name.Draw(rc);
+
 	if (m_game->GetStopFlag() == true)
 	{
 		return;
 	}
-	//ステートがポーズステートでないなら
-	if (m_Neutral_EnemyState != enNeutral_Enemy_Pause) {
-		//スプライトフラグがtureなら
-		if (m_player->GetSpriteFlag())
+
+	// ポーズ中は何もしない
+	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
+		return;
+	}
+
+	//スプライトフラグがtureなら
+	if (m_player->GetSpriteFlag())
+	{
+		if (DrawHP())
 		{
-			if (DrawHP())
-			{
-				m_HPBack.Draw(rc);
-				m_HPBar.Draw(rc);
-				m_HPFrame.Draw(rc);
-			}
+			m_HPBack.Draw(rc);
+			m_HPBar.Draw(rc);
+			m_HPFrame.Draw(rc);
 		}
 	}
+
+	
 }

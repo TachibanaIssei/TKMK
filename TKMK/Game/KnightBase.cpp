@@ -2,6 +2,7 @@
 #include "KnightBase.h"
 #include "Status.h"
 #include "GameUI.h"
+#include "Player.h"
 
 KnightBase::KnightBase()
 {
@@ -85,7 +86,8 @@ void KnightBase::SetModel()
 
 	//
 
-	
+	m_player = FindGO<Player>("player");
+
 	//剣のエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 }
@@ -284,12 +286,13 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_charState = enCharState_Death;
+		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(17);
 		se->Play(false);
-		se->SetVolume(0.5f);
-		
-		se->SetPosition(m_position);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 
 		m_Status.Hp = 0;
 		//攻撃された相手が中立の敵以外なら
@@ -312,7 +315,9 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		SoundSource * se = NewGO<SoundSource>(0);
 		se->Init(12);
 		se->Play(false);
-		se->SetVolume(0.5f);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}
@@ -754,3 +759,4 @@ void KnightBase::UltEnd() {
 	m_charState = enCharState_Idle;
 	OnProcessCommonStateTransition();
 }
+

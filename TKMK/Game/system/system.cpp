@@ -101,3 +101,5 @@ bool DispatchWindowMessage()
 	}
 	return msg.message != WM_QUIT;
 }
+
+GameLoop g_gameLoop;

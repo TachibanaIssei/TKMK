@@ -7,3 +7,11 @@ extern HWND			g_hWnd ;				//ウィンドウハンドル。
 void InitGame(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow, const TCHAR* appName);
 //ウィンドウメッセージをディスパッチ。falseが返ってきたら、ゲーム終了。
 bool DispatchWindowMessage();
+
+class GameLoop
+{
+public:
+	bool m_isLoop = true;
+};
+
+extern GameLoop g_gameLoop;

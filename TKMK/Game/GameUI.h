@@ -110,23 +110,13 @@ public:
 	void CharPoint();
 
 private:
-	FontRender m_CountDownFont;
-
-	FontRender m_LevelFont;
-	FontRender m_LevelNameFont;
+	FontRender m_ExpFont;
 
 	FontRender m_HpFont;
 	FontRender m_HpNameFont;
 
-	FontRender m_AtkFont;
-	FontRender m_SpeedFont;
-
 	FontRender m_PointFont[4];
 
-	FontRender m_RespawnCount;
-
-	/*KnightPlayer* m_knightplayer=nullptr;
-	WizardPlayer* wizardPlayer = nullptr;*/
 	Player* player = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
@@ -148,10 +138,14 @@ private:
 	SpriteRender            m_Point;							//ポイント
 	SpriteRender            m_ExperienceFlame;					//経験値のフレーム
 	SpriteRender            m_ExperienceBar_flont;				//経験値バーの表
+	SpriteRender            m_ExperienceBar_back;				//経験値バーの裏
 	SpriteRender			m_Crown;							//ポイントが一番多いキャラにつける王冠マーク
 	SpriteRender			m_PointFlame[4];					//ポイントを表示するフレーム
 	SpriteRender            m_CharIcon[4];                      //キャラのアイコン
 	SpriteRender			m_CountNumper;					//カウントダウン
+	SpriteRender			m_RespawnIn;						//Respawn inの画像
+	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
+	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
 
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
@@ -199,6 +193,8 @@ private:
 
 	int oldtStartCount = 0;
 
+	int oldRespawnCount = 0;
+
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;
 	//分を計るタイマー
@@ -207,20 +203,16 @@ private:
 
 	bool GameEndFlag=false;
 
-	int nowEXP;
 	//前フレームの経験値
 	int oldEXP=0;
 
-	int nowEXPTable=0;
-	//前フレームの経験値テーブル
-	int oldEXPTable;
 	//キャラのポイント
 	int charPoint[4];
 
 	int MaxPoint = 0;
 
-	//float StartCountDown = 4.0f;
+	
 
-	//int LEVEL;
+
 };
 

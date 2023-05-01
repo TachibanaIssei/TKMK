@@ -239,15 +239,20 @@ public:
 	}
 
 	/// <summary>
-	/// 引数に攻撃力を代入させる
+	/// 攻撃力を返す
 	/// </summary>
 	int GetAtk() {
 		return m_Status.Atk;
 	}
+
+	/// <summary>
+	/// HPを返す
+	/// </summary>
 	int GetHP()
 	{
 		return m_Status.Hp;
 	}
+
 	/// <summary>
 	/// 中立の赤色の敵を倒した時攻撃を上げる処理
 	/// </summary>
@@ -264,6 +269,11 @@ public:
 	void HpUp(int HpUp)
 	{
 		m_Status.Hp += HpUp;
+		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
+		if (m_Status.Hp > m_Status.MaxHp)
+		{
+			m_Status.Hp = m_Status.MaxHp;
+		}
 	}
 
 	/// <summary>
@@ -319,7 +329,7 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 現在の経験値を返す
 	/// </summary>
 	/// <returns></returns>
 	int GetExperience()
@@ -328,12 +338,21 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// 現在の経験値テーブルを返す
 	/// </summary>
 	/// <returns></returns>
 	int GetExpTable()
 	{
 		return ExpTable;
+	}
+
+	/// <summary>
+	/// 前のレベルのの経験値テーブルを返す
+	/// </summary>
+	/// <returns></returns>
+	int GetOldExpTable()
+	{
+		return m_oldExpTable;
 	}
 
 	/// <summary>
@@ -450,13 +469,24 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// リスポーン待機時間を返す
 	/// </summary>
 	/// <param name=""></param>
 	/// <returns></returns>
 	float GetRespawnTimer()const
 	{
 		return m_respwanTimer;
+	}
+
+	float SoundSet(Player* player, float Max, float Min);
+
+	/// <summary>
+	/// 効果音を上げたり下げたりする
+	/// </summary>
+	void SetSE(float addSE)
+	{
+		//SEVolume += addSE;
+		MaxVolume += addSE;
 	}
 
 private:
@@ -472,6 +502,7 @@ protected:
 	int Point;                 //敵を倒して手に入れたポイント
 	int GetExp;                //中立の敵を倒したときの経験値
 	int ExpTable;              //経験値テーブル
+	int m_oldExpTable = 0;         //前のレベルの経験値テーブル
 	int respawnNumber;         //リスポーンする座標の番号
 	bool isDeath = false;      //死んだかどうかの判定
 	bool invincibleFlag = false;     //無敵時間フラグ
@@ -515,6 +546,11 @@ protected:
 	///////////////////////////////
 	//評価値計算のタイマー
 	float EvalTimer = 0.0f;
+
+	//効果音
+	float SEVolume = 0.0f;
+	float MaxVolume = 2.0f;
+	const float MinVolume = 0.0f;
 
 	Player* m_player = nullptr;
 	Actor* m_targetActor = nullptr;

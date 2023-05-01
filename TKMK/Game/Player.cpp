@@ -80,7 +80,8 @@ void Player::CharSelect(int number)
 /// <returns>選択されているキャラの座標</returns>
 Vector3 Player::GetCharPosition()const
 {
-	switch (m_selectCharctar)
+	return playerActor->GetPosition();
+	/*switch (m_selectCharctar)
 	{
 	case enKnight:
 		return knightPlayer->GetPosition();
@@ -98,7 +99,7 @@ Vector3 Player::GetCharPosition()const
 
 	default:
 		break;
-	}
+	}*/
 }
 
 /// <summary>
@@ -275,6 +276,15 @@ int Player::CharSetEXP() const
 int Player::CharSetEXPTable() const
 {
 	return playerActor->GetExpTable();
+}
+
+/// <summary>
+/// プレイヤーの前のレベルの経験値テーブルを取得
+/// </summary>
+/// <returns></returns>
+int Player::CharSetOldEXPTable() const
+{
+	return playerActor->GetOldExpTable();
 }
 
 float Player::CharGetRespawnTime() const

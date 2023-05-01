@@ -17,11 +17,16 @@ bool Tittle::Start()
 {
 	//背景の初期化
 	m_spriteRender.Init("Assets/sprite/Title/first_title/titleBack.DDS",1920.0f,1080.0f);
-	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
+	m_spriteRender.SetPosition(g_vec3Zero);
 	m_spriteRender.SetScale(g_vec3One);
 	m_sRotation.SetRotationZ(0.0f);
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
+
+	//PressAButton
+	m_pressAButton.Init("Assets/sprite/Title/first_title/PressAButton.DDS",700.0f,150.0f);
+	m_pressAButton.SetPosition(0.0f, -300.0f, 0.0f);
+	m_pressAButton.Update();
 	
 	//titleのロゴ
 	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo.DDS", 400.0f,150.0f);
@@ -152,10 +157,12 @@ bool Tittle::Start()
 void Tittle::Update()
 {
 	Scene();
+	Fade();
 
 	m_timer++;
 
 	m_spriteRender.Update();
+	m_pressAButton.Update();
 	m_titleLogo.Update();
 	m_fire.Update();
 	m_start.Update();
@@ -218,6 +225,7 @@ void Tittle::Scene()
 		}
 		else if (LogoComplement < 1.0f)
 		{
+			m_fadeSeem = false;
 			if (m_timer % 2 == 0)
 			{
 				//線形補完
@@ -286,6 +294,7 @@ void Tittle::Scene()
 	{
 		//線形変換に移る
 		titleScene = 1;
+		m_isWaitFadeout = true;
 	}
 	if (m_titleScene == enTitleScene_Change && LogoComplement > 1.0f)
 	{
@@ -541,10 +550,31 @@ void Tittle::Ilust()
 		break;
 	}
 }
+void Tittle::Fade()
+{
+	if (m_fadeSeem == true)
+	{
+		//PressAのフェード
+		if (m_isWaitFadeout)
+		{
+			m_alpha += g_gameTime->GetFrameDeltaTime() * 20.5f;
+		}
+		else
+		{
+			m_alpha += g_gameTime->GetFrameDeltaTime() * 1.2f;
+		}
+		m_pressAButton.SetMulColor({ 1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha)) });
+	}
+	else
+	{
+		m_pressAButton.SetMulColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+	}
+}
 
 void Tittle::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
+	m_pressAButton.Draw(rc);
 	m_iluststart.Draw(rc);
 	m_iluststartOp.Draw(rc);
 	m_ilusthowtoplay.Draw(rc);

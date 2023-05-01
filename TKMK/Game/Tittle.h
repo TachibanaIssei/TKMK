@@ -16,6 +16,7 @@ public:
 	void Operation();
 	void CharacterOp();
 	void Ilust();
+	void Fade();
 
 	/// <summary>
 	/// キャラ選択画面からタイトルに戻った時にタイトルのセレクト画面に戻す関数
@@ -90,7 +91,7 @@ private:
 	SpriteRender m_ilustoptionOp;				//"OPTION"の時の説明文
 	SpriteRender m_titleswordwhite;				//白い剣
 	SpriteRender m_titleswordbrack;				//黒い剣
-
+	SpriteRender m_pressAButton;				//プレスAボタン
 
 	EnTitleScene m_titleScene;					//タイトルのポジション
 	EnSelectPosition m_tSelectPosition;			//セレクトのポジション
@@ -156,5 +157,8 @@ private:
 	float swordright = 0.0f;						//剣の補完率(右)
 	float swordleft = 0.0f;							//剣の補完率(左)
 	int m_timer = 0;
+	float m_alpha = 0.0f;
+	bool m_isWaitFadeout = false;
+	bool m_fadeSeem = true;
 };
 

@@ -4,6 +4,7 @@
 #include "Neutral_Enemy.h"
 #include "KnightUlt.h"
 #include "GameUI.h"
+#include "Fade.h"
 
 //todo
 //スキル使ったときに範囲内に敵がいたらその方向に向かっていく
@@ -22,6 +23,7 @@ KnightPlayer::KnightPlayer()
 {
 	m_gameUI = FindGO<GameUI>("m_gameUI");
 	m_game = FindGO<Game>("game");
+	m_fade = FindGO<Fade>("fade");
 
 	SetModel();
 	//アニメーションイベント用の関数を設定する。
@@ -58,14 +60,6 @@ KnightPlayer::KnightPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
-
-	//3Dサウンド
-	
-	//m_soundEngine->SetListenerPosition(m_position);
-	//
-	//m_soundEngine->SetListenerFront(g_camera3D->GetForward());
-	//m_soundEngine->SetListenerUp(Vector3::AxisY);
-	//m_soundEngine->Update();
 }
 
 KnightPlayer::~KnightPlayer()
@@ -75,8 +69,6 @@ KnightPlayer::~KnightPlayer()
 
 void KnightPlayer::Update()
 {
-
-	
 	//アニメーションの再生
 	PlayAnimation();
 	//当たり判定
@@ -92,7 +84,7 @@ void KnightPlayer::Update()
 	}
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag)==true) {
+	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade)==true) {
 		return;
 	}
 	
@@ -102,10 +94,10 @@ void KnightPlayer::Update()
 	}
 
 	//やられたらリスポーンするまで実行する
-	if (DeathToRespawnTimer(m_DeathToRespwanFlag) == true)
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade) == true)
 	{
 
-		m_charState = enCharState_Idle;
+		//m_charState = enCharState_Idle;
 
 		return;
 	}

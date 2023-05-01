@@ -215,6 +215,11 @@ void Tittle::Scene()
 				swordleft += 0.09f;
 			}
 		}
+		else if (delaytime < 45)
+		{
+			//’x‚ç‚¹‚éŽžŠÔ
+			delaytime++;
+		}
 		else if (firstLogo < 1.0f)
 		{
 			m_titlefadeSeem = true;

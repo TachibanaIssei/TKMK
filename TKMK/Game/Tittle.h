@@ -161,6 +161,7 @@ private:
 	float swordleft = 0.0f;							//Œ•‚Ì•âŠ®—¦(¶)
 	int m_timer = 0;
 	int fadetime = 0;
+	int delaytime = 0;								//’x‚ç‚¹‚éŠÔ
 	float m_alpha = 0.0f;
 	bool m_isWaitFadeout = false;					//PressAButton‚Ì•\¦‚·‚éŠÔŠu
 	bool m_fadeSeem = true;							//PressAButton‚ğ•\¦‚·‚é‚©

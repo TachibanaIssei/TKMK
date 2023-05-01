@@ -259,6 +259,8 @@ protected:
 		enAnimationClip_Walk,
 		enAnimationClip_Run,
 		enAnimationClip_ChainAtk,
+		enAnimationClip_SecondAtk,
+		enAnimationClip_lastAtk,
 		enAnimationClip_Damege,
 		enAnimationClip_Death,
 		enAnimationClip_Skill,

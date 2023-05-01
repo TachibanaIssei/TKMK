@@ -13,11 +13,12 @@
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "Lamp.h"
+#include "Fade.h"
 //#include <vector>
 //#include <algorithm>
 
 namespace {
-	int ENEMY_AMOUNT = 10;
+	const int ENEMY_AMOUNT = 10;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
 	const Vector3 Menu_HowToPlayPos = Vector3(0.0f, 60.0f, 0.0f);
 	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);
@@ -80,6 +81,8 @@ bool Game::Start()
 
 	InitSkyCube();
 
+	
+
 	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
 
@@ -116,58 +119,63 @@ bool Game::Start()
 
 	//中立の敵の生成
 	{
-		m_Enemylevel.Init("Assets/level3D/enemyRespawnPos.tkl", [&](LevelObjectData& objData) {
+		m_Enemylevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
 
 			if (objData.ForwardMatchName(L"Pos") == true) {
-				if (objData.number == 0) {
-					SetRespawnPosition(objData.position, objData.rotation, objData.number);
-					return true;
-				}
-				if (objData.number == 1) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				//enemyNumber++;
-				//ENEMY_AMOUNT;
-				//CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-			if (objData.number == 2) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 3) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				enemyNumber++;
-				ENEMY_AMOUNT;
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-			if (objData.number == 4) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-				return true;
-			}
-			if (objData.number == 5) {
+
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
 
-					enemyNumber++;
-					ENEMY_AMOUNT;
-					CreateEnemy(objData.position, objData.rotation);
-					return true;
-				}
-				if (objData.number == 6) {
-					SetRespawnPosition(objData.position, objData.rotation, objData.number);
-					return true;
-				}
-				if (objData.number == 7) {
-					SetRespawnPosition(objData.position, objData.rotation, objData.number);
-					enemyNumber++;
-					ENEMY_AMOUNT;
-					CreateEnemy(objData.position, objData.rotation);
-					return true;
-				}
-				if (objData.number == 8) {
-					SetRespawnPosition(objData.position, objData.rotation, objData.number);
-					return true;
-				}
+			//	if (objData.number == 0) {
+			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
+			//		return true;
+			//	}
+				//if (objData.number == 1) {
+				//	CreateEnemy(objData.position, objData.rotation);
+				//}
+				////enemyNumber++;
+				////ENEMY_AMOUNT;
+				////CreateEnemy(objData.position, objData.rotation);
+				//return true;
+			//}
+
+			//if (objData.number == 2) {
+			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
+			//	return true;
+			//}
+			//if (objData.number == 3) {
+			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
+			//	enemyNumber++;
+			//	ENEMY_AMOUNT;
+			//	CreateEnemy(objData.position, objData.rotation);
+			//	return true;
+			//}
+			//if (objData.number == 4) {
+			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
+			//	return true;
+			//}
+			//if (objData.number == 5) {
+			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
+
+			//		enemyNumber++;
+			//		ENEMY_AMOUNT;
+			//		CreateEnemy(objData.position, objData.rotation);
+			//		return true;
+			//	}
+			//	if (objData.number == 6) {
+			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
+			//		return true;
+			//	}
+			//	if (objData.number == 7) {
+			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
+			//		enemyNumber++;
+			//		ENEMY_AMOUNT;
+			//		CreateEnemy(objData.position, objData.rotation);
+			//		return true;
+			//	}
+			//	if (objData.number == 8) {
+			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
+			//		return true;
+			//	}
 			}
 			return true;
 			});
@@ -224,6 +232,8 @@ bool Game::Start()
 
 	//マップの生成
 	m_Map = NewGO<Map>(2, "map");
+
+	
 
 	//ポーズ画面の画像読み込み
 	{
@@ -372,6 +382,7 @@ void Game::Battle()
 	if (GameEndFlag == false) {
 		CountDown();
 	}
+
 	m_RespawnTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_RespawnTimer >= 5.0f) {
 		Respawn();
@@ -380,7 +391,7 @@ void Game::Battle()
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_RabbitRespawnTimer >= 30.0f)
 	{
-		RabbitRespawn();
+		//RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
 	}
 }
@@ -461,7 +472,7 @@ void Game::Respawn()
 		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
 		for (int generate = 0; generate < spawnAmount; generate++) {
 			//ランダムに番号を決める(0以外)
-			RandamRespawnPosNumber = rand() % 8 + 1;
+			RandamRespawnPosNumber = rand() % 19 + 1;
 
 			//中立の敵のリスポーンする座標を決める
 			SetEnemyRespawnPos();
@@ -478,7 +489,7 @@ void Game::RabbitRespawn()
 	RabbitFlag = true;
 
 	//ランダムに番号を決める(0以外)
-	RandamRespawnPosNumber = rand() % 8 + 1;	//中立の敵のリスポーンする座標を決める
+	RandamRespawnPosNumber = rand() % 19 + 1;	//中立の敵のリスポーンする座標を決める
 	SetEnemyRespawnPos();
 	//中立の敵を生成
 	CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber],true);
@@ -497,7 +508,7 @@ void Game::SetEnemyRespawnPos()
 	//最大値が0だったら
 	if(SearchRespawnPosNumber==0)
 	{
-		MaxSearchNumber = 8;
+		MaxSearchNumber = 19;
 	}
 
 	while (SearchRespawnPosNumber!= MaxSearchNumber)
@@ -529,7 +540,7 @@ void Game::SetEnemyRespawnPos()
 		}
 		
 		//番号が8でないなら
-		if (SearchRespawnPosNumber < 8)
+		if (SearchRespawnPosNumber < 19)
 		{
 			SearchRespawnPosNumber++;
 		}
@@ -541,7 +552,7 @@ void Game::SetEnemyRespawnPos()
 		
 	}
 	//ループでどの座標にも生成できなかったらランダムに決める
-	SearchRespawnPosNumber= rand() % 8 + 1;
+	SearchRespawnPosNumber= rand() % 19 + 1;
 	return;
 }
 

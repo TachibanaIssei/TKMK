@@ -557,16 +557,19 @@ void Tittle::Fade()
 		//PressAのフェード
 		if (m_isWaitFadeout)
 		{
+			//フェードの間隔（短い）
 			m_alpha += g_gameTime->GetFrameDeltaTime() * 20.5f;
 		}
 		else
 		{
+			//フェードの間隔（長い）
 			m_alpha += g_gameTime->GetFrameDeltaTime() * 1.2f;
 		}
 		m_pressAButton.SetMulColor({ 1.0f, 1.0f, 1.0f, fabsf(sinf(m_alpha)) });
 	}
 	else
 	{
+		//透明にして見えなくする
 		m_pressAButton.SetMulColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 	}
 }

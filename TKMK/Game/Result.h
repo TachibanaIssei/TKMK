@@ -48,11 +48,6 @@ private:
 	float Complement = 0.01f;	//üŒ`•âŠÔ‚Ì•âŠ®—¦
 	float WordScale = 3.0f;
 
-	char playername1[30] = "Player1";
-	char playername2[30] = "CPU1";
-	char playername3[30] = "CPU2";
-	char playername4[30] = "CPU3";
-
 	Score Player[PLAYER];
 
 	FontRender m_PlayerRank1;

@@ -58,7 +58,7 @@ bool Result::Start()
 	DeleteGO(game);
 
 	//Result‚Ì‰Šú‰»
-	m_spriteRender.Init("Assets/sprite/Result/ResultBack.DDS", 1920.0f, 1080.0f);
+	m_spriteRender.Init("Assets/sprite/Result/titleBack.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
 	m_spriteRender.SetScale(g_vec3One);
 	m_sRotation.SetRotationZ(0.0f);

@@ -33,6 +33,12 @@ public:
 		enGameState_Num,
 	};
 
+	enum EnEFK {
+		enEffect_Knight_Red_Death,
+		enEffect_Knight_Green_Death,
+		enEffect_Knight_Blue_Death,
+		enEffect_Knight_Yellow_Death,
+	};
 	enum EnPauseMenu
 	{
 		enPauseMenuState_Back,
@@ -231,8 +237,8 @@ private:
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
-	Vector3 EnemyRespawnPosition[9];
-	Quaternion EnemyReapawnPot[9];
+	Vector3 EnemyRespawnPosition[45];
+	Quaternion EnemyReapawnPot[45];
 	//ポーズの画像
 	SpriteRender m_Pause_Front;    //ポーズのメイン
 	SpriteRender m_Pause_Back;     //背景

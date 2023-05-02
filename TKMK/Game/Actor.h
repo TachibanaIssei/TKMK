@@ -4,6 +4,7 @@
 
 class Neutral_Enemy;
 class Player;
+class Fade;
 
 class Actor:public IGameObject
 {
@@ -18,6 +19,8 @@ public:
 		enCharState_Walk,
 		enCharState_Run,
 		enCharState_Attack,
+		enCharState_SecondAttack,
+		enCharState_LastAttack,
 		enCharState_Damege,
 		enCharState_Death,
 		enCharState_Skill,
@@ -448,25 +451,8 @@ public:
 	/// <summary>
 	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
-	/// /// <param name="DeathToRespwanFlag"></param>
-	bool DeathToRespawnTimer(bool DeathToRespwanFlag)
-	{
-		//キャラがやられたら
-		if (m_DeathToRespwanFlag == true)
-		{
-			//タイマー減少
-			m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
-			//2秒以上経ったら
-			if (m_respwanTimer <= 0.0f)
-			{
-				m_DeathToRespwanFlag = false;
-			}
-			//やられている
-			return true;
-		}
-		//やられていない
-		return false;
-	}
+	/// <param name="DeathToRespwanFlag"></param>
+	bool DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade);
 
 	/// <summary>
 	/// リスポーン待機時間を返す
@@ -556,6 +542,7 @@ protected:
 	Actor* m_targetActor = nullptr;
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
 	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）
+	Fade* m_fade = nullptr;
 
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 

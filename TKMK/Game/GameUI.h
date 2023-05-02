@@ -5,6 +5,7 @@
 class Player;
 class Game;
 class Actor;
+class Fade;
 
 class GameUI:public IGameObject
 {
@@ -120,6 +121,7 @@ private:
 	Player* player = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
+	Fade* fade = nullptr;
 
 	std::vector<Actor*> m_Actors;
 

@@ -5,6 +5,7 @@
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 #include "Player.h"
+#include "Fade.h"
 
 namespace
 {
@@ -63,7 +64,7 @@ GameUI::~GameUI()
 bool GameUI::Start()
 {
 	player = FindGO<Player>("player");
-
+	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
 	//ブルー
 	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 80.0f, 80.0f);
@@ -203,7 +204,7 @@ bool GameUI::Start()
 		m_MaxLv.SetScale(0.5, 0.5, 1.0);
 
 		//スキルのアイコン
-		m_SkillRender.Init("Assets/sprite/skill_flame.DDS", 162, 162);
+		m_SkillRender.Init("Assets/sprite/gameUI/skil_Icon.DDS", 162, 162);
 		m_SkillRender.SetPosition(Skill_Pos);
 		m_SkillRender.SetScale(1.1, 1.1);
 		//必殺技のアイコン
@@ -310,9 +311,6 @@ void GameUI::Update()
 	EXPBar();
 
 	HPBar();
-	
-	//回避バー
-	
 }
 
 //ゲームスタートのカウントダウン
@@ -393,6 +391,8 @@ void GameUI::RespawnCountDown()
 		{
 		case 0:
 			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
+			//画面を暗くしてゆく
+			fade->StartFadeIn(2.0f);
 			break;
 		case 1:
 			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);

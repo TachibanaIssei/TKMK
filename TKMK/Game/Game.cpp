@@ -120,63 +120,18 @@ bool Game::Start()
 	//中立の敵の生成
 	{
 		m_Enemylevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
-
+			//座標を記憶する
 			if (objData.ForwardMatchName(L"Pos") == true) {
-
 				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-
-			//	if (objData.number == 0) {
-			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			//		return true;
-			//	}
-				//if (objData.number == 1) {
-				//	CreateEnemy(objData.position, objData.rotation);
-				//}
-				////enemyNumber++;
-				////ENEMY_AMOUNT;
-				////CreateEnemy(objData.position, objData.rotation);
-				//return true;
-			//}
-
-			//if (objData.number == 2) {
-			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			//	return true;
-			//}
-			//if (objData.number == 3) {
-			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			//	enemyNumber++;
-			//	ENEMY_AMOUNT;
-			//	CreateEnemy(objData.position, objData.rotation);
-			//	return true;
-			//}
-			//if (objData.number == 4) {
-			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			//	return true;
-			//}
-			//if (objData.number == 5) {
-			//	SetRespawnPosition(objData.position, objData.rotation, objData.number);
-
-			//		enemyNumber++;
-			//		ENEMY_AMOUNT;
-			//		CreateEnemy(objData.position, objData.rotation);
-			//		return true;
-			//	}
-			//	if (objData.number == 6) {
-			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			//		return true;
-			//	}
-			//	if (objData.number == 7) {
-			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			//		enemyNumber++;
-			//		ENEMY_AMOUNT;
-			//		CreateEnemy(objData.position, objData.rotation);
-			//		return true;
-			//	}
-			//	if (objData.number == 8) {
-			//		SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			//		return true;
-			//	}
 			}
+
+			//リスポーン番号1～8まで生成
+			//中立の敵の生成
+			if (objData.number != 0&& objData.number <= 8) {
+				CreateEnemy(objData.position, objData.rotation);
+				return true;
+			}
+
 			return true;
 			});
 	}

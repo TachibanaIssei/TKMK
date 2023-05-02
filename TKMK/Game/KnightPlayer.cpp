@@ -84,7 +84,7 @@ void KnightPlayer::Update()
 	}
 	//todo
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause|| DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade)==true) {
+	if (m_GameState == enPause/*|| DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade)==true*/) {
 		return;
 	}
 	
@@ -254,9 +254,6 @@ void KnightPlayer::Attack()
 		{
 			m_charState = enCharState_Attack;
 			Point++;
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
 			pushFlag = true;
 			AtkState = true;
 		}
@@ -268,15 +265,19 @@ void KnightPlayer::Attack()
 		{
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
+			////攻撃を二段目にする
+			//m_charState = enCharState_SecondAttack;
 		}
 	}
-
+	//二段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == SecondAtkStart_State)
 	{
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
+			////攻撃を三段目にする
+			//m_charState = enCharState_LastAttack;
 		}
 	}
 
@@ -469,7 +470,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//一段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"FirstAttack_End") == 0)
 	{
-		
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}

@@ -45,7 +45,7 @@ private:
 	int titleScene = 1;			//タイトルのシーン番号
 	int m_timer = 0;			//タイマー
 	int select = 0;				//セレクトポジ
-	float Complement = 0.01f;	//線形補間の補完率
+	float Complement = 0.0f;	//線形補間の補完率
 	float WordScale = 3.0f;
 
 	Score Player[PLAYER];
@@ -98,6 +98,7 @@ private:
 		Vector3(-250.0f, -1000.0f, 0.0f),	//選択カーソル
 	};
 
-	//カーソルを左にずらすVector
-	Vector3 Leftcursor = { -230.0f,-20.0f,0.0f };
+	//透明度
+	Vector4 m_color = { 0.0f,0.0f,0.0f,0.0f };	//透明
+	Vector4 m_colorST = { g_vec4White };		//不透明
 };

@@ -74,19 +74,21 @@ bool Result::Start()
 	m_GOtitle.Update();
 	//"タイトルに戻る"選択
 	m_GOtitleST.Init("Assets/sprite/Result/GOtoTitle_color.DDS", 500.0f, 100.0f);
-	m_GOtitleST.SetPosition(FirstPos[4]);
+	m_GOtitleST.SetPosition(RankPos[4]);
 	m_GOtitleST.SetScale(g_vec3One);
+	m_GOtitleST.SetMulColor(m_color);
 	m_GOtitleST.Update();
 
 	//"ゲームを終了"非選択
-	m_gameover.Init("Assets/sprite/Result/EndGame_white.DDS", 500.0f, 100.0f);
+	m_gameover.Init("Assets/sprite/Result/EndGame_white.DDS", 400.0f, 100.0f);
 	m_gameover.SetPosition(FirstPos[5]);
 	m_gameover.SetScale(g_vec3One);
 	m_gameover.Update();
 	//"ゲームを終了"選択
-	m_gameoverST.Init("Assets/sprite/Result/EndGame_color.DDS", 500.0f, 100.0f);
-	m_gameoverST.SetPosition(FirstPos[5]);
+	m_gameoverST.Init("Assets/sprite/Result/EndGame_color.DDS", 400.0f, 100.0f);
+	m_gameoverST.SetPosition(RankPos[5]);
 	m_gameoverST.SetScale(g_vec3One);
+	m_gameoverST.SetMulColor(m_color);
 	m_gameoverST.Update();
 
 	return true;
@@ -163,8 +165,6 @@ void Result::Move()
 {
 	if (Complement < 1.0f)
 	{
-		if (m_timer % 2 == 0)
-		{
 			for (int i = 0; i < 6; i++)
 			{
 				MovePos[i].Lerp(Complement, FirstPos[i], RankPos[i]);
@@ -190,8 +190,7 @@ void Result::Move()
 					break;
 				}
 			}
-			Complement += 0.04f;
-		}
+			Complement += 0.02f;
 	}
 	else
 	{
@@ -219,9 +218,13 @@ void Result::Select()
 	{
 	case 0:
 		m_cursor = enCursorPos_title;
+		m_GOtitleST.SetMulColor(m_colorST);
+		m_gameoverST.SetMulColor(m_color);
 		break;
 	case 1:
 		m_cursor = enCursorPos_exit;
+		m_GOtitleST.SetMulColor(m_color);
+		m_gameoverST.SetMulColor(m_colorST);
 		break;
 	}
 
@@ -236,6 +239,8 @@ void Result::Select()
 	{
 		g_gameLoop.m_isLoop = false;
 	}
+	m_GOtitleST.Update();
+	m_gameoverST.Update();
 }
 
 void Result::Render(RenderContext& rc)
@@ -247,4 +252,6 @@ void Result::Render(RenderContext& rc)
 	m_PlayerRank4.Draw(rc);
 	m_GOtitle.Draw(rc);
 	m_gameover.Draw(rc);
+	m_GOtitleST.Draw(rc);
+	m_gameoverST.Draw(rc);
 }

@@ -352,7 +352,7 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
 		if (m_respwanTimer <= 0.0f)
 		{
 			//画面を明るくする
-			fade->StartFadeOut(0.3f);
+			fade->StartFadeOut(1.0f);
 
 			m_DeathToRespwanFlag = false;
 		}

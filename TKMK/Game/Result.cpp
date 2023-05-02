@@ -65,23 +65,29 @@ bool Result::Start()
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
 
-	//"タイトルに戻る"
-	m_GOtitle.Init("Assets/sprite/Result/changeTitle.DDS", 500.0f, 100.0f);
+
+
+	//"タイトルに戻る"非選択
+	m_GOtitle.Init("Assets/sprite/Result/GOtoTitle_white.DDS", 500.0f, 100.0f);
 	m_GOtitle.SetPosition(FirstPos[4]);
 	m_GOtitle.SetScale(g_vec3One);
 	m_GOtitle.Update();
+	//"タイトルに戻る"選択
+	m_GOtitleST.Init("Assets/sprite/Result/GOtoTitle_color.DDS", 500.0f, 100.0f);
+	m_GOtitleST.SetPosition(FirstPos[4]);
+	m_GOtitleST.SetScale(g_vec3One);
+	m_GOtitleST.Update();
 
-	//"ゲームを終了"
-	m_gameover.Init("Assets/sprite/Result/gameover.DDS", 500.0f, 100.0f);
+	//"ゲームを終了"非選択
+	m_gameover.Init("Assets/sprite/Result/EndGame_white.DDS", 500.0f, 100.0f);
 	m_gameover.SetPosition(FirstPos[5]);
 	m_gameover.SetScale(g_vec3One);
 	m_gameover.Update();
-
-	//選択カーソル
-	m_choice.Init("Assets/sprite/Choice.DDS", 100.0f, 100.0f);
-	m_choice.SetPosition(FirstPos[6]);
-	m_choice.SetScale(0.6f, 1.1f, 1.0f);
-	m_choice.Update();
+	//"ゲームを終了"選択
+	m_gameoverST.Init("Assets/sprite/Result/EndGame_color.DDS", 500.0f, 100.0f);
+	m_gameoverST.SetPosition(FirstPos[5]);
+	m_gameoverST.SetScale(g_vec3One);
+	m_gameoverST.Update();
 
 	return true;
 }
@@ -159,7 +165,7 @@ void Result::Move()
 	{
 		if (m_timer % 2 == 0)
 		{
-			for (int i = 0; i < 7; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				MovePos[i].Lerp(Complement, FirstPos[i], RankPos[i]);
 				switch (i)
@@ -182,9 +188,6 @@ void Result::Move()
 				case 5:
 					m_gameover.SetPosition(MovePos[i]);
 					break;
-				case 6:
-					m_choice.SetPosition(MovePos[i]);
-					break;
 				}
 			}
 			Complement += 0.04f;
@@ -199,7 +202,6 @@ void Result::Move()
 
 	m_GOtitle.Update();
 	m_gameover.Update();
-	m_choice.Update();
 }
 
 void Result::Select()
@@ -217,11 +219,9 @@ void Result::Select()
 	{
 	case 0:
 		m_cursor = enCursorPos_title;
-		m_choice.SetPosition(RankPos[6]);
 		break;
 	case 1:
 		m_cursor = enCursorPos_exit;
-		m_choice.SetPosition(RankPos[5]+ Leftcursor);
 		break;
 	}
 
@@ -236,8 +236,6 @@ void Result::Select()
 	{
 		g_gameLoop.m_isLoop = false;
 	}
-
-	m_choice.Update();
 }
 
 void Result::Render(RenderContext& rc)
@@ -247,7 +245,6 @@ void Result::Render(RenderContext& rc)
 	m_PlayerRank2.Draw(rc);
 	m_PlayerRank3.Draw(rc);
 	m_PlayerRank4.Draw(rc);
-	m_choice.Draw(rc);
 	m_GOtitle.Draw(rc);
 	m_gameover.Draw(rc);
 }

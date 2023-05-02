@@ -59,9 +59,10 @@ private:
 
 	Quaternion m_sRotation;
 	SpriteRender m_spriteRender;	//背景
-	SpriteRender m_GOtitle;			//"タイトルへ戻る"
-	SpriteRender m_gameover;		//"ゲーム終了"
-	SpriteRender m_choice;			//選択カーソル
+	SpriteRender m_GOtitle;			//"タイトルへ戻る"非選択
+	SpriteRender m_GOtitleST;		//"タイトルへ戻る"選択
+	SpriteRender m_gameover;		//"ゲーム終了"非選択
+	SpriteRender m_gameoverST;		//"タイトルへ戻る"選択
 	Tittle* tittle = nullptr;
 
 	//線形補間でここまで動かす

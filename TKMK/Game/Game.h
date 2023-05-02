@@ -231,8 +231,8 @@ private:
 
 	Quaternion m_rotation = Quaternion::Identity;
 	Quaternion m_sRotation = Quaternion::Identity;
-	Vector3 EnemyRespawnPosition[9];
-	Quaternion EnemyReapawnPot[9];
+	Vector3 EnemyRespawnPosition[45];
+	Quaternion EnemyReapawnPot[45];
 	//ポーズの画像
 	SpriteRender m_Pause_Front;    //ポーズのメイン
 	SpriteRender m_Pause_Back;     //背景

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Actor.h"
 #include "Player.h"
+#include "Fade.h"
 
 Actor::Actor()
 {
@@ -336,4 +337,28 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 	return Vol;
 }
 
+/// <summary>
+/// キャラがやられてからリスポーンするまでの時間を計る
+/// </summary>
+/// /// <param name="DeathToRespwanFlag"></param>
+bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
+{
+	//キャラがやられたら
+	if (m_DeathToRespwanFlag == true)
+	{
+		//タイマー減少
+		m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
+		//2秒以上経ったら
+		if (m_respwanTimer <= 0.0f)
+		{
+			//画面を明るくする
+			fade->StartFadeOut(1.0f);
 
+			m_DeathToRespwanFlag = false;
+		}
+		//やられている
+		return true;
+	}
+	//やられていない
+	return false;
+}

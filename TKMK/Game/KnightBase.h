@@ -241,6 +241,10 @@ protected:
 	void OnProcessFallStateTransition();
 	//チェインアタックのステートの遷移処理
 	void OnProcessChainAtkStateTransition();
+	//二段目アタックのステートの遷移処理
+	void OnProcessSecondAtkStateTransition();
+	//三段目アタックのステートの遷移処理
+	void OnProcessLastAtkStateTransition();
 	//スキルのステートの遷移処理
 	void OnProcessSkillAtkStateTransition();
 	//回避のステートの遷移処理
@@ -259,6 +263,8 @@ protected:
 		enAnimationClip_Walk,
 		enAnimationClip_Run,
 		enAnimationClip_ChainAtk,
+		enAnimationClip_SecondAtk,
+		enAnimationClip_lastAtk,
 		enAnimationClip_Damege,
 		enAnimationClip_Death,
 		enAnimationClip_Skill,

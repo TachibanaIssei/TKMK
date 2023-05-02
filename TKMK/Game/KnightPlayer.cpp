@@ -96,9 +96,10 @@ void KnightPlayer::Update()
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade) == true)
 	{
-
-		//m_charState = enCharState_Idle;
-
+		m_charState = enCharState_Idle;
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
 		return;
 	}
 

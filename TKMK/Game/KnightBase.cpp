@@ -45,7 +45,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Run].Load("Assets/animData/Knight/run.tka");
 	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/Knight_ChainAttack.tka");
+	m_animationClips[enAnimationClip_ChainAtk].Load("Assets/animData/Knight/ChainAttack/first_Attack.tka");
 	m_animationClips[enAnimationClip_ChainAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/ChainAttack/Second_Attack.tka");
 	m_animationClips[enAnimationClip_SecondAtk].SetLoopFlag(false);
@@ -479,41 +479,62 @@ void KnightBase::PlayAnimation()
 
 	switch (m_charState)
 	{
+	//待機
 	case enCharState_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
 		break;
+	//歩き
 	case enCharState_Walk:
 		m_modelRender.PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
+	//走る
 	case enCharState_Run:
 		m_modelRender.PlayAnimation(enAnimationClip_Run,0.2f);
 		break;
+	//ジャンプ
 	case enCharState_Jump:
 		m_modelRender.PlayAnimation(enAnimationClip_Jump, 0.2f);
 		break;
+	//落ちる
 	case enCharState_Fall:
 		m_modelRender.SetAnimationSpeed(0.9f);
 		m_modelRender.PlayAnimation(enAnimationClip_Fall, 0.0f);
 		break;
+	//一段目
 	case enCharState_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.1f);
-		m_modelRender.SetAnimationSpeed(1.5f);
+		m_modelRender.SetAnimationSpeed(1.1f);
 		break;
+	//二段目
+	case enCharState_SecondAttack:
+		m_modelRender.PlayAnimation(enAnimationClip_SecondAtk, 0.1f);
+		m_modelRender.SetAnimationSpeed(1.3f);
+		break;
+	//三段目
+	case enCharState_LastAttack:
+		m_modelRender.PlayAnimation(enAnimationClip_lastAtk, 0.1f);
+		m_modelRender.SetAnimationSpeed(1.3f);
+		break;
+	//スキル
 	case enCharState_Skill:
 		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
 		break;
+	//必殺技
 	case enCharState_UltimateSkill:
 		//ここ調整必要！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 		m_modelRender.SetAnimationSpeed(0.8f);
 		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1);
 		break;
+	//回避
 	case enCharState_Avoidance:
 		m_modelRender.SetAnimationSpeed(1.5f);
 		m_modelRender.PlayAnimation(enAnimationClip_Avoidance, 0.1f);
 		break;
+	//被ダメージ
 	case enCharState_Damege:
 		m_modelRender.PlayAnimation(enAnimationClip_Damege, 0.4f);
 		break;
+	//デス
 	case enCharState_Death:
 		m_modelRender.PlayAnimation(enAnimationClip_Death);
 	default:
@@ -545,6 +566,12 @@ void KnightBase::ManageState()
 		break;
 	case enCharState_Attack:
 		OnProcessChainAtkStateTransition();
+		break;
+	case enCharState_SecondAttack:
+		OnProcessSecondAtkStateTransition();
+		break;
+	case enCharState_LastAttack:
+		OnProcessLastAtkStateTransition();
 		break;
 	case enCharState_Skill:
 		OnProcessSkillAtkStateTransition();
@@ -616,7 +643,6 @@ void KnightBase::OnProcessJumpStateTransition()
 	{
 		m_AirFlag = true;
 	}
-
 	if (m_AirFlag == true)
 	{
 		if (m_charCon.IsOnGround() == true)
@@ -629,19 +655,71 @@ void KnightBase::OnProcessJumpStateTransition()
 		}
 
 	}
-
 	// 応急処置
 	if (m_position.y < 10) {
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();
 	}
-
 }
 
 /// <summary>
 /// FirstAtkアニメーションが再生されているときの処理
 /// </summary>
 void KnightBase::OnProcessChainAtkStateTransition()
+{
+	//チェインアタックのアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//二段目のアタック入力をしていたなら
+		if (m_AtkTmingState == SecondAtk_State)
+		{
+			//攻撃を二段目にする
+			m_charState = enCharState_SecondAttack;
+		}
+		else
+		{
+			//待機ステート
+		//攻撃を始めたかの判定をfalseにする
+			AtkState = false;
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			m_charState = enCharState_Idle;
+			OnProcessCommonStateTransition();
+		}
+	}
+}
+
+/// <summary>
+/// SecondAtkアニメーションが再生されているときの処理
+/// </summary>
+void KnightBase::OnProcessSecondAtkStateTransition()
+{
+	//チェインアタックのアニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//二段目のアタック入力をしていたなら
+		if (m_AtkTmingState == LastAtk_State)
+		{
+			//攻撃を二段目にする
+			m_charState = enCharState_LastAttack;
+		}
+		else
+		{
+			//待機ステート
+		//攻撃を始めたかの判定をfalseにする
+			AtkState = false;
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			m_charState = enCharState_Idle;
+			OnProcessCommonStateTransition();
+		}
+	}
+}
+
+/// <summary>
+/// LastAtkアニメーションが再生されているときの処理
+/// </summary>
+void KnightBase::OnProcessLastAtkStateTransition()
 {
 	//チェインアタックのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)

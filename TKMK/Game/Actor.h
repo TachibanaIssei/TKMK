@@ -19,6 +19,8 @@ public:
 		enCharState_Walk,
 		enCharState_Run,
 		enCharState_Attack,
+		enCharState_SecondAttack,
+		enCharState_LastAttack,
 		enCharState_Damege,
 		enCharState_Death,
 		enCharState_Skill,

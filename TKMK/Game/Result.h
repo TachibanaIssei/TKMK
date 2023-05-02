@@ -22,7 +22,7 @@ public:
 		enChange_first,		//最初の処理
 		enChange_move,		//線形補完中
 		enChange_stop,		//終わった後
-		enChange_Num
+		enChange_Num,
 	};
 
 	//カーソルの場所
@@ -71,8 +71,8 @@ private:
 		Vector3(-250.0f, 350.0f, 0.0f),		//２位
 		Vector3(-250.0f, 200.0f, 0.0f),		//３位
 		Vector3(-250.0f, 50.0f, 0.0f),		//４位
-		Vector3(-500.0f, -350.0f, 0.0f),	//"タイトルに戻る"
-		Vector3(525.0f, -350.0f, 0.0f),		//"ゲームを終了"
+		Vector3(-500.0f, -450.0f, 0.0f),	//"タイトルに戻る"
+		Vector3(525.0f, -450.0f, 0.0f),		//"ゲームを終了"
 		Vector3(-775.0f, -370.0f, 0.0f),	//選択カーソル
 	};
 

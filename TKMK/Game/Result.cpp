@@ -65,8 +65,6 @@ bool Result::Start()
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
 
-
-
 	//"タイトルに戻る"非選択
 	m_GOtitle.Init("Assets/sprite/Result/GOtoTitle_white.DDS", 500.0f, 100.0f);
 	m_GOtitle.SetPosition(FirstPos[4]);

@@ -222,6 +222,10 @@ public:
 	{
 		respawnNumber = number;
 	}
+	int GetRespawnNumber() const
+	{
+		return respawnNumber;
+	}
 	
 protected:
 	/// <summary>

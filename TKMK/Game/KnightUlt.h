@@ -21,6 +21,10 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 
+	void SetUltColorNumb(int number)
+	{
+		ColorNumb = number;
+	}
 	/// <summary>
 		/// 座標を設定する。
 		/// </summary>
@@ -172,6 +176,7 @@ private:
 	int CharLevel = 0;
 	//bool Ultflag = true;
 
+	int ColorNumb;
 	// 生成者
 	Actor* m_actor = nullptr;
 	// ゲームカメラ

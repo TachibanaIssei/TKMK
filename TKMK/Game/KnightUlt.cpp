@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Actor.h"
 #include "GameCamera.h"
+#include "KnightAI.h"
 
 //壁に当たったら消すようにするtodo
 namespace {
@@ -36,6 +37,7 @@ KnightUlt::~KnightUlt()
 
 bool KnightUlt::Start()
 {
+
 	//最初の座標
 	m_firstposition = m_position;
 	//移動速度を計算。
@@ -72,9 +74,32 @@ bool KnightUlt::Start()
 
 	//エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/Knight/Knight_Ultimate.efk");
+	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
+	EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
+	EffectEngine::GetInstance()->ResistEffect(5, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
+
 	//斬撃エフェクトの再生。
-	Ulteffect = NewGO<EffectEmitter>(1);
-	Ulteffect->Init(1);
+	if (ColorNumb == 2)
+	{
+		Ulteffect = NewGO<EffectEmitter>(1);
+		Ulteffect->Init(1);
+	}
+	else if (ColorNumb == 1)
+	{
+		Ulteffect = NewGO<EffectEmitter>(3);
+		Ulteffect->Init(3);
+	}
+	else if (ColorNumb == 3)
+	{
+		Ulteffect = NewGO<EffectEmitter>(4);
+		Ulteffect->Init(4);
+	}
+	else
+	{
+		Ulteffect = NewGO<EffectEmitter>(5);
+		Ulteffect->Init(5);
+	}
+	
 	Ulteffect->SetScale({ 4.0f,4.0f,4.0f });
 	Ulteffect->SetPosition(m_position);
 	Ulteffect->SetRotation(effectRot);

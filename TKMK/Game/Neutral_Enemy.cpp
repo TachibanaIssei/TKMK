@@ -100,6 +100,9 @@ bool Neutral_Enemy::Start()
 		m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
+		//エフェクトを読み込む。
+		EffectEngine::GetInstance()->ResistEffect(9, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
+		EffectEngine::GetInstance()->ResistEffect(10, u"Assets/effect/Neutral_Enemy/death.efk");
 
 		enemyColorRam = rand() % 10;
 
@@ -264,7 +267,15 @@ void Neutral_Enemy::Update()
 	//モデルの更新。
 	m_modelRender.Update();
 }
-
+void Neutral_Enemy::DeathEfk()
+{
+		EffectEmitter* DeathEfk = NewGO<EffectEmitter>(0);
+		DeathEfk->Init(10);
+		DeathEfk->SetScale(Vector3::One * 5.0f);
+		Vector3 effectPosition = m_position;
+		DeathEfk->SetPosition(effectPosition);
+		DeathEfk->Play();
+}
 void Neutral_Enemy::Move()
 {
 	Vector3 diff = m_forward;
@@ -400,6 +411,8 @@ void Neutral_Enemy::Collision()
 				//HPが0になったら
 			if (m_Status.Hp <= 0)
 			{
+				DeathEfk();
+
 				if (m_enemyKinds == enEnemyKinds_Rabbit)
 				{
 					//相手に経験値を渡す
@@ -466,6 +479,7 @@ void Neutral_Enemy::Collision()
 				m_lastAttackActor->ExpProcess(Exp/2);
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
+				DeathEfk();
 			}
 			else {
 				//被ダメージステートに遷移する。
@@ -1043,18 +1057,31 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//攻撃中の判定をtrueにする
 		m_UnderAttack = true;
 		//攻撃エフェクトを発生させる
-		
+		//大きさを設定する。
+		//座標を調整
+		//エフェクト再生
+		EffectEmitter*AttackEfk = NewGO<EffectEmitter>(0);
+		AttackEfk->Init(9);
+		AttackEfk->SetScale(Vector3::One * 20.0f);
+		Vector3 effectPosition = m_position;
+		//座標を少し上にする。
+		effectPosition.y += 35.0f;
+
+		effectPosition += m_forward * 25;
+
+		/*AttackEfk->SetRotation()*/
+		AttackEfk->SetPosition(effectPosition);
 		//攻撃用のコリジョンを作成
 		MakeAttackCollision();
 
-		//大きさを設定する。
-
-		//座標を調整
-
-		//エフェクト再生
-
-
+		AttackEfk->Play();
 		//効果音再生
+	
+
+		/*SoundSource* se = NewGO<SoundSource>(0);*/
+		/*se->Init(3);
+		se->Play(false);
+		se->SetVolume(0.8f);*/
 		//攻撃の声
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(21);
@@ -1066,7 +1093,6 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 	//キーの名前がattack_endの時
 	else if (wcscmp(eventName,L"Attack_end")==0){
 		m_UnderAttack = false;
-
 		//ステートを切り替える
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}

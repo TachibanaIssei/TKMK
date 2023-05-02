@@ -806,6 +806,7 @@ void KnightAI::MakeUltSkill()
 	knightUlt->SetCreatorName(GetName());
 	// 制作者を教える
 	knightUlt->SetActor(this);
+	knightUlt->SetUltColorNumb(respawnNumber);
 	//キャラのレベルを入れる
 	knightUlt->GetCharLevel(Lv);
 	//座標の設定

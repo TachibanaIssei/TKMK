@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "Actor.h"
 #include "GameCamera.h"
+#include "KnightAI.h"
 
 //壁に当たったら消すようにするtodo
 namespace {
@@ -36,6 +37,7 @@ KnightUlt::~KnightUlt()
 
 bool KnightUlt::Start()
 {
+
 	//最初の座標
 	m_firstposition = m_position;
 	//移動速度を計算。
@@ -70,11 +72,27 @@ bool KnightUlt::Start()
 	//懲り所オブジェクトが自動で削除されないようにする。
 	UltDeleteJudgeCollision->SetIsEnableAutoDelete(false);
 
-	//エフェクトを読み込む。
-	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/Knight/Knight_Ultimate.efk");
+	
+	Ulteffect = NewGO<EffectEmitter>(0);
 	//斬撃エフェクトの再生。
-	Ulteffect = NewGO<EffectEmitter>(1);
-	Ulteffect->Init(1);
+	if (ColorNumb == 2)
+	{
+		
+		Ulteffect->Init(enEffect_Knight_Ult_Blue);
+	}
+	else if (ColorNumb == 1)
+	{
+		Ulteffect->Init(enEffect_Knight_Ult_Red);
+	}
+	else if (ColorNumb == 3)
+	{
+		Ulteffect->Init(enEffect_Knight_Ult_Green);
+	}
+	else
+	{
+		Ulteffect->Init(enEffect_Knight_Ult_Yellow);
+	}
+	
 	Ulteffect->SetScale({ 4.0f,4.0f,4.0f });
 	Ulteffect->SetPosition(m_position);
 	Ulteffect->SetRotation(effectRot);

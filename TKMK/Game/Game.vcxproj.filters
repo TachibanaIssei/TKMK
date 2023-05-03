@@ -54,5 +54,6 @@
     <ClInclude Include="Lamp.h" />
     <ClInclude Include="CharacterSelect.h" />
     <ClInclude Include="Fade.h" />
+    <ClInclude Include="Effect.h" />
   </ItemGroup>
 </Project>

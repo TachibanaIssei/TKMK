@@ -62,7 +62,7 @@ void Fade::Render(RenderContext& rc)
 	if (m_currentAlpha > 0.0f)
 	{
 		BlackSprite.SetMulColor({ 1.0f, 1.0f, 1.0f, m_currentAlpha });
-		BlackSprite.Draw(rc);
+		BlackSprite.Draw(rc,true);
 	}
 	
 }

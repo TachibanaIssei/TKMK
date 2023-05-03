@@ -53,11 +53,19 @@ void nsK2EngineLow::RenderingEngine::ShadowModelRendering(RenderContext& rc, Cam
 	}
 }
 
-void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc)
+void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc, bool drawTiming = false)
 {
-	for (auto& spriteObj : m_spriteList)
-	{
-		spriteObj->OnRenderSprite(rc);
+	if (drawTiming) {
+		for (auto& spriteObj : m_laterSpriteList)
+		{
+			spriteObj->OnRenderSprite(rc);
+		}
+	}
+	else {
+		for (auto& spriteObj : m_spriteList)
+		{
+			spriteObj->OnRenderSprite(rc);
+		}
 	}
 }
 
@@ -98,8 +106,11 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	SpriteRendering(rc);
 	//文字を描画
 	FontRendering(rc);
+	//スプライトを文字の上に描画する
+	SpriteRendering(rc, true);
 
 	m_modelList.clear();
 	m_spriteList.clear();
+	m_laterSpriteList.clear();
 	m_fontList.clear();
 }

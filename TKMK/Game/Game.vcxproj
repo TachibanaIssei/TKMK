@@ -259,6 +259,7 @@
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="CharacterSelect.h" />
     <ClInclude Include="CharUltFlag.h" />
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />

@@ -336,6 +336,10 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	{
 		eval += 600;
 	}
+	if (ColorEnemy == Neutral_Enemy::enEnemyKinds_Rabbit)
+	{
+
+	}
 	// 壁の向こうに対象がいるなら評価値を下げる
 	btTransform start, end;
 	start.setIdentity();
@@ -743,7 +747,7 @@ void KnightAI::Attack()
 			matrix.Apply(m_SwordPos);
 			m_SwordRot.SetRotation(matrix);*/
 			EffectEmitter* Ult_Swordeffect = NewGO<EffectEmitter>(2);
-			Ult_Swordeffect->Init(2);
+			Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
 			Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
 			Ult_Swordeffect->SetPosition(m_position);
 			//Ult_Swordeffect->SetRotation(m_SwordRot);
@@ -802,6 +806,7 @@ void KnightAI::MakeUltSkill()
 	knightUlt->SetCreatorName(GetName());
 	// 制作者を教える
 	knightUlt->SetActor(this);
+	knightUlt->SetUltColorNumb(respawnNumber);
 	//キャラのレベルを入れる
 	knightUlt->GetCharLevel(Lv);
 	//座標の設定
@@ -1040,7 +1045,7 @@ void KnightAI::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 
 	//フォントを描画する。
-	m_Name.Draw(rc);
+	//m_Name.Draw(rc);
 
 }
 

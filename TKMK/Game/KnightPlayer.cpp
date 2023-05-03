@@ -313,8 +313,8 @@ void KnightPlayer::Attack()
 		/*Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
 		matrix.Apply(m_SwordPos);
 		m_SwordRot.SetRotation(matrix);*/
-		EffectEmitter*Ult_Swordeffect = NewGO<EffectEmitter>(2);
-		Ult_Swordeffect->Init(2);
+		EffectEmitter*Ult_Swordeffect = NewGO<EffectEmitter>(0);
+		Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
 		Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
 		Ult_Swordeffect->SetPosition(m_position);
 		//Ult_Swordeffect->SetRotation(m_SwordRot);

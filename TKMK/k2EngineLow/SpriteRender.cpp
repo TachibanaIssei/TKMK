@@ -19,7 +19,13 @@ void nsK2EngineLow::SpriteRender::Init(const char* filePath, const float w, cons
 	//isInit = 1;
 }
 
-void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc)
+void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc, bool drawTiming)
 {
-	g_renderingEngine->AddSpriteList(this);
+	if (drawTiming)
+	{
+		g_renderingEngine->AddSpriteList(this, true);
+	}
+	else {
+		g_renderingEngine->AddSpriteList(this);
+	}
 }

@@ -30,9 +30,15 @@ namespace nsK2EngineLow {
 		/// スプライトレンダークラスをリストに追加する
 		/// </summary>
 		/// <param name="spriteRender">スプライトレンダー</param>
-		void AddSpriteList(SpriteRender* spriteRender)
+		void AddSpriteList(SpriteRender* spriteRender,bool drawTiming = false)
 		{
-			m_spriteList.push_back(spriteRender);
+			if (drawTiming)
+			{
+				m_laterSpriteList.push_back(spriteRender);
+			}
+			else {
+				m_spriteList.push_back(spriteRender);
+			}
 		}
 		/// <summary>
 		/// フォントレンダークラスをリストに追加する
@@ -467,7 +473,7 @@ namespace nsK2EngineLow {
 		/// スプライトを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void SpriteRendering(RenderContext& rc);
+		void SpriteRendering(RenderContext& rc, bool drawTiming);
 		/// <summary>
 		/// フォントを描画する
 		/// </summary>
@@ -477,6 +483,7 @@ namespace nsK2EngineLow {
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
+		std::vector<SpriteRender*>	m_laterSpriteList;			//描画順が遅いスプライトクラスのリスト
 		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
 
 		SceneLight					m_sceneLight;				//シーンライト

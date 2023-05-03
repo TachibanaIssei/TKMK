@@ -24,10 +24,8 @@ namespace {
 	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);
 	const Vector3 Menu_SEPos = Vector3(-245.0f, -185.0f, 0.0f);
 	const Vector3 Menu_QuitGamePos = Vector3(0.0f, -320.0f, 0.0f);
-	const Vector3 Menu_SelectBar_BGMPos = Vector3(0.0f, -68.0f, 0.0f);
-	const Vector3 Menu_SelectBar_SEPos = Vector3(0.0f, -183.0f, 0.0f);
-
-	const float AddSE = 0.5f;
+	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
+	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
 }
 
 Game::Game()
@@ -69,6 +67,19 @@ Game::~Game()
 
 bool Game::Start()
 {
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Red, u"Assets/effect/Knight/Knight_Red_Death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Yellow, u"Assets/effect/Knight/Knight_Red_Death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Red_Death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Green, u"Assets/effect/Knight/Knight_Red_Death.efk");
+
+	//エフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Red, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Green, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Yellow, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
+
+	//オーラエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 
 	g_renderingEngine->UnUseHemiLight();
 
@@ -136,7 +147,7 @@ bool Game::Start()
 			});
 	}
 
-	
+
 
 	m_AIPos.Init("Assets/level3D/AIPOS2.tkl", [&](LevelObjectData& objData) {
 
@@ -152,6 +163,8 @@ bool Game::Start()
 					m_KnightAI->SetCharaconPosition(objData.position);
 					int Number = 0;
 					m_KnightAI->SetRespawnNumber(Number);
+					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+					
 					return true;
 				}
 				//右上の座標
@@ -163,6 +176,7 @@ bool Game::Start()
 					m_KnightAI1->SetCharaconPosition(objData.position);
 					int Number = 1;
 					m_KnightAI1->SetRespawnNumber(Number);
+					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 					return true;
 				}
 				//左下の座標
@@ -174,6 +188,7 @@ bool Game::Start()
 					m_KnightAI2->SetCharaconPosition(objData.position);
 					int Number = 3;
 					m_KnightAI2->SetRespawnNumber(Number);
+					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 					return true;
 				}
 			}
@@ -257,7 +272,11 @@ bool Game::Start()
 
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
-	
+	//BGMの再生
+	m_bgm = NewGO<SoundSource>(0);
+	m_bgm->Init(2);
+	m_bgm->Play(true);
+	m_bgm->SetVolume(BGMVolume);
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -287,12 +306,6 @@ void Game::BattleStart()
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);
-
-		//BGMの再生
-		m_bgm = NewGO<SoundSource>(0);
-		m_bgm->Init(2);
-		m_bgm->Play(true);
-		m_bgm->SetVolume(BGMVolume);
 	}
 }
 
@@ -344,7 +357,7 @@ void Game::Battle()
 		m_RespawnTimer = 0.0f;
 	}
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
-	if (m_RabbitRespawnTimer >= 30.0f)
+	if (m_RabbitRespawnTimer >= 5.0f)
 	{
 		//RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
@@ -439,6 +452,7 @@ void Game::Respawn()
 
 void Game::RabbitRespawn()
 {
+	return;
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
 	RabbitFlag = true;
@@ -568,10 +582,10 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	neutral_Enemy->SetPosition(pos);
 	neutral_Enemy->SetRotation(rot);
 	neutral_Enemy->modelUpdate();
-	neutral_Enemy->GetSE(SoundEffectVolume);
 	if (isRabiit == true)
 	{
 		neutral_Enemy->ChangeRabbit();
+		neutral_Enemy->SetRabbitLifeFlag(true);
 	}
 
 	m_neutral_Enemys.push_back(neutral_Enemy);
@@ -634,22 +648,14 @@ void Game::SetMusic()
 
 void Game::PauseMove()
 {
-	if (MenuNumber < 4)
+	if (g_pad[0]->IsTrigger(enButtonDown))
 	{
-		if (g_pad[0]->IsTrigger(enButtonDown))
-		{
-			MenuNumber++;
-		}
+		MenuNumber++;
 	}
-	
-	if (MenuNumber > 0)
+	if (g_pad[0]->IsTrigger(enButtonUp))
 	{
-		if (g_pad[0]->IsTrigger(enButtonUp))
-		{
-			MenuNumber--;
-		}
+		MenuNumber--;
 	}
-	
 
 }
 
@@ -753,11 +759,10 @@ void Game::Menu_BGM()
 {
 	//音量を上げる
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if (BGMVolume < 7.0f)
+		if (BGMVolume < 8.0f)
 		{
-			BGMVolume += AddSE;
+			BGMVolume += 0.5f;
 			m_bgm->SetVolume(BGMVolume);
-			//バーの座標を移動
 			SelectBar_BGMPos.x += m_nuwBGMPos;
 		}
 		
@@ -766,9 +771,8 @@ void Game::Menu_BGM()
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if (BGMVolume > 0)
 		{
-			BGMVolume -= AddSE;
+			BGMVolume -= 0.2f;
 			m_bgm->SetVolume(BGMVolume);
-			//バーの座標を移動
 			SelectBar_BGMPos.x -= m_nuwBGMPos;
 		}
 	
@@ -782,21 +786,9 @@ void Game::Menu_SE()
 {
 	//音量を上げる
 	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if (SoundEffectVolume < 7.0f)
+		if (SoundEffectVolume < 4.0f)
 		{
-			SoundEffectVolume += AddSE;
-
-			//それぞれのキャラの効果音を上げる
-			for (auto character : m_Actors)
-			{
-				character->SetSE(AddSE);
-			}
-			//中立の敵の効果音を上げる
-			for (auto enemy:m_neutral_Enemys)
-			{
-				enemy->SetSE(AddSE);
-			}
-			//バーの座標を移動
+			SoundEffectVolume += 0.4f;
 			SelectBar_SEPos.x += m_nuwSEPos;
 		}
 		
@@ -805,19 +797,7 @@ void Game::Menu_SE()
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
 		if (SoundEffectVolume > 0)
 		{
-			SoundEffectVolume -= AddSE;
-
-			//それぞれのキャラの効果音を下げる
-			for (auto character : m_Actors)
-			{
-				character->SetSE(-AddSE);
-			}
-			//中立の敵の効果音を下げる
-			for (auto enemy : m_neutral_Enemys)
-			{
-				enemy->SetSE(-AddSE);
-			}
-			//バーの座標を移動
+			SoundEffectVolume -= 0.1f;
 			SelectBar_SEPos.x -= m_nuwSEPos;
 		}
 		

@@ -64,7 +64,13 @@ Game::~Game()
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	DeleteGO(m_bgm);
-	DeleteGO(lamp);
+
+	QueryGOs<Lamp>("lamp", [&](Lamp* lamp_) {
+		DeleteGO(lamp_);
+		return true;
+		});
+	//DeleteGO(lamp);
+	DeleteGO(m_skyCube);
 }
 
 bool Game::Start()

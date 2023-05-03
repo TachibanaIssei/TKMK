@@ -1,4 +1,5 @@
 #pragma once
+#include "physics/PhysicsGhostObject.h"
 
 class Tittle;
 class Game;
@@ -11,6 +12,21 @@ public:
 	bool Start();
 	void Update();
 	void Cursor();
+
+	/// <summary>
+	/// ポインターの移動処理
+	/// </summary>
+	void PointerMove();
+
+	/// <summary>
+	/// コリジョン作成
+	/// </summary>
+	void SetCollision();
+
+	/// <summary>
+	/// ゴーストオブジェクトの当たり判定の処理
+	/// </summary>
+	void GhostCollision();
 
 	void SetKnightModel();
 
@@ -45,10 +61,11 @@ public:
  
 
 private:
-	SpriteRender m_CharacterSelectPic;		//セレクト画面
 	SpriteRender m_SelectCursor;			//カーソル
-	SpriteRender m_KnightPic;				//剣士の画像
-	SpriteRender m_WizardPic;				//魔法使いの画像
+
+	SpriteRender m_pointer_black;					//ポインター
+	SpriteRender m_pointer_white;					//ポインター
+
 
 	SpriteRender m_Status;					//ステータス
 	SpriteRender m_Attack_Icon;				//攻撃、スキル、必殺技アイコン
@@ -57,13 +74,25 @@ private:
 
 	ModelRender m_Knight;					//剣士のモデル
 	Quaternion m_KnightRot;
+
+	ModelRender m_platform;					//モデルを乗せる台
 	
 
 	EnCharacterSelect m_characterSelect;	//キャラクターセレクト
 
 	Vector3 curPosition = { -510.0f,75.0f,0.0f };
 
-	Vector3 m_CameraPosition = { -30.0f, 50.0f, -150.0f };
+	Vector3 m_pointer_blackPos = Vector3::Zero;
+	Vector3 m_pointer_whitePos= Vector3::Zero;
+	Vector3 m_moveSpeed = Vector3::Zero;
+
+	CharacterController Poimter;
+
+	PhysicsGhostObject Attack;
+	PhysicsGhostObject Skill;
+	PhysicsGhostObject UltimateSkill;
+
+	float time;
 
 	int CursorNum = 0;
 	int TitleScene = 1;

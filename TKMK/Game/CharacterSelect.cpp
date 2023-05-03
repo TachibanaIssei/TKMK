@@ -9,8 +9,20 @@ namespace {
 	const Vector3 NamePos = Vector3(-600.0f, -400.0f, 0.0f);				//名前の座標
 	const Vector3 UnderBarPos = Vector3(0.0f, -500.0f, 0.0f);			//画面下のバーの座標
 
-	const Vector3 KnightPOs = Vector3(-600.0f, 0.0f, 0.0f);
+	const Vector3 KnightPos = Vector3(-150.0f, 0.0f, 0.0f);				//剣士の座標
+	const Vector3 PlatformPos = Vector3(-150.0f, -40.0f, 0.0f);				//剣士の座標
+	const Vector3 CameraTargetPos = Vector3(0.0f, 90.0f, 0.0f);			//カメラのターゲット
 	const Quaternion KnightRot = Quaternion(0.0f, 90.0f, 0.0f, 1.0f);
+
+	const Vector3 m_CameraPosition = Vector3( 0.0f, 90.0f, -250.0f );   //カメラの座標
+
+	const Vector3 AttackCollision = Vector3(20.0f, 33.0f, 0.0f);
+	const Quaternion AttackCollisionRot = Quaternion(180.0f, 75.0f, 0.0f, 1.0f);
+	const Vector3 SkillCollision = Vector3(105.0f, 33.0f, 0.0f);
+	const Vector3 UltimateCollision = Vector3(194.0f, 30.0f, 0.0f);
+
+	const float PointerSpeed = 30.0f;
+
 }
 
 CharacterSelect::CharacterSelect()
@@ -20,18 +32,23 @@ CharacterSelect::CharacterSelect()
 
 CharacterSelect::~CharacterSelect()
 {
-
+	//攻撃アイコンの当たり判定
+	Attack.Release();
+	//スキルアイコンの当たり判定
+	Skill.Release();
+	//必殺技アイコンの当たり判定
+	UltimateSkill.Release();
 }
 
 bool CharacterSelect::Start()
 {
 	
-
-	Quaternion rot/*={0.0f,0.0f,0.0f,0.0f}*/;
-	//rot.x = 10.0f;
-	rot.Apply(m_CameraPosition);
+	//カメラの座標を設定
+	Quaternion rot;
+	//rot.Apply(m_CameraPosition);
+	g_camera3D->SetTarget(CameraTargetPos);
 	g_camera3D->SetPosition(m_CameraPosition);
-	//g_camera3D->
+	g_camera3D->Update();
 
 	g_renderingEngine->SetAmbient(Vector4(0.5f, 0.5f, 0.5f, 1.0f));
 	Vector3 dir = { 0.0f,-1.0f,0.0f };
@@ -40,24 +57,26 @@ bool CharacterSelect::Start()
 
 	//剣士のモデル、アニメーション
 	SetKnightModel();
+	//攻撃、スキル、必殺技アイコンの当たり判定
+	SetCollision();
 
-	//キャラクターセレクト画面
-	m_CharacterSelectPic.Init("Assets/sprite/CharacterSelectPic.DDS", 1920.0f, 1080.0f);
-	m_CharacterSelectPic.SetPosition(0.0f, 0.0f, 0.0f);
-	m_CharacterSelectPic.SetScale(1.0f, 1.0f, 1.0f);
-	m_CharacterSelectPic.Update();
+	//ポインターの黒
+	m_pointer_black.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
+	m_pointer_black.SetPosition(m_pointer_blackPos);
+	m_pointer_black.SetScale(0.6f, 0.6f, 0.6f);
+	m_pointer_black.Update();
 
-	//剣士の画像
-	m_KnightPic.Init("Assets/sprite/Select/Knight.DDS", 300.0f, 300.0f); 
-	m_KnightPic.SetPosition(-510.0f, 75.0f, 0.0f);
-	m_KnightPic.SetScale(1.0f, 1.0f, 1.0f);
-	m_KnightPic.Update();
+	//ポインターの白
+	m_pointer_white.Init("Assets/sprite/Select/pointer_white.DDS", 220.0f, 220.0f);
+	m_pointer_white.SetPosition(m_pointer_whitePos);
+	m_pointer_white.SetScale(0.6f, 0.6f, 0.6f);
+	m_pointer_white.Update();
 
-	//魔法使いの画像
-	m_WizardPic.Init("Assets/sprite/Select/Wizard.DDS", 300.0f, 300.0f);
-	m_WizardPic.SetPosition(-40.0f, 75.0f, 0.0f );
-	m_WizardPic.SetScale(1.0f, 1.0f, 1.0f);
-	m_WizardPic.Update();
+	//台の設定
+	m_platform.Init("Assets/modelData/platform/platform.tkm");
+	m_platform.SetPosition(PlatformPos);
+	m_platform.SetScale(2.2f, 2.0f, 2.2f);
+	m_platform.Update();
 
 	//カーソル
 	m_SelectCursor.Init("Assets/sprite/SelectCurSor.DDS", 1200.0f, 675.0f);
@@ -95,8 +114,18 @@ bool CharacterSelect::Start()
 
 void CharacterSelect::Update()
 {
+	//ポインターの点滅
+	time += g_gameTime->GetFrameDeltaTime();
+	/*time++;
+	if (time >= 61)
+	{
+		time = 0;
+	}*/
+
 	//カーソル
 	Cursor();
+
+	PointerMove();
 	
 	//Aボタンを押した時
 	if (g_pad[0]->IsTrigger(enButtonA))
@@ -124,20 +153,60 @@ void CharacterSelect::Update()
 		}
 		DeleteGO(this);
 	}
+	//Bボタンが押されたらタイトルに戻る
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
 		DeleteGO(this);
 	}
 
-	m_CharacterSelectPic.Update();
-	m_KnightPic.Update();
-	m_WizardPic.Update();
 	m_SelectCursor.Update();
 
-	m_KnightRot.AddRotationDegY(4.0f);
+	//剣士を回転させる
+	m_KnightRot.AddRotationDegY(2.0f);
 	m_Knight.SetRotation(m_KnightRot);
 	m_Knight.Update();
+
+	m_platform.SetRotation(m_KnightRot);
+	m_platform.Update();
+
+	//当たり判定の可視化
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+}
+
+/// <summary>
+/// ポインターの移動処理
+/// </summary>
+void CharacterSelect::PointerMove()
+{
+	
+	//移動処理
+	Vector3 stickL;
+	stickL.x = PointerSpeed*g_pad[0]->GetLStickXF();
+	stickL.y = PointerSpeed * g_pad[0]->GetLStickYF();
+
+	m_moveSpeed += stickL;
+	
+	m_pointer_blackPos += m_moveSpeed;
+	m_pointer_whitePos += m_moveSpeed;
+
+	m_pointer_black.SetPosition(m_moveSpeed);
+	m_pointer_white.SetPosition(m_moveSpeed);
+
+	m_pointer_black.Update();
+	m_pointer_white.Update();
+}
+
+void CharacterSelect::GhostCollision()
+{
+	//ポインターとアタックアイコンのゴーストオブジェクトのあたり判定を行う。
+	PhysicsWorld::GetInstance()->ContactTest(Poimter, [&](const btCollisionObject& contactObject) {
+		if (Attack.IsSelf(contactObject) == true) {
+			//m_physicsGhostObjectとぶつかった。
+			//フラグをtrueにする。
+			//m_isHit = true;
+		}
+		});
 }
 
 void CharacterSelect::Cursor()
@@ -203,10 +272,14 @@ void CharacterSelect::Cursor()
 		curPosition = { -40.0f,-275.0f,0.0f };
 		break;
 	}
+
 	m_SelectCursor.SetPosition(curPosition);
 	m_SelectCursor.Update();
 }
 
+/// <summary>
+/// 剣士のモデル、アニメーション読み込み
+/// </summary>
 void CharacterSelect::SetKnightModel()
 {
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Knight/Knight_idle.tka");
@@ -237,28 +310,47 @@ void CharacterSelect::SetKnightModel()
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
 
 	//剣士モデルを読み込み
-	m_Knight.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
-	m_Knight.SetPosition(-90.0f, 0.0f, 0.0f);
-	m_Knight.SetScale(1.5f, 1.5f, 1.5f);
+	m_Knight.Init("Assets/modelData/character/Knight/model_Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_Knight.SetPosition(KnightPos);
+	m_Knight.SetScale(2.7f, 2.7f, 2.7f);
 	/*Quaternion Krot;
 	Krot.y = 90.0f;
 	m_Knight.SetRotation(Krot);*/
 	m_Knight.Update();
 }
 
+/// <summary>
+/// コリジョン作成
+/// </summary>
+void CharacterSelect::SetCollision()
+{
+	//攻撃アイコンの当たり判定
+	Attack.CreateBox(AttackCollision, AttackCollisionRot, Vector3(50.0f, 50.0f, 5.0f));
+	//スキルアイコンの当たり判定
+	Skill.CreateSphere(SkillCollision, Quaternion::Identity, 30.0f);
+	//必殺技アイコンの当たり判定
+	UltimateSkill.CreateBox(UltimateCollision, Quaternion::Identity, Vector3(50.0f, 50.0f, 5.0f));
+}
+
 void CharacterSelect::Render(RenderContext& rc)
 {
-	//m_CharacterSelectPic.Draw(rc);
-	//m_KnightPic.Draw(rc);
-	//m_WizardPic.Draw(rc);
 	//m_SelectCursor.Draw(rc);
 
 	//剣士のモデル
 	m_Knight.Draw(rc);
+	m_platform.Draw(rc);
 
 	m_Status.Draw(rc);
 	m_Attack_Icon.Draw(rc);
 	m_name.Draw(rc);
 	m_UnderBar.Draw(rc);
+
+	//点滅早くtodo
+	if ((int)time % 2 == 0)
+	{
+		m_pointer_white.Draw(rc);
+	}
+	
+	m_pointer_black.Draw(rc);
 }
 

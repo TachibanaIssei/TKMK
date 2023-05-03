@@ -67,6 +67,19 @@ Game::~Game()
 
 bool Game::Start()
 {
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Red, u"Assets/effect/Knight/Knight_Red_Death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Yellow, u"Assets/effect/Knight/Knight_Red_Death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Red_Death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Green, u"Assets/effect/Knight/Knight_Red_Death.efk");
+
+	//エフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Red, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Green, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Yellow, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
+
+	//オーラエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 
 	g_renderingEngine->UnUseHemiLight();
 
@@ -134,7 +147,7 @@ bool Game::Start()
 			});
 	}
 
-	
+
 
 	m_AIPos.Init("Assets/level3D/AIPOS2.tkl", [&](LevelObjectData& objData) {
 
@@ -150,6 +163,8 @@ bool Game::Start()
 					m_KnightAI->SetCharaconPosition(objData.position);
 					int Number = 0;
 					m_KnightAI->SetRespawnNumber(Number);
+					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+					
 					return true;
 				}
 				//右上の座標
@@ -161,6 +176,7 @@ bool Game::Start()
 					m_KnightAI1->SetCharaconPosition(objData.position);
 					int Number = 1;
 					m_KnightAI1->SetRespawnNumber(Number);
+					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 					return true;
 				}
 				//左下の座標
@@ -172,6 +188,7 @@ bool Game::Start()
 					m_KnightAI2->SetCharaconPosition(objData.position);
 					int Number = 3;
 					m_KnightAI2->SetRespawnNumber(Number);
+					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 					return true;
 				}
 			}

@@ -14,22 +14,19 @@ public:
 	KnightBase();
 	virtual ~KnightBase();
 
-	//enum PlayerState {
-	//	enKnightState_Idle,
-	//	enKnightState_Walk,
-	//	enKnightState_Run,
-	//	enKnightState_ChainAtk,
-	//	enKnightState_Damege,
-	//	enKnightState_Death,
-	//	enKnightState_Skill,
-	//	enKnightState_UltimateSkill,
-	//	enKnightState_Avoidance,
-	//	enKnightState_Jump,
-	//	enKnightState_Fall,
-	//	enKnightState_Num,
-	//	enKnightState_Pause,        //ゲームの状態を受け取る
-	//};
-
+	enum EnKnightKinds
+	{
+		enKnightKinds_Red,
+		enKnightKinds_Green,
+		enKnightKinds_Blue,
+		enKnightKinds_Yellow,
+		enKnightKinds_Num
+	};
+	EnKnightKinds KnightKinds = enKnightKinds_Num;
+	void SetKnightColor(EnKnightKinds color)
+	{
+		KnightKinds = color;
+	}
 	/// <summary>
 	/// モデルのInit、キャラコンの初期化
 	/// </summary>
@@ -353,6 +350,7 @@ protected:
 
 	//プレイヤーとの内積を求めて線形補間で音量調整
 	float SEVolume = 0;
+
 
 };
 

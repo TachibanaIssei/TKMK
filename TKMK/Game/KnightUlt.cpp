@@ -72,32 +72,25 @@ bool KnightUlt::Start()
 	//懲り所オブジェクトが自動で削除されないようにする。
 	UltDeleteJudgeCollision->SetIsEnableAutoDelete(false);
 
-	//エフェクトを読み込む。
-	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/Knight/Knight_Ultimate.efk");
-	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
-	EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
-	EffectEngine::GetInstance()->ResistEffect(5, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
-
+	
+	Ulteffect = NewGO<EffectEmitter>(0);
 	//斬撃エフェクトの再生。
 	if (ColorNumb == 2)
 	{
-		Ulteffect = NewGO<EffectEmitter>(1);
-		Ulteffect->Init(1);
+		
+		Ulteffect->Init(enEffect_Knight_Ult_Blue);
 	}
 	else if (ColorNumb == 1)
 	{
-		Ulteffect = NewGO<EffectEmitter>(3);
-		Ulteffect->Init(3);
+		Ulteffect->Init(enEffect_Knight_Ult_Red);
 	}
 	else if (ColorNumb == 3)
 	{
-		Ulteffect = NewGO<EffectEmitter>(4);
-		Ulteffect->Init(4);
+		Ulteffect->Init(enEffect_Knight_Ult_Green);
 	}
 	else
 	{
-		Ulteffect = NewGO<EffectEmitter>(5);
-		Ulteffect->Init(5);
+		Ulteffect->Init(enEffect_Knight_Ult_Yellow);
 	}
 	
 	Ulteffect->SetScale({ 4.0f,4.0f,4.0f });

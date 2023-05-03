@@ -397,7 +397,7 @@ void Neutral_Enemy::Collision()
 			//プレイヤーの攻撃力を取得
 			//何故かm_knightAIがnull
 			//HPを減らす
-			// //HPを減らす
+
 			if (m_enemyKinds == enEnemyKinds_Rabbit)
 			{
 				m_Status.Hp -= 1;

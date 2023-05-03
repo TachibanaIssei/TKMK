@@ -3,6 +3,7 @@
 #include "Status.h"
 #include "GameUI.h"
 #include "Player.h"
+#include "Effect.h"
 
 KnightBase::KnightBase()
 {
@@ -65,10 +66,26 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Knight/Knight_fall2.tka");
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
+	
+	m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	////剣士モデルを読み込み
+	//switch (KnightKinds)
+	//{
+	//case enKnightKinds_Red:
+	//	m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	//	break;
+	//case enKnightKinds_Blue:
+	//	m_modelRender.Init("Assets/modelData/character/Knight/Knight_Blue.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	//	break;
+	//case enKnightKinds_Green:
+	//	m_modelRender.Init("Assets/modelData/character/Knight/Knight_Green.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	//	break;
+	//case enKnightKinds_Yellow:
+	//	m_modelRender.Init("Assets/modelData/character/Knight/Knight_Yellow.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	//	break;
 
-	//剣士モデルを読み込み
-	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
-
+	//}
+	
 	//「mixamorig:RightHand」(右手)ボーンのID(番号)を取得する。
 	m_swordBoneId = m_modelRender.FindBoneID(L"mixamorig:RightHand");
 	//攻撃時のアニメーションイベント剣士の座標のID(番号)を取得する。
@@ -91,9 +108,6 @@ void KnightBase::SetModel()
 	//
 
 	m_player = FindGO<Player>("player");
-
-	//剣のエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 }
 
 /// <summary>
@@ -290,6 +304,35 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_charState = enCharState_Death;
+		EffectEmitter* EffectKnightDeath;
+		EffectKnightDeath = NewGO <EffectEmitter>(0);
+		if (KnightKinds == enKnightKinds_Red)
+		{
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_Death_Red);
+		}
+		else if(KnightKinds == enKnightKinds_Yellow)
+		{
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_Death_Yellow);
+		}
+		else if(KnightKinds == enKnightKinds_Green)
+		{
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_Death_Green);
+		}
+		else
+		{
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_Death_Blue);
+		}
+		EffectKnightDeath->SetScale(Vector3::One * 20.0f);
+		
+		Vector3 effectPosition = m_position;
+		//座標を少し上にする。
+		effectPosition.y += 15.0f;
+		effectPosition += m_forward * -30;
+
+		EffectKnightDeath->SetPosition(effectPosition);
+		EffectKnightDeath->Play();
+	
+
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(17);

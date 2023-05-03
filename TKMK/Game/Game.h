@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Effect.h"
 #include "Level3DRender.h"
 
 class BackGround;
@@ -33,12 +33,10 @@ public:
 		enGameState_Num,
 	};
 
-	enum EnEFK {
-		enEffect_Knight_Red_Death,
-		enEffect_Knight_Green_Death,
-		enEffect_Knight_Blue_Death,
-		enEffect_Knight_Yellow_Death,
-	};
+	
+
+	EnEFK m_EnEffect_Knight = enEffect_Knight_Death_Num;
+
 	enum EnPauseMenu
 	{
 		enPauseMenuState_Back,
@@ -204,6 +202,7 @@ public:
 	{
 		RabbitFlag = rabbit;
 	}
+
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する

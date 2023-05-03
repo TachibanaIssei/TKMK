@@ -1,5 +1,10 @@
-4
+9
 6,Status,42,../../Game/Assets/sprite/Select/Status.png,403.8461538461538,273.07692307692304,950,350,10,1.0,1.0,0.5,0.5,10,Status.dds
 8,underBar,44,../../Game/Assets/sprite/Select/underBar.png,0.0,-482.6923076923076,1920,300,10,1.0,1.0,0.5,0.5,12,underBar.dds
 4,name,40,../../Game/Assets/sprite/Select/name.png,-657.6923076923076,-384.6153846153845,550,200,10,1.0,1.0,0.5,0.5,8,name.dds
 11,Attack_Icon,47,../../Game/Assets/sprite/Select/Attack_Icon.png,388.46153846153857,-123.0769230769231,1000,450,10,1.0,1.0,0.5,0.5,15,Attack_Icon.dds
+15,Ult_explanation,51,../../Game/Assets/sprite/Select/Ult_explanation.png,9.615384615384642,-194.23076923076917,1700,501,10,1.0,1.0,0.5,0.5,19,Ult_explanation.dds
+17,Skill_explanation,53,../../Game/Assets/sprite/Select/Skill_explanation.png,384.61538461538476,-209.61538461538453,1120,450,10,1.0,1.0,0.5,0.5,21,Skill_explanation.dds
+18,Attack_explanation,54,../../Game/Assets/sprite/Select/Attack_explanation.png,57.692307692307736,-186.53846153846155,1120,300,10,1.0,1.0,0.5,0.5,22,Attack_explanation.dds
+13,pointer_white,49,../../Game/Assets/sprite/Select/pointer_white.png,0.0,0.0,220,220,10,1.0,1.0,0.5,0.5,17,pointer_white.dds
+13,pointer_black,49,../../Game/Assets/sprite/Select/pointer_black.png,0.0,0.0,220,220,10,1.0,1.0,0.5,0.5,17,pointer_black.dds

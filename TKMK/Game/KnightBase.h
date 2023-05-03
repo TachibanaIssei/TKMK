@@ -158,6 +158,7 @@ public:
 	bool IsEnableMove() const
 	{
 		return m_charState != enCharState_Attack &&
+			m_charState != enCharState_SecondAttack &&
 			m_charState != enCharState_UltimateSkill &&
 			m_charState != enCharState_Skill &&
 			m_charState != enCharState_Avoidance &&

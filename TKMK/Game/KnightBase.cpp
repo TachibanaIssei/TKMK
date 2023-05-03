@@ -67,7 +67,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
 
 	//剣士モデルを読み込み
-	m_modelRender.Init("Assets/modelData/character/Knight/Knight_02.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_modelRender.Init("Assets/modelData/character/Knight/model_Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 
 	//「mixamorig:RightHand」(右手)ボーンのID(番号)を取得する。
 	m_swordBoneId = m_modelRender.FindBoneID(L"mixamorig:RightHand");

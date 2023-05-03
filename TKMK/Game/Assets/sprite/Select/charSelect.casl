@@ -1,0 +1,5 @@
+4
+6,Status,42,../../Game/Assets/sprite/Select/Status.png,403.8461538461538,273.07692307692304,950,350,10,1.0,1.0,0.5,0.5,10,Status.dds
+8,underBar,44,../../Game/Assets/sprite/Select/underBar.png,0.0,-482.6923076923076,1920,300,10,1.0,1.0,0.5,0.5,12,underBar.dds
+4,name,40,../../Game/Assets/sprite/Select/name.png,-657.6923076923076,-384.6153846153845,550,200,10,1.0,1.0,0.5,0.5,8,name.dds
+11,Attack_Icon,47,../../Game/Assets/sprite/Select/Attack_Icon.png,388.46153846153857,-123.0769230769231,1000,450,10,1.0,1.0,0.5,0.5,15,Attack_Icon.dds

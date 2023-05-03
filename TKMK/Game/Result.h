@@ -1,7 +1,7 @@
 #pragma once
 
 #define PLAYER 4
-#define MOVE 7
+#define MOVE 8
 
 class Tittle;
 
@@ -36,7 +36,6 @@ public:
 	struct Score {
 		int Point = 0;		//獲得ポイント
 		int NameNum = 1;	
-		char Name[30];		//プレイヤーネーム
 		int Rank = 1;		//順位
 	};
 
@@ -63,39 +62,52 @@ private:
 	SpriteRender m_GOtitleST;		//"タイトルへ戻る"選択
 	SpriteRender m_gameover;		//"ゲーム終了"非選択
 	SpriteRender m_gameoverST;		//"タイトルへ戻る"選択
+	SpriteRender m_Ranking;			//順位表
+	SpriteRender m_PlayerNameP;		//"Player"名前かぶりだから変える
+	SpriteRender m_CPUName1;		//CPU1
+	SpriteRender m_CPUName2;		//CPU2
+	SpriteRender m_CPUName3;		//CPU3
+	SpriteRender m_ResultLogo;		//リザルトのロゴ
+
+
 	Tittle* tittle = nullptr;
+
+	Vector3 PointRight = { 200.0f,50.0f,0.0f };
 
 	//線形補間でここまで動かす
 	Vector3 RankPos[MOVE] = {
-		Vector3(-250.0f, 500.0f, 0.0f),		//順位、１位
-		Vector3(-250.0f, 350.0f, 0.0f),		//２位
-		Vector3(-250.0f, 200.0f, 0.0f),		//３位
-		Vector3(-250.0f, 50.0f, 0.0f),		//４位
+		Vector3(0.0f, 200.0f, 0.0f),		//順位、１位
+		Vector3(0.0f, 50.0f, 0.0f),			//２位
+		Vector3(0.0f, -100.0f, 0.0f),		//３位
+		Vector3(0.0f, -250.0f, 0.0f),		//４位
 		Vector3(-500.0f, -450.0f, 0.0f),	//"タイトルに戻る"
 		Vector3(525.0f, -450.0f, 0.0f),		//"ゲームを終了"
-		Vector3(-775.0f, -370.0f, 0.0f),	//選択カーソル
+		Vector3(0.0f, -30.0f, 0.0f),		//順位表
+		Vector3(0.0f, 400.0f,0.0f),		//リザルトのロゴ
 	};
 
 	//線形補間で動かすときのポジション
 	Vector3 MovePos[MOVE] = {
-		Vector3(0.0f, 0.0f, 0.0f),		//順位、１位
-		Vector3(0.0f, 0.0f, 0.0f),		//２位
-		Vector3(0.0f, 0.0f, 0.0f),		//３位
-		Vector3(0.0f, 0.0f, 0.0f),		//４位
-		Vector3(0.0f, 0.0f, 0.0f),		//"タイトルに戻る"
-		Vector3(0.0f, 0.0f, 0.0f),		//"ゲームを終了"
-		Vector3(0.0f, 0.0f, 0.0f),		//選択カーソル
+		Vector3(g_vec3Zero),		//順位、１位
+		Vector3(g_vec3Zero),		//２位
+		Vector3(g_vec3Zero),		//３位
+		Vector3(g_vec3Zero),		//４位
+		Vector3(g_vec3Zero),		//"タイトルに戻る"
+		Vector3(g_vec3Zero),		//"ゲームを終了"
+		Vector3(g_vec3Zero),		//順位表
+		Vector3(g_vec3Zero),		//リザルトのロゴ
 	};
 
 	//画面外
 	Vector3 FirstPos[MOVE] = {
-		Vector3(-250.0f, -1000.0f, 0.0f),	//順位、１位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//２位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//３位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//４位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//"タイトルに戻る"
-		Vector3(-250.0f, -1000.0f, 0.0f),	//"ゲームを終了"
-		Vector3(-250.0f, -1000.0f, 0.0f),	//選択カーソル
+		Vector3(0.0f, -1000.0f, 0.0f),	//順位、１位
+		Vector3(0.0f, -1000.0f, 0.0f),	//２位
+		Vector3(0.0f, -1000.0f, 0.0f),	//３位
+		Vector3(0.0f, -1000.0f, 0.0f),	//４位
+		Vector3(0.0f, -1000.0f, 0.0f),	//"タイトルに戻る"
+		Vector3(0.0f, -1000.0f, 0.0f),	//"ゲームを終了"
+		Vector3(0.0f, -1000.0f, 0.0f),	//順位表
+		Vector3(0.0f, -1000.0f, 0.0f),	//リザルトのロゴ
 	};
 
 	//透明度

@@ -310,6 +310,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_charState = enCharState_Death;
+
 		EffectEmitter* EffectKnightDeath;
 		EffectKnightDeath = NewGO <EffectEmitter>(0);
 		if (KnightKinds == enKnightKinds_Red)

@@ -261,23 +261,37 @@ void KnightPlayer::Attack()
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (g_pad[0]->IsTrigger(enButtonA)&& m_AtkTmingState!= SecondAtk_State)
 		{
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
-			////攻撃を二段目にする
-			//m_charState = enCharState_SecondAttack;
+			EffectEmitter* EffectKnightDeath;
+			EffectKnightDeath = NewGO <EffectEmitter>(0);
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_AttackChack);
+			Vector3 effectPosition = m_position;
+			//座標を少し上にする。
+			effectPosition.y += 50.0f;
+			EffectKnightDeath->SetScale(Vector3::One * 30.0f);
+			EffectKnightDeath->SetPosition(effectPosition);
+			EffectKnightDeath->Play();
 		}
 	}
 	//二段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == SecondAtkStart_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (g_pad[0]->IsTrigger(enButtonA)&&m_AtkTmingState != LastAtk_State)
 		{
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
-			////攻撃を三段目にする
-			//m_charState = enCharState_LastAttack;
+			EffectEmitter* EffectKnightDeath;
+			EffectKnightDeath = NewGO <EffectEmitter>(0);
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_AttackChack);
+			Vector3 effectPosition = m_position;
+			//座標を少し上にする。
+			effectPosition.y += 50.0f;
+			EffectKnightDeath->SetScale(Vector3::One * 30.0f);
+			EffectKnightDeath->SetPosition(effectPosition);
+			EffectKnightDeath->Play();
 		}
 	}
 

@@ -154,7 +154,7 @@ void CharacterSelect::Update()
 	}*/
 
 	//ƒJ[ƒ\ƒ‹
-	Cursor();
+	//Cursor();
 
 	PointerMove();
 	
@@ -205,7 +205,7 @@ void CharacterSelect::Update()
 	m_platform.Update();
 
 	//“–‚½‚è”»’è‚Ì‰ÂŽ‹‰»
-	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
 
 /// <summary>

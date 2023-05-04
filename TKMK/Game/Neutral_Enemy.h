@@ -29,7 +29,7 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	void HPBar();
-
+	void DeathEfk();
 	//中立の敵のステート
 	enum EnNEState {
 		enNeutral_Enemy_Idle,					//待機。
@@ -72,6 +72,12 @@ public:
 		m_enemyKinds = enEnemyKinds_Rabbit;
 	}
 
+	void SetRabbitLifeFlag(bool rabbit)
+	{
+		rabbitLife = rabbit;
+	}
+
+	void HPreductionbytime();
 	/// <summary>
 	/// 座標を設定
 	/// </summary>
@@ -338,7 +344,7 @@ private:
 	SpriteRender		m_HPBar;		//HPバー画像
 	SpriteRender		m_HPFrame;		//HP枠画像
 	SpriteRender		m_HPBack;		//HP背景画像	
-	
+
 	FontRender              m_Name;
 	SphereCollider			m_sphereCollider;
 	RigidBody				m_rigidBody;
@@ -363,7 +369,7 @@ private:
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	//中立の敵がやられたときに渡す経験値
-	int Exp = 2;
+	int Exp = 5;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
 	int P = -1;
@@ -384,5 +390,7 @@ private:
 	// ウサギ専用
 	bool isPatrolRandom = false;
 	float isPatrolTimer = 0.0f;
+	float HPreductionbyTimer = 0.0f;
+	bool rabbitLife = false;
 };
 

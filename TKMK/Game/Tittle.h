@@ -113,7 +113,7 @@ private:
 	Vector3 m_startPosition = { 0.0f,-250.0f,0.0f };				//"Start"
 	Vector3 m_optionPosition = { 0.0f,-350.0f,0.0f };				//"Option"
 
-	const Vector3 m_titleLogoPosition = { 0.0f,200.0f,0.0f };				//起動時の画面のタイトルロゴのポジション
+	const Vector3 m_titleLogoPosition = { -20.0f,200.0f,0.0f };				//起動時の画面のタイトルロゴのポジション
 	const Vector3 m_selectLogoPosition = { -500.0f,400.0f,0.0f };			//セレクト画面のタイトルロゴのポジション
 	
 	Vector3 m_firsttitleScale = {5.0f,5.0f,1.0f };					//タイトルロゴの最初の大きさ
@@ -134,6 +134,7 @@ private:
 	Vector3 m_titleswordscale = { g_vec3One };						//起動時の大きさ
 	Vector3 m_selectswordscale = { 0.6f, 0.6f, 1.0f };				//セレクト画面の剣の大きさ
 	Vector3 m_swordscale;											//剣のスケール
+	Vector3 m_swordPosition = { 0.0f,200.0f,0.0f };
 
 	//セレクトの項目ごとの位置
 	Vector3 m_Top = { -500.0f,-130.0f,0.0f };						//上

@@ -30,6 +30,7 @@ void Player::CreaetPlayer()
 		knightPlayer->SetSGame(game);
 		knightPlayer->SetGameUI(gameUI);
 		knightPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
+		knightPlayer->SetKnightColor(KnightBase::enKnightKinds_Blue);
 		player_name = knightPlayer->GetName();
 		playerActor = knightPlayer;
 		break;

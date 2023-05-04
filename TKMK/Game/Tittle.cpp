@@ -191,31 +191,24 @@ void Tittle::Scene()
 		m_fadeSeem = false;
 		if (swordright < 1.0f)
 		{
-			if (m_timer % 2 == 0)
-			{
-				//線形補間
-				m_swordright.Lerp(swordright, m_Toprightfirstposition, m_titleLogoPosition);
-				//線形補完したものをSetPositionに入れる
-				m_titleswordwhite.SetPosition(m_swordright);
-
-				//補完率
-				swordright += 0.03f;
-			}
+			//線形補間
+			m_swordright.Lerp(swordright, m_Toprightfirstposition, m_swordPosition);
+			//線形補完したものをSetPositionに入れる
+			m_titleswordwhite.SetPosition(m_swordright);
+			//補完率
+			swordright += 0.03f;
 		}
 		else if (swordleft < 1.0f)
 		{
-			if (m_timer % 2 == 0)
-			{
-				//線形補間
-				m_swordleft.Lerp(swordleft, m_Topleftfirstposition, m_titleLogoPosition);
-				//線形補完したものをSetPositionに入れる
-				m_titleswordbrack.SetPosition(m_swordleft);
+			//線形補間
+			m_swordleft.Lerp(swordleft, m_Topleftfirstposition, m_swordPosition);
+			//線形補完したものをSetPositionに入れる
+			m_titleswordbrack.SetPosition(m_swordleft);
 
-				//補完率
-				swordleft += 0.09f;
-			}
+			//補完率
+			swordleft += 0.09f;
 		}
-		else if (delaytime < 45)
+		else if (delaytime < 20)
 		{
 			//遅らせる時間
 			delaytime++;
@@ -223,18 +216,16 @@ void Tittle::Scene()
 		else if (firstLogo < 1.0f)
 		{
 			m_titlefadeSeem = true;
-			if (m_timer % 2 == 0)
-			{
-				//線形補間
-				m_firsttitleScale.Lerp(firstLogo, m_firsttitleScale, m_titleLogoScale);
-				m_fireScale.Lerp(firstLogo, m_firsttitleScale, m_titleLogoScale);
+		
+			//線形補間
+			m_firsttitleScale.Lerp(firstLogo, m_firsttitleScale, m_titleLogoScale);
+			m_fireScale.Lerp(firstLogo, m_firsttitleScale, m_titleLogoScale);
 
-				//線形補間したものをSetPositionに入れる
-				m_titleLogo.SetScale(m_firsttitleScale);
-				m_fire.SetScale(m_fireScale);
-				//補完率
-				firstLogo += 0.01f;
-			}
+			//線形補間したものをSetPositionに入れる
+			m_titleLogo.SetScale(m_firsttitleScale);
+			m_fire.SetScale(m_fireScale);
+			//補完率
+			firstLogo += 0.01f;
 		}
 		else
 		{

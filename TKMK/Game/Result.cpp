@@ -58,30 +58,64 @@ bool Result::Start()
 	DeleteGO(game);
 
 	//Resultの初期化
-	m_spriteRender.Init("Assets/sprite/Result/ResultBack.DDS", 1920.0f, 1080.0f);
-	m_spriteRender.SetPosition(0.0f, 0.0f, 0.0f);
+	m_spriteRender.Init("Assets/sprite/Result/titleBack.DDS", 1920.0f, 1080.0f);
+	m_spriteRender.SetPosition(g_vec3Zero);
 	m_spriteRender.SetScale(g_vec3One);
 	m_sRotation.SetRotationZ(0.0f);
 	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
 
-	//"タイトルに戻る"
-	m_GOtitle.Init("Assets/sprite/Result/changeTitle.DDS", 500.0f, 100.0f);
+	//リザルトのロゴ
+	m_ResultLogo.Init("Assets/sprite/Result/RESULT.DDS", 700.0f, 150.0f);
+	m_ResultLogo.SetPosition(FirstPos[7]);
+	m_ResultLogo.Update();
+
+	//順位表
+	m_Ranking.Init("Assets/sprite/Result/RankingFramePP.DDS", 1000.0f, 700.0f);
+	m_Ranking.SetPosition(FirstPos[6]);
+	m_Ranking.Update();
+
+	//"タイトルに戻る"非選択
+	m_GOtitle.Init("Assets/sprite/Result/GOtoTitle_white.DDS", 500.0f, 100.0f);
 	m_GOtitle.SetPosition(FirstPos[4]);
 	m_GOtitle.SetScale(g_vec3One);
 	m_GOtitle.Update();
+	//"タイトルに戻る"選択
+	m_GOtitleST.Init("Assets/sprite/Result/GOtoTitle_color.DDS", 500.0f, 100.0f);
+	m_GOtitleST.SetPosition(RankPos[4]);
+	m_GOtitleST.SetScale(g_vec3One);
+	m_GOtitleST.SetMulColor(m_color);
+	m_GOtitleST.Update();
 
-	//"ゲームを終了"
-	m_gameover.Init("Assets/sprite/Result/gameover.DDS", 500.0f, 100.0f);
+	//"ゲームを終了"非選択
+	m_gameover.Init("Assets/sprite/Result/EndGame_white.DDS", 400.0f, 100.0f);
 	m_gameover.SetPosition(FirstPos[5]);
 	m_gameover.SetScale(g_vec3One);
 	m_gameover.Update();
-
-	//選択カーソル
-	m_choice.Init("Assets/sprite/Choice.DDS", 100.0f, 100.0f);
-	m_choice.SetPosition(FirstPos[6]);
-	m_choice.SetScale(0.6f, 1.1f, 1.0f);
-	m_choice.Update();
+	//"ゲームを終了"選択
+	m_gameoverST.Init("Assets/sprite/Result/EndGame_color.DDS", 400.0f, 100.0f);
+	m_gameoverST.SetPosition(RankPos[5]);
+	m_gameoverST.SetScale(g_vec3One);
+	m_gameoverST.SetMulColor(m_color);
+	m_gameoverST.Update();
+	
+	//Playerの名前
+	//"Player"
+	m_PlayerNameP.Init("Assets/sprite/Result/Player.DDS", 250.0f, 100.0f);
+	m_PlayerNameP.SetPosition(FirstPos[0]);
+	m_PlayerNameP.Update();
+	//"CPU1"
+	m_CPUName1.Init("Assets/sprite/Result/CPU1.DDS", 200.0f, 75.0f);
+	m_CPUName1.SetPosition(FirstPos[0]);
+	m_CPUName1.Update();
+	//"CPU2"
+	m_CPUName2.Init("Assets/sprite/Result/CPU2.DDS", 200.0f, 75.0f);
+	m_CPUName2.SetPosition(FirstPos[0]);
+	m_CPUName2.Update();
+	//"CPU3"
+	m_CPUName3.Init("Assets/sprite/Result/CPU3.DDS", 200.0f, 75.0f);
+	m_CPUName3.SetPosition(FirstPos[0]);
+	m_CPUName3.Update();
 
 	return true;
 }
@@ -121,60 +155,181 @@ void Result::Rank()
 		switch (Player[i].Rank)
 		{
 		case 1:
-			swprintf(Rank1, L"%d,%d,%d pt", Player[i].Rank,Player[i].NameNum, Player[i].Point);
+			swprintf(Rank1, L"%d", Player[i].Point);
 			m_PlayerRank1.SetText(Rank1);
 			m_PlayerRank1.SetPosition(FirstPos[i]);
 			m_PlayerRank1.SetColor(g_vec4Black);
 			m_PlayerRank1.SetScale(WordScale);
+			switch (Player[i].NameNum)
+			{
+			case 1:
+				m_PlayerNameP.SetPosition(FirstPos[i]);
+				break;
+			case 2:
+				m_CPUName1.SetPosition(FirstPos[i]);
+				break;
+			case 3:
+				m_CPUName2.SetPosition(FirstPos[i]);
+				break;
+			case 4:
+				m_CPUName3.SetPosition(FirstPos[i]);
+				break;
+			}
 			break;
 		case 2:
-			swprintf(Rank2, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			swprintf(Rank2, L"%d", Player[i].Point);
 			m_PlayerRank2.SetText(Rank2);
 			m_PlayerRank2.SetPosition(FirstPos[i]);
 			m_PlayerRank2.SetColor(g_vec4Black);
 			m_PlayerRank2.SetScale(WordScale);
+			switch (Player[i].NameNum)
+			{
+			case 1:
+				m_PlayerNameP.SetPosition(FirstPos[i]);
+				break;
+			case 2:
+				m_CPUName1.SetPosition(FirstPos[i]);
+				break;
+			case 3:
+				m_CPUName2.SetPosition(FirstPos[i]);
+				break;
+			case 4:
+				m_CPUName3.SetPosition(FirstPos[i]);
+				break;
+			}
 			break;
 		case 3:
-			swprintf(Rank3, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			swprintf(Rank3, L"%d", Player[i].Point);
 			m_PlayerRank3.SetText(Rank3);
 			m_PlayerRank3.SetPosition(FirstPos[i]);
 			m_PlayerRank3.SetColor(g_vec4Black);
 			m_PlayerRank3.SetScale(WordScale);
+			switch (Player[i].NameNum)
+			{
+			case 1:
+				m_PlayerNameP.SetPosition(FirstPos[i]);
+				break;
+			case 2:
+				m_CPUName1.SetPosition(FirstPos[i]);
+				break;
+			case 3:
+				m_CPUName2.SetPosition(FirstPos[i]);
+				break;
+			case 4:
+				m_CPUName3.SetPosition(FirstPos[i]);
+				break;
+			}
 			break;
 		case 4:
-			swprintf(Rank4, L"%d,%d,%d pt", Player[i].Rank, Player[i].NameNum, Player[i].Point);
+			swprintf(Rank4, L"%d", Player[i].Point);
 			m_PlayerRank4.SetText(Rank4);
 			m_PlayerRank4.SetPosition(FirstPos[i]);
 			m_PlayerRank4.SetColor(g_vec4Black);
 			m_PlayerRank4.SetScale(WordScale);
+			switch (Player[i].NameNum)
+			{
+			case 1:
+				m_PlayerNameP.SetPosition(FirstPos[i]);
+				break;
+			case 2:
+				m_CPUName1.SetPosition(FirstPos[i]);
+				break;
+			case 3:
+				m_CPUName2.SetPosition(FirstPos[i]);
+				break;
+			case 4:
+				m_CPUName3.SetPosition(FirstPos[i]);
+				break;
+			}
 			break;
 		}
 	}
-	
+	m_PlayerNameP.Update();
+	m_CPUName1.Update();
+	m_CPUName2.Update();
+	m_CPUName3.Update();
 }
 
 void Result::Move()
 {
 	if (Complement < 1.0f)
 	{
-		if (m_timer % 2 == 0)
-		{
-			for (int i = 0; i < 7; i++)
+			for (int i = 0; i < MOVE; i++)
 			{
 				MovePos[i].Lerp(Complement, FirstPos[i], RankPos[i]);
 				switch (i)
 				{
 				case 0:
-					m_PlayerRank1.SetPosition(MovePos[i]);
+					m_PlayerRank1.SetPosition(MovePos[i] + PointRight);
+					switch (Player[i].NameNum)
+					{
+					case 1:
+						m_PlayerNameP.SetPosition(MovePos[i]);
+						break;
+					case 2:
+						m_CPUName1.SetPosition(MovePos[i]);
+						break;
+					case 3:
+						m_CPUName2.SetPosition(MovePos[i]);
+						break;
+					case 4:
+						m_CPUName3.SetPosition(MovePos[i]);
+						break;
+					}
 					break;
 				case 1:
-					m_PlayerRank2.SetPosition(MovePos[i]);
+					m_PlayerRank2.SetPosition(MovePos[i] + PointRight);
+					switch (Player[i].NameNum)
+					{
+					case 1:
+						m_PlayerNameP.SetPosition(MovePos[i]);
+						break;
+					case 2:
+						m_CPUName1.SetPosition(MovePos[i]);
+						break;
+					case 3:
+						m_CPUName2.SetPosition(MovePos[i]);
+						break;
+					case 4:
+						m_CPUName3.SetPosition(MovePos[i]);
+						break;
+					}
 					break;
 				case 2:
-					m_PlayerRank3.SetPosition(MovePos[i]);
+					m_PlayerRank3.SetPosition(MovePos[i] + PointRight);
+					switch (Player[i].NameNum)
+					{
+					case 1:
+						m_PlayerNameP.SetPosition(MovePos[i]);
+						break;
+					case 2:
+						m_CPUName1.SetPosition(MovePos[i]);
+						break;
+					case 3:
+						m_CPUName2.SetPosition(MovePos[i]);
+						break;
+					case 4:
+						m_CPUName3.SetPosition(MovePos[i]);
+						break;
+					}
 					break;
 				case 3:
-					m_PlayerRank4.SetPosition(MovePos[i]);
+					m_PlayerRank4.SetPosition(MovePos[i] + PointRight);
+					switch (Player[i].NameNum)
+					{
+					case 1:
+						m_PlayerNameP.SetPosition(MovePos[i]);
+						break;
+					case 2:
+						m_CPUName1.SetPosition(MovePos[i]);
+						break;
+					case 3:
+						m_CPUName2.SetPosition(MovePos[i]);
+						break;
+					case 4:
+						m_CPUName3.SetPosition(MovePos[i]);
+						break;
+					}
 					break;
 				case 4:
 					m_GOtitle.SetPosition(MovePos[i]);
@@ -183,12 +338,14 @@ void Result::Move()
 					m_gameover.SetPosition(MovePos[i]);
 					break;
 				case 6:
-					m_choice.SetPosition(MovePos[i]);
+					m_Ranking.SetPosition(MovePos[i]);
+					break;
+				case 7:
+					m_ResultLogo.SetPosition(MovePos[i]);
 					break;
 				}
 			}
-			Complement += 0.04f;
-		}
+			Complement += 0.02f;
 	}
 	else
 	{
@@ -197,9 +354,14 @@ void Result::Move()
 
 	m_timer++;
 
+	m_Ranking.Update();
+	m_ResultLogo.Update();
 	m_GOtitle.Update();
 	m_gameover.Update();
-	m_choice.Update();
+	m_PlayerNameP.Update();
+	m_CPUName1.Update();
+	m_CPUName2.Update();
+	m_CPUName3.Update();
 }
 
 void Result::Select()
@@ -217,11 +379,13 @@ void Result::Select()
 	{
 	case 0:
 		m_cursor = enCursorPos_title;
-		m_choice.SetPosition(RankPos[6]);
+		m_GOtitleST.SetMulColor(m_colorST);
+		m_gameoverST.SetMulColor(m_color);
 		break;
 	case 1:
 		m_cursor = enCursorPos_exit;
-		m_choice.SetPosition(RankPos[5]+ Leftcursor);
+		m_GOtitleST.SetMulColor(m_color);
+		m_gameoverST.SetMulColor(m_colorST);
 		break;
 	}
 
@@ -236,18 +400,25 @@ void Result::Select()
 	{
 		g_gameLoop.m_isLoop = false;
 	}
-
-	m_choice.Update();
+	m_GOtitleST.Update();
+	m_gameoverST.Update();
 }
 
 void Result::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
+	m_Ranking.Draw(rc);
+	m_PlayerNameP.Draw(rc);
+	m_CPUName1.Draw(rc);
+	m_CPUName2.Draw(rc);
+	m_CPUName3.Draw(rc);
 	m_PlayerRank1.Draw(rc);
 	m_PlayerRank2.Draw(rc);
 	m_PlayerRank3.Draw(rc);
 	m_PlayerRank4.Draw(rc);
-	m_choice.Draw(rc);
 	m_GOtitle.Draw(rc);
 	m_gameover.Draw(rc);
+	m_GOtitleST.Draw(rc);
+	m_gameoverST.Draw(rc);
+	m_ResultLogo.Draw(rc);
 }

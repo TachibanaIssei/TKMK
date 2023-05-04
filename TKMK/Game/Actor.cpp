@@ -10,7 +10,16 @@ Actor::Actor()
 
 Actor::~Actor()
 {
+	// エフェクト削除
+	if (GetPower != nullptr) {
+		GetPower->DeleteEffect();
+		DeleteGO(GetPower);
+	}
 
+	if (PowerUpEfk != nullptr) {
+		PowerUpEfk->DeleteEffect();
+		DeleteGO(PowerUpEfk);
+	}
 }
 
 void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
@@ -119,6 +128,7 @@ void Actor::AttackUP()
 			GetPower = nullptr;
 		}
 	}
+
 	if (PowerUpTimer > 0.0f)
 	{
 		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();

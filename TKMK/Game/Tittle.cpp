@@ -286,7 +286,7 @@ void Tittle::Scene()
 				m_operationPosition.Lerp(LogoComplement, m_firstPosition, m_Central);
 				m_startPosition.Lerp(LogoComplement, m_firstPosition, m_Top);
 				m_optionPosition.Lerp(LogoComplement, m_firstPosition, m_Under);
-				m_LogoPosition.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
+				m_LogoPosition.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition + m_LeftLogo);
 				m_LogoScale.Lerp(LogoComplement, m_titleLogoScale, m_selectLogoScale);
 				m_fireScale.Lerp(LogoComplement, m_titlefireScale, m_selectfireScale);
 				m_ilust.Lerp(LogoComplement, m_RightfirstPosition, m_selectilust);
@@ -321,7 +321,7 @@ void Tittle::Scene()
 		//もし操作説明画面やキャラクター説明画面が見えず、またセレクト画面だったら表示する
 		if (m_operationLook == enOperationLook_UnSeem || m_characterOpLook == enCharacterOpLook_UnSeem || LogoComplement < 1.0f)
 		{
-			m_titleLogo.SetPosition(m_selectLogoPosition);
+			m_titleLogo.SetPosition(m_selectLogoPosition + m_LeftLogo);
 			m_start.SetPosition(m_Top);
 			m_operation.SetPosition(m_Central);
 			m_option.SetPosition(m_Under);
@@ -552,7 +552,7 @@ void Tittle::CharacterOp()
 			break;
 		case 3:
 			m_characterOpPosition = enCharacterOpPosition_Mitei;
-			m_fire.SetPosition(m_MiteiCursor + m_charaLeftCursor);
+			m_fire.SetPosition(m_MiteiCursor);
 			break;
 		}
 		m_Opchoice.SetPosition(0.0f, 450.0f, 0.0f);

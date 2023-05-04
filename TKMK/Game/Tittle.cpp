@@ -148,11 +148,14 @@ bool Tittle::Start()
 	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/titleBGM/titleBGM2.wav");
 	//選択音
 	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/sentaku/sentaku4.wav");
+	//斬撃音
+	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/titleBGM/titleSE/zangeki2.wav");
+	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/titleBGM/titleSE/zangeki1.wav");
 
 	m_bgm = NewGO<SoundSource>(0);
-	m_bgm->Init(1);
+	/*m_bgm->Init(1);
 	m_bgm->Play(false);
-	m_bgm->SetVolume(0.5f);
+	m_bgm->SetVolume(0.5f);*/
 
 	return true;
 }
@@ -190,8 +193,16 @@ void Tittle::Scene()
 	if (m_titleScene == enTitleScene_PressAScene)
 	{
 		m_fadeSeem = false;
-		if (swordright < 1.0f)
+		if (m_linear == enLinear_sword1)
 		{
+			if (swordright > 1.0f)
+			{
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(6);
+				se->SetVolume(SEVolume);
+				se->Play(false);
+				m_linear = enLinear_sword2;
+			}
 			//線形補間
 			m_swordright.Lerp(swordright, m_Toprightfirstposition, m_swordPosition);
 			//線形補完したものをSetPositionに入れる
@@ -199,23 +210,43 @@ void Tittle::Scene()
 			//補完率
 			swordright += 0.03f;
 		}
-		else if (swordleft < 1.0f)
+		else if (m_linear == enLinear_sword2)
 		{
+			if (swordleft >= 1.0f)
+			{
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(6);
+				se->SetVolume(SEVolume);
+				se->Play(false);
+				m_linear = enLinear_delay;
+			}
 			//線形補間
 			m_swordleft.Lerp(swordleft, m_Topleftfirstposition, m_swordPosition);
 			//線形補完したものをSetPositionに入れる
 			m_titleswordbrack.SetPosition(m_swordleft);
 
 			//補完率
-			swordleft += 0.09f;
+			swordleft += 0.03f;
 		}
-		else if (delaytime < 20)
+		else if (m_linear == enLinear_delay)
 		{
+			if (delaytime > 20)
+			{
+				m_linear = enLinear_Logo;
+			}
 			//遅らせる時間
 			delaytime++;
 		}
-		else if (firstLogo < 1.0f)
+		else if (m_linear == enLinear_Logo)
 		{
+			if (firstLogo > 1.0f)
+			{
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(7);
+				se->SetVolume(SEVolume);
+				se->Play(false);
+				m_linear = enLinear_End;
+			}
 			m_titlefadeSeem = true;
 		
 			//線形補間
@@ -228,7 +259,7 @@ void Tittle::Scene()
 			//補完率
 			firstLogo += 0.01f;
 		}
-		else
+		else if(m_linear == enLinear_End)
 		{
 			m_fadeSeem = true;
 			m_titleanim = true;
@@ -318,13 +349,16 @@ void Tittle::Scene()
 	if (m_titleScene == enTitleScene_PressAScene && m_titleanim == true && g_pad[0]->IsTrigger(enButtonA))
 	{
 		//線形変換に移る
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
 		titleScene = 1;
 		m_isWaitFadeout = true;
 	}
 	if (m_titleScene == enTitleScene_Change && LogoComplement > 1.0f)
 	{
 		//セレクト画面に移る
-		m_bgm->Stop();
 		titleScene = 2;
 	}
 	
@@ -335,15 +369,15 @@ void Tittle::Scene()
 		break;
 	case 1:
 		m_titleScene = enTitleScene_Change;
-		break;
-	case 2:
-		m_titleScene = enTitleScene_Select;
 		if (m_bgm->IsPlaying() == false)
 		{
 			m_bgm->Init(2);
 			m_bgm->Play(true);
 			m_bgm->SetVolume(0.5f);
 		}
+		break;
+	case 2:
+		m_titleScene = enTitleScene_Select;
 		break;
 	}
 }

@@ -35,6 +35,16 @@ public:
 		enTitleScene_Num,
 	};
 
+	//線形補間のタイミング
+	enum EnLinear {
+		enLinear_sword1,								//剣１
+		enLinear_sword2,								//剣２
+		enLinear_delay,									//タイムラグを作る
+		enLinear_Logo,									//タイトルロゴ
+		enLinear_End,									//終わり
+		enLinear_Num,
+	};
+
 	//どこを選択しているか
 	enum EnSelectPosition {
 		enSelectPosition_Start,						//スタートポジション
@@ -98,6 +108,7 @@ private:
 	EnOperationLook m_operationLook;			//操作説明画像の表示
 	EnCharacterOpLook m_characterOpLook;		//キャラクター説明の表示
 	EnCharacterOpPosition m_characterOpPosition;//キャラクター説明のポジション
+	EnLinear m_linear;
 
 	Game* game=nullptr;
 	SoundSource* m_bgm = nullptr;
@@ -168,5 +179,6 @@ private:
 	bool m_fadeSeem = true;							//PressAButtonを表示するか
 	bool m_titlefadeSeem = false;					//タイトルの
 	bool m_titleanim = false;						//タイトルのアニメーション中か
+	float SEVolume = 0.4f;
 };
 

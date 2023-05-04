@@ -1,6 +1,8 @@
 #pragma once
 #include "Status.h"
 #include "Level3DRender.h"
+#include "Effect.h"
+#include "ChaseEFK.h"
 
 class Neutral_Enemy;
 class Player;
@@ -41,6 +43,24 @@ public:
 	virtual void UltEnd() = 0;
 
 protected:
+	void AttackUP();
+	void AttackUPEnd() {
+		m_Status.Atk -= PowerUp;
+		if (PowerUpEfk != nullptr)
+		{
+			PowerUpEfk->DeleteEffect();
+			DeleteGO(PowerUpEfk);
+			PowerUpEfk = nullptr;
+		}
+		
+		// 攻撃UP開始も削除
+		if (GetPower != nullptr) {
+			GetPower->DeleteEffect();
+			DeleteGO(GetPower);
+			GetPower = nullptr;
+		}
+
+	}
 
 	/// <summary>
 	/// レベルアップ時に増加するステータス
@@ -262,8 +282,21 @@ public:
 	/// <param name="AtkUp">増加する攻撃力</param>
 	void AtkUp(int AtkUp)
 	{
-		m_Status.Atk += AtkUp;
+		//パワーUPじゃないとき
+		if (PowerUpTimer <= 0.0f)
+		{
+			PowerUp = AtkUp;
+			m_Status.Atk += PowerUp;
+			GetPower = NewGO<ChaseEFK>(3);
+			GetPower->SetEffect(EnEFK::enEffect_Knight_GetPower, this, Vector3::One * 30.0f);
+			GetPower->AutoDelete(false);
+			GetPower->GetEffect()->AutoDelete(false);
+		}
+		
+		PowerUpTimer = 15.0f;
+
 	}
+
 
 	/// <summary>
 	/// HP回復させる処理
@@ -272,6 +305,12 @@ public:
 	void HpUp(int HpUp)
 	{
 		m_Status.Hp += HpUp;
+		EffectEmitter* GetHP = NewGO<EffectEmitter>(0);
+		GetHP->Init(EnEFK::enEffect_Knight_GetHoimi);
+		GetHP->SetScale(Vector3::One * 40.0f);
+		Vector3 effectPosition = m_position;
+		GetHP->SetPosition(effectPosition);
+		GetHP->Play();
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
 		if (m_Status.Hp > m_Status.MaxHp)
 		{
@@ -546,6 +585,10 @@ protected:
 
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 
-
+	ChaseEFK* GetPower = nullptr;
+	ChaseEFK* PowerUpEfk = nullptr;
+	float PowerUpTimer = 0.0f;
+	int PowerUp = 0;
+	
 };
 

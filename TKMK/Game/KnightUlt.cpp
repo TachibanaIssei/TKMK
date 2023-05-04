@@ -80,11 +80,11 @@ bool KnightUlt::Start()
 		
 		Ulteffect->Init(enEffect_Knight_Ult_Blue);
 	}
-	else if (ColorNumb == 1)
+	else if (ColorNumb == 0)
 	{
 		Ulteffect->Init(enEffect_Knight_Ult_Red);
 	}
-	else if (ColorNumb == 3)
+	else if (ColorNumb == 1)
 	{
 		Ulteffect->Init(enEffect_Knight_Ult_Green);
 	}

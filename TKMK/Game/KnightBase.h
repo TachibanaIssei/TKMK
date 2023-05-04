@@ -287,6 +287,7 @@ protected:
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	float m_position_YUp = 33.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
+	Vector3 m_forwardNow = Vector3::Zero;                   //正面ベクトル
 	Vector3 collisionRot= Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン
 	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標

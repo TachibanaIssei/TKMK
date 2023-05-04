@@ -67,10 +67,7 @@ Game::~Game()
 
 bool Game::Start()
 {
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Red, u"Assets/effect/Knight/Knight_Red_Death.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Yellow, u"Assets/effect/Knight/Knight_Red_Death.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Red_Death.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Green, u"Assets/effect/Knight/Knight_Red_Death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
 
 	//エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
@@ -80,7 +77,13 @@ bool Game::Start()
 
 	//オーラエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
-
+	//中立の敵を倒すとき得るもののエフェクト
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetPower, u"Assets/effect/Knight/Knight_GetPower.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetHoimi, u"Assets/effect/Knight/Knight_GetHoimi.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp.efk");
+	//エフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_head_butt, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_Death, u"Assets/effect/Neutral_Enemy/death.efk");
 	g_renderingEngine->UnUseHemiLight();
 
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
@@ -164,7 +167,7 @@ bool Game::Start()
 					int Number = 0;
 					m_KnightAI->SetRespawnNumber(Number);
 					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
-					
+
 					return true;
 				}
 				//右上の座標
@@ -177,6 +180,7 @@ bool Game::Start()
 					int Number = 1;
 					m_KnightAI1->SetRespawnNumber(Number);
 					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+
 					return true;
 				}
 				//左下の座標
@@ -189,6 +193,7 @@ bool Game::Start()
 					int Number = 3;
 					m_KnightAI2->SetRespawnNumber(Number);
 					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+
 					return true;
 				}
 			}

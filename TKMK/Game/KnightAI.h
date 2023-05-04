@@ -20,6 +20,7 @@ public:
 
 	KnightAI();
 	~KnightAI();
+	bool Start();
 	void Update();
 	void Attack();
 	void Render(RenderContext& rc);

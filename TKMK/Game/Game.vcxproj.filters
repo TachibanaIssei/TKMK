@@ -27,6 +27,7 @@
     <ClCompile Include="Lamp.cpp" />
     <ClCompile Include="CharacterSelect.cpp" />
     <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="ChaseEFK.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -55,5 +56,6 @@
     <ClInclude Include="CharacterSelect.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="ChaseEFK.h" />
   </ItemGroup>
 </Project>

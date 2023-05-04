@@ -110,6 +110,14 @@ public:
 	/// </summary>
 	void CharPoint();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="size"></param>
+	/// <param name="scale"></param>
+	/// <returns></returns>
+	Vector3& HPBerSend(Vector3 size, Vector3 scale);
+
 private:
 	FontRender m_ExpFont;
 
@@ -153,6 +161,8 @@ private:
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
+
+	Vector3				m_EXPBerPos = Vector3::Zero;				   //EXPバーのポジション
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);
 	Vector3				m_FightScale = Vector3(1.0f, 1.0f, 0.0f);

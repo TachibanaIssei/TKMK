@@ -35,7 +35,7 @@ public:
 
 	
 
-	EnEFK m_EnEffect_Knight = enEffect_Knight_Death_Num;
+	EnEFK m_EnEffect_Knight = enEffect_Num;
 
 	enum EnPauseMenu
 	{
@@ -291,7 +291,7 @@ private:
 	//秒を計るタイマー
 	float SecondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 5.0f;
+	float MinutesTimer = 3.0f;
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
 	//必殺技中みんな止まる

@@ -21,11 +21,21 @@ namespace {
 
 KnightPlayer::KnightPlayer()
 {
+
+}
+
+KnightPlayer::~KnightPlayer()
+{
+
+}
+
+bool KnightPlayer::Start() {
 	m_gameUI = FindGO<GameUI>("m_gameUI");
 	m_game = FindGO<Game>("game");
 	m_fade = FindGO<Fade>("fade");
 
 	SetModel();
+
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -33,7 +43,7 @@ KnightPlayer::KnightPlayer()
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	respawnNumber = 2;        //リスポーンする座標の番号0
-	
+
 	//リスポーンする座標のセット
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
@@ -60,11 +70,9 @@ KnightPlayer::KnightPlayer()
 	m_Avoidance_barRender.Init("Assets/sprite/avoidance_bar.DDS", 194, 26);
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
-}
 
-KnightPlayer::~KnightPlayer()
-{
 
+	return true;
 }
 
 void KnightPlayer::Update()
@@ -141,7 +149,7 @@ void KnightPlayer::Update()
 				//回避処理
 				Avoidance();
 		}
-
+		AttackUP();
 		//移動処理
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
@@ -231,6 +239,12 @@ void KnightPlayer::Update()
 		m_charState = enCharState_Fall;
 	}
 	
+	if (m_moveSpeed.LengthSq() != 0.0f) {
+		m_forwardNow = m_moveSpeed;
+		m_forwardNow.Normalize();
+		m_forwardNow.y = 0.0f;
+	}
+
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
@@ -261,30 +275,44 @@ void KnightPlayer::Attack()
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (g_pad[0]->IsTrigger(enButtonA)&& m_AtkTmingState!= SecondAtk_State)
 		{
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
-			////攻撃を二段目にする
-			//m_charState = enCharState_SecondAttack;
+			EffectEmitter* EffectKnightDeath;
+			EffectKnightDeath = NewGO <EffectEmitter>(0);
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_AttackChack);
+			Vector3 effectPosition = m_position;
+			//座標を少し上にする。
+			effectPosition.y += 50.0f;
+			EffectKnightDeath->SetScale(Vector3::One * 30.0f);
+			EffectKnightDeath->SetPosition(effectPosition);
+			EffectKnightDeath->Play();
 		}
 	}
 	//二段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == SecondAtkStart_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (g_pad[0]->IsTrigger(enButtonA)&&m_AtkTmingState != LastAtk_State)
 		{
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
-			////攻撃を三段目にする
-			//m_charState = enCharState_LastAttack;
+			EffectEmitter* EffectKnightDeath;
+			EffectKnightDeath = NewGO <EffectEmitter>(0);
+			EffectKnightDeath->Init(EnEFK::enEffect_Knight_AttackChack);
+			Vector3 effectPosition = m_position;
+			//座標を少し上にする。
+			effectPosition.y += 50.0f;
+			EffectKnightDeath->SetScale(Vector3::One * 30.0f);
+			EffectKnightDeath->SetPosition(effectPosition);
+			EffectKnightDeath->Play();
 		}
 	}
 
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB))
+	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB)&&m_Status.Hp>0)
 	{
 		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed);

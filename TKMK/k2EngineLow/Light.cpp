@@ -6,7 +6,6 @@ void nsK2EngineLow::SceneLight::Init()
     m_light.directionalLight.color.x = 0.5f;
     m_light.directionalLight.color.y = 0.5f;
     m_light.directionalLight.color.z = 0.5f;
-    m_light.directionalLight.color.w = 1.0f;
 
     m_light.directionalLight.direction.x = 1.0f;
     m_light.directionalLight.direction.y = -1.0f;
@@ -16,7 +15,6 @@ void nsK2EngineLow::SceneLight::Init()
     m_light.ambientLight.x = 0.3f;
     m_light.ambientLight.y = 0.3f;
     m_light.ambientLight.z = 0.3f;
-    m_light.ambientLight.w = 1.0f;
 
     m_light.hemisphereLight.groundColor = Vector3(0.17f, 0.15f, 0.1255f);
     m_light.hemisphereLight.skyColor = Vector3(0.0116f, 0.0766f, 0.0766f);

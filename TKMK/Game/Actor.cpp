@@ -101,6 +101,36 @@ void Actor::GetRespawnPos()
 }
 
 /// <summary>
+/// 攻撃UP
+/// </summary>
+void Actor::AttackUP()
+{
+	//攻撃UP関連
+	if (GetPower != nullptr)
+	{
+		if (GetPower->GetEffect()->IsPlay() == false)
+		{
+			PowerUpEfk = NewGO<ChaseEFK>(3);
+			PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 10.0f);
+
+			GetPower->DeleteEffect();
+			DeleteGO(GetPower);
+
+			GetPower = nullptr;
+		}
+	}
+	if (PowerUpTimer > 0.0f)
+	{
+		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();
+		if (PowerUpTimer <= 0.0f)
+		{
+			//攻撃UP終了
+			AttackUPEnd();
+		}
+	}
+}
+
+/// <summary>
 /// レベルアップの処理
 /// </summary>
 /// <param name="lus">レベルアップ時に増加するステータス</param>

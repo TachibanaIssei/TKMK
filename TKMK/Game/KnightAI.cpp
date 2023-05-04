@@ -9,9 +9,21 @@
 
 KnightAI::KnightAI()
 {
-	m_Status.Init("Knight");
 	
+}
+
+
+KnightAI::~KnightAI()
+{
+
+}
+
+bool KnightAI::Start() {
+
+	m_Status.Init("Knight");
+
 	SetModel();
+
 	//アニメーションイベント用の関数を設定する。
 	m_modelRender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -30,13 +42,8 @@ KnightAI::KnightAI()
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
 	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
-	
-}
 
-
-KnightAI::~KnightAI()
-{
-
+	return true;
 }
 
 void KnightAI::Update()
@@ -59,6 +66,8 @@ void KnightAI::Update()
 		}
 		return;
 	}
+
+	AttackUP();
 
 	//重力
 	Move();
@@ -138,6 +147,11 @@ void KnightAI::Update()
 	//フォントの色を設定。
 	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
+	if (m_moveSpeed.LengthSq() != 0.0f) {
+		m_forwardNow = m_moveSpeed;
+		m_forwardNow.Normalize();
+		m_forwardNow.y = 0.0f;
+	}
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetRotation(m_rot);

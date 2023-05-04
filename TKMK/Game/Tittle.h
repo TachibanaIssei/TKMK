@@ -158,8 +158,8 @@ private:
 	Vector3 m_ZombieCursor = { 145.0f, 450.0f, 0.0f };
 	Vector3 m_MiteiCursor = { 425.0f, 450.0f, 0.0f };
 
-	//キャラクター説明画面でカーソルを左側に表示させるときに足すためのポジション
-	Vector3 m_charaLeftCursor = { -130.0f,0.0f,0.0f };
+	//Logoのポジションを左にずらす
+	Vector3 m_LeftLogo = { -10.0f,0.0f,0.0f };
 
 	Vector4 m_color = { 1.0f,1.0f,1.0f,0.0f };		//選択されてないときに透明度を低くして強調しないようにする時に使う
 	Vector4 m_colorST = { g_vec4White };			//通常の透明度

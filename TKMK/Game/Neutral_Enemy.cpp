@@ -100,9 +100,6 @@ bool Neutral_Enemy::Start()
 		m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
-		//エフェクトを読み込む。
-		EffectEngine::GetInstance()->ResistEffect(9, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
-		EffectEngine::GetInstance()->ResistEffect(10, u"Assets/effect/Neutral_Enemy/death.efk");
 
 		enemyColorRam = rand() % 10;
 
@@ -270,7 +267,7 @@ void Neutral_Enemy::Update()
 void Neutral_Enemy::DeathEfk()
 {
 		EffectEmitter* DeathEfk = NewGO<EffectEmitter>(0);
-		DeathEfk->Init(10);
+		DeathEfk->Init(EnEFK::enEffect_Neutral_Enemy_Death);
 		DeathEfk->SetScale(Vector3::One * 5.0f);
 		Vector3 effectPosition = m_position;
 		DeathEfk->SetPosition(effectPosition);
@@ -1061,7 +1058,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//座標を調整
 		//エフェクト再生
 		EffectEmitter*AttackEfk = NewGO<EffectEmitter>(0);
-		AttackEfk->Init(9);
+		AttackEfk->Init(enEffect_Neutral_Enemy_head_butt);
 		AttackEfk->SetScale(Vector3::One * 20.0f);
 		Vector3 effectPosition = m_position;
 		//座標を少し上にする。

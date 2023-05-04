@@ -13,6 +13,7 @@ class KnightPlayer:public KnightBase
 public:
 	KnightPlayer();
 	~KnightPlayer();
+	bool Start();
 	void Update();
 
 	void Attack();

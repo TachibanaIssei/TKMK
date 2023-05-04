@@ -35,7 +35,7 @@ public:
 
 	
 
-	EnEFK m_EnEffect_Knight = enEffect_Knight_Death_Num;
+	EnEFK m_EnEffect_Knight = enEffect_Num;
 
 	enum EnPauseMenu
 	{

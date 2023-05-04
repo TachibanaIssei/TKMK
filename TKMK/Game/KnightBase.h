@@ -280,14 +280,15 @@ protected:
 	//初期ステータス 最大HP、HP、攻撃力、スピード
 	
 
+
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	float m_position_YUp = 33.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
 	Vector3 m_forward = Vector3::AxisZ;                   //正面ベクトル
+  Vector3 m_forwardNow = Vector3::Zero;                 //現在の正面ベクトル
 	Vector3 collisionRot= Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン
 	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
-
 	//Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
 	//Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
 	Vector3 m_Skill_MoveSpeed = Vector3::Zero;
@@ -295,7 +296,7 @@ protected:
 
 	//Vector3 m_SwordPos = Vector3::Zero;						//剣の座標
 	CharacterController m_charCon;                        //キャラクターコントロール
-	
+
 
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 	//PlayerState m_charState = enKnightState_Idle/* = enKnightState_Num*/;

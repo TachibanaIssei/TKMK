@@ -95,7 +95,16 @@ namespace nsK2EngineLow {
 		{
 			return m_effect.IsPlay();
 		}
+
+		/// <summary>
+		/// エフェクトが終わったら勝手に消えるかどうか
+		/// </summary>
+		void AutoDelete(bool deleteFlag) {
+			autoEnd = deleteFlag;
+		}
+
 	private:
 		Effect m_effect;					//エフェクト。
+		bool autoEnd = true;
 	};
 }

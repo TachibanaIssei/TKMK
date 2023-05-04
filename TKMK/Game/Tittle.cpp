@@ -145,7 +145,7 @@ bool Tittle::Start()
 
 	//BGM‚ÌÝ’è
 	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/titleBGM/fanfare1.wav");
-	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/titleBGM/titleBGM2.wav");
+	g_soundEngine->ResistWaveFileBank(3, "Assets/sound/titleBGM/titleBGM2.wav");
 	//‘I‘ð‰¹
 	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/sentaku/sentaku4.wav");
 	//ŽaŒ‚‰¹
@@ -153,9 +153,7 @@ bool Tittle::Start()
 	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/titleBGM/titleSE/zangeki1.wav");
 
 	m_bgm = NewGO<SoundSource>(0);
-	/*m_bgm->Init(1);
-	m_bgm->Play(false);
-	m_bgm->SetVolume(0.5f);*/
+
 
 	return true;
 }
@@ -239,7 +237,7 @@ void Tittle::Scene()
 		}
 		else if (m_linear == enLinear_Logo)
 		{
-			if (firstLogo > 1.0f)
+			if (firstLogo > 0.8f)
 			{
 				SoundSource* se = NewGO<SoundSource>(0);
 				se->Init(7);
@@ -257,7 +255,7 @@ void Tittle::Scene()
 			m_titleLogo.SetScale(m_firsttitleScale);
 			m_fire.SetScale(m_fireScale);
 			//•âŠ®—¦
-			firstLogo += 0.01f;
+			firstLogo += 0.03f;
 		}
 		else if(m_linear == enLinear_End)
 		{
@@ -371,7 +369,7 @@ void Tittle::Scene()
 		m_titleScene = enTitleScene_Change;
 		if (m_bgm->IsPlaying() == false)
 		{
-			m_bgm->Init(2);
+			m_bgm->Init(3);
 			m_bgm->Play(true);
 			m_bgm->SetVolume(0.5f);
 		}

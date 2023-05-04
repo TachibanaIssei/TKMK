@@ -71,6 +71,10 @@ private:
 	SpriteRender m_Attack_Icon;				//攻撃、スキル、必殺技アイコン
 	SpriteRender m_UnderBar;				//画面下のバー
 	SpriteRender m_name;					//名前
+	
+	SpriteRender m_Attack_explanation;		//攻撃の説明文
+	SpriteRender Skill_explanation;			//スキルの説明文
+	SpriteRender Ult_explanation;			//必殺技の説明文
 
 	ModelRender m_Knight;					//剣士のモデル
 	Quaternion m_KnightRot;
@@ -82,15 +86,18 @@ private:
 
 	Vector3 curPosition = { -510.0f,75.0f,0.0f };
 
-	Vector3 m_pointer_blackPos = Vector3::Zero;
-	Vector3 m_pointer_whitePos= Vector3::Zero;
+
+	//ポインター
+	CharacterController Poimter;
+	Vector3 m_Pointerposition = Vector3(0.0f,200.0f,-0.0f);
 	Vector3 m_moveSpeed = Vector3::Zero;
 
-	CharacterController Poimter;
-
 	PhysicsGhostObject Attack;
+	bool Attack_explanationFlag = false;
 	PhysicsGhostObject Skill;
+	bool Skill_explanationFlag = false;
 	PhysicsGhostObject UltimateSkill;
+	bool Ult_explanationFlag = false;
 
 	float time;
 

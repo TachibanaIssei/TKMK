@@ -9,19 +9,23 @@ namespace {
 	const Vector3 NamePos = Vector3(-600.0f, -400.0f, 0.0f);				//名前の座標
 	const Vector3 UnderBarPos = Vector3(0.0f, -500.0f, 0.0f);			//画面下のバーの座標
 
+	const Vector3 Attack_explanationPos = Vector3(20.0f, 33.0f, 0.0f);
+	const Vector3 Skill_explanationPos = Vector3(105.0f, 33.0f, 0.0f);
+	const Vector3 Ult_explanationPos = Vector3(40.0f, 30.0f, 0.0f);
+
 	const Vector3 KnightPos = Vector3(-150.0f, 0.0f, 0.0f);				//剣士の座標
 	const Vector3 PlatformPos = Vector3(-150.0f, -40.0f, 0.0f);				//剣士の座標
-	const Vector3 CameraTargetPos = Vector3(0.0f, 90.0f, 0.0f);			//カメラのターゲット
 	const Quaternion KnightRot = Quaternion(0.0f, 90.0f, 0.0f, 1.0f);
 
-	const Vector3 m_CameraPosition = Vector3( 0.0f, 90.0f, -250.0f );   //カメラの座標
+	const Vector3 CameraTargetPos = Vector3(0.0f, 90.0f, 0.0f);			//カメラのターゲット
+	const Vector3 m_CameraPosition = Vector3( 0.0f, 90.0f, -248.0f );   //カメラの座標
 
 	const Vector3 AttackCollision = Vector3(20.0f, 33.0f, 0.0f);
 	const Quaternion AttackCollisionRot = Quaternion(180.0f, 75.0f, 0.0f, 1.0f);
 	const Vector3 SkillCollision = Vector3(105.0f, 33.0f, 0.0f);
 	const Vector3 UltimateCollision = Vector3(194.0f, 30.0f, 0.0f);
 
-	const float PointerSpeed = 30.0f;
+	const float PointerSpeed = 20.0f;
 
 }
 
@@ -62,13 +66,13 @@ bool CharacterSelect::Start()
 
 	//ポインターの黒
 	m_pointer_black.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
-	m_pointer_black.SetPosition(m_pointer_blackPos);
+	m_pointer_black.SetPosition(m_Pointerposition);
 	m_pointer_black.SetScale(0.6f, 0.6f, 0.6f);
 	m_pointer_black.Update();
 
 	//ポインターの白
 	m_pointer_white.Init("Assets/sprite/Select/pointer_white.DDS", 220.0f, 220.0f);
-	m_pointer_white.SetPosition(m_pointer_whitePos);
+	m_pointer_white.SetPosition(m_Pointerposition);
 	m_pointer_white.SetScale(0.6f, 0.6f, 0.6f);
 	m_pointer_white.Update();
 
@@ -109,6 +113,33 @@ bool CharacterSelect::Start()
 	m_UnderBar.SetScale(1.0f, 1.0f, 1.0f);
 	m_UnderBar.Update();
 
+	//説明文
+	{
+		//攻撃の説明文
+		m_Attack_explanation.Init("Assets/sprite/Select/Attack_explanation.DDS", 1120.0f, 300.0f);
+		m_Attack_explanation.SetPosition(Attack_explanationPos);
+		m_Attack_explanation.SetScale(1.0f, 1.0f, 1.0f);
+		m_Attack_explanation.Update();
+
+		//スキルの説明文
+		Skill_explanation.Init("Assets/sprite/Select/Skill_explanation.DDS", 1120.0f, 450.0f);
+		Skill_explanation.SetPosition(Skill_explanationPos);
+		Skill_explanation.SetScale(1.0f, 1.0f, 1.0f);
+		Skill_explanation.Update();
+
+		//必殺技の説明文
+		Ult_explanation.Init("Assets/sprite/Select/Ult_explanation.DDS", 1700.0f, 501.0f);
+		Ult_explanation.SetPosition(Ult_explanationPos);
+		Ult_explanation.SetScale(1.0f, 1.0f, 1.0f);
+		Ult_explanation.Update();
+	}
+
+	Poimter.Init(
+		20.0f,
+		1.0f,
+		m_Pointerposition
+	);
+
 	return true;
 }
 
@@ -126,6 +157,9 @@ void CharacterSelect::Update()
 	Cursor();
 
 	PointerMove();
+	
+	GhostCollision();
+
 	
 	//Aボタンを押した時
 	if (g_pad[0]->IsTrigger(enButtonA))
@@ -171,7 +205,7 @@ void CharacterSelect::Update()
 	m_platform.Update();
 
 	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 }
 
 /// <summary>
@@ -182,29 +216,69 @@ void CharacterSelect::PointerMove()
 	
 	//移動処理
 	Vector3 stickL;
-	stickL.x = PointerSpeed*g_pad[0]->GetLStickXF();
+	stickL.x = PointerSpeed * g_pad[0]->GetLStickXF();
 	stickL.y = PointerSpeed * g_pad[0]->GetLStickYF();
 
 	m_moveSpeed += stickL;
 	
-	m_pointer_blackPos += m_moveSpeed;
-	m_pointer_whitePos += m_moveSpeed;
+	
 
-	m_pointer_black.SetPosition(m_moveSpeed);
-	m_pointer_white.SetPosition(m_moveSpeed);
+	m_Pointerposition = Poimter.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+
+	/*if (m_Pointerposition.x > 500.0f) {
+		m_Pointerposition.x = 500.0f;
+	}
+	if (m_Pointerposition.x < 0.0f) {
+		m_Pointerposition.x = 0.0f;
+	}
+
+	if (m_Pointerposition.y > 300.0f) {
+		m_Pointerposition.y = 300.0f;
+	}
+	if (m_Pointerposition.y < 0.0f) {
+		m_Pointerposition.y = 0.0f;
+	}*/
+
+	//画像の座標が追いつかない
+	m_pointer_black.SetPosition(m_Pointerposition);
+	m_pointer_white.SetPosition(m_Pointerposition);
 
 	m_pointer_black.Update();
 	m_pointer_white.Update();
+
 }
 
 void CharacterSelect::GhostCollision()
 {
+	Attack_explanationFlag = false;
 	//ポインターとアタックアイコンのゴーストオブジェクトのあたり判定を行う。
 	PhysicsWorld::GetInstance()->ContactTest(Poimter, [&](const btCollisionObject& contactObject) {
 		if (Attack.IsSelf(contactObject) == true) {
 			//m_physicsGhostObjectとぶつかった。
 			//フラグをtrueにする。
 			//m_isHit = true;
+			Attack_explanationFlag = true;
+		}
+		});
+
+	Skill_explanationFlag = false;
+	//ポインターとアタックアイコンのゴーストオブジェクトのあたり判定を行う。
+	PhysicsWorld::GetInstance()->ContactTest(Poimter, [&](const btCollisionObject& contactObject) {
+		if (Skill.IsSelf(contactObject) == true) {
+			//m_physicsGhostObjectとぶつかった。
+			//フラグをtrueにする。
+			//m_isHit = true;
+			Skill_explanationFlag = true;
+		}
+		});
+
+	Ult_explanationFlag = false;
+	PhysicsWorld::GetInstance()->ContactTest(Poimter, [&](const btCollisionObject& contactObject) {
+		if (UltimateSkill.IsSelf(contactObject) == true) {
+			//m_physicsGhostObjectとぶつかった。
+			//フラグをtrueにする。
+			//m_isHit = true;
+			Ult_explanationFlag = true;
 		}
 		});
 }
@@ -344,6 +418,19 @@ void CharacterSelect::Render(RenderContext& rc)
 	m_Attack_Icon.Draw(rc);
 	m_name.Draw(rc);
 	m_UnderBar.Draw(rc);
+
+	if (Attack_explanationFlag == true)
+	{
+		m_Attack_explanation.Draw(rc);
+	}
+	if (Skill_explanationFlag == true)
+	{
+		Skill_explanation.Draw(rc);
+	}
+	if (Ult_explanationFlag == true)
+	{
+		Ult_explanation.Draw(rc);
+	}
 
 	//点滅早くtodo
 	if ((int)time % 2 == 0)

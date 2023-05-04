@@ -160,7 +160,7 @@ void KnightPlayer::Update()
 		if (AvoidanceFlag == true) {
 			m_charState = enCharState_Avoidance;
 			//移動処理を行う(直線移動のみ)。
-			MoveStraight(m_Skill_Right, m_Skill_Forward);
+			MoveStraight();
 		}
 
 		//スキル使用中なら
@@ -168,7 +168,7 @@ void KnightPlayer::Update()
 			//スキルステート
 			m_charState = enCharState_Skill;
 			//移動処理を行う(直線移動のみ)。
-			MoveStraight(m_Skill_Right, m_Skill_Forward);
+			MoveStraight();
 		}
 		//ステート
 		ManageState();
@@ -300,12 +300,8 @@ void KnightPlayer::Attack()
 	//Bボタンが押されたら
 	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB)&&m_Status.Hp>0)
 	{
-		//移動速度を上げる
-		Vector3 stickL;
-		stickL.x = g_pad[0]->GetLStickXF();
-		stickL.y = g_pad[0]->GetLStickYF();
 		//スキルを使うときのスピードを使う
-		AnimationMove(SkillSpeed, stickL);
+		AnimationMove(SkillSpeed);
 		pushFlag = true;
 		SkillState = true;
 	}
@@ -348,8 +344,6 @@ void KnightPlayer::Attack()
 		//必殺技発動フラグをセット
 	/*	UltimateSkillFlag = true;*/
 	}
-
-	
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
 	if (AtkCollistionFlag == true) AtkCollisiton();
@@ -370,10 +364,7 @@ void KnightPlayer::Avoidance()
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
 		//回避ステート
-		Vector3 stickL;
-		stickL.x = g_pad[0]->GetLStickXF();
-		stickL.y = g_pad[0]->GetLStickYF();
-		AnimationMove(AvoidanceSpeed, stickL);
+		AnimationMove(AvoidanceSpeed);
 		pushFlag = true;
 		AvoidanceFlag = true;
 	}

@@ -138,7 +138,7 @@ namespace nsK2EngineLow {
 		/// 描画処理
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void Draw(RenderContext& rc);
+		void Draw(RenderContext& rc, bool drawTiming = false);
 
 		/// <summary>
 		/// RenderingEngineで描画するときに呼び出す

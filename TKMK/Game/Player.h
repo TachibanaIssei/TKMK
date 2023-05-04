@@ -5,7 +5,7 @@
 
 #include "Status.h"
 
-class Status;
+struct Status;
 class Game;
 class GameUI;
 class KnightPlayer;

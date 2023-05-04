@@ -66,6 +66,9 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Knight/Knight_fall2.tka");
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
+
+	//剣士モデルを読み込み
+	//m_modelRender.Init("Assets/modelData/character/Knight/model_Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	
 	//剣士モデルを読み込み
 	switch (KnightKinds)
@@ -107,6 +110,8 @@ void KnightBase::SetModel()
 	//
 
 	m_player = FindGO<Player>("player");
+	//剣のエフェクトを読み込む
+	//EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 }
 
 /// <summary>
@@ -185,6 +190,7 @@ void KnightBase::Invincible()
 		invincibleTimer -= g_gameTime->GetFrameDeltaTime();
 	}
 }
+
 /// <summary>
 /// 攻撃時の当たり判定の処理
 /// </summary>
@@ -462,45 +468,24 @@ void KnightBase::Death()
 /// <summary>
 /// アニメーション再生時に直線移動させる方向の決定
 /// </summary>
-/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
-/// <param name="stickL">スティックの移動の入力量</param>
-void KnightBase::AnimationMove(float moveSpeed,Vector3 stickL)
+void KnightBase::AnimationMove(float Speed)
 {
 	m_moveSpeed.x = 0.0f;
 	m_moveSpeed.z = 0.0f;
 
-	//移動の入力量がないなら
-	if (stickL.x == 0.0f&& stickL.y == 0.0f) {
-		//前に移動
-		stickL.x = 0.0f;
-		stickL.y = 1.0f;
-	}
-
-	m_Skill_Forward = Vector3::Zero;
-	m_Skill_Right = Vector3::Zero;
-
-	//カメラの前方向と右方向のベクトルを持ってくる。
-	m_Skill_Forward = g_camera3D->GetForward();
-	m_Skill_Right = g_camera3D->GetRight();
-	//y方向には移動させない。
-	m_Skill_Forward.y = 0.0f;
-	m_Skill_Right.y = 0.0f;
-
-	//左スティックの入力量とstatusのスピードを乗算。
-	m_Skill_Right *= stickL.x * moveSpeed;
-	m_Skill_Forward *= stickL.y * moveSpeed;
+	//移動速度を計算。
+	m_Skill_MoveSpeed = Vector3::AxisZ;
+	m_rot.Apply(m_Skill_MoveSpeed);
+	m_rot.AddRotationDegY(360.0f);
+	//移動速度を決める
+	m_Skill_MoveSpeed *= Speed;
 }
 
 //直線移動させる
-void KnightBase::MoveStraight(Vector3& right, Vector3& forward)
+void KnightBase::MoveStraight()
 {
-	Vector3 SkillSpeed = Vector3::Zero;
-	//移動処理
-	//移動速度にスティックの入力量を加算する。
-	//Vector3 m_SkillSpeed; 
-	SkillSpeed = right + forward;
 	//キャラクターコントローラーを使って座標を移動させる。
-	m_position = m_charCon.Execute(SkillSpeed, 1.0f / 60.0f);
+	m_position = m_charCon.Execute(m_Skill_MoveSpeed, 1.0f / 60.0f);
 }
 
 /// <summary>
@@ -514,7 +499,7 @@ void KnightBase::PlayAnimation()
 	{
 	//待機
 	case enCharState_Idle:
-		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.4f);
+		m_modelRender.PlayAnimation(enAnimationClip_Idle,0.2f);
 		break;
 	//歩き
 	case enCharState_Walk:
@@ -844,6 +829,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		SetRespawn();
 		Death();
 		pushFlag = false;
+		AtkState = false;
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定

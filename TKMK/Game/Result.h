@@ -1,7 +1,7 @@
 #pragma once
 
 #define PLAYER 4
-#define MOVE 7
+#define MOVE 8
 
 class Tittle;
 
@@ -22,7 +22,7 @@ public:
 		enChange_first,		//最初の処理
 		enChange_move,		//線形補完中
 		enChange_stop,		//終わった後
-		enChange_Num
+		enChange_Num,
 	};
 
 	//カーソルの場所
@@ -36,7 +36,6 @@ public:
 	struct Score {
 		int Point = 0;		//獲得ポイント
 		int NameNum = 1;	
-		char Name[30];		//プレイヤーネーム
 		int Rank = 1;		//順位
 	};
 
@@ -45,13 +44,8 @@ private:
 	int titleScene = 1;			//タイトルのシーン番号
 	int m_timer = 0;			//タイマー
 	int select = 0;				//セレクトポジ
-	float Complement = 0.01f;	//線形補間の補完率
+	float Complement = 0.0f;	//線形補間の補完率
 	float WordScale = 3.0f;
-
-	char playername1[30] = "Player1";
-	char playername2[30] = "CPU1";
-	char playername3[30] = "CPU2";
-	char playername4[30] = "CPU3";
 
 	Score Player[PLAYER];
 
@@ -64,44 +58,59 @@ private:
 
 	Quaternion m_sRotation;
 	SpriteRender m_spriteRender;	//背景
-	SpriteRender m_GOtitle;			//"タイトルへ戻る"
-	SpriteRender m_gameover;		//"ゲーム終了"
-	SpriteRender m_choice;			//選択カーソル
+	SpriteRender m_GOtitle;			//"タイトルへ戻る"非選択
+	SpriteRender m_GOtitleST;		//"タイトルへ戻る"選択
+	SpriteRender m_gameover;		//"ゲーム終了"非選択
+	SpriteRender m_gameoverST;		//"タイトルへ戻る"選択
+	SpriteRender m_Ranking;			//順位表
+	SpriteRender m_PlayerNameP;		//"Player"名前かぶりだから変える
+	SpriteRender m_CPUName1;		//CPU1
+	SpriteRender m_CPUName2;		//CPU2
+	SpriteRender m_CPUName3;		//CPU3
+	SpriteRender m_ResultLogo;		//リザルトのロゴ
+
+
 	Tittle* tittle = nullptr;
+
+	Vector3 PointRight = { 200.0f,50.0f,0.0f };
 
 	//線形補間でここまで動かす
 	Vector3 RankPos[MOVE] = {
-		Vector3(-250.0f, 500.0f, 0.0f),		//順位、１位
-		Vector3(-250.0f, 350.0f, 0.0f),		//２位
-		Vector3(-250.0f, 200.0f, 0.0f),		//３位
-		Vector3(-250.0f, 50.0f, 0.0f),		//４位
-		Vector3(-500.0f, -350.0f, 0.0f),	//"タイトルに戻る"
-		Vector3(525.0f, -350.0f, 0.0f),		//"ゲームを終了"
-		Vector3(-775.0f, -370.0f, 0.0f),	//選択カーソル
+		Vector3(0.0f, 200.0f, 0.0f),		//順位、１位
+		Vector3(0.0f, 50.0f, 0.0f),			//２位
+		Vector3(0.0f, -100.0f, 0.0f),		//３位
+		Vector3(0.0f, -250.0f, 0.0f),		//４位
+		Vector3(-500.0f, -450.0f, 0.0f),	//"タイトルに戻る"
+		Vector3(525.0f, -450.0f, 0.0f),		//"ゲームを終了"
+		Vector3(0.0f, -30.0f, 0.0f),		//順位表
+		Vector3(0.0f, 400.0f,0.0f),		//リザルトのロゴ
 	};
 
 	//線形補間で動かすときのポジション
 	Vector3 MovePos[MOVE] = {
-		Vector3(0.0f, 0.0f, 0.0f),		//順位、１位
-		Vector3(0.0f, 0.0f, 0.0f),		//２位
-		Vector3(0.0f, 0.0f, 0.0f),		//３位
-		Vector3(0.0f, 0.0f, 0.0f),		//４位
-		Vector3(0.0f, 0.0f, 0.0f),		//"タイトルに戻る"
-		Vector3(0.0f, 0.0f, 0.0f),		//"ゲームを終了"
-		Vector3(0.0f, 0.0f, 0.0f),		//選択カーソル
+		Vector3(g_vec3Zero),		//順位、１位
+		Vector3(g_vec3Zero),		//２位
+		Vector3(g_vec3Zero),		//３位
+		Vector3(g_vec3Zero),		//４位
+		Vector3(g_vec3Zero),		//"タイトルに戻る"
+		Vector3(g_vec3Zero),		//"ゲームを終了"
+		Vector3(g_vec3Zero),		//順位表
+		Vector3(g_vec3Zero),		//リザルトのロゴ
 	};
 
 	//画面外
 	Vector3 FirstPos[MOVE] = {
-		Vector3(-250.0f, -1000.0f, 0.0f),	//順位、１位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//２位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//３位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//４位
-		Vector3(-250.0f, -1000.0f, 0.0f),	//"タイトルに戻る"
-		Vector3(-250.0f, -1000.0f, 0.0f),	//"ゲームを終了"
-		Vector3(-250.0f, -1000.0f, 0.0f),	//選択カーソル
+		Vector3(0.0f, -1000.0f, 0.0f),	//順位、１位
+		Vector3(0.0f, -1000.0f, 0.0f),	//２位
+		Vector3(0.0f, -1000.0f, 0.0f),	//３位
+		Vector3(0.0f, -1000.0f, 0.0f),	//４位
+		Vector3(0.0f, -1000.0f, 0.0f),	//"タイトルに戻る"
+		Vector3(0.0f, -1000.0f, 0.0f),	//"ゲームを終了"
+		Vector3(0.0f, -1000.0f, 0.0f),	//順位表
+		Vector3(0.0f, -1000.0f, 0.0f),	//リザルトのロゴ
 	};
 
-	//カーソルを左にずらすVector
-	Vector3 Leftcursor = { -230.0f,-20.0f,0.0f };
+	//透明度
+	Vector4 m_color = { 0.0f,0.0f,0.0f,0.0f };	//透明
+	Vector4 m_colorST = { g_vec4White };		//不透明
 };

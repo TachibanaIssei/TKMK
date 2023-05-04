@@ -101,7 +101,6 @@ bool Neutral_Enemy::Start()
 		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 
-
 		enemyColorRam = rand() % 10;
 
 		if (enemyColorRam <= 5)

@@ -305,12 +305,8 @@ public:
 	void HpUp(int HpUp)
 	{
 		m_Status.Hp += HpUp;
-		EffectEmitter* GetHP = NewGO<EffectEmitter>(0);
-		GetHP->Init(EnEFK::enEffect_Knight_GetHoimi);
-		GetHP->SetScale(Vector3::One * 40.0f);
-		Vector3 effectPosition = m_position;
-		GetHP->SetPosition(effectPosition);
-		GetHP->Play();
+		GetPower = NewGO<ChaseEFK>(3);
+		GetPower->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
 		if (m_Status.Hp > m_Status.MaxHp)
 		{

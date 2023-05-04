@@ -38,7 +38,12 @@ namespace
 	const float DownPointPosY = 100.0f;
 
 	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //経験値テーブル
-	const Vector3 EXPERIENCE_BAR_POS = Vector3(603.0f, -500.0f, 0.0f);	//経験値バー
+
+	const float EXPBAR_WIDTH = 300.0f;
+	const float EXPBAR_HEIGHT = 70.0f;
+	const Vector3 EXPERIENCE_BAR_POS = Vector3(750.0f, -500.0f, 0.0f);	//経験値バーの座標
+	const Vector3 EXPBAR_SIZE = Vector3(EXPBAR_WIDTH, EXPBAR_HEIGHT, 0.0f);	//経験値バーのサイズ
+
 	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//レベルアップまでに必要な経験値の量
 
 	const Vector3 RESPWANCOUNT_POS = Vector3(0.0f, 0.0f, 0.0f);		//リスポーンした後のカウント
@@ -122,12 +127,6 @@ bool GameUI::Start()
 			num++;
 		}
 
-		//王冠マーク
-		m_Crown.Init("Assets/sprite/gameUI/crown.DDS", 80.0f, 80.0f);
-		//m_Crown.SetPosition(FLAME_POS);
-		m_Crown.SetScale(1.0, 1.0, 1.0);
-		m_Crown.Update();
-
 	}
 	
 	//リスポーン関連
@@ -169,11 +168,12 @@ bool GameUI::Start()
 		m_ExperienceFlame.Init("Assets/sprite/gameUI/ExperienceBar.DDS", 600.0f, 120.0f);
 		m_ExperienceFlame.SetPosition(EXPERIENCE_POS);
 		m_ExperienceFlame.SetScale(0.5, 0.5, 1.0);
-
-		//経験値バーの表ピボットにするtodo
-		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", 300.0f, 70.0f);
-		m_ExperienceBar_flont.SetPosition(EXPERIENCE_BAR_POS);
-		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
+		
+		//経験値バーの表ピボットにする
+		m_EXPBerPos = EXPERIENCE_BAR_POS;
+		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
+		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
+		//m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
 
 		//経験値バーの裏
@@ -465,7 +465,17 @@ void GameUI::EXPBar()
 	float finalEXP = nowEXP - oldEXPTable;
 
 	//HPバーの増えていく割合。
-	EXPScale.x = (float)/*4.99*/finalEXP / (float)finalEXPTable;
+	EXPScale.x = (float)finalEXP / (float)finalEXPTable;
+	m_ExperienceBar_flont.SetScale(EXPScale);
+
+	//EXPバー画像を左寄せに表示する
+	Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
+	m_EXPBerPos.x =BerSizeSubtraction.x;
+	//m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
+	m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
+	//m_ExperienceBar_flont.SetScale(EXPScale);
+	m_ExperienceBar_flont.Update();
+
 
 	//レベルアップまでに必要な経験値の量
 	int UpToLevel = nowEXPTable - nowEXP;
@@ -473,8 +483,21 @@ void GameUI::EXPBar()
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
 
-	m_ExperienceBar_flont.SetScale(EXPScale);
-	m_ExperienceBar_flont.Update();
+	
+}
+
+//
+Vector3& GameUI::HPBerSend(Vector3 size, Vector3 scale)
+{
+	Vector3 expBerSize = size;								//画像の元の大きさ
+	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
+	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
+
+	changeBerSize.x = expBerSize.x * scale.x;
+	BerSizeSubtraction.x = expBerSize.x - changeBerSize.x;
+	BerSizeSubtraction.x /= 2.0f;
+
+	return BerSizeSubtraction;
 }
 
 //キャラのポイントと。ポイントが一番多いキャラに王冠マークをつける表示の処理
@@ -493,23 +516,6 @@ void GameUI::CharPoint()
 		wchar_t P[255];
 		swprintf_s(P, 255, L"%dP", POINT);
 		m_PointFont[num].SetText(P);
-
-		//一番ポイントが多いキャラに王冠マークをつける
-		//フレームを大きくする
-		if (charPoint[num]>0&&charPoint[num] >= MaxPoint)
-		{
-			MaxPoint = charPoint[num];
-			m_Crown.SetPosition(CrownPos[num]);
-			m_PointFlame[num].SetScale(2.0f, 1.3f, 1.0f);
-
-			m_Crown.Update();
-			m_PointFlame[num].Update();
-		}
-		else
-		{
-			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
-			m_PointFlame[num].Update();
-		}
 
 		num++;
 	}

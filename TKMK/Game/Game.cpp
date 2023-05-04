@@ -87,6 +87,9 @@ bool Game::Start()
 	//オーラエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 
+	//アタックチェックエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_AttackChack, u"Assets/effect/Knight/Knight_Attack_Check.efk");
+
 	g_renderingEngine->UnUseHemiLight();
 
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };

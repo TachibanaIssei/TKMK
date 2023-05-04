@@ -10,6 +10,7 @@ enum EnEFK {
 	enEffect_Knight_Ult_Blue,
 	enEffect_Knight_Ult_Yellow,
 	enEffect_Knight_Ult_Aura,
+	enEffect_Knight_AttackChack,
 	enEffect_Knight_Death_Num
 
 };

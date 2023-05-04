@@ -144,13 +144,14 @@ bool Tittle::Start()
 	m_ilustoptionOp.Update();
 
 	//BGMの設定
-	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/gameBGM/TitleBGM1.wav");
+	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/titleBGM/fanfare1.wav");
+	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/titleBGM/titleBGM2.wav");
 	//選択音
 	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/sentaku/sentaku4.wav");
 
 	m_bgm = NewGO<SoundSource>(0);
 	m_bgm->Init(1);
-	m_bgm->Play(true);
+	m_bgm->Play(false);
 	m_bgm->SetVolume(0.5f);
 
 	return true;
@@ -323,6 +324,7 @@ void Tittle::Scene()
 	if (m_titleScene == enTitleScene_Change && LogoComplement > 1.0f)
 	{
 		//セレクト画面に移る
+		m_bgm->Stop();
 		titleScene = 2;
 	}
 	
@@ -336,6 +338,12 @@ void Tittle::Scene()
 		break;
 	case 2:
 		m_titleScene = enTitleScene_Select;
+		if (m_bgm->IsPlaying() == false)
+		{
+			m_bgm->Init(2);
+			m_bgm->Play(true);
+			m_bgm->SetVolume(0.5f);
+		}
 		break;
 	}
 }

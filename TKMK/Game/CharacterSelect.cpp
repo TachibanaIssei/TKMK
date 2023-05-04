@@ -54,9 +54,9 @@ bool CharacterSelect::Start()
 	g_camera3D->SetPosition(m_CameraPosition);
 	g_camera3D->Update();
 
-	g_renderingEngine->SetAmbient(Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
 	Vector3 dir = { 0.0f,-1.0f,0.0f };
-	Vector4 color = { 0.5f,0.5f,0.5f,1.0f };
+	Vector3 color = { 0.5f,0.5f,0.5f };
 	g_renderingEngine->SetDirectionLight(0, dir, color);
 
 	//剣士のモデル、アニメーション

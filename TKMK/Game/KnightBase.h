@@ -103,16 +103,12 @@ public:
 	/// <summary>
 	/// アニメーション再生時の移動方向、移動速度を決める
 	/// </summary>
-	/// <param name="moveSpeed">スティックの移動量と乗算させたいスピードの値</param>
-	/// <param name="stickL">スティックの移動の入力量</param>
-	void AnimationMove(float moveSpeed,Vector3 stickL);
+	void AnimationMove(float Speed);
 
 	/// <summary>
-	/// 
+	/// 直線移動
 	/// </summary>
-	/// <param name="right"></param>
-	/// <param name="forward"></param>
-	void MoveStraight(Vector3& right, Vector3& forward);
+	void MoveStraight();
 
 	/// <summary>
 	/// アニメーションイベント
@@ -290,8 +286,12 @@ protected:
 	Vector3 collisionRot= Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン
 	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
-	Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
-	Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
+
+	//Vector3 m_Skill_Right = Vector3::Zero;                 //カメラの右方向
+	//Vector3 m_Skill_Forward = Vector3::Zero;               //カメラの前方向
+	Vector3 m_Skill_MoveSpeed = Vector3::Zero;
+
+
 	//Vector3 m_SwordPos = Vector3::Zero;						//剣の座標
 	CharacterController m_charCon;                        //キャラクターコントロール
 	
@@ -350,6 +350,11 @@ protected:
 
 	//プレイヤーとの内積を求めて線形補間で音量調整
 	float SEVolume = 0;
+
+	//スキルを使った時の移動速度
+	float SkillSpeed = 270.0f;
+	//回避を使った時の移動速度
+	float AvoidanceSpeed = 170.0f;
 
 };
 

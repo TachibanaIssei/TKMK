@@ -56,7 +56,7 @@ bool KnightPlayer::Start() {
 	m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定
-	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
+	Skillfont.SetPosition(485.0f, -243.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);
@@ -209,15 +209,6 @@ void KnightPlayer::Update()
 			Vector3 effectPosition = m_position;
 			effectPosition.y += 50.0f;
 			EffectKnightSkill->SetPosition(effectPosition);
-			//Vector3 m_SwordPos = Vector3::Zero;
-			//Quaternion m_SwordRot;
-			////「Sword」ボーンのワールド行列を取得する。
-			//Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-			//matrix.Apply(m_SwordPos);
-			////m_SwordRot.SetRotation(matrix);
-			////m_SwordRot.y = 0.0f;
-			//EffectKnightSkill->SetPosition(m_SwordPos);
-			//EffectKnightSkill->SetRotation(m_SwordRot);
 			EffectKnightSkill->Update();
 		}
 

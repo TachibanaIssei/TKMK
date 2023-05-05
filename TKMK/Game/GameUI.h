@@ -138,8 +138,10 @@ private:
 	SpriteRender			m_statusBar;						//ステータスの画像
 	SpriteRender			m_HPFrame;							//プレイヤーの顔画像の枠
 	SpriteRender			m_playerFaceBack;					//プレイヤーの顔画像の背景
-	SpriteRender            m_SkillRender;						//スキルアイコン
-	SpriteRender            m_UltRender;						//必殺アイコン
+	SpriteRender            m_SkillRenderIN;					//スキルのアイコン
+	SpriteRender            m_SkillRenderOUT;					//スキルのアイコンのフレーム
+	SpriteRender            m_UltRenderIN;						//必殺アイコン
+	SpriteRender            m_UltRenderOUT;						//必殺アイコンのフレーム
 	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;

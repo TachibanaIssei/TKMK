@@ -26,26 +26,43 @@ Map::~Map()
 bool Map::Start()
 {
 	//マップの読み込み
-	m_Map.Init("Assets/sprite/minimap.DDS", 302, 302);
+	m_Map.Init("Assets/sprite/gameUI/minimap.DDS", 350, 350);
 	//座標設定
 	m_Map.SetPosition(MAP_CENTER_POSITION);
-	//マップの外枠の読み込み
-	m_MapFrame.Init("Assets/sprite/minimap_window.DDS", 300, 300);
-	//座標設定
-	m_MapFrame.SetPosition(MAP_CENTER_POSITION);
+	////マップの外枠の読み込み
+	//m_MapFrame.Init("Assets/sprite/minimap_window.DDS", 300, 300);
+	////座標設定
+	//m_MapFrame.SetPosition(MAP_CENTER_POSITION);
 
 	//マップでプレイヤーの表示画像読み込み
 	m_MapPlayer.Init("Assets/sprite/minimap_player.DDS", 35, 35);
 	//座標設定
 	m_MapPlayer.SetPosition(MAP_CENTER_POSITION);
 
-	for (int amount = 0; amount < enemys; amount++) {
+	m_game = FindGO<Game>("game");
+
+	int amount = 0;
+	for (auto enemy : m_game->GetNeutral_Enemys())
+	{
 		//マップでエネミーの表示画像読み込み
-		m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy.DDS", 35, 35);
+		if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_White)
+		{
+			m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy.DDS", 30, 30);
+		}
+		else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Red)
+		{
+			m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy_red.DDS", 30, 30);
+		}
+		else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Green)
+		{
+			m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy_green.DDS", 30, 30);
+		}
+
 		m_MapEnemy[amount].SetPosition(MAP_CENTER_POSITION);
+		amount++;
 	}
 	
-	m_game = FindGO<Game>("game");
+	
 	
 	player = FindGO<Player>("player");
 	
@@ -54,9 +71,10 @@ bool Map::Start()
 void Map::Update()
 {
 	PlayerMap();
+
 	EnemyMap();
 	m_Map.Update();
-	m_MapFrame.Update();
+	//m_MapFrame.Update();
 }
 
 /// <summary>
@@ -122,10 +140,25 @@ void Map::EnemyMap()
 		//エネミーの座標を取得
 		Vector3 enemyPosition = enemy->GetPosition();
 		Vector3 mapPosition;
+
 		//ワールド座標をマップ座標に変換する
 		if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
 		{
-			//座標を設定
+			////座標を設定
+			////マップでエネミーの表示画像読み込み
+			//if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_White)
+			//{
+			//	m_MapEnemy[i].Init("Assets/sprite/minimap_enemy.DDS", 30, 30);
+			//}
+			//else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Red)
+			//{
+			//	m_MapEnemy[i].Init("Assets/sprite/minimap_enemy_red.DDS", 30, 30);
+			//}
+			//else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Green)
+			//{
+			//	m_MapEnemy[i].Init("Assets/sprite/minimap_enemy_green.DDS", 30, 30);
+			//}
+
 			m_MapEnemy[i].SetPosition(mapPosition + MAP_CENTER_POSITION);
 			m_MapEnemy[i].Update();
 			i++;
@@ -135,7 +168,7 @@ void Map::EnemyMap()
 void Map::Render(RenderContext& rc) 
 {
 	m_Map.Draw(rc);
-	m_MapFrame.Draw(rc);
+	//m_MapFrame.Draw(rc);
 	m_MapPlayer.Draw(rc);
 	for(int amount=0;amount< m_game->GetNeutral_Enemys().size(); amount++) m_MapEnemy[amount].Draw(rc);
 }

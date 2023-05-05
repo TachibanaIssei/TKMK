@@ -73,15 +73,20 @@ Game::~Game()
 
 bool Game::Start()
 {
+	//剣士の死んだときのエフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
 
-	//エフェクトを読み込む。
+	//剣士の必殺技エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Red, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Green, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Yellow, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
 
-	//オーラエフェクトを読み込む
+	//剣士のスキル使用時のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Skill, u"Assets/effect/Knight/Knight_Skill_Effect.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_SkillGround, u"Assets/effect/Knight/Knight_SkillGround_Effect.efk");
+
+	//剣士の必殺技発動時のオーラエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 
 	//アタックチェックエフェクトを読み込む
@@ -91,7 +96,7 @@ bool Game::Start()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetPower, u"Assets/effect/Knight/Knight_GetPower.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetHoimi, u"Assets/effect/Knight/Knight_GetHoimi.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp.efk");
-	//エフェクトを読み込む。
+	//中立の敵の攻撃、死亡時エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_head_butt, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_Death, u"Assets/effect/Neutral_Enemy/death.efk");
 
@@ -140,7 +145,7 @@ bool Game::Start()
 	m_Actors.push_back(player->GetPlayerActor());
 
 	//カメラの生成
-	m_gamecamera = NewGO<GameCamera>(0, "gamecamera");
+	m_gamecamera = NewGO<GameCamera>(1, "gamecamera");
 
 	//中立の敵の生成
 	{
@@ -216,8 +221,9 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
+
 	//マップの生成
-	m_Map = NewGO<Map>(2, "map");
+	m_Map = NewGO<Map>(0, "map");
 
 	
 

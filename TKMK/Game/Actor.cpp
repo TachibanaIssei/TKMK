@@ -51,6 +51,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	{
 		//前方向を計算する
 		m_Forward = forward + right;
+		m_forwardNow = forward + right;
 	}
 
 	//移動速度に前方向と右方向の入力量を加算する。

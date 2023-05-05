@@ -46,6 +46,8 @@ private:
 	int select = 0;				//セレクトポジ
 	float Complement = 0.0f;	//線形補間の補完率
 	float WordScale = 3.0f;
+	float BGMVolume = 0.4f;
+	float SEVolume = 0.6f;
 
 	Score Player[PLAYER];
 
@@ -71,6 +73,7 @@ private:
 
 
 	Tittle* tittle = nullptr;
+	SoundSource* m_bgm = nullptr;
 
 	Vector3 PointRight = { 200.0f,50.0f,0.0f };
 

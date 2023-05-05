@@ -149,6 +149,12 @@ namespace nsK2EngineLow {
 			m_sprite.Draw(rc);
 		}
 		
+		bool IsInit()
+		{
+			if (m_isInit)	return true;
+			else			return false;
+		}
+
 	private:
 		Sprite m_sprite;								//SpriteƒNƒ‰ƒX
 
@@ -156,7 +162,7 @@ namespace nsK2EngineLow {
 		Vector3 m_position = Vector3::Zero;				//À•W
 		Vector3	m_scale = Vector3::One;					//‘å‚«‚³
 		Quaternion m_rotation = Quaternion::Identity;	//‰ñ“]
-		bool isInit = 0;
+		bool m_isInit = false;
 	};
 }
 

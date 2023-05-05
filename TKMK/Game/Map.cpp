@@ -8,7 +8,7 @@
 
 namespace
 {
-	Vector3 MAP_CENTER_POSITION = Vector3(-800.0f, 380.0f, 0.0f);
+	const Vector3 MAP_CENTER_POSITION = Vector3(-780.0f, 360.0f, 0.0f);
 
 	float MAP_RADIUS = 160.0f;
 	float LIMITED_RANGE_IMAGE = 600.0f;
@@ -40,27 +40,6 @@ bool Map::Start()
 	m_MapPlayer.SetPosition(MAP_CENTER_POSITION);
 
 	m_game = FindGO<Game>("game");
-
-	int amount = 0;
-	for (auto enemy : m_game->GetNeutral_Enemys())
-	{
-		//マップでエネミーの表示画像読み込み
-		if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_White)
-		{
-			m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy.DDS", 30, 30);
-		}
-		else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Red)
-		{
-			m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy_red.DDS", 30, 30);
-		}
-		else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Green)
-		{
-			m_MapEnemy[amount].Init("Assets/sprite/minimap_enemy_green.DDS", 30, 30);
-		}
-
-		m_MapEnemy[amount].SetPosition(MAP_CENTER_POSITION);
-		amount++;
-	}
 	
 	
 	
@@ -134,41 +113,17 @@ void Map::PlayerMap()
 //エネミーのマップの移動処理
 void Map::EnemyMap()
 {
-	int i = 0;
-	for (auto enemy : m_game->GetNeutral_Enemys())
-	{
-		//エネミーの座標を取得
-		Vector3 enemyPosition = enemy->GetPosition();
-		Vector3 mapPosition;
-
-		//ワールド座標をマップ座標に変換する
-		if (WorldPositionConvertToMapPosition(Vector3::Zero, enemyPosition, mapPosition))
-		{
-			////座標を設定
-			////マップでエネミーの表示画像読み込み
-			//if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_White)
-			//{
-			//	m_MapEnemy[i].Init("Assets/sprite/minimap_enemy.DDS", 30, 30);
-			//}
-			//else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Red)
-			//{
-			//	m_MapEnemy[i].Init("Assets/sprite/minimap_enemy_red.DDS", 30, 30);
-			//}
-			//else if (enemy->GetenemyColor() == Neutral_Enemy::enEnemyKinds_Green)
-			//{
-			//	m_MapEnemy[i].Init("Assets/sprite/minimap_enemy_green.DDS", 30, 30);
-			//}
-
-			m_MapEnemy[i].SetPosition(mapPosition + MAP_CENTER_POSITION);
-			m_MapEnemy[i].Update();
-			i++;
-		}
-	}
+	
 }
+
 void Map::Render(RenderContext& rc) 
 {
 	m_Map.Draw(rc);
 	//m_MapFrame.Draw(rc);
 	m_MapPlayer.Draw(rc);
-	for(int amount=0;amount< m_game->GetNeutral_Enemys().size(); amount++) m_MapEnemy[amount].Draw(rc);
+
+	for (auto enemy : m_game->GetNeutral_Enemys())
+	{
+		enemy->EnemyMap(rc);
+	}
 }

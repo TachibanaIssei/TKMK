@@ -6,6 +6,11 @@ cbuffer cb : register(b0){
 	float4x4 mvp;		//���[���h�r���[�v���W�F�N�V�����s��B
 	float4 mulColor;	//��Z�J���[�B
 };
+
+cbuffer SpriteCB : register(b1){
+	bool grayScale;
+}
+
 struct VSInput{
 	float4 pos : POSITION;
 	float2 uv  : TEXCOORD0;
@@ -28,5 +33,19 @@ PSInput VSMain(VSInput In)
 }
 float4 PSMain( PSInput In ) : SV_Target0
 {
-	return colorTexture.Sample(Sampler, In.uv) * mulColor;
+	if(grayScale)
+	{
+		float4 color = colorTexture.Sample(Sampler, In.uv) * mulColor;
+
+		float Y = color.r * 0.29891f + color.g * 0.58661f + color.b * 0.11448f;
+		color.r = Y;
+		color.g = Y;
+		color.b = Y;
+
+		return color;
+	}
+	else
+	{
+		return colorTexture.Sample(Sampler, In.uv) * mulColor;
+	}
 }

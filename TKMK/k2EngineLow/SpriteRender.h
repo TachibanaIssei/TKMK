@@ -1,6 +1,11 @@
 #pragma once
 
 namespace nsK2EngineLow {
+	struct SpriteCB
+	{
+		bool grayScale = false;	//グレースケールをするかどうか
+	};
+
 	/// <summary>
 	/// スプライトレンダー
 	/// </summary>
@@ -155,14 +160,32 @@ namespace nsK2EngineLow {
 			else			return false;
 		}
 
-	private:
-		Sprite m_sprite;								//Spriteクラス
+		/// <summary>
+		/// グレースケールを設定する
+		/// </summary>
+		/// <param name="flag">trueの場合グレースケールを行う</param>
+		void SetGrayScale(bool flag)
+		{
+			m_spriteCB.grayScale = flag;
+		}
+		/// <summary>
+		/// グレースケール中か判定
+		/// </summary>
+		/// <returns>trueの場合グレースケール中</returns>
+		bool IsGrayScale()
+		{
+			return m_spriteCB.grayScale;
+		}
 
-		Vector2 m_pivot = Sprite::DEFAULT_PIVOT;		//ピボット
-		Vector3 m_position = Vector3::Zero;				//座標
-		Vector3	m_scale = Vector3::One;					//大きさ
-		Quaternion m_rotation = Quaternion::Identity;	//回転
-		bool m_isInit = false;
+	private:
+		SpriteCB	m_spriteCB;
+		Sprite		m_sprite;								//Spriteクラス
+
+		Vector2		m_pivot = Sprite::DEFAULT_PIVOT;		//ピボット
+		Vector3		m_position = Vector3::Zero;				//座標
+		Vector3		m_scale = Vector3::One;					//大きさ
+		Quaternion	m_rotation = Quaternion::Identity;	//回転
+		bool		m_isInit = false;
 	};
 }
 

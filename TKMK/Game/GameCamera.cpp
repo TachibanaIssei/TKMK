@@ -180,7 +180,13 @@ void GameCamera::UltRotCamera()
 	sita = acos(cos_sita);
 	sita = Math::RadToDeg(sita);
 
-	if (sita < 175.0f) {
+	knightUlt = FindGO<KnightUlt>("knightUlt");
+	if (knightUlt != nullptr)
+	{
+		m_springCamera.Refresh();
+		m_enCameraState = m_enChaseCameraState;
+	}
+	else if (sita < 175.0f) {
 		KnightUltCamera(ultactor,false);
 	}
 	else
@@ -203,20 +209,7 @@ void GameCamera::ChaseCamera()
 		}
 		else
 		{
-			//m_springCamera.Refresh();
-			////全てリセット
-			//SetCameraCharFrontFlag = false;
-			//KnightUltFlag = false;
-
-			////必殺技を撃ったActorのステートを戻す
-			////ultactor->UltSkillEnd();
-
-			////CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
-			////プレイヤーのカメラをリセットする
-			//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
-
-			//m_enCameraState = m_enNomarlCameraState;
-		
+			
 		}
 }
 
@@ -344,7 +337,7 @@ void GameCamera::KnightUltCamera(Actor*actor, bool reset)
 		Vector3 toCameraPosOld = m_toCameraPos;
 
 		//パッドの入力を使ってカメラを回す。x2.8
-		float x = 1.9f;
+		float x = 2.1f;
 		float y = 0.1f;
 
 		//Y軸周りの回転
@@ -386,7 +379,7 @@ void GameCamera::KnightUltCamera(Actor*actor, bool reset)
 
 void GameCamera::ChaseUltEff()
 {
-	//プレイヤーの前方向を取得
+	//必殺技エフェクトの前方向を取得
 	Vector3 toCameraPosXZ = knightUlt->GetForward();
 	//正規化
 	toCameraPosXZ.Normalize();

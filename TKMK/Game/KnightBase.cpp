@@ -264,9 +264,41 @@ void KnightBase::Collition()
 	{
 		//このコリジョンを作ったアクターを検索
 		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
+
+	
+
 		//コリジョンを作ったアクターが自分でないなら
 		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
+			//攻撃エフェクト再生
+			EffectEmitter* EffectKnight_Attack;
+			EffectKnight_Attack = NewGO <EffectEmitter>(0);
+			EffectKnight_Attack->Init(EnEFK::enEffect_Knight_Attack);
+			EffectKnight_Attack->SetScale(Vector3::One * 50.0f);
+			EffectKnight_Attack->Play();
+			if (m_lastAttackActor->NowCharState() == Actor::enCharState_Attack)
+			{
+				//逆向きにする
+				Quaternion Damegerot=m_rot;
+				Damegerot.AddRotationDegZ(180.0f);
+				EffectKnight_Attack->SetRotation(Damegerot);
+			}
+			else if (m_lastAttackActor->NowCharState() == Actor::enCharState_SecondAttack)
+			{
+				//逆向きにする
+				Quaternion Damegerot = m_rot;
+				Damegerot.AddRotationZ(225.0f);
+				EffectKnight_Attack->SetRotation(Damegerot);
+			}
+			else
+			{
+
+			}
+			Vector3 damegePosition = m_position;
+			damegePosition.y += 50.0f;
+			EffectKnight_Attack->SetPosition(damegePosition);
+			
+
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 

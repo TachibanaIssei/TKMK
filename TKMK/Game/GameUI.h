@@ -118,6 +118,24 @@ public:
 	/// <returns></returns>
 	Vector3& HPBerSend(Vector3 size, Vector3 scale);
 
+	/// <summary>
+	/// スキルのアイコンをグレースケールにする
+	/// </summary>
+	/// <param name="flag">trueの場合グレースケールにする</param>
+	void SetSkillIconGrayScale(bool flag)
+	{
+		m_SkillRenderIN.SetGrayScale(flag);
+	}
+
+	/// <summary>
+	/// 必殺のアイコンをグレースケールにする
+	/// </summary>
+	/// <param name="flag">trueの場合グレースケールにする</param>
+	void SetULTIconGrayScale(bool flag)
+	{
+		m_UltRenderIN.SetGrayScale(flag);
+	}
+
 private:
 	FontRender m_ExpFont;
 

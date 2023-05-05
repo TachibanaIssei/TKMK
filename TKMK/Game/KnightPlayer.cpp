@@ -7,10 +7,9 @@
 #include "Fade.h"
 
 //todo
-//スキル使ったときに範囲内に敵がいたらその方向に向かっていく
-//おそらく必殺技を使った後に攻撃力が上がったままになっている
-//for文、findGO使う
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
+
+//必殺技打つときに一瞬止まるようにする
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -82,20 +81,42 @@ void KnightPlayer::Update()
 	//当たり判定
 	Collition();
 
+	//必殺技を打ったら少しの間動きを止める
+	//if (m_charState == enCharState_UltimateSkill)
+	//{
+	//	if (UltStopTimer > 0.0f)
+	//	{
+	//		//タイマー減少
+	//		UltStopTimer -= g_gameTime->GetFrameDeltaTime();
+
+
+	//	}
+	//	
+	//	return;
+	//}
+	/*else
+	{
+		UltStopTimer = 1.0f;
+	}*/
+
+	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
+		//死ぬステートまたはダメージステートなら
 		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
 		{
 			m_modelRender.Update();
 		}
+		//抜け出す
 		return;
 	}
-	//todo
+
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause/*|| DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade)==true*/) {
+	if (m_GameState == enPause) {
 		return;
 	}
 	
+	//ゲームUIがnullなら
 	if (m_gameUI == nullptr)
 	{
 		m_gameUI = FindGO<GameUI>("m_gameUI");
@@ -183,18 +204,22 @@ void KnightPlayer::Update()
 		//回避クールタイムの処理
 		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
-		//if (m_swordEffectFlag ==true)
-		//{
-		//	Vector3 m_SwordPos = Vector3::Zero;
-		//	Quaternion m_SwordRot;
-		//	//「Sword」ボーンのワールド行列を取得する。
-		//	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-		//	matrix.Apply(m_SwordPos);
-		//	m_SwordRot.SetRotation(matrix);
-		//	Ult_Swordeffect->SetPosition(m_SwordPos);
-		//	Ult_Swordeffect->SetRotation(m_SwordRot);
-		//	Ult_Swordeffect->Update();
-		//}
+		if (m_swordEffectFlag ==true)
+		{
+			Vector3 effectPosition = m_position;
+			effectPosition.y += 50.0f;
+			EffectKnightSkill->SetPosition(effectPosition);
+			//Vector3 m_SwordPos = Vector3::Zero;
+			//Quaternion m_SwordRot;
+			////「Sword」ボーンのワールド行列を取得する。
+			//Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+			//matrix.Apply(m_SwordPos);
+			////m_SwordRot.SetRotation(matrix);
+			////m_SwordRot.y = 0.0f;
+			//EffectKnightSkill->SetPosition(m_SwordPos);
+			//EffectKnightSkill->SetRotation(m_SwordRot);
+			EffectKnightSkill->Update();
+		}
 
 		//レベルアップする
 		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
@@ -267,7 +292,6 @@ void KnightPlayer::Attack()
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_charState = enCharState_Attack;
-			Point++;
 			pushFlag = true;
 			AtkState = true;
 		}
@@ -279,15 +303,15 @@ void KnightPlayer::Attack()
 		{
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
-			EffectEmitter* EffectKnightDeath;
-			EffectKnightDeath = NewGO <EffectEmitter>(0);
-			EffectKnightDeath->Init(EnEFK::enEffect_Knight_AttackChack);
+			EffectEmitter* EffectKnight_AttackChack;
+			EffectKnight_AttackChack = NewGO <EffectEmitter>(0);
+			EffectKnight_AttackChack->Init(EnEFK::enEffect_Knight_AttackChack);
 			Vector3 effectPosition = m_position;
 			//座標を少し上にする。
 			effectPosition.y += 50.0f;
-			EffectKnightDeath->SetScale(Vector3::One * 30.0f);
-			EffectKnightDeath->SetPosition(effectPosition);
-			EffectKnightDeath->Play();
+			EffectKnight_AttackChack->SetScale(Vector3::One * 30.0f);
+			EffectKnight_AttackChack->SetPosition(effectPosition);
+			EffectKnight_AttackChack->Play();
 		}
 	}
 	//二段目のアタックのアニメーションがスタートしたなら
@@ -297,15 +321,15 @@ void KnightPlayer::Attack()
 		{
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
-			EffectEmitter* EffectKnightDeath;
-			EffectKnightDeath = NewGO <EffectEmitter>(0);
-			EffectKnightDeath->Init(EnEFK::enEffect_Knight_AttackChack);
+			EffectEmitter* EffectKnight_AttackChack;
+			EffectKnight_AttackChack = NewGO <EffectEmitter>(0);
+			EffectKnight_AttackChack->Init(EnEFK::enEffect_Knight_AttackChack);
 			Vector3 effectPosition = m_position;
 			//座標を少し上にする。
 			effectPosition.y += 50.0f;
-			EffectKnightDeath->SetScale(Vector3::One * 30.0f);
-			EffectKnightDeath->SetPosition(effectPosition);
-			EffectKnightDeath->Play();
+			EffectKnight_AttackChack->SetScale(Vector3::One * 30.0f);
+			EffectKnight_AttackChack->SetPosition(effectPosition);
+			EffectKnight_AttackChack->Play();
 		}
 	}
 
@@ -316,6 +340,36 @@ void KnightPlayer::Attack()
 	{
 		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed);
+		{
+			//エフェクトの座標を更新させる
+			m_swordEffectFlag = true;
+			//剣にまとわせるエフェクト
+			EffectKnightSkill = NewGO <EffectEmitter>(0);
+			EffectKnightSkill->Init(EnEFK::enEffect_Knight_Skill);
+			EffectKnightSkill->SetScale(Vector3::One * 30.0f);
+			EffectKnightSkill->Play();
+			Vector3 SwordeffectPosition = m_position;
+			SwordeffectPosition.y += 50.0f;
+			EffectKnightSkill->SetPosition(SwordeffectPosition);
+			Quaternion SwordeffectRot = m_rot;
+			EffectKnightSkill->SetRotation(SwordeffectRot);
+			EffectKnightSkill->Update();
+			
+
+			//床のエフェクト
+			EffectEmitter* EffectKnightSkillGround;
+			EffectKnightSkillGround = NewGO <EffectEmitter>(0);
+			EffectKnightSkillGround->Init(EnEFK::enEffect_Knight_SkillGround);
+			EffectKnightSkillGround->SetScale(Vector3::One * 40.0f);
+			EffectKnightSkillGround->Play();
+			Vector3 effectPosition = m_position;
+			Quaternion EffRot = m_rot;
+			EffectKnightSkillGround->SetPosition(effectPosition);
+			EffectKnightSkillGround->SetRotation(m_rot);
+			EffectKnightSkillGround->Update();
+		}
+		
+		
 		pushFlag = true;
 		SkillState = true;
 	}
@@ -333,16 +387,11 @@ void KnightPlayer::Attack()
 
 		Vector3 m_SwordPos = Vector3::Zero;
 		Quaternion m_SwordRot;
-		//「Sword」ボーンのワールド行列を取得する。
-		/*Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-		matrix.Apply(m_SwordPos);
-		m_SwordRot.SetRotation(matrix);*/
+		//自身をまとうエフェクト
 		EffectEmitter*Ult_Swordeffect = NewGO<EffectEmitter>(0);
 		Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
 		Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
 		Ult_Swordeffect->SetPosition(m_position);
-		//Ult_Swordeffect->SetRotation(m_SwordRot);
-		//Ult_Swordeffect->Update();
 			//エフェクトを再生
 		Ult_Swordeffect->Play();
 		m_swordEffectFlag = true;
@@ -546,9 +595,10 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//スキルの移動処理をしないようにする
 		SkillState = false;
-		//m_Status.Speed -= 120.0f;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
+		//エフェクトの座標を更新しない
+		m_swordEffectFlag = false;
 	}
 	//回避アニメーションが終わったら
 	if (wcscmp(eventName, L"Avoidance_End") == 0)

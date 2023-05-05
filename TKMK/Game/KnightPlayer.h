@@ -70,6 +70,7 @@ private:
 	Vector2 Avoidance_FlamePos = Vector2::Zero;
 	Vector2 Avoidance_BarPos = Vector2::Zero;
 
+	EffectEmitter* EffectKnightSkill;
 	bool m_swordEffectFlag = false;
 
 	float UltimateSkillTimer = 0;

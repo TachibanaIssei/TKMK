@@ -55,6 +55,8 @@ namespace
 	const Vector3 RespawnInPos = Vector3(0.0f, 300.0f, 0.0f);		//Respawn inの座標
 
 	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//の座標
+
+	const Vector3 ADDPOINTPOS = Vector3(20.0f, 10.0f, 0.0f);
 }
 GameUI::GameUI()
 {
@@ -89,7 +91,7 @@ bool GameUI::Start()
 		{
 			//ポイントを表示
 			m_PointFont[num].SetPosition(PointPos[num]);
-			m_PointFont[num].SetScale(1.5f);
+			m_PointFont[num].SetScale(1.3f);
 			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 			m_PointFont[num].SetRotation(0.0f);
 			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
@@ -174,7 +176,7 @@ bool GameUI::Start()
 		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
 		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
 		//m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
-		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
+		m_ExperienceBar_flont.SetScale(0.5, 50.0, 1.0);
 
 		//経験値バーの裏
 		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
@@ -470,8 +472,19 @@ void GameUI::EXPBar()
 
 	//EXPバー画像を左寄せに表示する
 	Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
-	m_EXPBerPos.x =BerSizeSubtraction.x;
-	//m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
+
+	if (finalEXPTable != oldEXPTable)
+	{
+		m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
+	}
+
+	//経験値の量が変わったときだけ
+	if (finalEXP != oldEXP)
+	{
+		m_EXPBerPos.x -= BerSizeSubtraction.x;
+	}
+	
+	
 	m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
 	//m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
@@ -483,7 +496,8 @@ void GameUI::EXPBar()
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
 
-	
+	oldEXP = finalEXP;
+	oldEXPTable = finalEXPTable;
 }
 
 //
@@ -514,18 +528,25 @@ void GameUI::CharPoint()
 		//ポイントの表示
 		int POINT = charPoint[num];
 		wchar_t P[255];
-		swprintf_s(P, 255, L"%dP", POINT);
+		swprintf_s(P, 255, L"%dp", POINT);
 		m_PointFont[num].SetText(P);
 
 
 		if (MaxPoint <= charPoint[num])
 		{
+			m_PointFont[num].SetScale(1.8f);
+			Vector3 FontPos;
+			FontPos= ADDPOINTPOS + PointPos[num];
+			m_PointFont[num].SetPosition(FontPos);
+
 			m_PointFlame[num].SetScale(1.7f,1.3f,0.0f);
 			m_PointFlame[num].Update();
 			MaxPoint = charPoint[num];
 		}
 		else
 		{
+			m_PointFont[num].SetScale(1.3f);
+			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
 			m_PointFlame[num].Update();
 		}

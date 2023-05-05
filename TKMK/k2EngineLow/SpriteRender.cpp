@@ -16,7 +16,8 @@ void nsK2EngineLow::SpriteRender::Init(const char* filePath, const float w, cons
 
 	//Sprite初期化オブジェクトを使用して、Spriteを初期化する
 	m_sprite.Init(initData);
-	//isInit = 1;
+
+	m_isInit = true;
 }
 
 void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc, bool drawTiming)

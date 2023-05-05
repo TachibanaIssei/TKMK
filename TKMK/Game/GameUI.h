@@ -221,7 +221,7 @@ private:
 	//キャラのポイント
 	int charPoint[4];
 
-	int MaxPoint = 0;
+	int MaxPoint = 1;
 
 	
 

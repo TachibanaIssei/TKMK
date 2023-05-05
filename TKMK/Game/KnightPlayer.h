@@ -56,6 +56,12 @@ public:
 	//	}
 	//}
 
+private:
+	void CoolTimeProcess();
+	/// <summary>
+	/// UIをグレースケールにする処理
+	/// </summary>
+	void GrayScaleUI();
 
 private:
 	Game* m_game=nullptr;

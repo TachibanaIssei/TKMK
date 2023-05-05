@@ -198,11 +198,8 @@ void KnightPlayer::Update()
 		//回転処理
 		Rotation();
 
-		//スキルクールタイムの処理
-		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
-
-		//回避クールタイムの処理
-		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+		CoolTimeProcess();
+		GrayScaleUI();
 
 		if (m_swordEffectFlag ==true)
 		{
@@ -273,7 +270,6 @@ void KnightPlayer::Update()
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
-	
 }
 
 //攻撃処理
@@ -453,6 +449,25 @@ void KnightPlayer::MakeUltSkill()
 	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
 	knightUlt->SetGame(m_game);
 
+}
+
+void KnightPlayer::CoolTimeProcess()
+{
+	//スキルクールタイムの処理
+	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+
+	//回避クールタイムの処理
+	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
+}
+
+void KnightPlayer::GrayScaleUI()
+{
+	if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true);
+	else				m_gameUI->SetSkillIconGrayScale(false);
+
+	if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true);
+	else				m_gameUI->SetULTIconGrayScale(false);
 }
 
 /// <summary>

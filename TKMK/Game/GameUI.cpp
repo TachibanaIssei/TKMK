@@ -517,12 +517,25 @@ void GameUI::CharPoint()
 		swprintf_s(P, 255, L"%dP", POINT);
 		m_PointFont[num].SetText(P);
 
+
+		if (MaxPoint <= charPoint[num])
+		{
+			m_PointFlame[num].SetScale(1.7f,1.3f,0.0f);
+			m_PointFlame[num].Update();
+			MaxPoint = charPoint[num];
+		}
+		else
+		{
+			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
+			m_PointFlame[num].Update();
+		}
+
+
 		num++;
 	}
 
 	
 	//誰に王冠マークつけるか決める
-
 }
 
 void GameUI::Render(RenderContext& rc)

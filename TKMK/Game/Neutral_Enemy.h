@@ -15,6 +15,7 @@ class KnightAI;
 class Player;
 class MagicBall;
 class Actor;
+class Map;
 
 /// <summary>
 /// 中立の敵
@@ -311,6 +312,16 @@ public:
 		MaxVolume = nowSEsixe;
 	}
 
+	void MapMove();
+
+	void EnemyMap(RenderContext& rc)
+	{
+		if (m_isMapImage == true)
+		{
+			m_enemyMapSprite.Draw(rc);
+		}
+	}
+
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
@@ -338,12 +349,14 @@ private:
 	Player* player = nullptr;
 	MagicBall* magicBall = nullptr;
 	KnightAI* m_knightAI = nullptr;
+	Map* map = nullptr;
 
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
 	SpriteRender		m_HPBar;		//HPバー画像
 	SpriteRender		m_HPFrame;		//HP枠画像
 	SpriteRender		m_HPBack;		//HP背景画像	
+	SpriteRender		m_enemyMapSprite;
 
 	FontRender              m_Name;
 	SphereCollider			m_sphereCollider;
@@ -369,7 +382,7 @@ private:
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	//中立の敵がやられたときに渡す経験値
-	int Exp = 2;
+	int Exp = 10;
 
 	//std::vector<Neutral_Enemy*>::iterator m_number;
 	int P = -1;
@@ -381,6 +394,9 @@ private:
 	std::vector<Actor*> be_target;
 
 	bool isStart = false;
+
+	//マップに映すかどうかの判定
+	bool m_isMapImage = false;
 
 	//効果音
 	float SEVolume = 0.0f;

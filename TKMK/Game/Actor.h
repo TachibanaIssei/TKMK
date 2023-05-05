@@ -249,7 +249,7 @@ public:
 	/// </summary>
 	const Vector3& GetForward() const
 	{
-		return m_Forward;
+		return m_forwardNow;
 	}
 
 	/// <summary>
@@ -421,6 +421,7 @@ public:
 		biff.y = 0.0f;
 		biff *= -1.0f;
 		m_Forward = biff;
+		m_forwardNow = biff;
 	}
 
 	/// <summary>
@@ -534,6 +535,7 @@ protected:
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 
 	Vector3 m_Forward;          //プレイヤーの前方向
+	Vector3 m_forwardNow = Vector3::Zero;                 //現在の正面ベクトル
 
 	Vector3 m_position = Vector3::Zero;                   //座標
 	ModelRender m_modelRender;                            //モデルレンダー

@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "MagicBall.h"
 #include "Actor.h"
+#include "Map.h"
 #include <cstring>
 #include <cwchar>
 //#include <vector>
@@ -24,6 +25,8 @@ namespace {
 	const int POS = 40;
 	const float HP_BER_RABBIT = 1.9f;
 	const float HP_BER_RABBIT_HEIGHT = 505.0f;
+
+	const Vector3 MAP_CENTER_POSITION = Vector3(-780.0f, 360.0f, 0.0f);
 }
 Neutral_Enemy::Neutral_Enemy()
 {
@@ -216,6 +219,28 @@ bool Neutral_Enemy::Start()
 		break;
 	}
 
+	//マップに色を教える
+	map = FindGO<Map>("map");
+
+	//マップでエネミーの表示画像読み込み
+	if (GetenemyColor() == Neutral_Enemy::enEnemyKinds_White)
+	{
+		m_enemyMapSprite.Init("Assets/sprite/minimap_enemy.DDS", 30, 30);
+	}
+	else if (GetenemyColor() == Neutral_Enemy::enEnemyKinds_Red)
+	{
+		m_enemyMapSprite.Init("Assets/sprite/minimap_enemy_red.DDS", 30, 30);
+	}
+	else if (GetenemyColor() == Neutral_Enemy::enEnemyKinds_Green)
+	{
+		m_enemyMapSprite.Init("Assets/sprite/minimap_enemy_green.DDS", 30, 30);
+	}
+	else if (GetenemyColor() == Neutral_Enemy::enEnemyKinds_Rabbit)
+	{
+		m_enemyMapSprite.Init("Assets/sprite/minimap_enemy_rabbit.DDS", 30, 30);
+	}
+
+
 	// 準備完了
 	isStart = true;
 
@@ -289,6 +314,8 @@ void Neutral_Enemy::Move()
 	}
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 	m_modelRender.SetPosition(m_position);
+
+	MapMove();
 
 }
 
@@ -1167,6 +1194,25 @@ float Neutral_Enemy::SoundSet(Player* player, float Max, float Min)
 	}
 
 	return Vol;
+}
+
+void Neutral_Enemy::MapMove()
+{
+	Vector3 mapPosition;
+
+	//ワールド座標をマップ座標に変換する
+	if (map->WorldPositionConvertToMapPosition(Vector3::Zero, m_position, mapPosition))
+	{
+		m_isMapImage = true;
+
+		m_enemyMapSprite.SetPosition(mapPosition+ MAP_CENTER_POSITION);
+	}
+	else
+	{
+		m_isMapImage = false;
+	}
+
+	m_enemyMapSprite.Update();
 }
 
 void Neutral_Enemy::Render(RenderContext& rc)

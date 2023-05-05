@@ -147,6 +147,9 @@ bool Game::Start()
 	//カメラの生成
 	m_gamecamera = NewGO<GameCamera>(1, "gamecamera");
 
+	//マップの生成
+	m_Map = NewGO<Map>(0, "map");
+
 	//中立の敵の生成
 	{
 		m_Enemylevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
@@ -222,8 +225,7 @@ bool Game::Start()
 	m_gameUI->SetSGame(this);
 
 
-	//マップの生成
-	m_Map = NewGO<Map>(0, "map");
+	
 
 	
 
@@ -474,7 +476,6 @@ void Game::Respawn()
 
 void Game::RabbitRespawn()
 {
-	return;
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
 	RabbitFlag = true;

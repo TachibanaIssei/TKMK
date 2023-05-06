@@ -23,7 +23,7 @@ namespace nsK2EngineLow {
 
 		if (!IsPlay() && autoEnd == true)
 		{
-			//DeleteGO(this);
+			DeleteGO(this);
 		}
 	}
 }

@@ -14,16 +14,19 @@ public:
 	/// <param name="target">追尾対象</param>
 	void SetEffect(EnEFK effect, Actor* target, Vector3 scale = Vector3::One);
 
+	// エフェクトを取得
 	EffectEmitter* GetEffect()
 	{
 		return m_effect;
 	}
 
+	// エフェクトを削除
 	void DeleteEffect() {
 		m_effect->Stop();
 		DeleteGO(m_effect);
 	}
 
+	// 自動で消えないようにする
 	void AutoDelete(bool flag) {
 		autoDelete = flag;
 	}

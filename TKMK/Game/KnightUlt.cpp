@@ -76,8 +76,7 @@ bool KnightUlt::Start()
 	Ulteffect = NewGO<EffectEmitter>(0);
 	//斬撃エフェクトの再生。
 	if (ColorNumb == 2)
-	{
-		
+	{	
 		Ulteffect->Init(enEffect_Knight_Ult_Blue);
 	}
 	else if (ColorNumb == 0)

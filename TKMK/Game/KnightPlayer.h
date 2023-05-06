@@ -56,6 +56,12 @@ public:
 	//	}
 	//}
 
+private:
+	void CoolTimeProcess();
+	/// <summary>
+	/// UIをグレースケールにする処理
+	/// </summary>
+	void GrayScaleUI();
 
 private:
 	Game* m_game=nullptr;
@@ -76,7 +82,10 @@ private:
 	float UltimateSkillTimer = 0;
 
 	//bool AtkCollistionFlag = false;
-	
+	// 
+	//ラストアタックのアニメーションを移動できなくするように
+	bool CantMove = false;
+
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
 	SpriteRender m_Avoidance_flameRender;

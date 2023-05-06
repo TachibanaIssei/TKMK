@@ -134,7 +134,6 @@ void KnightPlayer::Update()
 		return;
 	}
 
-
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
@@ -172,11 +171,17 @@ void KnightPlayer::Update()
 				//回避処理
 				Avoidance();
 		}
+
+		//攻撃上昇中
 		AttackUP();
+
 		//移動処理
-		Vector3 stickL;
-		stickL.x = g_pad[0]->GetLStickXF();
-		stickL.y = g_pad[0]->GetLStickYF();
+		Vector3 stickL = Vector3::Zero;
+		if (CantMove == false)
+		{
+			stickL.x = g_pad[0]->GetLStickXF();
+			stickL.y = g_pad[0]->GetLStickYF();
+		}
 		Move(m_position, m_charCon, m_Status, stickL);
 
 		//回避中なら
@@ -200,11 +205,8 @@ void KnightPlayer::Update()
 		//回転処理
 		Rotation();
 
-		//スキルクールタイムの処理
-		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
-
-		//回避クールタイムの処理
-		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+		CoolTimeProcess();
+		GrayScaleUI();
 
 		if (m_swordEffectFlag ==true)
 		{
@@ -266,7 +268,6 @@ void KnightPlayer::Update()
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
-	
 }
 
 //攻撃処理
@@ -436,6 +437,7 @@ void KnightPlayer::MakeUltSkill()
 	knightUlt->SetCreatorName(GetName());
 	// 制作者を教える
 	knightUlt->SetActor(this);
+	knightUlt->SetUltColorNumb(respawnNumber);
 	//キャラのレベルを入れる
 	knightUlt->GetCharLevel(Lv);
 	//座標の設定
@@ -446,6 +448,25 @@ void KnightPlayer::MakeUltSkill()
 	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
 	knightUlt->SetGame(m_game);
 
+}
+
+void KnightPlayer::CoolTimeProcess()
+{
+	//スキルクールタイムの処理
+	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+
+	//回避クールタイムの処理
+	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+
+}
+
+void KnightPlayer::GrayScaleUI()
+{
+	if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true);
+	else				m_gameUI->SetSkillIconGrayScale(false);
+
+	if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true);
+	else				m_gameUI->SetULTIconGrayScale(false);
 }
 
 /// <summary>
@@ -469,6 +490,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
 	{
@@ -483,6 +505,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
 	{
@@ -497,6 +520,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+	//三段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"Move_True") == 0)
+	{
+		CantMove = true;
+
+	}
+
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
@@ -513,6 +543,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
@@ -522,6 +553,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//m_swordEffectFlag = false;
 		
 	}
+
 	//ジャンプのアニメーションが始まったら
 	if (wcscmp(eventName, L"Jump_Start") == 0)
 	{
@@ -564,6 +596,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			m_AtkTmingState = Num_State;
 		}
 	}
+
 	//三段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"LastAttack_End") == 0)
 	{
@@ -571,6 +604,12 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
+
+	}
+	//三段目のアタックのアニメーションで剣を振り終わったら移動できないように
+	if (wcscmp(eventName, L"LastToIdle") == 0)
+	{
+		CantMove = false;
 	}
 	///三段目のアタックのアニメーションが終わったら
 	if (wcscmp(eventName, L"LastToIdle") == 0)

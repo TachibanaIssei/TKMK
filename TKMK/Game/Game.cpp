@@ -93,9 +93,10 @@ bool Game::Start()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_AttackChack, u"Assets/effect/Knight/Knight_Attack_Check.efk");
 
 	//中立の敵を倒すとき得るもののエフェクト
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetPower, u"Assets/effect/Knight/Knight_GetPower.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetHoimi, u"Assets/effect/Knight/Knight_GetHoimi.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp.efk");
+
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp2.efk");
+	//エフェクトを読み込む。
 	//中立の敵の攻撃、死亡時エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_head_butt, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_Death, u"Assets/effect/Neutral_Enemy/death.efk");
@@ -318,7 +319,6 @@ void Game::Update()
 
 	GameState();
 
-	m_modelRender.Update();
 }
 
 void Game::BattleStart()
@@ -383,7 +383,7 @@ void Game::Battle()
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_RabbitRespawnTimer >= 5.0f)
 	{
-		//RabbitRespawn();
+		RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
 	}
 }
@@ -862,7 +862,6 @@ void Game::CountDown()
 
 void Game::Render(RenderContext& rc)
 {
-	m_modelRender.Draw(rc);
 
 	if (m_GameState == enGameState_Pause)
 	{

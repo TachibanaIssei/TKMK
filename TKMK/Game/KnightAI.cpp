@@ -67,6 +67,7 @@ void KnightAI::Update()
 		return;
 	}
 
+	//攻撃アップ中の処理
 	AttackUP();
 
 	//重力
@@ -219,10 +220,16 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	eval += 5000 - (int)Distance;
 
 	//自分にすごく近い敵が居たらをターゲットする
-	if (Distance <= 50.0f)
+	if (Distance <= 200.0f)
 	{
-		eval += 2000;
+		eval += 2500;
 	}
+
+	if (Distance <= 100.0f)
+	{
+		eval += 2500;
+	}
+
 
 	// リスポーン前のアクターは狙わない
 	if (actorPos.y >= 100)
@@ -257,14 +264,18 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	//今狙ってるアクターのレベルを取得する
 	int actorlv = actor->GetLevel();
 	//相手より自分のレベルが高かったら評価値は高くなる
-	eval += (Lv - actorlv) * 300;
+	eval += (Lv - actorlv) * 500;
 
 	//自分のレベルが一定以上達したらキルモードに入る
-	if (Lv >= 6)
+	if (Lv >= 4)
 	{
-		eval += 1000;
+		eval += 2000;
 	}
-
+	//パワーアップ中はアクターを狙う
+	if (PowerUpTimer > 0.0f)
+	{
+		eval += 3000;
+	}
 	//自分を攻撃した相手が近い ＆ 相手とのHP差が大きかったら 逃げる
 	if (actor == m_lastAttackActor)
 	{

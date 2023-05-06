@@ -16,6 +16,7 @@ class Player;
 class CharUltFlag;
 class Actor;
 class Lamp;
+class Fade;
 
 class Game : public IGameObject
 {
@@ -247,6 +248,7 @@ private:
 	SpriteRender m_Menu_QuitGame;    //QuitGame
 	SpriteRender m_Menu_SelectBar_BGM;   //SelectBar_BGM
 	SpriteRender m_Menu_SelectBar_SE;   //SelectBar_SE
+	SpriteRender m_operationPic;        //操作説明
 
 	Vector3 SelectBar_BGMPos = Vector3::AxisX;
 	Vector3 SelectBar_SEPos = Vector3::AxisX;
@@ -271,6 +273,7 @@ private:
 	Player* player = nullptr;
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
+	Fade* fade = nullptr;
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
@@ -278,6 +281,8 @@ private:
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
+
+	bool HowToPlaySpriteFlag = false;
 
 	float m_spriteAlpha = 0.0f;
 
@@ -290,14 +295,15 @@ private:
 	//秒を計るタイマー
 	float SecondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 3.0f;
+	float MinutesTimer = 2.0f;
+
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
 	//必殺技中みんな止まる
 	bool UltStopFlag = false;
 	Actor* Ultactor = nullptr;
 
-	float m_StartToGameTimer = 4.5f;
+	float m_StartToGameTimer = 6.0f;
 
 	float m_EndtoResultTimer = 0.0f;
 

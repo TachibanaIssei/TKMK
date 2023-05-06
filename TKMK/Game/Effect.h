@@ -7,6 +7,11 @@ enum EnEFK {
 	enEffect_Knight_Ult_Blue,
 	enEffect_Knight_Ult_Yellow,
 	enEffect_Knight_Ult_Aura,
+	enEffect_Knight_Attack,
+	/*enEffect_Knight_Atk_Red,
+	enEffect_Knight_Atk_Green,
+	enEffect_Knight_Atk_Blue,
+	enEffect_Knight_Atk_Yellow,*/
 	enEffect_Knight_AttackChack,
 	enEffect_Knight_Skill,
 	enEffect_Knight_SkillGround,

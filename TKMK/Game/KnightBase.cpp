@@ -240,22 +240,6 @@ void KnightBase::Collition()
 	{
 		return;
 	}
-	
-	//敵の攻撃用のコリジョンを取得する名前一緒にする
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
-	//コリジョンの配列をfor文で回す
-	for (auto collision : collisions)
-	{
-		//コリジョンが自身のキャラコンに当たったら
-		if (collision->IsHit(m_charCon))
-		{
-			//エネミーの攻撃力を取ってくる
-
-			//hpを10減らす
-			Dameged(Enemy_atk, m_Neutral_enemy);
-
-		}
-	}
 
 	//敵の攻撃用のコリジョンを取得する名前一緒にする
 	const auto& Knightcollisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
@@ -264,9 +248,39 @@ void KnightBase::Collition()
 	{
 		//このコリジョンを作ったアクターを検索
 		m_lastAttackActor = FindGO<Actor>(knightcollision->GetCreatorName());
+
 		//コリジョンを作ったアクターが自分でないなら
 		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
+			//攻撃エフェクト再生
+			EffectEmitter* EffectKnight_Attack;
+			EffectKnight_Attack = NewGO <EffectEmitter>(0);
+			EffectKnight_Attack->Init(EnEFK::enEffect_Knight_Attack);
+			EffectKnight_Attack->SetScale(Vector3::One * 50.0f);
+			EffectKnight_Attack->Play();
+			if (m_lastAttackActor->NowCharState() == Actor::enCharState_Attack)
+			{
+				//逆向きにする
+				Quaternion Damegerot=m_rot;
+				Damegerot.AddRotationDegZ(180.0f);
+				EffectKnight_Attack->SetRotation(Damegerot);
+			}
+			else if (m_lastAttackActor->NowCharState() == Actor::enCharState_SecondAttack)
+			{
+				//逆向きにする
+				Quaternion Damegerot = m_rot;
+				Damegerot.AddRotationDegZ(270.0f);
+				EffectKnight_Attack->SetRotation(Damegerot);
+			}
+			else
+			{
+
+			}
+			Vector3 damegePosition = m_position;
+			damegePosition.y += 50.0f;
+			EffectKnight_Attack->SetPosition(damegePosition);
+			
+
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 
@@ -288,6 +302,32 @@ void KnightBase::Collition()
 				Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 
 			}
+		}
+	}
+
+	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
+	//エネミーの攻撃はのけぞらないようにする
+	if (m_charState == enCharState_Death ||
+		m_charState == enCharState_Attack||
+		m_charState == enCharState_SecondAttack||
+		m_charState == enCharState_LastAttack||
+		m_charState == enCharState_Avoidance)
+	{
+		return;
+	}
+	//敵の攻撃用のコリジョンを取得する名前一緒にする
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
+	//コリジョンの配列をfor文で回す
+	for (auto collision : collisions)
+	{
+		//コリジョンが自身のキャラコンに当たったら
+		if (collision->IsHit(m_charCon))
+		{
+			//エネミーの攻撃力を取ってくる
+
+			//hpを10減らす
+			Dameged(Enemy_atk, m_Neutral_enemy);
+
 		}
 	}
 }
@@ -743,7 +783,7 @@ void KnightBase::OnProcessSecondAtkStateTransition()
 /// </summary>
 void KnightBase::OnProcessLastAtkStateTransition()
 {
-	//チェインアタックのアニメーション再生が終わったら。
+	//アニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
 		//待機ステート

@@ -3,6 +3,7 @@
 
 class Tittle;
 class Game;
+class Fade;
 
 class CharacterSelect:public IGameObject
 {
@@ -12,6 +13,8 @@ public:
 	bool Start();
 	void Update();
 	void Cursor();
+
+	void Ready();
 
 	/// <summary>
 	/// ポインターの移動処理
@@ -61,6 +64,8 @@ public:
  
 
 private:
+	Fade* fade = nullptr;
+
 	SpriteRender m_SelectCursor;			//カーソル
 
 	SpriteRender m_pointer_black;					//ポインター
@@ -103,5 +108,7 @@ private:
 
 	int CursorNum = 0;
 	int TitleScene = 1;
+
+	bool m_readyFlag = false;
 };
 

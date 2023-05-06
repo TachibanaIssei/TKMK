@@ -1,6 +1,14 @@
 #include "k2EngineLowPreCompile.h"
 #include "Shadow.h"
 
+namespace ShadowConst
+{
+	const int	RENDER_TARGET_WIDTH		= 16000;		//レンダリングターゲットの幅
+	const int	RENDER_TARGET_HEIGHT	= 16000;		//レンダリングターゲットの高さ
+
+	const float LIGHT_CAMERA_VIEW_ANGLE = 80.0f;	//ライトカメラのビューアングル
+}
+
 void nsK2EngineLow::Shadow::Init()
 {
 	InitRenderTarget();
@@ -23,8 +31,8 @@ void nsK2EngineLow::Shadow::InitRenderTarget()
 {
 	//シャドウマップ描画用のレンダリングターゲット
 	m_shadowMap.Create(
-		2040,
-		2040,
+		ShadowConst::RENDER_TARGET_WIDTH,
+		ShadowConst::RENDER_TARGET_HEIGHT,
 		1,
 		1,
 		DXGI_FORMAT_R32_FLOAT,
@@ -38,7 +46,7 @@ void nsK2EngineLow::Shadow::InitLightCamera()
 	m_lightCamera.SetPosition(m_lightCameraPosition);
 	m_lightCamera.SetTarget(0, 0, 0);
 	m_lightCamera.SetUp(1, 0, 0);
-	m_lightCamera.SetViewAngle(Math::DegToRad(10.0f));
+	m_lightCamera.SetViewAngle(Math::DegToRad(ShadowConst::LIGHT_CAMERA_VIEW_ANGLE));
 	m_lightCamera.Update();
 }
 
@@ -47,7 +55,7 @@ void nsK2EngineLow::Shadow::UpdateLightCamera()
 	//ライトカメラの位置を計算する
 	Vector3 lightCamPos = g_camera3D->GetTarget();
 	lightCamPos.x += m_lightCameraPosition.x;
-	lightCamPos.y = m_lightCameraPosition.y;
+	lightCamPos.y += m_lightCameraPosition.y;
 	lightCamPos.z += m_lightCameraPosition.z;
 
 	m_lightCamera.SetPosition(lightCamPos);

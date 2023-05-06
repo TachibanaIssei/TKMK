@@ -54,15 +54,6 @@ protected:
 			DeleteGO(PowerUpEfk);
 			PowerUpEfk = nullptr;
 		}
-		
-		// 攻撃UP開始も削除
-		if (GetPower != nullptr) 
-		{
-			GetPower->DeleteEffect();
-			DeleteGO(GetPower);
-			GetPower = nullptr;
-		}
-
 	}
 
 	/// <summary>
@@ -291,17 +282,11 @@ public:
 			PowerUp = AtkUp;
 			m_Status.Atk += PowerUp;
 
-			//念のため消しておく
-			if (GetPower != nullptr) {
-				GetPower->DeleteEffect();
-				DeleteGO(GetPower);
-			}
+			PowerUpEfk  = NewGO<ChaseEFK>(3);
+			PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 15.0f);
 
-			GetPower = NewGO<ChaseEFK>(3);
-			GetPower->SetEffect(EnEFK::enEffect_Knight_GetPower, this, Vector3::One * 30.0f);
-
-			GetPower->AutoDelete(false);
-			GetPower->GetEffect()->AutoDelete(false);
+			PowerUpEfk->AutoDelete(false);
+			PowerUpEfk->GetEffect()->AutoDelete(false);
 		}
 		
 		PowerUpTimer = 15.0f;
@@ -316,8 +301,8 @@ public:
 	void HpUp(int HpUp)
 	{
 		m_Status.Hp += HpUp;
-		GetPower = NewGO<ChaseEFK>(3);
-		GetPower->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
+		GetHoimi = NewGO<ChaseEFK>(3);
+		GetHoimi->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
 		if (m_Status.Hp > m_Status.MaxHp)
 		{
@@ -592,8 +577,8 @@ protected:
 
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 
-	ChaseEFK* GetPower = nullptr;
 	ChaseEFK* PowerUpEfk = nullptr;
+	ChaseEFK* GetHoimi = nullptr;
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
 	

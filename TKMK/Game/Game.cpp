@@ -88,9 +88,8 @@ bool Game::Start()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_AttackChack, u"Assets/effect/Knight/Knight_Attack_Check.efk");
 
 	//中立の敵を倒すとき得るもののエフェクト
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetPower, u"Assets/effect/Knight/Knight_GetPower.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetHoimi, u"Assets/effect/Knight/Knight_GetHoimi.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp2.efk");
 	//エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_head_butt, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_Death, u"Assets/effect/Neutral_Enemy/death.efk");
@@ -467,7 +466,7 @@ void Game::Respawn()
 
 void Game::RabbitRespawn()
 {
-	
+	return;
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
 	RabbitFlag = true;

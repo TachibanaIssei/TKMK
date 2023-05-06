@@ -433,6 +433,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
 	{
@@ -447,13 +448,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
 	{
 		m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
-		CantMove = true;
 		//剣３段目音
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(15);
@@ -462,6 +463,13 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+	//三段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"Move_True") == 0)
+	{
+		CantMove = true;
+
+	}
+
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
@@ -478,6 +486,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
+
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
@@ -487,6 +496,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//m_swordEffectFlag = false;
 		
 	}
+
 	//ジャンプのアニメーションが始まったら
 	if (wcscmp(eventName, L"Jump_Start") == 0)
 	{
@@ -537,6 +547,11 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
+
+	}
+	//三段目のアタックのアニメーションで剣を振り終わったら移動できないように
+	if (wcscmp(eventName, L"LastToIdle") == 0)
+	{
 		CantMove = false;
 	}
 	//アニメーションの再生が終わったら

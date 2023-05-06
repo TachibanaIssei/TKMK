@@ -50,7 +50,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_ChainAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_SecondAtk].Load("Assets/animData/Knight/ChainAttack/Second_Attack.tka");
 	m_animationClips[enAnimationClip_SecondAtk].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_lastAtk].Load("Assets/animData/Knight/ChainAttack/last_Attack.tka");
+	m_animationClips[enAnimationClip_lastAtk].Load("Assets/animData/Knight/ChainAttack/last_Attack2.tka");
 	m_animationClips[enAnimationClip_lastAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Knight/Knight_Skill.tka");
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
@@ -335,14 +335,6 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 			PowerUpEfk->DeleteEffect();
 			DeleteGO(PowerUpEfk);
 			PowerUpEfk = nullptr;
-		}
-
-		// 攻撃UP開始も削除
-		if (GetPower != nullptr)
-		{
-			GetPower->DeleteEffect();
-			DeleteGO(GetPower);
-			GetPower = nullptr;
 		}
 
 		//デスボイス再生

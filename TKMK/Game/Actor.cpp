@@ -10,12 +10,6 @@ Actor::Actor()
 
 Actor::~Actor()
 {
-	// エフェクト削除
-	if (GetPower != nullptr) {
-		GetPower->DeleteEffect();
-		DeleteGO(GetPower);
-	}
-
 	if (PowerUpEfk != nullptr) {
 		PowerUpEfk->DeleteEffect();
 		DeleteGO(PowerUpEfk);
@@ -114,29 +108,6 @@ void Actor::GetRespawnPos()
 /// </summary>
 void Actor::AttackUP()
 {
-	//攻撃UP関連
-	if (GetPower != nullptr)
-	{
-		if (GetPower->GetEffect()->IsPlay() == false)
-		{
-			// 念のため消しておく
-			if (PowerUpEfk != nullptr) {
-				PowerUpEfk->DeleteEffect();
-				DeleteGO(PowerUpEfk);
-			}
-
-			PowerUpEfk = NewGO<ChaseEFK>(3);
-			PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 10.0f);
-			PowerUpEfk->AutoDelete(false);
-			PowerUpEfk->GetEffect()->AutoDelete(false);
-
-			GetPower->DeleteEffect();
-			DeleteGO(GetPower);
-
-			GetPower = nullptr;
-		}
-	}
-
 	if (PowerUpTimer > 0.0f)
 	{
 		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();

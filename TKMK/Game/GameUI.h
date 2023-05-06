@@ -88,7 +88,7 @@ public:
 
 	}
 
-	void Timer();
+	void FinishTimer();
 
 	/// <summary>
 	/// 
@@ -156,6 +156,7 @@ private:
 	SpriteRender			m_RespawnIn;						//Respawn inの画像
 	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
 	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
+	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
@@ -169,6 +170,8 @@ private:
 	bool				m_fightFlag = false;
 	float				m_GameCountScale = 20.0f;
 	float               m_Color = 1.0f;
+
+	Vector3				m_finishCountScale = Vector3::One;
 
 	Vector3 PointPos[4] = {
 		Vector3(-850.0f, 150.0f, 0.0f),
@@ -206,6 +209,8 @@ private:
 	int oldtStartCount = 0;
 
 	int oldRespawnCount = 0;
+
+	int oldFinishCount = 0;
 
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;

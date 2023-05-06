@@ -607,7 +607,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 
 	}
 	//三段目のアタックのアニメーションで剣を振り終わったら移動できないように
-	if (wcscmp(eventName, L"LastToIdle") == 0)
+	if (wcscmp(eventName, L"Move_False") == 0)
 	{
 		CantMove = false;
 	}
@@ -620,13 +620,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			m_charState = enCharState_Idle;
 			m_AtkTmingState = Num_State;
 	}
-	//アニメーションの再生が終わったら
-	//if (m_modelRender.IsPlayingAnimation() == false) {
-	//	m_charState = enCharState_Idle;
-	//	AtkState = false;
-	//	//ボタンプッシュフラグをfalseにする
-	//	pushFlag = false;
-	//}
 
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)

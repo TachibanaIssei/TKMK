@@ -117,6 +117,26 @@ bool Result::Start()
 	m_CPUName3.SetPosition(FirstPos[0]);
 	m_CPUName3.Update();
 
+	g_soundEngine->ResistWaveFileBank(40, "Assets/sound/resultBGM/Result1.wav");
+	g_soundEngine->ResistWaveFileBank(41, "Assets/sound/resultBGM/Result2.wav");
+	g_soundEngine->ResistWaveFileBank(42, "Assets/sound/resultBGM/Result3.wav");
+
+	m_bgm = NewGO<SoundSource>(0);
+	switch (Player[0].Rank)
+	{
+	case 1:
+		m_bgm->Init(40);
+		break;
+	case 4:
+		m_bgm->Init(42);
+		break;
+	default:
+		m_bgm->Init(41);
+		break;
+	}
+	m_bgm->Play(true);
+	m_bgm->SetVolume(BGMVolume);
+
 	return true;
 }
 
@@ -369,10 +389,18 @@ void Result::Select()
 	if (g_pad[0]->IsTrigger(enButtonLeft) && select != 0)
 	{
 		select -= 1;
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->SetVolume(SEVolume);
+		se->Play(false);
 	}
 	if (g_pad[0]->IsTrigger(enButtonRight) && select < 1)
 	{
 		select += 1;
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->SetVolume(SEVolume);
+		se->Play(false);
 	}
 
 	switch (select)
@@ -394,6 +422,7 @@ void Result::Select()
 	{
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
 		DeleteGO(this);
+		DeleteGO(m_bgm);
 	}
 	//ƒQ[ƒ€‚ðI—¹
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_exit)

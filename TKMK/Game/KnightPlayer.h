@@ -56,6 +56,12 @@ public:
 	//	}
 	//}
 
+private:
+	void CoolTimeProcess();
+	/// <summary>
+	/// UIをグレースケールにする処理
+	/// </summary>
+	void GrayScaleUI();
 
 private:
 	Game* m_game=nullptr;
@@ -70,6 +76,7 @@ private:
 	Vector2 Avoidance_FlamePos = Vector2::Zero;
 	Vector2 Avoidance_BarPos = Vector2::Zero;
 
+	EffectEmitter* EffectKnightSkill;
 	bool m_swordEffectFlag = false;
 
 	float UltimateSkillTimer = 0;

@@ -204,13 +204,21 @@ bool GameUI::Start()
 		m_MaxLv.SetScale(0.5, 0.5, 1.0);
 
 		//スキルのアイコン
-		m_SkillRender.Init("Assets/sprite/gameUI/skil_Icon.DDS", 162, 162);
-		m_SkillRender.SetPosition(Skill_Pos);
-		m_SkillRender.SetScale(1.1, 1.1);
+		m_SkillRenderIN.Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", 162, 162);
+		m_SkillRenderIN.SetPosition(Skill_Pos);
+		m_SkillRenderIN.SetScale(1.1, 1.1);
+		//スキルのアイコンフレーム
+		m_SkillRenderOUT.Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", 162, 162);
+		m_SkillRenderOUT.SetPosition(Skill_Pos);
+		m_SkillRenderOUT.SetScale(1.1, 1.1);
 		//必殺技のアイコン
-		m_UltRender.Init("Assets/sprite/gameUI/Ult_Icon.DDs", 162, 162);
-		m_UltRender.SetPosition(Ult_Pos);
-		m_UltRender.SetScale(1.2, 1.2);
+		m_UltRenderIN.Init("Assets/sprite/gameUI/ULT_Icon_IN.DDS", 162, 162);
+		m_UltRenderIN.SetPosition(Ult_Pos);
+		m_UltRenderIN.SetScale(1.2, 1.2);
+		//必殺のアイコンフレーム
+		m_UltRenderOUT.Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", 162, 162);
+		m_UltRenderOUT.SetPosition(Ult_Pos);
+		m_UltRenderOUT.SetScale(1.2, 1.2);
 
 		m_Lv.Update();
 		m_LvNumber.Update();
@@ -219,8 +227,10 @@ bool GameUI::Start()
 		m_ExperienceFlame.Update();
 		m_ExperienceBar_flont.Update();
 		m_ExperienceBar_back.Update();
-		m_SkillRender.Update();
-		m_UltRender.Update();
+		m_SkillRenderIN.Update();
+		m_SkillRenderOUT.Update();
+		m_UltRenderIN.Update();
+		m_UltRenderOUT.Update();
 	}
 
 	//HP関連
@@ -517,12 +527,25 @@ void GameUI::CharPoint()
 		swprintf_s(P, 255, L"%dP", POINT);
 		m_PointFont[num].SetText(P);
 
+
+		if (MaxPoint <= charPoint[num])
+		{
+			m_PointFlame[num].SetScale(1.7f,1.3f,0.0f);
+			m_PointFlame[num].Update();
+			MaxPoint = charPoint[num];
+		}
+		else
+		{
+			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
+			m_PointFlame[num].Update();
+		}
+
+
 		num++;
 	}
 
 	
 	//誰に王冠マークつけるか決める
-
 }
 
 void GameUI::Render(RenderContext& rc)
@@ -550,8 +573,10 @@ void GameUI::Render(RenderContext& rc)
 		m_hpBar.Draw(rc);
 		
 		m_HPFrame.Draw(rc);
-		m_SkillRender.Draw(rc);
-		m_UltRender.Draw(rc);
+		m_SkillRenderIN.Draw(rc);
+		m_SkillRenderOUT.Draw(rc);
+		m_UltRenderIN.Draw(rc);
+		m_UltRenderOUT.Draw(rc);
 
 		m_HpFont.Draw(rc);
 		m_Lv.Draw(rc);

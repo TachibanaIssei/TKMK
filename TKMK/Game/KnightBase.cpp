@@ -107,11 +107,7 @@ void KnightBase::SetModel()
 		m_position
 	);
 
-	//
-
 	m_player = FindGO<Player>("player");
-	//剣のエフェクトを読み込む
-	//EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 }
 
 /// <summary>

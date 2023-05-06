@@ -8,6 +8,8 @@ enum EnEFK {
 	enEffect_Knight_Ult_Yellow,
 	enEffect_Knight_Ult_Aura,
 	enEffect_Knight_AttackChack,
+	enEffect_Knight_Skill,
+	enEffect_Knight_SkillGround,
 	enEffect_Knight_Death_Num,
 	enEffect_Knight_GetPower,
 	enEffect_Knight_PowerUP,

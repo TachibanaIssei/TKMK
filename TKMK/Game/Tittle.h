@@ -35,6 +35,16 @@ public:
 		enTitleScene_Num,
 	};
 
+	//線形補間のタイミング
+	enum EnLinear {
+		enLinear_sword1,								//剣１
+		enLinear_sword2,								//剣２
+		enLinear_delay,									//タイムラグを作る
+		enLinear_Logo,									//タイトルロゴ
+		enLinear_End,									//終わり
+		enLinear_Num,
+	};
+
 	//どこを選択しているか
 	enum EnSelectPosition {
 		enSelectPosition_Start,						//スタートポジション
@@ -98,6 +108,7 @@ private:
 	EnOperationLook m_operationLook;			//操作説明画像の表示
 	EnCharacterOpLook m_characterOpLook;		//キャラクター説明の表示
 	EnCharacterOpPosition m_characterOpPosition;//キャラクター説明のポジション
+	EnLinear m_linear;
 
 	Game* game=nullptr;
 	SoundSource* m_bgm = nullptr;
@@ -147,8 +158,8 @@ private:
 	Vector3 m_ZombieCursor = { 145.0f, 450.0f, 0.0f };
 	Vector3 m_MiteiCursor = { 425.0f, 450.0f, 0.0f };
 
-	//キャラクター説明画面でカーソルを左側に表示させるときに足すためのポジション
-	Vector3 m_charaLeftCursor = { -130.0f,0.0f,0.0f };
+	//Logoのポジションを左にずらす
+	Vector3 m_LeftLogo = { -10.0f,0.0f,0.0f };
 
 	Vector4 m_color = { 1.0f,1.0f,1.0f,0.0f };		//選択されてないときに透明度を低くして強調しないようにする時に使う
 	Vector4 m_colorST = { g_vec4White };			//通常の透明度
@@ -168,5 +179,6 @@ private:
 	bool m_fadeSeem = true;							//PressAButtonを表示するか
 	bool m_titlefadeSeem = false;					//タイトルの
 	bool m_titleanim = false;						//タイトルのアニメーション中か
+	float SEVolume = 0.4f;
 };
 

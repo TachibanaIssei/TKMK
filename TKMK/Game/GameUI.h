@@ -118,6 +118,24 @@ public:
 	/// <returns></returns>
 	Vector3& HPBerSend(Vector3 size, Vector3 scale);
 
+	/// <summary>
+	/// スキルのアイコンをグレースケールにする
+	/// </summary>
+	/// <param name="flag">trueの場合グレースケールにする</param>
+	void SetSkillIconGrayScale(bool flag)
+	{
+		m_SkillRenderIN.SetGrayScale(flag);
+	}
+
+	/// <summary>
+	/// 必殺のアイコンをグレースケールにする
+	/// </summary>
+	/// <param name="flag">trueの場合グレースケールにする</param>
+	void SetULTIconGrayScale(bool flag)
+	{
+		m_UltRenderIN.SetGrayScale(flag);
+	}
+
 private:
 	FontRender m_ExpFont;
 
@@ -138,8 +156,10 @@ private:
 	SpriteRender			m_statusBar;						//ステータスの画像
 	SpriteRender			m_HPFrame;							//プレイヤーの顔画像の枠
 	SpriteRender			m_playerFaceBack;					//プレイヤーの顔画像の背景
-	SpriteRender            m_SkillRender;						//スキルアイコン
-	SpriteRender            m_UltRender;						//必殺アイコン
+	SpriteRender            m_SkillRenderIN;					//スキルのアイコン
+	SpriteRender            m_SkillRenderOUT;					//スキルのアイコンのフレーム
+	SpriteRender            m_UltRenderIN;						//必殺アイコン
+	SpriteRender            m_UltRenderOUT;						//必殺アイコンのフレーム
 	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;
@@ -221,7 +241,7 @@ private:
 	//キャラのポイント
 	int charPoint[4];
 
-	int MaxPoint = 0;
+	int MaxPoint = 1;
 
 	
 

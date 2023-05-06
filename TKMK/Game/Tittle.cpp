@@ -144,14 +144,16 @@ bool Tittle::Start()
 	m_ilustoptionOp.Update();
 
 	//BGMの設定
-	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/gameBGM/TitleBGM1.wav");
+	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/titleBGM/fanfare1.wav");
+	g_soundEngine->ResistWaveFileBank(3, "Assets/sound/titleBGM/titleBGM2.wav");
 	//選択音
 	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/sentaku/sentaku4.wav");
+	//斬撃音
+	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/titleBGM/titleSE/zangeki2.wav");
+	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/titleBGM/titleSE/zangeki1.wav");
 
 	m_bgm = NewGO<SoundSource>(0);
-	m_bgm->Init(1);
-	m_bgm->Play(true);
-	m_bgm->SetVolume(0.5f);
+
 
 	return true;
 }
@@ -189,8 +191,16 @@ void Tittle::Scene()
 	if (m_titleScene == enTitleScene_PressAScene)
 	{
 		m_fadeSeem = false;
-		if (swordright < 1.0f)
+		if (m_linear == enLinear_sword1)
 		{
+			if (swordright > 1.0f)
+			{
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(6);
+				se->SetVolume(SEVolume);
+				se->Play(false);
+				m_linear = enLinear_sword2;
+			}
 			//線形補間
 			m_swordright.Lerp(swordright, m_Toprightfirstposition, m_swordPosition);
 			//線形補完したものをSetPositionに入れる
@@ -198,23 +208,43 @@ void Tittle::Scene()
 			//補完率
 			swordright += 0.03f;
 		}
-		else if (swordleft < 1.0f)
+		else if (m_linear == enLinear_sword2)
 		{
+			if (swordleft >= 1.0f)
+			{
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(6);
+				se->SetVolume(SEVolume);
+				se->Play(false);
+				m_linear = enLinear_delay;
+			}
 			//線形補間
 			m_swordleft.Lerp(swordleft, m_Topleftfirstposition, m_swordPosition);
 			//線形補完したものをSetPositionに入れる
 			m_titleswordbrack.SetPosition(m_swordleft);
 
 			//補完率
-			swordleft += 0.09f;
+			swordleft += 0.03f;
 		}
-		else if (delaytime < 20)
+		else if (m_linear == enLinear_delay)
 		{
+			if (delaytime > 20)
+			{
+				m_linear = enLinear_Logo;
+			}
 			//遅らせる時間
 			delaytime++;
 		}
-		else if (firstLogo < 1.0f)
+		else if (m_linear == enLinear_Logo)
 		{
+			if (firstLogo > 0.8f)
+			{
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(7);
+				se->SetVolume(SEVolume);
+				se->Play(false);
+				m_linear = enLinear_End;
+			}
 			m_titlefadeSeem = true;
 		
 			//線形補間
@@ -225,9 +255,9 @@ void Tittle::Scene()
 			m_titleLogo.SetScale(m_firsttitleScale);
 			m_fire.SetScale(m_fireScale);
 			//補完率
-			firstLogo += 0.01f;
+			firstLogo += 0.03f;
 		}
-		else
+		else if(m_linear == enLinear_End)
 		{
 			m_fadeSeem = true;
 			m_titleanim = true;
@@ -256,7 +286,7 @@ void Tittle::Scene()
 				m_operationPosition.Lerp(LogoComplement, m_firstPosition, m_Central);
 				m_startPosition.Lerp(LogoComplement, m_firstPosition, m_Top);
 				m_optionPosition.Lerp(LogoComplement, m_firstPosition, m_Under);
-				m_LogoPosition.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
+				m_LogoPosition.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition + m_LeftLogo);
 				m_LogoScale.Lerp(LogoComplement, m_titleLogoScale, m_selectLogoScale);
 				m_fireScale.Lerp(LogoComplement, m_titlefireScale, m_selectfireScale);
 				m_ilust.Lerp(LogoComplement, m_RightfirstPosition, m_selectilust);
@@ -291,7 +321,7 @@ void Tittle::Scene()
 		//もし操作説明画面やキャラクター説明画面が見えず、またセレクト画面だったら表示する
 		if (m_operationLook == enOperationLook_UnSeem || m_characterOpLook == enCharacterOpLook_UnSeem || LogoComplement < 1.0f)
 		{
-			m_titleLogo.SetPosition(m_selectLogoPosition);
+			m_titleLogo.SetPosition(m_selectLogoPosition + m_LeftLogo);
 			m_start.SetPosition(m_Top);
 			m_operation.SetPosition(m_Central);
 			m_option.SetPosition(m_Under);
@@ -317,6 +347,10 @@ void Tittle::Scene()
 	if (m_titleScene == enTitleScene_PressAScene && m_titleanim == true && g_pad[0]->IsTrigger(enButtonA))
 	{
 		//線形変換に移る
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->Play(false);
+		se->SetVolume(1.0f);
 		titleScene = 1;
 		m_isWaitFadeout = true;
 	}
@@ -333,6 +367,12 @@ void Tittle::Scene()
 		break;
 	case 1:
 		m_titleScene = enTitleScene_Change;
+		if (m_bgm->IsPlaying() == false)
+		{
+			m_bgm->Init(3);
+			m_bgm->Play(true);
+			m_bgm->SetVolume(0.5f);
+		}
 		break;
 	case 2:
 		m_titleScene = enTitleScene_Select;
@@ -512,7 +552,7 @@ void Tittle::CharacterOp()
 			break;
 		case 3:
 			m_characterOpPosition = enCharacterOpPosition_Mitei;
-			m_fire.SetPosition(m_MiteiCursor + m_charaLeftCursor);
+			m_fire.SetPosition(m_MiteiCursor);
 			break;
 		}
 		m_Opchoice.SetPosition(0.0f, 450.0f, 0.0f);

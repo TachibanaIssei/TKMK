@@ -1,4 +1,4 @@
-34
+35
 5,timer,41,../../Game/Assets/sprite/gameUI/timer.png,0.0,478.0,372,120,10,0.3384615384615383,0.3020104895104895,0.5,0.5,9,timer.dds
 13,HPBar_HP_back,49,../../Game/Assets/sprite/gameUI/HPBar_HP_back.png,-660.0,-477.0,600,120,10,1.0,1.0,0.5,0.5,17,HPBar_HP_back.dds
 8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,857.0,-429.0,1103,500,10,0.9193589743589745,1.0,0.5,0.5,12,LevelBar.dds
@@ -33,3 +33,4 @@
 13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,651.9230769230769,-465.38461538461524,600,120,10,1.0,1.0,0.5,0.5,17,ExperienceBar.dds
 9,skil_Icon,45,../../Game/Assets/sprite/gameUI/skil_Icon.png,519.2307692307693,-182.69230769230774,230,230,10,0.2131907308377896,0.2131907308377896,0.5,0.5,13,skil_Icon.dds
 7,minimap,43,../../Game/Assets/sprite/gameUI/minimap.png,-805.7692307692307,382.6923076923077,284,284,10,0.5548872180451127,0.5548872180451127,0.5,0.5,11,minimap.dds
+6,finish,42,../../Game/Assets/sprite/gameUI/finish.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,10,finish.dds

@@ -1,0 +1,11 @@
+10
+6,finish,42,../../Game/Assets/sprite/gameUI/finish.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,10,finish.dds
+13,finishCount_9,49,../../Game/Assets/sprite/gameUI/finishCount_9.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_9.dds
+13,finishCount_8,49,../../Game/Assets/sprite/gameUI/finishCount_8.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_8.dds
+13,finishCount_7,49,../../Game/Assets/sprite/gameUI/finishCount_7.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_7.dds
+13,finishCount_6,49,../../Game/Assets/sprite/gameUI/finishCount_6.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_6.dds
+13,finishCount_5,49,../../Game/Assets/sprite/gameUI/finishCount_5.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_5.dds
+13,finishCount_4,49,../../Game/Assets/sprite/gameUI/finishCount_4.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_4.dds
+13,finishCount_3,49,../../Game/Assets/sprite/gameUI/finishCount_3.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_3.dds
+13,finishCount_2,49,../../Game/Assets/sprite/gameUI/finishCount_2.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_2.dds
+13,finishCount_1,49,../../Game/Assets/sprite/gameUI/finishCount_1.png,0.0,0.0,300,500,10,1.0,1.0,0.5,0.5,17,finishCount_1.dds

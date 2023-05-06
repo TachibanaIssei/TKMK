@@ -188,15 +188,16 @@ public:
 	/// </summary>
 	/// <param name="point">倒された相手の現在のポイント</param>
 	/// <param name="level">自分の現在のレベル</param>
-	void PointProcess(int level)
+	void PointProcess(int& level)
 	{
 		//レベルが5以上なら
 		if (level > 5)
 		{
 			level = 5;
 		}
+		int AddPoint = level;
 		//レベル分ポイントを増やす
-		Point += level;
+		Point += AddPoint;
 	}
 
 	/// <summary>

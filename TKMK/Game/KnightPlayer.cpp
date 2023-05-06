@@ -8,8 +8,10 @@
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
-
+//たまに死んでも動ける
+//ジャンプ
 //必殺技打つときに一瞬止まるようにする
+//アニメーションイベント
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -570,13 +572,22 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_charState = enCharState_Idle;
-		AtkState = false;
-		//ボタンプッシュフラグをfalseにする
-		pushFlag = false;
+	///三段目のアタックのアニメーションが終わったら
+	if (wcscmp(eventName, L"LastToIdle") == 0)
+	{
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			AtkState = false;
+			m_charState = enCharState_Idle;
+			m_AtkTmingState = Num_State;
 	}
+	//アニメーションの再生が終わったら
+	//if (m_modelRender.IsPlayingAnimation() == false) {
+	//	m_charState = enCharState_Idle;
+	//	AtkState = false;
+	//	//ボタンプッシュフラグをfalseにする
+	//	pushFlag = false;
+	//}
 
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)

@@ -119,8 +119,16 @@ void Actor::AttackUP()
 	{
 		if (GetPower->GetEffect()->IsPlay() == false)
 		{
+			// 念のため消しておく
+			if (PowerUpEfk != nullptr) {
+				PowerUpEfk->DeleteEffect();
+				DeleteGO(PowerUpEfk);
+			}
+
 			PowerUpEfk = NewGO<ChaseEFK>(3);
 			PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 10.0f);
+			PowerUpEfk->AutoDelete(false);
+			PowerUpEfk->GetEffect()->AutoDelete(false);
 
 			GetPower->DeleteEffect();
 			DeleteGO(GetPower);
@@ -132,6 +140,7 @@ void Actor::AttackUP()
 	if (PowerUpTimer > 0.0f)
 	{
 		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();
+
 		if (PowerUpTimer <= 0.0f)
 		{
 			//攻撃UP終了

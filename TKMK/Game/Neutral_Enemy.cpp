@@ -567,7 +567,7 @@ bool Neutral_Enemy::Search()
 		float angle = acosf(diff.Dot(m_forward));
 	
 		//Actorが視界内に居たら。
-		if (Math::PI * 0.8f > fabsf(angle) && (ActorPosition - m_position).LengthSq() <= 100.0f * 100.0f)
+		if (Math::PI * 0.8f > fabsf(angle) && (ActorPosition - m_position).LengthSq() <= 200.0f * 200.0f)
 		{
 			m_targetActor = actor;
 

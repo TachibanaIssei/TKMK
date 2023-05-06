@@ -111,7 +111,6 @@ void KnightPlayer::Update()
 		return;
 	}
 
-
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
@@ -149,11 +148,17 @@ void KnightPlayer::Update()
 				//回避処理
 				Avoidance();
 		}
+
+		//攻撃上昇中
 		AttackUP();
+
 		//移動処理
-		Vector3 stickL;
-		stickL.x = g_pad[0]->GetLStickXF();
-		stickL.y = g_pad[0]->GetLStickYF();
+		Vector3 stickL = Vector3::Zero;
+		if (CantMove == false)
+		{
+			stickL.x = g_pad[0]->GetLStickXF();
+			stickL.y = g_pad[0]->GetLStickYF();
+		}
 		Move(m_position, m_charCon, m_Status, stickL);
 
 		//回避中なら
@@ -394,6 +399,7 @@ void KnightPlayer::MakeUltSkill()
 	knightUlt->SetCreatorName(GetName());
 	// 制作者を教える
 	knightUlt->SetActor(this);
+	knightUlt->SetUltColorNumb(respawnNumber);
 	//キャラのレベルを入れる
 	knightUlt->GetCharLevel(Lv);
 	//座標の設定
@@ -447,6 +453,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
+		CantMove = true;
 		//剣３段目音
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(15);
@@ -522,6 +529,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			m_AtkTmingState = Num_State;
 		}
 	}
+
 	//三段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"LastAttack_End") == 0)
 	{
@@ -529,6 +537,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
+		CantMove = false;
 	}
 	//アニメーションの再生が終わったら
 	if (m_modelRender.IsPlayingAnimation() == false) {

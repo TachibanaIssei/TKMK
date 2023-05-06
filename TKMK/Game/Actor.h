@@ -44,8 +44,10 @@ public:
 
 protected:
 	void AttackUP();
+
 	void AttackUPEnd() {
 		m_Status.Atk -= PowerUp;
+
 		if (PowerUpEfk != nullptr)
 		{
 			PowerUpEfk->DeleteEffect();
@@ -54,7 +56,8 @@ protected:
 		}
 		
 		// 攻撃UP開始も削除
-		if (GetPower != nullptr) {
+		if (GetPower != nullptr) 
+		{
 			GetPower->DeleteEffect();
 			DeleteGO(GetPower);
 			GetPower = nullptr;
@@ -287,8 +290,16 @@ public:
 		{
 			PowerUp = AtkUp;
 			m_Status.Atk += PowerUp;
+
+			//念のため消しておく
+			if (GetPower != nullptr) {
+				GetPower->DeleteEffect();
+				DeleteGO(GetPower);
+			}
+
 			GetPower = NewGO<ChaseEFK>(3);
 			GetPower->SetEffect(EnEFK::enEffect_Knight_GetPower, this, Vector3::One * 30.0f);
+
 			GetPower->AutoDelete(false);
 			GetPower->GetEffect()->AutoDelete(false);
 		}
@@ -542,7 +553,7 @@ protected:
 	Status m_Status;                                      //ステータス
 	Status m_InitialStatus;                                //初期ステータス
 	//レベルアップ時に増加するステータス
-	LvUpStatus LvUPStatus = { 30,5,10.0f };
+	LvUpStatus LvUPStatus = { 30,5,20.0f };
 
 	//スポーン、リスポーンして塔から地上に降りたか
 	//空中にいるかの判定

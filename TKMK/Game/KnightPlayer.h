@@ -75,7 +75,7 @@ private:
 	float UltimateSkillTimer = 0;
 
 	//bool AtkCollistionFlag = false;
-	
+	bool CantMove = false;
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
 	SpriteRender m_Avoidance_flameRender;

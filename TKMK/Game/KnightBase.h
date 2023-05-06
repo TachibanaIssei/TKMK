@@ -157,13 +157,6 @@ public:
 			m_charState != enCharState_Avoidance &&
 			m_charState != enCharState_Damege &&
 			m_charState != enCharState_Death;
-
-		/*return m_charState != enKnightState_ChainAtk &&
-			m_charState != enKnightState_UltimateSkill &&
-			m_charState != enKnightState_Skill &&
-			m_charState != enKnightState_Avoidance &&
-			m_charState != enKnightState_Damege&&
-			m_charState != enKnightState_Death;*/
 	}
 
 

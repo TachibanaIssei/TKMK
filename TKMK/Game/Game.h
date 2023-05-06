@@ -228,7 +228,6 @@ private:
 	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
 
-	ModelRender m_modelRender;
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;
 	Level3DRender m_AIPos;

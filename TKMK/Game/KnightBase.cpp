@@ -304,6 +304,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
 	invincibleTimer = 2.0f;
+
 	//自身のHPが0以下なら
 	if (m_Status.Hp <= 0) {
 		//倒されたときの処理に遷移
@@ -328,7 +329,21 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 			PowerUpTimer = 0.0f;
 			AttackUPEnd();
 		}
+		// 念のためここでも消す
+		if (PowerUpEfk != nullptr)
+		{
+			PowerUpEfk->DeleteEffect();
+			DeleteGO(PowerUpEfk);
+			PowerUpEfk = nullptr;
+		}
 
+		// 攻撃UP開始も削除
+		if (GetPower != nullptr)
+		{
+			GetPower->DeleteEffect();
+			DeleteGO(GetPower);
+			GetPower = nullptr;
+		}
 
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -522,12 +537,12 @@ void KnightBase::PlayAnimation()
 	//一段目
 	case enCharState_Attack:
 		m_modelRender.PlayAnimation(enAnimationClip_ChainAtk, 0.1f);
-		m_modelRender.SetAnimationSpeed(1.1f);
+		m_modelRender.SetAnimationSpeed(1.4f);
 		break;
 	//二段目
 	case enCharState_SecondAttack:
 		m_modelRender.PlayAnimation(enAnimationClip_SecondAtk, 0.1f);
-		m_modelRender.SetAnimationSpeed(1.3f);
+		m_modelRender.SetAnimationSpeed(1.4f);
 		break;
 	//三段目
 	case enCharState_LastAttack:

@@ -392,6 +392,7 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
 		//2秒以上経ったら
 		if (m_respwanTimer <= 0.0f)
 		{
+			//フェードアウト
 			//画面を明るくする
 			fade->StartFadeOut(1.0f);
 

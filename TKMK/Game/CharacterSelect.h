@@ -94,8 +94,10 @@ private:
 
 	//ポインター
 	CharacterController Poimter;
-	Vector3 m_Pointerposition = Vector3(0.0f,200.0f,-0.0f);
+	Vector3 m_Pointerposition = Vector3(0.0f,90.0f,0.0f);
 	Vector3 m_moveSpeed = Vector3::Zero;
+
+	CollisionObject* POINTER;
 
 	PhysicsGhostObject Attack;
 	bool Attack_explanationFlag = false;

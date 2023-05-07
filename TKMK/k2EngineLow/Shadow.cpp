@@ -3,10 +3,10 @@
 
 namespace ShadowConst
 {
-	const int	RENDER_TARGET_WIDTH		= 16000;		//レンダリングターゲットの幅
-	const int	RENDER_TARGET_HEIGHT	= 16000;		//レンダリングターゲットの高さ
+	const int	RENDER_TARGET_WIDTH		= 2040;		//レンダリングターゲットの幅
+	const int	RENDER_TARGET_HEIGHT	= 2040;		//レンダリングターゲットの高さ
 
-	const float LIGHT_CAMERA_VIEW_ANGLE = 80.0f;	//ライトカメラのビューアングル
+	const float LIGHT_CAMERA_VIEW_ANGLE = 10.0f;	//ライトカメラのビューアングル
 }
 
 void nsK2EngineLow::Shadow::Init()
@@ -27,7 +27,7 @@ void nsK2EngineLow::Shadow::Render(RenderContext& rc)
 	g_renderingEngine->ShadowModelRendering(rc, m_lightCamera);
 	rc.WaitUntilFinishDrawingToRenderTarget(m_shadowMap);
 
-	//m_shadowBlur.ExecuteOnGPU(rc, 5.0f);
+	m_shadowBlur.ExecuteOnGPU(rc, 5.0f);
 }
 
 void nsK2EngineLow::Shadow::InitRenderTarget()

@@ -79,6 +79,24 @@ namespace nsK2EngineLow {
 			m_sceneLight.SetmLVP(LVP);
 		}
 
+		/// <summary>
+		/// ライトカメラの位置を設定する
+		/// </summary>
+		/// <param name="pos">位置</param>
+		void SetLightPos(Vector3 pos)
+		{
+			m_sceneLight.SetLightPos(pos);
+		}
+
+		/// <summary>
+		/// シャドウマップにブラーをかけたテクスチャを取得
+		/// </summary>
+		/// <returns></returns>
+		Texture& GetShadowBlurBokeTexture()
+		{
+			return m_shadow.GetShadowBlurBokeTexture();
+		}
+
 	////////////////////////////////////////////////////////////////////////////////
 	///シャドウマップの関数
 	////////////////////////////////////////////////////////////////////////////////

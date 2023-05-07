@@ -34,7 +34,7 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	if (shadow)
 	{
 		m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
-		m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
+		m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32_FLOAT;
 
 		m_shadowModel.Init(m_modelInitData);
 	}
@@ -46,10 +46,7 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
 	m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
 
-	m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture();
-
-	//ライトカメラのビュープロジェクション行列を設定する
-	g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+	m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowBlurBokeTexture();
 
 	MakeDirectionData();
 
@@ -81,6 +78,7 @@ void nsK2EngineLow::ModelRender::Update()
 	{
 		m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+		g_renderingEngine->SetLightPos(g_renderingEngine->GetLightCamera().GetPosition());
 	}
 
 	//アニメーションを進める
@@ -89,7 +87,11 @@ void nsK2EngineLow::ModelRender::Update()
 
 void nsK2EngineLow::ModelRender::MakeDirectionData()
 {
-	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
+	//ライトカメラのビュープロジェクション行列を設定する
+	g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+	g_renderingEngine->SetLightPos(g_renderingEngine->GetLightCamera().GetPosition());
+
+	m_modelInitData.m_expandConstantBuffer = (void*)&g_renderingEngine->GetSceneLight();
 	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
 }
 

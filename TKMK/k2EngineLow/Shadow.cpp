@@ -13,9 +13,10 @@ void nsK2EngineLow::Shadow::Init()
 {
 	InitRenderTarget();
 	InitLightCamera();
+	m_shadowBlur.Init(&m_shadowMap.GetRenderTargetTexture());
 }
 
-void nsK2EngineLow::Shadow::Render(RenderContext& rc)
+;void nsK2EngineLow::Shadow::Render(RenderContext& rc)
 {
 	UpdateLightCamera();
 
@@ -35,7 +36,7 @@ void nsK2EngineLow::Shadow::InitRenderTarget()
 		ShadowConst::RENDER_TARGET_HEIGHT,
 		1,
 		1,
-		DXGI_FORMAT_R32_FLOAT,
+		DXGI_FORMAT_R32G32_FLOAT,
 		DXGI_FORMAT_D32_FLOAT,
 		m_clearColor
 	);

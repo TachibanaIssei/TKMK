@@ -70,6 +70,7 @@ namespace nsK2EngineLow {
 		Vector3				ambientLight;		//環境光
 		float				pad1;				//パディング1
 		Matrix				mLVP;				//ライトビュープロジェクション行列
+		Vector3				lightPos;			//ライトの座標
 	};
 
 	class SceneLight {
@@ -87,6 +88,15 @@ namespace nsK2EngineLow {
 		void SetmLVP(Matrix LVP)
 		{
 			m_light.mLVP = LVP;
+		}
+
+		/// <summary>
+		/// ライトカメラの位置を設定する
+		/// </summary>
+		/// <param name="pos">位置</param>
+		void SetLightPos(Vector3 pos)
+		{
+			m_light.lightPos = pos;
 		}
 	////////////////////////////////////////////////////////////////////////////////////////
 	///ディレクションライトの関数

@@ -4,6 +4,7 @@
 #define MOVE 8
 
 class Tittle;
+class Fade;
 
 class Result :public IGameObject
 {
@@ -74,6 +75,7 @@ private:
 
 	Tittle* tittle = nullptr;
 	SoundSource* m_bgm = nullptr;
+	Fade* fade = nullptr;
 
 	Vector3 PointRight = { 200.0f,50.0f,0.0f };
 

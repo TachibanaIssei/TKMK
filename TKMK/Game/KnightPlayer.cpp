@@ -549,6 +549,8 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	{
 		//必殺技の当たり判定のクラスを作成
 		MakeUltSkill();
+		//レベルを下げる
+		UltimateSkill();
 		//エフェクトを移動
 		//m_swordEffectFlag = false;
 		

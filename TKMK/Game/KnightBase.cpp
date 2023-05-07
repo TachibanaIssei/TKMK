@@ -874,6 +874,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		Death();
 		pushFlag = false;
 		AtkState = false;
+		CantMove = false;
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定
@@ -899,7 +900,7 @@ void KnightBase::UltEnd() {
 	//ボタンプッシュフラグをfalseにする
 	pushFlag = false;
 	//レベルを下げる
-	UltimateSkill();
+	//UltimateSkill();
 	//待機ステート
 	m_charState = enCharState_Idle;
 	OnProcessCommonStateTransition();

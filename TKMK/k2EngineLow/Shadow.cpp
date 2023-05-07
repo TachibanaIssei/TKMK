@@ -16,7 +16,7 @@ void nsK2EngineLow::Shadow::Init()
 	m_shadowBlur.Init(&m_shadowMap.GetRenderTargetTexture());
 }
 
-;void nsK2EngineLow::Shadow::Render(RenderContext& rc)
+void nsK2EngineLow::Shadow::Render(RenderContext& rc)
 {
 	UpdateLightCamera();
 
@@ -27,7 +27,7 @@ void nsK2EngineLow::Shadow::Init()
 	g_renderingEngine->ShadowModelRendering(rc, m_lightCamera);
 	rc.WaitUntilFinishDrawingToRenderTarget(m_shadowMap);
 
-	m_shadowBlur.ExecuteOnGPU(rc, 5.0f);
+	//m_shadowBlur.ExecuteOnGPU(rc, 5.0f);
 }
 
 void nsK2EngineLow::Shadow::InitRenderTarget()

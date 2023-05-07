@@ -26,6 +26,8 @@ void nsK2EngineLow::Shadow::Init()
 	//‰eƒ‚ƒfƒ‹‚ð•`‰æ
 	g_renderingEngine->ShadowModelRendering(rc, m_lightCamera);
 	rc.WaitUntilFinishDrawingToRenderTarget(m_shadowMap);
+
+	m_shadowBlur.ExecuteOnGPU(rc, 5.0f);
 }
 
 void nsK2EngineLow::Shadow::InitRenderTarget()

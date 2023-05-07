@@ -86,6 +86,8 @@ cbuffer LightCB : register(b1)
     HemisphereLight hemisphereLight;
     float3          CameraEyePos;   //カメラの座標
     float3          ambient;        //環境光
+    float4x4        mLVP;           //ライトビュープロジェクション行列
+    float3          lightPos;       //ライトカメラの位置
 }
 
 ////////////////////////////////////////////////

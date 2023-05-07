@@ -89,6 +89,7 @@ cbuffer LightCB : register(b1)
     float3          ambient;        //環境光
     float4x4        mLVP;           //ライトビュープロジェクション行列
     float3          lightPos;       //ライトカメラの位置
+    float           maxLightDepth;  //ライトカメラから見た深度値の最大
 }
 
 ////////////////////////////////////////////////
@@ -160,7 +161,7 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 
     psIn.normalInView = mul(mView, psIn.normal);
     
-    psIn.depth.x = length(psIn.worldPos - lightPos) / 1000.0f;
+    psIn.depth.x = length(psIn.worldPos - lightPos) / maxLightDepth;
     psIn.depth.y = psIn.depth.x * psIn.depth.x;
 
 	return psIn;

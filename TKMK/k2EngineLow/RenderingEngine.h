@@ -89,12 +89,12 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// シャドウマップにブラーをかけたテクスチャを取得
+		/// ライトから見た深度値の最大を設定する
 		/// </summary>
-		/// <returns></returns>
-		Texture& GetShadowBlurBokeTexture()
+		/// <param name="depth">深度値の最大</param>
+		void SetMaxLightDepth(float depth)
 		{
-			return m_shadow.GetShadowBlurBokeTexture();
+			m_sceneLight.SetMaxLightDepth(depth);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +107,15 @@ namespace nsK2EngineLow {
 		Texture& GetShadowMapTexture()
 		{
 			return m_shadow.GetShadowMapTexture();
+		}
+
+		/// <summary>
+		/// シャドウマップにブラーをかけたテクスチャを取得
+		/// </summary>
+		/// <returns></returns>
+		Texture& GetShadowBlurBokeTexture()
+		{
+			return m_shadow.GetShadowBlurBokeTexture();
 		}
 
 		/// <summary>

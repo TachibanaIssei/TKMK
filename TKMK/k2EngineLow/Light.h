@@ -61,16 +61,17 @@ namespace nsK2EngineLow {
 	/// </summary>
 	struct Light
 	{
-		DirectionalLight	directionalLight;	//ディレクションライトの配列
-		PointLight			pointLight;			//ポイントライト
-		SpotLight			spotLight;			//スポットライト
-		HemisphereLight		hemisphereLight;	//半球ライト
-		Vector3				cameraEyePos;		//カメラ座標
-		float				pad0;				//パディング0
-		Vector3				ambientLight;		//環境光
-		float				pad1;				//パディング1
-		Matrix				mLVP;				//ライトビュープロジェクション行列
-		Vector3				lightPos;			//ライトの座標
+		DirectionalLight	directionalLight;			//ディレクションライトの配列
+		PointLight			pointLight;					//ポイントライト
+		SpotLight			spotLight;					//スポットライト
+		HemisphereLight		hemisphereLight;			//半球ライト
+		Vector3				cameraEyePos;				//カメラ座標
+		float				pad0;						//パディング0
+		Vector3				ambientLight;				//環境光
+		float				pad1;						//パディング1
+		Matrix				mLVP;						//ライトビュープロジェクション行列
+		Vector3				lightPos;					//ライトの座標
+		float				maxLightDepth = 1200.0f;	//ライトから見た深度値の最大
 	};
 
 	class SceneLight {
@@ -97,6 +98,15 @@ namespace nsK2EngineLow {
 		void SetLightPos(Vector3 pos)
 		{
 			m_light.lightPos = pos;
+		}
+
+		/// <summary>
+		/// ライトから見た深度値の最大を設定する
+		/// </summary>
+		/// <param name="depth">深度値の最大</param>
+		void SetMaxLightDepth(float depth)
+		{
+			m_light.maxLightDepth = depth;
 		}
 	////////////////////////////////////////////////////////////////////////////////////////
 	///ディレクションライトの関数

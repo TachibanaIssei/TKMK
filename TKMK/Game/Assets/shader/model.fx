@@ -225,8 +225,8 @@ float4 PSMain( SPSIn psIn ) : SV_Target0
 /// </summary>
 float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
 {
-    //シャドウマップにZ値を書き込む
-    return float4(psIn.pos.z, psIn.pos.z, psIn.pos.z, 1.0f);
+    //ライトからみた深度値と深度値の2乗を出力
+    return float4(psIn.depth.x, psIn.depth.y, 0.0f, 1.0f);
 }
 
 /////////////////////////////////////////////////////////////////////////

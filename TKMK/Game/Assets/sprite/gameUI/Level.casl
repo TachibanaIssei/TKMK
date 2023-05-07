@@ -1,0 +1,11 @@
+10
+8,Lv1_back,44,../../Game/Assets/sprite/gameUI/Lv1_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv1_back.dds
+8,Lv2_back,44,../../Game/Assets/sprite/gameUI/Lv2_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv2_back.dds
+8,Lv3_back,44,../../Game/Assets/sprite/gameUI/Lv3_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv3_back.dds
+8,Lv4_back,44,../../Game/Assets/sprite/gameUI/Lv4_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv4_back.dds
+8,Lv5_back,44,../../Game/Assets/sprite/gameUI/Lv5_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv5_back.dds
+8,Lv6_back,44,../../Game/Assets/sprite/gameUI/Lv6_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv6_back.dds
+8,Lv7_back,44,../../Game/Assets/sprite/gameUI/Lv7_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv7_back.dds
+8,Lv8_back,44,../../Game/Assets/sprite/gameUI/Lv8_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv8_back.dds
+8,Lv9_back,44,../../Game/Assets/sprite/gameUI/Lv9_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,12,Lv9_back.dds
+9,Lv10_back,45,../../Game/Assets/sprite/gameUI/Lv10_back.png,0.0,0.0,150,150,10,1.0,1.0,0.5,0.5,13,Lv10_back.dds

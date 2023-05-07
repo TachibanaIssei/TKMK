@@ -29,6 +29,7 @@ struct SPSIn{
     float3 biNormal     : BINORMAL;     //従ベクトル
     float3 worldPos		: TEXCOORD1;	//ワールド座標
     float3 normalInView : TEXCOORD2;    //カメラ空間の法線
+    float2 depth        : TEXCOORD3;    // ライト空間での座標
 	
 };
 
@@ -159,6 +160,9 @@ SPSIn VSMainCore(SVSIn vsIn, uniform bool hasSkin)
 
     psIn.normalInView = mul(mView, psIn.normal);
     
+    psIn.depth.x = length(psIn.worldPos - lightPos) / 1000.0f;
+    psIn.depth.y = psIn.depth.x * psIn.depth.x;
+
 	return psIn;
 }
 

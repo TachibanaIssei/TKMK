@@ -3,10 +3,10 @@
 
 namespace ShadowConst
 {
-	const int	RENDER_TARGET_WIDTH		= 2040;		//レンダリングターゲットの幅
-	const int	RENDER_TARGET_HEIGHT	= 2040;		//レンダリングターゲットの高さ
+	const int	RENDER_TARGET_WIDTH		= 10000;		//レンダリングターゲットの幅
+	const int	RENDER_TARGET_HEIGHT	= 10000;		//レンダリングターゲットの高さ
 
-	const float LIGHT_CAMERA_VIEW_ANGLE = 10.0f;	//ライトカメラのビューアングル
+	const float LIGHT_CAMERA_VIEW_ANGLE = 60.0f;	//ライトカメラのビューアングル
 }
 
 void nsK2EngineLow::Shadow::Init()

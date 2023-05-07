@@ -37,6 +37,6 @@ namespace nsK2EngineLow {
 		Camera m_lightCamera;
 		GaussianBlur m_shadowBlur;
 
-		Vector3 m_lightCameraPosition = Vector3(0.0f,1000.0f,0.0f);
+		Vector3 m_lightCameraPosition = Vector3(0.0f,700.0f,0.0f);
 	};
 }

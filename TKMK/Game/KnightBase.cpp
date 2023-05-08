@@ -74,16 +74,16 @@ void KnightBase::SetModel()
 	switch (KnightKinds)
 	{
 	case enKnightKinds_Red:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 	case enKnightKinds_Blue:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Blue.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 	case enKnightKinds_Green:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Green.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Green2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 	case enKnightKinds_Yellow:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Yellow.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Yellow2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 
 	}

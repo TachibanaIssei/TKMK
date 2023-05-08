@@ -437,12 +437,9 @@ void CharacterSelect::SetKnightModel()
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
 
 	//åïémÉÇÉfÉãÇì«Ç›çûÇ›
-	m_Knight.Init("Assets/modelData/character/Knight/model_Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_Knight.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	m_Knight.SetPosition(KnightPos);
 	m_Knight.SetScale(2.7f, 2.7f, 2.7f);
-	/*Quaternion Krot;
-	Krot.y = 90.0f;
-	m_Knight.SetRotation(Krot);*/
 	m_Knight.Update();
 }
 

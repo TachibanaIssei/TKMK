@@ -407,6 +407,16 @@ void Game::Battle()
 		RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
 	}
+
+	if (UltStopFlag == true)
+	{
+		UltCanUseTimer -= g_gameTime->GetFrameDeltaTime();
+		if (UltCanUseTimer <= 0)
+		{
+			UltCanUseFlag = false;
+			UltCanUseTimer = 0.0f;
+		}
+	}
 }
 
 //ポーズ時の処理

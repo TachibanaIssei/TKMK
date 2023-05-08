@@ -87,7 +87,7 @@ void KnightAI::Update()
 		//リスポーンしたときしか使えない
 		//飛び降りる処理
 		//地上にいないならジャンプしかしないようにする
-		if (m_position.y > 150.0f) {
+		if (m_position.y > 10.0f) {
 			if (m_charCon.IsOnGround())
 			{
 				
@@ -755,12 +755,12 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を発動する処理
-	//Xボタンが押されたら
-		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80)
+		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
 			pushFlag = true;
 			m_game->SetStopFlag(true);
 			m_game->SetUltActor(this);
+			m_game->SetUltCanUseFlag(true);
 			//アニメーション再生
 			//必殺技ステート
 			m_charState = enCharState_UltimateSkill;

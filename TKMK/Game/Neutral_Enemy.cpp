@@ -333,8 +333,12 @@ void Neutral_Enemy::HPreductionbytime()
 	
 	if (m_enemyKinds == enEnemyKinds_Rabbit)
 	{
-		m_Status.Hp -= 1;
-		HPreductionbyTimer = 0.0f;
+		if (m_Status.Hp > 1)
+		{
+			m_Status.Hp -= 1;
+			HPreductionbyTimer = 0.0f;
+		}
+	
 	}
 	
 }
@@ -462,6 +466,8 @@ void Neutral_Enemy::Collision()
 				//緑の場合
 				if (m_enemyKinds == enEnemyKinds_Green)
 				{
+					//回復量
+					int HpPass = m_Status.MaxHp/2;
 					m_lastAttackActor->HpUp(HpPass);
 					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
 					{

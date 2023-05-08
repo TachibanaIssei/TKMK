@@ -389,7 +389,7 @@ void KnightPlayer::Attack()
 		Ult_Swordeffect->SetPosition(m_position);
 			//エフェクトを再生
 		Ult_Swordeffect->Play();
-		m_swordEffectFlag = true;
+		//m_swordEffectFlag = true;
 
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);

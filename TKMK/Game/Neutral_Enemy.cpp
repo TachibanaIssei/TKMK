@@ -89,7 +89,9 @@ bool Neutral_Enemy::Start()
 		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Rabbit/Damage.tka");
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 
-		m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit.tkm", m_animationClips, enAnimationClip_Num);
+		m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit2.tkm", m_animationClips, enAnimationClip_Num);
+
+		m_scale = { 40.0f,40.0f,40.0f };
 	}
 	else
 	{
@@ -104,12 +106,12 @@ bool Neutral_Enemy::Start()
 		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 
-		enemyColorRam = 4;
+		enemyColorRam = rand() % 10;
 
 		if (enemyColorRam <= 5)
 		{
 			//白
-			m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit2.tkm", m_animationClips, enAnimationClip_Num/*, enModelUpAxisY*/);
+			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_white/Ghost_white.tkm", m_animationClips, enAnimationClip_Num/*, enModelUpAxisY*/);
 			m_enemyKinds = enEnemyKinds_White;
 		}
 		else if (enemyColorRam <= 7)
@@ -270,7 +272,7 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
-	HPreductionbyTimer -= g_gameTime->GetFrameDeltaTime();
+	HPreductionbyTimer += g_gameTime->GetFrameDeltaTime();
 	if (HPreductionbyTimer >= 10)
 	{
 		HPreductionbytime();
@@ -287,6 +289,13 @@ void Neutral_Enemy::Update()
 	}
 
 	//モデルの更新。
+	//座標を設定
+	m_modelRender.SetPosition(m_position);
+	//回転を設定する。
+	m_modelRender.SetRotation(m_rot);
+	//大きさを設定する。
+	m_modelRender.SetScale(m_scale);
+
 	m_modelRender.Update();
 }
 void Neutral_Enemy::DeathEfk()
@@ -322,11 +331,11 @@ void Neutral_Enemy::Move()
 void Neutral_Enemy::HPreductionbytime()
 {
 	
-	//if (m_enemyKinds == enEnemyKinds_Rabbit)
-	//{
-	//	m_Status.Hp -= 1;
-	//	HPreductionbyTimer = 0.0f;
-	//}
+	if (m_enemyKinds == enEnemyKinds_Rabbit)
+	{
+		m_Status.Hp -= 1;
+		HPreductionbyTimer = 0.0f;
+	}
 	
 }
 
@@ -1157,16 +1166,11 @@ void Neutral_Enemy::EscapeSearch()
 void Neutral_Enemy::modelUpdate()
 {
 	//座標を設定
-	m_modelRender.SetPosition(0.0f,500.0f,0.0f);
+	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
 	m_modelRender.SetRotation(m_rot);
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
-
-	if (m_enemyKinds == enEnemyKinds_Rabbit)
-	{
-		m_modelRender.SetScale(40.0f, 40.0f, 40.0f);
-	}
 
 	//モデルの更新。
 	m_modelRender.Update();

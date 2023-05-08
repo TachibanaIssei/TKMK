@@ -756,7 +756,7 @@ void KnightAI::Attack()
 	{
 		//必殺技を発動する処理
 	//Xボタンが押されたら
-		if (pushFlag == false && Lv >= 4)
+		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80)
 		{
 			pushFlag = true;
 			m_game->SetStopFlag(true);

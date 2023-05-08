@@ -404,7 +404,7 @@ void Game::Battle()
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_RabbitRespawnTimer >= 5.0f)
 	{
-		//RabbitRespawn();
+		RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
 	}
 }
@@ -501,6 +501,10 @@ void Game::Respawn()
 
 void Game::RabbitRespawn()
 {
+	if (RabbitFlag == true) {
+		return;
+	}
+
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
 	RabbitFlag = true;

@@ -324,6 +324,10 @@ void Result::Select()
 	//リザルト画面からタイトル画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_title)
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->SetVolume(SEVolume);
+		se->Play(false);
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
 		DeleteGO(this);
 		DeleteGO(m_bgm);
@@ -331,6 +335,10 @@ void Result::Select()
 	//ゲームを終了
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_exit)
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->SetVolume(SEVolume);
+		se->Play(false);
 		g_gameLoop.m_isLoop = false;
 	}
 	m_GOtitleST.Update();

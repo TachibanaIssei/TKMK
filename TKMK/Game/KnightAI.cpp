@@ -80,6 +80,13 @@ void KnightAI::Update()
 		//ステート
 		ManageState();
 	}
+
+	//必殺技の溜めのときに動かないようにする
+	//if (m_charState == enCharState_Ult_liberation)
+	//{
+	//	m_modelRender.Update();
+	//	return;
+	//}
 		
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -102,10 +109,16 @@ void KnightAI::Update()
 		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
 		// 次のアクションを抽選 
 		LotNextAction();
-		//追跡
-		ChaseAndEscape();
+
+		if (m_charState != enCharState_Ult_liberation)
+		{
+			//追跡
+			ChaseAndEscape();
+		}
+		
 		//攻撃
 		Attack();
+		
 		//反転
 		Rotation();
 		//無敵時間
@@ -541,13 +554,7 @@ void KnightAI::LotNextAction()
 
 void KnightAI::ChaseAndEscape()
 {
-	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_charState == enCharState_Damege ||
-		m_charState == enCharState_Death ||
-		m_charState == enCharState_UltimateSkill ||
-		m_charState == enCharState_Attack ||
-		m_charState == enCharState_Skill ||
-		m_charState == enCharState_Avoidance)
+	if (IsEnableMove() == false)
 	{
 		return;
 	}
@@ -692,16 +699,11 @@ void KnightAI::Attack()
 		AtkCollisiton();
 	}
 
-	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_charState == enCharState_Damege ||
-		m_charState == enCharState_Death ||
-		m_charState == enCharState_UltimateSkill ||
-		m_charState == enCharState_Attack ||
-		m_charState == enCharState_Skill ||
-		m_charState == enCharState_Avoidance)
+	if (IsEnableMove() == false)
 	{
 		return;
 	}
+	
 
 	if (CanSkill())
 	{	
@@ -759,11 +761,12 @@ void KnightAI::Attack()
 		if (pushFlag == false && Lv >= 4)
 		{
 			pushFlag = true;
-			m_game->SetStopFlag(true);
-			m_game->SetUltActor(this);
-			//アニメーション再生
+			/*m_game->SetStopFlag(true);
+			m_game->SetUltActor(this);*/
+			//必殺技の溜めステートに移行する
+			m_charState = enCharState_Ult_liberation;
 			//必殺技ステート
-			m_charState = enCharState_UltimateSkill;
+			//m_charState = enCharState_UltimateSkill;
 
 			Vector3 m_SwordPos = Vector3::Zero;
 			Quaternion m_SwordRot;
@@ -778,7 +781,7 @@ void KnightAI::Attack()
 			//Ult_Swordeffect->SetRotation(m_SwordRot);
 			//Ult_Swordeffect->Update();
 				//エフェクトを再生
-			Ult_Swordeffect->Play	();
+			Ult_Swordeffect->Play();
 			m_swordEffectFlag = true;
 
 			//アルティメットSE
@@ -788,7 +791,7 @@ void KnightAI::Attack()
 			se->SetVolume(m_game->SetSoundEffectVolume());
 
 			//必殺技発動フラグをセット
-			UltimateSkillFlag = true;
+			//UltimateSkillFlag = true;
 		}
 	}
 
@@ -896,6 +899,12 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		se->Init(11);
 		se->Play(false);
 		se->SetVolume(0.3f);
+	}
+	//必殺技のアニメーションが始まったら
+	if (wcscmp(eventName, L"timeStop") == 0)
+	{
+		m_game->SetStopFlag(true);
+		m_game->SetUltActor(this);
 	}
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)

@@ -104,12 +104,12 @@ bool Neutral_Enemy::Start()
 		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Neutral_Enemy/Damage.tka");
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 
-		enemyColorRam = rand() % 10;
+		enemyColorRam = 4;
 
 		if (enemyColorRam <= 5)
 		{
 			//白
-			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_White/Ghost_White.tkm", m_animationClips, enAnimationClip_Num);
+			m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit2.tkm", m_animationClips, enAnimationClip_Num/*, enModelUpAxisY*/);
 			m_enemyKinds = enEnemyKinds_White;
 		}
 		else if (enemyColorRam <= 7)
@@ -1157,11 +1157,16 @@ void Neutral_Enemy::EscapeSearch()
 void Neutral_Enemy::modelUpdate()
 {
 	//座標を設定
-	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetPosition(0.0f,500.0f,0.0f);
 	//回転を設定する。
 	m_modelRender.SetRotation(m_rot);
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
+
+	if (m_enemyKinds == enEnemyKinds_Rabbit)
+	{
+		m_modelRender.SetScale(40.0f, 40.0f, 40.0f);
+	}
 
 	//モデルの更新。
 	m_modelRender.Update();

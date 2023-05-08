@@ -52,6 +52,8 @@ private:
 
 	Score Player[PLAYER];
 
+	ModelRender m_No1Charctar;		//ˆêˆÊ‚ÌƒLƒƒƒ‰‚Ìƒ‚ƒfƒ‹
+
 	FontRender m_PlayerRank1;
 	FontRender m_PlayerRank2;
 	FontRender m_PlayerRank3;

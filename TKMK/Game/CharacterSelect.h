@@ -65,6 +65,7 @@ public:
 
 private:
 	Fade* fade = nullptr;
+	SoundSource* m_bgm = nullptr;
 
 	SpriteRender m_SelectCursor;			//ÉJÅ[É\Éã
 
@@ -105,6 +106,7 @@ private:
 	bool Ult_explanationFlag = false;
 
 	float time;
+	float BGMVolume = 0.4f;
 
 	int CursorNum = 0;
 	int TitleScene = 1;

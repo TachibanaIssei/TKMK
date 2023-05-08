@@ -142,6 +142,13 @@ bool CharacterSelect::Start()
 		m_Pointerposition
 	);
 
+	g_soundEngine->ResistWaveFileBank(45, "Assets/sound/characterSelectBGM/characterSelect1.wav");
+
+	m_bgm = NewGO<SoundSource>(0);
+	m_bgm->Init(45);
+	m_bgm->Play(true);
+	m_bgm->SetVolume(BGMVolume);
+
 	return true;
 }
 
@@ -183,6 +190,7 @@ void CharacterSelect::Update()
 		{
 			Tittle* tittle = NewGO<Tittle>(0, "tittle");
 			DeleteGO(this);
+			DeleteGO(m_bgm);
 		}
 	}
 
@@ -394,6 +402,7 @@ void CharacterSelect::Ready()
 			break;
 		}
 		DeleteGO(this);
+		DeleteGO(m_bgm);
 
 	}
 	

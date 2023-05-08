@@ -208,6 +208,7 @@ void KnightPlayer::Update()
 		CoolTimeProcess();
 		GrayScaleUI();
 
+		//連打したらたまにエラー出るtodo
 		if (m_swordEffectFlag ==true)
 		{
 			Vector3 effectPosition = m_position;

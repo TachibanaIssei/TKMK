@@ -28,7 +28,7 @@ namespace {
 
 	const Vector3 UltimateCollision = Vector3(194.0f, 30.0f, 0.0f);
 
-	const float PointerSpeed = 400.0f;
+	const float PointerSpeed = 900.0f;
 
 }
 

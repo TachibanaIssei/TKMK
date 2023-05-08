@@ -41,6 +41,8 @@ private:
 		enCharacterSelect_Num,			//キャラクターの種類の数
 	};
 
+	void InitSprite();
+
 	/// <summary>
 	/// インゲームへの処理
 	/// </summary>
@@ -66,6 +68,44 @@ private:
 	/// </summary>
 	void SetKnightModel();
 
+	/// <summary>
+	/// モデルを回転させる
+	/// </summary>
+	void ModelRotation();
+
+	/// <summary>
+	/// アイコンがカーソルと重なっているかをチェックする
+	/// </summary>
+	void CheckIconOverlap();
+
+	/// <summary>
+	/// 通常攻撃のアイコンとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckNormalAttackIconOverlap();
+
+	/// <summary>
+	/// スキルのアイコンとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckSkillIconOverlap();
+
+	/// <summary>
+	/// 必殺技のアイコンとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckUltIconOverlap();
+
+	/// <summary>
+	/// アイコン画像の縦横の最大と最小の座標を計算する
+	/// </summary>
+	/// <param name="posX">画像のX座標</param>
+	/// <param name="posY">画像のY座標</param>
+	/// <param name="W">画像の幅</param>
+	/// <param name="H">画像の高さ</param>
+	/// <returns>右端、左端、上、下の値を持ったVector4を返す</returns>
+	Vector4 CalcIconPos(float posX,float posY, float W, float H);
+
 
 private:
 	Fade* fade = nullptr;
@@ -77,7 +117,9 @@ private:
 	SpriteRender m_pointerBlack;			//黒ポインター
 	SpriteRender m_pointerWhite;			//白ポインター
 	SpriteRender m_status;					//ステータス
-	SpriteRender m_attackIcon;				//攻撃、スキル、必殺技アイコン
+	SpriteRender m_attackIcon;				//攻撃アイコン
+	SpriteRender m_skillIcon;				//スキルアイコン
+	SpriteRender m_ultIcon;					//必殺技アイコン
 	SpriteRender m_underBar;				//画面下のバー
 	SpriteRender m_name;					//名前
 	SpriteRender m_attackExplanation;		//攻撃の説明文
@@ -90,8 +132,6 @@ private:
 	Quaternion m_knightRot;					//剣士の回転
 
 	EnCharacterSelect m_characterSelect;	//キャラクターセレクト
-
-	Vector3 m_cursorPosition = { -510.0f,75.0f,0.0f };
 
 	Vector3 m_pointerPosition	= Vector3(0.0f,90.0f,0.0f);
 

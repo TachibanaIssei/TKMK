@@ -6,7 +6,14 @@
 
 namespace {
 	const Vector3	STATUS_POS = Vector3(400.0f, 250.0f, 0.0f);				//ステータスの座標
-	const Vector3	ATTACK_ICON_POS = Vector3(400.0f, -150.0f, 0.0f);		//攻撃、スキル、必殺技アイコンの座標
+
+	const Vector3	NORMAL_ATTACK_ICON_POS = Vector3(115.0f, -130.0f, 0.0f);//通常攻撃アイコンの座標
+	const Vector3	SKILL_ICON_POS = Vector3(445.0f, -130.0f, 0.0f);		//スキルアイコンの座標
+	const Vector3	ULT_ICON_POS = Vector3(770.0f, -130.0f, 0.0f);			//必殺技アイコンの座標
+	const float		ICON_WIDTH	= 310.0f;									//アイコン画像の横の解像度
+	const float		ICON_HEIGHT = 400.0f;									//アイコン画像の縦の解像度
+	const float		NORMAL_ATTACK_ICON_HEIGHT = 417.0f;
+
 	const Vector3	NAME_POS = Vector3(-600.0f, -400.0f, 0.0f);				//名前の座標
 	const Vector3	UNDERBAR_POS = Vector3(0.0f, -500.0f, 0.0f);			//画面下のバーの座標
 
@@ -56,75 +63,9 @@ bool CharacterSelect::Start()
 	//剣士のモデル、アニメーション
 	SetKnightModel();
 
-	//ポインターの黒
-	m_pointerBlack.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
-	m_pointerBlack.SetPosition(m_pointerPosition);
-	m_pointerBlack.SetScale(0.6f, 0.6f, 0.6f);
-	m_pointerBlack.Update();
+	InitSprite();
 
-	//ポインターの白
-	m_pointerWhite.Init("Assets/sprite/Select/pointer_white.DDS", 220.0f, 220.0f);
-	m_pointerWhite.SetPosition(m_pointerPosition);
-	m_pointerWhite.SetScale(0.6f, 0.6f, 0.6f);
-	m_pointerWhite.Update();
-
-	//台の設定
-	m_platform.Init("Assets/modelData/platform/platform.tkm");
-	m_platform.SetPosition(PLATFORM_POS);
-	m_platform.SetScale(2.2f, 2.0f, 2.2f);
-	m_platform.Update();
-
-	//カーソル
-	m_selectCursor.Init("Assets/sprite/SelectCurSor.DDS", 1200.0f, 675.0f);
-	m_selectCursor.SetPosition(m_cursorPosition);
-	m_selectCursor.SetScale(1.0f, 1.0f, 1.0f);
-	m_selectCursor.Update();
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	//ステータス
-	m_status.Init("Assets/sprite/Select/Status.DDS", 950.0f, 350.0f);
-	m_status.SetPosition(STATUS_POS);
-	m_status.SetScale(1.0f, 1.0f, 1.0f);
-	m_status.Update();
-
-	//攻撃、スキル、必殺技アイコン
-	m_attackIcon.Init("Assets/sprite/Select/Attack_Icon.DDS", 1000.0f, 450.0f);
-	m_attackIcon.SetPosition(ATTACK_ICON_POS);
-	m_attackIcon.SetScale(1.0f, 1.0f, 1.0f);
-	m_attackIcon.Update();
-
-	//名前
-	m_name.Init("Assets/sprite/Select/name.DDS", 550.0f, 200.0f);
-	m_name.SetPosition(NAME_POS);
-	m_name.SetScale(1.0f, 1.0f, 1.0f);
-	m_name.Update();
-
-	//画面下のバー
-	m_underBar.Init("Assets/sprite/Select/underBar.DDS", 1920.0f, 300.0f);
-	m_underBar.SetPosition(UNDERBAR_POS);
-	m_underBar.SetScale(1.0f, 1.0f, 1.0f);
-	m_underBar.Update();
-
-	//説明文
-	{
-		//攻撃の説明文
-		m_attackExplanation.Init("Assets/sprite/Select/Attack_explanation.DDS", 1120.0f, 300.0f);
-		m_attackExplanation.SetPosition(ATTACK_EXPLANATION_POS);
-		m_attackExplanation.SetScale(1.0f, 1.0f, 1.0f);
-		m_attackExplanation.Update();
-
-		//スキルの説明文
-		m_skillExplanation.Init("Assets/sprite/Select/Skill_explanation.DDS", 1120.0f, 450.0f);
-		m_skillExplanation.SetPosition(SKILL_EXPLANATION_POS);
-		m_skillExplanation.SetScale(1.0f, 1.0f, 1.0f);
-		m_skillExplanation.Update();
-
-		//必殺技の説明文
-		m_ultExplanation.Init("Assets/sprite/Select/Ult_explanation.DDS", 1700.0f, 501.0f);
-		m_ultExplanation.SetPosition(ULT_EXPLANATION_POS);
-		m_ultExplanation.SetScale(1.0f, 1.0f, 1.0f);
-		m_ultExplanation.Update();
-	}
+	
 
 	g_soundEngine->ResistWaveFileBank(45, "Assets/sound/characterSelectBGM/characterSelect1.wav");
 
@@ -132,6 +73,9 @@ bool CharacterSelect::Start()
 	m_bgm->Init(45);
 	m_bgm->Play(true);
 	m_bgm->SetVolume(m_bgmVolume);
+
+	//当たり判定の可視化
+	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	return true;
 }
@@ -144,41 +88,29 @@ void CharacterSelect::Update()
 	if (m_readyFlag == true)
 	{
 		Ready();
+		return;
 	}
-	else
+
+	PointerMove();
+	CheckIconOverlap();
+
+	//Aボタンを押した時
+	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		PointerMove();
-
-		//Aボタンを押した時
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			//フェードアウトを始める
-			fade->StartFadeIn(1.0f);
-
-			m_readyFlag = true;
-		}
-
-		//Bボタンが押されたらタイトルに戻る
-		if (g_pad[0]->IsTrigger(enButtonB))
-		{
-			Tittle* tittle = NewGO<Tittle>(0, "tittle");
-			DeleteGO(this);
-			DeleteGO(m_bgm);
-		}
+		//フェードアウトを始める
+		fade->StartFadeIn(1.0f);
+		m_readyFlag = true;
 	}
 
-	m_selectCursor.Update();
+	//Bボタンが押されたらタイトルに戻る
+	if (g_pad[0]->IsTrigger(enButtonB))
+	{
+		Tittle* tittle = NewGO<Tittle>(0, "tittle");
+		DeleteGO(this);
+		DeleteGO(m_bgm);
+	}
 
-	//剣士を回転させる
-	m_knightRot.AddRotationDegY(2.0f);
-	m_knight.SetRotation(m_knightRot);
-	m_knight.Update();
-
-	m_platform.SetRotation(m_knightRot);
-	m_platform.Update();
-
-	//当たり判定の可視化
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	ModelRotation();
 }
 
 void CharacterSelect::PointerMove()
@@ -242,6 +174,85 @@ void CharacterSelect::PointerMoveY()
 		{
 			m_pointerPosition.y = MAX_SCREEN_HEIGHT;
 		}
+	}
+}
+
+void CharacterSelect::InitSprite()
+{
+	//ポインターの黒
+	m_pointerBlack.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
+	m_pointerBlack.SetPosition(m_pointerPosition);
+	m_pointerBlack.SetScale(0.6f, 0.6f, 0.6f);
+	m_pointerBlack.Update();
+
+	//ポインターの白
+	m_pointerWhite.Init("Assets/sprite/Select/pointer_white.DDS", 220.0f, 220.0f);
+	m_pointerWhite.SetPosition(m_pointerPosition);
+	m_pointerWhite.SetScale(0.6f, 0.6f, 0.6f);
+	m_pointerWhite.Update();
+
+	//台の設定
+	m_platform.Init("Assets/modelData/platform/platform.tkm");
+	m_platform.SetPosition(PLATFORM_POS);
+	m_platform.SetScale(2.2f, 2.0f, 2.2f);
+	m_platform.Update();
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//ステータス
+	m_status.Init("Assets/sprite/Select/Status.DDS", 950.0f, 350.0f);
+	m_status.SetPosition(STATUS_POS);
+	m_status.SetScale(g_vec3One);
+	m_status.Update();
+
+	//通常攻撃アイコン
+	m_attackIcon.Init("Assets/sprite/Select/NormalAttack_Icon.DDS", ICON_WIDTH, 417.0f);
+	m_attackIcon.SetPosition(NORMAL_ATTACK_ICON_POS);
+	m_attackIcon.SetScale(g_vec3One);
+	m_attackIcon.Update();
+
+	//スキルアイコン
+	m_skillIcon.Init("Assets/sprite/Select/Skill_Icon.DDS", ICON_WIDTH, ICON_HEIGHT);
+	m_skillIcon.SetPosition(SKILL_ICON_POS);
+	m_skillIcon.SetScale(g_vec3One);
+	m_skillIcon.Update();
+
+	//必殺アイコン
+	m_ultIcon.Init("Assets/sprite/Select/ULT_Icon.DDS", ICON_WIDTH, ICON_HEIGHT);
+	m_ultIcon.SetPosition(ULT_ICON_POS);
+	m_ultIcon.SetScale(g_vec3One);
+	m_ultIcon.Update();
+
+	//名前
+	m_name.Init("Assets/sprite/Select/name.DDS", 550.0f, 200.0f);
+	m_name.SetPosition(NAME_POS);
+	m_name.SetScale(g_vec3One);
+	m_name.Update();
+
+	//画面下のバー
+	m_underBar.Init("Assets/sprite/Select/underBar.DDS", 1920.0f, 300.0f);
+	m_underBar.SetPosition(UNDERBAR_POS);
+	m_underBar.SetScale(g_vec3One);
+	m_underBar.Update();
+
+	//説明文
+	{
+		//攻撃の説明文
+		m_attackExplanation.Init("Assets/sprite/Select/Attack_explanation.DDS", 1120.0f, 300.0f);
+		m_attackExplanation.SetPosition(ATTACK_EXPLANATION_POS);
+		m_attackExplanation.SetScale(g_vec3One);
+		m_attackExplanation.Update();
+
+		//スキルの説明文
+		m_skillExplanation.Init("Assets/sprite/Select/Skill_explanation.DDS", 1120.0f, 450.0f);
+		m_skillExplanation.SetPosition(SKILL_EXPLANATION_POS);
+		m_skillExplanation.SetScale(g_vec3One);
+		m_skillExplanation.Update();
+
+		//必殺技の説明文
+		m_ultExplanation.Init("Assets/sprite/Select/Ult_explanation.DDS", 1700.0f, 501.0f);
+		m_ultExplanation.SetPosition(ULT_EXPLANATION_POS);
+		m_ultExplanation.SetScale(g_vec3One);
+		m_ultExplanation.Update();
 	}
 }
 
@@ -316,6 +327,89 @@ void CharacterSelect::SetKnightModel()
 	m_knight.Update();
 }
 
+void CharacterSelect::ModelRotation()
+{
+	//剣士を回転させる
+	m_knightRot.AddRotationDegY(2.0f);
+	m_knight.SetRotation(m_knightRot);
+
+	//土台を回転させる
+	m_platform.SetRotation(m_knightRot);
+	
+	m_knight.Update();
+	m_platform.Update();
+}
+
+void CharacterSelect::CheckIconOverlap()
+{
+	m_attackExplanationFlag = CheckNormalAttackIconOverlap();
+	m_skillExplanationFlag	= CheckSkillIconOverlap();
+	m_ultExplanationFlag	= CheckUltIconOverlap();
+}
+
+bool CharacterSelect::CheckNormalAttackIconOverlap()
+{
+	Vector4 IconPos = CalcIconPos(NORMAL_ATTACK_ICON_POS.x, NORMAL_ATTACK_ICON_POS.y, ICON_WIDTH, NORMAL_ATTACK_ICON_HEIGHT);
+
+	//X軸が重なっているか
+	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
+	{
+		//Y軸が重なっているか
+		if (m_pointerPosition.y >= IconPos.w && m_pointerPosition.y <= IconPos.z)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CharacterSelect::CheckSkillIconOverlap()
+{
+	Vector4 IconPos = CalcIconPos(SKILL_ICON_POS.x, SKILL_ICON_POS.y, ICON_WIDTH, ICON_HEIGHT);
+
+	//X軸が重なっているか
+	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
+	{
+		//Y軸が重なっているか
+		if (m_pointerPosition.y >= IconPos.w && m_pointerPosition.y <= IconPos.z)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CharacterSelect::CheckUltIconOverlap()
+{
+	Vector4 IconPos = CalcIconPos(ULT_ICON_POS.x, ULT_ICON_POS.y, ICON_WIDTH, ICON_HEIGHT);
+
+	//X軸が重なっているか
+	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
+	{
+		//Y軸が重なっているか
+		if (m_pointerPosition.y >= IconPos.w && m_pointerPosition.y <= IconPos.z)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+Vector4 CharacterSelect::CalcIconPos(float posX, float posY, float W, float H)
+{
+	Vector4 pos = g_vec4Black;
+	//アイコンの右端
+	pos.x = posX + (W / 2);
+	//アイコンの左端
+	pos.y = posX - (W / 2);
+	//アイコンの上
+	pos.z = posY + (H / 2);
+	//アイコンの下
+	pos.w = posY - (H / 2);
+
+	return pos;
+}
+
 void CharacterSelect::Render(RenderContext& rc)
 {
 	//剣士のモデル
@@ -323,7 +417,11 @@ void CharacterSelect::Render(RenderContext& rc)
 	m_platform.Draw(rc);
 
 	m_status.Draw(rc);
+
 	m_attackIcon.Draw(rc);
+	m_skillIcon.Draw(rc);
+	m_ultIcon.Draw(rc);
+
 	m_name.Draw(rc);
 	m_underBar.Draw(rc);
 

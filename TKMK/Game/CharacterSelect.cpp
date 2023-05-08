@@ -18,15 +18,17 @@ namespace {
 	const Vector3 PlatformPos = Vector3(-150.0f, -40.0f, 0.0f);				//剣士の座標
 	const Quaternion KnightRot = Quaternion(0.0f, 90.0f, 0.0f, 1.0f);
 
-	const Vector3 CameraTargetPos = Vector3(0.0f, 90.0f, 0.0f);			//カメラのターゲット
+	const Vector3 CameraTargetPos = Vector3(0.0f, 90.0f, -200.0f);			//カメラのターゲット
 	const Vector3 m_CameraPosition = Vector3( 0.0f, 90.0f, -248.0f );   //カメラの座標
 
-	const Vector3 AttackCollision = Vector3(20.0f, 33.0f, 0.0f);
+	const Vector3 AttackCollision = Vector3(20.0f, 33.0f, -0.0f);
 	const Quaternion AttackCollisionRot = Quaternion(180.0f, 75.0f, 0.0f, 1.0f);
+
 	const Vector3 SkillCollision = Vector3(105.0f, 33.0f, 0.0f);
+
 	const Vector3 UltimateCollision = Vector3(194.0f, 30.0f, 0.0f);
 
-	const float PointerSpeed = 400.0f;
+	const float PointerSpeed = 900.0f;
 
 }
 
@@ -137,7 +139,7 @@ bool CharacterSelect::Start()
 	}
 
 	Poimter.Init(
-		20.0f,
+		15.0f,
 		1.0f,
 		m_Pointerposition
 	);
@@ -247,28 +249,31 @@ void CharacterSelect::PointerMove()
 	
 	
 
-	m_Pointerposition = Poimter.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	m_Pointerposition = Poimter.Execute(m_moveSpeed, 1.0f/60.0f);
+	Poimter.SetPosition(m_Pointerposition);
 
-	/*if (m_Pointerposition.x > 500.0f) {
-		m_Pointerposition.x = 500.0f;
+	if (m_Pointerposition.x > 1000.0f) {
+		m_Pointerposition.x = 1000.0f;
 	}
-	if (m_Pointerposition.x < 0.0f) {
-		m_Pointerposition.x = 0.0f;
+	if (m_Pointerposition.x < -1000.0f) {
+		m_Pointerposition.x = -1000.0f;
 	}
 
-	if (m_Pointerposition.y > 300.0f) {
-		m_Pointerposition.y = 300.0f;
+	if (m_Pointerposition.y > 500.0f) {
+		m_Pointerposition.y = 500.0f;
 	}
-	if (m_Pointerposition.y < 0.0f) {
-		m_Pointerposition.y = 0.0f;
-	}*/
-
+	if (m_Pointerposition.y < -500.0f) {
+		m_Pointerposition.y = -500.0f;
+	}
+	//m_Pointerposition.z = 0.0f;
 	//画像の座標が追いつかない
 	m_pointer_black.SetPosition(m_Pointerposition);
 	m_pointer_white.SetPosition(m_Pointerposition);
 
 	m_pointer_black.Update();
 	m_pointer_white.Update();
+
+
 
 }
 
@@ -441,12 +446,9 @@ void CharacterSelect::SetKnightModel()
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
 
 	//剣士モデルを読み込み
-	m_Knight.Init("Assets/modelData/character/Knight/model_Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_Knight.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	m_Knight.SetPosition(KnightPos);
 	m_Knight.SetScale(2.7f, 2.7f, 2.7f);
-	/*Quaternion Krot;
-	Krot.y = 90.0f;
-	m_Knight.SetRotation(Krot);*/
 	m_Knight.Update();
 }
 
@@ -455,6 +457,13 @@ void CharacterSelect::SetKnightModel()
 /// </summary>
 void CharacterSelect::SetCollision()
 {
+
+	/*POINTER = NewGO<CollisionObject>(0,"Pointer");
+	POINTER->CreateCapsule(m_Pointerposition, Quaternion::Identity, 20.0f, 1.0f);
+	POINTER->SetIsEnable(false);
+	POINTER->SetIsEnableAutoDelete(false);
+	POINTER->Update();*/
+
 	//攻撃アイコンの当たり判定
 	Attack.CreateBox(AttackCollision, AttackCollisionRot, Vector3(50.0f, 50.0f, 5.0f));
 	//スキルアイコンの当たり判定

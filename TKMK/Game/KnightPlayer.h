@@ -83,7 +83,6 @@ private:
 
 	//bool AtkCollistionFlag = false;
 	// 
-	//ラストアタックのアニメーションを移動できなくするように
 	
 
 	bool UltimateSkillFlag = false;

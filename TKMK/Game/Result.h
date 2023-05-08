@@ -16,6 +16,7 @@ public:
 	void Rank();
 	void Move();
 	void Select();
+	void NameMove();
 
 	//Result‚ÌƒV[ƒ“•ÏŠ·
 	enum EnChange {

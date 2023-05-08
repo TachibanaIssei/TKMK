@@ -82,6 +82,13 @@ bool Game::Start()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Green, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Yellow, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
 
+	//剣士の攻撃エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Attack, u"Assets/effect/Knight/Knight_Attack_default.efk");
+	/*EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Blue, u"Assets/effect/Knight/Knight_Attack_blue.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Red, u"Assets/effect/Knight/Knight_Attack_Red.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Green, u"Assets/effect/Knight/Knight_Attack_green.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Yellow, u"Assets/effect/Knight/Knight_Attack_yellow.efk");*/
+
 	//剣士のスキル使用時のエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Skill, u"Assets/effect/Knight/Knight_Skill_Effect.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_SkillGround, u"Assets/effect/Knight/Knight_SkillGround_Effect.efk");
@@ -112,6 +119,10 @@ bool Game::Start()
 
 	InitSkyCube();
 
+	fade = FindGO<Fade>("fade");
+	//フェードインしているのでフェードアウトする
+	//画面を明るくする
+	fade->StartFadeOut(1.0f);
 	
 
 	//スタジアムの生成
@@ -290,6 +301,11 @@ bool Game::Start()
 
 		SelectBar_BGMPos = Menu_SelectBar_BGMPos;
 		SelectBar_SEPos = Menu_SelectBar_SEPos;
+
+		m_operationPic.Init("Assets/sprite/Controller.DDS", 1920.0f, 1080.0f);
+		m_operationPic.SetPosition(Vector3::Zero);
+		m_operationPic.SetScale(g_vec3One);
+		m_operationPic.Update();
 	}
 	
 	//ゲームの状態をゲームステートにする
@@ -297,11 +313,6 @@ bool Game::Start()
 
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
-	//BGMの再生
-	m_bgm = NewGO<SoundSource>(0);
-	m_bgm->Init(2);
-	m_bgm->Play(true);
-	m_bgm->SetVolume(BGMVolume);
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -323,10 +334,20 @@ void Game::Update()
 
 void Game::BattleStart()
 {
+	if (fade->GetCurrentAlpha() > 0.0f)
+	{
+		return;
+	}
+
 	m_StartToGameTimer -= g_gameTime->GetFrameDeltaTime();
 
 	if (m_StartToGameTimer < 0)
 	{
+		//BGMの再生
+		m_bgm = NewGO<SoundSource>(0);
+		m_bgm->Init(2);
+		m_bgm->Play(true);
+		m_bgm->SetVolume(BGMVolume);
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);
@@ -383,7 +404,7 @@ void Game::Battle()
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_RabbitRespawnTimer >= 5.0f)
 	{
-		RabbitRespawn();
+		//RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
 	}
 }
@@ -391,8 +412,12 @@ void Game::Battle()
 //ポーズ時の処理
 void Game::Pause()
 {
-	//ポーズ時の移動処理
-	PauseMove();
+	if (HowToPlaySpriteFlag == false)
+	{
+		//ポーズ時の移動処理
+		PauseMove();
+	}
+	
 	//前のフレームのメニュー番号と今のフレームのメニュー番号が違うなら
 	if (MenuNumber_old != MenuNumber) {
 		//メニューのステートを選ぶ
@@ -775,7 +800,11 @@ void Game::Menu_Back()
 //HowToPlayの処理
 void Game::Menu_HowToPlay()
 {
-
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		//フラグ反転
+		HowToPlaySpriteFlag = !HowToPlaySpriteFlag;
+	}
 }
 //BGMの処理
 void Game::Menu_BGM()
@@ -874,6 +903,11 @@ void Game::Render(RenderContext& rc)
 		m_Menu_QuitGame.Draw(rc);    //QuitGame
 		m_Menu_SelectBar_BGM.Draw(rc);
 		m_Menu_SelectBar_SE.Draw(rc);
+
+		if (HowToPlaySpriteFlag == true)
+		{
+			m_operationPic.Draw(rc);
+		}
 	}
 	//m_fontRender.Draw(rc);
 	

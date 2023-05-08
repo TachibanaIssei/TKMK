@@ -8,8 +8,10 @@
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
-
+//たまに死んでも動ける
+//ジャンプ
 //必殺技打つときに一瞬止まるようにする
+//アニメーションイベント
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -56,7 +58,7 @@ bool KnightPlayer::Start() {
 	m_modelRender.Update();
 
 	//スキルのクールタイムを表示するフォントの設定
-	Skillfont.SetPosition(805.0f, -400.0f, 0.0f);
+	Skillfont.SetPosition(485.0f, -243.0f, 0.0f);
 	Skillfont.SetScale(2.0f);
 	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 	Skillfont.SetRotation(0.0f);
@@ -211,15 +213,6 @@ void KnightPlayer::Update()
 			Vector3 effectPosition = m_position;
 			effectPosition.y += 50.0f;
 			EffectKnightSkill->SetPosition(effectPosition);
-			//Vector3 m_SwordPos = Vector3::Zero;
-			//Quaternion m_SwordRot;
-			////「Sword」ボーンのワールド行列を取得する。
-			//Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-			//matrix.Apply(m_SwordPos);
-			////m_SwordRot.SetRotation(matrix);
-			////m_SwordRot.y = 0.0f;
-			//EffectKnightSkill->SetPosition(m_SwordPos);
-			//EffectKnightSkill->SetRotation(m_SwordRot);
 			EffectKnightSkill->Update();
 		}
 
@@ -614,16 +607,18 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 
 	}
 	//三段目のアタックのアニメーションで剣を振り終わったら移動できないように
-	if (wcscmp(eventName, L"LastToIdle") == 0)
+	if (wcscmp(eventName, L"Move_False") == 0)
 	{
 		CantMove = false;
 	}
-	//アニメーションの再生が終わったら
-	if (m_modelRender.IsPlayingAnimation() == false) {
-		m_charState = enCharState_Idle;
-		AtkState = false;
-		//ボタンプッシュフラグをfalseにする
-		pushFlag = false;
+	///三段目のアタックのアニメーションが終わったら
+	if (wcscmp(eventName, L"LastToIdle") == 0)
+	{
+			//ボタンプッシュフラグをfalseにする
+			pushFlag = false;
+			AtkState = false;
+			m_charState = enCharState_Idle;
+			m_AtkTmingState = Num_State;
 	}
 
 	//スキルのアニメーションで剣を振り終わったら

@@ -55,6 +55,8 @@ namespace
 	const Vector3 RespawnInPos = Vector3(0.0f, 300.0f, 0.0f);		//Respawn inの座標
 
 	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//の座標
+
+	const Vector3 ADDPOINTPOS = Vector3(20.0f, 10.0f, 0.0f);
 }
 GameUI::GameUI()
 {
@@ -89,7 +91,7 @@ bool GameUI::Start()
 		{
 			//ポイントを表示
 			m_PointFont[num].SetPosition(PointPos[num]);
-			m_PointFont[num].SetScale(1.5f);
+			m_PointFont[num].SetScale(1.3f);
 			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 			m_PointFont[num].SetRotation(0.0f);
 			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
@@ -157,6 +159,12 @@ bool GameUI::Start()
 	m_CountNumper.SetScale(m_gameCountScale);
 	m_CountNumper.Update();
 
+	//試合終了のカウントダウン
+	m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
+	m_FinishCountNumber.SetPosition(Vector3::Zero);
+	m_FinishCountNumber.SetScale(m_finishCountScale);
+	m_FinishCountNumber.Update();
+
 	//右下のフレーム
 	{
 		//レベルや経験値のフレーム
@@ -174,7 +182,7 @@ bool GameUI::Start()
 		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
 		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
 		//m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
-		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
+		m_ExperienceBar_flont.SetScale(0.5, 50.0, 1.0);
 
 		//経験値バーの裏
 		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
@@ -304,6 +312,12 @@ void GameUI::Update()
 	{
 		RespawnCountDown();
 	}
+
+	//試合終了まで残り10秒以下なら
+	if (m_game->GetMinutesTimer()<1&&m_game->GetSecondsTimer() < 10)
+	{
+		FinishTimer();
+	}
 	
 	//gameクラスのスタートのフラグが立っている間処理を行わない
 	if (m_GameUIState == m_GameStartState) {
@@ -349,6 +363,11 @@ void GameUI::CountDown()
 			break;
 		case 2:
 			m_CountNumper.Init("Assets/sprite/gameUI/count2.DDS", 1920.0f, 1080.0f);
+			m_gameCountScale = Vector3(0.2f, 0.2f, 0.0f);
+			m_Color = 1.0f;
+			break;
+		case 3:
+			m_CountNumper.Init("Assets/sprite/gameUI/count3.DDS", 1920.0f, 1080.0f);
 			m_gameCountScale = Vector3(0.2f, 0.2f, 0.0f);
 			m_Color = 1.0f;
 			break;
@@ -437,24 +456,66 @@ void GameUI::HPBar()
 	m_hpBar.Update();
 }
 
-//制限時間の表示の処理
-void GameUI::Timer()
+//試合終了の表示の処理
+void GameUI::FinishTimer()
 {
-		//0秒以下なら
-		if (SecondsTimer <= 0) {
-			//1分減らす
-			MinutesTimer--;
-			//もし0分なら、秒も0にする
-			if (MinutesTimer < 0) {
-				SecondsTimer = 0.0f;
-				MinutesTimer = 0.0f;
-				GameEndFlag = true;
-			}
-			//60秒に戻す
-			else SecondsTimer = 60.0f;
+	int finishTimer = m_game->GetSecondsTimer();
+
+	if (oldFinishCount != finishTimer)
+	{
+		switch (finishTimer)
+		{
+		case 0:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finish.DDS", 1920.0f, 1080.0f);
+			break;
+		case 1:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_1.DDS", 300.0f, 500.0f);
+			break;
+		case 2:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_2.DDS", 300.0f, 500.0f);
+			break;
+		case 3:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_3.DDS", 300.0f, 500.0f);
+			break;
+		case 4:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_4.DDS", 300.0f, 500.0f);
+			break;
+		case 5:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_5.DDS", 300.0f, 500.0f);
+			break;
+		case 6:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_6.DDS", 300.0f, 500.0f);
+			break;
+		case 7:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_7.DDS", 300.0f, 500.0f);
+			break;
+		case 8:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_8.DDS", 300.0f, 500.0f);
+			break;
+		case 9:
+			//試合終了のカウントダウン
+			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
+			//m_CountNumper.SetPosition(Vector3::Zero);
+			//m_FinishCountNumber.SetScale(m_finishCountScale);
+			
+			break;
+		default:
+			break;
 		}
-		else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
-	
+	}
+
+	oldFinishCount = finishTimer;
+
+	m_FinishCountNumber.Update();
 }
 
 //プレイヤーの経験値の表示の処理todo
@@ -480,8 +541,19 @@ void GameUI::EXPBar()
 
 	//EXPバー画像を左寄せに表示する
 	Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
-	m_EXPBerPos.x =BerSizeSubtraction.x;
-	//m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
+
+	if (finalEXPTable != oldEXPTable)
+	{
+		m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
+	}
+
+	//経験値の量が変わったときだけ
+	if (finalEXP != oldEXP)
+	{
+		m_EXPBerPos.x -= BerSizeSubtraction.x;
+	}
+	
+	
 	m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
 	//m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
@@ -493,7 +565,8 @@ void GameUI::EXPBar()
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
 
-	
+	oldEXP = finalEXP;
+	oldEXPTable = finalEXPTable;
 }
 
 //
@@ -519,23 +592,40 @@ void GameUI::CharPoint()
 	int num = 0;
 	for (auto actor:m_Actors)
 	{
+		//制限時間が残り1分なら
+		if (m_game->GetMinutesTimer() < 1)
+		{
+			wchar_t P[255];
+			swprintf_s(P, 255, L"?p");
+			m_PointFont[num].SetText(P);
+			num++;
+			continue;
+		}
+
 		charPoint[num] = actor->GetPoint();
 
 		//ポイントの表示
 		int POINT = charPoint[num];
 		wchar_t P[255];
-		swprintf_s(P, 255, L"%dP", POINT);
+		swprintf_s(P, 255, L"%dp", POINT);
 		m_PointFont[num].SetText(P);
 
 
 		if (MaxPoint <= charPoint[num])
 		{
+			m_PointFont[num].SetScale(1.8f);
+			Vector3 FontPos;
+			FontPos= ADDPOINTPOS + PointPos[num];
+			m_PointFont[num].SetPosition(FontPos);
+
 			m_PointFlame[num].SetScale(1.7f,1.3f,0.0f);
 			m_PointFlame[num].Update();
 			MaxPoint = charPoint[num];
 		}
 		else
 		{
+			m_PointFont[num].SetScale(1.3f);
+			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
 			m_PointFlame[num].Update();
 		}
@@ -600,10 +690,18 @@ void GameUI::Render(RenderContext& rc)
 			m_RespawnIn.Draw(rc);
 			m_RespawnCountNumber.Draw(rc);
 		}
+
+		//試合終了まで残り10秒なら
+		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10)
+		{
+			m_FinishCountNumber.Draw(rc);
+		}
+		
 	}
 	else
 	{
-		if (m_game->NowGameState() == 0) {
+		//カウントダウンの表示
+		if (m_game->NowGameState() == 0&& m_game->CountDownMinutes() <= 3) {
 			m_CountNumper.Draw(rc);
 		}
 	}

@@ -88,7 +88,7 @@ public:
 
 	}
 
-	void Timer();
+	void FinishTimer();
 
 	/// <summary>
 	/// 
@@ -176,19 +176,22 @@ private:
 	SpriteRender			m_RespawnIn;						//Respawn inの画像
 	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
 	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
+	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
 	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
 
-	Vector3				m_EXPBerPos = Vector3::Zero;				   //EXPバーのポジション
+	Vector3				m_EXPBerPos = /*Vector3(750.0f, -500.0f, 0.0f)*/Vector3::Zero;				   //EXPバーのポジション
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);
 	Vector3				m_FightScale = Vector3(1.0f, 1.0f, 0.0f);
 	bool				m_fightFlag = false;
 	float				m_GameCountScale = 20.0f;
 	float               m_Color = 1.0f;
+
+	Vector3				m_finishCountScale = Vector3::One;
 
 	Vector3 PointPos[4] = {
 		Vector3(-850.0f, 150.0f, 0.0f),
@@ -227,6 +230,8 @@ private:
 
 	int oldRespawnCount = 0;
 
+	int oldFinishCount = 0;
+
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;
 	//分を計るタイマー
@@ -237,6 +242,7 @@ private:
 
 	//前フレームの経験値
 	int oldEXP=0;
+	int oldEXPTable = 0;
 
 	//キャラのポイント
 	int charPoint[4];

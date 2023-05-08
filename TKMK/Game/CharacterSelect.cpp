@@ -2,6 +2,7 @@
 #include "CharacterSelect.h"
 #include "Tittle.h"
 #include "Game.h"
+#include "Fade.h"
 
 namespace {
 	const Vector3 StatusPos = Vector3(400.0f, 250.0f, 0.0f);			//ステータスの座標
@@ -25,7 +26,7 @@ namespace {
 	const Vector3 SkillCollision = Vector3(105.0f, 33.0f, 0.0f);
 	const Vector3 UltimateCollision = Vector3(194.0f, 30.0f, 0.0f);
 
-	const float PointerSpeed = 20.0f;
+	const float PointerSpeed = 400.0f;
 
 }
 
@@ -46,7 +47,8 @@ CharacterSelect::~CharacterSelect()
 
 bool CharacterSelect::Start()
 {
-	
+	fade = FindGO<Fade>("fade");
+
 	//カメラの座標を設定
 	Quaternion rot;
 	//rot.Apply(m_CameraPosition);
@@ -140,6 +142,13 @@ bool CharacterSelect::Start()
 		m_Pointerposition
 	);
 
+	g_soundEngine->ResistWaveFileBank(45, "Assets/sound/characterSelectBGM/characterSelect1.wav");
+
+	m_bgm = NewGO<SoundSource>(0);
+	m_bgm->Init(45);
+	m_bgm->Play(true);
+	m_bgm->SetVolume(BGMVolume);
+
 	return true;
 }
 
@@ -153,46 +162,61 @@ void CharacterSelect::Update()
 		time = 0;
 	}*/
 
-	//カーソル
-	//Cursor();
-
-	PointerMove();
-	
-	GhostCollision();
-
-	
-	//Aボタンを押した時
-	if (g_pad[0]->IsTrigger(enButtonA))
+	if (m_readyFlag == true)
 	{
-		Game* game = NewGO<Game>(0, "game");
-		//キャラクターセレクトが
-		switch (m_characterSelect)
+		Ready();
+	}
+	else
+	{
+		//カーソル
+		//Cursor();
+
+		PointerMove();
+
+		GhostCollision();
+
+
+		//Aボタンを押した時
+		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			//剣士だったら
-		case enCharacterSelect_Knight:
-			game->SetCharacterSelect(m_characterSelect);
-			break;
-			//魔法使いだったら
-		case enCharacterSelect_Wizard:
-			game->SetCharacterSelect(m_characterSelect);
-			break;
-			//ゾンビ(予定)だったら
-		case enCharacterSelect_Zombie:
-			game->SetCharacterSelect(enCharacterSelect_Knight);
-			break;
-			//未定
-		case enCharacterSelect_Mitei2:
-			game->SetCharacterSelect(enCharacterSelect_Wizard);
-			break;
+			//フェードアウトを始める
+			fade->StartFadeIn(1.0f);
+
+			m_readyFlag = true;
 		}
-		DeleteGO(this);
+
+		//Bボタンが押されたらタイトルに戻る
+		if (g_pad[0]->IsTrigger(enButtonB))
+		{
+			Tittle* tittle = NewGO<Tittle>(0, "tittle");
+			DeleteGO(this);
+			DeleteGO(m_bgm);
+		}
 	}
-	//Bボタンが押されたらタイトルに戻る
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		Tittle* tittle = NewGO<Tittle>(0, "tittle");
-		DeleteGO(this);
-	}
+
+	////カーソル
+	////Cursor();
+
+	//PointerMove();
+	//
+	//GhostCollision();
+
+	//
+	////Aボタンを押した時
+	//if (g_pad[0]->IsTrigger(enButtonA))
+	//{
+	//	//フェードアウトを始める
+	//	fade->StartFadeOut(1.0f);
+
+	//	m_readyFlag = true;
+	//}
+
+	////Bボタンが押されたらタイトルに戻る
+	//if (g_pad[0]->IsTrigger(enButtonB))
+	//{
+	//	Tittle* tittle = NewGO<Tittle>(0, "tittle");
+	//	DeleteGO(this);
+	//}
 
 	m_SelectCursor.Update();
 
@@ -213,7 +237,7 @@ void CharacterSelect::Update()
 /// </summary>
 void CharacterSelect::PointerMove()
 {
-	
+	m_moveSpeed = Vector3::Zero;
 	//移動処理
 	Vector3 stickL;
 	stickL.x = PointerSpeed * g_pad[0]->GetLStickXF();
@@ -349,6 +373,39 @@ void CharacterSelect::Cursor()
 
 	m_SelectCursor.SetPosition(curPosition);
 	m_SelectCursor.Update();
+}
+
+//ゲームに遷移する前にフェードアウトする
+void CharacterSelect::Ready()
+{
+	if (fade->GetCurrentAlpha() >= 1.0f)
+	{
+		Game* game = NewGO<Game>(0, "game");
+		//キャラクターセレクトが
+		switch (m_characterSelect)
+		{
+			//剣士だったら
+		case enCharacterSelect_Knight:
+			game->SetCharacterSelect(m_characterSelect);
+			break;
+			//魔法使いだったら
+		case enCharacterSelect_Wizard:
+			game->SetCharacterSelect(m_characterSelect);
+			break;
+			//ゾンビ(予定)だったら
+		case enCharacterSelect_Zombie:
+			game->SetCharacterSelect(enCharacterSelect_Knight);
+			break;
+			//未定
+		case enCharacterSelect_Mitei2:
+			game->SetCharacterSelect(enCharacterSelect_Wizard);
+			break;
+		}
+		DeleteGO(this);
+		DeleteGO(m_bgm);
+
+	}
+	
 }
 
 /// <summary>

@@ -41,7 +41,7 @@ namespace
 
 	const float EXPBAR_WIDTH = 300.0f;
 	const float EXPBAR_HEIGHT = 70.0f;
-	const Vector3 EXPERIENCE_BAR_POS = Vector3(750.0f, -500.0f, 0.0f);	//経験値バーの座標
+	const Vector3 EXPERIENCE_BAR_POS = Vector3(600.0f, -500.0f, 0.0f);	//経験値バーの座標
 	const Vector3 EXPBAR_SIZE = Vector3(EXPBAR_WIDTH, EXPBAR_HEIGHT, 0.0f);	//経験値バーのサイズ
 
 	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//レベルアップまでに必要な経験値の量
@@ -181,7 +181,7 @@ bool GameUI::Start()
 		m_EXPBerPos = EXPERIENCE_BAR_POS;
 		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
 		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
-		//m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_ExperienceBar_flont.SetScale(0.5, 50.0, 1.0);
 
 		//経験値バーの裏
@@ -205,6 +205,11 @@ bool GameUI::Start()
 		m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
 		m_LvNumber.SetPosition(LV_NUBER_POS);
 		m_LvNumber.SetScale(1.4, 1.4, 1.0);
+
+		//Lv1の裏の画像の読み込み
+		m_LvNumber_back.Init("Assets/sprite/gameUI/Lv1_back.DDS", 150.0f, 150.0f);
+		m_LvNumber_back.SetPosition(LV_NUBER_POS);
+		m_LvNumber_back.SetScale(1.4, 1.4, 1.0);
 
 		// /10の画像を読み込む
 		m_MaxLv.Init("Assets/sprite/gameUI/maxLv.DDS", 196.0f, 150.0f);
@@ -230,6 +235,7 @@ bool GameUI::Start()
 
 		m_Lv.Update();
 		m_LvNumber.Update();
+		m_LvNumber_back.Update();
 		m_MaxLv.Update();
 		m_Flame.Update();
 		m_ExperienceFlame.Update();
@@ -332,6 +338,33 @@ void GameUI::Update()
 	//表示するテキストを設定。
 	m_time_left.SetText(wcsbuf);
 	
+	//レベルの点滅
+	if (m_flashNumberFlag==false)
+	{
+		m_LvNumberColor -= 0.02f;
+
+		if (m_LvNumberColor < 0.0f)
+		{
+			m_LvNumberColor = 0.0f;
+			m_flashNumberFlag = true;
+		}
+
+		m_LvNumber_back.SetMulColor(Vector4(1.0f,1.0f, 1.0f, m_LvNumberColor));
+	}
+	else if(m_flashNumberFlag == true)
+	{
+		m_LvNumberColor += 0.02f;
+
+		if (m_LvNumberColor > 1.0f)
+		{
+			m_LvNumberColor = 1.0f;
+			m_flashNumberFlag = false;
+		}
+
+		m_LvNumber_back.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+	}
+	m_LvNumber_back.Update();
+
 	EXPBar();
 
 	HPBar();
@@ -539,22 +572,22 @@ void GameUI::EXPBar()
 	EXPScale.x = (float)finalEXP / (float)finalEXPTable;
 	m_ExperienceBar_flont.SetScale(EXPScale);
 
-	//EXPバー画像を左寄せに表示する
-	Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
+	////EXPバー画像を左寄せに表示する
+	//Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
 
-	if (finalEXPTable != oldEXPTable)
-	{
-		m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
-	}
+	///*if (finalEXPTable != oldEXPTable)
+	//{
+	//	m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
+	//}*/
 
-	//経験値の量が変わったときだけ
-	if (finalEXP != oldEXP)
-	{
-		m_EXPBerPos.x -= BerSizeSubtraction.x;
-	}
-	
-	
-	m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
+	////経験値の量が変わったときだけ
+	//if (finalEXP != oldEXP)
+	//{
+	//	m_EXPBerPos.x -= BerSizeSubtraction.x;
+	//}
+	//
+	//
+	//m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
 	//m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
@@ -670,6 +703,7 @@ void GameUI::Render(RenderContext& rc)
 
 		m_HpFont.Draw(rc);
 		m_Lv.Draw(rc);
+		m_LvNumber_back.Draw(rc);
 		m_LvNumber.Draw(rc);
 		m_MaxLv.Draw(rc);
 		

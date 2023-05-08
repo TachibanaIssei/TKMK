@@ -83,8 +83,7 @@ private:
 
 	//bool AtkCollistionFlag = false;
 	// 
-	//ラストアタックのアニメーションを移動できなくするように
-	bool CantMove = false;
+	
 
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;

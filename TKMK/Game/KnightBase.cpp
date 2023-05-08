@@ -74,16 +74,16 @@ void KnightBase::SetModel()
 	switch (KnightKinds)
 	{
 	case enKnightKinds_Red:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 	case enKnightKinds_Blue:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Blue.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 	case enKnightKinds_Green:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Green.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Green2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 	case enKnightKinds_Yellow:
-		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Yellow.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Yellow2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 		break;
 
 	}
@@ -520,6 +520,7 @@ void KnightBase::AnimationMove(float Speed)
 	//移動速度を計算。
 	m_Skill_MoveSpeed = Vector3::AxisZ;
 	m_rot.Apply(m_Skill_MoveSpeed);
+	//動かずに2回目打つと反対方向に動く
 	m_rot.AddRotationDegY(360.0f);
 	//移動速度を決める
 	m_Skill_MoveSpeed *= Speed;
@@ -874,6 +875,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		Death();
 		pushFlag = false;
 		AtkState = false;
+		CantMove = false;
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定
@@ -899,7 +901,7 @@ void KnightBase::UltEnd() {
 	//ボタンプッシュフラグをfalseにする
 	pushFlag = false;
 	//レベルを下げる
-	UltimateSkill();
+	//UltimateSkill();
 	//待機ステート
 	m_charState = enCharState_Idle;
 	OnProcessCommonStateTransition();

@@ -26,6 +26,7 @@ public:
 		enCharState_Damege,
 		enCharState_Death,
 		enCharState_Skill,
+		enCharState_Ult_liberation,
 		enCharState_UltimateSkill,
 		enCharState_Avoidance,
 		enCharState_Pause,

@@ -1,6 +1,6 @@
 5
-7,minimap,43,../../Game/Assets/sprite/gameUI/minimap.png,0.0,0.0,512,512,10,1.0,1.0,0.5,0.5,11,minimap.dds
 17,minimap_enemy_red,46,../../Game/Assets/sprite/minimap_enemy_red.png,109.61538461538476,-88.46153846153845,93,93,10,0.1827067669172931,0.1827067669172931,0.5,0.5,21,minimap_enemy_red.dds
 20,minimap_enemy_rabbit,49,../../Game/Assets/sprite/minimap_enemy_rabbit.png,0.0,0.0,89,89,10,0.1751879699248119,0.1751879699248119,0.5,0.5,24,minimap_enemy_rabbit.dds
 13,minimap_enemy,42,../../Game/Assets/sprite/minimap_enemy.png,-26.923076923076906,146.15384615384613,101,101,10,0.1977443609022555,0.1977443609022555,0.5,0.5,17,minimap_enemy.dds
 19,minimap_enemy_green,48,../../Game/Assets/sprite/minimap_enemy_green.png,-128.8461538461538,-3.846153846153811,101,101,10,0.19774436090225553,0.19774436090225553,0.5,0.5,23,minimap_enemy_green.dds
+7,minimap,43,../../Game/Assets/sprite/gameUI/minimap.png,0.0,0.0,512,512,10,1.0,1.0,0.5,0.5,11,minimap.dds

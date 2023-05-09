@@ -54,6 +54,8 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_lastAtk].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Skill].Load("Assets/animData/Knight/Knight_Skill.tka");
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
+	m_animationClips[enAnimationClip_Ult_liberation].Load("Assets/animData/Knight/Knight_Ult_liberation.tka");
+	m_animationClips[enAnimationClip_Ult_liberation].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_UltimateAttack.tka");
 	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
@@ -233,9 +235,8 @@ void KnightBase::Collition()
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
 	if (/*m_charState == enKnightState_Damege || */
 		m_charState == enCharState_Death ||
-		//m_charState == enKnightState_UltimateSkill ||
-		//m_charState == enKnightState_ChainAtk ||
-		//m_charState == enKnightState_Skill ||
+		m_charState == enCharState_UltimateSkill ||
+		m_charState == enCharState_Ult_liberation ||
 		m_charState == enCharState_Avoidance)
 	{
 		return;
@@ -311,7 +312,10 @@ void KnightBase::Collition()
 		m_charState == enCharState_Attack||
 		m_charState == enCharState_SecondAttack||
 		m_charState == enCharState_LastAttack||
-		m_charState == enCharState_Avoidance)
+		m_charState == enCharState_Avoidance||
+		m_charState == enCharState_UltimateSkill ||
+		m_charState == enCharState_Ult_liberation
+		)
 	{
 		return;
 	}
@@ -582,6 +586,10 @@ void KnightBase::PlayAnimation()
 	case enCharState_Skill:
 		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.3f);
 		break;
+	//必殺技の溜め
+	case enCharState_Ult_liberation:
+		m_modelRender.PlayAnimation(enAnimationClip_Ult_liberation);
+		break;
 	//必殺技
 	case enCharState_UltimateSkill:
 		//ここ調整必要！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
@@ -638,6 +646,9 @@ void KnightBase::ManageState()
 		break;
 	case enCharState_Skill:
 		OnProcessSkillAtkStateTransition();
+		break;
+	case enCharState_Ult_liberation:
+		OnProcessUlt_liberationStateTransition();
 		break;
 	case enCharState_UltimateSkill:
 		OnProcessUltimateSkillAtkStateTransition();
@@ -818,6 +829,28 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 }
 
 /// <summary>
+/// 必殺技の溜めアニメーションが再生されているときの処理
+/// </summary>
+void KnightBase::OnProcessUlt_liberationStateTransition()
+{
+	//必殺技アニメーション再生が終わったら。
+	if (m_modelRender.IsPlayingAnimation() == false)
+	{
+		//フラグをfalseにする
+		
+		//必殺技ステート
+		m_charState = enCharState_UltimateSkill;
+		//アルティメットSE
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(16);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
+	}
+}
+
+/// <summary>
 /// 必殺技アニメーションが再生されているときの処理
 /// </summary>
 void KnightBase::OnProcessUltimateSkillAtkStateTransition()
@@ -825,14 +858,7 @@ void KnightBase::OnProcessUltimateSkillAtkStateTransition()
 	//必殺技アニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//AtkState = false;
-		////ボタンプッシュフラグをfalseにする
-		//pushFlag = false;
-		////レベルを下げる
-		//UltimateSkill();
-		////待機ステート
-		//m_charState = enCharState_Idle;
-		//OnProcessCommonStateTransition();
+		
 	}
 }
 

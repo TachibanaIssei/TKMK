@@ -74,13 +74,13 @@ bool GameUI::Start()
 	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
 	//ブルー
-	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 80.0f, 80.0f);
+	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 70.0f, 70.0f);
 	//レッド
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Red.DDS", 80.0f, 80.0f);
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Green.DDS", 70.0f, 70.0f);
 	//グリーン
-	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", 80.0f, 80.0f);
+	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Red.DDS", 70.0f, 70.0f);
 	//イエロー
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 80.0f, 80.0f);
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 70.0f, 70.0f);
 
 	//ポイント関連
 	{

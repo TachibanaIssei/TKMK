@@ -45,6 +45,16 @@ public:
 	/// </summary>
 	void ChaseUltEff();
 
+	/// <summary>
+	/// カメラを揺らす
+	/// </summary>
+	void CameraShake(bool UpDown);
+
+	void ChangeCameraShakeFlag(bool flag)
+	{
+		m_cameraShakeFlag = flag;
+	}
+
 	//カメラのステート
 	enum CameraState
 	{
@@ -105,6 +115,8 @@ private:
 	//注視点の計算
 	Vector3 TargetPos;
 	//Quaternion oldgetRot;
+	//カメラの最終的な視点
+	Vector3 newCamPos = Vector3::Zero;
 
 	bool PlayerCameraSet = false;
 
@@ -119,6 +131,10 @@ private:
 	const char* player_name = nullptr;
 
 	float sita = 0.0f;
+
+	bool m_cameraShakeFlag = false;
+	bool m_ShakeMoveFlag = false;
+	float m_cameraShakeTimer = 0.1f;
 
 	//アクターの情報
 	std::vector<Actor*> m_actors;

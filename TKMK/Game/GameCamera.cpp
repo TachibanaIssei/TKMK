@@ -96,6 +96,7 @@ void GameCamera::Update()
 		return;
 	}
 
+	//カメラステート管理
 	StateControl();
 }
 
@@ -144,6 +145,38 @@ void GameCamera::NomarlCamera()
 	{
 		//カメラの視点を設定
 		FollowThePlayer();
+		//剣士が三段目攻撃をしたらカメラを揺らす
+		if (m_cameraShakeFlag == true)
+		{
+			//CameraShakeを2回実行したら終わり
+			CameraShake(m_ShakeMoveFlag);
+			//揺れる方向を変える
+			if (m_ShakeMoveFlag == false) {
+				//反転
+				m_ShakeMoveFlag = !m_ShakeMoveFlag;
+			}
+			//true(2回揺れた)なら
+			else {
+				//カメラを揺らす処理を止める
+				m_cameraShakeFlag = false;
+			}
+			
+
+
+
+
+			//if (m_cameraShakeTimer > 0.0f)
+			//{
+			//	m_cameraShakeTimer -= g_gameTime->GetFrameDeltaTime();
+
+			//	//CameraShake();
+			//}
+			//else
+			//{
+			//	m_cameraShakeTimer = 0.1f;
+			//	m_cameraShakeFlag = false;
+			//}
+		}
 	}
 
 
@@ -252,7 +285,6 @@ void GameCamera::FollowThePlayer()
 	}
 
 	//カメラの位置の衝突解決する
-	Vector3 newCamPos;
 	m_cameraCollisionSolver.Execute(
 		newCamPos,
 		TargetPos + m_toCameraPos,
@@ -412,6 +444,26 @@ void GameCamera::ChaseUltEff()
 
 
 
+}
+
+//カメラを揺らす処理
+void GameCamera::CameraShake(bool UpDown)
+{
+	if (UpDown == false) {
+		TargetPos.y += 10.0f;
+		//TargetPos.x += 4.0f;
+		//m_ShakeMoveFlag = true;
+	}
+	else {
+		TargetPos.y -= 10.0f;
+		//TargetPos.x -= 4.0f;
+		//m_ShakeMoveFlag = false;
+	}
+	
+	//視点と注視点を設定
+	m_springCamera.SetTarget(TargetPos);
+	m_springCamera.SetPosition(newCamPos);
+	m_springCamera.Update();
 }
 
 void GameCamera::GameCameraUltEnd() {

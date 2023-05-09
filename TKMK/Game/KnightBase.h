@@ -156,6 +156,7 @@ public:
 			m_charState != enCharState_Skill &&
 			m_charState != enCharState_Avoidance &&
 			m_charState != enCharState_Damege &&
+			m_charState != enCharState_Ult_liberation&&
 			m_charState != enCharState_Death;
 	}
 
@@ -241,6 +242,8 @@ protected:
 	void OnProcessSkillAtkStateTransition();
 	//回避のステートの遷移処理
 	void OnProcessAvoidanceStateTransition();
+	//必殺技の溜めのステートの遷移処理
+	void OnProcessUlt_liberationStateTransition();
 	//必殺技のステートの遷移処理
 	void OnProcessUltimateSkillAtkStateTransition();
 	//ダメージを受けたときのステートの遷移処理
@@ -260,6 +263,7 @@ protected:
 		enAnimationClip_Damege,
 		enAnimationClip_Death,
 		enAnimationClip_Skill,
+		enAnimationClip_Ult_liberation,
 		enAnimationClip_UltimateSkill,
 		enAnimationClip_Avoidance,
 		enAnimationClip_Jump,

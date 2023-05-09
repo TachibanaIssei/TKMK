@@ -26,6 +26,9 @@ namespace {
 	const Vector3 Menu_QuitGamePos = Vector3(0.0f, -320.0f, 0.0f);
 	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
 	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
+	const Vector3 TOWEREXPOSITION_POS = Vector3(-90.0f, -2.0f, 0.0f);
+	const Vector3 RABBIT_POS = Vector3(0.0f, 1.13f, 0.0f);
+
 }
 
 Game::Game()
@@ -307,9 +310,20 @@ bool Game::Start()
 		m_operationPic.SetPosition(Vector3::Zero);
 		m_operationPic.SetScale(g_vec3One);
 		m_operationPic.Update();
+
+
+		m_underSprite.Init("Assets/sprite/TowerDown.DDS", 1920.0f, 1080.0f);
+		m_underSprite.SetPosition(TOWEREXPOSITION_POS);
+		m_underSprite.SetScale(Vector3::One);
+		m_underSprite.Update();
+
+		m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 1920.0f, 1080.0f);
+		m_RabbitSprite.SetPosition(RABBIT_POS);
+		m_RabbitSprite.SetScale(Vector3::One);
+		m_RabbitSprite.Update();
 	}
 
-	TowerEFK();
+
 	//ゲームの状態をゲームステートにする
 	m_GameState = enGameState_Start;
 
@@ -331,7 +345,7 @@ void Game::Update()
 	}
 
 	GameState();
-	
+
 }
 
 void Game::BattleStart()
@@ -353,12 +367,18 @@ void Game::BattleStart()
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);
+		TowerEFK();
 	}
 }
 
 //バトルステートの処理
 void Game::Battle()
 {
+	if (player->GetCharPosition().y <= 10 && m_underSprite_TowerDown == false)
+	{
+		m_underSprite_TowerDown = true;
+		UnderSpriteUpdate();
+	}
 	if (m_GameState == enGameState_Battle) {
 		//CTRLを押したら
 		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
@@ -366,7 +386,7 @@ void Game::Battle()
 			m_GameState = enGameState_Rezult;
 		}
 	}
-
+	
 	//ポーズステートに変える
 	//スタートボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
@@ -387,7 +407,8 @@ void Game::Battle()
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
 			}
 	}
-
+	
+	
 	if (UltStopFlag == true)
 	{
 		return;
@@ -603,6 +624,8 @@ void Game::TowerEFK()
 	TowerDown->SetRotation(Efk_Rot);
 	TowerDown->Update();
 }
+
+
 //ゲームのステート管理
 void Game::GameState()
 {
@@ -921,7 +944,7 @@ void Game::CountDown()
 
 void Game::Render(RenderContext& rc)
 {
-
+	
 	if (m_GameState == enGameState_Pause)
 	{
 		m_Pause_Back.Draw(rc);
@@ -933,12 +956,28 @@ void Game::Render(RenderContext& rc)
 		m_Menu_QuitGame.Draw(rc);    //QuitGame
 		m_Menu_SelectBar_BGM.Draw(rc);
 		m_Menu_SelectBar_SE.Draw(rc);
-
+		
 		if (HowToPlaySpriteFlag == true)
 		{
 			m_operationPic.Draw(rc);
 		}
 	}
+	
+	if (RabbitFlag == true && m_GameState == enGameState_Battle)
+	{
+		m_RabbitSprite.Draw(rc);
+
+	}
+
+	if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
+
+		if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
+			return;
+		}
+
+		m_underSprite.Draw(rc);
+	}
+	
 	//m_fontRender.Draw(rc);
 	
 }

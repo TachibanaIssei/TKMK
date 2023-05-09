@@ -292,7 +292,7 @@ void CharacterSelect::Ready()
 {
 	if (fade->GetCurrentAlpha() >= 1.0f)
 	{
-		Game* game = NewGO<Game>(0, "game");
+		Game* game = NewGO<Game>(5, "game");
 		//キャラクターセレクトが
 		switch (m_characterSelect)
 		{

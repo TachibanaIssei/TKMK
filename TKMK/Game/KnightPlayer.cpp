@@ -243,10 +243,14 @@ void KnightPlayer::Update()
 		m_forwardNow.y = 0.0f;
 	}
 
+	// レベルをゲームに教える（下部スプライト更新用）
+	m_game->UnderSprite_Level(Lv);
+
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
 
 }
+
 
 //攻撃処理
 void KnightPlayer::Attack()
@@ -264,6 +268,7 @@ void KnightPlayer::Attack()
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_charState = enCharState_Attack;
+			m_game->UnderSprite_Attack();
 			pushFlag = true;
 			AtkState = true;
 		}
@@ -315,6 +320,7 @@ void KnightPlayer::Attack()
 		{
 			//エフェクトの座標を更新させる
 			m_swordEffectFlag = true;
+			m_game->UnderSprite_Skill();
 			//剣にまとわせるエフェクト
 			EffectKnightSkill = NewGO <EffectEmitter>(0);
 			EffectKnightSkill->Init(EnEFK::enEffect_Knight_Skill);
@@ -350,6 +356,7 @@ void KnightPlayer::Attack()
 	//Xボタンが押されたら
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
+		m_game->UnderSprite_Ult();
 		pushFlag = true;
 		
 		//必殺技の溜めステートに移行する

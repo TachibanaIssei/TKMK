@@ -69,7 +69,7 @@ void Player::CharSelect(int number)
 	case 3:
 		m_selectCharctar = enMonster;
 		break;
-
+		
 	default:
 		break;
 	}

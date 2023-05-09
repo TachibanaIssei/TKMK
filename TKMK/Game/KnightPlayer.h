@@ -7,6 +7,7 @@ class Game;
 class Neutral_Enemy;
 class KnightUlt;
 class GameUI;
+class GameCamera;
 
 class KnightPlayer:public KnightBase
 {
@@ -65,7 +66,7 @@ private:
 
 private:
 	Game* m_game=nullptr;
-	
+	//GameCamera* gameCamera = nullptr;
 	GameUI* m_gameUI = nullptr;
 	
 	//CollisionObject* collisionObject;                     //ƒRƒŠƒWƒ‡ƒ“

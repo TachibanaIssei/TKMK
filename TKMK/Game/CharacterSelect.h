@@ -66,7 +66,7 @@ private:
 	/// <summary>
 	/// Œ•mƒ‚ƒfƒ‹‚Ìİ’è
 	/// </summary>
-	void SetKnightModel();
+	void SetModel();
 
 	/// <summary>
 	/// ƒ‚ƒfƒ‹‚ğ‰ñ“]‚³‚¹‚é
@@ -114,6 +114,8 @@ private:
 
 
 private:
+	SkyCube* m_skyCube = nullptr;
+
 	Fade* fade = nullptr;
 	SoundSource* m_bgm = nullptr;
 
@@ -143,6 +145,8 @@ private:
 
 	ModelRender m_knight;					//Œ•m‚Ìƒ‚ƒfƒ‹
 	ModelRender m_platform;					//ƒ‚ƒfƒ‹‚ğæ‚¹‚é‘ä
+	ModelRender m_stage;
+	ModelRender m_wall;
 
 	Quaternion m_knightRot;					//Œ•m‚Ì‰ñ“]
 

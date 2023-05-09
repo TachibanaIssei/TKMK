@@ -35,12 +35,13 @@ namespace SelectConst{
 	const float BER_HEIGHT = 96.0f;											//バーの高さ
 	const Vector2 BER_PIVOT = Vector2(0.0f, 0.5f);							//バーのピボット
 
-	const Vector3	ATTACK_EXPLANATION_POS = Vector3(20.0f, 33.0f, 0.0f);	//通常攻撃説明画像の座標
-	const Vector3	SKILL_EXPLANATION_POS = Vector3(105.0f, 33.0f, 0.0f);	//スキル説明画像の座標
-	const Vector3	ULT_EXPLANATION_POS = Vector3(40.0f, 30.0f, 0.0f);		//必殺技説明画像の座標
+	const Vector3	ATTACK_EXPLANATION_POS = Vector3(0.0f, 33.0f, 0.0f);	//通常攻撃説明画像の座標
+	const Vector3	SKILL_EXPLANATION_POS = Vector3(0.0f, 33.0f, 0.0f);		//スキル説明画像の座標
+	const Vector3	ULT_EXPLANATION_POS = Vector3(0.0f, 30.0f, 0.0f);		//必殺技説明画像の座標
 
 	const Vector3	KNIGHT_POS = Vector3(-150.0f, 0.0f, 0.0f);				//剣士の座標
 	const Vector3	PLATFORM_POS = Vector3(-150.0f, -40.0f, 0.0f);			//土台の座標
+	const Vector3	STAGE_POS = Vector3(0.0f, -50.0f, -90.0f);
 
 	const Vector3	CAMERA_TARGET_POS = Vector3(0.0f, 90.0f, -200.0f);		//カメラのターゲット
 	const Vector3	CAMERA_POSITION = Vector3( 0.0f, 90.0f, -248.0f );		//カメラの座標
@@ -52,7 +53,6 @@ namespace SelectConst{
 
 	const float		MAX_SCREEN_HEIGHT = 540.0f;								//画面の縦の最大値
 	const float		MIN_SCREEN_HEIGHT = -540.0f;							//画面の縦の最小値
-
 }
 
 CharacterSelect::CharacterSelect()
@@ -61,10 +61,16 @@ CharacterSelect::CharacterSelect()
 
 CharacterSelect::~CharacterSelect()
 {
+	DeleteGO(m_skyCube);
 }
 
 bool CharacterSelect::Start()
 {
+	m_skyCube = NewGO<SkyCube>(0, "skyCube");
+	m_skyCube->SetScale(300.0f);
+	Vector3 pos = Vector3(0.0f, -900.0f, -900.0f);
+	m_skyCube->SetPosition(pos);
+
 	fade = FindGO<Fade>("fade");
 
 	//カメラの座標を設定
@@ -80,7 +86,7 @@ bool CharacterSelect::Start()
 	g_renderingEngine->SetDirectionLight(0, dir, color);
 
 	//剣士のモデル、アニメーション
-	SetKnightModel();
+	SetModel();
 
 	//画像の初期化
 	InitSprite();
@@ -217,12 +223,6 @@ void CharacterSelect::InitSprite()
 	m_pointerWhite.SetScale(0.6f, 0.6f, 0.6f);
 	m_pointerWhite.Update();
 
-	//台の設定
-	m_platform.InitBackGround("Assets/modelData/platform/platform.tkm");
-	m_platform.SetPosition(SelectConst::PLATFORM_POS);
-	m_platform.SetScale(2.2f, 2.0f, 2.2f);
-	m_platform.Update();
-
 	//////////////////////////////////////////////////////////////////////////////////////
 	//ステータス
 	m_status.Init("Assets/sprite/Select/Status_notBer.DDS", 950.0f, 350.0f);
@@ -288,25 +288,25 @@ void CharacterSelect::InitSprite()
 	m_hpBerLv1.Init("Assets/sprite/Select/bar_Blue.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
 	m_hpBerLv1.SetPosition(SelectConst::HP_BER_POS);
 	m_hpBerLv1.SetPivot(SelectConst::BER_PIVOT);
-	m_hpBerLv1.SetScale(Vector3(0.5f,1.0f,1.0f));
+	m_hpBerLv1.SetScale(Vector3(0.3f,1.0f,1.0f));
 	m_hpBerLv1.Update();
 
 	m_hpBerLvmax.Init("Assets/sprite/Select/bar_white.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
 	m_hpBerLvmax.SetPosition(SelectConst::HP_BER_POS);
 	m_hpBerLvmax.SetPivot(SelectConst::BER_PIVOT);
-	m_hpBerLvmax.SetScale(g_vec3One);
+	m_hpBerLvmax.SetScale(Vector3(0.9f, 1.0f, 1.0f));
 	m_hpBerLvmax.Update();
 
 	m_atkBerLv1.Init("Assets/sprite/Select/bar_Blue.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
 	m_atkBerLv1.SetPosition(SelectConst::ATK_BER_POS);
 	m_atkBerLv1.SetPivot(SelectConst::BER_PIVOT);
-	m_atkBerLv1.SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	m_atkBerLv1.SetScale(Vector3(0.35f, 1.0f, 1.0f));
 	m_atkBerLv1.Update();
 
 	m_atkBerLvmax.Init("Assets/sprite/Select/bar_white.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
 	m_atkBerLvmax.SetPosition(SelectConst::ATK_BER_POS);
 	m_atkBerLvmax.SetPivot(SelectConst::BER_PIVOT);
-	m_atkBerLvmax.SetScale(g_vec3One);
+	m_atkBerLvmax.SetScale(Vector3(0.85f, 1.0f, 1.0f));
 	m_atkBerLvmax.Update();
 
 	//説明文
@@ -364,9 +364,9 @@ void CharacterSelect::Ready()
 }
 
 /// <summary>
-/// 剣士のモデル、アニメーション読み込み
+/// モデル、アニメーション読み込み
 /// </summary>
-void CharacterSelect::SetKnightModel()
+void CharacterSelect::SetModel()
 {
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Knight/Knight_idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
@@ -400,6 +400,22 @@ void CharacterSelect::SetKnightModel()
 	m_knight.SetPosition(SelectConst::KNIGHT_POS);
 	m_knight.SetScale(2.7f, 2.7f, 2.7f);
 	m_knight.Update();
+
+	//台の設定
+	m_platform.InitBackGround("Assets/modelData/platform/platform.tkm");
+	m_platform.SetPosition(SelectConst::PLATFORM_POS);
+	m_platform.SetScale(2.2f, 2.0f, 2.2f);
+	m_platform.Update();
+
+	m_stage.InitBackGround("Assets/modelData/background/stadium05_ground.tkm");
+	m_stage.SetPosition(SelectConst::STAGE_POS);
+	m_stage.SetScale(1.0f,1.2f,1.0f);
+	m_stage.Update();
+
+	m_wall.InitBackGround("Assets/modelData/background/stadium05_Wall.tkm");
+	m_wall.SetPosition(SelectConst::STAGE_POS);
+	m_wall.SetScale(1.0f,0.7f,1.0f);
+	m_wall.Update();
 }
 
 void CharacterSelect::ModelRotation()
@@ -507,6 +523,8 @@ void CharacterSelect::Render(RenderContext& rc)
 	//剣士のモデル
 	m_knight.Draw(rc);
 	m_platform.Draw(rc);
+	m_wall.Draw(rc);
+	m_stage.Draw(rc);
 
 	m_status.Draw(rc);
 	m_hpBerLvmax.Draw(rc);

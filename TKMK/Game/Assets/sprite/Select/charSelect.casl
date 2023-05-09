@@ -14,5 +14,5 @@
 13,underBarFrame,49,../../Game/Assets/sprite/Select/underBarFrame.png,0.0,-495.0,1920,300,10,1.0,1.0,0.5,0.5,17,underBarFrame.dds
 9,bar_white,45,../../Game/Assets/sprite/Select/bar_white.png,202.96153846153834,183.0,649,96,10,1.0,1.0,0.0,0.5,13,bar_white.dds
 9,bar_Frame,45,../../Game/Assets/sprite/Select/bar_Frame.png,257.69230769230785,213.46153846153845,675,109,10,1.0,1.0,0.5,0.5,13,bar_Frame.dds
-8,bar_Blue,44,../../Game/Assets/sprite/Select/bar_Blue.png,527.0,305.0,649,96,10,1.0,1.0,0.5,0.5,12,bar_Blue.dds
-13,Status_notBer,49,../../Game/Assets/sprite/Select/Status_notBer.png,-180.76923076923072,275.0,950,350,10,1.0,1.0,0.5,0.5,17,Status_notBer.dds
+13,Status_notBer,49,../../Game/Assets/sprite/Select/Status_notBer.png,-130.76923076923072,253.8461538461538,950,350,10,1.0,1.0,0.5,0.5,17,Status_notBer.dds
+8,bar_Blue,44,../../Game/Assets/sprite/Select/bar_Blue.png,521.1538461538462,305.7692307692307,649,96,10,1.0,1.0,0.5,0.5,12,bar_Blue.dds

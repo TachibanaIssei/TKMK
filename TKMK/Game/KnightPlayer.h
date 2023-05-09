@@ -90,6 +90,9 @@ private:
 	FontRender Skillfont;
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
+	SpriteRender m_AtkUpIcon_Render;
+
+	//bool m_atkUpSpriteFlag = false;
 
 	//スキルを使った時の移動速度
 	float SkillSpeed = 270.0f;

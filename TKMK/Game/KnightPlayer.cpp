@@ -21,6 +21,9 @@ namespace {
 	const Vector3 AVOIDANCE_BAR_POS = Vector3(98.0f, -397.0f, 0.0f);
 
 	const Vector3 AVOIDANCE_FLAME_POS = Vector3(0.0f, -410.0f, 0.0f);
+
+	const Vector3 ATKUPICON_POS = Vector3(-870.0f, -390.0f, 0.0f);
+	const Vector3 ATKUPICON_SCALE = Vector3(0.2f, 0.2f, 1.0f);
 }
 
 KnightPlayer::KnightPlayer()
@@ -76,6 +79,10 @@ bool KnightPlayer::Start() {
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 
+	m_AtkUpIcon_Render.Init("Assets/sprite/gameUI/attackUP.DDS", 512, 512);
+	m_AtkUpIcon_Render.SetPosition(ATKUPICON_POS);
+	m_AtkUpIcon_Render.SetScale(ATKUPICON_SCALE);
+	m_AtkUpIcon_Render.Update();
 
 	return true;
 }
@@ -648,4 +655,7 @@ void KnightPlayer::Render(RenderContext& rc)
 		m_Avoidance_barRender.Draw(rc);
 	}
 	
+	if (m_atkUpSpriteFlag == true) {
+		m_AtkUpIcon_Render.Draw(rc);
+	}
 }

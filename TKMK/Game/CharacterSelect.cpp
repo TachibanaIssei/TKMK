@@ -4,10 +4,10 @@
 #include "Game.h"
 #include "Fade.h"
 
-namespace {
+namespace SelectConst{
 	const Vector3	STATUS_POS = Vector3(400.0f, 250.0f, 0.0f);				//ステータスの座標
 
-	const Vector3	NORMAL_ATTACK_ICON_POS = Vector3(115.0f, -130.0f, 0.0f);//通常攻撃アイコンの座標
+	const Vector3	NORMAL_ATTACK_ICON_POS = Vector3(115.0f, -140.0f, 0.0f);//通常攻撃アイコンの座標
 	const Vector3	SKILL_ICON_POS = Vector3(445.0f, -130.0f, 0.0f);		//スキルアイコンの座標
 	const Vector3	ULT_ICON_POS = Vector3(770.0f, -130.0f, 0.0f);			//必殺技アイコンの座標
 	const float		ICON_WIDTH	= 310.0f;									//アイコン画像の横の解像度
@@ -24,6 +24,16 @@ namespace {
 	const float		START_HEIGHT = 145.0f;									//スタート画像の高さ
 	const float		START_WIDTH_DUMMY = 600.0f;								//カーソルと重なっているかの判定のための幅
 	const float		START_HEIGHT_DUMMY = 200.0f;							//カーソルと重なっているかの判定のための高さ
+
+	const Vector3 HP_BER_FRAME_POS = Vector3(527.0, 286.0f, 0.0f);			//HPバーのフレーム
+	const Vector3 ATK_BER_FRAME_POS = Vector3(527.0, 163.0f, 0.0f);			//攻撃バーのフレーム
+	const float BER_FRAME_WIDTH = 675.0f;									//フレームの幅
+	const float BER_FRAME_HEIGHT = 109.0f;									//フレームの高さ
+	const Vector3 HP_BER_POS = Vector3(203.0f, 286.0f, 0.0f);				//HPバーの座標
+	const Vector3 ATK_BER_POS = Vector3(203.0f, 163.0f, 0.0f);				//攻撃バーの座標
+	const float BER_WIDTH = 649.0f;											//バーの幅
+	const float BER_HEIGHT = 96.0f;											//バーの高さ
+	const Vector2 BER_PIVOT = Vector2(0.0f, 0.5f);							//バーのピボット
 
 	const Vector3	ATTACK_EXPLANATION_POS = Vector3(20.0f, 33.0f, 0.0f);	//通常攻撃説明画像の座標
 	const Vector3	SKILL_EXPLANATION_POS = Vector3(105.0f, 33.0f, 0.0f);	//スキル説明画像の座標
@@ -59,8 +69,8 @@ bool CharacterSelect::Start()
 
 	//カメラの座標を設定
 	Quaternion rot;
-	g_camera3D->SetTarget(CAMERA_TARGET_POS);
-	g_camera3D->SetPosition(CAMERA_POSITION);
+	g_camera3D->SetTarget(SelectConst::CAMERA_TARGET_POS);
+	g_camera3D->SetPosition(SelectConst::CAMERA_POSITION);
 	g_camera3D->Update();
 
 	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
@@ -146,23 +156,23 @@ void CharacterSelect::PointerMoveX()
 	//左に動く
 	if (g_pad[0]->GetLStickXF() <= -0.001f)
 	{
-		m_pointerPosition.x -= POINTER_SPEED;
+		m_pointerPosition.x -= SelectConst::POINTER_SPEED;
 
 		//画面の左端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.x <= MIN_SCREEN_WIDTH)
+		if (m_pointerPosition.x <= SelectConst::MIN_SCREEN_WIDTH)
 		{
-			m_pointerPosition.x = MIN_SCREEN_WIDTH;
+			m_pointerPosition.x = SelectConst::MIN_SCREEN_WIDTH;
 		}
 	}
 	//右に動く
 	else if (g_pad[0]->GetLStickXF() >= 0.001f)
 	{
-		m_pointerPosition.x += POINTER_SPEED;
+		m_pointerPosition.x += SelectConst::POINTER_SPEED;
 
 		//画面の右端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.x >= MAX_SCREEN_WIDTH)
+		if (m_pointerPosition.x >= SelectConst::MAX_SCREEN_WIDTH)
 		{
-			m_pointerPosition.x = MAX_SCREEN_WIDTH;
+			m_pointerPosition.x = SelectConst::MAX_SCREEN_WIDTH;
 		}
 	}
 }
@@ -172,23 +182,23 @@ void CharacterSelect::PointerMoveY()
 	//下に動く
 	if (g_pad[0]->GetLStickYF() <= -0.001f)
 	{
-		m_pointerPosition.y -= POINTER_SPEED;
+		m_pointerPosition.y -= SelectConst::POINTER_SPEED;
 
 		//画面の左端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.y <= MIN_SCREEN_HEIGHT)
+		if (m_pointerPosition.y <= SelectConst::MIN_SCREEN_HEIGHT)
 		{
-			m_pointerPosition.y = MIN_SCREEN_HEIGHT;
+			m_pointerPosition.y = SelectConst::MIN_SCREEN_HEIGHT;
 		}
 	}
 	//上に動く
 	else if (g_pad[0]->GetLStickYF() >= 0.001f)
 	{
-		m_pointerPosition.y += POINTER_SPEED;
+		m_pointerPosition.y += SelectConst::POINTER_SPEED;
 
 		//画面の右端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.y >= MAX_SCREEN_HEIGHT)
+		if (m_pointerPosition.y >= SelectConst::MAX_SCREEN_HEIGHT)
 		{
-			m_pointerPosition.y = MAX_SCREEN_HEIGHT;
+			m_pointerPosition.y = SelectConst::MAX_SCREEN_HEIGHT;
 		}
 	}
 }
@@ -209,79 +219,113 @@ void CharacterSelect::InitSprite()
 
 	//台の設定
 	m_platform.InitBackGround("Assets/modelData/platform/platform.tkm");
-	m_platform.SetPosition(PLATFORM_POS);
+	m_platform.SetPosition(SelectConst::PLATFORM_POS);
 	m_platform.SetScale(2.2f, 2.0f, 2.2f);
 	m_platform.Update();
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//ステータス
-	m_status.Init("Assets/sprite/Select/Status.DDS", 950.0f, 350.0f);
-	m_status.SetPosition(STATUS_POS);
+	m_status.Init("Assets/sprite/Select/Status_notBer.DDS", 950.0f, 350.0f);
+	m_status.SetPosition(SelectConst::STATUS_POS);
 	m_status.SetScale(g_vec3One);
 	m_status.Update();
 
 	//通常攻撃アイコン
-	m_attackIcon.Init("Assets/sprite/Select/NormalAttack_Icon.DDS", ICON_WIDTH, 417.0f);
-	m_attackIcon.SetPosition(NORMAL_ATTACK_ICON_POS);
+	m_attackIcon.Init("Assets/sprite/Select/NormalAttack_Icon.DDS", SelectConst::ICON_WIDTH, 417.0f);
+	m_attackIcon.SetPosition(SelectConst::NORMAL_ATTACK_ICON_POS);
 	m_attackIcon.SetScale(g_vec3One);
 	m_attackIcon.Update();
 
 	//スキルアイコン
-	m_skillIcon.Init("Assets/sprite/Select/Skill_Icon.DDS", ICON_WIDTH, ICON_HEIGHT);
-	m_skillIcon.SetPosition(SKILL_ICON_POS);
+	m_skillIcon.Init("Assets/sprite/Select/Skill_Icon.DDS", SelectConst::ICON_WIDTH, SelectConst::ICON_HEIGHT);
+	m_skillIcon.SetPosition(SelectConst::SKILL_ICON_POS);
 	m_skillIcon.SetScale(g_vec3One);
 	m_skillIcon.Update();
 
 	//必殺アイコン
-	m_ultIcon.Init("Assets/sprite/Select/ULT_Icon.DDS", ICON_WIDTH, ICON_HEIGHT);
-	m_ultIcon.SetPosition(ULT_ICON_POS);
+	m_ultIcon.Init("Assets/sprite/Select/ULT_Icon.DDS", SelectConst::ICON_WIDTH, SelectConst::ICON_HEIGHT);
+	m_ultIcon.SetPosition(SelectConst::ULT_ICON_POS);
 	m_ultIcon.SetScale(g_vec3One);
 	m_ultIcon.Update();
 
 	//名前
 	m_name.Init("Assets/sprite/Select/name.DDS", 550.0f, 200.0f);
-	m_name.SetPosition(NAME_POS);
+	m_name.SetPosition(SelectConst::NAME_POS);
 	m_name.SetScale(g_vec3One);
 	m_name.Update();
 
 	//画面下のバー
-	m_underBar.Init("Assets/sprite/Select/underBarIn.DDS", UNDER_BER_WIDTH, UNDER_BER_HEIGHT);
-	m_underBar.SetPosition(UNDERBAR_POS);
+	m_underBar.Init("Assets/sprite/Select/underBarIn.DDS", SelectConst::UNDER_BER_WIDTH, SelectConst::UNDER_BER_HEIGHT);
+	m_underBar.SetPosition(SelectConst::UNDERBAR_POS);
 	m_underBar.SetScale(g_vec3One);
 	m_underBar.Update();
 
-	m_underBarYellow.Init("Assets/sprite/Select/underBarInYellow.DDS", UNDER_BER_WIDTH, UNDER_BER_HEIGHT);
-	m_underBarYellow.SetPosition(UNDERBAR_POS);
+	m_underBarYellow.Init("Assets/sprite/Select/underBarInYellow.DDS", SelectConst::UNDER_BER_WIDTH, SelectConst::UNDER_BER_HEIGHT);
+	m_underBarYellow.SetPosition(SelectConst::UNDERBAR_POS);
 	m_underBarYellow.SetScale(g_vec3One);
 	m_underBarYellow.Update();
 
-	m_underBarFrame.Init("Assets/sprite/Select/underBarFrame.DDS", UNDER_BER_WIDTH, UNDER_BER_HEIGHT);
-	m_underBarFrame.SetPosition(UNDERBAR_POS);
+	m_underBarFrame.Init("Assets/sprite/Select/underBarFrame.DDS", SelectConst::UNDER_BER_WIDTH, SelectConst::UNDER_BER_HEIGHT);
+	m_underBarFrame.SetPosition(SelectConst::UNDERBAR_POS);
 	m_underBarFrame.SetScale(g_vec3One);
 	m_underBarFrame.Update();
 
-	m_startSprite.Init("Assets/sprite/Select/Start.DDS", START_WIDTH, START_HEIGHT);
-	m_startSprite.SetPosition(START_POS);
+	m_startSprite.Init("Assets/sprite/Select/Start.DDS", SelectConst::START_WIDTH, SelectConst::START_HEIGHT);
+	m_startSprite.SetPosition(SelectConst::START_POS);
 	m_startSprite.SetScale(g_vec3One);
 	m_startSprite.Update();
+
+	m_hpBerFrame.Init("Assets/sprite/Select/bar_Frame.DDS", SelectConst::BER_FRAME_WIDTH, SelectConst::BER_FRAME_HEIGHT);
+	m_hpBerFrame.SetPosition(SelectConst::HP_BER_FRAME_POS);
+	m_hpBerFrame.SetScale(g_vec3One);
+	m_hpBerFrame.Update();
+
+	m_atkBerFrame.Init("Assets/sprite/Select/bar_Frame.DDS", SelectConst::BER_FRAME_WIDTH, SelectConst::BER_FRAME_HEIGHT);
+	m_atkBerFrame.SetPosition(SelectConst::ATK_BER_FRAME_POS);
+	m_atkBerFrame.SetScale(g_vec3One);
+	m_atkBerFrame.Update();
+
+	m_hpBerLv1.Init("Assets/sprite/Select/bar_Blue.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
+	m_hpBerLv1.SetPosition(SelectConst::HP_BER_POS);
+	m_hpBerLv1.SetPivot(SelectConst::BER_PIVOT);
+	m_hpBerLv1.SetScale(Vector3(0.5f,1.0f,1.0f));
+	m_hpBerLv1.Update();
+
+	m_hpBerLvmax.Init("Assets/sprite/Select/bar_white.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
+	m_hpBerLvmax.SetPosition(SelectConst::HP_BER_POS);
+	m_hpBerLvmax.SetPivot(SelectConst::BER_PIVOT);
+	m_hpBerLvmax.SetScale(g_vec3One);
+	m_hpBerLvmax.Update();
+
+	m_atkBerLv1.Init("Assets/sprite/Select/bar_Blue.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
+	m_atkBerLv1.SetPosition(SelectConst::ATK_BER_POS);
+	m_atkBerLv1.SetPivot(SelectConst::BER_PIVOT);
+	m_atkBerLv1.SetScale(Vector3(0.5f, 1.0f, 1.0f));
+	m_atkBerLv1.Update();
+
+	m_atkBerLvmax.Init("Assets/sprite/Select/bar_white.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
+	m_atkBerLvmax.SetPosition(SelectConst::ATK_BER_POS);
+	m_atkBerLvmax.SetPivot(SelectConst::BER_PIVOT);
+	m_atkBerLvmax.SetScale(g_vec3One);
+	m_atkBerLvmax.Update();
 
 	//説明文
 	{
 		//攻撃の説明文
 		m_attackExplanation.Init("Assets/sprite/Select/Attack_explanation.DDS", 1120.0f, 300.0f);
-		m_attackExplanation.SetPosition(ATTACK_EXPLANATION_POS);
+		m_attackExplanation.SetPosition(SelectConst::ATTACK_EXPLANATION_POS);
 		m_attackExplanation.SetScale(g_vec3One);
 		m_attackExplanation.Update();
 
 		//スキルの説明文
 		m_skillExplanation.Init("Assets/sprite/Select/Skill_explanation.DDS", 1120.0f, 450.0f);
-		m_skillExplanation.SetPosition(SKILL_EXPLANATION_POS);
+		m_skillExplanation.SetPosition(SelectConst::SKILL_EXPLANATION_POS);
 		m_skillExplanation.SetScale(g_vec3One);
 		m_skillExplanation.Update();
 
 		//必殺技の説明文
 		m_ultExplanation.Init("Assets/sprite/Select/Ult_explanation.DDS", 1700.0f, 501.0f);
-		m_ultExplanation.SetPosition(ULT_EXPLANATION_POS);
+		m_ultExplanation.SetPosition(SelectConst::ULT_EXPLANATION_POS);
 		m_ultExplanation.SetScale(g_vec3One);
 		m_ultExplanation.Update();
 	}
@@ -353,7 +397,7 @@ void CharacterSelect::SetKnightModel()
 
 	//剣士モデルを読み込み
 	m_knight.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
-	m_knight.SetPosition(KNIGHT_POS);
+	m_knight.SetPosition(SelectConst::KNIGHT_POS);
 	m_knight.SetScale(2.7f, 2.7f, 2.7f);
 	m_knight.Update();
 }
@@ -381,7 +425,7 @@ void CharacterSelect::CheckIconOverlap()
 
 bool CharacterSelect::CheckNormalAttackIconOverlap()
 {
-	Vector4 IconPos = CalcIconPos(NORMAL_ATTACK_ICON_POS.x, NORMAL_ATTACK_ICON_POS.y, ICON_WIDTH, NORMAL_ATTACK_ICON_HEIGHT);
+	Vector4 IconPos = CalcIconPos(SelectConst::NORMAL_ATTACK_ICON_POS.x, SelectConst::NORMAL_ATTACK_ICON_POS.y, SelectConst::ICON_WIDTH, SelectConst::NORMAL_ATTACK_ICON_HEIGHT);
 
 	//X軸が重なっているか
 	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
@@ -397,7 +441,7 @@ bool CharacterSelect::CheckNormalAttackIconOverlap()
 
 bool CharacterSelect::CheckSkillIconOverlap()
 {
-	Vector4 IconPos = CalcIconPos(SKILL_ICON_POS.x, SKILL_ICON_POS.y, ICON_WIDTH, ICON_HEIGHT);
+	Vector4 IconPos = CalcIconPos(SelectConst::SKILL_ICON_POS.x, SelectConst::SKILL_ICON_POS.y, SelectConst::ICON_WIDTH, SelectConst::ICON_HEIGHT);
 
 	//X軸が重なっているか
 	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
@@ -413,7 +457,7 @@ bool CharacterSelect::CheckSkillIconOverlap()
 
 bool CharacterSelect::CheckUltIconOverlap()
 {
-	Vector4 IconPos = CalcIconPos(ULT_ICON_POS.x, ULT_ICON_POS.y, ICON_WIDTH, ICON_HEIGHT);
+	Vector4 IconPos = CalcIconPos(SelectConst::ULT_ICON_POS.x, SelectConst::ULT_ICON_POS.y, SelectConst::ICON_WIDTH, SelectConst::ICON_HEIGHT);
 
 	//X軸が重なっているか
 	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
@@ -429,7 +473,7 @@ bool CharacterSelect::CheckUltIconOverlap()
 
 bool CharacterSelect::CheckUnderBarOverlap()
 {
-	Vector4 IconPos = CalcIconPos(START_POS.x, START_POS.y, START_WIDTH_DUMMY, START_HEIGHT_DUMMY);
+	Vector4 IconPos = CalcIconPos(SelectConst::START_POS.x, SelectConst::START_POS.y, SelectConst::START_WIDTH_DUMMY, SelectConst::START_HEIGHT_DUMMY);
 
 	//X軸が重なっているか
 	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
@@ -465,6 +509,13 @@ void CharacterSelect::Render(RenderContext& rc)
 	m_platform.Draw(rc);
 
 	m_status.Draw(rc);
+	m_hpBerLvmax.Draw(rc);
+	m_hpBerLv1.Draw(rc);
+	m_atkBerLvmax.Draw(rc);
+	m_atkBerLv1.Draw(rc);
+
+	m_hpBerFrame.Draw(rc);
+	m_atkBerFrame.Draw(rc);
 
 	m_attackIcon.Draw(rc);
 	m_skillIcon.Draw(rc);

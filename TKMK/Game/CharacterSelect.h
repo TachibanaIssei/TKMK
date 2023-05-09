@@ -12,29 +12,9 @@ public:
 	~CharacterSelect();
 	bool Start();
 	void Update();
-	void Cursor();
-
-	void Ready();
-
-	/// <summary>
-	/// ポインターの移動処理
-	/// </summary>
-	void PointerMove();
-
-	/// <summary>
-	/// コリジョン作成
-	/// </summary>
-	void SetCollision();
-
-	/// <summary>
-	/// ゴーストオブジェクトの当たり判定の処理
-	/// </summary>
-	void GhostCollision();
-
-	void SetKnightModel();
-
 	void Render(RenderContext& rc);
-	
+
+private:
 	//アニメーション
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -52,7 +32,6 @@ public:
 		enAnimationClip_Fall,
 		enAnimationClip_Num,
 	};
-	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
 	enum EnCharacterSelect {
 		enCharacterSelect_Knight,		//剣士
@@ -61,58 +40,119 @@ public:
 		enCharacterSelect_Mitei2,		//未定
 		enCharacterSelect_Num,			//キャラクターの種類の数
 	};
- 
+
+	void InitSprite();
+
+	/// <summary>
+	/// インゲームへの処理
+	/// </summary>
+	void Ready();
+
+	/// <summary>
+	/// ポインターの移動処理
+	/// </summary>
+	void PointerMove();
+
+	/// <summary>
+	/// ポインターの横移動処理
+	/// </summary>
+	void PointerMoveX();
+
+	/// <summary>
+	/// ポインターの縦移動処理
+	/// </summary>
+	void PointerMoveY();
+
+	/// <summary>
+	/// 剣士モデルの設定
+	/// </summary>
+	void SetKnightModel();
+
+	/// <summary>
+	/// モデルを回転させる
+	/// </summary>
+	void ModelRotation();
+
+	/// <summary>
+	/// アイコンがカーソルと重なっているかをチェックする
+	/// </summary>
+	void CheckIconOverlap();
+
+	/// <summary>
+	/// 通常攻撃のアイコンとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckNormalAttackIconOverlap();
+
+	/// <summary>
+	/// スキルのアイコンとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckSkillIconOverlap();
+
+	/// <summary>
+	/// 必殺技のアイコンとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckUltIconOverlap();
+
+	/// <summary>
+	/// アンダーバーのフレームとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckUnderBarOverlap();
+
+	/// <summary>
+	/// アイコン画像の縦横の最大と最小の座標を計算する
+	/// </summary>
+	/// <param name="posX">画像のX座標</param>
+	/// <param name="posY">画像のY座標</param>
+	/// <param name="W">画像の幅</param>
+	/// <param name="H">画像の高さ</param>
+	/// <returns>右端、左端、上、下の値を持ったVector4を返す</returns>
+	Vector4 CalcIconPos(float posX,float posY, float W, float H);
+
 
 private:
 	Fade* fade = nullptr;
 	SoundSource* m_bgm = nullptr;
 
-	SpriteRender m_SelectCursor;			//カーソル
+	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
-	SpriteRender m_pointer_black;					//ポインター
-	SpriteRender m_pointer_white;					//ポインター
-
-
-	SpriteRender m_Status;					//ステータス
-	SpriteRender m_Attack_Icon;				//攻撃、スキル、必殺技アイコン
-	SpriteRender m_UnderBar;				//画面下のバー
+	SpriteRender m_selectCursor;			//カーソル
+	SpriteRender m_pointerBlack;			//黒ポインター
+	SpriteRender m_pointerWhite;			//白ポインター
+	SpriteRender m_status;					//ステータス
+	SpriteRender m_attackIcon;				//攻撃アイコン
+	SpriteRender m_skillIcon;				//スキルアイコン
+	SpriteRender m_ultIcon;					//必殺技アイコン
+	SpriteRender m_underBar;				//画面下のバー
+	SpriteRender m_underBarYellow;			//画面下の黄色バー
+	SpriteRender m_underBarFrame;			//画面下バーのフレーム
+	SpriteRender m_startSprite;				//スタート画像
 	SpriteRender m_name;					//名前
-	
-	SpriteRender m_Attack_explanation;		//攻撃の説明文
-	SpriteRender Skill_explanation;			//スキルの説明文
-	SpriteRender Ult_explanation;			//必殺技の説明文
+	SpriteRender m_attackExplanation;		//攻撃の説明文
+	SpriteRender m_skillExplanation;		//スキルの説明文
+	SpriteRender m_ultExplanation;			//必殺技の説明文
 
-	ModelRender m_Knight;					//剣士のモデル
-	Quaternion m_KnightRot;
-
+	ModelRender m_knight;					//剣士のモデル
 	ModelRender m_platform;					//モデルを乗せる台
-	
+
+	Quaternion m_knightRot;					//剣士の回転
 
 	EnCharacterSelect m_characterSelect;	//キャラクターセレクト
 
-	Vector3 curPosition = { -510.0f,75.0f,0.0f };
+	Vector3 m_pointerPosition	= Vector3(0.0f,90.0f,0.0f);
 
+	bool m_attackExplanationFlag = false;	//通常攻撃説明画像表示フラグ
+	bool m_skillExplanationFlag = false;	//スキル説明画像表示フラグ
+	bool m_ultExplanationFlag = false;		//必殺技説明画像表示フラグ
+	bool m_underBarDrawFlag = false;		//下のバーの表示フラグ
 
-	//ポインター
-	CharacterController Poimter;
-	Vector3 m_Pointerposition = Vector3(0.0f,90.0f,0.0f);
-	Vector3 m_moveSpeed = Vector3::Zero;
-
-	CollisionObject* POINTER;
-
-	PhysicsGhostObject Attack;
-	bool Attack_explanationFlag = false;
-	PhysicsGhostObject Skill;
-	bool Skill_explanationFlag = false;
-	PhysicsGhostObject UltimateSkill;
-	bool Ult_explanationFlag = false;
+	bool m_readyFlag = false;				//インゲーム開始フラグ
 
 	float time;
-	float BGMVolume = 0.4f;
+	float m_bgmVolume = 0.4f;				//BGMのボリューム
 
-	int CursorNum = 0;
-	int TitleScene = 1;
-
-	bool m_readyFlag = false;
 };
 

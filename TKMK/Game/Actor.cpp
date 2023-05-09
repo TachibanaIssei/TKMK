@@ -111,12 +111,16 @@ void Actor::AttackUP()
 {
 	if (PowerUpTimer > 0.0f)
 	{
+		m_atkUpSpriteFlag = true;
 		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();
 
 		if (PowerUpTimer <= 0.0f)
 		{
 			//攻撃UP終了
 			AttackUPEnd();
+			//攻撃力アップアイコンを消す
+			m_atkUpSpriteFlag = false;
+
 		}
 	}
 }

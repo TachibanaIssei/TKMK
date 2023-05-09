@@ -696,6 +696,9 @@ void KnightBase::OnProcessCommonStateTransition()
 /// </summary>
 void KnightBase::OnProcessIdleStateTransition()
 {
+	//todoいいかどうかわからん
+	pushFlag = false;
+	AtkState = false;
 	OnProcessCommonStateTransition();
 }
 

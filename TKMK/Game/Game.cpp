@@ -75,8 +75,9 @@ bool Game::Start()
 {
 	//剣士の死んだときのエフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
-
+	
 	//剣士の必殺技エフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Delete_Blue, u"Assets/effect/Knight/Knight_Ult_full.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Red, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Green, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
@@ -159,8 +160,7 @@ bool Game::Start()
 	//カメラの生成
 	m_gamecamera = NewGO<GameCamera>(1, "gamecamera");
 
-	//マップの生成
-	m_Map = NewGO<Map>(0, "map");
+	
 
 	//中立の敵の生成
 	{
@@ -343,6 +343,8 @@ void Game::BattleStart()
 
 	if (m_StartToGameTimer < 0)
 	{
+		//マップの生成
+		m_Map = NewGO<Map>(0, "map");
 		//BGMの再生
 		m_bgm = NewGO<SoundSource>(0);
 		m_bgm->Init(2);

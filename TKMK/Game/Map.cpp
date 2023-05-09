@@ -26,7 +26,7 @@ Map::~Map()
 bool Map::Start()
 {
 	//マップの読み込み
-	m_Map.Init("Assets/sprite/gameUI/minimap.DDS", 350, 350);
+	m_Map.Init("Assets/sprite/minimap.DDS", 350, 350);
 	//座標設定
 	m_Map.SetPosition(MAP_CENTER_POSITION);
 	////マップの外枠の読み込み

@@ -8,6 +8,8 @@
 #include "Player.h"
 #include "KnightUlt.h"
 #include "Actor.h"
+//todo
+//死んだあとにAIが必殺技を使うとカメラがプレイヤーの前に行ってしまう
 
 namespace
 {
@@ -24,7 +26,7 @@ namespace
 	const float KNIGHT_CAMERA_POS_X = 80.0f;
 	const float KNIGHT_CAMERA_POS_Y = 0.0f;
 
-	const float KNIGHT_ULT_POS_X = -130.0f;
+	const float KNIGHT_ULT_POS_X = -90.0f;
 	const float KNIGHT_ULT_POS_Y = 40.0f;
 }
 
@@ -93,6 +95,8 @@ void GameCamera::Update()
 	{
 		//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
 		m_springCamera.Refresh();
+		//カメラの更新。
+		//m_springCamera.Update();
 		return;
 	}
 
@@ -133,6 +137,14 @@ void GameCamera::NomarlCamera()
 		}
 	}
 
+	//プレイヤーだけ溜めのところも正面から見せる
+	//もしプレイヤーが必殺技の溜めを使っていたら
+	if (player_actor->NowCharState() == Actor::enCharState_Ult_liberation)
+	{
+		m_springCamera.Refresh();
+		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor);
+		return;
+	}
 
 	//Yボタンが押されたら
 	//カメラの視点を最初の状態に戻す
@@ -160,28 +172,13 @@ void GameCamera::NomarlCamera()
 				//カメラを揺らす処理を止める
 				m_cameraShakeFlag = false;
 			}
-			
-
-
-
-
-			//if (m_cameraShakeTimer > 0.0f)
-			//{
-			//	m_cameraShakeTimer -= g_gameTime->GetFrameDeltaTime();
-
-			//	//CameraShake();
-			//}
-			//else
-			//{
-			//	m_cameraShakeTimer = 0.1f;
-			//	m_cameraShakeFlag = false;
-			//}
 		}
 	}
 
 
 }
 
+//剣士の回りを回る
 void GameCamera::UltRotCamera()
 {
 	//カメラを剣士の正面にセットしていないなら

@@ -204,6 +204,21 @@ public:
 		RabbitFlag = rabbit;
 	}
 
+	void SetUltCanUseFlag(bool flag)
+	{
+		UltCanUseFlag = flag;
+		// タイマーをセット
+		if (UltCanUseFlag == true)
+		{
+			UltCanUseTimer = 3.0f;
+		}
+	}
+
+	//必殺が使えるがどうか
+	bool GetUltCanUseFlag()
+	{
+		return UltCanUseFlag;
+	}
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する
@@ -295,25 +310,27 @@ private:
 	//秒を計るタイマー
 	float SecondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 2.0f;
+	float MinutesTimer = 3.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
 	//必殺技中みんな止まる
 	bool UltStopFlag = false;
+
 	Actor* Ultactor = nullptr;
 
 	float m_StartToGameTimer = 6.0f;
 
 	float m_EndtoResultTimer = 0.0f;
-
+	//必殺使えるかどうかのタイマー
+	float m_UltCanUseTimer = 0.0f;
 	//リスポーンタイマー
 	float m_RespawnTimer = 0.0f;
 	//リスポーンタイマー（ウサギ用）
 	float m_RabbitRespawnTimer = 0.0f;
 	//
 	float m_BetweenTimer = 0.0f;
-	
+	//ウサギが生きてるかどうかのタイマー
 	bool RabbitFlag = false;
 
 	//BGMの初期音量
@@ -337,7 +354,8 @@ private:
 	char* enemyName;
 	wchar_t name_t[255];
 	
-	std::vector<Actor*>m_ultActor;
-	
+	//falseの時しか必殺技を使えん
+	bool UltCanUseFlag = false;
+	float UltCanUseTimer = 0.0f;
 };
 

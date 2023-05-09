@@ -2,7 +2,7 @@
 #include "Result.h"
 #include "Tittle.h"
 #include "Game.h"
-
+#include "Fade.h"
 #include "system/system.h"
 
 Result::Result()
@@ -17,6 +17,9 @@ Result::~Result()
 
 bool Result::Start()
 {
+	fade = FindGO<Fade>("fade");
+	fade->StartFadeOut(1.0f);
+
 	Game* game = FindGO<Game>("game");
 	//K2EngineLow* g_k2EngineLow = nullptr;
 	//g_k2EngineLow->~K2EngineLow();
@@ -146,7 +149,7 @@ void Result::Update()
 	if (m_change == enChange_first)
 	{
 		Rank();
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (g_pad[0]->IsTrigger(enButtonA)&&fade->GetCurrentAlpha()<=0.0f)
 		{
 			m_change = enChange_move;
 		}

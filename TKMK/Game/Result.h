@@ -4,6 +4,7 @@
 #define MOVE 8
 
 class Tittle;
+class Fade;
 
 class Result :public IGameObject
 {
@@ -52,6 +53,8 @@ private:
 
 	Score Player[PLAYER];
 
+	ModelRender m_No1Charctar;		//ˆêˆÊ‚ÌƒLƒƒƒ‰‚Ìƒ‚ƒfƒ‹
+
 	FontRender m_PlayerRank1;
 	FontRender m_PlayerRank2;
 	FontRender m_PlayerRank3;
@@ -75,6 +78,7 @@ private:
 
 	Tittle* tittle = nullptr;
 	SoundSource* m_bgm = nullptr;
+	Fade* fade = nullptr;
 
 	Vector3 PointRight = { 200.0f,50.0f,0.0f };
 

@@ -404,8 +404,18 @@ void Game::Battle()
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
 	if (m_RabbitRespawnTimer >= 5.0f)
 	{
-		//RabbitRespawn();
+		RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
+	}
+
+	if (UltStopFlag == true)
+	{
+		UltCanUseTimer -= g_gameTime->GetFrameDeltaTime();
+		if (UltCanUseTimer <= 0)
+		{
+			UltCanUseFlag = false;
+			UltCanUseTimer = 0.0f;
+		}
 	}
 }
 
@@ -432,16 +442,18 @@ void Game::Pause()
 //タイムアップになったあとの処理
 void Game::End()
 {
-	m_EndtoResultTimer+= g_gameTime->GetFrameDeltaTime();
+	m_EndtoResultTimer += g_gameTime->GetFrameDeltaTime();
 
-	if (m_EndtoResultTimer >= 10.0f)
+	if (m_EndtoResultTimer >= 5.0f)
 	{
-		m_GameState=enGameState_Rezult;
+		m_GameState = enGameState_Rezult;
+		fade->StartFadeIn(1.0f);
 	}
 }
 
 void Game::GoResult()
 {
+	if (fade->GetCurrentAlpha() >= 1.0f)
 	Result* result = NewGO<Result>(0, "Result");
 	//DeleteGO(this);
 }
@@ -501,6 +513,10 @@ void Game::Respawn()
 
 void Game::RabbitRespawn()
 {
+	if (RabbitFlag == true) {
+		return;
+	}
+
 	//　乱数を初期化。
 	srand((unsigned)time(NULL));
 	RabbitFlag = true;

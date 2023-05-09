@@ -83,24 +83,6 @@ void KnightPlayer::Update()
 	//当たり判定
 	Collition();
 
-	//必殺技を打ったら少しの間動きを止める
-	//if (m_charState == enCharState_UltimateSkill)
-	//{
-	//	if (UltStopTimer > 0.0f)
-	//	{
-	//		//タイマー減少
-	//		UltStopTimer -= g_gameTime->GetFrameDeltaTime();
-
-
-	//	}
-	//	
-	//	return;
-	//}
-	/*else
-	{
-		UltStopTimer = 1.0f;
-	}*/
-
 	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
@@ -208,6 +190,7 @@ void KnightPlayer::Update()
 		CoolTimeProcess();
 		GrayScaleUI();
 
+		//連打したらたまにエラー出るtodo
 		if (m_swordEffectFlag ==true)
 		{
 			Vector3 effectPosition = m_position;
@@ -215,22 +198,6 @@ void KnightPlayer::Update()
 			EffectKnightSkill->SetPosition(effectPosition);
 			EffectKnightSkill->Update();
 		}
-
-		//レベルアップする
-		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-		//{
-		//	if(Lv!=10)
-		//	ExpProcess(exp);
-		//	//m_Status.GetExp += 5;
-		//	//m_gameUI->LevelFontChange(Lv);
-		//}
-
-		//ダメージを受ける
-		/*if (g_pad[0]->IsTrigger(enButtonX))
-		{
-			Dameged(dddd);
-		}*/
-
 	}
 	//速度を0にする(動かないようにする)
 	else
@@ -375,6 +342,7 @@ void KnightPlayer::Attack()
 		pushFlag = true;
 		m_game->SetStopFlag(true);
 		m_game->SetUltActor(this);
+		m_game->SetUltCanUseFlag(true);
 		//アニメーション再生
 		//必殺技ステート
 		m_charState = enCharState_UltimateSkill;
@@ -388,7 +356,7 @@ void KnightPlayer::Attack()
 		Ult_Swordeffect->SetPosition(m_position);
 			//エフェクトを再生
 		Ult_Swordeffect->Play();
-		m_swordEffectFlag = true;
+		//m_swordEffectFlag = true;
 
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -549,6 +517,8 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	{
 		//必殺技の当たり判定のクラスを作成
 		MakeUltSkill();
+		//レベルを下げる
+		UltimateSkill();
 		//エフェクトを移動
 		//m_swordEffectFlag = false;
 		

@@ -40,33 +40,43 @@ public:
 		{
 		case 1:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv1_back.DDS", 150.0f, 150.0f);
 			break;
 		case 2:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv2.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv2_back.DDS", 150.0f, 150.0f);
 			break;
 		case 3:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv3.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv3_back.DDS", 150.0f, 150.0f);
 			break;
 		case 4:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv4.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv4_back.DDS", 150.0f, 150.0f);
 			break;
 		case 5:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv5.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv5_back.DDS", 150.0f, 150.0f);
 			break;
 		case 6:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv6.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv6_back.DDS", 150.0f, 150.0f);
 			break;
 		case 7:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv7.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv7_back.DDS", 150.0f, 150.0f);
 			break;
 		case 8:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv8.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv8_back.DDS", 150.0f, 150.0f);
 			break;
 		case 9:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv9.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv9_back.DDS", 150.0f, 150.0f);
 			break;
 		case 10:
 			m_LvNumber.Init("Assets/sprite/gameUI/Lv10.DDS", 150.0f, 150.0f);
+			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv10_back.DDS", 150.0f, 150.0f);
 			break;
 		default:
 			break;
@@ -163,6 +173,9 @@ private:
 	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;
+	SpriteRender            m_LvNumber_back;							//レベルの裏
+	float					m_LvNumberColor = 1.0f;
+	bool					m_flashNumberFlag = false;
 	SpriteRender            m_MaxLv;
 	SpriteRender            m_Flame;							//制限時間と獲得ポイントやHPバーの画像を
 	SpriteRender            m_Point;							//ポイント

@@ -213,6 +213,7 @@ public:
 	{
 		return respawnNumber;
 	}
+
 	
 protected:
 	/// <summary>
@@ -346,6 +347,8 @@ protected:
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
-
+	//ラストアタックのアニメーションで切った後に動けないようにする
+	//tureの時は動けなくなる
+	bool CantMove = false;
 };
 

@@ -5,6 +5,7 @@
 #include "KnightUlt.h"
 #include "GameUI.h"
 #include "Fade.h"
+#include "GameCamera.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -12,6 +13,8 @@
 //ジャンプ
 //必殺技打つときに一瞬止まるようにする
 //アニメーションイベント
+//三段目攻撃も途中にほかのキャラが必殺技を使うとフラグがかわらなくなる
+//死んだときにAIが必殺技を使うとカメラがおかしくなる時がある
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -34,6 +37,7 @@ bool KnightPlayer::Start() {
 	m_gameUI = FindGO<GameUI>("m_gameUI");
 	m_game = FindGO<Game>("game");
 	m_fade = FindGO<Fade>("fade");
+	
 
 	SetModel();
 
@@ -94,6 +98,12 @@ void KnightPlayer::Update()
 		//抜け出す
 		return;
 	}
+
+	/*if (m_charState == enCharState_Ult_liberation)
+	{
+		m_modelRender.Update();
+		return;
+	}*/
 
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
@@ -165,6 +175,7 @@ void KnightPlayer::Update()
 			stickL.y = g_pad[0]->GetLStickYF();
 		}
 		Move(m_position, m_charCon, m_Status, stickL);
+		
 
 		//回避中なら
 		if (AvoidanceFlag == true) {
@@ -340,31 +351,20 @@ void KnightPlayer::Attack()
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
-		m_game->SetStopFlag(true);
-		m_game->SetUltActor(this);
-		m_game->SetUltCanUseFlag(true);
-		//アニメーション再生
-		//必殺技ステート
-		m_charState = enCharState_UltimateSkill;
+		
+		//必殺技の溜めステートに移行する
+		m_charState = enCharState_Ult_liberation;
 
 		Vector3 m_SwordPos = Vector3::Zero;
 		Quaternion m_SwordRot;
 		//自身をまとうエフェクト
 		EffectEmitter*Ult_Swordeffect = NewGO<EffectEmitter>(0);
 		Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
-		Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
+		Ult_Swordeffect->SetScale({ 20.0f,40.0f,20.0f });
 		Ult_Swordeffect->SetPosition(m_position);
 			//エフェクトを再生
 		Ult_Swordeffect->Play();
 		//m_swordEffectFlag = true;
-
-		//アルティメットSE
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(16);
-		se->Play(false);
-		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
 
 		//必殺技発動フラグをセット
 	/*	UltimateSkillFlag = true;*/
@@ -511,8 +511,15 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
 	}
-
+	
 	//必殺技のアニメーションが始まったら
+	if (wcscmp(eventName, L"timeStop") == 0)
+	{
+		m_game->SetStopFlag(true);
+		m_game->SetUltActor(this);
+	}
+
+	//必殺技のアニメーションで剣を振ったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
 		//必殺技の当たり判定のクラスを作成
@@ -574,7 +581,9 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkState = false;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
-
+		//カメラを揺らすフラグを立てる
+		GameCamera* gameCamera = FindGO<GameCamera>("gamecamera");
+		gameCamera->ChangeCameraShakeFlag(true);
 	}
 	//三段目のアタックのアニメーションで剣を振り終わったら移動できないように
 	if (wcscmp(eventName, L"Move_False") == 0)

@@ -87,24 +87,6 @@ void KnightPlayer::Update()
 	//当たり判定
 	Collition();
 
-	//必殺技を打ったら少しの間動きを止める
-	//if (m_charState == enCharState_UltimateSkill)
-	//{
-	//	if (UltStopTimer > 0.0f)
-	//	{
-	//		//タイマー減少
-	//		UltStopTimer -= g_gameTime->GetFrameDeltaTime();
-
-
-	//	}
-	//	
-	//	return;
-	//}
-	/*else
-	{
-		UltStopTimer = 1.0f;
-	}*/
-
 	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
@@ -227,22 +209,6 @@ void KnightPlayer::Update()
 			EffectKnightSkill->SetPosition(effectPosition);
 			EffectKnightSkill->Update();
 		}
-
-		//レベルアップする
-		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
-		//{
-		//	if(Lv!=10)
-		//	ExpProcess(exp);
-		//	//m_Status.GetExp += 5;
-		//	//m_gameUI->LevelFontChange(Lv);
-		//}
-
-		//ダメージを受ける
-		/*if (g_pad[0]->IsTrigger(enButtonX))
-		{
-			Dameged(dddd);
-		}*/
-
 	}
 	//速度を0にする(動かないようにする)
 	else

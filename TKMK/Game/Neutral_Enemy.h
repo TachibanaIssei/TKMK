@@ -372,8 +372,8 @@ private:
 	float   m_stopTimer = 1.0f;             //止まってしまったタイマー
 
 	int enemyColorRam = 0;					//エネミーのカラーを決める
-	int AtkPass = 10;						//渡す攻撃力の量
-	int HpPass = 30;						//回復量
+	int AtkPass = 30;						//渡す攻撃力の量
+	
 
 	//攻撃を受けたときに相手の攻撃力を格納する変数
 	int GetAtk=0;

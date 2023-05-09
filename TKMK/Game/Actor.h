@@ -289,10 +289,8 @@ public:
 
 			PowerUpEfk->AutoDelete(false);
 			PowerUpEfk->GetEffect()->AutoDelete(false);
-		}
-		
+		}		
 		PowerUpTimer = 15.0f;
-
 	}
 
 
@@ -585,6 +583,6 @@ protected:
 	ChaseEFK* GetHoimi = nullptr;
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
-	
+
 };
 

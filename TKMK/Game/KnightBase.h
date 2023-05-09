@@ -214,6 +214,7 @@ public:
 	{
 		return respawnNumber;
 	}
+
 	
 protected:
 	/// <summary>

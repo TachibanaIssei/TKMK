@@ -803,6 +803,7 @@ void KnightBase::OnProcessLastAtkStateTransition()
 		AtkState = false;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
+		CantMove = false;
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();
 	}

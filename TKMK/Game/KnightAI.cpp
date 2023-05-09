@@ -94,7 +94,7 @@ void KnightAI::Update()
 		//リスポーンしたときしか使えない
 		//飛び降りる処理
 		//地上にいないならジャンプしかしないようにする
-		if (m_position.y > 150.0f) {
+		if (m_position.y > 10.0f) {
 			if (m_charCon.IsOnGround())
 			{
 				
@@ -757,12 +757,12 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を発動する処理
-	//Xボタンが押されたら
-		if (pushFlag == false && Lv >= 4)
+		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
 			pushFlag = true;
 			//必殺技の溜めステートに移行する
 			m_charState = enCharState_Ult_liberation;
+
 			Vector3 m_SwordPos = Vector3::Zero;
 			Quaternion m_SwordRot;
 			EffectEmitter* Ult_Swordeffect = NewGO<EffectEmitter>(2);

@@ -92,7 +92,10 @@ public:
 	{
 		return SoundEffectVolume;
 	}
-
+	/// <summary>
+	/// タワー上のエフェクト
+	/// </summary>
+	void TowerEFK();
 	/// <summary>
 	/// 中立の敵のリスポーン
 	/// </summary>
@@ -296,7 +299,7 @@ private:
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
-
+	Vector3 m_EFK_Pos = Vector3::Zero;
 	bool HowToPlaySpriteFlag = false;
 
 	float m_spriteAlpha = 0.0f;

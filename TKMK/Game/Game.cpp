@@ -107,7 +107,8 @@ bool Game::Start()
 	//中立の敵の攻撃、死亡時エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_head_butt, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_Death, u"Assets/effect/Neutral_Enemy/death.efk");
-
+	//タワーから降りるを示す↑のエフェクト
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_TowerDown, u"Assets/effect/Tower/TowerDown.efk");
 	g_renderingEngine->UnUseHemiLight();
 
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
@@ -183,7 +184,7 @@ bool Game::Start()
 
 
 
-	m_AIPos.Init("Assets/level3D/AIPOS2.tkl", [&](LevelObjectData& objData) {
+	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
 
 		
 
@@ -227,6 +228,11 @@ bool Game::Start()
 
 					return true;
 				}
+				if (objData.number == 4)
+				{
+					m_EFK_Pos = objData.position;
+				}
+				return true;
 			}
 		return true;
 		});
@@ -235,11 +241,6 @@ bool Game::Start()
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
-
-
-	
-
-	
 
 	//ポーズ画面の画像読み込み
 	{
@@ -307,7 +308,8 @@ bool Game::Start()
 		m_operationPic.SetScale(g_vec3One);
 		m_operationPic.Update();
 	}
-	
+
+	TowerEFK();
 	//ゲームの状態をゲームステートにする
 	m_GameState = enGameState_Start;
 
@@ -329,7 +331,7 @@ void Game::Update()
 	}
 
 	GameState();
-
+	
 }
 
 void Game::BattleStart()
@@ -588,7 +590,19 @@ void Game::SetEnemyRespawnPos()
 	SearchRespawnPosNumber= rand() % 19 + 1;
 	return;
 }
-
+void Game::TowerEFK()
+{
+	EffectEmitter* TowerDown = NewGO <EffectEmitter>(0);
+	TowerDown->Init(EnEFK::enEffect_TowerDown);
+	TowerDown->SetScale(Vector3::One * 30.0f);
+	TowerDown->Play();
+	Vector3 EFKPOS = m_EFK_Pos;
+	TowerDown->SetPosition(EFKPOS);
+	Quaternion Efk_Rot= Quaternion::Identity;
+	Efk_Rot.AddRotationDegY(255.0f);
+	TowerDown->SetRotation(Efk_Rot);
+	TowerDown->Update();
+}
 //ゲームのステート管理
 void Game::GameState()
 {

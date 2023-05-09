@@ -102,8 +102,16 @@ void CharacterSelect::Update()
 	PointerMove();
 	CheckIconOverlap();
 
-	//Aボタンを押した時
-	if (g_pad[0]->IsTrigger(enButtonA))
+	if 
+	(
+		//スタートボタンを押したときか
+		g_pad[0]->IsTrigger(enButtonStart) ||
+		(
+			//STARTの範囲内でAボタンを押した時
+			m_underBarDrawFlag &&
+			g_pad[0]->IsTrigger(enButtonA)
+		)
+	)
 	{
 		//フェードアウトを始める
 		fade->StartFadeIn(1.0f);

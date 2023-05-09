@@ -839,7 +839,13 @@ void KnightBase::OnProcessUlt_liberationStateTransition()
 		
 		//必殺技ステート
 		m_charState = enCharState_UltimateSkill;
-
+		//アルティメットSE
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(16);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 }
 

@@ -761,34 +761,23 @@ void KnightAI::Attack()
 		if (pushFlag == false && Lv >= 4)
 		{
 			pushFlag = true;
-			/*m_game->SetStopFlag(true);
-			m_game->SetUltActor(this);*/
 			//必殺技の溜めステートに移行する
 			m_charState = enCharState_Ult_liberation;
-			//必殺技ステート
-			//m_charState = enCharState_UltimateSkill;
-
 			Vector3 m_SwordPos = Vector3::Zero;
 			Quaternion m_SwordRot;
-			//「Sword」ボーンのワールド行列を取得する。
-			/*Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
-			matrix.Apply(m_SwordPos);
-			m_SwordRot.SetRotation(matrix);*/
 			EffectEmitter* Ult_Swordeffect = NewGO<EffectEmitter>(2);
 			Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
-			Ult_Swordeffect->SetScale({ 50.0f,50.0f,50.0f });
+			Ult_Swordeffect->SetScale({ 20.0f,40.0f,20.0f });
 			Ult_Swordeffect->SetPosition(m_position);
 			//Ult_Swordeffect->SetRotation(m_SwordRot);
 			//Ult_Swordeffect->Update();
 				//エフェクトを再生
 			Ult_Swordeffect->Play();
-			m_swordEffectFlag = true;
-
 			//アルティメットSE
-			SoundSource* se = NewGO<SoundSource>(0);
+			/*SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(16);
 			se->Play(false);
-			se->SetVolume(m_game->SetSoundEffectVolume());
+			se->SetVolume(m_game->SetSoundEffectVolume());*/
 
 			//必殺技発動フラグをセット
 			//UltimateSkillFlag = true;
@@ -1001,12 +990,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 void KnightAI::AvoidanceSprite()
 {
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (m_charState == enCharState_Damege ||
-		m_charState == enCharState_Death ||
-		m_charState == enCharState_UltimateSkill ||
-		m_charState == enCharState_Attack ||
-		m_charState == enCharState_Skill ||
-		m_charState == enCharState_Avoidance)
+	if (IsEnableMove() == false)
 	{
 		return;
 	}

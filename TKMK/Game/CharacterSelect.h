@@ -97,6 +97,12 @@ private:
 	bool CheckUltIconOverlap();
 
 	/// <summary>
+	/// アンダーバーのフレームとカーソルが重なっているかをチェックする
+	/// </summary>
+	/// <returns>重なっていたらtrue</returns>
+	bool CheckUnderBarOverlap();
+
+	/// <summary>
 	/// アイコン画像の縦横の最大と最小の座標を計算する
 	/// </summary>
 	/// <param name="posX">画像のX座標</param>
@@ -121,6 +127,9 @@ private:
 	SpriteRender m_skillIcon;				//スキルアイコン
 	SpriteRender m_ultIcon;					//必殺技アイコン
 	SpriteRender m_underBar;				//画面下のバー
+	SpriteRender m_underBarYellow;			//画面下の黄色バー
+	SpriteRender m_underBarFrame;			//画面下バーのフレーム
+	SpriteRender m_startSprite;				//スタート画像
 	SpriteRender m_name;					//名前
 	SpriteRender m_attackExplanation;		//攻撃の説明文
 	SpriteRender m_skillExplanation;		//スキルの説明文
@@ -138,6 +147,8 @@ private:
 	bool m_attackExplanationFlag = false;	//通常攻撃説明画像表示フラグ
 	bool m_skillExplanationFlag = false;	//スキル説明画像表示フラグ
 	bool m_ultExplanationFlag = false;		//必殺技説明画像表示フラグ
+	bool m_underBarDrawFlag = false;		//下のバーの表示フラグ
+
 	bool m_readyFlag = false;				//インゲーム開始フラグ
 
 	float time;

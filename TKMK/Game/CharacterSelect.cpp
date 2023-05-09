@@ -15,7 +15,15 @@ namespace {
 	const float		NORMAL_ATTACK_ICON_HEIGHT = 417.0f;
 
 	const Vector3	NAME_POS = Vector3(-600.0f, -400.0f, 0.0f);				//名前の座標
-	const Vector3	UNDERBAR_POS = Vector3(0.0f, -500.0f, 0.0f);			//画面下のバーの座標
+	const Vector3	UNDERBAR_POS = Vector3(0.0f, -490.0f, 0.0f);			//画面下のバーの座標
+	const float		UNDER_BER_WIDTH		= 1920.0f;							//バーの幅
+	const float		UNDER_BER_HEIGHT	= 300.0f;							//バーの高さ
+
+	const Vector3	START_POS = Vector3(0.0f, -460.0f, 0.0f);				//スタート画像の座標
+	const float		START_WIDTH = 471.0f;									//スタート画像の幅
+	const float		START_HEIGHT = 145.0f;									//スタート画像の高さ
+	const float		START_WIDTH_DUMMY = 600.0f;								//カーソルと重なっているかの判定のための幅
+	const float		START_HEIGHT_DUMMY = 200.0f;							//カーソルと重なっているかの判定のための高さ
 
 	const Vector3	ATTACK_EXPLANATION_POS = Vector3(20.0f, 33.0f, 0.0f);	//通常攻撃説明画像の座標
 	const Vector3	SKILL_EXPLANATION_POS = Vector3(105.0f, 33.0f, 0.0f);	//スキル説明画像の座標
@@ -56,16 +64,16 @@ bool CharacterSelect::Start()
 	g_camera3D->Update();
 
 	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
-	Vector3 dir = { 0.0f,-1.0f,0.0f };
+	Vector3 dir = Vector3(0.0f,-1.0f,0.5f);
+	dir.Normalize();
 	Vector3 color = { 0.5f,0.5f,0.5f };
 	g_renderingEngine->SetDirectionLight(0, dir, color);
 
 	//剣士のモデル、アニメーション
 	SetKnightModel();
 
+	//画像の初期化
 	InitSprite();
-
-	
 
 	g_soundEngine->ResistWaveFileBank(45, "Assets/sound/characterSelectBGM/characterSelect1.wav");
 
@@ -192,7 +200,7 @@ void CharacterSelect::InitSprite()
 	m_pointerWhite.Update();
 
 	//台の設定
-	m_platform.Init("Assets/modelData/platform/platform.tkm");
+	m_platform.InitBackGround("Assets/modelData/platform/platform.tkm");
 	m_platform.SetPosition(PLATFORM_POS);
 	m_platform.SetScale(2.2f, 2.0f, 2.2f);
 	m_platform.Update();
@@ -229,10 +237,25 @@ void CharacterSelect::InitSprite()
 	m_name.Update();
 
 	//画面下のバー
-	m_underBar.Init("Assets/sprite/Select/underBar.DDS", 1920.0f, 300.0f);
+	m_underBar.Init("Assets/sprite/Select/underBarIn.DDS", UNDER_BER_WIDTH, UNDER_BER_HEIGHT);
 	m_underBar.SetPosition(UNDERBAR_POS);
 	m_underBar.SetScale(g_vec3One);
 	m_underBar.Update();
+
+	m_underBarYellow.Init("Assets/sprite/Select/underBarInYellow.DDS", UNDER_BER_WIDTH, UNDER_BER_HEIGHT);
+	m_underBarYellow.SetPosition(UNDERBAR_POS);
+	m_underBarYellow.SetScale(g_vec3One);
+	m_underBarYellow.Update();
+
+	m_underBarFrame.Init("Assets/sprite/Select/underBarFrame.DDS", UNDER_BER_WIDTH, UNDER_BER_HEIGHT);
+	m_underBarFrame.SetPosition(UNDERBAR_POS);
+	m_underBarFrame.SetScale(g_vec3One);
+	m_underBarFrame.Update();
+
+	m_startSprite.Init("Assets/sprite/Select/Start.DDS", START_WIDTH, START_HEIGHT);
+	m_startSprite.SetPosition(START_POS);
+	m_startSprite.SetScale(g_vec3One);
+	m_startSprite.Update();
 
 	//説明文
 	{
@@ -345,6 +368,7 @@ void CharacterSelect::CheckIconOverlap()
 	m_attackExplanationFlag = CheckNormalAttackIconOverlap();
 	m_skillExplanationFlag	= CheckSkillIconOverlap();
 	m_ultExplanationFlag	= CheckUltIconOverlap();
+	m_underBarDrawFlag = CheckUnderBarOverlap();
 }
 
 bool CharacterSelect::CheckNormalAttackIconOverlap()
@@ -395,6 +419,22 @@ bool CharacterSelect::CheckUltIconOverlap()
 	return false;
 }
 
+bool CharacterSelect::CheckUnderBarOverlap()
+{
+	Vector4 IconPos = CalcIconPos(START_POS.x, START_POS.y, START_WIDTH_DUMMY, START_HEIGHT_DUMMY);
+
+	//X軸が重なっているか
+	if (m_pointerPosition.x >= IconPos.y && m_pointerPosition.x <= IconPos.x)
+	{
+		//Y軸が重なっているか
+		if (m_pointerPosition.y >= IconPos.w && m_pointerPosition.y <= IconPos.z)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 Vector4 CharacterSelect::CalcIconPos(float posX, float posY, float W, float H)
 {
 	Vector4 pos = g_vec4Black;
@@ -423,20 +463,16 @@ void CharacterSelect::Render(RenderContext& rc)
 	m_ultIcon.Draw(rc);
 
 	m_name.Draw(rc);
-	m_underBar.Draw(rc);
 
-	if (m_attackExplanationFlag == true)
-	{
-		m_attackExplanation.Draw(rc);
-	}
-	if (m_skillExplanationFlag == true)
-	{
-		m_skillExplanation.Draw(rc);
-	}
-	if (m_ultExplanationFlag == true)
-	{
-		m_ultExplanation.Draw(rc);
-	}
+	if (m_underBarDrawFlag)	m_underBarYellow.Draw(rc);
+	else m_underBar.Draw(rc);
+
+	m_underBarFrame.Draw(rc);
+	m_startSprite.Draw(rc);
+
+	if (m_attackExplanationFlag)	m_attackExplanation.Draw(rc);
+	if (m_skillExplanationFlag)		m_skillExplanation.Draw(rc);
+	if (m_ultExplanationFlag)		m_ultExplanation.Draw(rc);
 
 	//点滅早くtodo
 	if ((int)time % 2 == 0)

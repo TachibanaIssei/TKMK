@@ -1079,7 +1079,7 @@ bool Neutral_Enemy::DrawHP()
 	//プレイヤーに向かう距離を計算する
 	float playerdistance = diff.Length();
 
-	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance<800.0f)
+	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance < 800.0f && m_player->GetPosition().y <= 10.0f)
 	{
 		return true;
 	}

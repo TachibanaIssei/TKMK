@@ -124,27 +124,27 @@ void GameCamera::StateControl()
 
 void GameCamera::NomarlCamera()
 {
-	for (auto actor : m_actors) {
-		//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
-		if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag==false)
-		{
-			KnightUltFlag = true;
-			//カメラステートを回転ステートに移る
-			m_enCameraState = m_enUltRotCameraState;
-			ultactor = actor;
+	//for (auto actor : m_actors) {
+	//	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
+	//	if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag==false)
+	//	{
+	//		KnightUltFlag = true;
+	//		//カメラステートを回転ステートに移る
+	//		m_enCameraState = m_enUltRotCameraState;
+	//		ultactor = actor;
 
-			return;
-		}
-	}
+	//		return;
+	//	}
+	//}
 
 	//プレイヤーだけ溜めのところも正面から見せる
 	//もしプレイヤーが必殺技の溜めを使っていたら
-	if (player_actor->NowCharState() == Actor::enCharState_Ult_liberation)
+	/*if (player_actor->NowCharState() == Actor::enCharState_Ult_liberation)
 	{
 		m_springCamera.Refresh();
 		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor);
 		return;
-	}
+	}*/
 
 	//Yボタンが押されたら
 	//カメラの視点を最初の状態に戻す

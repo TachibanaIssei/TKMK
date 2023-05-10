@@ -215,6 +215,19 @@ public:
 		return respawnNumber;
 	}
 
+	/// <summary>
+	/// HPが0なら実行する
+	/// </summary>
+	/// <param name="status"></param>
+	void IsDead(Status& status)
+	{
+		if (status.Hp <= 0)
+		{
+			m_charState = enCharState_Death;
+
+		}
+	}
+
 	
 protected:
 	/// <summary>

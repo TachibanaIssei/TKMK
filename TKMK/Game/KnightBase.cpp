@@ -420,50 +420,50 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 void KnightBase::UltimateSkill()
 {
 	//
-	int DownLv=0;
+	int DownLv = 3;
 	//レベルが5以下なら
 	//必殺技強化なし
-	if (Lv < 6)
-	{
-		//レベルを3下げる
-		DownLv = 3;
-	}
-	//レベルが7以下なら
-	//必殺技一段階強化
-	else if (Lv < 8)
-	{
-		switch (Lv)
-		{
-		case 6:
-			DownLv = 5;
-			break;
-		case 7:
-			DownLv = 6;
-			break;
-		default:
-			break;
-		}
-	}
-	//レベルが10以下なら
-	//必殺技二段階強化
-	else if (Lv <= 10)
-	{
-		switch (Lv)
-		{
-		case 8:
-			DownLv = 7;
-			break;
-		case 9:
-			DownLv = 8;
-			break;
-		case 10:
-			DownLv = 9;
-			break;
-		default:
-			break;
-		}
-		
-	}
+	//if (Lv < 6)
+	//{
+	//	//レベルを3下げる
+	//	DownLv = 3;
+	//}
+	////レベルが7以下なら
+	////必殺技一段階強化
+	//else if (Lv < 8)
+	//{
+	//	switch (Lv)
+	//	{
+	//	case 6:
+	//		DownLv = 5;
+	//		break;
+	//	case 7:
+	//		DownLv = 6;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+	////レベルが10以下なら
+	////必殺技二段階強化
+	//else if (Lv <= 10)
+	//{
+	//	switch (Lv)
+	//	{
+	//	case 8:
+	//		DownLv = 7;
+	//		break;
+	//	case 9:
+	//		DownLv = 8;
+	//		break;
+	//	case 10:
+	//		DownLv = 9;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//	
+	//}
 
 	//レベルを3下げる
 	levelDown(LvUPStatus, m_Status, Lv, DownLv);

@@ -18,7 +18,7 @@ void ChaseEFK::Update() {
 
 }
 
-void ChaseEFK::SetEffect(EnEFK effect, Actor* target, Vector3 scale) {
+void ChaseEFK::SetEffect(EnEFK effect, Actor* target,Vector3 scale) {
 
 	// エフェクトを作る
 	m_effect = NewGO<EffectEmitter>(5);
@@ -26,6 +26,8 @@ void ChaseEFK::SetEffect(EnEFK effect, Actor* target, Vector3 scale) {
 	m_effect->SetScale(scale);
 	Vector3 effectPosition = target->GetPosition();
 	m_effect->SetPosition(effectPosition);
+	Quaternion rot = target->GetRot();
+	m_effect->SetRotation(rot);
 	m_effect->Play();
 
 	m_targetActor = target;

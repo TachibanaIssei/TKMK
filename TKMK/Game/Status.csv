@@ -2,4 +2,4 @@ name,hp,attack,Speed,GetExp
 Enemy,60,10,100,5
 Knight,150,35,140,0
 Wizard,100,40,80,0
-Rabbit,1,0,100,0
+Rabbit,15,0,100,0

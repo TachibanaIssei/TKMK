@@ -300,7 +300,7 @@ void KnightBase::Collition()
 			if (collision->IsHit(m_charCon) && m_lastAttackActor != this)
 			{
 				//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
-				Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
+				Dameged(300, m_lastAttackActor);
 
 			}
 		}

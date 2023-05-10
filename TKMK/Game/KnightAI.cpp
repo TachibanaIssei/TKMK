@@ -67,6 +67,16 @@ void KnightAI::Update()
 		return;
 	}
 
+	//やられたらリスポーンするまで実行する
+	if (DeathToRespawnTimer_AI(m_DeathToRespwanFlag) == true)
+	{
+		//m_charState = enCharState_Idle;
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
+		return;
+	}
+
 	//攻撃アップ中の処理
 	AttackUP();
 
@@ -756,6 +766,8 @@ void KnightAI::Attack()
 	
 	if (CanUlt())
 	{
+		//必殺技を打たない
+		return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{

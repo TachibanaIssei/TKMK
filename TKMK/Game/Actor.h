@@ -583,6 +583,7 @@ protected:
 	ChaseEFK* GetHoimi = nullptr;
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
+	bool m_atkUpSpriteFlag = false;
 
 };
 

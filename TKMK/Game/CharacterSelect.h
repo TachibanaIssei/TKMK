@@ -66,7 +66,7 @@ private:
 	/// <summary>
 	/// 剣士モデルの設定
 	/// </summary>
-	void SetKnightModel();
+	void SetModel();
 
 	/// <summary>
 	/// モデルを回転させる
@@ -114,6 +114,8 @@ private:
 
 
 private:
+	SkyCube* m_skyCube = nullptr;
+
 	Fade* fade = nullptr;
 	SoundSource* m_bgm = nullptr;
 
@@ -129,6 +131,12 @@ private:
 	SpriteRender m_underBar;				//画面下のバー
 	SpriteRender m_underBarYellow;			//画面下の黄色バー
 	SpriteRender m_underBarFrame;			//画面下バーのフレーム
+	SpriteRender m_hpBerFrame;				//HPバーのフレーム
+	SpriteRender m_atkBerFrame;				//攻撃バーのフレーム
+	SpriteRender m_hpBerLv1;				//レベル1のときのHPバー
+	SpriteRender m_hpBerLvmax;				//レベルマックスのときのHPバー
+	SpriteRender m_atkBerLv1;				//レベル1のときの攻撃バー
+	SpriteRender m_atkBerLvmax;				//レベルマックスのときの攻撃バー
 	SpriteRender m_startSprite;				//スタート画像
 	SpriteRender m_name;					//名前
 	SpriteRender m_attackExplanation;		//攻撃の説明文
@@ -137,6 +145,8 @@ private:
 
 	ModelRender m_knight;					//剣士のモデル
 	ModelRender m_platform;					//モデルを乗せる台
+	ModelRender m_stage;
+	ModelRender m_wall;
 
 	Quaternion m_knightRot;					//剣士の回転
 

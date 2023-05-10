@@ -6,6 +6,7 @@ enum EnEFK {
 	enEffect_Knight_Ult_Green,
 	enEffect_Knight_Ult_Blue,
 	enEffect_Knight_Ult_Yellow,
+	enEffect_Knight_Ult_Delete_Blue,
 	enEffect_Knight_Ult_Aura,
 	enEffect_Knight_Attack,
 	/*enEffect_Knight_Atk_Red,
@@ -21,6 +22,7 @@ enum EnEFK {
 	enEffect_Knight_GetHoimi,
 	enEffect_Neutral_Enemy_Death,
 	enEffect_Neutral_Enemy_head_butt,
+	enEffect_TowerDown,
 	enEffect_Num
 };
 

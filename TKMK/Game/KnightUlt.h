@@ -156,6 +156,7 @@ private:
 	Vector3	m_moveSpeed;
 	Vector3 m_forward;
 	EffectEmitter* Ulteffect;
+	EffectEmitter* explosion;
 	//エフェクトの当たり判定
 	CollisionObject* UltCollision;
 	//この当たり判定が壁に当たったら消す
@@ -165,7 +166,7 @@ private:
 	RigidBody				m_rigidBody;						//剛体。
 	SphereCollider			m_sphereCollider;							//コライダー。
 
-	//char m_collisionName;
+	bool explosionflag = false;
 
 	float m_timer = 0.0f;
 

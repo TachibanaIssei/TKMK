@@ -19,10 +19,10 @@
 10,pointFlame,46,../../Game/Assets/sprite/gameUI/pointFlame.png,-824.9999999999999,88.46153846153845,300,100,10,1.0,1.0,0.5,0.5,14,pointFlame.dds
 5,crown,41,../../Game/Assets/sprite/gameUI/crown.png,-881.7307692307692,90.38461538461536,80,80,10,1.0,1.0,0.5365853658536586,0.5,9,crown.dds
 17,pointFlame_player,53,../../Game/Assets/sprite/gameUI/pointFlame_player.png,-824.9999999999999,88.46153846153845,300,100,10,1.0,1.0,0.5,0.5,21,pointFlame_player.dds
-11,Knight_Blue,47,../../Game/Assets/sprite/gameUI/Knight_Blue.png,-494.23076923076917,78.84615384615392,80,80,10,1.0,1.0,0.5,0.5,15,Knight_Blue.dds
-12,Knight_Green,48,../../Game/Assets/sprite/gameUI/Knight_Green.png,-636.5384615384614,82.69230769230768,80,80,10,1.0,1.0,0.5,0.5,16,Knight_Green.dds
-10,Knight_Red,46,../../Game/Assets/sprite/gameUI/Knight_Red.png,-819.2307692307692,88.46153846153845,80,80,10,1.0,1.0,0.5,0.5,14,Knight_Red.dds
-13,Knight_Yellow,49,../../Game/Assets/sprite/gameUI/Knight_Yellow.png,-732.6923076923076,78.84615384615392,80,80,10,1.0,1.0,0.5,0.5,17,Knight_Yellow.dds
+11,Knight_Blue,47,../../Game/Assets/sprite/gameUI/Knight_Blue.png,-494.23076923076917,78.84615384615392,500,500,10,1.0,1.0,0.5,0.5,15,Knight_Blue.dds
+12,Knight_Green,48,../../Game/Assets/sprite/gameUI/Knight_Green.png,-636.5384615384614,82.69230769230768,500,500,10,1.0,1.0,0.5,0.5,16,Knight_Green.dds
+10,Knight_Red,46,../../Game/Assets/sprite/gameUI/Knight_Red.png,-819.2307692307692,88.46153846153845,500,500,10,1.0,1.0,0.5,0.5,14,Knight_Red.dds
+13,Knight_Yellow,49,../../Game/Assets/sprite/gameUI/Knight_Yellow.png,-732.6923076923076,78.84615384615392,500,500,10,1.0,1.0,0.5,0.5,17,Knight_Yellow.dds
 6,count3,42,../../Game/Assets/sprite/gameUI/count3.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,10,count3.dds
 6,count2,42,../../Game/Assets/sprite/gameUI/count2.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,10,count2.dds
 6,count1,42,../../Game/Assets/sprite/gameUI/count1.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,10,count1.dds

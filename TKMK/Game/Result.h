@@ -80,14 +80,14 @@ private:
 	SoundSource* m_bgm = nullptr;
 	Fade* fade = nullptr;
 
-	Vector3 PointRight = { 200.0f,50.0f,0.0f };
+	Vector3 PointRight = { 200.0f,85.0f,0.0f };
 
 	//ê¸å`ï‚ä‘Ç≈Ç±Ç±Ç‹Ç≈ìÆÇ©Ç∑
 	Vector3 RankPos[MOVE] = {
-		Vector3(0.0f, 200.0f, 0.0f),		//èáà ÅAÇPà 
-		Vector3(0.0f, 50.0f, 0.0f),			//ÇQà 
-		Vector3(0.0f, -100.0f, 0.0f),		//ÇRà 
-		Vector3(0.0f, -250.0f, 0.0f),		//ÇSà 
+		Vector3(0.0f, 160.0f, 0.0f),		//èáà ÅAÇPà 
+		Vector3(0.0f, 20.0f, 0.0f),			//ÇQà 
+		Vector3(0.0f, -120.0f, 0.0f),		//ÇRà 
+		Vector3(0.0f, -255.0f, 0.0f),		//ÇSà 
 		Vector3(-500.0f, -450.0f, 0.0f),	//"É^ÉCÉgÉãÇ…ñﬂÇÈ"
 		Vector3(525.0f, -450.0f, 0.0f),		//"ÉQÅ[ÉÄÇèIóπ"
 		Vector3(0.0f, -30.0f, 0.0f),		//èáà ï\

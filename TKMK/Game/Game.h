@@ -34,8 +34,6 @@ public:
 		enGameState_Num,
 	};
 
-	
-
 	EnEFK m_EnEffect_Knight = enEffect_Num;
 
 	enum EnPauseMenu
@@ -57,7 +55,7 @@ public:
 	void Between();
 	void GoResult();
 	void GameState();
-	
+
 	/// <summary>
 	/// ポーズ時の移動処理
 	/// </summary>
@@ -92,7 +90,10 @@ public:
 	{
 		return SoundEffectVolume;
 	}
-
+	/// <summary>
+	/// タワー上のエフェクト
+	/// </summary>
+	void TowerEFK();
 	/// <summary>
 	/// 中立の敵のリスポーン
 	/// </summary>
@@ -219,6 +220,48 @@ public:
 	{
 		return UltCanUseFlag;
 	}
+
+	void UnderSprite_Attack() {
+		if (m_underSprite_Attack) {
+			return;
+		}
+
+		if (m_underSprite_TowerDown) {
+			m_underSprite_Attack = true;
+		}
+		UnderSpriteUpdate();
+	}
+	void UnderSprite_Skill() {
+		if (m_underSprite_Skill) {
+			return;
+		}
+
+		if (m_underSprite_TowerDown) {
+			m_underSprite_Skill = true;
+		}
+		UnderSpriteUpdate();
+	}
+	void UnderSprite_Level(int lv) {
+		if (m_underSprite_Level) {
+			return;
+		}
+
+		if (lv >= 4) {
+			m_underSprite_Level = true;
+			UnderSpriteUpdate();
+		}
+	}
+	void UnderSprite_Ult() {
+		if (m_underSprite_Ult) {
+			return;
+		}
+
+		if (m_underSprite_Attack && m_underSprite_Skill) {
+			m_underSprite_Ult = true;
+		}
+		UnderSpriteUpdate();
+	}
+
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する
@@ -240,6 +283,20 @@ private:
 	/// スカイキューブの初期化処理
 	/// </summary>
 	void InitSkyCube();
+
+	void UnderSpriteUpdate() {
+
+		// Attack/Skill
+		if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level) {
+			m_underSprite.Init("Assets/sprite/Ult.DDS", 1920.0f, 1080.0f);
+			return;
+		}
+		// Down
+		if (m_underSprite_TowerDown) {
+			m_underSprite.Init("Assets/sprite/FirstAttack.DDS", 1920.0f, 1080.0f);
+			return;
+		}
+	}
 
 	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
@@ -264,6 +321,16 @@ private:
 	SpriteRender m_Menu_SelectBar_BGM;   //SelectBar_BGM
 	SpriteRender m_Menu_SelectBar_SE;   //SelectBar_SE
 	SpriteRender m_operationPic;        //操作説明
+
+	//ゲームの説明
+	SpriteRender m_underSprite;			//下部に表示する説明の画像
+	SpriteRender m_RabbitSprite;		//ウサギ出現の画像
+
+	bool m_underSprite_TowerDown = false;
+	bool m_underSprite_Attack = false;
+	bool m_underSprite_Skill = false;
+	bool m_underSprite_Level = false;
+	bool m_underSprite_Ult = false;
 
 	Vector3 SelectBar_BGMPos = Vector3::AxisX;
 	Vector3 SelectBar_SEPos = Vector3::AxisX;
@@ -296,7 +363,7 @@ private:
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
-
+	Vector3 m_EFK_Pos = Vector3::Zero;
 	bool HowToPlaySpriteFlag = false;
 
 	float m_spriteAlpha = 0.0f;
@@ -357,5 +424,7 @@ private:
 	//falseの時しか必殺技を使えん
 	bool UltCanUseFlag = false;
 	float UltCanUseTimer = 0.0f;
+
+
 };
 

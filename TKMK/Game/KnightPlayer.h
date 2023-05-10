@@ -23,6 +23,7 @@ public:
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
+
 	inline Vector3 GetPosition() { return m_position; }
 
 	void AvoidanceSprite();
@@ -56,6 +57,7 @@ public:
 
 	//	}
 	//}
+
 
 private:
 	void CoolTimeProcess();
@@ -105,5 +107,10 @@ private:
 
 	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
+
+	//タワーの画像出すかどうか
+	bool TowerSpriteFlag = false;
+	//攻撃の画像を出すかどうか
+	bool AttackSpriteFlag = false;
 };
 

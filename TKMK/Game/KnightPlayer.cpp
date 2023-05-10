@@ -6,6 +6,7 @@
 #include "GameUI.h"
 #include "Fade.h"
 #include "GameCamera.h"
+#include "WizardUlt.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -106,12 +107,6 @@ void KnightPlayer::Update()
 		return;
 	}
 
-	/*if (m_charState == enCharState_Ult_liberation)
-	{
-		m_modelRender.Update();
-		return;
-	}*/
-
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
@@ -123,15 +118,23 @@ void KnightPlayer::Update()
 		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
+	//ステートがデスステートなら
+	/*if (m_Status.Hp<=0)
+	{
+		m_modelRender.Update();
+		return;
+	}*/
+
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade) == true)
 	{
-		m_charState = enCharState_Idle;
+		//m_charState = enCharState_Idle;
 		//アニメーションの再生
 		PlayAnimation();
 		m_modelRender.Update();
 		return;
 	}
+	
 
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -536,8 +539,30 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技のアニメーションで剣を振ったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
+		//雷を生成する
+		for (auto actors : m_game->GetActors())
+		{
+			//生成するキャラと自分のオブジェクトの名前が同じなら処理を飛ばす
+			if (GetName() == actors->GetName())
+			{
+				continue;
+			}
+			//必殺技の雷の生成
+			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+			//自分のオブジェクトの名前をセット
+			wizardUlt->SetCreatorName(GetName());
+			//攻撃するアクターのオブジェクト名をセット
+			wizardUlt->SetActor(actors->GetName());
+			//攻撃するアクターの座標取得
+			Vector3 UltPos = actors->GetPosition();
+			UltPos.y += 100.0f;
+			wizardUlt->SetPosition(UltPos);
+			wizardUlt->SetGame(m_game);
+		}
+
+
 		//必殺技の当たり判定のクラスを作成
-		MakeUltSkill();
+		//MakeUltSkill();
 		//レベルを下げる
 		UltimateSkill();
 		//エフェクトを移動

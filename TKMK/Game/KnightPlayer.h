@@ -8,6 +8,7 @@ class Neutral_Enemy;
 class KnightUlt;
 class GameUI;
 class GameCamera;
+class WizardUlt;
 
 class KnightPlayer:public KnightBase
 {

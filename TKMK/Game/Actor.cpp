@@ -363,7 +363,7 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 }
 
 /// <summary>
-/// キャラがやられてからリスポーンするまでの時間を計る
+/// キャラがやられてからリスポーンするまでの時間を計る　プレイヤー用
 /// </summary>
 /// /// <param name="DeathToRespwanFlag"></param>
 bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
@@ -380,6 +380,29 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
 			//画面を明るくする
 			fade->StartFadeOut(1.0f);
 
+			m_DeathToRespwanFlag = false;
+		}
+		//やられている
+		return true;
+	}
+	//やられていない
+	return false;
+}
+
+/// <summary>
+/// キャラがやられてからリスポーンするまでの時間を計る　AI用
+/// </summary>
+/// /// <param name="DeathToRespwanFlag"></param>
+bool Actor::DeathToRespawnTimer_AI(bool DeathToRespwanFlag)
+{
+	//キャラがやられたら
+	if (m_DeathToRespwanFlag == true)
+	{
+		//タイマー減少
+		m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
+		//2秒以上経ったら
+		if (m_respwanTimer <= 0.0f)
+		{
 			m_DeathToRespwanFlag = false;
 		}
 		//やられている

@@ -507,6 +507,11 @@ public:
 		MaxVolume += addSE;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	bool DeathToRespawnTimer_AI(bool DeathToRespwanFlag);
+
 private:
     Level3DRender m_respawnLevel;
 

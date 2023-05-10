@@ -427,7 +427,7 @@ void Game::Battle()
 		m_RespawnTimer = 0.0f;
 	}
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
-	if (m_RabbitRespawnTimer >= 5.0f)
+	if (m_RabbitRespawnTimer >= 15.0f)
 	{
 		RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;

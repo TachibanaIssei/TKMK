@@ -22,6 +22,7 @@ enum EnEFK {
 	enEffect_Knight_GetHoimi,
 	enEffect_Neutral_Enemy_Death,
 	enEffect_Neutral_Enemy_head_butt,
+	enEffect_TowerDown,
 	enEffect_Num
 };
 

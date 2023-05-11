@@ -140,6 +140,8 @@ void KnightPlayer::Update()
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
 			m_gameUI->LevelFontChange(Lv);
+			LevelUp = NewGO<ChaseEFK>(4);
+			LevelUp->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
 		}
 
 		//前フレームのレベルを取得
@@ -339,6 +341,7 @@ void KnightPlayer::Attack()
 			Quaternion SwordeffectRot = m_rot;
 			EffectKnightSkill->SetRotation(SwordeffectRot);
 			EffectKnightSkill->Update();
+
 			
 
 			//床のエフェクト
@@ -352,6 +355,10 @@ void KnightPlayer::Attack()
 			EffectKnightSkillGround->SetPosition(effectPosition);
 			EffectKnightSkillGround->SetRotation(m_rot);
 			EffectKnightSkillGround->Update();
+
+			m_FootSmoke = NewGO<ChaseEFK>(3);
+			m_FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
+			
 		}
 		
 		

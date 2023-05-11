@@ -85,7 +85,7 @@ private:
 	float UltimateSkillTimer = 0;
 
 	//bool AtkCollistionFlag = false;
-	// 
+	ChaseEFK* m_FootSmoke = nullptr;
 	
 
 	bool UltimateSkillFlag = false;
@@ -101,7 +101,7 @@ private:
 	//‰ñ”ğ‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
 	float AvoidanceSpeed = 170.0f;
 
-	int oldLv;
+	int oldLv = 1;
 
 	int dddd = 20;
 
@@ -112,5 +112,6 @@ private:
 	bool TowerSpriteFlag = false;
 	//UŒ‚‚Ì‰æ‘œ‚ğo‚·‚©‚Ç‚¤‚©
 	bool AttackSpriteFlag = false;
+	ChaseEFK* LevelUp = nullptr;
 };
 

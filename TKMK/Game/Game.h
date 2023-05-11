@@ -425,6 +425,6 @@ private:
 	bool UltCanUseFlag = false;
 	float UltCanUseTimer = 0.0f;
 
-
+	EffectEmitter* TowerDown = nullptr;
 };
 

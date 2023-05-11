@@ -12,7 +12,7 @@ public:
 	/// </summary>
 	/// <param name="effect">種類</param>
 	/// <param name="target">追尾対象</param>
-	void SetEffect(EnEFK effect, Actor* target, Vector3 scale = Vector3::One);
+	void SetEffect(EnEFK effect, Actor* target,Vector3 scale = Vector3::One);
 
 	// エフェクトを取得
 	EffectEmitter* GetEffect()

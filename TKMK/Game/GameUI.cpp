@@ -76,11 +76,11 @@ bool GameUI::Start()
 	//ブルー
 	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 70.0f, 70.0f);
 	//レッド
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Green.DDS", 70.0f, 70.0f);
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", 70.0f, 70.0f);
 	//グリーン
-	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Red.DDS", 70.0f, 70.0f);
+	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", 70.0f, 70.0f);
 	//イエロー
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 70.0f, 70.0f);
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 70.0f, 70.0f);
 
 	//ポイント関連
 	{
@@ -101,25 +101,40 @@ bool GameUI::Start()
 			{
 				//アイコンを剣士にする(ブルー)
 				
-				m_CharIcon[num].SetPosition(CharIconPos[num]);
+				m_CharIcon[0].SetPosition(CharIconPos[num]);
 				//フレームをプレイヤー用にする
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
 			}
-			//プレイヤーが魔法使いなら
-			else if (actor->IsMatchName(wizardname))
-			{
-				//アイコンを魔法使いにする
-				
-				//フレームをプレイヤー用にする
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
-			}
-			//それ以外(AI)なら
 			else
 			{
 				m_CharIcon[num].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
-			
+			//プレイヤーが魔法使いなら
+			//else if (actor->IsMatchName(wizardname))
+			//{
+			//	//アイコンを魔法使いにする
+			//	
+			//	//フレームをプレイヤー用にする
+			//	m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+			//}
+			//赤の剣士AIなら
+			/*else if(actor->IsMatchName(KnightAI_Red))
+			{
+				m_CharIcon[1].SetPosition(CharIconPos[num]);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}
+			else if (actor->IsMatchName(KnightAI_Green))
+			{
+				m_CharIcon[2].SetPosition(CharIconPos[num]);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}
+			else if (actor->IsMatchName(KnightAI_Yellow))
+			{
+				m_CharIcon[3].SetPosition(CharIconPos[num]);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}*/
+
 			m_PointFlame[num].SetPosition(PointFlamePos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
 			m_PointFlame[num].Update();
@@ -160,7 +175,7 @@ bool GameUI::Start()
 	m_CountNumper.Update();
 
 	//試合終了のカウントダウン
-	m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
+	m_FinishCountNumber.Init("Assets/sprite/gameUI/finish.DDS", 1920.0f, 1080.0f);
 	m_FinishCountNumber.SetPosition(Vector3::Zero);
 	m_FinishCountNumber.SetScale(m_finishCountScale);
 	m_FinishCountNumber.Update();
@@ -287,7 +302,8 @@ bool GameUI::Start()
 		//フォントの設定。
 		m_time_left.SetPosition(TIME_FONT_POS);
 		//フォントの大きさを設定。
-		m_time_left.SetScale(1.6f);
+		m_time_left.SetScale(timerScale);
+		m_time_left.SetPivot(0.0f, 0.0f);
 		//フォントの色を設定。
 		m_time_left.SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		m_time_left.SetShadowParam(true, 2.0f, g_vec4Black);
@@ -319,11 +335,7 @@ void GameUI::Update()
 		RespawnCountDown();
 	}
 
-	//試合終了まで残り10秒以下なら
-	if (m_game->GetMinutesTimer()<1&&m_game->GetSecondsTimer() < 10)
-	{
-		FinishTimer();
-	}
+	Timer();
 	
 	//gameクラスのスタートのフラグが立っている間処理を行わない
 	if (m_GameUIState == m_GameStartState) {
@@ -332,11 +344,7 @@ void GameUI::Update()
 
 	CharPoint();
 	
-	//制限時間の表示
-	wchar_t wcsbuf[256];
-	swprintf_s(wcsbuf, 256, L"%d:%02d", int(m_game->GetMinutesTimer()),int(m_game->GetSecondsTimer()));
-	//表示するテキストを設定。
-	m_time_left.SetText(wcsbuf);
+	
 	
 	//レベルの点滅
 	if (m_flashNumberFlag==false)
@@ -490,65 +498,106 @@ void GameUI::HPBar()
 }
 
 //試合終了の表示の処理
-void GameUI::FinishTimer()
+void GameUI::Timer()
 {
-	int finishTimer = m_game->GetSecondsTimer();
+	//制限時間の表示
+	wchar_t wcsbuf[256];
+	swprintf_s(wcsbuf, 256, L"%d:%02d", int(m_game->GetMinutesTimer()), int(m_game->GetSecondsTimer()));
+	//表示するテキストを設定。
+	
+	m_time_left.SetText(wcsbuf);
 
-	if (oldFinishCount != finishTimer)
+	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10&& m_game->GetSecondsTimer() > 0 )
 	{
-		switch (finishTimer)
+		if (timerScaleFlag == false)
 		{
-		case 0:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finish.DDS", 1920.0f, 1080.0f);
-			break;
-		case 1:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_1.DDS", 300.0f, 500.0f);
-			break;
-		case 2:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_2.DDS", 300.0f, 500.0f);
-			break;
-		case 3:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_3.DDS", 300.0f, 500.0f);
-			break;
-		case 4:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_4.DDS", 300.0f, 500.0f);
-			break;
-		case 5:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_5.DDS", 300.0f, 500.0f);
-			break;
-		case 6:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_6.DDS", 300.0f, 500.0f);
-			break;
-		case 7:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_7.DDS", 300.0f, 500.0f);
-			break;
-		case 8:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_8.DDS", 300.0f, 500.0f);
-			break;
-		case 9:
-			//試合終了のカウントダウン
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
-			//m_CountNumper.SetPosition(Vector3::Zero);
-			//m_FinishCountNumber.SetScale(m_finishCountScale);
+			if (timerScale < 4.0f)
+			{
+				timerScale += 2.0f*g_gameTime->GetFrameDeltaTime();
+			}
+			else
+			{
+				timerScale = 4.0f;
+				timerScaleFlag = true;
+			}
 			
-			break;
-		default:
-			break;
 		}
+		else if (timerScaleFlag == true)
+		{
+			if (timerScale > 2.0f)
+			{
+				timerScale -= 2.0f * g_gameTime->GetFrameDeltaTime();
+			}
+			else
+			{
+				timerScale = 2.0f;
+				timerScaleFlag = false;
+			}
+		}
+
+		
+		m_time_left.SetScale(timerScale);
 	}
 
-	oldFinishCount = finishTimer;
 
-	m_FinishCountNumber.Update();
+
+	//int finishTimer = m_game->GetSecondsTimer();
+
+	//if (oldFinishCount != finishTimer)
+	//{
+	//	switch (finishTimer)
+	//	{
+	//	case 0:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finish.DDS", 1920.0f, 1080.0f);
+	//		break;
+	//	case 1:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_1.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 2:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_2.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 3:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_3.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 4:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_4.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 5:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_5.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 6:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_6.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 7:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_7.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 8:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_8.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 9:
+	//		//試合終了のカウントダウン
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
+	//		//m_CountNumper.SetPosition(Vector3::Zero);
+	//		//m_FinishCountNumber.SetScale(m_finishCountScale);
+	//		
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	//oldFinishCount = finishTimer;
+
+	//m_FinishCountNumber.Update();
 }
 
 //プレイヤーの経験値の表示の処理todo
@@ -726,7 +775,7 @@ void GameUI::Render(RenderContext& rc)
 		}
 
 		//試合終了まで残り10秒なら
-		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10)
+		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
 		{
 			m_FinishCountNumber.Draw(rc);
 		}

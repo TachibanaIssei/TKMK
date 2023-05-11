@@ -98,7 +98,7 @@ public:
 
 	}
 
-	void FinishTimer();
+	void Timer();
 
 	/// <summary>
 	/// 
@@ -235,9 +235,14 @@ private:
 	};															//â§ä•É}Å[ÉN
 
 	FontRender m_time_left;
+	float timerScale = 2.0f;
+	bool timerScaleFlag = false;
 
 	const char* knightname = "knightplayer";
 	const char* wizardname = "wizardplayer";
+	const char* KnightAI_Red = "KnightAI";
+	const char* KnightAI_Green = "KnightAI1";
+	const char* KnightAI_Yellow = "KnightAI2";
 
 	int oldtStartCount = 0;
 

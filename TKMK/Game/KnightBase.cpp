@@ -710,12 +710,11 @@ void KnightBase::OnProcessRunStateTransition()
 	OnProcessCommonStateTransition();
 }
 
+//ジャンプアニメーションが再生されているとき
 void KnightBase::OnProcessJumpStateTransition()
 {
-	//��ŏ��
 	pushFlag = false;
-	//�t���O�ŋ󒆂ɂ��邩����
-	//�󒆂ɂ���
+	//空中にいるなら
 	if (IsAir(m_charCon) == enIsAir && m_charCon.IsOnGround() == false)
 	{
 		m_AirFlag = true;
@@ -724,7 +723,6 @@ void KnightBase::OnProcessJumpStateTransition()
 	{
 		if (m_charCon.IsOnGround() == true)
 		{
-			//�{�^���v�b�V���t���O��false�ɂ���
 			pushFlag = false;
 			m_AirFlag = false;
 			m_charState = enCharState_Idle;
@@ -906,6 +904,8 @@ void KnightBase::OnProcessDeathStateTransition()
 		pushFlag = false;
 		AtkState = false;
 		CantMove = false;
+		//地上にいない
+		IsGroundFlag = false;
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定

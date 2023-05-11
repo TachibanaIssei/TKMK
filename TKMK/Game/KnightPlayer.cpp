@@ -162,16 +162,18 @@ void KnightPlayer::Update()
 			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
 			{
 				pushFlag = true;
-				jampAccumulateflag = true;
+				//jampAccumulateflag = true;
 				m_charState = enCharState_Jump;
 			}
 		}
 		else
 		{
-				//攻撃処理
-				Attack();
-				//回避処理
-				Avoidance();
+			//地上にいる
+			IsGroundFlag = true;
+			//攻撃処理
+			Attack();
+			//回避処理
+			Avoidance();
 		}
 
 		//攻撃上昇中

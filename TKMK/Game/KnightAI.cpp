@@ -111,6 +111,13 @@ void KnightAI::Update()
 				m_charState = enCharState_Jump;
 			}
 		}
+		//地上にいるなら
+		else
+		{
+			//地上にいる
+			IsGroundFlag = true;
+		}
+
 		//ステート
 		ManageState();
 		//回避
@@ -125,6 +132,7 @@ void KnightAI::Update()
 			//追跡
 			ChaseAndEscape();
 		}
+		
 		
 		//攻撃
 		Attack();

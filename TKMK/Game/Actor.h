@@ -552,6 +552,8 @@ protected:
 	bool m_AirFlag = false;
 	//ジャンプフラグ
 	bool m_RespawnJumpFlag = false;
+	//地上に降りたかどうかの判定
+	bool IsGroundFlag = false;
 
 	//自分をターゲットしてるアクターのリスト
 	std::vector<Actor*> be_target;

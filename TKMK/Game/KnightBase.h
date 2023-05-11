@@ -354,7 +354,7 @@ protected:
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
 
-	bool jampAccumulateflag = false;
+	//bool jampAccumulateflag = false;
 
 	//プレイヤーとの内積を求めて線形補間で音量調整
 	float SEVolume = 0;

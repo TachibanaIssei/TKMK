@@ -34,7 +34,7 @@ bool WizardUlt::Start()
 	Vector3 ThunderPos = m_position;
 	ThunderPos.y = 0.0f;
 	Thunder->SetPosition(ThunderPos);
-	Thunder->SetScale(Vector3::One * 5.0f);
+	Thunder->SetScale(Vector3::One * 12.0f);
 	Thunder->Play();
 	return true;
 }

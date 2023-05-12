@@ -203,6 +203,7 @@ bool Game::Start()
 			//		m_Actors.push_back(m_KnightAI);
 			//		m_KnightAI->SetPosition(objData.position);
 			//		m_KnightAI->SetCharaconPosition(objData.position);
+			//		m_KnightAI->SetPlayerActor(player->GetPlayerActor());
 			//		int Number = 0;
 			//		m_KnightAI->SetRespawnNumber(Number);
 			//		m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
@@ -216,6 +217,7 @@ bool Game::Start()
 			//		m_Actors.push_back(m_KnightAI1);
 			//		m_KnightAI1->SetPosition(objData.position);
 			//		m_KnightAI1->SetCharaconPosition(objData.position);
+			//		m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
 			//		int Number = 1;
 			//		m_KnightAI1->SetRespawnNumber(Number);
 			//		m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
@@ -229,12 +231,13 @@ bool Game::Start()
 			//		m_Actors.push_back(m_KnightAI2);
 			//		m_KnightAI2->SetPosition(objData.position);
 			//		m_KnightAI2->SetCharaconPosition(objData.position);
+			//		m_KnightAI2->SetPlayerActor(player->GetPlayerActor());
 			//		int Number = 3;
 			//		m_KnightAI2->SetRespawnNumber(Number);
 			//		m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 
 			//		return true;
-				//}
+			//	}
 				if (objData.number == 4)
 				{
 					m_EFK_Pos = objData.position;
@@ -242,7 +245,7 @@ bool Game::Start()
 				return true;
 			}
 		return true;
-		});  
+});  
 	
 	
 	//GameUIの生成

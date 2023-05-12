@@ -235,6 +235,7 @@ bool Game::Start()
 
 					return true;
 				}
+
 				if (objData.number == 4)
 				{
 					m_EFK_Pos = objData.position;
@@ -242,7 +243,7 @@ bool Game::Start()
 				return true;
 			}
 		return true;
-		});  
+});  
 	
 	
 	//GameUIの生成

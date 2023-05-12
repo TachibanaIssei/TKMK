@@ -7,6 +7,16 @@
 #include "WizardUlt.h"
 #include "KnightUlt.h"
 
+namespace
+{
+	const float HP_WINDOW_WIDTH = 1152.0f;
+	const float HP_WINDOW_HEIGHT = 648.0f;
+	const float HP_BER_WIDTH = 178.0f;
+	const float HP_BER_HEIGHT = 22.0f;
+	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
+	const float RADIUS = 100.0f;
+
+}
 KnightAI::KnightAI()
 {
 	
@@ -43,6 +53,12 @@ bool KnightAI::Start() {
 	m_sphereCollider.Create(1.0f);
 	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
 
+	m_HP_Bar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
+	//m_HPBar.SetPivot(PIVOT);
+
+	m_HP_Back.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
+
+	m_HP_Frame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
 	return true;
 }
 
@@ -72,6 +88,8 @@ void KnightAI::Update()
 		}
 		return;
 	}
+	HPBar();
+
 
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer_AI(m_DeathToRespwanFlag) == true)
@@ -82,7 +100,6 @@ void KnightAI::Update()
 		m_modelRender.Update();
 		return;
 	}
-
 	//攻撃アップ中の処理
 	AttackUP();
 
@@ -941,6 +958,87 @@ void KnightAI::MakeUltSkill()
 
 }
 
+void KnightAI::HPBar()
+{
+	if (m_Status.Hp < 0)
+	{
+		m_Status.Hp = 0;
+	}
+
+	Vector3 scale = Vector3::One;
+	scale.x = float(m_Status.Hp) / float(m_Status.MaxHp);
+	m_HP_Bar.SetScale(scale);
+
+	Vector3 BerPosition = m_position;
+	BerPosition.y += 75.0f;
+	//座標を変換する
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBer_Pos, BerPosition);
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindow_Pos, BerPosition);
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBack_Pos, BerPosition);
+
+	//HPバー画像を左寄せに表示する
+	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
+	m_HPBer_Pos.x -= BerSizeSubtraction.x;
+	wchar_t wcsbuf[256];
+	std::size_t len = std::strlen(GetName());
+	std::size_t converted = 0;
+	wchar_t* wcstr = new wchar_t[len + 1];
+	mbstowcs_s(&converted, wcstr, len + 1, GetName(), _TRUNCATE);
+	m_Name.SetText(wcstr);
+	m_Name.SetPosition(Vector3(m_HPBer_Pos.x, m_HPBer_Pos.y, 0.0f));
+	//フォントの大きさを設定。
+	m_Name.SetScale(0.5f);
+	//フォントの色を設定。
+	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
+
+	m_HP_Bar.SetPosition(Vector3(m_HPBer_Pos.x, m_HPBer_Pos.y, 0.0f));
+	m_HP_Frame.SetPosition(Vector3(m_HPWindow_Pos.x, m_HPWindow_Pos.y, 0.0f));
+	m_HP_Back.SetPosition(Vector3(m_HPBack_Pos.x, m_HPBack_Pos.y, 0.0f));
+
+	m_HP_Bar.Update();
+	m_HP_Frame.Update();
+	m_HP_Back.Update();
+}
+Vector3 KnightAI::HPBerSend(Vector3 size, Vector3 scale)
+{
+	Vector3 hpBerSize = size;								//画像の元の大きさ
+	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
+	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
+
+	changeBerSize.x = hpBerSize.x * scale.x;
+	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
+	BerSizeSubtraction.x /= 2.0f;
+
+	return BerSizeSubtraction;
+}
+
+bool KnightAI::DrawHP()
+{
+	Vector3 toCameraTarget = g_camera3D->GetTarget() - g_camera3D->GetPosition();
+	Vector3 toMush = m_position - g_camera3D->GetPosition();
+	toCameraTarget.y = 0.0f;
+	toMush.y = 0.0f;
+	toCameraTarget.Normalize();
+	toMush.Normalize();
+
+	float cos = Dot(toCameraTarget, toMush);
+	float angle = acos(cos);
+
+	//カメラの後ろにあるなら描画しない
+	Vector3 diff = m_player->GetPosition() - m_position;
+
+	//プレイヤーに向かう距離を計算する
+	float playerdistance = diff.Length();
+
+	if (fabsf(angle) < Math::DegToRad(45.0f) && playerdistance < 800.0f && m_player->GetPosition().y <= 10.0f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 
 void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
@@ -1188,7 +1286,16 @@ void KnightAI::Rotation()
 void KnightAI::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
-
+	//スプライトフラグがtureなら
+	if (m_player->GetSpriteFlag())
+	{
+		if (DrawHP())
+		{
+			m_HP_Back.Draw(rc);
+			m_HP_Bar.Draw(rc);
+			m_HP_Frame.Draw(rc);
+		}
+	}
 	//フォントを描画する。
 	//m_Name.Draw(rc);
 

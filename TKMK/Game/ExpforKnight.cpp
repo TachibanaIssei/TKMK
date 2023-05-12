@@ -17,17 +17,32 @@ ExpforKnight::~ExpforKnight()
 bool ExpforKnight::Start()
 {
 	//プレイヤーが経験値を獲得する画像
-	kyokusen.Init("Assets/sprite/1.DDS", 96.0f, 96.0f, AlphaBlendMode_Add);
 
-		//ワールド座標をスクリン座標に変換
-		Vector3 EFKWorldPOS = m_EnemyPos;
+	m_NormalExp.Init("Assets/sprite/Exp.DDS",128.0f, 128.0f, AlphaBlendMode_Add);
 
-		g_camera3D->CalcScreenPositionFromWorldPosition(m_EFKSCPOS, EFKWorldPOS);
-		center.x = (m_EFKSCPOS.x - EXPERIENCE_BAR_POS.x) / 2.0f;
-		center.y = (m_EFKSCPOS.y - EXPERIENCE_BAR_POS.y) / 2.0f;
-		center.y += 400.0f;
+	//ワールド座標をスクリン座標に変換
+	Vector3 EFKWorldPOS = m_EnemyPos;
 
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_EFKSCPOS, EFKWorldPOS);
+	center.x = (m_EFKSCPOS.x - EXPERIENCE_BAR_POS.x) / 2.0f;
+	center.y = (m_EFKSCPOS.y - EXPERIENCE_BAR_POS.y) / 2.0f;
+	center.y += 400.0f;
+	if (isRabbit)
+	{
+		Randamu = rand() % 601 - 300;
+		center.x += Randamu;
+		Randamu = rand() % 601 - 300;
+		center.y += Randamu;
+	}
 
+	else
+	{
+		Randamu = rand() % 401 - 200;
+		center.x += Randamu;
+		Randamu = rand() % 401 - 200;
+		center.y += Randamu;
+	}
+	
 	return true;
 }
 
@@ -48,8 +63,8 @@ void ExpforKnight::Bezier()
 	MovePos2.Lerp(m_Timer, center, EXPERIENCE_BAR_POS);
 	MovePos3.Lerp(m_Timer, MovePos, MovePos2);
 
-	kyokusen.SetPosition(MovePos3.x,MovePos3.y,0.0f);
-	kyokusen.Update();
+	m_NormalExp.SetPosition(MovePos3.x,MovePos3.y,0.0f);
+	m_NormalExp.Update();
 
 	m_Timer += 0.04f;
 
@@ -57,5 +72,6 @@ void ExpforKnight::Bezier()
 void ExpforKnight::Render(RenderContext& rc)
 {
 
-	kyokusen.Draw(rc);
+	m_NormalExp.Draw(rc);
+
 }

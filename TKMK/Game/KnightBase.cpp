@@ -163,10 +163,6 @@ void KnightBase::ExpProcess(int Exp)
 }
 
 /// <summary>
-/// 移動処理
-/// </summary>
-
-/// <summary>
 /// 回転処理
 /// </summary>
 void KnightBase::Rotation()
@@ -377,6 +373,9 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 			PowerUpEfk = nullptr;
 		}
 
+		//地上にいない
+		IsGroundFlag = false;
+
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(17);
@@ -420,50 +419,50 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 void KnightBase::UltimateSkill()
 {
 	//
-	int DownLv=0;
+	int DownLv = 3;
 	//レベルが5以下なら
 	//必殺技強化なし
-	if (Lv < 6)
-	{
-		//レベルを3下げる
-		DownLv = 3;
-	}
-	//レベルが7以下なら
-	//必殺技一段階強化
-	else if (Lv < 8)
-	{
-		switch (Lv)
-		{
-		case 6:
-			DownLv = 5;
-			break;
-		case 7:
-			DownLv = 6;
-			break;
-		default:
-			break;
-		}
-	}
-	//レベルが10以下なら
-	//必殺技二段階強化
-	else if (Lv <= 10)
-	{
-		switch (Lv)
-		{
-		case 8:
-			DownLv = 7;
-			break;
-		case 9:
-			DownLv = 8;
-			break;
-		case 10:
-			DownLv = 9;
-			break;
-		default:
-			break;
-		}
-		
-	}
+	//if (Lv < 6)
+	//{
+	//	//レベルを3下げる
+	//	DownLv = 3;
+	//}
+	////レベルが7以下なら
+	////必殺技一段階強化
+	//else if (Lv < 8)
+	//{
+	//	switch (Lv)
+	//	{
+	//	case 6:
+	//		DownLv = 5;
+	//		break;
+	//	case 7:
+	//		DownLv = 6;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+	////レベルが10以下なら
+	////必殺技二段階強化
+	//else if (Lv <= 10)
+	//{
+	//	switch (Lv)
+	//	{
+	//	case 8:
+	//		DownLv = 7;
+	//		break;
+	//	case 9:
+	//		DownLv = 8;
+	//		break;
+	//	case 10:
+	//		DownLv = 9;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//	
+	//}
 
 	//レベルを3下げる
 	levelDown(LvUPStatus, m_Status, Lv, DownLv);
@@ -710,12 +709,11 @@ void KnightBase::OnProcessRunStateTransition()
 	OnProcessCommonStateTransition();
 }
 
+//ジャンプアニメーションが再生されているとき
 void KnightBase::OnProcessJumpStateTransition()
 {
-	//��ŏ��
 	pushFlag = false;
-	//�t���O�ŋ󒆂ɂ��邩����
-	//�󒆂ɂ���
+	//空中にいるなら
 	if (IsAir(m_charCon) == enIsAir && m_charCon.IsOnGround() == false)
 	{
 		m_AirFlag = true;
@@ -724,7 +722,6 @@ void KnightBase::OnProcessJumpStateTransition()
 	{
 		if (m_charCon.IsOnGround() == true)
 		{
-			//�{�^���v�b�V���t���O��false�ɂ���
 			pushFlag = false;
 			m_AirFlag = false;
 			m_charState = enCharState_Idle;
@@ -906,6 +903,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		pushFlag = false;
 		AtkState = false;
 		CantMove = false;
+		
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定
@@ -932,6 +930,11 @@ void KnightBase::UltEnd() {
 	pushFlag = false;
 	//レベルを下げる
 	//UltimateSkill();
+	//必殺技使用時のフラグを戻す
+	m_UseUltimaitSkillFlag = false;
+	//カウンターリセット
+	m_OnGroundCharCounter = 0;
+
 	//待機ステート
 	m_charState = enCharState_Idle;
 	OnProcessCommonStateTransition();

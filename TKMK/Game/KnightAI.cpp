@@ -56,6 +56,12 @@ void KnightAI::Update()
 	Collition();
 	//アニメーションの再生
 	PlayAnimation();
+
+	//必殺技を打った時
+	if (UltimaitSkillTime() == true) {
+		return;
+	}
+
 	//自分の以外の必殺中は止まります
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
@@ -64,6 +70,16 @@ void KnightAI::Update()
 		{
 			m_modelRender.Update();
 		}
+		return;
+	}
+
+	//やられたらリスポーンするまで実行する
+	if (DeathToRespawnTimer_AI(m_DeathToRespwanFlag) == true)
+	{
+		//m_charState = enCharState_Idle;
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
 		return;
 	}
 
@@ -101,6 +117,20 @@ void KnightAI::Update()
 				m_charState = enCharState_Jump;
 			}
 		}
+		else
+		{
+			//やられているなら
+			if (m_charState == enCharState_Death)
+			{
+				//地上にいない
+				IsGroundFlag = false;
+			}
+			else
+				//地上にいる
+				IsGroundFlag = true;
+			
+		}
+
 		//ステート
 		ManageState();
 		//回避
@@ -115,6 +145,7 @@ void KnightAI::Update()
 			//追跡
 			ChaseAndEscape();
 		}
+		
 		
 		//攻撃
 		Attack();
@@ -756,6 +787,8 @@ void KnightAI::Attack()
 	
 	if (CanUlt())
 	{
+		//必殺技を打たない
+		//return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
@@ -784,6 +817,43 @@ void KnightAI::Attack()
 		}
 	}
 
+}
+
+//必殺技を打っている間の処理
+bool KnightAI::UltimaitSkillTime()
+{
+	if (m_UseUltimaitSkillFlag == true)
+	{
+		if (m_UltshootTimer > 1)
+		{
+			MakeUltSkill();
+		}
+		else
+		{
+			m_UltshootTimer += g_gameTime->GetFrameDeltaTime();
+		}
+
+		//全ての雷が落ちてから
+
+		//地上にいるキャラに必殺技を打ち終わったら
+		if (m_OnGroundCharCounter <= 0)
+		{
+			for (auto actor : m_game->GetActors())
+			{
+				//必殺技打たれた状態を無くす
+				actor->ChangeDamegeUltFlag(false);
+			}
+
+			//時間を動かす
+			UltEnd();
+			m_game->SetStopFlag(false);
+		}
+
+
+		return true;
+	}
+
+	return false;
 }
 
 
@@ -818,21 +888,56 @@ void KnightAI::AtkCollisiton()
 /// </summary>
 void KnightAI::MakeUltSkill()
 {
-	KnightUlt* knightUlt = NewGO<KnightUlt>(0, "knightUlt");
-	//製作者の名前を入れる
-	knightUlt->SetCreatorName(GetName());
-	// 制作者を教える
-	knightUlt->SetActor(this);
-	knightUlt->SetUltColorNumb(respawnNumber);
-	//キャラのレベルを入れる
-	knightUlt->GetCharLevel(Lv);
-	//座標の設定
-	Vector3 UltPos = m_position;
-	UltPos.y += 60.0f;
-	knightUlt->SetPosition(UltPos);
-	knightUlt->SetRotation(m_rot);
-	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
-	knightUlt->SetGame(m_game);
+	//必殺技の雷の生成
+	for (auto actor : m_game->GetActors())
+	{
+		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
+		if (GetName() == actor->GetName() || actor->GetDamegeUltFlag() == true)
+		{
+			continue;
+		}
+		//地上にいるAIにだけ雷を落とす
+		if (actor->IsGroundIn() == true)
+		{
+			//必殺技の雷の生成
+			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+			//自分のオブジェクトの名前をセット
+			wizardUlt->SetCreatorName(GetName());
+			//攻撃するアクターのオブジェクト名をセット
+			wizardUlt->SetActor(actor->GetName());
+			//攻撃するアクターの座標取得
+			Vector3 UltPos = actor->GetPosition();
+			UltPos.y += 100.0f;
+			wizardUlt->SetPosition(UltPos);
+			wizardUlt->SetGame(m_game);
+
+			//必殺技を打たれたのでフラグを立てる
+			actor->ChangeDamegeUltFlag(true);
+
+		}
+		//カウント減らす
+		//m_OnGroundCharCounter--;
+		//
+		m_UltshootTimer = 0.0f;
+		//一人ずつ必殺技を打つのでぬける
+		return;
+	}
+
+	//KnightUlt* knightUlt = NewGO<KnightUlt>(0, "knightUlt");
+	////製作者の名前を入れる
+	//knightUlt->SetCreatorName(GetName());
+	//// 制作者を教える
+	//knightUlt->SetActor(this);
+	//knightUlt->SetUltColorNumb(respawnNumber);
+	////キャラのレベルを入れる
+	//knightUlt->GetCharLevel(Lv);
+	////座標の設定
+	//Vector3 UltPos = m_position;
+	//UltPos.y += 60.0f;
+	//knightUlt->SetPosition(UltPos);
+	//knightUlt->SetRotation(m_rot);
+	//knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	//knightUlt->SetGame(m_game);
 
 }
 
@@ -898,10 +1003,28 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
+		//必殺技使用時の処理ができるようにする
+		m_UseUltimaitSkillFlag = true;
+		//地上にいるキャラをカウントする
+		for (auto actor : m_game->GetActors())
+		{
+			if (GetName() == actor->GetName()) {
+				continue;
+			}
+
+			if (actor->IsGroundIn() == true)
+			{
+				m_OnGroundCharCounter++;
+			}
+		}
 		//必殺技の当たり判定のクラスを作成
-		MakeUltSkill();
+		//MakeUltSkill();
 		//レベルを下げる
 		UltimateSkill();
+		////必殺技の当たり判定のクラスを作成
+		//MakeUltSkill();
+		////レベルを下げる
+		//UltimateSkill();
 		//エフェクトを移動
 		//m_swordEffectFlag = false;
 

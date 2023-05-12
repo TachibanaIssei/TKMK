@@ -6,6 +6,7 @@
 #include "GameUI.h"
 #include "Fade.h"
 #include "GameCamera.h"
+#include "WizardUlt.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -94,6 +95,12 @@ void KnightPlayer::Update()
 	//当たり判定
 	Collition();
 
+	//必殺技を打った時
+	if (UltimaitSkillTime() == true) {
+		return;
+	}
+	
+
 	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
@@ -106,12 +113,6 @@ void KnightPlayer::Update()
 		return;
 	}
 
-	/*if (m_charState == enCharState_Ult_liberation)
-	{
-		m_modelRender.Update();
-		return;
-	}*/
-
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
@@ -123,15 +124,23 @@ void KnightPlayer::Update()
 		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
+	//ステートがデスステートなら
+	/*if (m_Status.Hp<=0)
+	{
+		m_modelRender.Update();
+		return;
+	}*/
+
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade) == true)
 	{
-		m_charState = enCharState_Idle;
+		//m_charState = enCharState_Idle;
 		//アニメーションの再生
 		PlayAnimation();
 		m_modelRender.Update();
 		return;
 	}
+	
 
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -161,16 +170,22 @@ void KnightPlayer::Update()
 			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
 			{
 				pushFlag = true;
-				jampAccumulateflag = true;
+				//jampAccumulateflag = true;
 				m_charState = enCharState_Jump;
 			}
 		}
 		else
 		{
-				//攻撃処理
-				Attack();
-				//回避処理
-				Avoidance();
+
+			if (m_charState != enCharState_Death)
+			{
+				//地上にいる
+				IsGroundFlag = true;
+			}
+			//攻撃処理
+			Attack();
+			//回避処理
+			Avoidance();
 		}
 
 		//攻撃上昇中
@@ -396,6 +411,43 @@ void KnightPlayer::Attack()
 	
 }
 
+//必殺技を打っている間の処理
+bool KnightPlayer::UltimaitSkillTime()
+{
+	if (m_UseUltimaitSkillFlag == true)
+	{
+		if (m_UltshootTimer > 1)
+		{
+			MakeUltSkill();
+		}
+		else
+		{
+			m_UltshootTimer += g_gameTime->GetFrameDeltaTime();
+		}
+		
+		//全ての雷が落ちてから
+		
+		//地上にいるキャラに必殺技を打ち終わったら
+		if (m_OnGroundCharCounter <= 0)
+		{
+			for (auto actor : m_game->GetActors())
+			{
+				//必殺技打たれた状態を無くす
+				actor->ChangeDamegeUltFlag(false);
+			}
+
+			//時間を動かす
+			UltEnd();
+			m_game->SetStopFlag(false);
+		}
+		
+
+		return true;
+	}
+
+	return false;
+}
+
 /// <summary>
 /// 回避処理
 /// </summary>
@@ -421,21 +473,56 @@ void KnightPlayer::Avoidance()
 /// </summary>
 void KnightPlayer::MakeUltSkill()
 {
-	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
-	//製作者の名前を入れる
-	knightUlt->SetCreatorName(GetName());
-	// 制作者を教える
-	knightUlt->SetActor(this);
-	knightUlt->SetUltColorNumb(respawnNumber);
-	//キャラのレベルを入れる
-	knightUlt->GetCharLevel(Lv);
-	//座標の設定
-	Vector3 UltPos = m_position;
-	UltPos.y += 60.0f;
-	knightUlt->SetPosition(UltPos);
-	knightUlt->SetRotation(m_rot);
-	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
-	knightUlt->SetGame(m_game);
+	//必殺技の雷の生成
+	for (auto actor : m_game->GetActors())
+	{
+		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
+		if (GetName() == actor->GetName()||actor->GetDamegeUltFlag()==true)
+		{
+			continue;
+		}
+		//地上にいるAIにだけ雷を落とす
+		if (actor->IsGroundIn() == true)
+		{
+			//必殺技の雷の生成
+			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+			//自分のオブジェクトの名前をセット
+			wizardUlt->SetCreatorName(GetName());
+			//攻撃するアクターのオブジェクト名をセット
+			wizardUlt->SetActor(actor->GetName());
+			//攻撃するアクターの座標取得
+			Vector3 UltPos = actor->GetPosition();
+			UltPos.y += 100.0f;
+			wizardUlt->SetPosition(UltPos);
+			wizardUlt->SetGame(m_game);
+
+			//必殺技を打たれたのでフラグを立てる
+			actor->ChangeDamegeUltFlag(true);
+			
+		}
+		//カウント減らす
+		//m_OnGroundCharCounter--;
+		//
+		m_UltshootTimer = 0.0f;
+		//一人ずつ必殺技を打つのでぬける
+		return;
+	}
+	
+	//KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
+	////製作者の名前を入れる
+	//knightUlt->SetCreatorName(GetName());
+	//// 制作者を教える
+	//knightUlt->SetActor(this);
+	//knightUlt->SetUltColorNumb(respawnNumber);
+	////キャラのレベルを入れる
+	//knightUlt->GetCharLevel(Lv);
+	////座標の設定
+	//Vector3 UltPos = m_position;
+	//UltPos.y += 60.0f;
+	//knightUlt->SetPosition(UltPos);
+	//knightUlt->SetRotation(m_rot);
+	//knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	//knightUlt->SetGame(m_game);
 
 }
 
@@ -543,8 +630,23 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技のアニメーションで剣を振ったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
+		//雷を生成する
+		//必殺技使用時の処理ができるようにする
+		m_UseUltimaitSkillFlag = true;
+		//地上にいるキャラをカウントする
+		for (auto actor : m_game->GetActors())
+		{
+			if (GetName() == actor->GetName()) {
+				continue;
+			}
+
+			if (actor->IsGroundIn()==true)
+			{
+				m_OnGroundCharCounter++;
+			}
+		}
 		//必殺技の当たり判定のクラスを作成
-		MakeUltSkill();
+		//MakeUltSkill();
 		//レベルを下げる
 		UltimateSkill();
 		//エフェクトを移動
@@ -638,7 +740,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	if (wcscmp(eventName, L"Avoidance_End") == 0)
 	{
 		//移動処理をしないようにする
-
+		pushFlag = false;
 		AvoidanceFlag = false;
 		//m_AtkTmingState = Num_State;
 	

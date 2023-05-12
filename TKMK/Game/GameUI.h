@@ -90,6 +90,11 @@ public:
 	void HPBar();
 
 	/// <summary>
+	/// AIのレベルの表示
+	/// </summary>
+	void Level();
+
+	/// <summary>
 	/// GamwUIのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
@@ -98,7 +103,7 @@ public:
 
 	}
 
-	void FinishTimer();
+	void Timer();
 
 	/// <summary>
 	/// 
@@ -153,6 +158,7 @@ private:
 	FontRender m_HpNameFont;
 
 	FontRender m_PointFont[4];
+	FontRender m_LevelFont[3];
 
 	Player* player = nullptr;
 	Game* m_game = nullptr;
@@ -191,7 +197,7 @@ private:
 	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
-	
+	Vector2				m_GameTimePos = Vector2::Zero;
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
@@ -213,12 +219,18 @@ private:
 		Vector3(-850.0f, -150.0f, 0.0f), 
 	};															//ポイント
 
+	Vector3 LevelPos[3] = {
+		Vector3(-950.0f, 0.0f, 0.0f),
+		Vector3(-950.0f, -100.0f, 0.0f),
+		Vector3(-950.0f, -200.0f, 0.0f),
+	};															//レベル
+
 	Vector3 PointFlamePos[4] = {
 		Vector3(-850.0f, 120.0f, 0.0f),
 		Vector3(-850.0f, 20.0f, 0.0f),
 		Vector3(-850.0f, -80.0f, 0.0f),
 		Vector3(-850.0f, -180.0f, 0.0f),
-	};															//ポイント
+	};															//ポイントのフレーム
 
 	Vector3 CharIconPos[4] = {
 		Vector3(-920.0f, 120.0f, 0.0f),
@@ -235,9 +247,14 @@ private:
 	};															//王冠マーク
 
 	FontRender m_time_left;
+	float timerScale = 2.0f;
+	bool timerScaleFlag = false;
 
 	const char* knightname = "knightplayer";
 	const char* wizardname = "wizardplayer";
+	const char* KnightAI_Red = "KnightAI";
+	const char* KnightAI_Green = "KnightAI1";
+	const char* KnightAI_Yellow = "KnightAI2";
 
 	int oldtStartCount = 0;
 

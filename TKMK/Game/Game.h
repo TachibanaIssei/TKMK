@@ -34,6 +34,7 @@ public:
 		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
+	
 
 	EnEFK m_EnEffect_Knight = enEffect_Num;
 

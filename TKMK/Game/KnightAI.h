@@ -23,6 +23,7 @@ public:
 	bool Start();
 	void Update();
 	void Attack();
+	bool UltimaitSkillTime();
 	void Render(RenderContext& rc);
 	void AtkCollisiton();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);

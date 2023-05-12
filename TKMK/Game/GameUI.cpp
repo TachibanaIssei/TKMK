@@ -57,6 +57,9 @@ namespace
 	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//の座標
 
 	const Vector3 ADDPOINTPOS = Vector3(20.0f, 10.0f, 0.0f);
+
+	const float WHITEHP_WAIT = 0.2f;
+
 }
 GameUI::GameUI()
 {
@@ -271,11 +274,19 @@ bool GameUI::Start()
 		m_HPFrame.Init("Assets/sprite/gameUI/HPBar_flame.DDS", 600.0f, 120.0f);
 		m_HPFrame.SetPosition(HP_BAR_POS);
 		m_HPFrame.SetScale(1.0, 0.7, 1.0);
-
+		//HPバーの白い部分
+		m_HpBar_White.Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", 580.0f, 80.0f);
+		m_HpBar_White.SetPivot(HPGAUGE_PIVOT);
+		m_HpBar_White.SetPosition(HP_BAR_FLONT_POS);
 		//更新処理
 		m_statusBar.Update();
 		m_HPFrame.Update();
+		m_HpBar_White.Update();
 		m_hpBar.Update();
+		//プレイヤーのHPを取得　白い部分用
+		White_BackHp = player->CharSetHp();
+		WhiteHp_Timer = WHITEHP_WAIT;
+
 	}
 
 	//制限時間と獲得ポイント
@@ -487,6 +498,34 @@ void GameUI::HPBar()
 	m_hpBar.SetScale(HpScale);
 
 	m_hpBar.Update();
+	
+	//Hp削られたら白い部分も減らす
+	if (HP < White_BackHp)
+	{
+		if (WhiteHp_Timer > 0.0f)
+		{
+			WhiteHp_Timer -= g_gameTime->GetFrameDeltaTime();
+		}
+		else
+		{
+			White_BackHp -= 2;
+
+			//HPバーの減っていく割合。
+			HpScale.x = (float)White_BackHp / (float)MaxHP;
+			m_HpBar_White.SetScale(HpScale);
+
+			if (White_BackHp <= HP)
+			{
+				White_BackHp = HP;
+				WhiteHp_Timer = WHITEHP_WAIT;
+			}
+		}
+	}
+	else if (HP > White_BackHp)
+	{
+		White_BackHp = HP;
+	}
+	m_HpBar_White.Update();
 }
 
 //試合終了の表示の処理
@@ -693,6 +732,7 @@ void GameUI::Render(RenderContext& rc)
 		m_time_left.Draw(rc);
 
 		m_statusBar.Draw(rc);
+		m_HpBar_White.Draw(rc);
 		m_hpBar.Draw(rc);
 		
 		m_HPFrame.Draw(rc);
@@ -707,6 +747,7 @@ void GameUI::Render(RenderContext& rc)
 		m_LvNumber.Draw(rc);
 		m_MaxLv.Draw(rc);
 		
+
 
 		//ポイントを描画
 		int num = 0;

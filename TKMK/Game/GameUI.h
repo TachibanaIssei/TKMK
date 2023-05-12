@@ -163,6 +163,7 @@ private:
 
 	//UI
 	SpriteRender			m_hpBar;							//HPバーの画像
+	SpriteRender            m_HpBar_White;                      //HPバーの白い部分
 	SpriteRender			m_statusBar;						//ステータスの画像
 	SpriteRender			m_HPFrame;							//プレイヤーの顔画像の枠
 	SpriteRender			m_playerFaceBack;					//プレイヤーの顔画像の背景
@@ -185,16 +186,16 @@ private:
 	SpriteRender			m_Crown;							//ポイントが一番多いキャラにつける王冠マーク
 	SpriteRender			m_PointFlame[4];					//ポイントを表示するフレーム
 	SpriteRender            m_CharIcon[4];                      //キャラのアイコン
-	SpriteRender			m_CountNumper;					//カウントダウン
+	SpriteRender			m_CountNumper;						//カウントダウン
 	SpriteRender			m_RespawnIn;						//Respawn inの画像
 	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
 	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
-	
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
+	
 
 	Vector3				m_EXPBerPos = /*Vector3(750.0f, -500.0f, 0.0f)*/Vector3::Zero;				   //EXPバーのポジション
 
@@ -262,8 +263,8 @@ private:
 
 	int MaxPoint = 1;
 
-	
-
+	int White_BackHp = 0;
+	float WhiteHp_Timer = 0.0f;
 
 };
 

@@ -19,6 +19,8 @@ WizardUlt::~WizardUlt()
 	//m_CreatMeActor->UltEnd();
 	//地上にいることを示すカウンターを減らす
 	m_CreatMeActor->SubOnGroundCharCounter();
+	//ターゲットの地上にいるフラグをfalseにする	
+	m_targetActor->ChangeGroundChackflag(false);
 	
 }
 

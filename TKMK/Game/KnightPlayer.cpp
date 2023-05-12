@@ -636,13 +636,18 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//地上にいるキャラをカウントする
 		for (auto actor : m_game->GetActors())
 		{
-			if (GetName() == actor->GetName()) {
+			//名前が自身と同じもしくは一度調べたキャラならやり直す
+			if (GetName() == actor->GetName()|| actor->GetGroundChackflag()==true) {
 				continue;
 			}
 
 			if (actor->IsGroundIn()==true)
 			{
+				//地上にいるのでカウントを増やす
 				m_OnGroundCharCounter++;
+				//このキャラはグラウンドにいる
+				actor->ChangeGroundChackflag(true);
+
 			}
 		}
 		//必殺技の当たり判定のクラスを作成

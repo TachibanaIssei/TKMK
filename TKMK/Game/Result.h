@@ -1,7 +1,7 @@
 #pragma once
 
 #define PLAYER 4
-#define MOVE 8
+#define MOVE 6
 
 class Tittle;
 class Fade;
@@ -72,7 +72,6 @@ private:
 	SpriteRender m_GOtitleST;		//"タイトルへ戻る"選択
 	SpriteRender m_gameover;		//"ゲーム終了"非選択
 	SpriteRender m_gameoverST;		//"タイトルへ戻る"選択
-	SpriteRender m_Ranking;			//順位表
 	SpriteRender m_PlayerNameP;		//"Player"名前かぶりだから変える
 	SpriteRender m_CPUName1;		//CPU1
 	SpriteRender m_CPUName2;		//CPU2
@@ -96,8 +95,6 @@ private:
 		Vector3(0.0f, -255.0f, 0.0f),		//４位
 		Vector3(-500.0f, -450.0f, 0.0f),	//"タイトルに戻る"
 		Vector3(525.0f, -450.0f, 0.0f),		//"ゲームを終了"
-		Vector3(0.0f, -30.0f, 0.0f),		//順位表
-		Vector3(0.0f, 400.0f,0.0f),		//リザルトのロゴ
 	};
 
 	//線形補間で動かすときのポジション
@@ -108,8 +105,6 @@ private:
 		Vector3(g_vec3Zero),		//４位
 		Vector3(g_vec3Zero),		//"タイトルに戻る"
 		Vector3(g_vec3Zero),		//"ゲームを終了"
-		Vector3(g_vec3Zero),		//順位表
-		Vector3(g_vec3Zero),		//リザルトのロゴ
 	};
 
 	//画面外
@@ -120,8 +115,6 @@ private:
 		Vector3(0.0f, -1000.0f, 0.0f),	//４位
 		Vector3(0.0f, -1000.0f, 0.0f),	//"タイトルに戻る"
 		Vector3(0.0f, -1000.0f, 0.0f),	//"ゲームを終了"
-		Vector3(0.0f, -1000.0f, 0.0f),	//順位表
-		Vector3(0.0f, -1000.0f, 0.0f),	//リザルトのロゴ
 	};
 
 	//透明度

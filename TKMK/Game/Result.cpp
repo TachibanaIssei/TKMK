@@ -9,6 +9,8 @@ namespace ResultSpriteConst
 {
 	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);
 	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);
+
+	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);		//リザルトのロゴ
 }
 
 Result::Result()
@@ -95,7 +97,7 @@ void Result::Update()
 	if (m_change == enChange_first)
 	{
 		Rank();
-		if (g_pad[0]->IsTrigger(enButtonA)&&fade->GetCurrentAlpha()<=0.0f)
+		if (fade->GetCurrentAlpha()<=0.0f)
 		{
 			m_change = enChange_move;
 		}
@@ -125,13 +127,8 @@ void Result::InitSprite()
 
 	//リザルトのロゴ
 	m_ResultLogo.Init("Assets/sprite/Result/RESULT.DDS", 700.0f, 150.0f);
-	m_ResultLogo.SetPosition(FirstPos[7]);
+	m_ResultLogo.SetPosition(ResultSpriteConst::RESULT_LOGO_POS);
 	m_ResultLogo.Update();
-
-	//順位表
-	m_Ranking.Init("Assets/sprite/Result/RankingFramePP.DDS", 1000.0f, 700.0f);
-	m_Ranking.SetPosition(FirstPos[6]);
-	m_Ranking.Update();
 
 	//"タイトルに戻る"非選択
 	m_GOtitle.Init("Assets/sprite/Result/GOtoTitle_white.DDS", 500.0f, 100.0f);
@@ -175,6 +172,7 @@ void Result::InitSprite()
 	m_CPUName3.SetPosition(FirstPos[0]);
 	m_CPUName3.Update();
 
+	//選択のカーソル
 	m_choiceCursor.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
 	m_choiceCursor.SetPosition(FirstPos[4]);
 	m_choiceCursor.SetScale(0.6f, 0.6f, 0.6f);
@@ -223,6 +221,8 @@ void Result::Rank()
 			m_PlayerRank4.SetColor(g_vec4Black);
 			m_PlayerRank4.SetScale(WordScale);
 			break;
+		default:
+			break;
 		}
 	}
 	m_PlayerNameP.Update();
@@ -233,7 +233,7 @@ void Result::Rank()
 
 void Result::Move()
 {
-	if (Complement < 1.0f)
+	if (Complement <= 1.0f)
 	{
 			for (int i = 0; i < MOVE; i++)
 			{
@@ -258,11 +258,7 @@ void Result::Move()
 				case 5:
 					m_gameover.SetPosition(MovePos[i]);
 					break;
-				case 6:
-					m_Ranking.SetPosition(MovePos[i]);
-					break;
-				case 7:
-					m_ResultLogo.SetPosition(MovePos[i]);
+				default:
 					break;
 				}
 			}
@@ -275,8 +271,6 @@ void Result::Move()
 
 	m_timer++;
 
-	m_Ranking.Update();
-	m_ResultLogo.Update();
 	m_GOtitle.Update();
 	m_gameover.Update();
 }
@@ -299,6 +293,8 @@ void Result::NameMove()
 			break;
 		case 4:
 			m_CPUName3.SetPosition(MovePos[Player[i].Rank - 1]);
+			break;
+		default:
 			break;
 		}
 	}
@@ -345,6 +341,8 @@ void Result::Select()
 		//選択カーソルを"ゲーム終了"に合わせる
 		m_choiceCursor.SetPosition(RankPos[5] + ResultSpriteConst::GAME_FINISH_ADD_CURSOR_POS);
 		break;
+	default:
+		break;
 	}
 
 	//リザルト画面からタイトル画面への遷移
@@ -375,7 +373,6 @@ void Result::Select()
 void Result::Render(RenderContext& rc)
 {
 	m_spriteRender.Draw(rc);
-	m_Ranking.Draw(rc);
 	m_PlayerNameP.Draw(rc);
 	m_CPUName1.Draw(rc);
 	m_CPUName2.Draw(rc);

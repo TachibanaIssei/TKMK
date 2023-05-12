@@ -17,6 +17,7 @@ class CharUltFlag;
 class Actor;
 class Lamp;
 class Fade;
+class ExpforKnight;
 
 class Game : public IGameObject
 {
@@ -426,5 +427,7 @@ private:
 	float UltCanUseTimer = 0.0f;
 
 	EffectEmitter* TowerDown = nullptr;
+
+
 };
 

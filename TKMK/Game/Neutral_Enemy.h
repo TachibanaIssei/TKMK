@@ -16,6 +16,7 @@ class Player;
 class MagicBall;
 class Actor;
 class Map;
+class ExpforKnight;
 
 /// <summary>
 /// 中立の敵
@@ -109,9 +110,8 @@ public:
 	{
 		return m_position;
 	}
+
 	
-
-
 	void Move();
 	/// <summary>
 	/// 追跡
@@ -326,6 +326,7 @@ private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
 	Vector2		  m_HPBerPos = Vector2::Zero;				   //HPバーのポジション
+	
 	Vector2	   	  m_HPWindowPos = Vector2::Zero;			   //HP枠のポジション
 	Vector2		  m_HPBackPos = Vector2::Zero;			       //HP背景のポジション
 	Vector3       m_position;                                  //座標
@@ -364,6 +365,9 @@ private:
 	Vector3                 m_patrolPos[41];
 	Vector3 nowPos = Vector3::Zero;
 	Vector3 m_hagikiPower;
+	
+	bool CallBezier = false;
+
 	bool m_UnderAttack = false;              //攻撃判定
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	//中立の敵

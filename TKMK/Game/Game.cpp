@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "Lamp.h"
 #include "Fade.h"
+#include "ExpforKnight.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -78,6 +79,7 @@ Game::~Game()
 
 bool Game::Start()
 {
+	
 	//剣士の死んだときのエフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");

@@ -4,6 +4,7 @@ class Player;
 class KnightAI;
 class Actor;
 class Game;
+class GameCamera;
 
 class WizardUlt:public IGameObject
 {
@@ -104,6 +105,11 @@ public:
 		m_game = game;
 	}
 
+	void ChangeUltEndFlag(bool flag)
+	{
+		UltEndFlag = flag;
+	}
+
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
@@ -111,6 +117,7 @@ private:
 	Actor* m_targetActor = nullptr;
 	Actor* m_CreatMeActor = nullptr;
 	Actor* m_GivePointActor = nullptr;
+	GameCamera* gameCamera = nullptr;
 
 	EffectEmitter* Thunder;
 
@@ -122,5 +129,8 @@ private:
 
 	float m_timer = 0.0f;
 	const char* m_targrtName = nullptr;
+
+	//雷を地上にいるキャラ全てに打ち終わったら
+	bool UltEndFlag = false;
 };
 

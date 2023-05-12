@@ -4,6 +4,7 @@
 #include "KnightAI.h"
 #include "Actor.h"
 #include "Game.h"
+#include "GameCamera.h"
 
 WizardUlt::WizardUlt()
 {
@@ -22,6 +23,11 @@ WizardUlt::~WizardUlt()
 	//ターゲットの地上にいるフラグをfalseにする	
 	m_targetActor->ChangeGroundChackflag(false);
 	
+	//自分が必殺技を打った最後の雷なら
+	if (UltEndFlag == true)
+	{
+		gameCamera->GameCameraUltEnd();
+	}
 }
 
 bool WizardUlt::Start()

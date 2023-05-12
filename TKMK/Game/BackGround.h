@@ -23,14 +23,15 @@ public:
 	}
 
 private:
-	ModelRender m_modelRender;
-	ModelRender m_modelRender_Wall;
-	ModelRender m_stagecollision;
+	ModelRender m_modelRenderGround;
+	ModelRender m_modelRenderObject;
+	ModelRender m_modelRenderWall;
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_scale = Vector3::One;
 	Quaternion m_rotation = Quaternion::Identity;
-	PhysicsStaticObject m_physicsStaticObject;
-	PhysicsStaticObject m_physicsStaticObject_Wall;
+	PhysicsStaticObject m_physicsStaticObjectGround;
+	PhysicsStaticObject m_physicsStaticObjectTower;
+	PhysicsStaticObject m_physicsStaticObjectWall;
 
 };
 

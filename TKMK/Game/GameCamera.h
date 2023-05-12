@@ -8,6 +8,7 @@ class Player;
 class Game;
 class KnightUlt;
 class Actor;
+class WizardUlt;
 
 class GameCamera:public IGameObject
 {
@@ -100,9 +101,16 @@ private:
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
 	Game* game = nullptr;
+
+	WizardUlt* wizardUlt = nullptr;
+
 	KnightUlt* knightUlt = nullptr;
+	//必殺技を打ったキャラ
 	Actor* ultactor = nullptr;
+	//プレイヤー
 	Actor* player_actor = nullptr;
+	//必殺技を打たれたキャラ
+	Actor* victim_actor = nullptr;
 	
 	Vector3					m_keepDiff				= Vector3::Zero;
 	Vector3					m_CameraFromActorDiff   = Vector3::One;
@@ -135,6 +143,12 @@ private:
 	bool m_cameraShakeFlag = false;
 	bool m_ShakeMoveFlag = false;
 	float m_cameraShakeTimer = 0.1f;
+
+	//キャラが雷を打たれているなら
+	bool TunderCameraFlag = false;
+
+	//雷に打たれたキャラの名前を格納
+	const char* Damege_actor_Name = nullptr;
 
 	//アクターの情報
 	std::vector<Actor*> m_actors;

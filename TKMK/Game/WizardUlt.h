@@ -23,6 +23,9 @@ public:
 	void Update();
 	void Move();
 
+	//雷を落とす
+	void FallThunder();
+
 	void Damege();
 
 	/// <summary>

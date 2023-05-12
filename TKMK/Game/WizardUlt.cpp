@@ -14,9 +14,12 @@ WizardUlt::~WizardUlt()
 {
 	DeleteGO(UltCollision);
 	// 全てを終わらせる！！！！！！！
-	m_game->SetStopFlag(false);
-	//m_targetActor->UltEnd();
-	m_CreatMeActor->UltEnd();
+	//m_game->SetStopFlag(false);
+	////m_targetActor->UltEnd();
+	//m_CreatMeActor->UltEnd();
+	//地上にいることを示すカウンターを減らす
+	m_CreatMeActor->SubOnGroundCharCounter();
+	
 }
 
 bool WizardUlt::Start()
@@ -36,6 +39,7 @@ bool WizardUlt::Start()
 	Thunder->SetPosition(ThunderPos);
 	Thunder->SetScale(Vector3::One * 12.0f);
 	Thunder->Play();
+
 	return true;
 }
 
@@ -49,17 +53,18 @@ void WizardUlt::Update()
 		DeleteGO(this);
 	}
 
-	m_timer += g_gameTime->GetFrameDeltaTime();
-	//タイマーが３より大きくなったら
-	//if (m_timer > 3)
-	//{
-	//	//攻撃対象のキャラにダメージを与える処理
-	//	Damege();
-	//	//自身を消す
-	//	DeleteGO(this);
-	//}
+	
+	//一秒ごとに雷を落とす
+	/*if (m_timer > 1.0f)
+	{
 
-	Move();
+		FallThunder();
+		
+	}
+	else
+	{
+		m_timer += g_gameTime->GetFrameDeltaTime();
+	}*/
 }
 
 void WizardUlt::Move()
@@ -68,6 +73,35 @@ void WizardUlt::Move()
 	m_position.y += 100.0f;
 
 	UltCollision->SetPosition(m_position);
+}
+
+//雷を落とす
+void WizardUlt::FallThunder()
+{
+	//for (auto actor : m_game->GetActors())
+	//{
+	//	//生成するキャラと必殺技を打ったキャラの名前が同じなら処理を飛ばす
+	//	if (m_CreatMeActor->GetName() == actor->GetName())
+	//	{
+	//		continue;
+	//	}
+
+	//	//地上にいるAIにだけ雷を落とす(エフェクト生成)
+	//	if (actor->IsGroundIn() == true)
+	//	{
+	//		Thunder = NewGO<EffectEmitter>(0);
+	//		Thunder->Init(enEffect_Knight_Thunder);
+
+	//		Vector3 ThunderPos = actor->GetPosition();
+	//		ThunderPos.y = 0.0f;
+	//		Thunder->SetPosition(ThunderPos);
+	//		Thunder->SetScale(Vector3::One * 12.0f);
+	//		Thunder->Play();
+	//	}
+
+	//	//タイマーリセット
+	//	m_timer = 0.0f;
+	//}
 }
 
 void WizardUlt::Damege()
@@ -82,11 +116,7 @@ void WizardUlt::Damege()
 		m_targetActor->Dameged(Damege, m_CreatMeActor);
 		int downlevel = 1;
 		//必殺技を打ったキャラのレベルを下げる
-		/*m_CreatMeActor->levelDown(
-			m_CreatMeActor->GetLvUPStatus(), 
-			m_CreatMeActor->GetStatus(), 
-			m_CreatMeActor->GetLevel(), 
-			downlevel);*/
+		
 	}
 
 	

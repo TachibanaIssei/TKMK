@@ -3,6 +3,7 @@
 class Player;
 class KnightAI;
 class Actor;
+class Game;
 
 class WizardUlt:public IGameObject
 {
@@ -21,6 +22,9 @@ public:
 	bool Start();
 	void Update();
 	void Move();
+
+	//雷を落とす
+	void FallThunder();
 
 	void Damege();
 
@@ -95,13 +99,20 @@ public:
 		return m_targrtName;
 	}
 
+	void SetGame(Game* game)
+	{
+		m_game = game;
+	}
+
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
-
+	Game* m_game = nullptr;
 	Actor* m_targetActor = nullptr;
 	Actor* m_CreatMeActor = nullptr;
 	Actor* m_GivePointActor = nullptr;
+
+	EffectEmitter* Thunder;
 
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;

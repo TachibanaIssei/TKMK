@@ -5,6 +5,12 @@
 #include "Fade.h"
 #include "system/system.h"
 
+namespace ResultSpriteConst
+{
+	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);
+	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);
+}
+
 Result::Result()
 {
 
@@ -21,8 +27,6 @@ bool Result::Start()
 	fade->StartFadeOut(1.0f);
 
 	Game* game = FindGO<Game>("game");
-	//K2EngineLow* g_k2EngineLow = nullptr;
-	//g_k2EngineLow->~K2EngineLow();
 	game->GetActorPoints(charPoints);
 
 	int i, j, k, l, m;
@@ -60,6 +64,57 @@ bool Result::Start()
 
 	DeleteGO(game);
 
+	InitSprite();
+
+	g_soundEngine->ResistWaveFileBank(40, "Assets/sound/resultBGM/Result1.wav");
+	g_soundEngine->ResistWaveFileBank(41, "Assets/sound/resultBGM/Result2.wav");
+	g_soundEngine->ResistWaveFileBank(42, "Assets/sound/resultBGM/Result3.wav");
+
+	m_bgm = NewGO<SoundSource>(0);
+	switch (Player[0].Rank)
+	{
+	case 1:
+		m_bgm->Init(40);
+		break;
+	case 4:
+		m_bgm->Init(42);
+		break;
+	default:
+		m_bgm->Init(41);
+		break;
+	}
+	m_bgm->Play(true);
+	m_bgm->SetVolume(BGMVolume);
+
+	return true;
+}
+
+void Result::Update()
+{
+	//最初の処理
+	if (m_change == enChange_first)
+	{
+		Rank();
+		if (g_pad[0]->IsTrigger(enButtonA)&&fade->GetCurrentAlpha()<=0.0f)
+		{
+			m_change = enChange_move;
+		}
+	}
+	//線形補間中の処理
+	if (m_change == enChange_move)
+	{
+		Move();
+		NameMove();
+	}
+	//線形補間が終わった後の処理
+	if (m_change == enChange_stop)
+	{
+		Select();
+	}
+}
+
+void Result::InitSprite()
+{
 	//Resultの初期化
 	m_spriteRender.Init("Assets/sprite/Result/titleBack.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(g_vec3Zero);
@@ -120,51 +175,13 @@ bool Result::Start()
 	m_CPUName3.SetPosition(FirstPos[0]);
 	m_CPUName3.Update();
 
-	g_soundEngine->ResistWaveFileBank(40, "Assets/sound/resultBGM/Result1.wav");
-	g_soundEngine->ResistWaveFileBank(41, "Assets/sound/resultBGM/Result2.wav");
-	g_soundEngine->ResistWaveFileBank(42, "Assets/sound/resultBGM/Result3.wav");
-
-	m_bgm = NewGO<SoundSource>(0);
-	switch (Player[0].Rank)
-	{
-	case 1:
-		m_bgm->Init(40);
-		break;
-	case 4:
-		m_bgm->Init(42);
-		break;
-	default:
-		m_bgm->Init(41);
-		break;
-	}
-	m_bgm->Play(true);
-	m_bgm->SetVolume(BGMVolume);
-
-	return true;
-}
-
-void Result::Update()
-{
-	//最初の処理
-	if (m_change == enChange_first)
-	{
-		Rank();
-		if (g_pad[0]->IsTrigger(enButtonA)&&fade->GetCurrentAlpha()<=0.0f)
-		{
-			m_change = enChange_move;
-		}
-	}
-	//線形補間中の処理
-	if (m_change == enChange_move)
-	{
-		Move();
-		NameMove();
-	}
-	//線形補間が終わった後の処理
-	if (m_change == enChange_stop)
-	{
-		Select();
-	}
+	m_choiceCursor.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
+	m_choiceCursor.SetPosition(FirstPos[4]);
+	m_choiceCursor.SetScale(0.6f, 0.6f, 0.6f);
+	Quaternion rot;
+	rot.SetRotationDegZ(225.0f);
+	m_choiceCursor.SetRotation(rot);
+	m_choiceCursor.Update();
 }
 
 void Result::Rank()
@@ -316,17 +333,27 @@ void Result::Select()
 		m_cursor = enCursorPos_title;
 		m_GOtitleST.SetMulColor(m_colorST);
 		m_gameoverST.SetMulColor(m_color);
+
+		//選択カーソルを"タイトルへ戻る"に合わせる
+		m_choiceCursor.SetPosition(RankPos[4] + ResultSpriteConst::GOTITLE_ADD_CURSOR_POS);
 		break;
 	case 1:
 		m_cursor = enCursorPos_exit;
 		m_GOtitleST.SetMulColor(m_color);
 		m_gameoverST.SetMulColor(m_colorST);
+
+		//選択カーソルを"ゲーム終了"に合わせる
+		m_choiceCursor.SetPosition(RankPos[5] + ResultSpriteConst::GAME_FINISH_ADD_CURSOR_POS);
 		break;
 	}
 
 	//リザルト画面からタイトル画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_title)
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->SetVolume(SEVolume);
+		se->Play(false);
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
 		DeleteGO(this);
 		DeleteGO(m_bgm);
@@ -334,10 +361,15 @@ void Result::Select()
 	//ゲームを終了
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_exit)
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(5);
+		se->SetVolume(SEVolume);
+		se->Play(false);
 		g_gameLoop.m_isLoop = false;
 	}
 	m_GOtitleST.Update();
 	m_gameoverST.Update();
+	m_choiceCursor.Update();
 }
 
 void Result::Render(RenderContext& rc)
@@ -357,4 +389,5 @@ void Result::Render(RenderContext& rc)
 	m_GOtitleST.Draw(rc);
 	m_gameoverST.Draw(rc);
 	m_ResultLogo.Draw(rc);
+	m_choiceCursor.Draw(rc);
 }

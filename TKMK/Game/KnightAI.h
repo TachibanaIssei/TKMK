@@ -23,6 +23,7 @@ public:
 	bool Start();
 	void Update();
 	void Attack();
+	bool UltimaitSkillTime();
 	void Render(RenderContext& rc);
 	void AtkCollisiton();
 	void HPBar();

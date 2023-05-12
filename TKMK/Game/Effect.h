@@ -3,6 +3,7 @@
 enum EnEFK {
 	enEffect_TowerDown,
 	enEffect_Knight_Death,
+	enEffect_Knight_Thunder,
 	enEffect_Knight_Ult_Red,
 	enEffect_Knight_Ult_Green,
 	enEffect_Knight_Ult_Blue,

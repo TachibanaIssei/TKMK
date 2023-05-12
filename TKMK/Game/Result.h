@@ -11,13 +11,9 @@ class Result :public IGameObject
 public:
 	Result();
 	~Result();
-	void Update();
 	bool Start();
+	void Update();
 	void Render(RenderContext& rc);
-	void Rank();
-	void Move();
-	void Select();
-	void NameMove();
 
 	//Resultのシーン変換
 	enum EnChange {
@@ -40,6 +36,14 @@ public:
 		int NameNum = 1;	
 		int Rank = 1;		//順位
 	};
+
+private:
+	void InitSprite();
+	void Rank();
+	void Move();
+	void Select();
+	void NameMove();
+
 
 private:
 	int charPoints[PLAYER];		//プレイヤーのポイント
@@ -75,19 +79,21 @@ private:
 	SpriteRender m_CPUName3;		//CPU3
 	SpriteRender m_ResultLogo;		//リザルトのロゴ
 
+	SpriteRender m_choiceCursor;	//選択時のカーソル
+
 
 	Tittle* tittle = nullptr;
 	SoundSource* m_bgm = nullptr;
 	Fade* fade = nullptr;
 
-	Vector3 PointRight = { 200.0f,50.0f,0.0f };
+	Vector3 PointRight = { 200.0f,85.0f,0.0f };
 
 	//線形補間でここまで動かす
 	Vector3 RankPos[MOVE] = {
-		Vector3(0.0f, 200.0f, 0.0f),		//順位、１位
-		Vector3(0.0f, 50.0f, 0.0f),			//２位
-		Vector3(0.0f, -100.0f, 0.0f),		//３位
-		Vector3(0.0f, -250.0f, 0.0f),		//４位
+		Vector3(0.0f, 160.0f, 0.0f),		//順位、１位
+		Vector3(0.0f, 20.0f, 0.0f),			//２位
+		Vector3(0.0f, -120.0f, 0.0f),		//３位
+		Vector3(0.0f, -255.0f, 0.0f),		//４位
 		Vector3(-500.0f, -450.0f, 0.0f),	//"タイトルに戻る"
 		Vector3(525.0f, -450.0f, 0.0f),		//"ゲームを終了"
 		Vector3(0.0f, -30.0f, 0.0f),		//順位表

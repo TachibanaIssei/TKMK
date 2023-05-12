@@ -11,13 +11,9 @@ class Result :public IGameObject
 public:
 	Result();
 	~Result();
-	void Update();
 	bool Start();
+	void Update();
 	void Render(RenderContext& rc);
-	void Rank();
-	void Move();
-	void Select();
-	void NameMove();
 
 	//Resultのシーン変換
 	enum EnChange {
@@ -40,6 +36,14 @@ public:
 		int NameNum = 1;	
 		int Rank = 1;		//順位
 	};
+
+private:
+	void InitSprite();
+	void Rank();
+	void Move();
+	void Select();
+	void NameMove();
+
 
 private:
 	int charPoints[PLAYER];		//プレイヤーのポイント
@@ -74,6 +78,8 @@ private:
 	SpriteRender m_CPUName2;		//CPU2
 	SpriteRender m_CPUName3;		//CPU3
 	SpriteRender m_ResultLogo;		//リザルトのロゴ
+
+	SpriteRender m_choiceCursor;	//選択時のカーソル
 
 
 	Tittle* tittle = nullptr;

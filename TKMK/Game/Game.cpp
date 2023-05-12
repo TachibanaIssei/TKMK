@@ -197,44 +197,44 @@ bool Game::Start()
 	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {		
 			if (objData.ForwardMatchName(L"CharPos") == true) {
 			//	//左上の座標
-			//	if (objData.number == 0) {
-			//		m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-			//		m_KnightAI->SetGame(this);
-			//		m_Actors.push_back(m_KnightAI);
-			//		m_KnightAI->SetPosition(objData.position);
-			//		m_KnightAI->SetCharaconPosition(objData.position);
-			//		int Number = 0;
-			//		m_KnightAI->SetRespawnNumber(Number);
-			//		m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+				if (objData.number == 0) {
+					m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+					m_KnightAI->SetGame(this);
+					m_Actors.push_back(m_KnightAI);
+					m_KnightAI->SetPosition(objData.position);
+					m_KnightAI->SetCharaconPosition(objData.position);
+					int Number = 0;
+					m_KnightAI->SetRespawnNumber(Number);
+					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
 
-			//		return true;
-			//	}
-			//	//右上の座標
-			//	if (objData.number == 1) {
-			//		m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-			//		m_KnightAI1->SetGame(this);
-			//		m_Actors.push_back(m_KnightAI1);
-			//		m_KnightAI1->SetPosition(objData.position);
-			//		m_KnightAI1->SetCharaconPosition(objData.position);
-			//		int Number = 1;
-			//		m_KnightAI1->SetRespawnNumber(Number);
-			//		m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+					return true;
+				}
+				//右上の座標
+				if (objData.number == 1) {
+					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+					m_KnightAI1->SetGame(this);
+					m_Actors.push_back(m_KnightAI1);
+					m_KnightAI1->SetPosition(objData.position);
+					m_KnightAI1->SetCharaconPosition(objData.position);
+					int Number = 1;
+					m_KnightAI1->SetRespawnNumber(Number);
+					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 
-			//		return true;
-			//	}
-			//	//左下の座標
-			//	if (objData.number == 3) {
-			//		m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
-			//		m_KnightAI2->SetGame(this);
-			//		m_Actors.push_back(m_KnightAI2);
-			//		m_KnightAI2->SetPosition(objData.position);
-			//		m_KnightAI2->SetCharaconPosition(objData.position);
-			//		int Number = 3;
-			//		m_KnightAI2->SetRespawnNumber(Number);
-			//		m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+					return true;
+				}
+				//左下の座標
+				if (objData.number == 3) {
+					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
+					m_KnightAI2->SetGame(this);
+					m_Actors.push_back(m_KnightAI2);
+					m_KnightAI2->SetPosition(objData.position);
+					m_KnightAI2->SetCharaconPosition(objData.position);
+					int Number = 3;
+					m_KnightAI2->SetRespawnNumber(Number);
+					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 
-			//		return true;
-				//}
+					return true;
+				}
 				if (objData.number == 4)
 				{
 					m_EFK_Pos = objData.position;

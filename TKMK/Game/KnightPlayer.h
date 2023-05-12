@@ -20,6 +20,8 @@ public:
 
 	void Attack();
 
+	bool UltimaitSkillTime();
+
 	void Avoidance();
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
@@ -33,31 +35,6 @@ public:
 	/// 必殺技の当たり判定生成する
 	/// </summary>
 	void MakeUltSkill();
-
-	/// <summary>
-	/// スキルを発動したときに範囲内で一番近い敵をねらう処理
-	/// </summary>
-	//void SkillTarget()
-	//{
-	//	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-
-	//	Vector3 nearPos = Vector3::Zero;
-	//	//一番近い距離
-	//	float Near = nearPos.Length();
-	//	for (auto enemy : m_neutral_Enemys)
-	//	{
-	//		Vector3 toEnemy = enemy->GetPosition() - m_position;
-	//		//エネミーとの距離を計算する
-	//		float newNear = toEnemy.Length();
-	//		//計算した距離が一番近い距離より小さいなら上書き
-	//		if (Near > newNear) {
-	//			Near = newNear;
-	//		}
-	//	}
-	//	if (Near < 300) {
-
-	//	}
-	//}
 
 
 private:
@@ -85,17 +62,11 @@ private:
 
 	float UltimateSkillTimer = 0;
 
-	//bool AtkCollistionFlag = false;
-	// 
-	
-
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
 	SpriteRender m_AtkUpIcon_Render;
-
-	//bool m_atkUpSpriteFlag = false;
 
 	//スキルを使った時の移動速度
 	float SkillSpeed = 270.0f;
@@ -106,12 +77,12 @@ private:
 
 	int dddd = 20;
 
-	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 
 	//タワーの画像出すかどうか
 	bool TowerSpriteFlag = false;
 	//攻撃の画像を出すかどうか
 	bool AttackSpriteFlag = false;
+	
 };
 

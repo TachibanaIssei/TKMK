@@ -33,8 +33,7 @@ public:
 		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
-	//ゲームのステート
-	EnGameState m_GameState = enGameState_Start;
+	
 
 	EnEFK m_EnEffect_Knight = enEffect_Num;
 
@@ -300,7 +299,8 @@ private:
 		}
 	}
 
-
+	//ゲームのステート
+	EnGameState m_GameState = enGameState_Start;
 
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;
@@ -376,9 +376,9 @@ private:
 	bool EnemyRespawnFlag[10];
 
 	//秒を計るタイマー
-	float SecondsTimer = 12.0f;
+	float SecondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 0.0f;
+	float MinutesTimer = 3.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;

@@ -163,10 +163,6 @@ void KnightBase::ExpProcess(int Exp)
 }
 
 /// <summary>
-/// 移動処理
-/// </summary>
-
-/// <summary>
 /// 回転処理
 /// </summary>
 void KnightBase::Rotation()
@@ -376,6 +372,9 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 			DeleteGO(PowerUpEfk);
 			PowerUpEfk = nullptr;
 		}
+
+		//地上にいない
+		IsGroundFlag = false;
 
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -904,8 +903,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		pushFlag = false;
 		AtkState = false;
 		CantMove = false;
-		//地上にいない
-		IsGroundFlag = false;
+		
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定
@@ -932,6 +930,11 @@ void KnightBase::UltEnd() {
 	pushFlag = false;
 	//レベルを下げる
 	//UltimateSkill();
+	//必殺技使用時のフラグを戻す
+	m_UseUltimaitSkillFlag = false;
+	//カウンターリセット
+	m_OnGroundCharCounter = 0;
+
 	//待機ステート
 	m_charState = enCharState_Idle;
 	OnProcessCommonStateTransition();

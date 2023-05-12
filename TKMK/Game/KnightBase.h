@@ -115,6 +115,11 @@ public:
 	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)=0;
 
 	/// <summary>
+	/// 必殺技を打っている間の処理
+	/// </summary>
+	virtual bool UltimaitSkillTime() = 0;
+
+	/// <summary>
 	/// 座標のセット
 	/// </summary>
 	/// <param name="PS"></param>
@@ -367,5 +372,9 @@ protected:
 	//ラストアタックのアニメーションで切った後に動けないようにする
 	//tureの時は動けなくなる
 	bool CantMove = false;
+
+
+
+	
 };
 

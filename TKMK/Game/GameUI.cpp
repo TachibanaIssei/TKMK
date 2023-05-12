@@ -17,7 +17,7 @@ namespace
 
 	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ステータスバーポジション
 	const Vector3 TIME_POS = Vector3(0.0,470.0f, 0.0f);	//制限時間の座標
-	const Vector3 TIME_FONT_POS = Vector3(-80.0, 500.0f, 0.0f);	//制限時間の座標
+	const Vector3 TIME_FONT_POS = Vector3(-80.0, 500.0f,0.0f);	//制限時間の座標
 
 	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
@@ -111,11 +111,11 @@ bool GameUI::Start()
 				m_CharIcon[num].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 				//レベル
-				m_LevelFont[num].SetPosition(LevelPos[num]);
-				m_LevelFont[num].SetScale(0.8f);
-				m_LevelFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-				m_LevelFont[num].SetRotation(0.0f);
-				m_LevelFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
+				m_LevelFont[num - 1].SetPosition(LevelPos[num-1]);
+				m_LevelFont[num - 1].SetScale(0.8f);
+				m_LevelFont[num - 1].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+				m_LevelFont[num - 1].SetRotation(0.0f);
+				m_LevelFont[num - 1].SetShadowParam(true, 2.0f, g_vec4Black);
 			}
 			//プレイヤーが魔法使いなら
 			//else if (actor->IsMatchName(wizardname))
@@ -307,10 +307,13 @@ bool GameUI::Start()
 		m_TimeAndPointRender.SetScale(0.35, 0.3, 0.3);
 
 		//フォントの設定。
-		m_time_left.SetPosition(TIME_FONT_POS);
+		//m_GameTimePos = TIME_FONT_POS;
+		
 		//フォントの大きさを設定。
 		m_time_left.SetScale(timerScale);
-		m_time_left.SetPivot(0.0f, 0.0f);
+		Vector2 aa = {1.0f, 1.0f };
+		m_time_left.SetPivot(aa);
+		m_time_left.SetPosition(TIME_FONT_POS);
 		//フォントの色を設定。
 		m_time_left.SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		m_time_left.SetShadowParam(true, 2.0f, g_vec4Black);
@@ -502,6 +505,8 @@ void GameUI::HPBar()
 	m_hpBar.SetScale(HpScale);
 
 	m_hpBar.Update();
+
+	//AI用のHP
 }
 
 //AIのレベルの表示
@@ -520,7 +525,7 @@ void GameUI::Level()
 		int Lv = actor->GetLevel();
 		wchar_t AILv[255];
 		swprintf_s(AILv, 255, L"Lv%d", Lv);
-		m_LevelFont[num].SetText(AILv);
+		m_LevelFont[num-1].SetText(AILv);
 
 		num++;
 	}
@@ -551,6 +556,8 @@ void GameUI::Timer()
 				timerScaleFlag = true;
 			}
 			
+
+
 		}
 		else if (timerScaleFlag == true)
 		{
@@ -793,7 +800,8 @@ void GameUI::Render(RenderContext& rc)
 			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
 			m_CharIcon[num].Draw(rc);
-			m_LevelFont[num].Draw(rc);
+			if(num>=1)
+			m_LevelFont[num-1].Draw(rc);
 			num++;
 		}
 		

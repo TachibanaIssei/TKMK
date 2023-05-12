@@ -197,7 +197,7 @@ private:
 	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
-	
+	Vector2				m_GameTimePos = Vector2::Zero;
 	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
 	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
 	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
@@ -220,9 +220,9 @@ private:
 	};															//ポイント
 
 	Vector3 LevelPos[3] = {
-		Vector3(-940.0f, 40.0f, 0.0f),
-		Vector3(-940.0f, -100.0f, 0.0f),
-		Vector3(-940.0f, -200.0f, 0.0f),
+		Vector3(-950.0f, 0.0f, 0.0f),
+		Vector3(-950.0f, -100.0f, 0.0f),
+		Vector3(-950.0f, -200.0f, 0.0f),
 	};															//レベル
 
 	Vector3 PointFlamePos[4] = {

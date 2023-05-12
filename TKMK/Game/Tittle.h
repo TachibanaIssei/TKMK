@@ -124,7 +124,7 @@ private:
 	Vector3 m_startPosition = { 0.0f,-250.0f,0.0f };				//"Start"
 	Vector3 m_optionPosition = { 0.0f,-350.0f,0.0f };				//"Option"
 
-	const Vector3 m_titleLogoPosition = { -20.0f,200.0f,0.0f };				//起動時の画面のタイトルロゴのポジション
+	const Vector3 m_titleLogoPosition = { -20.0f,180.0f,0.0f };				//起動時の画面のタイトルロゴのポジション
 	const Vector3 m_selectLogoPosition = { -500.0f,400.0f,0.0f };			//セレクト画面のタイトルロゴのポジション
 	
 	Vector3 m_firsttitleScale = {5.0f,5.0f,1.0f };					//タイトルロゴの最初の大きさ
@@ -143,9 +143,9 @@ private:
 	Vector3 m_swordright;											//白い剣の線形補間
 	Vector3 m_swordleft;											//黒い剣の線形補間
 	Vector3 m_titleswordscale = { g_vec3One };						//起動時の大きさ
-	Vector3 m_selectswordscale = { 0.6f, 0.6f, 1.0f };				//セレクト画面の剣の大きさ
+	Vector3 m_selectswordscale = { 0.7f, 0.7f, 1.0f };				//セレクト画面の剣の大きさ
 	Vector3 m_swordscale;											//剣のスケール
-	Vector3 m_swordPosition = { 0.0f,200.0f,0.0f };
+	Vector3 m_swordPosition = { 0.0f,220.0f,0.0f };
 
 	//セレクトの項目ごとの位置
 	Vector3 m_Top = { -500.0f,-130.0f,0.0f };						//上
@@ -157,6 +157,10 @@ private:
 	Vector3 m_WizardCursor = { -130.0f, 450.0f, 0.0f };
 	Vector3 m_ZombieCursor = { 145.0f, 450.0f, 0.0f };
 	Vector3 m_MiteiCursor = { 425.0f, 450.0f, 0.0f };
+
+	//線形補間後のポジションを仮保存
+	Vector3 m_RightPos;                 //右の剣の座標
+	Vector3 m_LeftPos;					//左の剣の座標
 
 	//Logoのポジションを左にずらす
 	Vector3 m_LeftLogo = { -10.0f,0.0f,0.0f };
@@ -170,6 +174,7 @@ private:
 	float firstLogo = 0.0f;
 	float LogoComplement = 0.04f;					//補完率
 	float swordright = 0.0f;						//剣の補完率(右)
+
 	float swordleft = 0.0f;							//剣の補完率(左)
 	int m_timer = 0;
 	int fadetime = 0;
@@ -180,5 +185,7 @@ private:
 	bool m_titlefadeSeem = false;					//タイトルの
 	bool m_titleanim = false;						//タイトルのアニメーション中か
 	float SEVolume = 0.4f;
+
+	bool GOBack = false;
 };
 

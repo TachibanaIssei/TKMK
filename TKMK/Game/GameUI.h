@@ -90,6 +90,11 @@ public:
 	void HPBar();
 
 	/// <summary>
+	/// AIのレベルの表示
+	/// </summary>
+	void Level();
+
+	/// <summary>
 	/// GamwUIのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
@@ -153,6 +158,7 @@ private:
 	FontRender m_HpNameFont;
 
 	FontRender m_PointFont[4];
+	FontRender m_LevelFont[3];
 
 	Player* player = nullptr;
 	Game* m_game = nullptr;
@@ -213,12 +219,18 @@ private:
 		Vector3(-850.0f, -150.0f, 0.0f), 
 	};															//ポイント
 
+	Vector3 LevelPos[3] = {
+		Vector3(-940.0f, 40.0f, 0.0f),
+		Vector3(-940.0f, -100.0f, 0.0f),
+		Vector3(-940.0f, -200.0f, 0.0f),
+	};															//レベル
+
 	Vector3 PointFlamePos[4] = {
 		Vector3(-850.0f, 120.0f, 0.0f),
 		Vector3(-850.0f, 20.0f, 0.0f),
 		Vector3(-850.0f, -80.0f, 0.0f),
 		Vector3(-850.0f, -180.0f, 0.0f),
-	};															//ポイント
+	};															//ポイントのフレーム
 
 	Vector3 CharIconPos[4] = {
 		Vector3(-920.0f, 120.0f, 0.0f),

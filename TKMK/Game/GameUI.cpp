@@ -70,6 +70,7 @@ GameUI::~GameUI()
 
 bool GameUI::Start()
 {
+	m_game = FindGO<Game>("game");
 	player = FindGO<Player>("player");
 	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
@@ -109,6 +110,12 @@ bool GameUI::Start()
 			{
 				m_CharIcon[num].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+				//レベル
+				m_LevelFont[num].SetPosition(LevelPos[num]);
+				m_LevelFont[num].SetScale(0.8f);
+				m_LevelFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+				m_LevelFont[num].SetRotation(0.0f);
+				m_LevelFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
 			}
 			//プレイヤーが魔法使いなら
 			//else if (actor->IsMatchName(wizardname))
@@ -324,7 +331,7 @@ void GameUI::Update()
 	}
 
 	//ゲームのステートがgameStartなら
-	if (m_game->NowGameState() == 0)
+	if (m_game->NowGameState() == Game::enGameState_Start)
 	{
 		CountDown();
 	}
@@ -343,7 +350,7 @@ void GameUI::Update()
 	}
 
 	CharPoint();
-	
+	Level();
 	
 	
 	//レベルの点滅
@@ -495,6 +502,29 @@ void GameUI::HPBar()
 	m_hpBar.SetScale(HpScale);
 
 	m_hpBar.Update();
+}
+
+//AIのレベルの表示
+void GameUI::Level()
+{
+	int num = 0;
+	for (auto actor : m_Actors)
+	{
+		//プレイヤーなら
+		if (actor->IsMatchName(knightname))
+		{
+			num++;
+			continue;
+		}
+		//AIなら
+		int Lv = actor->GetLevel();
+		wchar_t AILv[255];
+		swprintf_s(AILv, 255, L"Lv%d", Lv);
+		m_LevelFont[num].SetText(AILv);
+
+		num++;
+	}
+
 }
 
 //試合終了の表示の処理
@@ -757,12 +787,13 @@ void GameUI::Render(RenderContext& rc)
 		m_MaxLv.Draw(rc);
 		
 
-		//ポイントを描画
+		//左のフレームの色々を描画
 		int num = 0;
 		for (auto actor:m_Actors) {
 			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
 			m_CharIcon[num].Draw(rc);
+			m_LevelFont[num].Draw(rc);
 			num++;
 		}
 		

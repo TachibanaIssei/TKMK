@@ -33,6 +33,8 @@ public:
 		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
+	//ゲームのステート
+	EnGameState m_GameState = enGameState_Start;
 
 	EnEFK m_EnEffect_Knight = enEffect_Num;
 
@@ -298,8 +300,7 @@ private:
 		}
 	}
 
-	//ゲームのステート
-	EnGameState m_GameState = enGameState_Start;
+
 
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;

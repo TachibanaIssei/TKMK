@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "Lamp.h"
 #include "Fade.h"
+#include "ExpforKnight.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -61,7 +62,8 @@ Game::~Game()
 	}
 
 	DeleteGO(player);
-	
+	TowerDown->Stop();
+	DeleteGO(TowerDown);
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	DeleteGO(m_bgm);
@@ -72,13 +74,15 @@ Game::~Game()
 		});
 	//DeleteGO(lamp);
 	DeleteGO(m_skyCube);
+	
 }
 
 bool Game::Start()
 {
+	
 	//剣士の死んだときのエフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
-	
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
 	//剣士の必殺技エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder, u"Assets/effect/Knight/Knight_Thunder.efk");
 
@@ -98,7 +102,8 @@ bool Game::Start()
 	//剣士のスキル使用時のエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Skill, u"Assets/effect/Knight/Knight_Skill_Effect.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_SkillGround, u"Assets/effect/Knight/Knight_SkillGround_Effect.efk");
-
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_FootSmoke, u"Assets/effect/Knight/footsmoke.efk");
+	
 	//剣士の必殺技発動時のオーラエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 
@@ -189,50 +194,47 @@ bool Game::Start()
 
 
 
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
-
-		
-
+	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {		
 			if (objData.ForwardMatchName(L"CharPos") == true) {
-				//左上の座標
-				if (objData.number == 0) {
-					m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-					m_KnightAI->SetGame(this);
-					m_Actors.push_back(m_KnightAI);
-					m_KnightAI->SetPosition(objData.position);
-					m_KnightAI->SetCharaconPosition(objData.position);
-					int Number = 0;
-					m_KnightAI->SetRespawnNumber(Number);
-					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+			//	//左上の座標
+			//	if (objData.number == 0) {
+			//		m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+			//		m_KnightAI->SetGame(this);
+			//		m_Actors.push_back(m_KnightAI);
+			//		m_KnightAI->SetPosition(objData.position);
+			//		m_KnightAI->SetCharaconPosition(objData.position);
+			//		int Number = 0;
+			//		m_KnightAI->SetRespawnNumber(Number);
+			//		m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
 
-					return true;
-				}
-				//右上の座標
-				if (objData.number == 1) {
-					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-					m_KnightAI1->SetGame(this);
-					m_Actors.push_back(m_KnightAI1);
-					m_KnightAI1->SetPosition(objData.position);
-					m_KnightAI1->SetCharaconPosition(objData.position);
-					int Number = 1;
-					m_KnightAI1->SetRespawnNumber(Number);
-					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+			//		return true;
+			//	}
+			//	//右上の座標
+			//	if (objData.number == 1) {
+			//		m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+			//		m_KnightAI1->SetGame(this);
+			//		m_Actors.push_back(m_KnightAI1);
+			//		m_KnightAI1->SetPosition(objData.position);
+			//		m_KnightAI1->SetCharaconPosition(objData.position);
+			//		int Number = 1;
+			//		m_KnightAI1->SetRespawnNumber(Number);
+			//		m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 
-					return true;
-				}
-				//左下の座標
-				if (objData.number == 3) {
-					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
-					m_KnightAI2->SetGame(this);
-					m_Actors.push_back(m_KnightAI2);
-					m_KnightAI2->SetPosition(objData.position);
-					m_KnightAI2->SetCharaconPosition(objData.position);
-					int Number = 3;
-					m_KnightAI2->SetRespawnNumber(Number);
-					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+			//		return true;
+			//	}
+			//	//左下の座標
+			//	if (objData.number == 3) {
+			//		m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
+			//		m_KnightAI2->SetGame(this);
+			//		m_Actors.push_back(m_KnightAI2);
+			//		m_KnightAI2->SetPosition(objData.position);
+			//		m_KnightAI2->SetCharaconPosition(objData.position);
+			//		int Number = 3;
+			//		m_KnightAI2->SetRespawnNumber(Number);
+			//		m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 
-					return true;
-				}
+			//		return true;
+				//}
 				if (objData.number == 4)
 				{
 					m_EFK_Pos = objData.position;
@@ -240,7 +242,7 @@ bool Game::Start()
 				return true;
 			}
 		return true;
-		});
+		});  
 	
 	
 	//GameUIの生成
@@ -617,7 +619,7 @@ void Game::SetEnemyRespawnPos()
 }
 void Game::TowerEFK()
 {
-	EffectEmitter* TowerDown = NewGO <EffectEmitter>(0);
+	TowerDown = NewGO <EffectEmitter>(0);
 	TowerDown->Init(EnEFK::enEffect_TowerDown);
 	TowerDown->SetScale(Vector3::One * 30.0f);
 	TowerDown->Play();

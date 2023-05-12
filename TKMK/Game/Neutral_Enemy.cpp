@@ -12,6 +12,7 @@
 #include "Map.h"
 #include <cstring>
 #include <cwchar>
+#include "ExpforKnight.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -50,7 +51,7 @@ Neutral_Enemy::~Neutral_Enemy()
 			rabbitLife = false;
 		}
 	}
-
+	DeleteGO(this);
 }
 
 //衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
@@ -130,6 +131,7 @@ bool Neutral_Enemy::Start()
 		//頭のボーンのIDを取得する
 		m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 	}
+	
 
 	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
 	//m_HPBar.SetPivot(PIVOT);
@@ -287,7 +289,6 @@ void Neutral_Enemy::Update()
 	if (isPatrolTimer > 0.0f) {
 		isPatrolTimer -= g_gameTime->GetFrameDeltaTime();
 	}
-
 	//モデルの更新。
 	//座標を設定
 	m_modelRender.SetPosition(m_position);
@@ -297,16 +298,9 @@ void Neutral_Enemy::Update()
 	m_modelRender.SetScale(m_scale);
 
 	m_modelRender.Update();
+
 }
-void Neutral_Enemy::DeathEfk()
-{
-		EffectEmitter* DeathEfk = NewGO<EffectEmitter>(0);
-		DeathEfk->Init(EnEFK::enEffect_Neutral_Enemy_Death);
-		DeathEfk->SetScale(Vector3::One * 5.0f);
-		Vector3 effectPosition = m_position;
-		DeathEfk->SetPosition(effectPosition);
-		DeathEfk->Play();
-}
+
 void Neutral_Enemy::Move()
 {
 	Vector3 diff = m_forward;
@@ -449,7 +443,8 @@ void Neutral_Enemy::Collision()
 			if (m_Status.Hp <= 0)
 			{
 				DeathEfk();
-
+				ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+				ExpKnight->SetPosition(m_position);
 				if (m_enemyKinds == enEnemyKinds_Rabbit)
 				{
 					//相手に経験値を渡す
@@ -519,6 +514,9 @@ void Neutral_Enemy::Collision()
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 				DeathEfk();
+				ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+				ExpKnight->SetPosition(m_position);
+
 			}
 			else {
 				//被ダメージステートに遷移する。
@@ -1005,8 +1003,16 @@ void Neutral_Enemy::PlayAnimation()
 		break;
 	}
 }
+void Neutral_Enemy::DeathEfk()
+{
+	EffectEmitter* DeathEfk = NewGO<EffectEmitter>(0);
+	DeathEfk->Init(EnEFK::enEffect_Neutral_Enemy_Death);
+	DeathEfk->SetScale(Vector3::One * 5.0f);
+	Vector3 effectPosition = m_position;
+	DeathEfk->SetPosition(effectPosition);
+	DeathEfk->Play();
+}
 
-//
 void Neutral_Enemy::HPBar()
 {
 	if (m_Status.Hp < 0)
@@ -1258,5 +1264,4 @@ void Neutral_Enemy::Render(RenderContext& rc)
 		}
 	}
 
-	
 }

@@ -257,6 +257,10 @@ public:
 		return m_spriteFlag;
 	}
 
+	Quaternion& GetRot()
+	{
+		return m_rot;
+	}
 	/// <summary>
 	/// 攻撃力を返す
 	/// </summary>

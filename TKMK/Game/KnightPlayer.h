@@ -32,7 +32,7 @@ public:
 	void AvoidanceSprite();
 
 	/// <summary>
-	/// •KE‹Z‚Ì“–‚½‚è”»’è¶¬‚·‚é
+	/// å¿…æ®ºæŠ€ã®å½“ãŸã‚Šåˆ¤å®šç”Ÿæˆã™ã‚‹
 	/// </summary>
 	void MakeUltSkill();
 
@@ -40,7 +40,7 @@ public:
 private:
 	void CoolTimeProcess();
 	/// <summary>
-	/// UI‚ğƒOƒŒ[ƒXƒP[ƒ‹‚É‚·‚éˆ—
+	/// UIã‚’ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«ã«ã™ã‚‹å‡¦ç†
 	/// </summary>
 	void GrayScaleUI();
 
@@ -49,7 +49,7 @@ private:
 	//GameCamera* gameCamera = nullptr;
 	GameUI* m_gameUI = nullptr;
 	
-	//CollisionObject* collisionObject;                     //ƒRƒŠƒWƒ‡ƒ“
+	//CollisionObject* collisionObject;                     //ã‚³ãƒªã‚¸ãƒ§ãƒ³
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
@@ -61,6 +61,9 @@ private:
 	bool m_swordEffectFlag = false;
 
 	float UltimateSkillTimer = 0;
+  
+	//bool AtkCollistionFlag = false;
+	ChaseEFK* m_FootSmoke = nullptr;
 
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
@@ -68,21 +71,22 @@ private:
 	SpriteRender m_Avoidance_barRender;
 	SpriteRender m_AtkUpIcon_Render;
 
-	//ƒXƒLƒ‹‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	//ã‚¹ã‚­ãƒ«ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
 	float SkillSpeed = 270.0f;
-	//‰ñ”ğ‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	//å›é¿ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
 	float AvoidanceSpeed = 170.0f;
 
-	int oldLv;
+	int oldLv = 1;
 
 	int dddd = 20;
 
-	Neutral_Enemy* m_Neutral_Enemy = nullptr; //’†—§‚Ì“G
+	Neutral_Enemy* m_Neutral_Enemy = nullptr; //ä¸­ç«‹ã®æ•µ
 
-	//ƒ^ƒ[‚Ì‰æ‘œo‚·‚©‚Ç‚¤‚©
+	//ã‚¿ãƒ¯ãƒ¼ã®ç”»åƒå‡ºã™ã‹ã©ã†ã‹
 	bool TowerSpriteFlag = false;
-	//UŒ‚‚Ì‰æ‘œ‚ğo‚·‚©‚Ç‚¤‚©
+	//æ”»æ’ƒã®ç”»åƒã‚’å‡ºã™ã‹ã©ã†ã‹
 	bool AttackSpriteFlag = false;
-	
+
+	ChaseEFK* LevelUp = nullptr;
 };
 

@@ -473,6 +473,7 @@ void KnightPlayer::Avoidance()
 /// </summary>
 void KnightPlayer::MakeUltSkill()
 {
+
 	//必殺技の雷の生成
 	for (auto actor : m_game->GetActors())
 	{
@@ -498,6 +499,20 @@ void KnightPlayer::MakeUltSkill()
 
 			//必殺技を打たれたのでフラグを立てる
 			actor->ChangeDamegeUltFlag(true);
+
+			std::vector<Actor*>::iterator it;
+
+			it = std::find(
+				m_game->GetActors().begin(),
+				m_game->GetActors().end(),
+				actor
+			);
+
+			//最後に落とす雷なら
+			if (it == m_game->GetActors().end())
+			{
+				wizardUlt->ChangeUltEndFlag(true);
+			}
 			
 		}
 		//カウント減らす

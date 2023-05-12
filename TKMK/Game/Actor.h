@@ -512,6 +512,32 @@ public:
 	/// </summary>
 	bool DeathToRespawnTimer_AI(bool DeathToRespwanFlag);
 
+	/// <summary>
+	/// 地上に降りているかのフラグ
+	/// </summary>
+	/// <returns></returns>
+	bool IsGroundIn()
+	{
+		return IsGroundFlag;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void ChangeDamegeUltFlag(bool flag)
+	{
+		m_DamegeUltimaitSkillaFlag = flag;
+	}
+
+	bool GetDamegeUltFlag() {
+		return m_DamegeUltimaitSkillaFlag;
+	}
+
+	void SubOnGroundCharCounter()
+	{
+		m_OnGroundCharCounter--;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -592,5 +618,17 @@ protected:
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
+	////////////////////////////////////////////////
+	// 雷を打つときに使う変数
+	////////////////////////////////////////////////
+	//必殺技を使ったときに立てるフラグ
+	bool m_UseUltimaitSkillFlag = false;
+	//必殺技を打たれたときに立てるフラグ
+	bool m_DamegeUltimaitSkillaFlag = false;
+	//必殺技を打つ間隔を計るタイマー
+	float m_UltshootTimer = 0.9f;
+	//地上にいるキャラを数える
+	int  m_OnGroundCharCounter = 0;
+	////////////////////////////////////////////////
 };
 

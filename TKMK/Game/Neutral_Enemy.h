@@ -30,7 +30,6 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-	void HPBar();
 	void DeathEfk();
 	//中立の敵のステート
 	enum EnNEState {
@@ -228,20 +227,6 @@ public:
 	/// <returns></returns>
     void EscapeSearch();
 	/// <summary>
-	/// ゲージを左寄せする処理
-	/// </summary>
-	/// <param name="size">画像の元の大きさ</param>
-	/// <param name="scale">現在のスケール倍率</param>
-	/// <returns>変換前と変換後の差</returns>
-	Vector3 HPBerSend(Vector3 size, Vector3 scale);
-
-	/// <summary>
-	/// HPゲージの描画フラグ
-	/// </summary>
-	/// <returns>描画できる範囲にあるときtrue</returns>
-	bool DrawHP();
-
-	/// <summary>
 	/// プレイヤーのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
@@ -325,10 +310,6 @@ public:
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
-	Vector2		  m_HPBerPos = Vector2::Zero;				   //HPバーのポジション
-	
-	Vector2	   	  m_HPWindowPos = Vector2::Zero;			   //HP枠のポジション
-	Vector2		  m_HPBackPos = Vector2::Zero;			       //HP背景のポジション
 	Vector3       m_position;                                  //座標
 	Vector3       m_moveSpeed;                                 //移動速度
 	Vector3       m_forward = Vector3::AxisZ;                  //正面のベクトル
@@ -354,9 +335,6 @@ private:
 
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
-	SpriteRender		m_HPBar;		//HPバー画像
-	SpriteRender		m_HPFrame;		//HP枠画像
-	SpriteRender		m_HPBack;		//HP背景画像	
 	SpriteRender		m_enemyMapSprite;
 
 	FontRender              m_Name;

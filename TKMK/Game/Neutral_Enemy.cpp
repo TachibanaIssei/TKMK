@@ -17,11 +17,6 @@
 //#include <algorithm>
 
 namespace {
-	const float HP_WINDOW_WIDTH = 1152.0f;
-	const float HP_WINDOW_HEIGHT = 648.0f;
-	const float HP_BER_WIDTH = 178.0f;
-	const float HP_BER_HEIGHT = 22.0f;
-	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
 	const float RADIUS = 100.0f;
 	const int POS = 40;
 	const float HP_BER_RABBIT = 1.9f;
@@ -131,14 +126,6 @@ bool Neutral_Enemy::Start()
 		//頭のボーンのIDを取得する
 		m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 	}
-	
-
-	m_HPBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
-	//m_HPBar.SetPivot(PIVOT);
-
-	m_HPBack.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
-
-	m_HPFrame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
 
     //座標を設定
 	m_modelRender.SetPosition(m_position);
@@ -283,7 +270,6 @@ void Neutral_Enemy::Update()
 	Rotation();
 	//ステートの遷移処理。
 	ManageState();
-	HPBar();
 	
 	// タイマーを減らす
 	if (isPatrolTimer > 0.0f) {
@@ -443,17 +429,36 @@ void Neutral_Enemy::Collision()
 			if (m_Status.Hp <= 0)
 			{
 				DeathEfk();
-				ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-				ExpKnight->SetPosition(m_position);
+				
 				if (m_enemyKinds == enEnemyKinds_Rabbit)
 				{
 					//相手に経験値を渡す
 					m_lastAttackActor->ExpProcess(60);
+					if (m_lastAttackActor == m_player)
+					{
+						for (int  i = 0; i < 10; i++)
+						{
+
+							ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+							ExpKnight->SetPosition(m_position);
+							ExpKnight->SetIsRabbitExp();
+						}
+
+					}
 				}
 				else
 				{
 					//相手に経験値を渡す
 					m_lastAttackActor->ExpProcess(Exp);
+					if (m_lastAttackActor == m_player)
+					{
+						for (int i = 0; i < 3; i++)
+						{
+
+							ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+							ExpKnight->SetPosition(m_position);
+						}
+					}
 				}				
 
 				//倒した時の報酬を倒した人に渡す
@@ -514,8 +519,12 @@ void Neutral_Enemy::Collision()
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 				DeathEfk();
-				ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-				ExpKnight->SetPosition(m_position);
+				if (m_lastAttackActor == m_player)
+				{
+					ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+					ExpKnight->SetPosition(m_position);
+				}
+				
 
 			}
 			else {
@@ -1013,87 +1022,6 @@ void Neutral_Enemy::DeathEfk()
 	DeathEfk->Play();
 }
 
-void Neutral_Enemy::HPBar()
-{
-	if (m_Status.Hp < 0)
-	{
-		m_Status.Hp = 0;
-	}
-
-	Vector3 scale = Vector3::One;
-	scale.x = float(m_Status.Hp) / float(m_Status.MaxHp);
-	m_HPBar.SetScale(scale);
-
-	Vector3 BerPosition = m_position;
-	BerPosition.y += 75.0f;
-	//座標を変換する
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBerPos, BerPosition);
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindowPos, BerPosition);
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBackPos, BerPosition);
-
-	//HPバー画像を左寄せに表示する
-	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
-	m_HPBerPos.x -= BerSizeSubtraction.x;
-	wchar_t wcsbuf[256];
-	std::size_t len = std::strlen(GetName());
-	std::size_t converted = 0;
-	wchar_t* wcstr = new wchar_t[len + 1];
-	mbstowcs_s(&converted, wcstr, len + 1, GetName(), _TRUNCATE);
-	m_Name.SetText(wcstr);
-	m_Name.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
-	//フォントの大きさを設定。
-	m_Name.SetScale(0.5f);
-	//フォントの色を設定。
-	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
-
-	m_HPBar.SetPosition(Vector3(m_HPBerPos.x, m_HPBerPos.y, 0.0f));
-	m_HPFrame.SetPosition(Vector3(m_HPWindowPos.x, m_HPWindowPos.y, 0.0f));
-	m_HPBack.SetPosition(Vector3(m_HPBackPos.x, m_HPBackPos.y, 0.0f));
-
-	m_HPBar.Update();
-	m_HPFrame.Update();
-	m_HPBack.Update();
-}
-Vector3 Neutral_Enemy::HPBerSend(Vector3 size, Vector3 scale)
-{
-	Vector3 hpBerSize = size;								//画像の元の大きさ
-	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
-	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
-
-	changeBerSize.x = hpBerSize.x * scale.x;
-	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
-	BerSizeSubtraction.x /= 2.0f;
-
-	return BerSizeSubtraction;
-}
-
-bool Neutral_Enemy::DrawHP()
-{
-	Vector3 toCameraTarget = g_camera3D->GetTarget() - g_camera3D->GetPosition();
-	Vector3 toMush = m_position - g_camera3D->GetPosition();
-	toCameraTarget.y = 0.0f;
-	toMush.y = 0.0f;
-	toCameraTarget.Normalize();
-	toMush.Normalize();
-
-	float cos = Dot(toCameraTarget, toMush);
-	float angle = acos(cos);
-
-	//カメラの後ろにあるなら描画しない
-	Vector3 diff = m_player->GetPosition() - m_position;
-
-	//プレイヤーに向かう距離を計算する
-	float playerdistance = diff.Length();
-
-	if (fabsf(angle) < Math::DegToRad(45.0f)&& playerdistance < 800.0f && m_player->GetPosition().y <= 10.0f)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	(void)clipName;
@@ -1252,16 +1180,4 @@ void Neutral_Enemy::Render(RenderContext& rc)
 	if (m_Neutral_EnemyState == enNeutral_Enemy_Pause) {
 		return;
 	}
-
-	//スプライトフラグがtureなら
-	if (m_player->GetSpriteFlag())
-	{
-		if (DrawHP())
-		{
-			m_HPBack.Draw(rc);
-			m_HPBar.Draw(rc);
-			m_HPFrame.Draw(rc);
-		}
-	}
-
 }

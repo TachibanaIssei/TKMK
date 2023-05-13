@@ -123,7 +123,7 @@ bool Tittle::Start()
 	m_iluststart.SetScale(TitleConst::START_IMAGE_SCALE);
 	m_iluststart.Update();
 	//"START"‚Ì‚Ìà–¾•¶
-	m_iluststartOp.Init("Assets/sprite/Title/ModeScene/Start_Setumei.DDS", 850.0f, 100.0f);
+	m_iluststartOp.Init("Assets/sprite/Title/ModeScene/Start_Setumei.DDS", 850.0f, 110.0f);
 	m_iluststartOp.SetPosition(m_RightfirstPosition);
 	m_iluststartOp.SetScale(g_vec3One);
 	m_iluststartOp.Update();

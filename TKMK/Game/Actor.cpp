@@ -76,7 +76,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
-	m_respawnLevel.Init("Assets/level3D/AIPOS2.tkl", [&](LevelObjectData& objData) {
+	m_respawnLevel.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
@@ -379,6 +379,7 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
 			//フェードアウト
 			//画面を明るくする
 			fade->StartFadeOut(1.0f);
+
 
 			m_DeathToRespwanFlag = false;
 		}

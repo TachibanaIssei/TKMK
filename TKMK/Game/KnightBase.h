@@ -307,11 +307,14 @@ protected:
 
 	CharacterController m_charCon;                        //キャラクターコントロール
 
+	EffectEmitter* Ult_Swordeffect = nullptr;				//必殺技の溜めエフェクト
 
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
+
+	std::vector<Actor*> DamegeUltActor;
 
 	enum AtkTimingState
 	{

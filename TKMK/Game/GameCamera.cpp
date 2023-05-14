@@ -7,6 +7,7 @@
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "KnightUlt.h"
+#include "WizardUlt.h"
 #include "Actor.h"
 //todo
 //死んだあとにAIが必殺技を使うとカメラがプレイヤーの前に行ってしまう
@@ -28,6 +29,11 @@ namespace
 
 	const float KNIGHT_ULT_POS_X = -90.0f;
 	const float KNIGHT_ULT_POS_Y = 40.0f;
+
+
+	//雷を落とす
+	const float KNIGHT_TUNDER_POS_X = 120.0f;
+	const float KNIGHT_TUNDER_POS_Y = -40.0f;
 }
 
 GameCamera::GameCamera()
@@ -90,14 +96,26 @@ void GameCamera::Update()
 		return;
 	}
 
+
+
+
 	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
 	if (player_actor->RespawnFlag()==true)
 	{
-		//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
 		m_springCamera.Refresh();
 		//カメラの更新。
 		//m_springCamera.Update();
+		//前フレーム
+		PlayerRespawnFlag = true;
+
 		return;
+	}
+
+	//リスポーンしたらカメラを戻す
+	if (player_actor->RespawnFlag()==false&& PlayerRespawnFlag==true) {
+		CameraTarget(-CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+		PlayerRespawnFlag = false;
+
 	}
 
 	//カメラステート管理
@@ -124,27 +142,48 @@ void GameCamera::StateControl()
 
 void GameCamera::NomarlCamera()
 {
+	//もしプレイヤーが必殺技を打ったら
+	if (player_actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag == false)
+	{
+		//溜めフラグをfalseにする
+		UltChargeFlag = false;
+		//必殺技フラグをたてる
+		KnightUltFlag = true;
+		//カメラステートを回転ステートに移る
+		m_enCameraState = m_enUltRotCameraState;
+	}
+
 	//for (auto actor : m_actors) {
 	//	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
-	//	if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag==false)
-	//	{
-	//		KnightUltFlag = true;
-	//		//カメラステートを回転ステートに移る
-	//		m_enCameraState = m_enUltRotCameraState;
-	//		ultactor = actor;
+	//	//剣士用
+	//	//if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag==false)
+	//	//{
+	//	//	KnightUltFlag = true;
+	//	//	//カメラステートを回転ステートに移る
+	//	//	m_enCameraState = m_enUltRotCameraState;
+	//	//	ultactor = actor;
 
-	//		return;
-	//	}
+	//	//	return;
+	//	//}
 	//}
 
 	//プレイヤーだけ溜めのところも正面から見せる
 	//もしプレイヤーが必殺技の溜めを使っていたら
-	/*if (player_actor->NowCharState() == Actor::enCharState_Ult_liberation)
+	if (player_actor->NowCharState() == Actor::enCharState_Ult_liberation)
 	{
+		UltChargeFlag = true;
+		
 		m_springCamera.Refresh();
 		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor);
 		return;
-	}*/
+	}
+	//もし溜めている間に攻撃されたらカメラをリセット
+	else if (UltChargeFlag == true && player_actor->NowCharState() != Actor::enCharState_Ult_liberation)
+	{
+		UltChargeFlag = false;
+		m_springCamera.Refresh();
+		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+	}
 
 	//Yボタンが押されたら
 	//カメラの視点を最初の状態に戻す
@@ -179,68 +218,137 @@ void GameCamera::NomarlCamera()
 }
 
 //剣士の回りを回る
+//雷に打たれていないキャラを探す
 void GameCamera::UltRotCamera()
 {
-	//カメラを剣士の正面にセットしていないなら
-	if (SetCameraCharFrontFlag == false)
-	{
+	//一回だけの処理
+	if (SetCameraCharFrontFlag == false) {
+		//プレイヤーを下からの見上げるようにする
 		m_springCamera.Refresh();
-		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, ultactor);
-		//キャラの正面からカメラに向かうベクトル
-		m_keepDiff = m_toCameraPos;
+		CameraTarget(KNIGHT_TUNDER_POS_X, KNIGHT_TUNDER_POS_Y, player_actor);
 
 		SetCameraCharFrontFlag = true;
-
-		KnightUltCamera(ultactor,true);
 	}
-
-	//プレイヤーからカメラに向かうベクトルを計算する
-	Vector3 start = m_keepDiff;
-	Vector3 end = m_CameraFromActorDiff;
-	start.y = 0.0f;
-	end.y = 0.0f;
-	//内積
-	float nai;
-	nai = start.Dot(end);
-	//成す角
-	float Start = start.Length();
-	float End = end.Length();
-
-	float cos_sita = nai / (Start * End);
-	sita = acos(cos_sita);
-	sita = Math::RadToDeg(sita);
-
-	knightUlt = FindGO<KnightUlt>("knightUlt");
-	if (knightUlt != nullptr)
+	
+	//誰かを見ている間は処理をしない
+	if (TunderCameraFlag == false)
 	{
-		m_springCamera.Refresh();
-		m_enCameraState = m_enChaseCameraState;
+		for (auto actor : game->GetActors())
+		{
+			//プレイヤーか一度見たキャラなら抜け出す
+			if (player_actor->GetName() == actor->GetName()||actor->GetCameraSawCharFlag()==true) {
+				continue;
+			}
+			//雷を打たれるなら
+			if (actor->GetDamegeUltFlag() == true)
+			{
+				//雷を打たれているキャラにカメラを向けるフラグ
+				TunderCameraFlag = true;
+				//カメラで見る対象のキャラ
+				victim_actor = actor;
+				//カメラで見たかのフラグを立てる
+				actor->ChangeCameraSawCharFlag(true);
+
+				//二人までしか見れない
+				//Damege_actor_Name = actor->GetName();
+				wizardUlt = FindGO<WizardUlt>("wizardUlt");
+				//見るキャラがきまったら抜け出す
+				m_enCameraState = m_enChaseCameraState;
+				return;
+			}
+			
+			
+		}
 	}
-	else if (sita < 175.0f) {
-		KnightUltCamera(ultactor,false);
-	}
-	else
-	{
-		m_springCamera.Refresh();
-		m_enCameraState = m_enChaseCameraState;
-	}
+	
+	
+	
+
+
+
+
+	//カメラを剣士の正面にセットしていないなら
+	//if (SetCameraCharFrontFlag == false)
+	//{
+	//	m_springCamera.Refresh();
+	//	CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, ultactor);
+	//	//キャラの正面からカメラに向かうベクトル
+	//	m_keepDiff = m_toCameraPos;
+
+	//	SetCameraCharFrontFlag = true;
+
+	//	KnightUltCamera(ultactor,true);
+	//}
+
+	////プレイヤーからカメラに向かうベクトルを計算する
+	//Vector3 start = m_keepDiff;
+	//Vector3 end = m_CameraFromActorDiff;
+	//start.y = 0.0f;
+	//end.y = 0.0f;
+	////内積
+	//float nai;
+	//nai = start.Dot(end);
+	////成す角
+	//float Start = start.Length();
+	//float End = end.Length();
+
+	//float cos_sita = nai / (Start * End);
+	//sita = acos(cos_sita);
+	//sita = Math::RadToDeg(sita);
+
+	//knightUlt = FindGO<KnightUlt>("knightUlt");
+	//if (knightUlt != nullptr)
+	//{
+	//	m_springCamera.Refresh();
+	//	m_enCameraState = m_enChaseCameraState;
+	//}
+	//else if (sita < 175.0f) {
+	//	KnightUltCamera(ultactor,false);
+	//}
+	//else
+	//{
+	//	m_springCamera.Refresh();
+	//	m_enCameraState = m_enChaseCameraState;
+	//}
 
 
 }
 
 void GameCamera::ChaseCamera()
 {
-	knightUlt = FindGO<KnightUlt>("knightUlt");
-	//knightUltが生成されている間
-	    if (knightUlt != nullptr)
-		{
-			//カメラがエフェクトを追うようにする
-			ChaseUltEff();
+	
+
+	if (wizardUlt != nullptr)
+	{
+		//雷に打たれているなら
+		if (TunderCameraFlag == true) {
+			//雷に打たれているキャラの正面にカメラを合わせる
+			m_springCamera.Refresh();
+			CameraTarget(KNIGHT_TUNDER_POS_X, 0, victim_actor);
+			return;
 		}
-		else
-		{
-			
-		}
+	}
+	//雷はないが
+	//else if (wizardUlt == nullptr && TunderCameraFlag == true)
+	//{
+	//	//入ってる
+	//	//ターゲットを見ないようにする
+	//	TunderCameraFlag = false;
+	//	m_enCameraState = m_enUltRotCameraState;
+	//}
+
+
+	//knightUlt = FindGO<KnightUlt>("knightUlt");
+	////knightUltが生成されている間
+	//    if (knightUlt != nullptr)
+	//	{
+	//		//カメラがエフェクトを追うようにする
+	//		ChaseUltEff();
+	//	}
+	//	else
+	//	{
+	//		
+	//	}
 }
 
 void GameCamera::FollowThePlayer()
@@ -464,14 +572,21 @@ void GameCamera::CameraShake(bool UpDown)
 }
 
 void GameCamera::GameCameraUltEnd() {
-
-	m_springCamera.Refresh();
 	//全てリセット
+	m_springCamera.Refresh();
+	//プレイヤーの正面にカメラを移動するフラグ
 	SetCameraCharFrontFlag = false;
+	//プレイヤーが必殺技を打ったことを示すフラグ
 	KnightUltFlag = false;
 
 	//必殺技を撃ったActorのステートを戻す
 	//ultactor->UltSkillEnd();
+
+	//全キャラのカメラで見たかのフラグをfalseにする
+	for (auto actor : game->GetActors())
+	{
+		actor->ChangeCameraSawCharFlag(false);
+	}
 
 	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
 	//プレイヤーのカメラをリセットする

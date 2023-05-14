@@ -17,7 +17,7 @@
 #include "ExpforKnight.h"
 //#include <vector>
 //#include <algorithm>
-
+//タワーのエフェクト消すときエラーあり
 namespace {
 	const int ENEMY_AMOUNT = 10;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
@@ -83,8 +83,13 @@ bool Game::Start()
 	//剣士の死んだときのエフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
+
+	//剣士が死んで倒れた時のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Death_Blue.efk");
+	
 	//剣士の必殺技エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder, u"Assets/effect/Knight/Knight_Thunder.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder_Charge, u"Assets/effect/Knight/Knight_Ult_Thunder_charge.efk");
 
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Delete_Blue, u"Assets/effect/Knight/Knight_Ult_full.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
@@ -203,6 +208,7 @@ bool Game::Start()
 					m_Actors.push_back(m_KnightAI);
 					m_KnightAI->SetPosition(objData.position);
 					m_KnightAI->SetCharaconPosition(objData.position);
+					m_KnightAI->SetPlayerActor(player->GetPlayerActor());
 					int Number = 0;
 					m_KnightAI->SetRespawnNumber(Number);
 					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
@@ -216,6 +222,7 @@ bool Game::Start()
 					m_Actors.push_back(m_KnightAI1);
 					m_KnightAI1->SetPosition(objData.position);
 					m_KnightAI1->SetCharaconPosition(objData.position);
+					m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
 					int Number = 1;
 					m_KnightAI1->SetRespawnNumber(Number);
 					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
@@ -229,6 +236,7 @@ bool Game::Start()
 					m_Actors.push_back(m_KnightAI2);
 					m_KnightAI2->SetPosition(objData.position);
 					m_KnightAI2->SetCharaconPosition(objData.position);
+					m_KnightAI2->SetPlayerActor(player->GetPlayerActor());
 					int Number = 3;
 					m_KnightAI2->SetRespawnNumber(Number);
 					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
@@ -243,7 +251,7 @@ bool Game::Start()
 				return true;
 			}
 		return true;
-});  
+    });  
 	
 	
 	//GameUIの生成

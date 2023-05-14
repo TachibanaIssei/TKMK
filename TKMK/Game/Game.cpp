@@ -17,7 +17,7 @@
 #include "ExpforKnight.h"
 //#include <vector>
 //#include <algorithm>
-
+//タワーのエフェクト消すときエラーあり
 namespace {
 	const int ENEMY_AMOUNT = 10;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
@@ -83,8 +83,13 @@ bool Game::Start()
 	//剣士の死んだときのエフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
+
+	//剣士が死んで倒れた時のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Death_Blue.efk");
+	
 	//剣士の必殺技エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder, u"Assets/effect/Knight/Knight_Thunder.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder_Charge, u"Assets/effect/Knight/Knight_Ult_Thunder_charge.efk");
 
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Delete_Blue, u"Assets/effect/Knight/Knight_Ult_full.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");

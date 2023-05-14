@@ -32,7 +32,7 @@ namespace
 
 
 	//雷を落とす
-	const float KNIGHT_TUNDER_POS_X = 70.0f;
+	const float KNIGHT_TUNDER_POS_X = 120.0f;
 	const float KNIGHT_TUNDER_POS_Y = -40.0f;
 }
 
@@ -96,14 +96,26 @@ void GameCamera::Update()
 		return;
 	}
 
+
+
+
 	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
 	if (player_actor->RespawnFlag()==true)
 	{
-		//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
 		m_springCamera.Refresh();
 		//カメラの更新。
 		//m_springCamera.Update();
+		//前フレーム
+		PlayerRespawnFlag = true;
+
 		return;
+	}
+
+	//リスポーンしたらカメラを戻す
+	if (player_actor->RespawnFlag()==false&& PlayerRespawnFlag==true) {
+		CameraTarget(-CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+		PlayerRespawnFlag = false;
+
 	}
 
 	//カメラステート管理
@@ -133,6 +145,9 @@ void GameCamera::NomarlCamera()
 	//もしプレイヤーが必殺技を打ったら
 	if (player_actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag == false)
 	{
+		//溜めフラグをfalseにする
+		UltChargeFlag = false;
+		//必殺技フラグをたてる
 		KnightUltFlag = true;
 		//カメラステートを回転ステートに移る
 		m_enCameraState = m_enUltRotCameraState;
@@ -156,9 +171,18 @@ void GameCamera::NomarlCamera()
 	//もしプレイヤーが必殺技の溜めを使っていたら
 	if (player_actor->NowCharState() == Actor::enCharState_Ult_liberation)
 	{
+		UltChargeFlag = true;
+		
 		m_springCamera.Refresh();
 		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor);
 		return;
+	}
+	//もし溜めている間に攻撃されたらカメラをリセット
+	else if (UltChargeFlag == true && player_actor->NowCharState() != Actor::enCharState_Ult_liberation)
+	{
+		UltChargeFlag = false;
+		m_springCamera.Refresh();
+		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
 	}
 
 	//Yボタンが押されたら
@@ -194,6 +218,7 @@ void GameCamera::NomarlCamera()
 }
 
 //剣士の回りを回る
+//雷に打たれていないキャラを探す
 void GameCamera::UltRotCamera()
 {
 	//一回だけの処理
@@ -210,8 +235,8 @@ void GameCamera::UltRotCamera()
 	{
 		for (auto actor : game->GetActors())
 		{
-			//プレイヤーなら抜け出す
-			if (player_actor->GetName() == actor->GetName()|| Damege_actor_Name ==actor->GetName()) {
+			//プレイヤーか一度見たキャラなら抜け出す
+			if (player_actor->GetName() == actor->GetName()||actor->GetCameraSawCharFlag()==true) {
 				continue;
 			}
 			//雷を打たれるなら
@@ -221,14 +246,17 @@ void GameCamera::UltRotCamera()
 				TunderCameraFlag = true;
 				//カメラで見る対象のキャラ
 				victim_actor = actor;
-				//二人までしか見れない
-				Damege_actor_Name = actor->GetName();
+				//カメラで見たかのフラグを立てる
+				actor->ChangeCameraSawCharFlag(true);
 
+				//二人までしか見れない
+				//Damege_actor_Name = actor->GetName();
+				wizardUlt = FindGO<WizardUlt>("wizardUlt");
 				//見るキャラがきまったら抜け出す
 				m_enCameraState = m_enChaseCameraState;
 				return;
 			}
-			//todo一人しか見てくれない
+			
 			
 		}
 	}
@@ -288,7 +316,7 @@ void GameCamera::UltRotCamera()
 
 void GameCamera::ChaseCamera()
 {
-	wizardUlt = FindGO<WizardUlt>("wizardUlt");
+	
 
 	if (wizardUlt != nullptr)
 	{
@@ -301,13 +329,13 @@ void GameCamera::ChaseCamera()
 		}
 	}
 	//雷はないが
-	else if (wizardUlt == nullptr && TunderCameraFlag == true)
-	{
-		//入ってる
-		//ターゲットを見ないようにする
-		TunderCameraFlag = false;
-		m_enCameraState = m_enUltRotCameraState;
-	}
+	//else if (wizardUlt == nullptr && TunderCameraFlag == true)
+	//{
+	//	//入ってる
+	//	//ターゲットを見ないようにする
+	//	TunderCameraFlag = false;
+	//	m_enCameraState = m_enUltRotCameraState;
+	//}
 
 
 	//knightUlt = FindGO<KnightUlt>("knightUlt");
@@ -544,14 +572,21 @@ void GameCamera::CameraShake(bool UpDown)
 }
 
 void GameCamera::GameCameraUltEnd() {
-
-	m_springCamera.Refresh();
 	//全てリセット
+	m_springCamera.Refresh();
+	//プレイヤーの正面にカメラを移動するフラグ
 	SetCameraCharFrontFlag = false;
+	//プレイヤーが必殺技を打ったことを示すフラグ
 	KnightUltFlag = false;
 
 	//必殺技を撃ったActorのステートを戻す
 	//ultactor->UltSkillEnd();
+
+	//全キャラのカメラで見たかのフラグをfalseにする
+	for (auto actor : game->GetActors())
+	{
+		actor->ChangeCameraSawCharFlag(false);
+	}
 
 	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
 	//プレイヤーのカメラをリセットする

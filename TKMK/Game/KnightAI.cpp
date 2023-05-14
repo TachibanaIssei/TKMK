@@ -6,7 +6,8 @@
 #include "Actor.h"
 #include "WizardUlt.h"
 #include "KnightUlt.h"
-
+//todo誰かが塔の上にいると処理が止まる
+//地上にいるフラグがfalseのやつがいると止まる
 namespace
 {
 	const float HP_WINDOW_WIDTH = 1152.0f;
@@ -48,6 +49,12 @@ bool KnightAI::Start() {
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+
+	//リスポーン時に向いている方向の前方向を取得
+	ForwardSet();
+
+	m_modelRender.Update();
+
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
@@ -94,9 +101,11 @@ void KnightAI::Update()
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer_AI(m_DeathToRespwanFlag) == true)
 	{
-		//m_charState = enCharState_Idle;
+		//m_charState = enCharState_Death;
 		//アニメーションの再生
 		PlayAnimation();
+		//ステート
+		ManageState();
 		m_modelRender.Update();
 		return;
 	}
@@ -805,7 +814,7 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を打たない
-		return;
+		//return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
@@ -815,7 +824,7 @@ void KnightAI::Attack()
 
 			Vector3 m_SwordPos = Vector3::Zero;
 			Quaternion m_SwordRot;
-			EffectEmitter* Ult_Swordeffect = NewGO<EffectEmitter>(2);
+			Ult_Swordeffect = NewGO<EffectEmitter>(2);
 			Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
 			Ult_Swordeffect->SetScale({ 20.0f,40.0f,20.0f });
 			Ult_Swordeffect->SetPosition(m_position);
@@ -861,9 +870,13 @@ bool KnightAI::UltimaitSkillTime()
 				actor->ChangeDamegeUltFlag(false);
 			}
 
+			//レベルを下げる
+			UltimateSkill();
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//中身を全て消す
+			DamegeUltActor.clear();
 		}
 
 
@@ -906,10 +919,10 @@ void KnightAI::AtkCollisiton()
 void KnightAI::MakeUltSkill()
 {
 	//必殺技の雷の生成
-	for (auto actor : m_game->GetActors())
+	for (auto actor : DamegeUltActor/*m_game->GetActors()*/)
 	{
 		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
-		if (GetName() == actor->GetName() || actor->GetDamegeUltFlag() == true)
+		if (GetName() == actor->GetName() || actor->GetDamegeUltFlag() == true/*||actor->GetGroundChackflag()==false*/)
 		{
 			continue;
 		}
@@ -918,10 +931,14 @@ void KnightAI::MakeUltSkill()
 		{
 			//必殺技の雷の生成
 			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+			//生成したのがプレイヤーではないからfalse
+			wizardUlt->SetThisCreatCharcter(false);
 			//自分のオブジェクトの名前をセット
 			wizardUlt->SetCreatorName(GetName());
 			//攻撃するアクターのオブジェクト名をセット
 			wizardUlt->SetActor(actor->GetName());
+			//攻撃力を決める
+			wizardUlt->SetUltDamege(Lv);
 			//攻撃するアクターの座標取得
 			Vector3 UltPos = actor->GetPosition();
 			UltPos.y += 100.0f;
@@ -1115,12 +1132,14 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 				m_OnGroundCharCounter++;
 				//このキャラはグラウンドにいる
 				actor->ChangeGroundChackflag(true);
+
+				//雷を打たれるキャラの情報を入れる
+				DamegeUltActor.push_back(actor);
 			}
 		}
 		//必殺技の当たり判定のクラスを作成
 		//MakeUltSkill();
-		//レベルを下げる
-		UltimateSkill();
+		
 		////必殺技の当たり判定のクラスを作成
 		//MakeUltSkill();
 		////レベルを下げる

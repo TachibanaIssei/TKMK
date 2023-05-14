@@ -564,6 +564,23 @@ public:
 		return m_GroundChackFlag;
 	}
 
+	/// <summary>
+	/// カメラで見たかのフラグを変える
+	/// </summary>
+	/// <param name="flag"></param>
+	void ChangeCameraSawCharFlag(bool flag)
+	{
+		m_CameraSawCharFlag = flag;
+	}
+
+	/// <summary>
+	/// カメラで見たかのフラグを返す
+	/// </summary>
+	bool GetCameraSawCharFlag()
+	{
+		return m_CameraSawCharFlag;
+	}
+
 
 private:
     Level3DRender m_respawnLevel;
@@ -645,6 +662,7 @@ protected:
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
+
 	////////////////////////////////////////////////
 	// 雷を打つときに使う変数
 	////////////////////////////////////////////////
@@ -654,6 +672,8 @@ protected:
 	bool m_DamegeUltimaitSkillaFlag = false;
 	//グラウンドに降りているかチェックするフラグ
 	bool m_GroundChackFlag = false;
+	//プレイヤーが必殺技を打った時に雷を打たれたキャラをカメラで見たかのフラグ
+	bool m_CameraSawCharFlag = false;
 	//必殺技を打つ間隔を計るタイマー
 	float m_UltshootTimer = 0.9f;
 	//地上にいるキャラを数える

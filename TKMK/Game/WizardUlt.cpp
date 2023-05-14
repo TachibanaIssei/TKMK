@@ -15,13 +15,20 @@ WizardUlt::~WizardUlt()
 {
 	DeleteGO(UltCollision);
 	// 全てを終わらせる！！！！！！！
-	//m_game->SetStopFlag(false);
-	////m_targetActor->UltEnd();
-	//m_CreatMeActor->UltEnd();
 	//地上にいることを示すカウンターを減らす
 	m_CreatMeActor->SubOnGroundCharCounter();
 	//ターゲットの地上にいるフラグをfalseにする	
 	m_targetActor->ChangeGroundChackflag(false);
+
+	//プレイヤーでないと実行しない
+	if (m_ThisCreatPlayerFlag == true)
+	{
+		gameCamera = FindGO<GameCamera>("gamecamera");
+		//カメラがもう一度雷に打たれていないキャラを探すようにする
+		gameCamera->ChangeMoveCameraState(GameCamera::m_enUltRotCameraState);
+		gameCamera->ChangeTunderCameraFlag(false);
+
+	}
 	
 	//自分が必殺技を打った最後の雷なら
 	if (UltEndFlag == true)
@@ -53,26 +60,27 @@ bool WizardUlt::Start()
 
 void WizardUlt::Update()
 {
-	if (Thunder->IsPlay() == false)
+	if (m_timer > 0.7f)
 	{
-		//攻撃対象のキャラにダメージを与える処理
-		Damege();
 		//自身を消す
 		DeleteGO(this);
 	}
 
-	
-	//一秒ごとに雷を落とす
-	/*if (m_timer > 1.0f)
+	if (Thunder->IsPlay() == false)
 	{
-
-		FallThunder();
 		
 	}
-	else
+	
+	//一秒ごとに雷を落とす
+	if (m_timer > 0.3f&& FallTunderFlag==false)
 	{
-		m_timer += g_gameTime->GetFrameDeltaTime();
-	}*/
+		//攻撃対象のキャラにダメージを与える処理
+		Damege();
+		FallTunderFlag = true;
+	}
+	
+	m_timer += g_gameTime->GetFrameDeltaTime();
+	
 }
 
 void WizardUlt::Move()
@@ -114,18 +122,8 @@ void WizardUlt::FallThunder()
 
 void WizardUlt::Damege()
 {
-	int Randam = rand() % 100;
-	int Damege = 0;
-	//5分の1の確率で即死
-	if (Randam > 0)
-	{
-		Damege = 1000;
-		//攻撃対象のキャラにダメージを与える
-		m_targetActor->Dameged(Damege, m_CreatMeActor);
-		int downlevel = 1;
-		//必殺技を打ったキャラのレベルを下げる
-		
-	}
+	//攻撃対象のキャラにダメージを与える
+	m_targetActor->Dameged(m_UltDamege, m_CreatMeActor);
+	int downlevel = 1;
 
-	
 }

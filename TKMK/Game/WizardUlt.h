@@ -110,6 +110,26 @@ public:
 		UltEndFlag = flag;
 	}
 
+	/// <summary>
+	/// 自身を生成したのがプレイヤーかどうか
+	/// trueでplayer
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetThisCreatCharcter(bool flag)
+	{
+		m_ThisCreatPlayerFlag = flag;
+	}
+
+	/// <summary>
+	/// 必殺技のダメージを決める
+	/// </summary>
+	/// <param name="level"></param>
+	void SetUltDamege(int level)
+	{
+		//レベル×50=必殺技のダメージ
+		m_UltDamege = 50 * level;
+	}
+
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
@@ -132,5 +152,12 @@ private:
 
 	//雷を地上にいるキャラ全てに打ち終わったら
 	bool UltEndFlag = false;
+	//攻撃する時にtureにする
+	bool FallTunderFlag = false;
+	//自身を生成したのがプレイヤーならtrueにする
+	bool m_ThisCreatPlayerFlag = false;
+
+	//必殺技の初期ダメージ
+	int m_UltDamege = 0;
 };
 

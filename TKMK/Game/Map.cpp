@@ -125,7 +125,7 @@ void Map::Render(RenderContext& rc)
 
 	for (auto enemy : m_game->GetNeutral_Enemys())
 	{
-		m_MapPlayer.Draw(rc);
 		enemy->EnemyMap(rc);
+		m_MapPlayer.Draw(rc);
 	}
 }

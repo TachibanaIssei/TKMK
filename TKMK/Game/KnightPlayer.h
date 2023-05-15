@@ -88,5 +88,6 @@ private:
 	bool AttackSpriteFlag = false;
 
 	ChaseEFK* LevelUp = nullptr;
+	ChaseEFK* LevelDown = nullptr;
 };
 

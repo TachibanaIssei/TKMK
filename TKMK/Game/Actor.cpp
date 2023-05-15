@@ -195,13 +195,13 @@ void Actor::ExpProcess(int Exp)
 			m_oldExpTable = ExpTable;
 			//経験値テーブルを更新する
 			//経験値を0にリセットする
-			/*GetExp = 0;
+			GetExp = 0;
 
 			if (Lv >= 2) {
 				ExpTable = 10;
-			}*/
+			}
 
-			switch (Lv)
+			/*switch (Lv)
 			{
 			case 2:
 				ExpTable = 10;
@@ -229,7 +229,7 @@ void Actor::ExpProcess(int Exp)
 				break;
 			default:
 				break;
-			}
+			}*/
 		}
 
 	}
@@ -241,8 +241,10 @@ void Actor::ExpProcess(int Exp)
 /// <param name="getExp">経験値</param>
 void Actor::ExpReset(int& Lv, int& getExp)
 {
+	getExp = 0;
+
 	//経験値をリセット
-	switch (Lv)
+	/*switch (Lv)
 	{
 	case 1:
 		getExp = 0;
@@ -274,7 +276,7 @@ void Actor::ExpReset(int& Lv, int& getExp)
 		
 	default:
 		break;
-	}
+	}*/
 }
 
 /// <summary>
@@ -284,7 +286,15 @@ void Actor::ExpReset(int& Lv, int& getExp)
 /// <param name="expTable">経験値テーブル</param>
 void Actor::ExpTableChamge(int& Lv, int& expTable)
 {
-	switch (Lv)
+	if (Lv == 1) {
+		expTable = 5;
+	}
+
+	if (Lv >= 2) {
+		expTable = 10;
+	}
+
+	/*switch (Lv)
 	{
 	case 1:
 		expTable = 5;
@@ -315,7 +325,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 		break;
 	default:
 		break;
-	}
+	}*/
 }
 
 /// <summary>

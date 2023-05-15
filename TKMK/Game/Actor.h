@@ -587,19 +587,19 @@ private:
 
 
 protected:
-	int Lv;                    //レベル
-	int AtkSpeed;              //攻撃速度
-	float Cooltime;            //スキルのクールタイム
-	float AvoidanceCoolTime;    //回避のクールタイム
-	bool SkillState = false;     //スキルが使用可能かどうかの判定
-	int Point;                 //敵を倒して手に入れたポイント
-	int GetExp;                //中立の敵を倒したときの経験値
-	int ExpTable;              //経験値テーブル
-	int m_oldExpTable = 0;         //前のレベルの経験値テーブル
-	int respawnNumber;         //リスポーンする座標の番号
-	bool isDeath = false;      //死んだかどうかの判定
-	bool invincibleFlag = false;     //無敵時間フラグ
-	int Ponit = 0;                  //獲得したポイント
+	int									Lv;								//レベル
+	int									AtkSpeed;						//攻撃速度
+	float								Cooltime;						//スキルのクールタイム
+	float								AvoidanceCoolTime;				//回避のクールタイム
+	bool								SkillState = false;				//スキルが使用可能かどうかの判定
+	int									Point;						    //敵を倒して手に入れたポイント
+	int									GetExp;						    //中立の敵を倒したときの経験値
+	int									ExpTable;						//経験値テーブル
+	int									m_oldExpTable = 0;				//前のレベルの経験値テーブル
+	int									respawnNumber;					//リスポーンする座標の番号
+	bool								isDeath = false;				//死んだかどうかの判定
+	bool								invincibleFlag = false;			//無敵時間フラグ
+	int									Ponit = 0;						//獲得したポイント
 	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Quaternion m_respawnRotation[4];

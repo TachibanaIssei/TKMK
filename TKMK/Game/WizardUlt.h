@@ -4,6 +4,7 @@ class Player;
 class KnightAI;
 class Actor;
 class Game;
+class GameCamera;
 
 class WizardUlt:public IGameObject
 {
@@ -104,6 +105,31 @@ public:
 		m_game = game;
 	}
 
+	void ChangeUltEndFlag(bool flag)
+	{
+		UltEndFlag = flag;
+	}
+
+	/// <summary>
+	/// 自身を生成したのがプレイヤーかどうか
+	/// trueでplayer
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetThisCreatCharcter(bool flag)
+	{
+		m_ThisCreatPlayerFlag = flag;
+	}
+
+	/// <summary>
+	/// 必殺技のダメージを決める
+	/// </summary>
+	/// <param name="level"></param>
+	void SetUltDamege(int level)
+	{
+		//レベル×50=必殺技のダメージ
+		m_UltDamege = 50 * level;
+	}
+
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
@@ -111,6 +137,7 @@ private:
 	Actor* m_targetActor = nullptr;
 	Actor* m_CreatMeActor = nullptr;
 	Actor* m_GivePointActor = nullptr;
+	GameCamera* gameCamera = nullptr;
 
 	EffectEmitter* Thunder;
 
@@ -122,5 +149,15 @@ private:
 
 	float m_timer = 0.0f;
 	const char* m_targrtName = nullptr;
+
+	//雷を地上にいるキャラ全てに打ち終わったら
+	bool UltEndFlag = false;
+	//攻撃する時にtureにする
+	bool FallTunderFlag = false;
+	//自身を生成したのがプレイヤーならtrueにする
+	bool m_ThisCreatPlayerFlag = false;
+
+	//必殺技の初期ダメージ
+	int m_UltDamege = 0;
 };
 

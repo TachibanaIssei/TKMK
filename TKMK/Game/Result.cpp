@@ -9,6 +9,13 @@ namespace ResultSpriteConst
 {
 	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);
 	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);
+
+	const Vector3 GO_TITLE_POS = Vector3(-500.0f, -450.0f, 0.0f);		//"タイトルに戻る"
+	const Vector3 GAME_FINISH_POS = Vector3(525.0f, -450.0f, 0.0f);		//"ゲームを終了"
+
+	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);		//リザルトのロゴ
+
+	const float POINT_FONT_SHADOW_OFFSET = 5.0f;
 }
 
 Result::Result()
@@ -33,16 +40,16 @@ bool Result::Start()
 	//ポイントを代入
 	for (i = 0; i < 4; i++)
 	{
-		Player[i] = { charPoints[i],i+1};
+		m_playerScore[i] = { charPoints[i],i+1};
 	}
 	//順位付け
 	for (j = 0; j < PLAYER; j++)
 	{
 		for (k = 0; k < PLAYER; k++)
 		{
-			if (Player[j].Point < Player[k].Point)
+			if (m_playerScore[j].Point < m_playerScore[k].Point)
 			{
-				Player[j].Rank += 1;
+				m_playerScore[j].Rank += 1;
 			}
 		}
 	}
@@ -51,11 +58,11 @@ bool Result::Start()
 	{
 		for (m = 0; m < PLAYER; m++)
 		{
-			if (Player[l].Point == Player[m].Point)
+			if (m_playerScore[l].Point == m_playerScore[m].Point)
 			{
-				if (Player[l].NameNum < Player[m].NameNum)
+				if (m_playerScore[l].NameNum < m_playerScore[m].NameNum)
 				{
-					Player[m].Rank += 1;
+					m_playerScore[m].Rank += 1;
 				}
 				
 			}
@@ -71,7 +78,7 @@ bool Result::Start()
 	g_soundEngine->ResistWaveFileBank(42, "Assets/sound/resultBGM/Result3.wav");
 
 	m_bgm = NewGO<SoundSource>(0);
-	switch (Player[0].Rank)
+	switch (m_playerScore[0].Rank)
 	{
 	case 1:
 		m_bgm->Init(40);
@@ -84,7 +91,7 @@ bool Result::Start()
 		break;
 	}
 	m_bgm->Play(true);
-	m_bgm->SetVolume(BGMVolume);
+	m_bgm->SetVolume(m_bgmVolume);
 
 	return true;
 }
@@ -95,22 +102,21 @@ void Result::Update()
 	if (m_change == enChange_first)
 	{
 		Rank();
-		if (g_pad[0]->IsTrigger(enButtonA)&&fade->GetCurrentAlpha()<=0.0f)
+		if (fade->GetCurrentAlpha()<=0.0f)
 		{
-			m_change = enChange_move;
+			m_change = enChange_4th;
 		}
 	}
-	//線形補間中の処理
-	if (m_change == enChange_move)
-	{
-		Move();
-		NameMove();
-	}
+
 	//線形補間が終わった後の処理
 	if (m_change == enChange_stop)
 	{
 		Select();
+		return;
 	}
+
+	//線形補間中の処理
+	MoveLerp();
 }
 
 void Result::InitSprite()
@@ -119,64 +125,58 @@ void Result::InitSprite()
 	m_spriteRender.Init("Assets/sprite/Result/titleBack.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(g_vec3Zero);
 	m_spriteRender.SetScale(g_vec3One);
-	m_sRotation.SetRotationZ(0.0f);
-	m_spriteRender.SetRotation(m_sRotation);
 	m_spriteRender.Update();
 
 	//リザルトのロゴ
-	m_ResultLogo.Init("Assets/sprite/Result/RESULT.DDS", 700.0f, 150.0f);
-	m_ResultLogo.SetPosition(FirstPos[7]);
-	m_ResultLogo.Update();
-
-	//順位表
-	m_Ranking.Init("Assets/sprite/Result/RankingFramePP.DDS", 1000.0f, 700.0f);
-	m_Ranking.SetPosition(FirstPos[6]);
-	m_Ranking.Update();
+	m_resultLogo.Init("Assets/sprite/Result/RESULT.DDS", 700.0f, 150.0f);
+	m_resultLogo.SetPosition(ResultSpriteConst::RESULT_LOGO_POS);
+	m_resultLogo.Update();
 
 	//"タイトルに戻る"非選択
-	m_GOtitle.Init("Assets/sprite/Result/GOtoTitle_white.DDS", 500.0f, 100.0f);
-	m_GOtitle.SetPosition(FirstPos[4]);
-	m_GOtitle.SetScale(g_vec3One);
-	m_GOtitle.Update();
+	m_goTitle.Init("Assets/sprite/Result/GOtoTitle_white.DDS", 500.0f, 100.0f);
+	m_goTitle.SetPosition(ResultSpriteConst::GO_TITLE_POS);
+	m_goTitle.SetScale(g_vec3One);
+	m_goTitle.Update();
 	//"タイトルに戻る"選択
-	m_GOtitleST.Init("Assets/sprite/Result/GOtoTitle_color.DDS", 500.0f, 100.0f);
-	m_GOtitleST.SetPosition(RankPos[4]);
-	m_GOtitleST.SetScale(g_vec3One);
-	m_GOtitleST.SetMulColor(m_color);
-	m_GOtitleST.Update();
+	m_goTitleSelect.Init("Assets/sprite/Result/GOtoTitle_color.DDS", 500.0f, 100.0f);
+	m_goTitleSelect.SetPosition(ResultSpriteConst::GO_TITLE_POS);
+	m_goTitleSelect.SetScale(g_vec3One);
+	m_goTitleSelect.SetMulColor(m_alphaColorUnSelect);
+	m_goTitleSelect.Update();
 
 	//"ゲームを終了"非選択
 	m_gameover.Init("Assets/sprite/Result/EndGame_white.DDS", 400.0f, 100.0f);
-	m_gameover.SetPosition(FirstPos[5]);
+	m_gameover.SetPosition(ResultSpriteConst::GAME_FINISH_POS);
 	m_gameover.SetScale(g_vec3One);
 	m_gameover.Update();
 	//"ゲームを終了"選択
 	m_gameoverST.Init("Assets/sprite/Result/EndGame_color.DDS", 400.0f, 100.0f);
-	m_gameoverST.SetPosition(RankPos[5]);
+	m_gameoverST.SetPosition(ResultSpriteConst::GAME_FINISH_POS);
 	m_gameoverST.SetScale(g_vec3One);
-	m_gameoverST.SetMulColor(m_color);
+	m_gameoverST.SetMulColor(m_alphaColorUnSelect);
 	m_gameoverST.Update();
 	
 	//Playerの名前
 	//"Player"
-	m_PlayerNameP.Init("Assets/sprite/Result/Player.DDS", 250.0f, 100.0f);
-	m_PlayerNameP.SetPosition(FirstPos[0]);
-	m_PlayerNameP.Update();
+	m_playerName.Init("Assets/sprite/Result/Player.DDS", 250.0f, 100.0f);
+	m_playerName.SetPosition(m_lerpStartPos[0]);
+	m_playerName.Update();
 	//"CPU1"
-	m_CPUName1.Init("Assets/sprite/Result/CPU1.DDS", 200.0f, 75.0f);
-	m_CPUName1.SetPosition(FirstPos[0]);
-	m_CPUName1.Update();
+	m_cpuName1.Init("Assets/sprite/Result/CPU1.DDS", 200.0f, 75.0f);
+	m_cpuName1.SetPosition(m_lerpStartPos[0]);
+	m_cpuName1.Update();
 	//"CPU2"
-	m_CPUName2.Init("Assets/sprite/Result/CPU2.DDS", 200.0f, 75.0f);
-	m_CPUName2.SetPosition(FirstPos[0]);
-	m_CPUName2.Update();
+	m_cpuName2.Init("Assets/sprite/Result/CPU2.DDS", 200.0f, 75.0f);
+	m_cpuName2.SetPosition(m_lerpStartPos[0]);
+	m_cpuName2.Update();
 	//"CPU3"
-	m_CPUName3.Init("Assets/sprite/Result/CPU3.DDS", 200.0f, 75.0f);
-	m_CPUName3.SetPosition(FirstPos[0]);
-	m_CPUName3.Update();
+	m_cpuName3.Init("Assets/sprite/Result/CPU3.DDS", 200.0f, 75.0f);
+	m_cpuName3.SetPosition(m_lerpStartPos[0]);
+	m_cpuName3.Update();
 
+	//選択のカーソル
 	m_choiceCursor.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
-	m_choiceCursor.SetPosition(FirstPos[4]);
+	m_choiceCursor.SetPosition(ResultSpriteConst::GO_TITLE_POS + ResultSpriteConst::GOTITLE_ADD_CURSOR_POS);
 	m_choiceCursor.SetScale(0.6f, 0.6f, 0.6f);
 	Quaternion rot;
 	rot.SetRotationDegZ(225.0f);
@@ -193,157 +193,191 @@ void Result::Rank()
 
 	for (int i = 0; i < PLAYER; i++)
 	{
-		switch (Player[i].Rank)
+		switch (m_playerScore[i].Rank)
 		{
 		case 1:
-			swprintf(Rank1, L"%d", Player[i].Point);
-			m_PlayerRank1.SetText(Rank1);
-			m_PlayerRank1.SetPosition(FirstPos[i]);
-			m_PlayerRank1.SetColor(g_vec4Black);
-			m_PlayerRank1.SetScale(WordScale);
+			swprintf(Rank1, L"%2dp", m_playerScore[i].Point);
+			m_playerRank1.SetText(Rank1);
+			m_playerRank1.SetPosition(m_lerpStartPos[i]);
+			m_playerRank1.SetColor(g_vec4Black);
+			m_playerRank1.SetScale(WORD_SCALE);
+			m_playerRank1.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
 			break;
 		case 2:
-			swprintf(Rank2, L"%d", Player[i].Point);
-			m_PlayerRank2.SetText(Rank2);
-			m_PlayerRank2.SetPosition(FirstPos[i]);
-			m_PlayerRank2.SetColor(g_vec4Black);
-			m_PlayerRank2.SetScale(WordScale);
+			swprintf(Rank2, L"%2dp", m_playerScore[i].Point);
+			m_playerRank2.SetText(Rank2);
+			m_playerRank2.SetPosition(m_lerpStartPos[i]);
+			m_playerRank2.SetColor(g_vec4Black);
+			m_playerRank2.SetScale(WORD_SCALE);
+			m_playerRank2.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
 			break;
 		case 3:
-			swprintf(Rank3, L"%d", Player[i].Point);
-			m_PlayerRank3.SetText(Rank3);
-			m_PlayerRank3.SetPosition(FirstPos[i]);
-			m_PlayerRank3.SetColor(g_vec4Black);
-			m_PlayerRank3.SetScale(WordScale);
+			swprintf(Rank3, L"%2dp", m_playerScore[i].Point);
+			m_playerRank3.SetText(Rank3);
+			m_playerRank3.SetPosition(m_lerpStartPos[i]);
+			m_playerRank3.SetColor(g_vec4Black);
+			m_playerRank3.SetScale(WORD_SCALE);
+			m_playerRank3.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
 			break;
 		case 4:
-			swprintf(Rank4, L"%d", Player[i].Point);
-			m_PlayerRank4.SetText(Rank4);
-			m_PlayerRank4.SetPosition(FirstPos[i]);
-			m_PlayerRank4.SetColor(g_vec4Black);
-			m_PlayerRank4.SetScale(WordScale);
+			swprintf(Rank4, L"%2dp", m_playerScore[i].Point);
+			m_playerRank4.SetText(Rank4);
+			m_playerRank4.SetPosition(m_lerpStartPos[i]);
+			m_playerRank4.SetColor(g_vec4Black);
+			m_playerRank4.SetScale(WORD_SCALE);
+			m_playerRank4.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
+			break;
+		default:
 			break;
 		}
 	}
-	m_PlayerNameP.Update();
-	m_CPUName1.Update();
-	m_CPUName2.Update();
-	m_CPUName3.Update();
 }
 
-void Result::Move()
+void Result::MoveLerp()
 {
-	if (Complement < 1.0f)
+	//補完率を増加させる
+	if (m_complement <= 1.0f)
 	{
-			for (int i = 0; i < MOVE; i++)
-			{
-				MovePos[i].Lerp(Complement, FirstPos[i], RankPos[i]);
-				switch (i)
-				{
-				case 0:
-					m_PlayerRank1.SetPosition(MovePos[i] + PointRight);
-					break;
-				case 1:
-					m_PlayerRank2.SetPosition(MovePos[i] + PointRight);
-					break;
-				case 2:
-					m_PlayerRank3.SetPosition(MovePos[i] + PointRight);
-					break;
-				case 3:
-					m_PlayerRank4.SetPosition(MovePos[i] + PointRight);
-					break;
-				case 4:
-					m_GOtitle.SetPosition(MovePos[i]);
-					break;
-				case 5:
-					m_gameover.SetPosition(MovePos[i]);
-					break;
-				case 6:
-					m_Ranking.SetPosition(MovePos[i]);
-					break;
-				case 7:
-					m_ResultLogo.SetPosition(MovePos[i]);
-					break;
-				}
-			}
-			Complement += 0.02f;
+		m_complement += 0.02f;
 	}
-	else
-	{
-		m_change = enChange_stop;
-	}
+	else {
+		//補完率が1を超えたらリセット
+		m_complement = 0.0f;
 
-	m_timer++;
-
-	m_Ranking.Update();
-	m_ResultLogo.Update();
-	m_GOtitle.Update();
-	m_gameover.Update();
-}
-
-void Result::NameMove()
-{
-	for (int i = 0; i < 4; i++)
-	{
-		MovePos[i].Lerp(Complement, FirstPos[i], RankPos[i]);
-		switch (Player[i].NameNum)
+		//次のステートに移行
+		switch (m_change)
 		{
-		case 1:
-			m_PlayerNameP.SetPosition(MovePos[Player[i].Rank - 1]);
+		case enChange_1st:
+			m_change = enChange_stop;
+			m_drawSelectSpriteFlag = true;
+			return;
 			break;
-		case 2:
-			m_CPUName1.SetPosition(MovePos[Player[i].Rank - 1]);
+		case enChange_2nd:
+			m_change = enChange_1st;
 			break;
-		case 3:
-			m_CPUName2.SetPosition(MovePos[Player[i].Rank - 1]);
+		case enChange_3rd:
+			m_change = enChange_2nd;
 			break;
-		case 4:
-			m_CPUName3.SetPosition(MovePos[Player[i].Rank - 1]);
+		case enChange_4th:
+			m_change = enChange_3rd;
+		default:
 			break;
 		}
 	}
-	m_PlayerNameP.Update();
-	m_CPUName1.Update();
-	m_CPUName2.Update();
-	m_CPUName3.Update();
+
+	MovePointFont();
+	MoveName();
+}
+
+void Result::MovePointFont()
+{
+	switch (m_change)
+	{
+	case enChange_1st:
+		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
+		m_playerRank1.SetPosition(m_lerpMoving[m_change] + PointRight);
+		break;
+
+	case enChange_2nd:
+		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
+		m_playerRank2.SetPosition(m_lerpMoving[m_change] + PointRight);
+		break;
+
+	case enChange_3rd:
+		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
+		m_playerRank3.SetPosition(m_lerpMoving[m_change] + PointRight);
+		break;
+
+	case enChange_4th:
+		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
+		m_playerRank4.SetPosition(m_lerpMoving[m_change] + PointRight);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Result::MoveName()
+{
+	//現在のステートが何位の移動を行うものか判定
+	for (int i = 0; i < PLAYER; i++)
+	{
+		if (m_playerScore[i].Rank - 1 == m_change)
+		{
+			m_nowMoveRank = i;
+			m_nowMoveCharacter = m_playerScore[i].NameNum;
+			break;
+		}
+	}
+
+	m_lerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_lerpMoveEnd[m_nowMoveRank]);
+
+	switch (m_nowMoveCharacter)
+	{
+	case(1):
+		m_playerName.SetPosition(m_lerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
+		break;
+	case(2):
+		m_cpuName1.SetPosition(m_lerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
+		break;
+	case(3):
+		m_cpuName2.SetPosition(m_lerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
+		break;
+	case(4):
+		m_cpuName3.SetPosition(m_lerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
+		break;
+
+	default:
+		break;
+	}
+
+	
+
+	m_playerName.Update();
+	m_cpuName1.Update();
+	m_cpuName2.Update();
+	m_cpuName3.Update();
 }
 
 void Result::Select()
 {
-	if (g_pad[0]->IsTrigger(enButtonLeft) && select != 0)
+	if (g_pad[0]->IsTrigger(enButtonLeft) && m_selectFlag == true)
 	{
-		select -= 1;
+		m_selectFlag = false;
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(5);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_seVolume);
 		se->Play(false);
 	}
-	if (g_pad[0]->IsTrigger(enButtonRight) && select < 1)
+	if (g_pad[0]->IsTrigger(enButtonRight) && m_selectFlag == false)
 	{
-		select += 1;
+		m_selectFlag = true;
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(5);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_seVolume);
 		se->Play(false);
 	}
 
-	switch (select)
+	switch (m_selectFlag)
 	{
-	case 0:
+	case false:
 		m_cursor = enCursorPos_title;
-		m_GOtitleST.SetMulColor(m_colorST);
-		m_gameoverST.SetMulColor(m_color);
+		m_goTitleSelect.SetMulColor(m_alphaColorSelect);
+		m_gameoverST.SetMulColor(m_alphaColorUnSelect);
 
 		//選択カーソルを"タイトルへ戻る"に合わせる
-		m_choiceCursor.SetPosition(RankPos[4] + ResultSpriteConst::GOTITLE_ADD_CURSOR_POS);
+		m_choiceCursor.SetPosition(ResultSpriteConst::GO_TITLE_POS + ResultSpriteConst::GOTITLE_ADD_CURSOR_POS);
 		break;
-	case 1:
+	case true:
 		m_cursor = enCursorPos_exit;
-		m_GOtitleST.SetMulColor(m_color);
-		m_gameoverST.SetMulColor(m_colorST);
+		m_goTitleSelect.SetMulColor(m_alphaColorUnSelect);
+		m_gameoverST.SetMulColor(m_alphaColorSelect);
 
 		//選択カーソルを"ゲーム終了"に合わせる
-		m_choiceCursor.SetPosition(RankPos[5] + ResultSpriteConst::GAME_FINISH_ADD_CURSOR_POS);
+		m_choiceCursor.SetPosition(ResultSpriteConst::GAME_FINISH_POS + ResultSpriteConst::GAME_FINISH_ADD_CURSOR_POS);
+		break;
+	default:
 		break;
 	}
 
@@ -352,7 +386,7 @@ void Result::Select()
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(5);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_seVolume);
 		se->Play(false);
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
 		DeleteGO(this);
@@ -363,31 +397,37 @@ void Result::Select()
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(5);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_seVolume);
 		se->Play(false);
 		g_gameLoop.m_isLoop = false;
 	}
-	m_GOtitleST.Update();
+	m_goTitleSelect.Update();
 	m_gameoverST.Update();
 	m_choiceCursor.Update();
 }
 
 void Result::Render(RenderContext& rc)
 {
-	m_spriteRender.Draw(rc);
-	m_Ranking.Draw(rc);
-	m_PlayerNameP.Draw(rc);
-	m_CPUName1.Draw(rc);
-	m_CPUName2.Draw(rc);
-	m_CPUName3.Draw(rc);
-	m_PlayerRank1.Draw(rc);
-	m_PlayerRank2.Draw(rc);
-	m_PlayerRank3.Draw(rc);
-	m_PlayerRank4.Draw(rc);
-	m_GOtitle.Draw(rc);
-	m_gameover.Draw(rc);
-	m_GOtitleST.Draw(rc);
-	m_gameoverST.Draw(rc);
-	m_ResultLogo.Draw(rc);
-	m_choiceCursor.Draw(rc);
+	m_spriteRender.Draw(rc);	//背景
+	m_resultLogo.Draw(rc);		//リザルトロゴ
+
+	m_playerName.Draw(rc);		//プレイヤー
+	m_cpuName1.Draw(rc);		//CPU1
+	m_cpuName2.Draw(rc);		//CPU2
+	m_cpuName3.Draw(rc);		//CPU3
+
+	m_playerRank1.Draw(rc);		//プレイヤーのポイント
+	m_playerRank2.Draw(rc);		//CPU1のポイント
+	m_playerRank3.Draw(rc);		//CPU2のポイント
+	m_playerRank4.Draw(rc);		//CPU3のポイント
+
+	//線形補間による順位表示が終了したら表示
+	if (m_drawSelectSpriteFlag)
+	{
+		m_goTitle.Draw(rc);			//"タイトルへ戻る"非選択
+		m_gameover.Draw(rc);		//"ゲーム終了"非選択
+		m_goTitleSelect.Draw(rc);	//"タイトルへ戻る"選択
+		m_gameoverST.Draw(rc);		//"ゲーム終了"選択
+		m_choiceCursor.Draw(rc);	//選択中のものを表す剣
+	}
 }

@@ -56,7 +56,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Ult_liberation].Load("Assets/animData/Knight/Knight_Ult_liberation.tka");
 	m_animationClips[enAnimationClip_Ult_liberation].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_UltimateAttack.tka");
+	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_Ult_Tunder.tka");
 	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
@@ -232,7 +232,7 @@ void KnightBase::Collition()
 	if (/*m_charState == enKnightState_Damege || */
 		m_charState == enCharState_Death ||
 		m_charState == enCharState_UltimateSkill ||
-		m_charState == enCharState_Ult_liberation ||
+		//m_charState == enCharState_Ult_liberation ||
 		m_charState == enCharState_Avoidance)
 	{
 		return;
@@ -249,7 +249,7 @@ void KnightBase::Collition()
 		//コリジョンを作ったアクターが自分でないなら
 		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
-			//攻撃エフェクト再生
+			//被ダメージエフェクト再生
 			EffectEmitter* EffectKnight_Attack;
 			EffectKnight_Attack = NewGO <EffectEmitter>(0);
 			EffectKnight_Attack->Init(EnEFK::enEffect_Knight_Attack);
@@ -271,12 +271,21 @@ void KnightBase::Collition()
 			}
 			else
 			{
-
+				//縦向きにする
+				Quaternion Damegerot = m_rot;
+				Damegerot.AddRotationDegZ(180.0f);
+				EffectKnight_Attack->SetRotation(Damegerot);
 			}
 			Vector3 damegePosition = m_position;
 			damegePosition.y += 50.0f;
 			EffectKnight_Attack->SetPosition(damegePosition);
 			
+
+			//もし必殺技の溜め中だったら
+			if (m_charState == enCharState_Ult_liberation) {
+				//エフェクトを止める
+				Ult_Swordeffect->Stop();
+			}
 
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
@@ -490,6 +499,9 @@ void KnightBase::SetRespawn()
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+
+	//リスポーン時に向いている方向の前方向を取得
+	ForwardSet();
 }
 
 /// <summary>
@@ -897,6 +909,12 @@ void KnightBase::OnProcessDeathStateTransition()
 	//Deathアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		EffectEmitter* DeathOrb = NewGO<EffectEmitter>(0);
+		DeathOrb->Init(EnEFK::enEffect_Knight_Death_Blue);
+		DeathOrb->SetPosition(m_position);
+		DeathOrb->SetScale(Vector3::One * 10.0f);
+		DeathOrb->Play();
+
 		//リスポーンする座標に自身の座標をセット
 		SetRespawn();
 		Death();
@@ -904,6 +922,8 @@ void KnightBase::OnProcessDeathStateTransition()
 		AtkState = false;
 		CantMove = false;
 		
+		
+
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定

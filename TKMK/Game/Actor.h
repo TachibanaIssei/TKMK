@@ -526,21 +526,61 @@ public:
 	}
 
 	/// <summary>
-	/// 
+	/// このキャラに対して必殺技を打たれたらフラグを変える
 	/// </summary>
 	void ChangeDamegeUltFlag(bool flag)
 	{
 		m_DamegeUltimaitSkillaFlag = flag;
 	}
 
+	/// <summary>
+	/// 必殺技を打たれたフラグを返す
+	/// </summary>
 	bool GetDamegeUltFlag() {
 		return m_DamegeUltimaitSkillaFlag;
 	}
 
+	/// <summary>
+	/// 地上にいるかのカウンターを減らす
+	/// </summary>
 	void SubOnGroundCharCounter()
 	{
 		m_OnGroundCharCounter--;
 	}
+
+	/// <summary>
+	/// 地上にいるかのフラグを変える
+	/// </summary>
+	/// <param name="flag"></param>
+	void ChangeGroundChackflag(bool flag) {
+		m_GroundChackFlag = flag;
+	}
+
+	/// <summary>
+	/// 地上にいるかのフラグを返す
+	/// </summary>
+	bool GetGroundChackflag()
+	{
+		return m_GroundChackFlag;
+	}
+
+	/// <summary>
+	/// カメラで見たかのフラグを変える
+	/// </summary>
+	/// <param name="flag"></param>
+	void ChangeCameraSawCharFlag(bool flag)
+	{
+		m_CameraSawCharFlag = flag;
+	}
+
+	/// <summary>
+	/// カメラで見たかのフラグを返す
+	/// </summary>
+	bool GetCameraSawCharFlag()
+	{
+		return m_CameraSawCharFlag;
+	}
+
 
 private:
     Level3DRender m_respawnLevel;
@@ -622,13 +662,18 @@ protected:
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
+
 	////////////////////////////////////////////////
 	// 雷を打つときに使う変数
 	////////////////////////////////////////////////
-	//必殺技を使ったときに立てるフラグ
+	//必殺技を使ったときに立てるフラグ(使用者のフラグ)
 	bool m_UseUltimaitSkillFlag = false;
-	//必殺技を打たれたときに立てるフラグ
+	//必殺技を打たれたときに立てるフラグ(被害者のフラグ)
 	bool m_DamegeUltimaitSkillaFlag = false;
+	//グラウンドに降りているかチェックするフラグ
+	bool m_GroundChackFlag = false;
+	//プレイヤーが必殺技を打った時に雷を打たれたキャラをカメラで見たかのフラグ
+	bool m_CameraSawCharFlag = false;
 	//必殺技を打つ間隔を計るタイマー
 	float m_UltshootTimer = 0.9f;
 	//地上にいるキャラを数える

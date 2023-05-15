@@ -8,6 +8,7 @@ class Player;
 class Game;
 class KnightUlt;
 class Actor;
+class WizardUlt;
 
 class GameCamera:public IGameObject
 {
@@ -77,6 +78,10 @@ public:
 
 	}
 
+	void ChangeMoveCameraState(EnCameraState state) {
+		m_enCameraState = state;
+	}
+
 	/// <summary>
 	/// 剣士の必殺技のインスタンスを代入する
 	/// </summary>
@@ -84,6 +89,10 @@ public:
 	void SetKnightUlt(KnightUlt* ultobj)
 	{
 		knightUlt = ultobj;
+	}
+
+	void ChangeTunderCameraFlag(bool flag) {
+		TunderCameraFlag = flag;
 	}
 
 	bool UltTime(bool UltMoveFlag);
@@ -100,9 +109,16 @@ private:
 	WizardPlayer* wizardPlayer = nullptr;
 	Player* player = nullptr;
 	Game* game = nullptr;
+
+	WizardUlt* wizardUlt = nullptr;
+
 	KnightUlt* knightUlt = nullptr;
+	//必殺技を打ったキャラ
 	Actor* ultactor = nullptr;
+	//プレイヤー
 	Actor* player_actor = nullptr;
+	//必殺技を打たれたキャラ
+	Actor* victim_actor = nullptr;
 	
 	Vector3					m_keepDiff				= Vector3::Zero;
 	Vector3					m_CameraFromActorDiff   = Vector3::One;
@@ -126,6 +142,8 @@ private:
 	//剣士のフラグ
 	bool KnightUltFlag = false;
 	bool SetCameraCharFrontFlag = false;
+	//必殺技の溜めが始まったらtrue
+	bool UltChargeFlag = false;
 
 	float m_timer = 0.0f;
 	const char* player_name = nullptr;
@@ -135,6 +153,16 @@ private:
 	bool m_cameraShakeFlag = false;
 	bool m_ShakeMoveFlag = false;
 	float m_cameraShakeTimer = 0.1f;
+
+	///////////////////////////////////////
+	//キャラが雷を打たれているなら
+	bool TunderCameraFlag = false;
+	//雷に打たれたキャラの名前を格納
+	const char* Damege_actor_Name = nullptr;
+	//////////////////////////////////////
+	
+	//前フレームのプレイヤーがリスポーン待機中かのフラグ
+	bool PlayerRespawnFlag = false;
 
 	//アクターの情報
 	std::vector<Actor*> m_actors;

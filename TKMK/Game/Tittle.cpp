@@ -2,7 +2,12 @@
 #include "Tittle.h"
 #include "CharacterSelect.h"
 #include "Game.h"
-//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+namespace TitleConst
+{
+	const Vector3 START_IMAGE_SCALE = Vector3(0.4f, 0.4f, 1.0f);
+}
+
 Tittle::Tittle()
 {
 
@@ -113,12 +118,12 @@ bool Tittle::Start()
 
 	//Selectのイラスト
 	//"START"の時のイラスト
-	m_iluststart.Init("Assets/sprite/Title/ModeScene/llust_Start.DDS", 500.0f, 600.0f);
+	m_iluststart.Init("Assets/sprite/Title/ModeScene/StageImage.DDS", 1901.0f, 664.0f);
 	m_iluststart.SetPosition(m_RightfirstPosition);
-	m_iluststart.SetScale(g_vec3One);
+	m_iluststart.SetScale(TitleConst::START_IMAGE_SCALE);
 	m_iluststart.Update();
 	//"START"の時の説明文
-	m_iluststartOp.Init("Assets/sprite/Title/ModeScene/Start_Setumei.DDS", 850.0f, 100.0f);
+	m_iluststartOp.Init("Assets/sprite/Title/ModeScene/Start_Setumei.DDS", 850.0f, 110.0f);
 	m_iluststartOp.SetPosition(m_RightfirstPosition);
 	m_iluststartOp.SetScale(g_vec3One);
 	m_iluststartOp.Update();

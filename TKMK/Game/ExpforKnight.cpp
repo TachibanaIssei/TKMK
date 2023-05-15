@@ -26,7 +26,8 @@ bool ExpforKnight::Start()
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_EFKSCPOS, EFKWorldPOS);
 	center.x = (m_EFKSCPOS.x - EXPERIENCE_BAR_POS.x) / 2.0f;
 	center.y = (m_EFKSCPOS.y - EXPERIENCE_BAR_POS.y) / 2.0f;
-	center.y += 400.0f;
+	center.x -= 200.0f;
+	center.y += 800.0f;
 	if (isRabbit)
 	{
 		Randamu = rand() % 601 - 300;
@@ -50,23 +51,27 @@ void ExpforKnight::Update()
 {
 	Bezier();
 
-	if (m_Timer >= 1)
+	if (m_Timer >= 0.98)
 	{
 		DeleteGO(this);
 	}
-
+	if (LeftTimer >= 1)
+	{
+		DeleteGO(this);
+	}
 }
 
 void ExpforKnight::Bezier()
 {
-	MovePos.Lerp(m_Timer, m_EFKSCPOS, center);
+	
+	MovePos.Lerp(LeftTimer, m_EFKSCPOS, center);
 	MovePos2.Lerp(m_Timer, center, EXPERIENCE_BAR_POS);
 	MovePos3.Lerp(m_Timer, MovePos, MovePos2);
 
 	m_NormalExp.SetPosition(MovePos3.x,MovePos3.y,0.0f);
 	m_NormalExp.Update();
-
-	m_Timer += 0.04f;
+	LeftTimer += 0.02f;
+	m_Timer += 0.03f;
 
 }
 void ExpforKnight::Render(RenderContext& rc)

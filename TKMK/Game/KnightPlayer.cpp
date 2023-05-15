@@ -150,8 +150,16 @@ void KnightPlayer::Update()
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
 			m_gameUI->LevelFontChange(Lv);
+		}
+		if (Lv > oldLv)
+		{
 			LevelUp = NewGO<ChaseEFK>(4);
 			LevelUp->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+		}
+		else if (Lv < oldLv)
+		{
+			LevelDown = NewGO<ChaseEFK>(4);
+			LevelDown->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
 		}
 
 		//前フレームのレベルを取得

@@ -308,6 +308,7 @@ bool GameUI::Start()
 		//プレイヤーのHPを取得　白い部分用
 		White_BackHp = player->CharSetHp();
 		WhiteHp_Timer = WHITEHP_WAIT;
+		BackUPLV = player->CharSetLevel();
 
 	}
 
@@ -437,6 +438,16 @@ void GameUI::CountDown()
 			break;
 		}
 	}
+
+	//if (FightLerp <= 1.0f)
+	//{
+	//	Fight_POS.Lerp(FightLerp,{0.0,1.13,-200},{0.0,1.13,0.0});
+	//}
+	//FightLerp += 0.03f;
+	//	m_CountNumper.SetPosition(Fight_POS);
+
+
+
 	//画像がFight!でないかつスケールが100以下なら
 	else if(m_fightFlag == false&&m_gameCountScale.x<100.0f)
 	{
@@ -446,23 +457,38 @@ void GameUI::CountDown()
 		m_Color -= 0.02f;
 		
 		m_CountNumper.SetScale(m_gameCountScale);
-		//
+		
 		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
 	}
 
 	//画像がFight!なら
-	if(m_fightFlag==true)
+	if (m_fightFlag == true)
 	{
-		if (m_FightScale.x < m_gameCountScale.x)
+
+		if (FightScale == true && FightshotStopFlag == false)
 		{
+			m_gameCountScale += {0.2f, 0.2f, 0.0f};
+
+			if (m_gameCountScale.x > 0.8f) {
+				FightshotStopFlag = true;
+			}
+		}
+		else if(FightshotStopFlag == false) {
 			//徐々に文字を小さくする
 			m_gameCountScale -= FightSmallScale;
+
+			if (m_gameCountScale.x < 0.6f)
+			{
+				FightScale = true;
+			}
 		}
+
+	}
 		
 		m_CountNumper.SetScale(m_gameCountScale);
-		//
+		
 		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
-	}
+	
 
 	
 	m_CountNumper.Update();
@@ -516,8 +542,14 @@ void GameUI::HPBar()
 	m_hpBar.SetScale(HpScale);
 
 	m_hpBar.Update();
-
 	
+	//レベルが下がった時の処理
+	if (BackUPLV > player->CharSetLevel())
+	{
+		White_BackHp = HP;
+	}
+	BackUPLV = player->CharSetLevel();
+
 	//Hp削られたら白い部分も減らす
 	if (HP < White_BackHp)
 	{

@@ -688,46 +688,41 @@ void GameUI::EXPBar()
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
 	//プレイヤーの経験値を取得
-	float nowEXP = player->CharSetEXP();
+	m_nowEXP = player->CharSetEXP();
 	//今の経験値テーブルを取得
 	float nowEXPTable = player->CharSetEXPTable();
 	//前のレベルの経験値テーブルを取得
 	float oldEXPTable = player->CharSetOldEXPTable();
 
-	//最終的な経験値テーブル
-	float finalEXPTable = nowEXPTable - oldEXPTable;
-	if (finalEXPTable < 0) {
-		finalEXPTable *= -1;
-	}
+	oldLevel = player->CharSetLevel();
 
-	//最終的な経験値
-	//必殺技発動時だけそのままにしたい×oldEXPTable
-
-
-	float finalEXP = nowEXP - oldEXPTable;
-	if (finalEXP < 0) {
-		finalEXP *= -1;
-	}
-
-
-	float final;
-	final = Math::Lerp(nowEXP, oldEXPTable, nowEXPTable);
+	//徐々に上げる処理
+	GrowEXP();
 
 	//HPバーの増えていく割合。
-	EXPScale.x = (float)finalEXP / (float)finalEXPTable;
-	EXPScale.x = final;
+	EXPScale.x = (float)m_exp / (float)nowEXPTable;
+
 	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
 	//デバッグ用
 	//レベルアップまでに必要な経験値の量
-	int UpToLevel = nowEXPTable - nowEXP;
+	int UpToLevel = nowEXPTable - m_nowEXP;
 	wchar_t UTL[255];
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
+}
 
-	oldEXP = finalEXP;
-	oldEXPTable = finalEXPTable;
+//経験値を徐々に上げる処理
+void GameUI::GrowEXP()
+{
+
+	if (m_nowEXP > m_exp)
+	{
+		m_exp++;
+	}
+
+	
 }
 
 //

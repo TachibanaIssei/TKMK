@@ -121,6 +121,11 @@ public:
 	void EXPBar();
 
 	/// <summary>
+	/// 経験値バーを徐々に上げる処理
+	/// </summary>
+	void GrowEXP();
+
+	/// <summary>
 	/// 
 	/// </summary>
 	void CharPoint();
@@ -274,8 +279,10 @@ private:
 	bool GameEndFlag=false;
 
 	//前フレームの経験値
-	int oldEXP=0;
-	int oldEXPTable = 0;
+	int m_nowEXP = 0;
+	int oldLevel = 0;
+	int m_exp = 0;
+
 
 	//キャラのポイント
 	int charPoint[4];

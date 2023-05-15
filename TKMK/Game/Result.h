@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #define PLAYER 4
 #define MOVE 4
 
@@ -96,7 +98,7 @@ private:
 	Vector3 PointRight = { 200.0f,85.0f,0.0f };
 
 	//üŒ`•âŠÔ‚Å‚±‚±‚Ü‚Å“®‚©‚·
-	Vector3 m_lerpMoveEnd[MOVE] = {			//‡ˆÊ
+	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//‡ˆÊ
 		Vector3(0.0f, 160.0f, 0.0f),		//‚PˆÊ
 		Vector3(0.0f, 20.0f, 0.0f),			//‚QˆÊ
 		Vector3(0.0f, -120.0f, 0.0f),		//‚RˆÊ
@@ -104,7 +106,7 @@ private:
 	};
 
 	//üŒ`•âŠÔ‚Å“®‚©‚·‚Æ‚«‚ÌÀ•W
-	Vector3 m_lerpMoving[MOVE] = {	//‡ˆÊ
+	std::array<Vector3, MOVE> m_lerpMoving = {		//‡ˆÊ
 		Vector3(g_vec3Zero),		//‚PˆÊ
 		Vector3(g_vec3Zero),		//‚QˆÊ
 		Vector3(g_vec3Zero),		//‚RˆÊ
@@ -112,7 +114,7 @@ private:
 	};
 
 	//üŒ`•âŠÔ‘O‚ÌÀ•W
-	Vector3 m_lerpStartPos[MOVE] = {		//‡ˆÊ
+	std::array<Vector3, MOVE> m_lerpStartPos = {	//‡ˆÊ
 		Vector3(-2500.0f, 160.0f, 0.0f),	//‚PˆÊ
 		Vector3(-2500.0f, 20.0f, 0.0f),		//‚QˆÊ
 		Vector3(-2500.0f, -120.0f, 0.0f),	//‚RˆÊ

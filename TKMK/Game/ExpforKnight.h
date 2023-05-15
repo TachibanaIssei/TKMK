@@ -33,7 +33,7 @@ private:
 	int Randamu = 0;
 
 	float m_Timer = 0.0f;
-
+	float LeftTimer = 0.0f;
 	bool isRabbit = false;
 };
 

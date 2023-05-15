@@ -15,6 +15,9 @@ namespace ResultSpriteConst
 
 	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);		//ÉäÉUÉãÉgÇÃÉçÉS
 
+	const float NAME_WIDTH = 278.0f;
+	const float NAME_HEIGHT = 118.0f;
+
 	const float POINT_FONT_SHADOW_OFFSET = 5.0f;
 }
 
@@ -158,19 +161,19 @@ void Result::InitSprite()
 	
 	//PlayerÇÃñºëO
 	//"Player"
-	m_playerName.Init("Assets/sprite/Result/Player.DDS", 250.0f, 100.0f);
+	m_playerName.Init("Assets/sprite/Result/Player.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
 	m_playerName.SetPosition(m_lerpStartPos[0]);
 	m_playerName.Update();
 	//"CPU1"
-	m_cpuName1.Init("Assets/sprite/Result/CPU1.DDS", 200.0f, 75.0f);
+	m_cpuName1.Init("Assets/sprite/Result/CPU1.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
 	m_cpuName1.SetPosition(m_lerpStartPos[0]);
 	m_cpuName1.Update();
 	//"CPU2"
-	m_cpuName2.Init("Assets/sprite/Result/CPU2.DDS", 200.0f, 75.0f);
+	m_cpuName2.Init("Assets/sprite/Result/CPU2.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
 	m_cpuName2.SetPosition(m_lerpStartPos[0]);
 	m_cpuName2.Update();
 	//"CPU3"
-	m_cpuName3.Init("Assets/sprite/Result/CPU3.DDS", 200.0f, 75.0f);
+	m_cpuName3.Init("Assets/sprite/Result/CPU3.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
 	m_cpuName3.SetPosition(m_lerpStartPos[0]);
 	m_cpuName3.Update();
 

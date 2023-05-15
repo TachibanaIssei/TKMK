@@ -79,39 +79,27 @@ private:
 	EnCursorPos m_cursor;
 
 	SpriteRender	m_spriteRender;		//背景
+	SpriteRender	m_resultLogo;		//リザルトのロゴ
 	SpriteRender	m_goTitle;			//"タイトルへ戻る"非選択
 	SpriteRender	m_goTitleSelect;	//"タイトルへ戻る"選択
 	SpriteRender	m_gameover;			//"ゲーム終了"非選択
 	SpriteRender	m_gameoverST;		//"タイトルへ戻る"選択
-	SpriteRender	m_playerName;		//"Player"名前かぶりだから変える
+
+	std::array<SpriteRender, 4> m_pointsUnit;
+
+	std::array<SpriteRender, 4> m_namePlate;
+
+	SpriteRender	m_playerName;		//"Player"
 	SpriteRender	m_cpuName1;			//CPU1
 	SpriteRender	m_cpuName2;			//CPU2
 	SpriteRender	m_cpuName3;			//CPU3
-	SpriteRender	m_resultLogo;		//リザルトのロゴ
+
 
 	SpriteRender m_choiceCursor;		//選択時のカーソル
 
 	Tittle* tittle = nullptr;
 	SoundSource* m_bgm = nullptr;
 	Fade* fade = nullptr;
-
-	Vector3 PointRight = { 200.0f,85.0f,0.0f };
-
-	//線形補間でここまで動かす
-	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//順位
-		Vector3(0.0f, 160.0f, 0.0f),		//１位
-		Vector3(0.0f, 20.0f, 0.0f),			//２位
-		Vector3(0.0f, -120.0f, 0.0f),		//３位
-		Vector3(0.0f, -255.0f, 0.0f)		//４位
-	};
-
-	//線形補間で動かすときの座標
-	std::array<Vector3, MOVE> m_lerpMoving = {		//順位
-		Vector3(g_vec3Zero),		//１位
-		Vector3(g_vec3Zero),		//２位
-		Vector3(g_vec3Zero),		//３位
-		Vector3(g_vec3Zero)			//４位
-	};
 
 	//線形補間前の座標
 	std::array<Vector3, MOVE> m_lerpStartPos = {	//順位
@@ -120,6 +108,39 @@ private:
 		Vector3(-2500.0f, -120.0f, 0.0f),	//３位
 		Vector3(-2500.0f, -255.0f, 0.0f)	//４位
 	};
+
+	//フォントを線形補間でここまで動かす
+	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//順位
+		Vector3(200.0f, 250.0f, 0.0f),		//１位
+		Vector3(200.0f, 105.0f, 0.0f),		//２位
+		Vector3(200.0f, -35.0f, 0.0f),		//３位
+		Vector3(200.0f, -170.0f, 0.0f)		//４位
+	};
+
+	//スプライトを線形補間でここまで動かす
+	std::array<Vector3, MOVE> m_spriteLerpMoveEnd = {		//順位
+		Vector3(-100.0f, 180.0f, 0.0f),		//１位
+		Vector3(-100.0f, 40.0f, 0.0f),		//２位
+		Vector3(-100.0f, -100.0f, 0.0f),	//３位
+		Vector3(-100.0f, -235.0f, 0.0f)		//４位
+	};
+
+	//フォントを線形補間で動かすときの座標
+	std::array<Vector3, MOVE> m_lerpMoving = {		//順位
+		Vector3(g_vec3Zero),		//１位
+		Vector3(g_vec3Zero),		//２位
+		Vector3(g_vec3Zero),		//３位
+		Vector3(g_vec3Zero)			//４位
+	};
+
+	//スプライトを線形補間で動かすときの座標
+	std::array<Vector3, MOVE> m_spriteLerpMoving = {		//順位
+		Vector3(g_vec3Zero),		//１位
+		Vector3(g_vec3Zero),		//２位
+		Vector3(g_vec3Zero),		//３位
+		Vector3(g_vec3Zero)			//４位
+	};
+
 
 	//透明度
 	Vector4 m_alphaColorUnSelect	= { 0.0f,0.0f,0.0f,0.0f };	//透明

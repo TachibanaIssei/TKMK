@@ -250,7 +250,7 @@ bool GameUI::Start()
 		m_SkillRenderOUT.SetPosition(Skill_Pos);
 		m_SkillRenderOUT.SetScale(1.1, 1.1);
 		//必殺技のアイコン
-		m_UltRenderIN.Init("Assets/sprite/gameUI/ULT_Icon_IN.DDS", 162, 162);
+		m_UltRenderIN.Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", 162, 162);
 		m_UltRenderIN.SetPosition(Ult_Pos);
 		m_UltRenderIN.SetScale(1.2, 1.2);
 		//必殺のアイコンフレーム
@@ -393,6 +393,7 @@ void GameUI::Update()
 		m_LvNumber_back.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
 	m_LvNumber_back.Update();
+
 
 	EXPBar();
 
@@ -591,6 +592,8 @@ void GameUI::Timer()
 			if (timerScale < 4.0f)
 			{
 				timerScale += 2.0f*g_gameTime->GetFrameDeltaTime();
+				//
+
 			}
 			else
 			{
@@ -693,33 +696,30 @@ void GameUI::EXPBar()
 
 	//最終的な経験値テーブル
 	float finalEXPTable = nowEXPTable - oldEXPTable;
+	if (finalEXPTable < 0) {
+		finalEXPTable *= -1;
+	}
+
 	//最終的な経験値
+	//必殺技発動時だけそのままにしたい×oldEXPTable
+
+
 	float finalEXP = nowEXP - oldEXPTable;
+	if (finalEXP < 0) {
+		finalEXP *= -1;
+	}
+
+
+	float final;
+	final = Math::Lerp(nowEXP, oldEXPTable, nowEXPTable);
 
 	//HPバーの増えていく割合。
 	EXPScale.x = (float)finalEXP / (float)finalEXPTable;
+	EXPScale.x = final;
 	m_ExperienceBar_flont.SetScale(EXPScale);
-
-	////EXPバー画像を左寄せに表示する
-	//Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
-
-	///*if (finalEXPTable != oldEXPTable)
-	//{
-	//	m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
-	//}*/
-
-	////経験値の量が変わったときだけ
-	//if (finalEXP != oldEXP)
-	//{
-	//	m_EXPBerPos.x -= BerSizeSubtraction.x;
-	//}
-	//
-	//
-	//m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
-	//m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
-
+	//デバッグ用
 	//レベルアップまでに必要な経験値の量
 	int UpToLevel = nowEXPTable - nowEXP;
 	wchar_t UTL[255];

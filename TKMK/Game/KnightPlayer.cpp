@@ -12,11 +12,10 @@
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
 //たまに死んでも動ける
 //ジャンプ
-//必殺技打つときに一瞬止まるようにする
-//アニメーションイベント
-// 
 //三段目攻撃も途中にほかのキャラが必殺技を使うとフラグがかわらなくなる
-//死んだときにAIが必殺技を使うとカメラがおかしくなる時がある
+//必殺技が一人しか当たらないときにカメラに処理できていないかも
+
+
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -429,7 +428,7 @@ bool KnightPlayer::UltimaitSkillTime()
 		//全ての雷が落ちてから
 		
 		//地上にいるキャラに必殺技を打ち終わったら
-		if (m_OnGroundCharCounter <= 0)
+		if (m_OnGroundCharCounter<=0/*DamegeUltActor.empty()==true*/)
 		{
 			for (auto actor : m_game->GetActors())
 			{
@@ -509,14 +508,29 @@ void KnightPlayer::MakeUltSkill()
 			//必殺技を打たれたのでフラグを立てる
 			actor->ChangeDamegeUltFlag(true);
 
+			//カウント減らす
+			//m_OnGroundCharCounter--;
+
 			//雷を落とすキャラがリストの最後なら
 			if (actor == m_game->GetActors().back())
 			{
 				//最後であることを知らせる
 				wizardUlt->ChangeUltEndFlag(true);
+				DamegeUltActor.clear();
 			}
-			//カウント減らす
-		//m_OnGroundCharCounter--;
+			//else
+			//{
+			//	std::vector<Actor*>::iterator it = std::find(
+			//		DamegeUltActor.begin(), // アクターのリストの最初
+			//		DamegeUltActor.end(),   // アクターのリストの最後
+			//		actor                     // 消したいアクター
+			//	);
+			//	DamegeUltActor.erase(it);
+			//}
+
+			
+
+		
 		//
 
 			m_UltshootTimer = 0.0f;

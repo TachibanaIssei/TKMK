@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "Player.h"
 #include "Fade.h"
-
+//todoレベルが上がった時経験値0スタートにする
 Actor::Actor()
 {
 
@@ -194,6 +194,13 @@ void Actor::ExpProcess(int Exp)
 			//今の経験値テーブルを代入
 			m_oldExpTable = ExpTable;
 			//経験値テーブルを更新する
+			//経験値を0にリセットする
+			/*GetExp = 0;
+
+			if (Lv >= 2) {
+				ExpTable = 10;
+			}*/
+
 			switch (Lv)
 			{
 			case 2:
@@ -291,7 +298,21 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 	case 4:
 		expTable = 30;
 		break;
-
+	case 5:
+		expTable = 40;
+		break;
+	case 6:
+		expTable = 50;
+		break;
+	case 7:
+		expTable = 60;
+		break;
+	case 8:
+		expTable = 70;
+		break;
+	case 9:
+		expTable = 80;
+		break;
 	default:
 		break;
 	}

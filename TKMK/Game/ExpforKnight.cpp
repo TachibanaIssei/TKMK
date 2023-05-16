@@ -70,8 +70,18 @@ void ExpforKnight::Bezier()
 
 	m_NormalExp.SetPosition(MovePos3.x,MovePos3.y,0.0f);
 	m_NormalExp.Update();
-	LeftTimer += 0.02f;
-	m_Timer += 0.03f;
+
+	if (LeftTimer > 0.2f && LeftTimer < 0.24f)
+	{
+		LeftTimer += 0.02f * 0.2f;
+		m_Timer += 0.03f * 0.2f;
+	}
+	else
+	{
+		LeftTimer += 0.02f;
+		m_Timer += 0.03f;
+	}
+	
 
 }
 void ExpforKnight::Render(RenderContext& rc)

@@ -183,12 +183,10 @@ public:
 		return m_Status.Hp;
 	}
 
-	
-
 	Quaternion& GetRot()
 	{
 		return m_rot;
-  }
+	}
 
 
 	/// <summary>
@@ -233,7 +231,75 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// 追尾エフェクトのポインタをリセット
+	/// </summary>
+	void EffectNullptr() {
+
+		if (GetHoimi != nullptr) {
+			if (GetHoimi->GetEffect()->IsPlay() == false) {
+				GetHoimi = nullptr;
+			}
+		}
+
+		if (EffectKnightSkill != nullptr) {
+			if (EffectKnightSkill->GetEffect()->IsPlay() == false) {
+				EffectKnightSkill = nullptr;
+			}
+		}
+
+		if (EffectKnightSkillGround != nullptr) {
+			if (EffectKnightSkillGround->GetEffect()->IsPlay() == false) {
+				EffectKnightSkillGround = nullptr;
+			}
+		}
+
+		if (FootSmoke != nullptr) {
+			if (FootSmoke->GetEffect()->IsPlay() == false) {
+				FootSmoke = nullptr;
+			}
+		}
+
+		if (LevelUp_efk != nullptr) {
+			if (LevelUp_efk->GetEffect()->IsPlay() == false) {
+				LevelUp_efk = nullptr;
+			}
+		}
+
+		if (LevelDown_efk != nullptr) {
+			if (LevelDown_efk->GetEffect()->IsPlay() == false) {
+				LevelDown_efk = nullptr;
+			}
+		}
+	}
 	
+	// 追尾エフェクトの削除
+	void ChaseEffectDelete() {
+		if (GetHoimi != nullptr) {
+			GetHoimi->ResetTarget();
+		}
+
+		if (EffectKnightSkill != nullptr) {
+			EffectKnightSkill->ResetTarget();
+		}
+
+		if (EffectKnightSkillGround != nullptr) {
+			EffectKnightSkillGround->ResetTarget();
+		}
+
+		if (FootSmoke != nullptr) {
+			FootSmoke->ResetTarget();
+		}
+
+		if (LevelUp_efk != nullptr) {
+			LevelUp_efk->ResetTarget();
+		}
+
+		if (LevelDown_efk != nullptr) {
+			LevelDown_efk->ResetTarget();
+		}
+	}
+
 protected:
 	/// <summary>
 	///無敵時間用
@@ -376,8 +442,9 @@ protected:
 	//tureの時は動けなくなる
 	bool CantMove = false;
 
-
-
-	
+	// 追尾エフェクト
+	ChaseEFK* EffectKnightSkill = nullptr;
+	ChaseEFK* EffectKnightSkillGround = nullptr;
+	ChaseEFK* FootSmoke = nullptr;
 };
 

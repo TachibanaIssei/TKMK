@@ -40,7 +40,6 @@ Neutral_Enemy::~Neutral_Enemy()
 	if (m_game != nullptr) {
 		m_game->RemoveEnemyFromList(this);
 
-
 		//自分がウサギなら、ウサギ生成フラグを戻す
 		if (m_enemyKinds == enEnemyKinds_Rabbit)
 		{
@@ -48,7 +47,17 @@ Neutral_Enemy::~Neutral_Enemy()
 			rabbitLife = false;
 		}
 	}
+
+	// キラキラの削除
+	if (m_enemyKinds == enEnemyKinds_Rabbit && Rabbit_kirakira != nullptr)
+	{
+		Rabbit_kirakira->AutoDelete(true);
+		Rabbit_kirakira->Stop();
+		DeleteGO(Rabbit_kirakira);
+	}
+
 	DeleteGO(this);
+	
 }
 
 //衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
@@ -89,7 +98,7 @@ bool Neutral_Enemy::Start()
 
 		m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit_Last.tkm", m_animationClips, enAnimationClip_Num);
 
-		Rabbit_kirakira = NewGO <EffectEmitter>(0);
+		Rabbit_kirakira = NewGO <EffectEmitter>(1);
 		Rabbit_kirakira->Init(EnEFK::enEffect_Rabbit_kirakira);
 		Rabbit_kirakira->SetScale(Vector3::One * 15.0f);
 		Rabbit_kirakira->SetPosition(m_position);
@@ -537,19 +546,15 @@ void Neutral_Enemy::Collision()
 				if (m_enemyKinds == enEnemyKinds_Green)
 				{
 					//回復量
-					int HpPass = m_Status.MaxHp/2;
+					int HpPass = m_lastAttackActor->GetMaxHp() / 2;
 					m_lastAttackActor->HpUp(HpPass);
-					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
-					{
-						m_lastAttackActor->HpReset(m_lastAttackActor->GetMaxHp());
-					}
 				}
 
-				//赤の場合
-				else if (m_enemyKinds == enEnemyKinds_Red)
-				{
-					m_lastAttackActor->AtkUp(AtkPass);
-				}
+				////赤の場合
+				//else if (m_enemyKinds == enEnemyKinds_Red)
+				//{
+				//	m_lastAttackActor->AtkUp(AtkPass);
+				//}
 				//Deathflag = true;
 				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;

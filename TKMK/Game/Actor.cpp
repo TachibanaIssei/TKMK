@@ -10,10 +10,10 @@ Actor::Actor()
 
 Actor::~Actor()
 {
-	if (PowerUpEfk != nullptr) {
+	/*if (PowerUpEfk != nullptr) {
 		PowerUpEfk->DeleteEffect();
 		DeleteGO(PowerUpEfk);
-	}
+	}*/
 }
 
 void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
@@ -104,26 +104,26 @@ void Actor::GetRespawnPos()
 		});
 }
 
-/// <summary>
-/// 攻撃UP
-/// </summary>
-void Actor::AttackUP()
-{
-	if (PowerUpTimer > 0.0f)
-	{
-		m_atkUpSpriteFlag = true;
-		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();
-
-		if (PowerUpTimer <= 0.0f)
-		{
-			//攻撃UP終了
-			AttackUPEnd();
-			//攻撃力アップアイコンを消す
-			m_atkUpSpriteFlag = false;
-
-		}
-	}
-}
+///// <summary>
+///// 攻撃UP
+///// </summary>
+//void Actor::AttackUP()
+//{
+//	if (PowerUpTimer > 0.0f)
+//	{
+//		m_atkUpSpriteFlag = true;
+//		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();
+//
+//		if (PowerUpTimer <= 0.0f)
+//		{
+//			//攻撃UP終了
+//			AttackUPEnd();
+//			//攻撃力アップアイコンを消す
+//			m_atkUpSpriteFlag = false;
+//
+//		}
+//	}
+//}
 
 /// <summary>
 /// レベルアップの処理

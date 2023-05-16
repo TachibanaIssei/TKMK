@@ -15,10 +15,15 @@ namespace ResultSpriteConst
 
 	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);		//リザルトのロゴの座標
 	
-	const Vector3 POINTS_ALIGN = { 200.0f,-80.0f,0.0f };				//ポイントの"p"を揃える
+	const Vector3 POINTS_ALIGN = { 280.0f,-128.0f,0.0f };				//ポイントの"p"を揃える
+	const Vector3 No1POINTS_ALIGN = { 280.0f,-142.0f,0.0f };			//一番上のポイントの"p"を揃える
 	const Vector3 POINTS_SCALE = { 1.2f,1.2f,1.0f };
 
+	const Vector3 FONT_POINT_ADD_POS = { 100.0f,-52.0f,0.0f };			//ポイント数のフォントの位置
+	const Vector3 NO1_FONT_POINT_ADD_POS = { 100.0f,-52.0f,0.0f };		//一番上のポイント数のフォントの位置
+
 	const Vector3 PLAYER_NAME_ALIGN = { 20.0f,0.0f,0.0f };				//プレイヤー名をCPUに揃えるために加算する値
+
 
 	const float NAME_WIDTH = 278.0f;
 	const float NAME_HEIGHT = 118.0f;
@@ -26,8 +31,8 @@ namespace ResultSpriteConst
 	const float POINTS_UNIT_WIDTH  = 54.0f;		//ポイントの単位の幅
 	const float POINTS_UNIT_HEIGHT = 69.0f;		//ポイントの単位の高さ
 
-	const Vector3 NO1_NAME_PLATE_ADD_POS = { -85.0f,-70.0f,0.0f };	//一位の名前の背景の画像に足す座標
-	const Vector3 LOSER_NAME_PLATE_ADD_POS = { -80.0f,-70.0f,0.0f };	//一位以外の名前の背景の画像に足す座標
+	const Vector3 NO1_NAME_PLATE_ADD_POS = { 57.0f,-120.0f,0.0f };	//一位の名前の背景の画像に足す座標
+	const Vector3 LOSER_NAME_PLATE_ADD_POS = { 50.0f,-120.0f,0.0f };	//一位以外の名前の背景の画像に足す座標
 	const float NO1_NAME_PLATE_WIDTH = 818.0f;					//一位の名前の背景の画像の幅
 	const float NO1_NAME_PLATE_HEIGHT = 158.0f;					//一位の名前の背景の画像の高さ
 	const float LOSER_NAME_PLATE_WIDTH = 800.0f;				//一位以外の名前の背景の画像の幅
@@ -35,7 +40,8 @@ namespace ResultSpriteConst
 
 	const float POINT_FONT_SHADOW_OFFSET = 5.0f;
 
-
+	const float LOSER_WORD_SCALE = 1.8f;	//フォントの大きさ
+	const float NO1_WORD_SCALE = 2.2f;	//一番上のフォントの大きさ
 }
 
 Result::Result()
@@ -245,7 +251,7 @@ void Result::Rank()
 			m_playerRank1.SetText(Rank1);
 			m_playerRank1.SetPosition(m_lerpStartPos[i]);
 			m_playerRank1.SetColor(g_vec4Black);
-			m_playerRank1.SetScale(WORD_SCALE);
+			m_playerRank1.SetScale(ResultSpriteConst::NO1_WORD_SCALE);
 			m_playerRank1.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
 			break;
 		case 2:
@@ -253,7 +259,7 @@ void Result::Rank()
 			m_playerRank2.SetText(Rank2);
 			m_playerRank2.SetPosition(m_lerpStartPos[i]);
 			m_playerRank2.SetColor(g_vec4Black);
-			m_playerRank2.SetScale(WORD_SCALE);
+			m_playerRank2.SetScale(ResultSpriteConst::LOSER_WORD_SCALE);
 			m_playerRank2.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
 			break;
 		case 3:
@@ -261,7 +267,7 @@ void Result::Rank()
 			m_playerRank3.SetText(Rank3);
 			m_playerRank3.SetPosition(m_lerpStartPos[i]);
 			m_playerRank3.SetColor(g_vec4Black);
-			m_playerRank3.SetScale(WORD_SCALE);
+			m_playerRank3.SetScale(ResultSpriteConst::LOSER_WORD_SCALE);
 			m_playerRank3.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
 			break;
 		case 4:
@@ -269,7 +275,7 @@ void Result::Rank()
 			m_playerRank4.SetText(Rank4);
 			m_playerRank4.SetPosition(m_lerpStartPos[i]);
 			m_playerRank4.SetColor(g_vec4Black);
-			m_playerRank4.SetScale(WORD_SCALE);
+			m_playerRank4.SetScale(ResultSpriteConst::LOSER_WORD_SCALE);
 			m_playerRank4.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
 			break;
 		default:
@@ -320,15 +326,15 @@ void Result::MovePointFont()
 	{
 	case enChange_1st:
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
-		m_playerRank1.SetPosition(m_lerpMoving[m_change]);
+		m_playerRank1.SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::FONT_POINT_ADD_POS);
 
 		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::NO1_NAME_PLATE_ADD_POS);
-		m_pointsUnit[0].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
+		m_pointsUnit[0].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::No1POINTS_ALIGN);
 		break;
 
 	case enChange_2nd:
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
-		m_playerRank2.SetPosition(m_lerpMoving[m_change]);
+		m_playerRank2.SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::FONT_POINT_ADD_POS);
 
 		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::LOSER_NAME_PLATE_ADD_POS);
 		m_pointsUnit[1].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
@@ -336,7 +342,7 @@ void Result::MovePointFont()
 
 	case enChange_3rd:
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
-		m_playerRank3.SetPosition(m_lerpMoving[m_change]);
+		m_playerRank3.SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::FONT_POINT_ADD_POS);
 
 		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::LOSER_NAME_PLATE_ADD_POS);
 		m_pointsUnit[2].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
@@ -344,7 +350,7 @@ void Result::MovePointFont()
 
 	case enChange_4th:
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
-		m_playerRank4.SetPosition(m_lerpMoving[m_change]);
+		m_playerRank4.SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::FONT_POINT_ADD_POS);
 
 		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::LOSER_NAME_PLATE_ADD_POS);
 		m_pointsUnit[3].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
@@ -382,18 +388,14 @@ void Result::MoveName()
 		m_playerName.SetPosition(m_spriteLerpMoving[m_nowMoveRank] + ResultSpriteConst::PLAYER_NAME_ALIGN);
 		break;
 	case(2):
-		//m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
 		m_cpuName1.SetPosition(m_spriteLerpMoving[m_nowMoveRank]);
 		break;
 	case(3):
-		//m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
 		m_cpuName2.SetPosition(m_spriteLerpMoving[m_nowMoveRank]);
 		break;
 	case(4):
-		//m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
 		m_cpuName3.SetPosition(m_spriteLerpMoving[m_nowMoveRank]);
 		break;
-
 	default:
 		break;
 	}

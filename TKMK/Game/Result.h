@@ -60,7 +60,6 @@ private:
 	int m_timer = 0;			//タイマー
 
 	float m_complement = 0.0f;	//線形補間の補完率
-	float WORD_SCALE = 3.0f;
 	float m_bgmVolume = 0.4f;
 	float m_seVolume = 0.6f;
 
@@ -111,10 +110,10 @@ private:
 
 	//フォントを線形補間でここまで動かす
 	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//順位
-		Vector3(200.0f, 250.0f, 0.0f),		//１位
-		Vector3(200.0f, 105.0f, 0.0f),		//２位
-		Vector3(200.0f, -35.0f, 0.0f),		//３位
-		Vector3(200.0f, -170.0f, 0.0f)		//４位
+		Vector3(100.0f, 300.0f, 0.0f),		//１位
+		Vector3(100.0f, 145.0f, 0.0f),		//２位
+		Vector3(100.0f, 0.0f, 0.0f),		//３位
+		Vector3(100.0f, -145.0f, 0.0f)		//４位
 	};
 
 	//スプライトを線形補間でここまで動かす

@@ -10,7 +10,7 @@
 16,LoserPlayerFrame,52,../../Game/Assets/sprite/Result/LoserPlayerFrame.png,55.76923076923083,90.38461538461536,800,120,1,1.0,1.0,0.5,0.5,20,LoserPlayerFrame.dds
 14,No1PlayerFrame,50,../../Game/Assets/sprite/Result/No1PlayerFrame.png,63.46153846153857,228.8461538461538,818,158,1,1.0,1.0,0.5,0.5,18,No1PlayerFrame.dds
 1,P,37,../../Game/Assets/sprite/Result/P.png,303.8461538461538,219.23076923076923,54,69,10,1.0,1.0,0.5,0.5,5,P.dds
-10,Number_1st,46,../../Game/Assets/sprite/Result/Number_1st.png,-496.1538461538461,236.53846153846155,205,106,10,1.0,1.0,0.5,0.5,14,Number_1st.dds
-10,Number_2nd,46,../../Game/Assets/sprite/Result/Number_2nd.png,-507.6923076923076,82.69230769230768,205,106,10,1.0,1.0,0.5,0.5,14,Number_2nd.dds
-10,Number_3rd,46,../../Game/Assets/sprite/Result/Number_3rd.png,-513.4615384615383,-48.076923076923094,205,106,10,1.0,1.0,0.5,0.5,14,Number_3rd.dds
-10,Number_4th,46,../../Game/Assets/sprite/Result/Number_4th.png,-513.4615384615383,-186.53846153846155,205,106,10,1.0,1.0,0.5,0.5,14,Number_4th.dds
+10,Number_1st,46,../../Game/Assets/sprite/Result/Number_1st.png,-496.1538461538461,236.53846153846155,256,114,10,1.0,1.0,0.5,0.5,14,Number_1st.dds
+10,Number_2nd,46,../../Game/Assets/sprite/Result/Number_2nd.png,-507.6923076923076,82.69230769230768,256,114,10,1.0,1.0,0.5,0.5,14,Number_2nd.dds
+10,Number_3rd,46,../../Game/Assets/sprite/Result/Number_3rd.png,-513.4615384615383,-48.076923076923094,256,114,10,1.0,1.0,0.5,0.5,14,Number_3rd.dds
+10,Number_4th,46,../../Game/Assets/sprite/Result/Number_4th.png,-513.4615384615383,-186.53846153846155,256,114,10,1.0,1.0,0.5,0.5,14,Number_4th.dds

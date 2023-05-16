@@ -26,10 +26,12 @@ namespace ResultSpriteConst
 	const float POINTS_UNIT_WIDTH  = 54.0f;		//ポイントの単位の幅
 	const float POINTS_UNIT_HEIGHT = 69.0f;		//ポイントの単位の高さ
 
-	const float NO1_NAME_PLATE_WIDTH = 818.0f;		//一位の名前の背景の画像の幅
-	const float NO1_NAME_PLATE_HEIGHT = 158.0f;		//一位の名前の背景の画像の高さ
-	const float LOSER_NAME_PLATE_WIDTH = 800.0f;	//一位以外の名前の背景の画像の幅
-	const float LOSER_NAME_PLATE_HEIGHT = 120.0f;	//一位以外の名前の背景の画像の高さ
+	const Vector3 NO1_NAME_PLATE_ADD_POS = { -85.0f,-70.0f,0.0f };	//一位の名前の背景の画像に足す座標
+	const Vector3 LOSER_NAME_PLATE_ADD_POS = { -80.0f,-70.0f,0.0f };	//一位以外の名前の背景の画像に足す座標
+	const float NO1_NAME_PLATE_WIDTH = 818.0f;					//一位の名前の背景の画像の幅
+	const float NO1_NAME_PLATE_HEIGHT = 158.0f;					//一位の名前の背景の画像の高さ
+	const float LOSER_NAME_PLATE_WIDTH = 800.0f;				//一位以外の名前の背景の画像の幅
+	const float LOSER_NAME_PLATE_HEIGHT = 120.0f;				//一位以外の名前の背景の画像の高さ
 
 	const float POINT_FONT_SHADOW_OFFSET = 5.0f;
 
@@ -320,6 +322,7 @@ void Result::MovePointFont()
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
 		m_playerRank1.SetPosition(m_lerpMoving[m_change]);
 
+		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::NO1_NAME_PLATE_ADD_POS);
 		m_pointsUnit[0].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
 		break;
 
@@ -327,6 +330,7 @@ void Result::MovePointFont()
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
 		m_playerRank2.SetPosition(m_lerpMoving[m_change]);
 
+		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::LOSER_NAME_PLATE_ADD_POS);
 		m_pointsUnit[1].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
 		break;
 
@@ -334,6 +338,7 @@ void Result::MovePointFont()
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
 		m_playerRank3.SetPosition(m_lerpMoving[m_change]);
 
+		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::LOSER_NAME_PLATE_ADD_POS);
 		m_pointsUnit[2].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
 		break;
 
@@ -341,6 +346,7 @@ void Result::MovePointFont()
 		m_lerpMoving[m_change].Lerp(m_complement, m_lerpStartPos[m_change], m_lerpMoveEnd[m_change]);
 		m_playerRank4.SetPosition(m_lerpMoving[m_change]);
 
+		m_namePlate[m_change].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::LOSER_NAME_PLATE_ADD_POS);
 		m_pointsUnit[3].SetPosition(m_lerpMoving[m_change] + ResultSpriteConst::POINTS_ALIGN);
 		break;
 
@@ -350,6 +356,7 @@ void Result::MovePointFont()
 
 	for (int i = 0; i < m_pointsUnit.size(); i++)
 	{
+		m_namePlate[i].Update();
 		m_pointsUnit[i].Update();
 	}
 }
@@ -361,38 +368,34 @@ void Result::MoveName()
 	{
 		if (m_playerScore[i].Rank - 1 == m_change)
 		{
-			m_nowMoveRank = i;
+			m_nowMoveRank = m_change;
 			m_nowMoveCharacter = m_playerScore[i].NameNum;
 			break;
 		}
 	}
 
-	m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
+	m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);	
 
 	switch (m_nowMoveCharacter)
 	{
 	case(1):
-		m_playerName.SetPosition(m_spriteLerpMoving[m_playerScore[m_nowMoveRank].Rank - 1] + ResultSpriteConst::PLAYER_NAME_ALIGN);
+		m_playerName.SetPosition(m_spriteLerpMoving[m_nowMoveRank] + ResultSpriteConst::PLAYER_NAME_ALIGN);
 		break;
 	case(2):
-		m_cpuName1.SetPosition(m_spriteLerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
+		//m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
+		m_cpuName1.SetPosition(m_spriteLerpMoving[m_nowMoveRank]);
 		break;
 	case(3):
-		m_cpuName2.SetPosition(m_spriteLerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
+		//m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
+		m_cpuName2.SetPosition(m_spriteLerpMoving[m_nowMoveRank]);
 		break;
 	case(4):
-		m_cpuName3.SetPosition(m_spriteLerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
+		//m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_lerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
+		m_cpuName3.SetPosition(m_spriteLerpMoving[m_nowMoveRank]);
 		break;
 
 	default:
 		break;
-	}
-
-	m_namePlate[m_nowMoveCharacter - 1].SetPosition(m_spriteLerpMoving[m_playerScore[m_nowMoveRank].Rank - 1]);
-
-	for (int i = 0; i < m_namePlate.size(); i++)
-	{
-		m_namePlate[i].Update();
 	}
 
 	m_playerName.Update();
@@ -475,8 +478,8 @@ void Result::Render(RenderContext& rc)
 	//ポイントの単位
 	for (int i = 0; i < m_pointsUnit.size(); i++)
 	{
-		m_pointsUnit[i].Draw(rc);
 		m_namePlate[i].Draw(rc);
+		m_pointsUnit[i].Draw(rc);
 	}
 
 	m_playerName.Draw(rc);		//プレイヤー

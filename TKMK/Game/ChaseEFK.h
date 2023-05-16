@@ -16,6 +16,14 @@ public:
 	void SetEffect(EnEFK effect, Actor* target,Vector3 scale = Vector3::One);
 
 	void SetEnemyEffect(EffectEmitter* name,Neutral_Enemy* target);
+
+	/// <summary>
+	/// 自動で回転させるかどうか
+	/// </summary>
+	void AutoRot(bool flag) {
+		autoRot = flag;
+	}
+
 	// エフェクトを取得
 	EffectEmitter* GetEffect()
 	{
@@ -25,6 +33,7 @@ public:
 	// エフェクトを削除
 	void DeleteEffect() {
 		m_effect->Stop();
+		m_effect = nullptr;
 		DeleteGO(m_effect);
 	}
 
@@ -33,11 +42,16 @@ public:
 		autoDelete = flag;
 	}
 
+	void ResetTarget() {
+		m_targetActor = nullptr;
+		m_targetEnemy = nullptr;
+	}
+
 private:
 	EffectEmitter* m_effect = nullptr;
 	Actor* m_targetActor = nullptr;
-	EffectEmitter* m_EnemyEffect = nullptr;
 	Neutral_Enemy* m_targetEnemy = nullptr;
 	bool autoDelete = true;
+	bool autoRot = false;
 };
 

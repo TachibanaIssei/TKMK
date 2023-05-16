@@ -58,6 +58,7 @@ Game::~Game()
 
 	for (auto aoctor : m_Actors)
 	{
+		aoctor->ChaseEffectDelete();
 		DeleteGO(aoctor);
 	}
 
@@ -110,7 +111,6 @@ bool Game::Start()
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Skill, u"Assets/effect/Knight/Knight_Skill_Effect.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_SkillGround, u"Assets/effect/Knight/Knight_SkillGround_Effect.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_FootSmoke, u"Assets/effect/Knight/footsmoke.efk");
-	
 	//剣士の必殺技発動時のオーラエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
 

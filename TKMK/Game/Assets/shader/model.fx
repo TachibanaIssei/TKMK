@@ -265,7 +265,7 @@ float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldP
     
     //スペキュラマップからスペキュラ反射の強さをサンプリング
     float specPower = g_specularMap.Sample(g_sampler, uv).r;
-    specularLig *= specPower * 2.0f;
+    specularLig *= specPower * 1.2f;
     
     return specularLig;
 }

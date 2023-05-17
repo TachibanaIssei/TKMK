@@ -43,10 +43,12 @@ public:
 	// 必殺技終了用の純粋仮想関数
 	virtual void UltEnd() = 0;
 
-protected:
-	void AttackUP();
+	virtual void ChaseEffectDelete() = 0;
 
-	void AttackUPEnd() {
+protected:
+	//void AttackUP();
+
+	/*void AttackUPEnd() {
 		m_Status.Atk -= PowerUp;
 
 		if (PowerUpEfk != nullptr)
@@ -55,7 +57,7 @@ protected:
 			DeleteGO(PowerUpEfk);
 			PowerUpEfk = nullptr;
 		}
-	}
+	}*/
 
 	/// <summary>
 	/// レベルアップ時に増加するステータス
@@ -77,6 +79,10 @@ protected:
 
 public:
 
+	EnCharState GetCharState()
+	{
+		return m_charState;
+	}
 	//ゲームクラスの現在の状態を示すステート
 	enum EnGameState
 	{
@@ -276,26 +282,26 @@ public:
 		return m_Status.Hp;
 	}
 
-	/// <summary>
-	/// 中立の赤色の敵を倒した時攻撃を上げる処理
-	/// </summary>
-	/// <param name="AtkUp">増加する攻撃力</param>
-	void AtkUp(int AtkUp)
-	{
-		//パワーUPじゃないとき
-		if (PowerUpTimer <= 0.0f)
-		{
-			PowerUp = AtkUp;
-			m_Status.Atk += PowerUp;
+	///// <summary>
+	///// 中立の赤色の敵を倒した時攻撃を上げる処理
+	///// </summary>
+	///// <param name="AtkUp">増加する攻撃力</param>
+	//void AtkUp(int AtkUp)
+	//{
+	//	//パワーUPじゃないとき
+	//	if (PowerUpTimer <= 0.0f)
+	//	{
+	//		PowerUp = AtkUp;
+	//		m_Status.Atk += PowerUp;
 
-			PowerUpEfk  = NewGO<ChaseEFK>(3);
-			PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 15.0f);
+	//		PowerUpEfk  = NewGO<ChaseEFK>(3);
+	//		PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 15.0f);
 
-			PowerUpEfk->AutoDelete(false);
-			PowerUpEfk->GetEffect()->AutoDelete(false);
-		}		
-		PowerUpTimer = 15.0f;
-	}
+	//		PowerUpEfk->AutoDelete(false);
+	//		PowerUpEfk->GetEffect()->AutoDelete(false);
+	//	}		
+	//	PowerUpTimer = 15.0f;
+	//}
 
 
 	/// <summary>
@@ -305,6 +311,11 @@ public:
 	void HpUp(int HpUp)
 	{
 		m_Status.Hp += HpUp;
+		// エフェクトがあるなら消す
+		if (GetHoimi != nullptr) {
+			GetHoimi->DeleteEffect();
+		}
+
 		GetHoimi = NewGO<ChaseEFK>(3);
 		GetHoimi->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
@@ -511,6 +522,77 @@ public:
 		MaxVolume += addSE;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	bool DeathToRespawnTimer_AI(bool DeathToRespwanFlag);
+
+	/// <summary>
+	/// 地上に降りているかのフラグ
+	/// </summary>
+	/// <returns></returns>
+	bool IsGroundIn()
+	{
+		return IsGroundFlag;
+	}
+
+	/// <summary>
+	/// このキャラに対して必殺技を打たれたらフラグを変える
+	/// </summary>
+	void ChangeDamegeUltFlag(bool flag)
+	{
+		m_DamegeUltimaitSkillaFlag = flag;
+	}
+
+	/// <summary>
+	/// 必殺技を打たれたフラグを返す
+	/// </summary>
+	bool GetDamegeUltFlag() {
+		return m_DamegeUltimaitSkillaFlag;
+	}
+
+	/// <summary>
+	/// 地上にいるかのカウンターを減らす
+	/// </summary>
+	void SubOnGroundCharCounter()
+	{
+		m_OnGroundCharCounter--;
+	}
+
+	/// <summary>
+	/// 地上にいるかのフラグを変える
+	/// </summary>
+	/// <param name="flag"></param>
+	void ChangeGroundChackflag(bool flag) {
+		m_GroundChackFlag = flag;
+	}
+
+	/// <summary>
+	/// 地上にいるかのフラグを返す
+	/// </summary>
+	bool GetGroundChackflag()
+	{
+		return m_GroundChackFlag;
+	}
+
+	/// <summary>
+	/// カメラで見たかのフラグを変える
+	/// </summary>
+	/// <param name="flag"></param>
+	void ChangeCameraSawCharFlag(bool flag)
+	{
+		m_CameraSawCharFlag = flag;
+	}
+
+	/// <summary>
+	/// カメラで見たかのフラグを返す
+	/// </summary>
+	bool GetCameraSawCharFlag()
+	{
+		return m_CameraSawCharFlag;
+	}
+
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -551,6 +633,8 @@ protected:
 	bool m_AirFlag = false;
 	//ジャンプフラグ
 	bool m_RespawnJumpFlag = false;
+	//地上に降りたかどうかの判定
+	bool IsGroundFlag = false;
 
 	//自分をターゲットしてるアクターのリスト
 	std::vector<Actor*> be_target;
@@ -580,14 +664,34 @@ protected:
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
 	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）
 	Fade* m_fade = nullptr;
-
+				
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 
-	ChaseEFK* PowerUpEfk = nullptr;
+	/*ChaseEFK* PowerUpEfk = nullptr;*/
 	ChaseEFK* GetHoimi = nullptr;
+	ChaseEFK* LevelUp_efk = nullptr;
+	ChaseEFK* LevelDown_efk = nullptr;
+
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
+
+	////////////////////////////////////////////////
+	// 雷を打つときに使う変数
+	////////////////////////////////////////////////
+	//必殺技を使ったときに立てるフラグ(使用者のフラグ)
+	bool m_UseUltimaitSkillFlag = false;
+	//必殺技を打たれたときに立てるフラグ(被害者のフラグ)
+	bool m_DamegeUltimaitSkillaFlag = false;
+	//グラウンドに降りているかチェックするフラグ
+	bool m_GroundChackFlag = false;
+	//プレイヤーが必殺技を打った時に雷を打たれたキャラをカメラで見たかのフラグ
+	bool m_CameraSawCharFlag = false;
+	//必殺技を打つ間隔を計るタイマー
+	float m_UltshootTimer = 0.9f;
+	//地上にいるキャラを数える
+	int  m_OnGroundCharCounter = 0;
+	////////////////////////////////////////////////
 };
 

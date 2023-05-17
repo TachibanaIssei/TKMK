@@ -10,10 +10,10 @@ Actor::Actor()
 
 Actor::~Actor()
 {
-	if (PowerUpEfk != nullptr) {
+	/*if (PowerUpEfk != nullptr) {
 		PowerUpEfk->DeleteEffect();
 		DeleteGO(PowerUpEfk);
-	}
+	}*/
 }
 
 void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
@@ -76,7 +76,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 //リスポーンする座標を設定する
 void Actor::GetRespawnPos()
 {
-	m_respawnLevel.Init("Assets/level3D/AIPOS2.tkl", [&](LevelObjectData& objData) {
+	m_respawnLevel.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
@@ -104,26 +104,26 @@ void Actor::GetRespawnPos()
 		});
 }
 
-/// <summary>
-/// 攻撃UP
-/// </summary>
-void Actor::AttackUP()
-{
-	if (PowerUpTimer > 0.0f)
-	{
-		m_atkUpSpriteFlag = true;
-		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();
-
-		if (PowerUpTimer <= 0.0f)
-		{
-			//攻撃UP終了
-			AttackUPEnd();
-			//攻撃力アップアイコンを消す
-			m_atkUpSpriteFlag = false;
-
-		}
-	}
-}
+///// <summary>
+///// 攻撃UP
+///// </summary>
+//void Actor::AttackUP()
+//{
+//	if (PowerUpTimer > 0.0f)
+//	{
+//		m_atkUpSpriteFlag = true;
+//		PowerUpTimer -= g_gameTime->GetFrameDeltaTime();
+//
+//		if (PowerUpTimer <= 0.0f)
+//		{
+//			//攻撃UP終了
+//			AttackUPEnd();
+//			//攻撃力アップアイコンを消す
+//			m_atkUpSpriteFlag = false;
+//
+//		}
+//	}
+//}
 
 /// <summary>
 /// レベルアップの処理
@@ -363,7 +363,7 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 }
 
 /// <summary>
-/// キャラがやられてからリスポーンするまでの時間を計る
+/// キャラがやられてからリスポーンするまでの時間を計る　プレイヤー用
 /// </summary>
 /// /// <param name="DeathToRespwanFlag"></param>
 bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
@@ -380,6 +380,30 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
 			//画面を明るくする
 			fade->StartFadeOut(1.0f);
 
+
+			m_DeathToRespwanFlag = false;
+		}
+		//やられている
+		return true;
+	}
+	//やられていない
+	return false;
+}
+
+/// <summary>
+/// キャラがやられてからリスポーンするまでの時間を計る　AI用
+/// </summary>
+/// /// <param name="DeathToRespwanFlag"></param>
+bool Actor::DeathToRespawnTimer_AI(bool DeathToRespwanFlag)
+{
+	//キャラがやられたら
+	if (m_DeathToRespwanFlag == true)
+	{
+		//タイマー減少
+		m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
+		//2秒以上経ったら
+		if (m_respwanTimer <= 0.0f)
+		{
 			m_DeathToRespwanFlag = false;
 		}
 		//やられている

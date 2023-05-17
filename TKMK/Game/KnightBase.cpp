@@ -56,7 +56,7 @@ void KnightBase::SetModel()
 	m_animationClips[enAnimationClip_Skill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Ult_liberation].Load("Assets/animData/Knight/Knight_Ult_liberation.tka");
 	m_animationClips[enAnimationClip_Ult_liberation].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_UltimateAttack.tka");
+	m_animationClips[enAnimationClip_UltimateSkill].Load("Assets/animData/Knight/Knight_Ult_Tunder.tka");
 	m_animationClips[enAnimationClip_UltimateSkill].SetLoopFlag(false);
 	m_animationClips[enAnimationClip_Damege].Load("Assets/animData/Knight/Knight_Damege.tka");
 	m_animationClips[enAnimationClip_Damege].SetLoopFlag(false);
@@ -163,10 +163,6 @@ void KnightBase::ExpProcess(int Exp)
 }
 
 /// <summary>
-/// 移動処理
-/// </summary>
-
-/// <summary>
 /// 回転処理
 /// </summary>
 void KnightBase::Rotation()
@@ -236,7 +232,7 @@ void KnightBase::Collition()
 	if (/*m_charState == enKnightState_Damege || */
 		m_charState == enCharState_Death ||
 		m_charState == enCharState_UltimateSkill ||
-		m_charState == enCharState_Ult_liberation ||
+		//m_charState == enCharState_Ult_liberation ||
 		m_charState == enCharState_Avoidance)
 	{
 		return;
@@ -253,7 +249,7 @@ void KnightBase::Collition()
 		//コリジョンを作ったアクターが自分でないなら
 		if (knightcollision->IsHit(m_charCon)&& m_lastAttackActor!=this)
 		{
-			//攻撃エフェクト再生
+			//被ダメージエフェクト再生
 			EffectEmitter* EffectKnight_Attack;
 			EffectKnight_Attack = NewGO <EffectEmitter>(0);
 			EffectKnight_Attack->Init(EnEFK::enEffect_Knight_Attack);
@@ -275,12 +271,21 @@ void KnightBase::Collition()
 			}
 			else
 			{
-
+				//縦向きにする
+				Quaternion Damegerot = m_rot;
+				Damegerot.AddRotationDegZ(180.0f);
+				EffectKnight_Attack->SetRotation(Damegerot);
 			}
 			Vector3 damegePosition = m_position;
 			damegePosition.y += 50.0f;
 			EffectKnight_Attack->SetPosition(damegePosition);
 			
+
+			//もし必殺技の溜め中だったら
+			if (m_charState == enCharState_Ult_liberation) {
+				//エフェクトを止める
+				Ult_Swordeffect->Stop();
+			}
 
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
@@ -343,7 +348,7 @@ void KnightBase::Collition()
 void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
-	invincibleTimer = 2.0f;
+	invincibleTimer = 1.0f;
 
 	//自身のHPが0以下なら
 	if (m_Status.Hp <= 0) {
@@ -363,19 +368,22 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		EffectKnightDeath->SetPosition(effectPosition);
 		EffectKnightDeath->Play();
 
-		//攻撃UPおわり
-		if (PowerUpTimer > 0.0f)
-		{
-			PowerUpTimer = 0.0f;
-			AttackUPEnd();
-		}
-		// 念のためここでも消す
-		if (PowerUpEfk != nullptr)
-		{
-			PowerUpEfk->DeleteEffect();
-			DeleteGO(PowerUpEfk);
-			PowerUpEfk = nullptr;
-		}
+		////攻撃UPおわり
+		//if (PowerUpTimer > 0.0f)
+		//{
+		//	PowerUpTimer = 0.0f;
+		//	AttackUPEnd();
+		//}
+		//// 念のためここでも消す
+		//if (PowerUpEfk != nullptr)
+		//{
+		//	PowerUpEfk->DeleteEffect();
+		//	DeleteGO(PowerUpEfk);
+		//	PowerUpEfk = nullptr;
+		//}
+
+		//地上にいない
+		IsGroundFlag = false;
 
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -402,6 +410,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		AtkCollistionFlag = false;
 		m_AtkTmingState = Num_State;
 		pushFlag = false;
+		CantMove = false;
 
 		SoundSource * se = NewGO<SoundSource>(0);
 		se->Init(12);
@@ -420,50 +429,50 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 void KnightBase::UltimateSkill()
 {
 	//
-	int DownLv=0;
+	int DownLv = 3;
 	//レベルが5以下なら
 	//必殺技強化なし
-	if (Lv < 6)
-	{
-		//レベルを3下げる
-		DownLv = 3;
-	}
-	//レベルが7以下なら
-	//必殺技一段階強化
-	else if (Lv < 8)
-	{
-		switch (Lv)
-		{
-		case 6:
-			DownLv = 5;
-			break;
-		case 7:
-			DownLv = 6;
-			break;
-		default:
-			break;
-		}
-	}
-	//レベルが10以下なら
-	//必殺技二段階強化
-	else if (Lv <= 10)
-	{
-		switch (Lv)
-		{
-		case 8:
-			DownLv = 7;
-			break;
-		case 9:
-			DownLv = 8;
-			break;
-		case 10:
-			DownLv = 9;
-			break;
-		default:
-			break;
-		}
-		
-	}
+	//if (Lv < 6)
+	//{
+	//	//レベルを3下げる
+	//	DownLv = 3;
+	//}
+	////レベルが7以下なら
+	////必殺技一段階強化
+	//else if (Lv < 8)
+	//{
+	//	switch (Lv)
+	//	{
+	//	case 6:
+	//		DownLv = 5;
+	//		break;
+	//	case 7:
+	//		DownLv = 6;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+	////レベルが10以下なら
+	////必殺技二段階強化
+	//else if (Lv <= 10)
+	//{
+	//	switch (Lv)
+	//	{
+	//	case 8:
+	//		DownLv = 7;
+	//		break;
+	//	case 9:
+	//		DownLv = 8;
+	//		break;
+	//	case 10:
+	//		DownLv = 9;
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//	
+	//}
 
 	//レベルを3下げる
 	levelDown(LvUPStatus, m_Status, Lv, DownLv);
@@ -491,6 +500,9 @@ void KnightBase::SetRespawn()
 	//剣士
 	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
 	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+
+	//リスポーン時に向いている方向の前方向を取得
+	ForwardSet();
 }
 
 /// <summary>
@@ -710,12 +722,11 @@ void KnightBase::OnProcessRunStateTransition()
 	OnProcessCommonStateTransition();
 }
 
+//ジャンプアニメーションが再生されているとき
 void KnightBase::OnProcessJumpStateTransition()
 {
-	//��ŏ��
 	pushFlag = false;
-	//�t���O�ŋ󒆂ɂ��邩����
-	//�󒆂ɂ���
+	//空中にいるなら
 	if (IsAir(m_charCon) == enIsAir && m_charCon.IsOnGround() == false)
 	{
 		m_AirFlag = true;
@@ -724,7 +735,6 @@ void KnightBase::OnProcessJumpStateTransition()
 	{
 		if (m_charCon.IsOnGround() == true)
 		{
-			//�{�^���v�b�V���t���O��false�ɂ���
 			pushFlag = false;
 			m_AirFlag = false;
 			m_charState = enCharState_Idle;
@@ -756,7 +766,7 @@ void KnightBase::OnProcessChainAtkStateTransition()
 		else
 		{
 			//待機ステート
-		//攻撃を始めたかの判定をfalseにする
+			//攻撃を始めたかの判定をfalseにする
 			AtkState = false;
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;
@@ -900,12 +910,21 @@ void KnightBase::OnProcessDeathStateTransition()
 	//Deathアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
+		EffectEmitter* DeathOrb = NewGO<EffectEmitter>(0);
+		DeathOrb->Init(EnEFK::enEffect_Knight_Death_Blue);
+		DeathOrb->SetPosition(m_position);
+		DeathOrb->SetScale(Vector3::One * 10.0f);
+		DeathOrb->Play();
+
 		//リスポーンする座標に自身の座標をセット
 		SetRespawn();
 		Death();
 		pushFlag = false;
 		AtkState = false;
 		CantMove = false;
+		
+		
+
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定
@@ -932,6 +951,11 @@ void KnightBase::UltEnd() {
 	pushFlag = false;
 	//レベルを下げる
 	//UltimateSkill();
+	//必殺技使用時のフラグを戻す
+	m_UseUltimaitSkillFlag = false;
+	//カウンターリセット
+	m_OnGroundCharCounter = 0;
+
 	//待機ステート
 	m_charState = enCharState_Idle;
 	OnProcessCommonStateTransition();

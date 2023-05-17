@@ -6,6 +6,7 @@
 #include "GameUI.h"
 #include "Fade.h"
 #include "GameCamera.h"
+#include "WizardUlt.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -13,6 +14,7 @@
 //ジャンプ
 //必殺技打つときに一瞬止まるようにする
 //アニメーションイベント
+// 
 //三段目攻撃も途中にほかのキャラが必殺技を使うとフラグがかわらなくなる
 //死んだときにAIが必殺技を使うとカメラがおかしくなる時がある
 
@@ -28,7 +30,7 @@ namespace {
 
 KnightPlayer::KnightPlayer()
 {
-
+	
 }
 
 KnightPlayer::~KnightPlayer()
@@ -94,6 +96,15 @@ void KnightPlayer::Update()
 	//当たり判定
 	Collition();
 
+	// 追尾エフェクトのリセット
+	EffectNullptr();
+	
+	//必殺技を打った時
+	if (UltimaitSkillTime() == true) {
+		return;
+	}
+	
+
 	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
@@ -106,12 +117,6 @@ void KnightPlayer::Update()
 		return;
 	}
 
-	/*if (m_charState == enCharState_Ult_liberation)
-	{
-		m_modelRender.Update();
-		return;
-	}*/
-
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
@@ -123,15 +128,23 @@ void KnightPlayer::Update()
 		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
+	//ステートがデスステートなら
+	/*if (m_Status.Hp<=0)
+	{
+		m_modelRender.Update();
+		return;
+	}*/
+
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade) == true)
 	{
-		m_charState = enCharState_Idle;
+		//m_charState = enCharState_Idle;
 		//アニメーションの再生
 		PlayAnimation();
 		m_modelRender.Update();
 		return;
 	}
+	
 
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -140,8 +153,22 @@ void KnightPlayer::Update()
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
 			m_gameUI->LevelFontChange(Lv);
-			LevelUp = NewGO<ChaseEFK>(4);
-			LevelUp->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+		}
+		if (Lv > oldLv)
+		{
+			if (LevelUp_efk != nullptr) {
+				LevelUp_efk->DeleteEffect();
+			}
+			LevelUp_efk = NewGO<ChaseEFK>(4);
+			LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+		}
+		else if (Lv < oldLv)
+		{
+			if (LevelDown_efk != nullptr) {
+				LevelDown_efk->DeleteEffect();
+			}
+			LevelDown_efk = NewGO<ChaseEFK>(4);
+			LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
 		}
 
 		//前フレームのレベルを取得
@@ -161,20 +188,26 @@ void KnightPlayer::Update()
 			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
 			{
 				pushFlag = true;
-				jampAccumulateflag = true;
+				//jampAccumulateflag = true;
 				m_charState = enCharState_Jump;
 			}
 		}
 		else
 		{
-				//攻撃処理
-				Attack();
-				//回避処理
-				Avoidance();
+
+			if (m_charState != enCharState_Death)
+			{
+				//地上にいる
+				IsGroundFlag = true;
+			}
+			//攻撃処理
+			Attack();
+			//回避処理
+			Avoidance();
 		}
 
 		//攻撃上昇中
-		AttackUP();
+		//AttackUP();
 
 		//移動処理
 		Vector3 stickL = Vector3::Zero;
@@ -210,14 +243,6 @@ void KnightPlayer::Update()
 		CoolTimeProcess();
 		GrayScaleUI();
 
-		//連打したらたまにエラー出るtodo
-		if (m_swordEffectFlag ==true)
-		{
-			Vector3 effectPosition = m_position;
-			effectPosition.y += 50.0f;
-			EffectKnightSkill->SetPosition(effectPosition);
-			EffectKnightSkill->Update();
-		}
 	}
 	//速度を0にする(動かないようにする)
 	else
@@ -273,7 +298,7 @@ void KnightPlayer::Attack()
 	//一段目のアタックをしていないなら
 	if (pushFlag==false&&AtkState == false)
 	{
-		//Bボタン押されたら攻撃する
+		//Aボタン押されたら攻撃する
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_charState = enCharState_Attack;
@@ -328,37 +353,44 @@ void KnightPlayer::Attack()
 		AnimationMove(SkillSpeed);
 		{
 			//エフェクトの座標を更新させる
-			m_swordEffectFlag = true;
 			m_game->UnderSprite_Skill();
-			//剣にまとわせるエフェクト
-			EffectKnightSkill = NewGO <EffectEmitter>(0);
-			EffectKnightSkill->Init(EnEFK::enEffect_Knight_Skill);
-			EffectKnightSkill->SetScale(Vector3::One * 30.0f);
-			EffectKnightSkill->Play();
-			Vector3 SwordeffectPosition = m_position;
-			SwordeffectPosition.y += 50.0f;
-			EffectKnightSkill->SetPosition(SwordeffectPosition);
-			Quaternion SwordeffectRot = m_rot;
-			EffectKnightSkill->SetRotation(SwordeffectRot);
-			EffectKnightSkill->Update();
+			////剣にまとわせるエフェクト
+			//EffectKnightSkill = NewGO <EffectEmitter>(0);
+			//EffectKnightSkill->Init(EnEFK::enEffect_Knight_Skill);
+			//EffectKnightSkill->SetScale(Vector3::One * 30.0f);
+			//EffectKnightSkill->Play();
+			//Vector3 SwordeffectPosition = m_position;
+			//SwordeffectPosition.y += 50.0f;
+			//EffectKnightSkill->SetPosition(SwordeffectPosition);
+			//Quaternion SwordeffectRot = m_rot;
+			//EffectKnightSkill->SetRotation(SwordeffectRot);
+			//EffectKnightSkill->Update();
 
-			
+			////床のエフェクト
+			//EffectEmitter* EffectKnightSkillGround;
+			//EffectKnightSkillGround = NewGO <EffectEmitter>(0);
+			//EffectKnightSkillGround->Init(EnEFK::enEffect_Knight_SkillGround);
+			//EffectKnightSkillGround->SetScale(Vector3::One * 40.0f);
+			//EffectKnightSkillGround->Play();
+			//Vector3 effectPosition = m_position;
+			//Quaternion EffRot = m_rot;
+			//EffectKnightSkillGround->SetPosition(effectPosition);
+			//EffectKnightSkillGround->SetRotation(m_rot);
+			//EffectKnightSkillGround->Update();
+
+			//剣にまとわせるエフェクト
+			EffectKnightSkill = NewGO <ChaseEFK>(4);
+			EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
 
 			//床のエフェクト
-			EffectEmitter* EffectKnightSkillGround;
-			EffectKnightSkillGround = NewGO <EffectEmitter>(0);
-			EffectKnightSkillGround->Init(EnEFK::enEffect_Knight_SkillGround);
-			EffectKnightSkillGround->SetScale(Vector3::One * 40.0f);
-			EffectKnightSkillGround->Play();
-			Vector3 effectPosition = m_position;
-			Quaternion EffRot = m_rot;
-			EffectKnightSkillGround->SetPosition(effectPosition);
-			EffectKnightSkillGround->SetRotation(m_rot);
-			EffectKnightSkillGround->Update();
+			EffectKnightSkillGround = NewGO <ChaseEFK>(4);
+			EffectKnightSkillGround->SetEffect(EnEFK::enEffect_Knight_SkillGround, this, Vector3::One * 40.0f);
 
-			m_FootSmoke = NewGO<ChaseEFK>(3);
-			m_FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
-			
+			//土煙のエフェクト
+			FootSmoke = NewGO<ChaseEFK>(4);
+			FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
+			FootSmoke->AutoRot(true);
+
 		}
 		
 		
@@ -379,7 +411,7 @@ void KnightPlayer::Attack()
 		Vector3 m_SwordPos = Vector3::Zero;
 		Quaternion m_SwordRot;
 		//自身をまとうエフェクト
-		EffectEmitter*Ult_Swordeffect = NewGO<EffectEmitter>(0);
+		Ult_Swordeffect = NewGO<EffectEmitter>(0);
 		Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
 		Ult_Swordeffect->SetScale({ 20.0f,40.0f,20.0f });
 		Ult_Swordeffect->SetPosition(m_position);
@@ -394,6 +426,47 @@ void KnightPlayer::Attack()
 	//コリジョン作成
 	if (AtkCollistionFlag == true) AtkCollisiton();
 	
+}
+
+//必殺技を打っている間の処理
+bool KnightPlayer::UltimaitSkillTime()
+{
+	if (m_UseUltimaitSkillFlag == true)
+	{
+		if (m_UltshootTimer > 1)
+		{
+			MakeUltSkill();
+		}
+		else
+		{
+			m_UltshootTimer += g_gameTime->GetFrameDeltaTime();
+		}
+		
+		//全ての雷が落ちてから
+		
+		//地上にいるキャラに必殺技を打ち終わったら
+		if (m_OnGroundCharCounter <= 0)
+		{
+			for (auto actor : m_game->GetActors())
+			{
+				//必殺技打たれた状態を無くす
+				actor->ChangeDamegeUltFlag(false);
+			}
+
+			//レベルを下げる
+			UltimateSkill();
+			//時間を動かす
+			UltEnd();
+			m_game->SetStopFlag(false);
+			//中身を全て消去する
+			DamegeUltActor.clear();
+		}
+		
+
+		return true;
+	}
+
+	return false;
 }
 
 /// <summary>
@@ -421,21 +494,69 @@ void KnightPlayer::Avoidance()
 /// </summary>
 void KnightPlayer::MakeUltSkill()
 {
-	KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
-	//製作者の名前を入れる
-	knightUlt->SetCreatorName(GetName());
-	// 制作者を教える
-	knightUlt->SetActor(this);
-	knightUlt->SetUltColorNumb(respawnNumber);
-	//キャラのレベルを入れる
-	knightUlt->GetCharLevel(Lv);
-	//座標の設定
-	Vector3 UltPos = m_position;
-	UltPos.y += 60.0f;
-	knightUlt->SetPosition(UltPos);
-	knightUlt->SetRotation(m_rot);
-	knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
-	knightUlt->SetGame(m_game);
+
+	//必殺技の雷の生成
+	for (auto actor : DamegeUltActor)
+	{
+		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
+		if (GetName() == actor->GetName()||actor->GetDamegeUltFlag()==true)
+		{
+			continue;
+		}
+		//地上にいるAIにだけ雷を落とす
+		if (actor->IsGroundIn() == true)
+		{
+			//必殺技の雷の生成
+			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+			//生成したのがプレイヤーなのでtrue
+			wizardUlt->SetThisCreatCharcter(true);
+			//自分のオブジェクトの名前をセット
+			wizardUlt->SetCreatorName(GetName());
+			//攻撃するアクターのオブジェクト名をセット
+			wizardUlt->SetActor(actor->GetName());
+			//攻撃力を決める
+			wizardUlt->SetUltDamege(Lv);
+			//攻撃するアクターの座標取得
+			Vector3 UltPos = actor->GetPosition();
+			UltPos.y += 100.0f;
+			wizardUlt->SetPosition(UltPos);
+			wizardUlt->SetGame(m_game);
+
+			//必殺技を打たれたのでフラグを立てる
+			actor->ChangeDamegeUltFlag(true);
+
+			//雷を落とすキャラがリストの最後なら
+			if (actor == m_game->GetActors().back())
+			{
+				//最後であることを知らせる
+				wizardUlt->ChangeUltEndFlag(true);
+			}
+			//カウント減らす
+		//m_OnGroundCharCounter--;
+		//
+
+			m_UltshootTimer = 0.0f;
+			//一人ずつ必殺技を打つのでぬける
+			return;
+		}
+		
+	}
+	
+	//KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
+	////製作者の名前を入れる
+	//knightUlt->SetCreatorName(GetName());
+	//// 制作者を教える
+	//knightUlt->SetActor(this);
+	//knightUlt->SetUltColorNumb(respawnNumber);
+	////キャラのレベルを入れる
+	//knightUlt->GetCharLevel(Lv);
+	////座標の設定
+	//Vector3 UltPos = m_position;
+	//UltPos.y += 60.0f;
+	//knightUlt->SetPosition(UltPos);
+	//knightUlt->SetRotation(m_rot);
+	//knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	//knightUlt->SetGame(m_game);
 
 }
 
@@ -468,7 +589,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//一段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"FirstAttack_Start") == 0)
 	{
-		m_AtkTmingState =FirstAtk_State;
+		m_AtkTmingState = FirstAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 		//剣１段目音
@@ -540,13 +661,52 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_game->SetUltActor(this);
 	}
 
+	//必殺技 剣を空に掲げたら
+	if (wcscmp(eventName, L"UltimateAttack_Charge") == 0)
+	{
+		//雷チャージエフェクト生成
+		EffectEmitter* ThunderCharge = NewGO<EffectEmitter>(0);
+		ThunderCharge->Init(EnEFK::enEffect_Knight_Thunder_Charge);
+
+		Vector3 ChargePos = Vector3::Zero;
+		//「Sword」ボーンのワールド行列を取得する。
+		Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+		matrix.Apply(ChargePos);
+
+		ChargePos.y += 20.0f;
+		ThunderCharge->SetPosition(ChargePos);
+		ThunderCharge->SetScale(Vector3::One * 5.0f);
+		ThunderCharge->Play();
+	}
+
 	//必殺技のアニメーションで剣を振ったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
+		//雷を生成する
+		//必殺技使用時の処理ができるようにする
+		m_UseUltimaitSkillFlag = true;
+		//地上にいるキャラをカウントする
+		for (auto actor : m_game->GetActors())
+		{
+			//名前が自身と同じもしくは一度調べたキャラならやり直す
+			if (GetName() == actor->GetName()|| actor->GetGroundChackflag()==true) {
+				continue;
+			}
+
+			if (actor->IsGroundIn()==true)
+			{
+				//地上にいるのでカウントを増やす
+				m_OnGroundCharCounter++;
+				//このキャラはグラウンドにいる
+				actor->ChangeGroundChackflag(true);
+				//雷を打たれるキャラの情報を入れる
+				DamegeUltActor.push_back(actor);
+			}
+		}
 		//必殺技の当たり判定のクラスを作成
-		MakeUltSkill();
+		//MakeUltSkill();
 		//レベルを下げる
-		UltimateSkill();
+		//UltimateSkill();
 		//エフェクトを移動
 		//m_swordEffectFlag = false;
 		
@@ -631,14 +791,12 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SkillState = false;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
-		//エフェクトの座標を更新しない
-		m_swordEffectFlag = false;
 	}
 	//回避アニメーションが終わったら
 	if (wcscmp(eventName, L"Avoidance_End") == 0)
 	{
 		//移動処理をしないようにする
-
+		pushFlag = false;
 		AvoidanceFlag = false;
 		//m_AtkTmingState = Num_State;
 	

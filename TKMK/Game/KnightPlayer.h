@@ -8,6 +8,7 @@ class Neutral_Enemy;
 class KnightUlt;
 class GameUI;
 class GameCamera;
+class WizardUlt;
 
 class KnightPlayer:public KnightBase
 {
@@ -19,6 +20,8 @@ public:
 
 	void Attack();
 
+	bool UltimaitSkillTime();
+
 	void Avoidance();
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
@@ -29,40 +32,15 @@ public:
 	void AvoidanceSprite();
 
 	/// <summary>
-	/// •KE‹Z‚Ì“–‚½‚è”»’è¶¬‚·‚é
+	/// å¿…æ®ºæŠ€ã®å½“ãŸã‚Šåˆ¤å®šç”Ÿæˆã™ã‚‹
 	/// </summary>
 	void MakeUltSkill();
-
-	/// <summary>
-	/// ƒXƒLƒ‹‚ğ”­“®‚µ‚½‚Æ‚«‚É”ÍˆÍ“à‚Åˆê”Ô‹ß‚¢“G‚ğ‚Ë‚ç‚¤ˆ—
-	/// </summary>
-	//void SkillTarget()
-	//{
-	//	m_neutral_Enemys = FindGOs<Neutral_Enemy>("Neutral_Enemy");
-
-	//	Vector3 nearPos = Vector3::Zero;
-	//	//ˆê”Ô‹ß‚¢‹——£
-	//	float Near = nearPos.Length();
-	//	for (auto enemy : m_neutral_Enemys)
-	//	{
-	//		Vector3 toEnemy = enemy->GetPosition() - m_position;
-	//		//ƒGƒlƒ~[‚Æ‚Ì‹——£‚ğŒvZ‚·‚é
-	//		float newNear = toEnemy.Length();
-	//		//ŒvZ‚µ‚½‹——£‚ªˆê”Ô‹ß‚¢‹——£‚æ‚è¬‚³‚¢‚È‚çã‘‚«
-	//		if (Near > newNear) {
-	//			Near = newNear;
-	//		}
-	//	}
-	//	if (Near < 300) {
-
-	//	}
-	//}
 
 
 private:
 	void CoolTimeProcess();
 	/// <summary>
-	/// UI‚ğƒOƒŒ[ƒXƒP[ƒ‹‚É‚·‚éˆ—
+	/// UIã‚’ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«ã«ã™ã‚‹å‡¦ç†
 	/// </summary>
 	void GrayScaleUI();
 
@@ -71,7 +49,7 @@ private:
 	//GameCamera* gameCamera = nullptr;
 	GameUI* m_gameUI = nullptr;
 	
-	//CollisionObject* collisionObject;                     //ƒRƒŠƒWƒ‡ƒ“
+	//CollisionObject* collisionObject;                     //ã‚³ãƒªã‚¸ãƒ§ãƒ³
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
@@ -79,14 +57,9 @@ private:
 	Vector2 Avoidance_FlamePos = Vector2::Zero;
 	Vector2 Avoidance_BarPos = Vector2::Zero;
 
-	EffectEmitter* EffectKnightSkill;
-	bool m_swordEffectFlag = false;
-
 	float UltimateSkillTimer = 0;
-
+  
 	//bool AtkCollistionFlag = false;
-	ChaseEFK* m_FootSmoke = nullptr;
-	
 
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
@@ -94,24 +67,21 @@ private:
 	SpriteRender m_Avoidance_barRender;
 	SpriteRender m_AtkUpIcon_Render;
 
-	//bool m_atkUpSpriteFlag = false;
-
-	//ƒXƒLƒ‹‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
-	float SkillSpeed = 270.0f;
-	//‰ñ”ğ‚ğg‚Á‚½‚ÌˆÚ“®‘¬“x
+	//ã‚¹ã‚­ãƒ«ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
+	float SkillSpeed = 200.0f;
+	//å›é¿ã‚’ä½¿ã£ãŸæ™‚ã®ç§»å‹•é€Ÿåº¦
 	float AvoidanceSpeed = 170.0f;
 
 	int oldLv = 1;
 
 	int dddd = 20;
 
-	//std::vector<Neutral_Enemy*> m_neutral_Enemys;
-	Neutral_Enemy* m_Neutral_Enemy = nullptr; //’†—§‚Ì“G
+	Neutral_Enemy* m_Neutral_Enemy = nullptr; //ä¸­ç«‹ã®æ•µ
 
-	//ƒ^ƒ[‚Ì‰æ‘œo‚·‚©‚Ç‚¤‚©
+	//ã‚¿ãƒ¯ãƒ¼ã®ç”»åƒå‡ºã™ã‹ã©ã†ã‹
 	bool TowerSpriteFlag = false;
-	//UŒ‚‚Ì‰æ‘œ‚ğo‚·‚©‚Ç‚¤‚©
+	//æ”»æ’ƒã®ç”»åƒã‚’å‡ºã™ã‹ã©ã†ã‹
 	bool AttackSpriteFlag = false;
-	ChaseEFK* LevelUp = nullptr;
+
 };
 

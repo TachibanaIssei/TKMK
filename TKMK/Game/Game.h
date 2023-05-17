@@ -17,6 +17,7 @@ class CharUltFlag;
 class Actor;
 class Lamp;
 class Fade;
+class ExpforKnight;
 
 class Game : public IGameObject
 {
@@ -33,6 +34,7 @@ public:
 		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
+	
 
 	EnEFK m_EnEffect_Knight = enEffect_Num;
 
@@ -231,6 +233,7 @@ public:
 		}
 		UnderSpriteUpdate();
 	}
+
 	void UnderSprite_Skill() {
 		if (m_underSprite_Skill) {
 			return;
@@ -241,6 +244,7 @@ public:
 		}
 		UnderSpriteUpdate();
 	}
+
 	void UnderSprite_Level(int lv) {
 		if (m_underSprite_Level) {
 			return;
@@ -251,6 +255,7 @@ public:
 			UnderSpriteUpdate();
 		}
 	}
+
 	void UnderSprite_Ult() {
 		if (m_underSprite_Ult) {
 			return;
@@ -377,7 +382,7 @@ private:
 	//秒を計るタイマー
 	float SecondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 3.0f;
+	float MinutesTimer = 1.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
@@ -426,5 +431,7 @@ private:
 	float UltCanUseTimer = 0.0f;
 
 	EffectEmitter* TowerDown = nullptr;
+
+
 };
 

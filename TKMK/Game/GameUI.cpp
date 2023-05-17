@@ -11,52 +11,55 @@ namespace
 {
 	const int Characters = 4;
 
-	const Vector2 GAUGE_PIVOT = Vector2(0.5f, 0.5f);				//ƒQ[ƒW‚Ìƒsƒ{ƒbƒg
-	const Vector2 HPGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//HPƒQ[ƒW‚Ìƒsƒ{ƒbƒg
-	const Vector2 EXPERIENCEGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//ŒoŒ±’lƒQ[ƒW‚Ìƒsƒ{ƒbƒg
+	const Vector2 GAUGE_PIVOT = Vector2(0.5f, 0.5f);				//ã‚²ãƒ¼ã‚¸ã®ãƒ”ãƒœãƒƒãƒˆ
+	const Vector2 HPGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//HPã‚²ãƒ¼ã‚¸ã®ãƒ”ãƒœãƒƒãƒˆ
+	const Vector2 EXPERIENCEGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//çµŒé¨“å€¤ã‚²ãƒ¼ã‚¸ã®ãƒ”ãƒœãƒƒãƒˆ
 
-	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ƒXƒe[ƒ^ƒXƒo[ƒ|ƒWƒVƒ‡ƒ“
-	const Vector3 TIME_POS = Vector3(0.0,470.0f, 0.0f);	//§ŒÀŠÔ‚ÌÀ•W
-	const Vector3 TIME_FONT_POS = Vector3(-80.0, 500.0f, 0.0f);	//§ŒÀŠÔ‚ÌÀ•W
+	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼ãƒã‚¸ã‚·ãƒ§ãƒ³
+	const Vector3 TIME_POS = Vector3(0.0,470.0f, 0.0f);	//åˆ¶é™æ™‚é–“ã®åº§æ¨™
+	const Vector3 TIME_FONT_POS = Vector3(-80.0, 500.0f,0.0f);	//åˆ¶é™æ™‚é–“ã®åº§æ¨™
 
-	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPƒo[ƒ|ƒWƒVƒ‡ƒ“
-	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPƒo[‚Ì•\‚Ìƒ|ƒWƒVƒ‡ƒ“
+	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPãƒãƒ¼ãƒã‚¸ã‚·ãƒ§ãƒ³
+	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPãƒãƒ¼ã®è¡¨ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
 
-	const float HP_BAR_WIDTH = 1400.0f;     //HPƒo[‚Ì’·‚³
-	const float HP_BAR_HIGHT = 200.0f;      //HPƒo[‚Ì‚‚³
-	const Vector3 HP_BAR_SIZE = Vector3(HP_BAR_WIDTH, HP_BAR_HIGHT, 0.0f);  //HPƒo[‚ÌƒTƒCƒY
+	const float HP_BAR_WIDTH = 1400.0f;     //HPãƒãƒ¼ã®é•·ã•
+	const float HP_BAR_HIGHT = 200.0f;      //HPãƒãƒ¼ã®é«˜ã•
+	const Vector3 HP_BAR_SIZE = Vector3(HP_BAR_WIDTH, HP_BAR_HIGHT, 0.0f);  //HPãƒãƒ¼ã®ã‚µã‚¤ã‚º
 
-	const Vector3 Skill_Pos = Vector3(520.0f, -280.0f, 0.0f);   //ƒXƒLƒ‹ƒAƒCƒRƒ“ƒ|ƒWƒVƒ‡ƒ“
-	const Vector3 Ult_Pos = Vector3(470.0f, -445.0f, 0.0f);     //•KE‹ZƒAƒCƒRƒ“ƒ|ƒWƒVƒ‡ƒ“
+	const Vector3 Skill_Pos = Vector3(520.0f, -280.0f, 0.0f);   //ã‚¹ã‚­ãƒ«ã‚¢ã‚¤ã‚³ãƒ³ãƒã‚¸ã‚·ãƒ§ãƒ³
+	const Vector3 Ult_Pos = Vector3(470.0f, -445.0f, 0.0f);     //å¿…æ®ºæŠ€ã‚¢ã‚¤ã‚³ãƒ³ãƒã‚¸ã‚·ãƒ§ãƒ³
 
 	const Vector3 LV_NUBER_POS = Vector3(780.0f, -360.0f, 0.0f);
 	const Vector3 LvPos = Vector3(640.0f, -310.0f, 0.0f);       //Lv
 	const Vector3 MaxLvPos = Vector3(920.0f, -400.0f, 0.0f);       // /10
 
-	const Vector3 FLAME_POS = Vector3(920.0f,-480.0f,0.0f);    //ƒŒƒxƒ‹‚âŒoŒ±’l‚ÌƒtƒŒ[ƒ€
+	const Vector3 FLAME_POS = Vector3(920.0f,-480.0f,0.0f);    //ãƒ¬ãƒ™ãƒ«ã‚„çµŒé¨“å€¤ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 	const float DownPointPosY = 100.0f;
 
-	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //ŒoŒ±’lƒe[ƒuƒ‹
+	const Vector3 EXPERIENCE_POS = Vector3(750.0f, -500.0f, 0.0f);  //çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«
 
 	const float EXPBAR_WIDTH = 300.0f;
 	const float EXPBAR_HEIGHT = 70.0f;
-	const Vector3 EXPERIENCE_BAR_POS = Vector3(600.0f, -500.0f, 0.0f);	//ŒoŒ±’lƒo[‚ÌÀ•W
-	const Vector3 EXPBAR_SIZE = Vector3(EXPBAR_WIDTH, EXPBAR_HEIGHT, 0.0f);	//ŒoŒ±’lƒo[‚ÌƒTƒCƒY
+	const Vector3 EXPERIENCE_BAR_POS = Vector3(600.0f, -500.0f, 0.0f);	//çµŒé¨“å€¤ãƒãƒ¼ã®åº§æ¨™
+	const Vector3 EXPBAR_SIZE = Vector3(EXPBAR_WIDTH, EXPBAR_HEIGHT, 0.0f);	//çµŒé¨“å€¤ãƒãƒ¼ã®ã‚µã‚¤ã‚º
 
-	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//ƒŒƒxƒ‹ƒAƒbƒv‚Ü‚Å‚É•K—v‚ÈŒoŒ±’l‚Ì—Ê
+	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã¾ã§ã«å¿…è¦ãªçµŒé¨“å€¤ã®é‡
 
-	const Vector3 RESPWANCOUNT_POS = Vector3(0.0f, 0.0f, 0.0f);		//ƒŠƒXƒ|[ƒ“‚µ‚½Œã‚ÌƒJƒEƒ“ƒg
+	const Vector3 RESPWANCOUNT_POS = Vector3(0.0f, 0.0f, 0.0f);		//ãƒªã‚¹ãƒãƒ¼ãƒ³ã—ãŸå¾Œã®ã‚«ã‚¦ãƒ³ãƒˆ
 
 	const Vector3 SmallScale = Vector3(0.1f, 0.1f, 0.0f);
 
 	const Vector3 FightSmallScale = Vector3(0.5f, 0.5f, 0.0f);
 
-	const Vector3 RespawnInPos = Vector3(0.0f, 300.0f, 0.0f);		//Respawn in‚ÌÀ•W
+	const Vector3 RespawnInPos = Vector3(0.0f, 300.0f, 0.0f);		//Respawn inã®åº§æ¨™
 
-	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//‚ÌÀ•W
+	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//ã®åº§æ¨™
 
 	const Vector3 ADDPOINTPOS = Vector3(20.0f, 10.0f, 0.0f);
+
+	const float WHITEHP_WAIT = 0.2f;
+
 }
 GameUI::GameUI()
 {
@@ -70,56 +73,78 @@ GameUI::~GameUI()
 
 bool GameUI::Start()
 {
+	m_game = FindGO<Game>("game");
 	player = FindGO<Player>("player");
 	fade = FindGO<Fade>("fade");
-	//ƒLƒƒƒ‰‚ÌƒAƒCƒRƒ“
-	//ƒuƒ‹[
+	//ã‚­ãƒ£ãƒ©ã®ã‚¢ã‚¤ã‚³ãƒ³
+	//ãƒ–ãƒ«ãƒ¼
 	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 70.0f, 70.0f);
-	//ƒŒƒbƒh
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Green.DDS", 70.0f, 70.0f);
-	//ƒOƒŠ[ƒ“
-	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Red.DDS", 70.0f, 70.0f);
-	//ƒCƒGƒ[
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 70.0f, 70.0f);
+	//ãƒ¬ãƒƒãƒ‰
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", 70.0f, 70.0f);
+	//ã‚°ãƒªãƒ¼ãƒ³
+	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", 70.0f, 70.0f);
+	//ã‚¤ã‚¨ãƒ­ãƒ¼
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 70.0f, 70.0f);
 
-	//ƒ|ƒCƒ“ƒgŠÖ˜A
+	//ãƒã‚¤ãƒ³ãƒˆé–¢é€£
 	{
-		//ƒLƒƒƒ‰‚Ìƒ|ƒCƒ“ƒg‚ğ•\¦
+		//ã‚­ãƒ£ãƒ©ã®ãƒã‚¤ãƒ³ãƒˆã‚’è¡¨ç¤º
 		m_Actors = m_game->GetActors();
 		int num = 0;
 		for (auto actor: m_Actors)
 		{
-			//ƒ|ƒCƒ“ƒg‚ğ•\¦
+			//ãƒã‚¤ãƒ³ãƒˆã‚’è¡¨ç¤º
 			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFont[num].SetScale(1.3f);
 			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 			m_PointFont[num].SetRotation(0.0f);
 			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
 
-			//ƒvƒŒƒCƒ„[‚ªŒ•m‚È‚ç
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå‰£å£«ãªã‚‰
 			if (actor->IsMatchName(knightname))
 			{
-				//ƒAƒCƒRƒ“‚ğŒ•m‚É‚·‚é(ƒuƒ‹[)
+				//ã‚¢ã‚¤ã‚³ãƒ³ã‚’å‰£å£«ã«ã™ã‚‹(ãƒ–ãƒ«ãƒ¼)
 				
-				m_CharIcon[num].SetPosition(CharIconPos[num]);
-				//ƒtƒŒ[ƒ€‚ğƒvƒŒƒCƒ„[—p‚É‚·‚é
+				m_CharIcon[0].SetPosition(CharIconPos[num]);
+				//ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç”¨ã«ã™ã‚‹
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
 			}
-			//ƒvƒŒƒCƒ„[‚ª–‚–@g‚¢‚È‚ç
-			else if (actor->IsMatchName(wizardname))
-			{
-				//ƒAƒCƒRƒ“‚ğ–‚–@g‚¢‚É‚·‚é
-				
-				//ƒtƒŒ[ƒ€‚ğƒvƒŒƒCƒ„[—p‚É‚·‚é
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
-			}
-			//‚»‚êˆÈŠO(AI)‚È‚ç
 			else
 			{
 				m_CharIcon[num].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+				//ãƒ¬ãƒ™ãƒ«
+				m_LevelFont[num - 1].SetPosition(LevelPos[num-1]);
+				m_LevelFont[num - 1].SetScale(0.8f);
+				m_LevelFont[num - 1].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+				m_LevelFont[num - 1].SetRotation(0.0f);
+				m_LevelFont[num - 1].SetShadowParam(true, 2.0f, g_vec4Black);
 			}
-			
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé­”æ³•ä½¿ã„ãªã‚‰
+			//else if (actor->IsMatchName(wizardname))
+			//{
+			//	//ã‚¢ã‚¤ã‚³ãƒ³ã‚’é­”æ³•ä½¿ã„ã«ã™ã‚‹
+			//	
+			//	//ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç”¨ã«ã™ã‚‹
+			//	m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+			//}
+			//èµ¤ã®å‰£å£«AIãªã‚‰
+			/*else if(actor->IsMatchName(KnightAI_Red))
+			{
+				m_CharIcon[1].SetPosition(CharIconPos[num]);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}
+			else if (actor->IsMatchName(KnightAI_Green))
+			{
+				m_CharIcon[2].SetPosition(CharIconPos[num]);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}
+			else if (actor->IsMatchName(KnightAI_Yellow))
+			{
+				m_CharIcon[3].SetPosition(CharIconPos[num]);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+			}*/
+
 			m_PointFlame[num].SetPosition(PointFlamePos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
 			m_PointFlame[num].Update();
@@ -131,19 +156,19 @@ bool GameUI::Start()
 
 	}
 	
-	//ƒŠƒXƒ|[ƒ“ŠÖ˜A
+	//ãƒªã‚¹ãƒãƒ¼ãƒ³é–¢é€£
 	{
-		//Respawn in‚Ì‰æ‘œ
+		//Respawn inã®ç”»åƒ
 		m_RespawnIn.Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
 		m_RespawnIn.SetPosition(RespawnInPos);
 		m_RespawnIn.SetScale(Vector3::One);
 
-		//ƒŠƒXƒ|[ƒ“‚Ì”wŒi‚Ì‰æ‘œ
+		//ãƒªã‚¹ãƒãƒ¼ãƒ³ã®èƒŒæ™¯ã®ç”»åƒ
 		m_Respawn_Back.Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
 		m_Respawn_Back.SetPosition(Vector3::Zero);
 		m_Respawn_Back.SetScale(Vector3::One);
 
-		//ƒŠƒXƒ|[ƒ“‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“‚Ì‰æ‘œ
+		//ãƒªã‚¹ãƒãƒ¼ãƒ³ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã®ç”»åƒ
 		m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
 		m_RespawnCountNumber.SetPosition(RespawnCountPos);
 		m_RespawnCountNumber.SetScale(Vector3::One);
@@ -153,82 +178,82 @@ bool GameUI::Start()
 		m_RespawnCountNumber.Update();
 	}
 
-	//ƒXƒ^[ƒg‚Ü‚Å‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
+	//ã‚¹ã‚¿ãƒ¼ãƒˆã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 	m_CountNumper.Init("Assets/sprite/gameUI/count3.DDS", 1920.0f, 1080.0f);
 	m_CountNumper.SetPosition(Vector3::Zero);
 	m_CountNumper.SetScale(m_gameCountScale);
 	m_CountNumper.Update();
 
-	//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-	m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
+	//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	m_FinishCountNumber.Init("Assets/sprite/gameUI/finish.DDS", 1920.0f, 1080.0f);
 	m_FinishCountNumber.SetPosition(Vector3::Zero);
 	m_FinishCountNumber.SetScale(m_finishCountScale);
 	m_FinishCountNumber.Update();
 
-	//‰E‰º‚ÌƒtƒŒ[ƒ€
+	//å³ä¸‹ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 	{
-		//ƒŒƒxƒ‹‚âŒoŒ±’l‚ÌƒtƒŒ[ƒ€
+		//ãƒ¬ãƒ™ãƒ«ã‚„çµŒé¨“å€¤ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 		m_Flame.Init("Assets/sprite/gameUI/LevelBar.DDS", 1200.0f, 500.0f);
 		m_Flame.SetPosition(FLAME_POS);
 		m_Flame.SetScale(1.0, 1.0, 1.0);
 		
-		//ŒoŒ±’l‚ÌƒtƒŒ[ƒ€
+		//çµŒé¨“å€¤ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 		m_ExperienceFlame.Init("Assets/sprite/gameUI/ExperienceBar.DDS", 600.0f, 120.0f);
 		m_ExperienceFlame.SetPosition(EXPERIENCE_POS);
 		m_ExperienceFlame.SetScale(0.5, 0.5, 1.0);
 		
-		//ŒoŒ±’lƒo[‚Ì•\ƒsƒ{ƒbƒg‚É‚·‚é
+		//çµŒé¨“å€¤ãƒãƒ¼ã®è¡¨ãƒ”ãƒœãƒƒãƒˆã«ã™ã‚‹
 		m_EXPBerPos = EXPERIENCE_BAR_POS;
 		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
 		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
 		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_ExperienceBar_flont.SetScale(0.5, 50.0, 1.0);
 
-		//ŒoŒ±’lƒo[‚Ì— 
+		//çµŒé¨“å€¤ãƒãƒ¼ã®è£
 		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
 		m_ExperienceBar_back.SetPosition(EXPERIENCE_POS);
 		m_ExperienceBar_back.SetScale(0.5, 0.5, 1.0);
 
-		//ƒŒƒxƒ‹ƒAƒbƒv‚Ü‚Å‚É•K—v‚ÈŒoŒ±’l‚Ì—Ê
+		//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã¾ã§ã«å¿…è¦ãªçµŒé¨“å€¤ã®é‡
 		m_ExpFont.SetPosition(UPTOLEVEL_POS);
 		m_ExpFont.SetScale(1.0f);
 		m_ExpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_ExpFont.SetRotation(0.0f);
 		m_ExpFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
-		//Lv‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
+		//Lvã®ç”»åƒã‚’èª­ã¿è¾¼ã‚€
 		m_Lv.Init("Assets/sprite/gameUI/Lv.DDS", 196.0f, 150.0f);
 		m_Lv.SetPosition(LvPos);
 		m_Lv.SetScale(0.4, 0.4, 1.0);
 
-		//Lv1‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
+		//Lv1ã®ç”»åƒã‚’èª­ã¿è¾¼ã‚€
 		m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
 		m_LvNumber.SetPosition(LV_NUBER_POS);
 		m_LvNumber.SetScale(1.4, 1.4, 1.0);
 
-		//Lv1‚Ì— ‚Ì‰æ‘œ‚Ì“Ç‚İ‚İ
+		//Lv1ã®è£ã®ç”»åƒã®èª­ã¿è¾¼ã¿
 		m_LvNumber_back.Init("Assets/sprite/gameUI/Lv1_back.DDS", 150.0f, 150.0f);
 		m_LvNumber_back.SetPosition(LV_NUBER_POS);
 		m_LvNumber_back.SetScale(1.4, 1.4, 1.0);
 
-		// /10‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
+		// /10ã®ç”»åƒã‚’èª­ã¿è¾¼ã‚€
 		m_MaxLv.Init("Assets/sprite/gameUI/maxLv.DDS", 196.0f, 150.0f);
 		m_MaxLv.SetPosition(MaxLvPos);
 		m_MaxLv.SetScale(0.5, 0.5, 1.0);
 
-		//ƒXƒLƒ‹‚ÌƒAƒCƒRƒ“
+		//ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¤ã‚³ãƒ³
 		m_SkillRenderIN.Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", 162, 162);
 		m_SkillRenderIN.SetPosition(Skill_Pos);
 		m_SkillRenderIN.SetScale(1.1, 1.1);
-		//ƒXƒLƒ‹‚ÌƒAƒCƒRƒ“ƒtƒŒ[ƒ€
+		//ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¤ã‚³ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ 
 		m_SkillRenderOUT.Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", 162, 162);
 		m_SkillRenderOUT.SetPosition(Skill_Pos);
 		m_SkillRenderOUT.SetScale(1.1, 1.1);
-		//•KE‹Z‚ÌƒAƒCƒRƒ“
+		//å¿…æ®ºæŠ€ã®ã‚¢ã‚¤ã‚³ãƒ³
 		m_UltRenderIN.Init("Assets/sprite/gameUI/ULT_Icon_IN.DDS", 162, 162);
 		m_UltRenderIN.SetPosition(Ult_Pos);
 		m_UltRenderIN.SetScale(1.2, 1.2);
-		//•KE‚ÌƒAƒCƒRƒ“ƒtƒŒ[ƒ€
+		//å¿…æ®ºã®ã‚¢ã‚¤ã‚³ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ 
 		m_UltRenderOUT.Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", 162, 162);
 		m_UltRenderOUT.SetPosition(Ult_Pos);
 		m_UltRenderOUT.SetScale(1.2, 1.2);
@@ -247,48 +272,61 @@ bool GameUI::Start()
 		m_UltRenderOUT.Update();
 	}
 
-	//HPŠÖ˜A
+	//HPé–¢é€£
 	{
-		//HP‚ÌƒtƒHƒ“ƒg
+		//HPã®ãƒ•ã‚©ãƒ³ãƒˆ
 		m_HpFont.SetPosition(-650.0f, -465.0f, 0.0f);
 		m_HpFont.SetScale(1.0f);
 		m_HpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_HpFont.SetRotation(0.0f);
 		m_HpFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
-		//HPƒQ[ƒW— ‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
+		//HPã‚²ãƒ¼ã‚¸è£ã®ç”»åƒã‚’èª­ã¿è¾¼ã‚€
 		m_statusBar.Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", 600.0f, 120.0f);
 		m_statusBar.SetPosition(HP_BAR_POS);
 		m_statusBar.SetScale(1.0, 0.7, 1.0);
 
-		//HPƒQ[ƒW‚Ì•\‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
+		//HPã‚²ãƒ¼ã‚¸ã®è¡¨ã®ç”»åƒã‚’èª­ã¿è¾¼ã‚€
 		m_hpBar.Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 80.0f);
-		//ƒsƒ{ƒbƒg‚ğİ’è‚·‚é
+		//ãƒ”ãƒœãƒƒãƒˆã‚’è¨­å®šã™ã‚‹
 		m_hpBar.SetPivot(HPGAUGE_PIVOT);
 		m_hpBar.SetPosition(HP_BAR_FLONT_POS);
 
-		//HPƒQ[ƒW‚ÌƒtƒŒ[ƒ€‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
+		//HPã‚²ãƒ¼ã‚¸ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®ç”»åƒã‚’èª­ã¿è¾¼ã‚€
 		m_HPFrame.Init("Assets/sprite/gameUI/HPBar_flame.DDS", 600.0f, 120.0f);
 		m_HPFrame.SetPosition(HP_BAR_POS);
 		m_HPFrame.SetScale(1.0, 0.7, 1.0);
-
-		//XVˆ—
+		//HPãƒãƒ¼ã®ç™½ã„éƒ¨åˆ†
+		m_HpBar_White.Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", 580.0f, 80.0f);
+		m_HpBar_White.SetPivot(HPGAUGE_PIVOT);
+		m_HpBar_White.SetPosition(HP_BAR_FLONT_POS);
+		//æ›´æ–°å‡¦ç†
 		m_statusBar.Update();
 		m_HPFrame.Update();
+		m_HpBar_White.Update();
 		m_hpBar.Update();
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®HPã‚’å–å¾—ã€€ç™½ã„éƒ¨åˆ†ç”¨
+		White_BackHp = player->CharSetHp();
+		WhiteHp_Timer = WHITEHP_WAIT;
+		BackUPLV = player->CharSetLevel();
+
 	}
 
-	//§ŒÀŠÔ‚ÆŠl“¾ƒ|ƒCƒ“ƒg
+	//åˆ¶é™æ™‚é–“ã¨ç²å¾—ãƒã‚¤ãƒ³ãƒˆ
 	{
 		m_TimeAndPointRender.Init("Assets/sprite/gameUI/timer.DDS", 1100.0f, 400.0f);
 		m_TimeAndPointRender.SetPosition(TIME_POS);
 		m_TimeAndPointRender.SetScale(0.35, 0.3, 0.3);
 
-		//ƒtƒHƒ“ƒg‚Ìİ’èB
+		//ãƒ•ã‚©ãƒ³ãƒˆã®è¨­å®šã€‚
+		//m_GameTimePos = TIME_FONT_POS;
+		
+		//ãƒ•ã‚©ãƒ³ãƒˆã®å¤§ãã•ã‚’è¨­å®šã€‚
+		m_time_left.SetScale(timerScale);
+		Vector2 aa = {1.0f, 1.0f };
+		m_time_left.SetPivot(aa);
 		m_time_left.SetPosition(TIME_FONT_POS);
-		//ƒtƒHƒ“ƒg‚Ì‘å‚«‚³‚ğİ’èB
-		m_time_left.SetScale(1.6f);
-		//ƒtƒHƒ“ƒg‚ÌF‚ğİ’èB
+		//ãƒ•ã‚©ãƒ³ãƒˆã®è‰²ã‚’è¨­å®šã€‚
 		m_time_left.SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		m_time_left.SetShadowParam(true, 2.0f, g_vec4Black);
 
@@ -302,43 +340,35 @@ bool GameUI::Start()
 
 void GameUI::Update()
 {
-	//gameƒNƒ‰ƒX‚Ìƒ|[ƒY‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚éŠÔˆ—‚ğs‚í‚È‚¢
+	//gameã‚¯ãƒ©ã‚¹ã®ãƒãƒ¼ã‚ºã®ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹é–“å‡¦ç†ã‚’è¡Œã‚ãªã„
 	if (m_GameUIState== m_PauseState) {
 		return;
 	}
 
-	//ƒQ[ƒ€‚ÌƒXƒe[ƒg‚ªgameStart‚È‚ç
-	if (m_game->NowGameState() == 0)
+	//ã‚²ãƒ¼ãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆãŒgameStartãªã‚‰
+	if (m_game->NowGameState() == Game::enGameState_Start)
 	{
 		CountDown();
 	}
 	
-	//ƒvƒŒƒCƒ„[‚ªƒŠƒXƒ|[ƒ“‘Ò‹@’†‚È‚ç
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒãƒªã‚¹ãƒãƒ¼ãƒ³å¾…æ©Ÿä¸­ãªã‚‰
 	if (player->CharGetRespawnTime() > 0)
 	{
 		RespawnCountDown();
 	}
 
-	//‡I—¹‚Ü‚Åc‚è10•bˆÈ‰º‚È‚ç
-	if (m_game->GetMinutesTimer()<1&&m_game->GetSecondsTimer() < 10)
-	{
-		FinishTimer();
-	}
+	Timer();
 	
-	//gameƒNƒ‰ƒX‚ÌƒXƒ^[ƒg‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚éŠÔˆ—‚ğs‚í‚È‚¢
+	//gameã‚¯ãƒ©ã‚¹ã®ã‚¹ã‚¿ãƒ¼ãƒˆã®ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹é–“å‡¦ç†ã‚’è¡Œã‚ãªã„
 	if (m_GameUIState == m_GameStartState) {
 		return;
 	}
 
 	CharPoint();
+	Level();
 	
-	//§ŒÀŠÔ‚Ì•\¦
-	wchar_t wcsbuf[256];
-	swprintf_s(wcsbuf, 256, L"%d:%02d", int(m_game->GetMinutesTimer()),int(m_game->GetSecondsTimer()));
-	//•\¦‚·‚éƒeƒLƒXƒg‚ğİ’èB
-	m_time_left.SetText(wcsbuf);
 	
-	//ƒŒƒxƒ‹‚Ì“_–Å
+	//ãƒ¬ãƒ™ãƒ«ã®ç‚¹æ»…
 	if (m_flashNumberFlag==false)
 	{
 		m_LvNumberColor -= 0.02f;
@@ -370,10 +400,10 @@ void GameUI::Update()
 	HPBar();
 }
 
-//ƒQ[ƒ€ƒXƒ^[ƒg‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
+//ã‚²ãƒ¼ãƒ ã‚¹ã‚¿ãƒ¼ãƒˆã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 void GameUI::CountDown()
 {
-	//ƒJƒEƒ“ƒgƒ_ƒEƒ“
+	//ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 	//int COUNTDOWNTIMER = m_game->CountDownMinutes();
 	int StartCountDown= m_game->CountDownMinutes();
 
@@ -408,32 +438,57 @@ void GameUI::CountDown()
 			break;
 		}
 	}
-	//‰æ‘œ‚ªFight!‚Å‚È‚¢‚©‚ÂƒXƒP[ƒ‹‚ª100ˆÈ‰º‚È‚ç
+
+	//if (FightLerp <= 1.0f)
+	//{
+	//	Fight_POS.Lerp(FightLerp,{0.0,1.13,-200},{0.0,1.13,0.0});
+	//}
+	//FightLerp += 0.03f;
+	//	m_CountNumper.SetPosition(Fight_POS);
+
+
+
+	//ç”»åƒãŒFight!ã§ãªã„ã‹ã¤ã‚¹ã‚±ãƒ¼ãƒ«ãŒ100ä»¥ä¸‹ãªã‚‰
 	else if(m_fightFlag == false&&m_gameCountScale.x<100.0f)
 	{
-		//™X‚É•¶š‚ğ‘å‚«‚­‚·‚é
+		//å¾ã€…ã«æ–‡å­—ã‚’å¤§ããã™ã‚‹
 		m_gameCountScale += SmallScale;
-		//­‚µ‚¸‚Â“§–¾‚É‚·‚é
+		//å°‘ã—ãšã¤é€æ˜ã«ã™ã‚‹
 		m_Color -= 0.02f;
 		
 		m_CountNumper.SetScale(m_gameCountScale);
-		//
+		
 		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
 	}
 
-	//‰æ‘œ‚ªFight!‚È‚ç
-	if(m_fightFlag==true)
+	//ç”»åƒãŒFight!ãªã‚‰
+	if (m_fightFlag == true)
 	{
-		if (m_FightScale.x < m_gameCountScale.x)
+
+		if (FightScale == true && FightshotStopFlag == false)
 		{
-			//™X‚É•¶š‚ğ¬‚³‚­‚·‚é
-			m_gameCountScale -= FightSmallScale;
+			m_gameCountScale += {0.2f, 0.2f, 0.0f};
+
+			if (m_gameCountScale.x > 0.8f) {
+				FightshotStopFlag = true;
+			}
 		}
+		else if(FightshotStopFlag == false) {
+			//å¾ã€…ã«æ–‡å­—ã‚’å°ã•ãã™ã‚‹
+			m_gameCountScale -= FightSmallScale;
+
+			if (m_gameCountScale.x < 0.6f)
+			{
+				FightScale = true;
+			}
+		}
+
+	}
 		
 		m_CountNumper.SetScale(m_gameCountScale);
-		//
+		
 		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
-	}
+	
 
 	
 	m_CountNumper.Update();
@@ -441,10 +496,10 @@ void GameUI::CountDown()
 	oldtStartCount = StartCountDown;
 }
 
-//ƒŠƒXƒ|[ƒ“‚·‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
+//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹ã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 void GameUI::RespawnCountDown()
 {
-	//ƒJƒEƒ“ƒgƒ_ƒEƒ“
+	//ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 	int RESPAWNCOUNTDOWN = player->CharGetRespawnTime();
 
 	if (oldRespawnCount != RESPAWNCOUNTDOWN)
@@ -453,7 +508,7 @@ void GameUI::RespawnCountDown()
 		{
 		case 0:
 			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
-			//‰æ–Ê‚ğˆÃ‚­‚µ‚Ä‚ä‚­
+			//ç”»é¢ã‚’æš—ãã—ã¦ã‚†ã
 			fade->StartFadeIn(2.0f);
 			break;
 		case 1:
@@ -472,7 +527,7 @@ void GameUI::RespawnCountDown()
 	m_RespawnCountNumber.Update();
 }
 
-//ƒvƒŒƒCƒ„[‚ÌHP‚Ì•\¦‚Ìˆ—
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®HPã®è¡¨ç¤ºã®å‡¦ç†
 void GameUI::HPBar()
 {
 	int HP = player->CharSetHp();
@@ -482,105 +537,210 @@ void GameUI::HPBar()
 	m_HpFont.SetText(hp);
 
 	Vector3 HpScale = Vector3::One;
-	//HPƒo[‚ÌŒ¸‚Á‚Ä‚¢‚­Š„‡B
+	//HPãƒãƒ¼ã®æ¸›ã£ã¦ã„ãå‰²åˆã€‚
 	HpScale.x = (float)player->CharSetHp() / (float)player->CharSetMaxHp();
 	m_hpBar.SetScale(HpScale);
 
 	m_hpBar.Update();
-}
-
-//‡I—¹‚Ì•\¦‚Ìˆ—
-void GameUI::FinishTimer()
-{
-	int finishTimer = m_game->GetSecondsTimer();
-
-	if (oldFinishCount != finishTimer)
+	
+	//ãƒ¬ãƒ™ãƒ«ãŒä¸‹ãŒã£ãŸæ™‚ã®å‡¦ç†
+	if (BackUPLV > player->CharSetLevel())
 	{
-		switch (finishTimer)
+		White_BackHp = HP;
+	}
+	BackUPLV = player->CharSetLevel();
+
+	//Hpå‰Šã‚‰ã‚ŒãŸã‚‰ç™½ã„éƒ¨åˆ†ã‚‚æ¸›ã‚‰ã™
+	if (HP < White_BackHp)
+	{
+		if (WhiteHp_Timer > 0.0f)
 		{
-		case 0:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finish.DDS", 1920.0f, 1080.0f);
-			break;
-		case 1:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_1.DDS", 300.0f, 500.0f);
-			break;
-		case 2:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_2.DDS", 300.0f, 500.0f);
-			break;
-		case 3:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_3.DDS", 300.0f, 500.0f);
-			break;
-		case 4:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_4.DDS", 300.0f, 500.0f);
-			break;
-		case 5:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_5.DDS", 300.0f, 500.0f);
-			break;
-		case 6:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_6.DDS", 300.0f, 500.0f);
-			break;
-		case 7:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_7.DDS", 300.0f, 500.0f);
-			break;
-		case 8:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_8.DDS", 300.0f, 500.0f);
-			break;
-		case 9:
-			//‡I—¹‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-			m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
-			//m_CountNumper.SetPosition(Vector3::Zero);
-			//m_FinishCountNumber.SetScale(m_finishCountScale);
-			
-			break;
-		default:
-			break;
+			WhiteHp_Timer -= g_gameTime->GetFrameDeltaTime();
+		}
+		else
+		{
+			White_BackHp -= 2;
+
+			//HPãƒãƒ¼ã®æ¸›ã£ã¦ã„ãå‰²åˆã€‚
+			HpScale.x = (float)White_BackHp / (float)MaxHP;
+			m_HpBar_White.SetScale(HpScale);
+
+			if (White_BackHp <= HP)
+			{
+				White_BackHp = HP;
+				WhiteHp_Timer = WHITEHP_WAIT;
+			}
 		}
 	}
+	else if (HP > White_BackHp)
+	{
+		White_BackHp = HP;
+	}
+	m_HpBar_White.Update();
 
-	oldFinishCount = finishTimer;
 
-	m_FinishCountNumber.Update();
+	//AIç”¨ã®HP
 }
 
-//ƒvƒŒƒCƒ„[‚ÌŒoŒ±’l‚Ì•\¦‚Ìˆ—todo
+//AIã®ãƒ¬ãƒ™ãƒ«ã®è¡¨ç¤º
+void GameUI::Level()
+{
+	int num = 0;
+	for (auto actor : m_Actors)
+	{
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãªã‚‰
+		if (actor->IsMatchName(knightname))
+		{
+			num++;
+			continue;
+		}
+		//AIãªã‚‰
+		int Lv = actor->GetLevel();
+		wchar_t AILv[255];
+		swprintf_s(AILv, 255, L"Lv%d", Lv);
+		m_LevelFont[num-1].SetText(AILv);
+
+		num++;
+	}
+
+
+}
+
+//è©¦åˆçµ‚äº†ã®è¡¨ç¤ºã®å‡¦ç†
+void GameUI::Timer()
+{
+	//åˆ¶é™æ™‚é–“ã®è¡¨ç¤º
+	wchar_t wcsbuf[256];
+	swprintf_s(wcsbuf, 256, L"%d:%02d", int(m_game->GetMinutesTimer()), int(m_game->GetSecondsTimer()));
+	//è¡¨ç¤ºã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®šã€‚
+	
+	m_time_left.SetText(wcsbuf);
+
+	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10&& m_game->GetSecondsTimer() > 0 )
+	{
+		if (timerScaleFlag == false)
+		{
+			if (timerScale < 4.0f)
+			{
+				timerScale += 2.0f*g_gameTime->GetFrameDeltaTime();
+			}
+			else
+			{
+				timerScale = 4.0f;
+				timerScaleFlag = true;
+			}
+			
+
+
+		}
+		else if (timerScaleFlag == true)
+		{
+			if (timerScale > 2.0f)
+			{
+				timerScale -= 2.0f * g_gameTime->GetFrameDeltaTime();
+			}
+			else
+			{
+				timerScale = 2.0f;
+				timerScaleFlag = false;
+			}
+		}
+
+		
+		m_time_left.SetScale(timerScale);
+	}
+
+
+
+	//int finishTimer = m_game->GetSecondsTimer();
+
+	//if (oldFinishCount != finishTimer)
+	//{
+	//	switch (finishTimer)
+	//	{
+	//	case 0:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finish.DDS", 1920.0f, 1080.0f);
+	//		break;
+	//	case 1:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_1.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 2:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_2.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 3:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_3.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 4:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_4.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 5:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_5.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 6:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_6.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 7:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_7.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 8:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_8.DDS", 300.0f, 500.0f);
+	//		break;
+	//	case 9:
+	//		//è©¦åˆçµ‚äº†ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	//		m_FinishCountNumber.Init("Assets/sprite/gameUI/finishCount_9.DDS", 300.0f, 500.0f);
+	//		//m_CountNumper.SetPosition(Vector3::Zero);
+	//		//m_FinishCountNumber.SetScale(m_finishCountScale);
+	//		
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	//oldFinishCount = finishTimer;
+
+	//m_FinishCountNumber.Update();
+}
+
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çµŒé¨“å€¤ã®è¡¨ç¤ºã®å‡¦ç†todo
 void GameUI::EXPBar()
 {
-	//ŒoŒ±’l‚Ì•\¦
+	//çµŒé¨“å€¤ã®è¡¨ç¤º
 	Vector3 EXPScale = Vector3::One;
-	//ƒvƒŒƒCƒ„[‚ÌŒoŒ±’l‚ğæ“¾
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çµŒé¨“å€¤ã‚’å–å¾—
 	float nowEXP = player->CharSetEXP();
-	//¡‚ÌŒoŒ±’lƒe[ƒuƒ‹‚ğæ“¾
+	//ä»Šã®çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å–å¾—
 	float nowEXPTable = player->CharSetEXPTable();
-	//‘O‚ÌƒŒƒxƒ‹‚ÌŒoŒ±’lƒe[ƒuƒ‹‚ğæ“¾
+	//å‰ã®ãƒ¬ãƒ™ãƒ«ã®çµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’å–å¾—
 	float oldEXPTable = player->CharSetOldEXPTable();
 
-	//ÅI“I‚ÈŒoŒ±’lƒe[ƒuƒ‹
+	//æœ€çµ‚çš„ãªçµŒé¨“å€¤ãƒ†ãƒ¼ãƒ–ãƒ«
 	float finalEXPTable = nowEXPTable - oldEXPTable;
-	//ÅI“I‚ÈŒoŒ±’l
+	//æœ€çµ‚çš„ãªçµŒé¨“å€¤
 	float finalEXP = nowEXP - oldEXPTable;
 
-	//HPƒo[‚Ì‘‚¦‚Ä‚¢‚­Š„‡B
+	//HPãƒãƒ¼ã®å¢—ãˆã¦ã„ãå‰²åˆã€‚
 	EXPScale.x = (float)finalEXP / (float)finalEXPTable;
 	m_ExperienceBar_flont.SetScale(EXPScale);
 
-	////EXPƒo[‰æ‘œ‚ğ¶Šñ‚¹‚É•\¦‚·‚é
-	//Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//‰æ‘œ‚ÌŒ³‚Ì‘å‚«‚³
+	////EXPãƒãƒ¼ç”»åƒã‚’å·¦å¯„ã›ã«è¡¨ç¤ºã™ã‚‹
+	//Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//ç”»åƒã®å…ƒã®å¤§ãã•
 
 	///*if (finalEXPTable != oldEXPTable)
 	//{
 	//	m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
 	//}*/
 
-	////ŒoŒ±’l‚Ì—Ê‚ª•Ï‚í‚Á‚½‚Æ‚«‚¾‚¯
+	////çµŒé¨“å€¤ã®é‡ãŒå¤‰ã‚ã£ãŸã¨ãã ã‘
 	//if (finalEXP != oldEXP)
 	//{
 	//	m_EXPBerPos.x -= BerSizeSubtraction.x;
@@ -592,7 +752,7 @@ void GameUI::EXPBar()
 	m_ExperienceBar_flont.Update();
 
 
-	//ƒŒƒxƒ‹ƒAƒbƒv‚Ü‚Å‚É•K—v‚ÈŒoŒ±’l‚Ì—Ê
+	//ãƒ¬ãƒ™ãƒ«ã‚¢ãƒƒãƒ—ã¾ã§ã«å¿…è¦ãªçµŒé¨“å€¤ã®é‡
 	int UpToLevel = nowEXPTable - nowEXP;
 	wchar_t UTL[255];
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
@@ -605,9 +765,9 @@ void GameUI::EXPBar()
 //
 Vector3& GameUI::HPBerSend(Vector3 size, Vector3 scale)
 {
-	Vector3 expBerSize = size;								//‰æ‘œ‚ÌŒ³‚Ì‘å‚«‚³
-	Vector3 changeBerSize = Vector3::Zero;					//‰æ‘œ‚ğƒXƒP[ƒ‹•ÏŠ·‚µ‚½‚ ‚Æ‚Ì‘å‚«‚³
-	Vector3 BerSizeSubtraction = Vector3::Zero;				//‰æ‘œ‚ÌŒ³‚Æ•ÏŠ·Œã‚Ì·
+	Vector3 expBerSize = size;								//ç”»åƒã®å…ƒã®å¤§ãã•
+	Vector3 changeBerSize = Vector3::Zero;					//ç”»åƒã‚’ã‚¹ã‚±ãƒ¼ãƒ«å¤‰æ›ã—ãŸã‚ã¨ã®å¤§ãã•
+	Vector3 BerSizeSubtraction = Vector3::Zero;				//ç”»åƒã®å…ƒã¨å¤‰æ›å¾Œã®å·®
 
 	changeBerSize.x = expBerSize.x * scale.x;
 	BerSizeSubtraction.x = expBerSize.x - changeBerSize.x;
@@ -616,16 +776,16 @@ Vector3& GameUI::HPBerSend(Vector3 size, Vector3 scale)
 	return BerSizeSubtraction;
 }
 
-//ƒLƒƒƒ‰‚Ìƒ|ƒCƒ“ƒg‚ÆBƒ|ƒCƒ“ƒg‚ªˆê”Ô‘½‚¢ƒLƒƒƒ‰‚É‰¤Š¥ƒ}[ƒN‚ğ‚Â‚¯‚é•\¦‚Ìˆ—
+//ã‚­ãƒ£ãƒ©ã®ãƒã‚¤ãƒ³ãƒˆã¨ã€‚ãƒã‚¤ãƒ³ãƒˆãŒä¸€ç•ªå¤šã„ã‚­ãƒ£ãƒ©ã«ç‹å† ãƒãƒ¼ã‚¯ã‚’ã¤ã‘ã‚‹è¡¨ç¤ºã®å‡¦ç†
 void GameUI::CharPoint()
 {
-	//ƒLƒƒƒ‰‚Ìƒ|ƒCƒ“ƒg‚ğ•\¦
+	//ã‚­ãƒ£ãƒ©ã®ãƒã‚¤ãƒ³ãƒˆã‚’è¡¨ç¤º
 	m_Actors = m_game->GetActors();
 
 	int num = 0;
 	for (auto actor:m_Actors)
 	{
-		//§ŒÀŠÔ‚ªc‚è1•ª‚È‚ç
+		//åˆ¶é™æ™‚é–“ãŒæ®‹ã‚Š1åˆ†ãªã‚‰
 		if (m_game->GetMinutesTimer() < 1)
 		{
 			wchar_t P[255];
@@ -637,7 +797,7 @@ void GameUI::CharPoint()
 
 		charPoint[num] = actor->GetPoint();
 
-		//ƒ|ƒCƒ“ƒg‚Ì•\¦
+		//ãƒã‚¤ãƒ³ãƒˆã®è¡¨ç¤º
 		int POINT = charPoint[num];
 		wchar_t P[255];
 		swprintf_s(P, 255, L"%dp", POINT);
@@ -668,20 +828,20 @@ void GameUI::CharPoint()
 	}
 
 	
-	//’N‚É‰¤Š¥ƒ}[ƒN‚Â‚¯‚é‚©Œˆ‚ß‚é
+	//èª°ã«ç‹å† ãƒãƒ¼ã‚¯ã¤ã‘ã‚‹ã‹æ±ºã‚ã‚‹
 }
 
 void GameUI::Render(RenderContext& rc)
 {
-	//gameƒNƒ‰ƒX‚Ìƒ|[ƒY‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚éŠÔˆ—‚ğs‚í‚È‚¢
+	//gameã‚¯ãƒ©ã‚¹ã®ãƒãƒ¼ã‚ºã®ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ã„ã‚‹é–“å‡¦ç†ã‚’è¡Œã‚ãªã„
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
-		//ƒŒƒxƒ‹‚âŒoŒ±’l‚ÌƒtƒŒ[ƒ€
+		//ãƒ¬ãƒ™ãƒ«ã‚„çµŒé¨“å€¤ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 		m_Flame.Draw(rc);
-		//ŒoŒ±’l‚Ì— 
+		//çµŒé¨“å€¤ã®è£
 		m_ExperienceBar_back.Draw(rc);
-		//ŒoŒ±’l‚Ì•\ •Ï“®‚·‚é
+		//çµŒé¨“å€¤ã®è¡¨ å¤‰å‹•ã™ã‚‹
 		m_ExperienceBar_flont.Draw(rc);
-		//ŒoŒ±’lƒtƒŒ[ƒ€
+		//çµŒé¨“å€¤ãƒ•ãƒ¬ãƒ¼ãƒ 
 		m_ExperienceFlame.Draw(rc);
 		//
 		m_ExpFont.Draw(rc);
@@ -693,6 +853,7 @@ void GameUI::Render(RenderContext& rc)
 		m_time_left.Draw(rc);
 
 		m_statusBar.Draw(rc);
+		m_HpBar_White.Draw(rc);
 		m_hpBar.Draw(rc);
 		
 		m_HPFrame.Draw(rc);
@@ -706,18 +867,21 @@ void GameUI::Render(RenderContext& rc)
 		m_LvNumber_back.Draw(rc);
 		m_LvNumber.Draw(rc);
 		m_MaxLv.Draw(rc);
-		
 
-		//ƒ|ƒCƒ“ƒg‚ğ•`‰æ
+		//ãƒã‚¤ãƒ³ãƒˆã‚’æç”»
+		//å·¦ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®è‰²ã€…ã‚’æç”»
+
 		int num = 0;
 		for (auto actor:m_Actors) {
 			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
 			m_CharIcon[num].Draw(rc);
+			if(num>=1)
+			m_LevelFont[num-1].Draw(rc);
 			num++;
 		}
 		
-		//ƒŠƒXƒ|[ƒ“‚·‚é‚Ü‚Å‚ÌŠÔ
+		//ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹ã¾ã§ã®æ™‚é–“
 		if (player->CharGetRespawnTime() > 0)
 		{
 			m_Respawn_Back.Draw(rc);
@@ -725,8 +889,8 @@ void GameUI::Render(RenderContext& rc)
 			m_RespawnCountNumber.Draw(rc);
 		}
 
-		//‡I—¹‚Ü‚Åc‚è10•b‚È‚ç
-		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10)
+		//è©¦åˆçµ‚äº†ã¾ã§æ®‹ã‚Š10ç§’ãªã‚‰
+		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
 		{
 			m_FinishCountNumber.Draw(rc);
 		}
@@ -734,7 +898,7 @@ void GameUI::Render(RenderContext& rc)
 	}
 	else
 	{
-		//ƒJƒEƒ“ƒgƒ_ƒEƒ“‚Ì•\¦
+		//ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã®è¡¨ç¤º
 		if (m_game->NowGameState() == 0&& m_game->CountDownMinutes() <= 3) {
 			m_CountNumper.Draw(rc);
 		}

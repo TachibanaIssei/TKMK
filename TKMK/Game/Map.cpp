@@ -118,12 +118,14 @@ void Map::EnemyMap()
 
 void Map::Render(RenderContext& rc) 
 {
+	
 	m_Map.Draw(rc);
 	//m_MapFrame.Draw(rc);
-	m_MapPlayer.Draw(rc);
+	
 
 	for (auto enemy : m_game->GetNeutral_Enemys())
 	{
 		enemy->EnemyMap(rc);
+		m_MapPlayer.Draw(rc);
 	}
 }

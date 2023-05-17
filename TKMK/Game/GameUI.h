@@ -24,16 +24,15 @@ public:
 
 	bool Start();
 	void Update();
-
 	void SetSGame(Game* Cgame)
 	{
 		m_game = Cgame;
 	}
 
 	/// <summary>
-	/// ƒvƒŒƒCƒ„[‚ÌƒŒƒxƒ‹‚É‡‚í‚¹‚ÄƒŒƒxƒ‹‚Ì‰æ‘œ‚ğ•ÏX‚·‚é
+	/// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒ¬ãƒ™ãƒ«ã«åˆã‚ã›ã¦ãƒ¬ãƒ™ãƒ«ã®ç”»åƒã‚’å¤‰æ›´ã™ã‚‹
 	/// </summary>
-	/// <param name="lv">ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌƒŒƒxƒ‹</param>
+	/// <param name="lv">ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã®ãƒ¬ãƒ™ãƒ«</param>
 	void LevelFontChange(int lv)
 	{
 		switch (lv)
@@ -85,20 +84,25 @@ public:
 
 	void Render(RenderContext& rc);
 
-	/// HPƒo[‚Ì•\¦
+	/// HPãƒãƒ¼ã®è¡¨ç¤º
     /// </summary>
 	void HPBar();
 
 	/// <summary>
-	/// GamwUI‚ÌƒXƒe[ƒg‚ğ•ÏX
+	/// AIã®ãƒ¬ãƒ™ãƒ«ã®è¡¨ç¤º
 	/// </summary>
-	/// <param name="gamescene">•ÏX‚µ‚½‚¢ƒXƒe[ƒg‚Ì–¼‘O</param>
+	void Level();
+
+	/// <summary>
+	/// GamwUIã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å¤‰æ›´
+	/// </summary>
+	/// <param name="gamescene">å¤‰æ›´ã—ãŸã„ã‚¹ãƒ†ãƒ¼ãƒˆã®åå‰</param>
 	void SetGameUIState(GameUIState gamescene) {
 		m_GameUIState = gamescene;
 
 	}
 
-	void FinishTimer();
+	void Timer();
 
 	/// <summary>
 	/// 
@@ -129,18 +133,18 @@ public:
 	Vector3& HPBerSend(Vector3 size, Vector3 scale);
 
 	/// <summary>
-	/// ƒXƒLƒ‹‚ÌƒAƒCƒRƒ“‚ğƒOƒŒ[ƒXƒP[ƒ‹‚É‚·‚é
+	/// ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¤ã‚³ãƒ³ã‚’ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«ã«ã™ã‚‹
 	/// </summary>
-	/// <param name="flag">true‚Ìê‡ƒOƒŒ[ƒXƒP[ƒ‹‚É‚·‚é</param>
+	/// <param name="flag">trueã®å ´åˆã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«ã«ã™ã‚‹</param>
 	void SetSkillIconGrayScale(bool flag)
 	{
 		m_SkillRenderIN.SetGrayScale(flag);
 	}
 
 	/// <summary>
-	/// •KE‚ÌƒAƒCƒRƒ“‚ğƒOƒŒ[ƒXƒP[ƒ‹‚É‚·‚é
+	/// å¿…æ®ºã®ã‚¢ã‚¤ã‚³ãƒ³ã‚’ã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«ã«ã™ã‚‹
 	/// </summary>
-	/// <param name="flag">true‚Ìê‡ƒOƒŒ[ƒXƒP[ƒ‹‚É‚·‚é</param>
+	/// <param name="flag">trueã®å ´åˆã‚°ãƒ¬ãƒ¼ã‚¹ã‚±ãƒ¼ãƒ«ã«ã™ã‚‹</param>
 	void SetULTIconGrayScale(bool flag)
 	{
 		m_UltRenderIN.SetGrayScale(flag);
@@ -153,6 +157,7 @@ private:
 	FontRender m_HpNameFont;
 
 	FontRender m_PointFont[4];
+	FontRender m_LevelFont[3];
 
 	Player* player = nullptr;
 	Game* m_game = nullptr;
@@ -162,41 +167,44 @@ private:
 	std::vector<Actor*> m_Actors;
 
 	//UI
-	SpriteRender			m_hpBar;							//HPƒo[‚Ì‰æ‘œ
-	SpriteRender			m_statusBar;						//ƒXƒe[ƒ^ƒX‚Ì‰æ‘œ
-	SpriteRender			m_HPFrame;							//ƒvƒŒƒCƒ„[‚ÌŠç‰æ‘œ‚Ì˜g
-	SpriteRender			m_playerFaceBack;					//ƒvƒŒƒCƒ„[‚ÌŠç‰æ‘œ‚Ì”wŒi
-	SpriteRender            m_SkillRenderIN;					//ƒXƒLƒ‹‚ÌƒAƒCƒRƒ“
-	SpriteRender            m_SkillRenderOUT;					//ƒXƒLƒ‹‚ÌƒAƒCƒRƒ“‚ÌƒtƒŒ[ƒ€
-	SpriteRender            m_UltRenderIN;						//•KEƒAƒCƒRƒ“
-	SpriteRender            m_UltRenderOUT;						//•KEƒAƒCƒRƒ“‚ÌƒtƒŒ[ƒ€
-	SpriteRender            m_TimeAndPointRender;				//§ŒÀŠÔ‚ÆŠl“¾ƒ|ƒCƒ“ƒg
+	SpriteRender			m_hpBar;							//HPãƒãƒ¼ã®ç”»åƒ
+	SpriteRender            m_HpBar_White;                      //HPãƒãƒ¼ã®ç™½ã„éƒ¨åˆ†
+	SpriteRender			m_statusBar;						//ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ç”»åƒ
+	SpriteRender			m_HPFrame;							//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®é¡”ç”»åƒã®æ 
+	SpriteRender			m_playerFaceBack;					//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®é¡”ç”»åƒã®èƒŒæ™¯
+	SpriteRender            m_SkillRenderIN;					//ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¤ã‚³ãƒ³
+	SpriteRender            m_SkillRenderOUT;					//ã‚¹ã‚­ãƒ«ã®ã‚¢ã‚¤ã‚³ãƒ³ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
+	SpriteRender            m_UltRenderIN;						//å¿…æ®ºã‚¢ã‚¤ã‚³ãƒ³
+	SpriteRender            m_UltRenderOUT;						//å¿…æ®ºã‚¢ã‚¤ã‚³ãƒ³ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
+	SpriteRender            m_TimeAndPointRender;				//åˆ¶é™æ™‚é–“ã¨ç²å¾—ãƒã‚¤ãƒ³ãƒˆ
 	SpriteRender            m_Lv;
 	SpriteRender            m_LvNumber;
-	SpriteRender            m_LvNumber_back;							//ƒŒƒxƒ‹‚Ì— 
+	SpriteRender            m_LvNumber_back;							//ãƒ¬ãƒ™ãƒ«ã®è£
 	float					m_LvNumberColor = 1.0f;
 	bool					m_flashNumberFlag = false;
 	SpriteRender            m_MaxLv;
-	SpriteRender            m_Flame;							//§ŒÀŠÔ‚ÆŠl“¾ƒ|ƒCƒ“ƒg‚âHPƒo[‚Ì‰æ‘œ‚ğ
-	SpriteRender            m_Point;							//ƒ|ƒCƒ“ƒg
-	SpriteRender            m_ExperienceFlame;					//ŒoŒ±’l‚ÌƒtƒŒ[ƒ€
-	SpriteRender            m_ExperienceBar_flont;				//ŒoŒ±’lƒo[‚Ì•\
-	SpriteRender            m_ExperienceBar_back;				//ŒoŒ±’lƒo[‚Ì— 
-	SpriteRender			m_Crown;							//ƒ|ƒCƒ“ƒg‚ªˆê”Ô‘½‚¢ƒLƒƒƒ‰‚É‚Â‚¯‚é‰¤Š¥ƒ}[ƒN
-	SpriteRender			m_PointFlame[4];					//ƒ|ƒCƒ“ƒg‚ğ•\¦‚·‚éƒtƒŒ[ƒ€
-	SpriteRender            m_CharIcon[4];                      //ƒLƒƒƒ‰‚ÌƒAƒCƒRƒ“
-	SpriteRender			m_CountNumper;					//ƒJƒEƒ“ƒgƒ_ƒEƒ“
-	SpriteRender			m_RespawnIn;						//Respawn in‚Ì‰æ‘œ
-	SpriteRender			m_Respawn_Back;						//ƒŠƒXƒ|[ƒ“‚Ì”wŒi
-	SpriteRender			m_RespawnCountNumber;				//ƒŠƒXƒ|[ƒ“‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-	SpriteRender			m_FinishCountNumber;				//§ŒÀŠÔc‚è10•b‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
+	SpriteRender            m_Flame;							//åˆ¶é™æ™‚é–“ã¨ç²å¾—ãƒã‚¤ãƒ³ãƒˆã‚„HPãƒãƒ¼ã®ç”»åƒã‚’
+	SpriteRender            m_Point;							//ãƒã‚¤ãƒ³ãƒˆ
+	SpriteRender            m_ExperienceFlame;					//çµŒé¨“å€¤ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
+	SpriteRender            m_ExperienceBar_flont;				//çµŒé¨“å€¤ãƒãƒ¼ã®è¡¨
+	SpriteRender            m_ExperienceBar_back;				//çµŒé¨“å€¤ãƒãƒ¼ã®è£
+	SpriteRender			m_Crown;							//ãƒã‚¤ãƒ³ãƒˆãŒä¸€ç•ªå¤šã„ã‚­ãƒ£ãƒ©ã«ã¤ã‘ã‚‹ç‹å† ãƒãƒ¼ã‚¯
+	SpriteRender			m_PointFlame[4];					//ãƒã‚¤ãƒ³ãƒˆã‚’è¡¨ç¤ºã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ 
+	SpriteRender            m_CharIcon[4];                      //ã‚­ãƒ£ãƒ©ã®ã‚¢ã‚¤ã‚³ãƒ³
+	SpriteRender			m_CountNumper;						//ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	SpriteRender			m_RespawnIn;						//Respawn inã®ç”»åƒ
+	SpriteRender			m_Respawn_Back;						//ãƒªã‚¹ãƒãƒ¼ãƒ³æ™‚ã®èƒŒæ™¯
+	SpriteRender			m_RespawnCountNumber;				//ãƒªã‚¹ãƒãƒ¼ãƒ³æ™‚ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+	SpriteRender			m_FinishCountNumber;				//åˆ¶é™æ™‚é–“æ®‹ã‚Š10ç§’ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 
-	
-	Vector2				m_HPBerPos = Vector2::Zero;				//HPƒo[‚Ìƒ|ƒWƒVƒ‡ƒ“
-	Vector2				m_HPWindowPos = Vector2::Zero;			//HP˜g‚Ìƒ|ƒWƒVƒ‡ƒ“
-	Vector2				m_HPBackPos = Vector2::Zero;			//HP”wŒi‚Ìƒ|ƒWƒVƒ‡ƒ“
 
-	Vector3				m_EXPBerPos = /*Vector3(750.0f, -500.0f, 0.0f)*/Vector3::Zero;				   //EXPƒo[‚Ìƒ|ƒWƒVƒ‡ƒ“
+	Vector2				m_GameTimePos = Vector2::Zero;
+	Vector2				m_HPBerPos = Vector2::Zero;				//HPãƒãƒ¼ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
+	Vector2				m_HPWindowPos = Vector2::Zero;			//HPæ ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
+	Vector2				m_HPBackPos = Vector2::Zero;			//HPèƒŒæ™¯ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
+	          
+
+	Vector3				m_EXPBerPos = /*Vector3(750.0f, -500.0f, 0.0f)*/Vector3::Zero;				   //EXPãƒãƒ¼ã®ãƒã‚¸ã‚·ãƒ§ãƒ³
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);
 	Vector3				m_FightScale = Vector3(1.0f, 1.0f, 0.0f);
@@ -211,33 +219,44 @@ private:
 		Vector3(-850.0f, 50.0f, 0.0f), 
 		Vector3(-850.0f, -50.0f, 0.0f), 
 		Vector3(-850.0f, -150.0f, 0.0f), 
-	};															//ƒ|ƒCƒ“ƒg
+	};															//ãƒã‚¤ãƒ³ãƒˆ
+
+	Vector3 LevelPos[3] = {
+		Vector3(-950.0f, 0.0f, 0.0f),
+		Vector3(-950.0f, -100.0f, 0.0f),
+		Vector3(-950.0f, -200.0f, 0.0f),
+	};															//ãƒ¬ãƒ™ãƒ«
 
 	Vector3 PointFlamePos[4] = {
 		Vector3(-850.0f, 120.0f, 0.0f),
 		Vector3(-850.0f, 20.0f, 0.0f),
 		Vector3(-850.0f, -80.0f, 0.0f),
 		Vector3(-850.0f, -180.0f, 0.0f),
-	};															//ƒ|ƒCƒ“ƒg
+	};															//ãƒã‚¤ãƒ³ãƒˆã®ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 	Vector3 CharIconPos[4] = {
 		Vector3(-920.0f, 120.0f, 0.0f),
 		Vector3(-920.0f, 20.0f, 0.0f),
 		Vector3(-920.0f, -80.0f, 0.0f),
 		Vector3(-920.0f, -180.0f, 0.0f),
-	};															//ƒAƒCƒRƒ“
+	};															//ã‚¢ã‚¤ã‚³ãƒ³
 	
 	Vector3 CrownPos[4] = {
 		Vector3(-920.0f, 120.0f, 0.0f),
 		Vector3(-920.0f, 20.0f, 0.0f),
 		Vector3(-920.0f, -80.0f, 0.0f),
 		Vector3(-920.0f, -180.0f, 0.0f),
-	};															//‰¤Š¥ƒ}[ƒN
+	};															//ç‹å† ãƒãƒ¼ã‚¯
 
 	FontRender m_time_left;
+	float timerScale = 2.0f;
+	bool timerScaleFlag = false;
 
 	const char* knightname = "knightplayer";
 	const char* wizardname = "wizardplayer";
+	const char* KnightAI_Red = "KnightAI";
+	const char* KnightAI_Green = "KnightAI1";
+	const char* KnightAI_Yellow = "KnightAI2";
 
 	int oldtStartCount = 0;
 
@@ -245,25 +264,30 @@ private:
 
 	int oldFinishCount = 0;
 
-	//•b‚ğŒv‚éƒ^ƒCƒ}[
+	//ç§’ã‚’è¨ˆã‚‹ã‚¿ã‚¤ãƒãƒ¼
 	float SecondsTimer=0.0f;
-	//•ª‚ğŒv‚éƒ^ƒCƒ}[
+	//åˆ†ã‚’è¨ˆã‚‹ã‚¿ã‚¤ãƒãƒ¼
 	float MinutesTimer=5.0f;
 	float m_timer = 300.0f;
 
 	bool GameEndFlag=false;
 
-	//‘OƒtƒŒ[ƒ€‚ÌŒoŒ±’l
+	//å‰ãƒ•ãƒ¬ãƒ¼ãƒ ã®çµŒé¨“å€¤
 	int oldEXP=0;
 	int oldEXPTable = 0;
 
-	//ƒLƒƒƒ‰‚Ìƒ|ƒCƒ“ƒg
+	//ã‚­ãƒ£ãƒ©ã®ãƒã‚¤ãƒ³ãƒˆ
 	int charPoint[4];
 
 	int MaxPoint = 1;
 
-	
+	int White_BackHp = 0;
+	float WhiteHp_Timer = 0.0f;
+
+	int BackUPLV = 0;
 
 
+	bool FightScale = false;
+	bool FightshotStopFlag = false;
 };
 

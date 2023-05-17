@@ -3,6 +3,11 @@
 #include "CharacterSelect.h"
 #include "Game.h"
 
+namespace TitleConst
+{
+	const Vector3 START_IMAGE_SCALE = Vector3(0.4f, 0.4f, 1.0f);
+}
+
 Tittle::Tittle()
 {
 
@@ -113,12 +118,12 @@ bool Tittle::Start()
 
 	//Selectのイラスト
 	//"START"の時のイラスト
-	m_iluststart.Init("Assets/sprite/Title/ModeScene/llust_Start.DDS", 500.0f, 600.0f);
+	m_iluststart.Init("Assets/sprite/Title/ModeScene/StageImage.DDS", 1901.0f, 664.0f);
 	m_iluststart.SetPosition(m_RightfirstPosition);
-	m_iluststart.SetScale(g_vec3One);
+	m_iluststart.SetScale(TitleConst::START_IMAGE_SCALE);
 	m_iluststart.Update();
 	//"START"の時の説明文
-	m_iluststartOp.Init("Assets/sprite/Title/ModeScene/Start_Setumei.DDS", 850.0f, 100.0f);
+	m_iluststartOp.Init("Assets/sprite/Title/ModeScene/Start_Setumei.DDS", 850.0f, 110.0f);
 	m_iluststartOp.SetPosition(m_RightfirstPosition);
 	m_iluststartOp.SetScale(g_vec3One);
 	m_iluststartOp.Update();
@@ -193,25 +198,31 @@ void Tittle::Scene()
 		m_fadeSeem = false;
 		if (m_linear == enLinear_sword1)
 		{
-			if (swordright > 1.0f)
+			if (swordright >= 1.1f)
 			{
+				swordright -= 0.11;
 				SoundSource* se = NewGO<SoundSource>(0);
 				se->Init(6);
 				se->SetVolume(SEVolume);
 				se->Play(false);
 				m_linear = enLinear_sword2;
 			}
+
 			//線形補間
 			m_swordright.Lerp(swordright, m_Toprightfirstposition, m_swordPosition);
 			//線形補完したものをSetPositionに入れる
 			m_titleswordwhite.SetPosition(m_swordright);
+
+			m_RightPos = m_swordright;
+
 			//補完率
-			swordright += 0.03f;
+			swordright += 0.07f;
 		}
 		else if (m_linear == enLinear_sword2)
 		{
-			if (swordleft >= 1.0f)
+			if (swordleft >= 1.1f)
 			{
+				swordleft -= 0.11;
 				SoundSource* se = NewGO<SoundSource>(0);
 				se->Init(6);
 				se->SetVolume(SEVolume);
@@ -223,8 +234,10 @@ void Tittle::Scene()
 			//線形補完したものをSetPositionに入れる
 			m_titleswordbrack.SetPosition(m_swordleft);
 
+			m_LeftPos = m_swordleft;
+
 			//補完率
-			swordleft += 0.03f;
+			swordleft += 0.07f;
 		}
 		else if (m_linear == enLinear_delay)
 		{
@@ -274,9 +287,9 @@ void Tittle::Scene()
 	//もしSelect画面だったら
 	if (m_titleScene == enTitleScene_Change)
 	{
-		if (LogoComplement < 1.0f)
+		if (LogoComplement <= 1.0f)
 		{
-			if (fadetime > 90)
+			if (fadetime > 30)
 			{
 				m_fadeSeem = false;
 			}
@@ -291,10 +304,9 @@ void Tittle::Scene()
 				m_fireScale.Lerp(LogoComplement, m_titlefireScale, m_selectfireScale);
 				m_ilust.Lerp(LogoComplement, m_RightfirstPosition, m_selectilust);
 				m_ilustOp.Lerp(LogoComplement, m_RightfirstPosition, m_selectilustOp);
-				m_swordright.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
-				m_swordleft.Lerp(LogoComplement, m_titleLogoPosition, m_selectLogoPosition);
+				m_swordright.Lerp(LogoComplement, m_RightPos, m_selectLogoPosition);
+				m_swordleft.Lerp(LogoComplement, m_LeftPos, m_selectLogoPosition);
 				m_swordscale.Lerp(LogoComplement, m_titleswordscale, m_selectswordscale);
-
 				//線形補完したものをSetPositionに入れる
 				m_fire.SetPosition(m_LogoPosition);
 				m_fire.SetScale(m_fireScale);
@@ -311,7 +323,7 @@ void Tittle::Scene()
 				m_titleswordbrack.SetScale(m_swordscale);
 
 				//補完率
-				LogoComplement += 0.03f;
+				LogoComplement += 0.05f;
 			}
 			fadetime += 1;
 		}

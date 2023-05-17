@@ -16,6 +16,8 @@ class Player;
 class MagicBall;
 class Actor;
 class Map;
+class ExpforKnight;
+class ChaseEFK;
 
 /// <summary>
 /// 中立の敵
@@ -29,7 +31,6 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
-	void HPBar();
 	void DeathEfk();
 	//中立の敵のステート
 	enum EnNEState {
@@ -58,6 +59,13 @@ public:
 		enAnimationClip_Damage,					//被ダメージアニメーション。
 		enAnimationClip_Death,					//ダウンアニメーション。
 		enAnimationClip_Num,					//アニメーションの数。
+	};
+
+	enum EnJumpFlag {
+		enJumpStart,
+		enJumpEnd,
+		enJumpnull,
+		enJumpNum
 	};
 	void SetNeutral_EnemyGame(Game* NEgame)
 	{
@@ -109,7 +117,6 @@ public:
 	{
 		return m_position;
 	}
-	
 
 
 	void Move();
@@ -228,20 +235,6 @@ public:
 	/// <returns></returns>
     void EscapeSearch();
 	/// <summary>
-	/// ゲージを左寄せする処理
-	/// </summary>
-	/// <param name="size">画像の元の大きさ</param>
-	/// <param name="scale">現在のスケール倍率</param>
-	/// <returns>変換前と変換後の差</returns>
-	Vector3 HPBerSend(Vector3 size, Vector3 scale);
-
-	/// <summary>
-	/// HPゲージの描画フラグ
-	/// </summary>
-	/// <returns>描画できる範囲にあるときtrue</returns>
-	bool DrawHP();
-
-	/// <summary>
 	/// プレイヤーのステートを変更
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
@@ -292,7 +285,7 @@ public:
 	//自分を狙っている敵を返す
 	int GetBetargetCount()
 	{
-		return be_target.size();
+		return (int)be_target.size();
 	}
 	void modelUpdate();
 
@@ -322,13 +315,11 @@ public:
 		}
 	}
 
+
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
-	Vector2		  m_HPBerPos = Vector2::Zero;				   //HPバーのポジション
-	Vector2	   	  m_HPWindowPos = Vector2::Zero;			   //HP枠のポジション
-	Vector2		  m_HPBackPos = Vector2::Zero;			       //HP背景のポジション
-	Vector3       m_position;                                  //座標
+	Vector3       m_position = Vector3::Zero;;                                 //座標
 	Vector3       m_moveSpeed;                                 //移動速度
 	Vector3       m_forward = Vector3::AxisZ;                  //正面のベクトル
 	Quaternion    m_rot;                                       //クォータニオン
@@ -353,9 +344,6 @@ private:
 
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
 	Status m_Status;                    //ステータス
-	SpriteRender		m_HPBar;		//HPバー画像
-	SpriteRender		m_HPFrame;		//HP枠画像
-	SpriteRender		m_HPBack;		//HP背景画像	
 	SpriteRender		m_enemyMapSprite;
 
 	FontRender              m_Name;
@@ -364,6 +352,9 @@ private:
 	Vector3                 m_patrolPos[41];
 	Vector3 nowPos = Vector3::Zero;
 	Vector3 m_hagikiPower;
+	
+	bool CallBezier = false;
+
 	bool m_UnderAttack = false;              //攻撃判定
 	int m_AttackBoneId = 1;                  //頭のボーンのID
 	//中立の敵
@@ -408,5 +399,8 @@ private:
 	float isPatrolTimer = 0.0f;
 	float HPreductionbyTimer = 0.0f;
 	bool rabbitLife = false;
+	EffectEmitter* Rabbit_kirakira = nullptr;
+	Vector3 m_Rabbit_Pos = Vector3::Zero;
+	EnJumpFlag enJump = enJumpNum;
 };
 

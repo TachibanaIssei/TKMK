@@ -115,6 +115,11 @@ public:
 	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)=0;
 
 	/// <summary>
+	/// 必殺技を打っている間の処理
+	/// </summary>
+	virtual bool UltimaitSkillTime() = 0;
+
+	/// <summary>
 	/// 座標のセット
 	/// </summary>
 	/// <param name="PS"></param>
@@ -178,12 +183,10 @@ public:
 		return m_Status.Hp;
 	}
 
-	
-
 	Quaternion& GetRot()
 	{
 		return m_rot;
-  }
+	}
 
 
 	/// <summary>
@@ -215,7 +218,88 @@ public:
 		return respawnNumber;
 	}
 
+	/// <summary>
+	/// HPが0なら実行する
+	/// </summary>
+	/// <param name="status"></param>
+	void IsDead(Status& status)
+	{
+		if (status.Hp <= 0)
+		{
+			m_charState = enCharState_Death;
+
+		}
+	}
+
+	/// <summary>
+	/// 追尾エフェクトのポインタをリセット
+	/// </summary>
+	void EffectNullptr() {
+
+		if (GetHoimi != nullptr) {
+			if (GetHoimi->GetEffect()->IsPlay() == false) {
+				GetHoimi = nullptr;
+			}
+		}
+
+		if (EffectKnightSkill != nullptr) {
+			if (EffectKnightSkill->GetEffect()->IsPlay() == false) {
+				EffectKnightSkill = nullptr;
+			}
+		}
+
+		if (EffectKnightSkillGround != nullptr) {
+			if (EffectKnightSkillGround->GetEffect()->IsPlay() == false) {
+				EffectKnightSkillGround = nullptr;
+			}
+		}
+
+		if (FootSmoke != nullptr) {
+			if (FootSmoke->GetEffect()->IsPlay() == false) {
+				FootSmoke = nullptr;
+			}
+		}
+
+		if (LevelUp_efk != nullptr) {
+			if (LevelUp_efk->GetEffect()->IsPlay() == false) {
+				LevelUp_efk = nullptr;
+			}
+		}
+
+		if (LevelDown_efk != nullptr) {
+			if (LevelDown_efk->GetEffect()->IsPlay() == false) {
+				LevelDown_efk = nullptr;
+			}
+		}
+	}
 	
+	// 追尾エフェクトの削除
+	void ChaseEffectDelete() {
+		if (GetHoimi != nullptr) {
+			GetHoimi->ResetTarget();
+		}
+
+		if (EffectKnightSkill != nullptr) {
+			EffectKnightSkill->ResetTarget();
+		}
+
+		if (EffectKnightSkillGround != nullptr) {
+			EffectKnightSkillGround->ResetTarget();
+		}
+
+		if (FootSmoke != nullptr) {
+			FootSmoke->ResetTarget();
+		}
+
+		if (LevelUp_efk != nullptr) {
+			LevelUp_efk->ResetTarget();
+		}
+
+		if (LevelDown_efk != nullptr) {
+			LevelDown_efk->ResetTarget();
+		}
+	}
+
 protected:
 	/// <summary>
 	///無敵時間用
@@ -289,11 +373,14 @@ protected:
 
 	CharacterController m_charCon;                        //キャラクターコントロール
 
+	EffectEmitter* Ult_Swordeffect = nullptr;				//必殺技の溜めエフェクト
 
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
+
+	std::vector<Actor*> DamegeUltActor;
 
 	enum AtkTimingState
 	{
@@ -341,7 +428,7 @@ protected:
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
 
-	bool jampAccumulateflag = false;
+	//bool jampAccumulateflag = false;
 
 	//プレイヤーとの内積を求めて線形補間で音量調整
 	float SEVolume = 0;
@@ -354,5 +441,10 @@ protected:
 	//ラストアタックのアニメーションで切った後に動けないようにする
 	//tureの時は動けなくなる
 	bool CantMove = false;
+
+	// 追尾エフェクト
+	ChaseEFK* EffectKnightSkill = nullptr;
+	ChaseEFK* EffectKnightSkillGround = nullptr;
+	ChaseEFK* FootSmoke = nullptr;
 };
 

@@ -184,7 +184,7 @@ float4 PSMain(SPSIn psIn) : SV_Target0
         if(zInLVP > zInShadowMap)
         {
             // 遮蔽されている
-            albedoColor.xyz *= 0.5f;
+            albedoColor.xyz *= 0.7f;
         }
     }
 
@@ -233,7 +233,7 @@ float3 CalcPhongSpecular(float3 lightDirection, float3 lightColor, float3 worldP
     
     //スペキュラマップからスペキュラ反射の強さをサンプリング
     float specPower = g_specularMap.Sample(g_sampler, uv).r;
-    specularLig *= specPower * 2.0f;
+    specularLig *= specPower * 1.1f;
 
     return specularLig;
 }

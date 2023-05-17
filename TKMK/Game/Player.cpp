@@ -12,8 +12,8 @@ Player::Player()
 
 Player::~Player()
 {
-	DeleteGO(knightPlayer);
-	DeleteGO(wizardPlayer);
+	//DeleteGO(knightPlayer);
+	//DeleteGO(wizardPlayer);
 }
 
 void Player::CreaetPlayer()

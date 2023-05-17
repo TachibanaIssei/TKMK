@@ -285,7 +285,7 @@ public:
 	//自分を狙っている敵を返す
 	int GetBetargetCount()
 	{
-		return be_target.size();
+		return (int)be_target.size();
 	}
 	void modelUpdate();
 

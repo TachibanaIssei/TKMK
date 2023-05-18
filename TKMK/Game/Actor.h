@@ -581,6 +581,41 @@ public:
 		return m_CameraSawCharFlag;
 	}
 
+	int GetSaveEXP() const
+	{
+		return m_SaveEXP;
+	}
+
+	void ResatSaveEXP()
+	{
+		m_SaveEXP = 0;
+	}
+
+	/// <summary>
+	/// 自身をカメラで見ているかのフラグを変える AI用
+	/// </summary>
+	/// <param name=""></param>
+	void ChangeChaseCamera(bool flag)
+	{
+		ChaseCameraFlag = flag;
+	}
+
+	bool GetChaseCameraFlag()
+	{
+		return ChaseCameraFlag;
+	}
+
+	/// <summary>
+	/// 必殺技で攻撃対象のアクターを返す
+	/// </summary>
+	/// <returns></returns>
+	std::vector<Actor*>& GetDamegeUltActor() {
+		return DamegeUltActor;
+	}
+
+	void  DamegeUltActorClear() {
+		DamegeUltActor.clear();
+	}
 
 private:
     Level3DRender m_respawnLevel;
@@ -655,6 +690,7 @@ protected:
 	Fade* m_fade = nullptr;
 
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
+	std::vector<Actor*> DamegeUltActor;             //必殺技で攻撃対象のアクター
 
 	ChaseEFK* PowerUpEfk = nullptr;
 	ChaseEFK* GetHoimi = nullptr;
@@ -662,7 +698,8 @@ protected:
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
-
+	//必殺技使用時にカメラで見ている間true AI用
+	bool ChaseCameraFlag = false;
 	////////////////////////////////////////////////
 	// 雷を打つときに使う変数
 	////////////////////////////////////////////////

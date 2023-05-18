@@ -191,12 +191,17 @@ public:
 	/// <param name="level">自分の現在のレベル</param>
 	void PointProcess(int& level)
 	{
+		int AddPoint = 0;
 		//レベルが5以上なら
 		if (level > 5)
 		{
-			level = 5;
+			AddPoint = 5;
 		}
-		int AddPoint = level;
+		else
+		{
+			AddPoint = level;
+		}
+		
 		//レベル分ポイントを増やす
 		Point += AddPoint;
 	}
@@ -635,6 +640,8 @@ protected:
 	bool								isDeath = false;				//死んだかどうかの判定
 	bool								invincibleFlag = false;			//無敵時間フラグ
 	int									Ponit = 0;						//獲得したポイント
+	int									m_SaveEXP = 0;					//UIに表示するために経験値を保存する
+
 	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Quaternion m_respawnRotation[4];

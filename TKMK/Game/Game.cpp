@@ -298,6 +298,8 @@ bool Game::Start()
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
 
+	m_boxCollider.Create(Vector3(1.0f,1.0f,1.0f));
+
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	return true;
@@ -966,6 +968,89 @@ void Game::CountDown()
 		else SecondsTimer = 60.0f;
 	}
 	else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
+}
+
+void Game::UltTimeSky()
+{
+	m_skyCube->SetLuminance(0.2f);
+	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
+
+	directionLightDir.Normalize();
+	Vector3 directionLightColor = Vector3{ 0.4f, 0.4f, 0.4f };
+	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
+	g_renderingEngine->SetAmbient({ 0.65f,0.6f,0.7f });
+}
+
+void Game::LightReset()
+{
+	m_skyCube->SetLuminance(1.0f);
+	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
+
+	directionLightDir.Normalize();
+	Vector3 directionLightColor = Vector3{ 0.5f, 0.5f, 0.5f };
+	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
+	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f });
+}
+
+//衝突したときに呼ばれる関数オブジェクト(壁用)
+struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
+
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//壁とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Ground) {
+			//衝突したのは壁ではない。
+			return 0.0f;
+		}
+
+		//壁とぶつかったら。
+		//フラグをtrueに。
+		isHit = true;
+		return 0.0f;
+	}
+};
+
+//アクターが地面に接地しているか確かめる
+bool Game::IsActorGroundChack(Actor* actor)
+{
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(actor->GetPosition().x, actor->GetPosition().y, actor->GetPosition().z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(actor->GetPosition().x, actor->GetPosition().y-5.0f, actor->GetPosition().z));
+
+	while (true)
+	{
+		//壁の判定を返す
+		IsGroundResult callback_Ground;
+		//コライダーを始点から終点まで動かして。
+		//壁と衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_boxCollider.GetBody(), start, end, callback_Ground);
+		//壁と衝突した！
+		if (callback_Ground.isHit == true)
+		{
+			//地面にいても死んでいたら
+			if (actor->NowCharState() == Actor::enCharState_Death)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+			
+		}
+		else
+		{
+			return false;
+		}
+
+			
+	}
 }
 
 void Game::Render(RenderContext& rc)

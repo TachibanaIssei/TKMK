@@ -307,6 +307,8 @@ public:
 		UnderSpriteUpdate();
 	}
 
+	bool IsActorGroundChack(Actor* actor);
+
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する
@@ -409,6 +411,10 @@ private:
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Vector3 m_EFK_Pos = Vector3::Zero;
+
+	RigidBody				m_rigidBody;						//剛体。
+	BoxCollider			m_boxCollider;							//コライダー。
+
 	bool HowToPlaySpriteFlag = false;
 
 	float m_spriteAlpha = 0.0f;

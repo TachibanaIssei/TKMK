@@ -92,7 +92,7 @@ private:
 
 	EvalData CalculateTargetEnemy(Neutral_Enemy* enemy);
 	EvalData CalculateTargetAI(Actor* actor);
-	
+
 	enum Action {
 		AttackAI,
 		AttackEnemy,
@@ -143,7 +143,7 @@ private:
 	bool SkillFlag = false;
 	bool m_swordEffectFlag = false;
 
-
+	
 
 	SpriteRender		m_HP_Bar;		//HPƒo[‰æ‘œ
 	SpriteRender		m_HP_Frame;		//HP˜g‰æ‘œ

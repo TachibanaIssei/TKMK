@@ -814,10 +814,13 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を打たない
-		//return;
+		return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
+			//画面を暗くする
+			m_game->SetUltTimeSkyFlag(true);
+
 			pushFlag = true;
 			//必殺技の溜めステートに移行する
 			m_charState = enCharState_Ult_liberation;
@@ -875,6 +878,10 @@ bool KnightAI::UltimaitSkillTime()
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//画面を暗くするフラグをfalseにする
+			m_game->SetUltTimeSkyFlag(false);
+			//画面が暗いのをリセットする
+			m_game->LightReset();
 			//中身を全て消す
 			DamegeUltActor.clear();
 		}
@@ -1137,6 +1144,10 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 				DamegeUltActor.push_back(actor);
 			}
 		}
+
+		//カメラで見るのを終わりにする
+		ChangeChaseCamera(false);
+
 		//必殺技の当たり判定のクラスを作成
 		//MakeUltSkill();
 		

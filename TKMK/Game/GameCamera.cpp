@@ -142,15 +142,19 @@ void GameCamera::StateControl()
 
 void GameCamera::NomarlCamera()
 {
-	//もしプレイヤーが必殺技を打ったら
-	if (player_actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag == false)
-	{
-		//溜めフラグをfalseにする
-		UltChargeFlag = false;
-		//必殺技フラグをたてる
-		KnightUltFlag = true;
-		//カメラステートを回転ステートに移る
-		m_enCameraState = m_enUltRotCameraState;
+	for (auto actor : m_actors) {
+		//もしプレイヤーが必殺技を打ったら
+		if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag == false)
+		{
+			//溜めフラグをfalseにする
+			UltChargeFlag = false;
+			//必殺技フラグをたてる
+			KnightUltFlag = true;
+			//カメラステートを回転ステートに移る
+			m_enCameraState = m_enUltRotCameraState;
+
+			ultactor = actor;
+		}
 	}
 
 	//for (auto actor : m_actors) {
@@ -221,26 +225,45 @@ void GameCamera::NomarlCamera()
 //雷に打たれていないキャラを探す
 void GameCamera::UltRotCamera()
 {
+	//AIの場合はこの処理だけする
 	//一回だけの処理
 	if (SetCameraCharFrontFlag == false) {
 		//プレイヤーを下からの見上げるようにする
 		m_springCamera.Refresh();
-		CameraTarget(KNIGHT_TUNDER_POS_X, KNIGHT_TUNDER_POS_Y, player_actor);
+		CameraTarget(KNIGHT_TUNDER_POS_X, KNIGHT_TUNDER_POS_Y, ultactor);
 
 		SetCameraCharFrontFlag = true;
+	}
+	//プレイヤー以外ならこの先の処理はしない
+	if (ultactor->GetName() != player_actor->GetName())
+	{
+		if (ultactor->GetChaseCameraFlag() == true) {
+			return;
+		}
+		else if (ultactor->GetChaseCameraFlag() == false) {
+			//必殺技フラグをfalseにする
+			KnightUltFlag = false;
+			SetCameraCharFrontFlag = false;
+			m_springCamera.Refresh();
+			CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+			m_enCameraState = m_enNomarlCameraState;
+			return;
+		}
+		
+		
 	}
 	
 	//誰かを見ている間は処理をしない
 	if (TunderCameraFlag == false)
 	{
-		for (auto actor : game->GetActors())
+		for (auto actor : player_actor->GetDamegeUltActor()/*game->GetActors()*/)
 		{
 			//プレイヤーか一度見たキャラなら抜け出す
-			if (player_actor->GetName() == actor->GetName()||actor->GetCameraSawCharFlag()==true) {
+			/*if (player_actor->GetName() == actor->GetName()||actor->GetCameraSawCharFlag()==true) {
 				continue;
-			}
+			}*/
 			//雷を打たれるなら
-			if (actor->GetDamegeUltFlag() == true)
+			//if (actor->GetDamegeUltFlag() == true)
 			{
 				//雷を打たれているキャラにカメラを向けるフラグ
 				TunderCameraFlag = true;
@@ -257,7 +280,7 @@ void GameCamera::UltRotCamera()
 				return;
 			}
 			
-			
+			return;
 		}
 	}
 	
@@ -316,7 +339,7 @@ void GameCamera::UltRotCamera()
 
 void GameCamera::ChaseCamera()
 {
-	
+	wizardUlt = FindGO<WizardUlt>("wizardUlt");
 
 	if (wizardUlt != nullptr)
 	{

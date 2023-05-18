@@ -22,6 +22,10 @@ public:
 		m_rotation = rotation;
 	}
 
+	Vector3 GetPosition() {
+		return m_position;
+	}
+
 private:
 	ModelRender m_modelRenderGround;
 	ModelRender m_modelRenderObject;

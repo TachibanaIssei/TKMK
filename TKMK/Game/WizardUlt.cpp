@@ -17,6 +17,8 @@ WizardUlt::~WizardUlt()
 	// 全てを終わらせる！！！！！！！
 	//地上にいることを示すカウンターを減らす
 	m_CreatMeActor->SubOnGroundCharCounter();
+	
+
 	//ターゲットの地上にいるフラグをfalseにする	
 	m_targetActor->ChangeGroundChackflag(false);
 
@@ -33,6 +35,8 @@ WizardUlt::~WizardUlt()
 	//自分が必殺技を打った最後の雷なら
 	if (UltEndFlag == true)
 	{
+		//攻撃対象のアクターのリストをクリアする
+		m_CreatMeActor->DamegeUltActorClear();
 		gameCamera->GameCameraUltEnd();
 	}
 }

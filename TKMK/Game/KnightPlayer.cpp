@@ -14,6 +14,9 @@
 //ジャンプ
 //三段目攻撃も途中にほかのキャラが必殺技を使うとフラグがかわらなくなる
 //必殺技が一人しか当たらないときにカメラに処理できていないかも
+//ベクタークラスでかんりする
+
+//必殺技中断された時ライトりせっと
 
 
 
@@ -148,7 +151,9 @@ void KnightPlayer::Update()
 		//今のフレームと前のフレームのレベルが違っていたら
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
-			m_gameUI->LevelFontChange(Lv);
+			m_gameUI->ChangePlayerLevel(Lv);
+
+			//m_gameUI->LevelFontChange(Lv);
 			LevelUp = NewGO<ChaseEFK>(4);
 			LevelUp->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
 		}
@@ -385,7 +390,11 @@ void KnightPlayer::Attack()
 	//Xボタンが押されたら
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
+		//ゲーム側に教える
 		m_game->UnderSprite_Ult();
+		//画面を暗くする
+		m_game->SetUltTimeSkyFlag(true);
+
 		pushFlag = true;
 		
 		//必殺技の溜めステートに移行する
@@ -428,6 +437,7 @@ bool KnightPlayer::UltimaitSkillTime()
 		//全ての雷が落ちてから
 		
 		//地上にいるキャラに必殺技を打ち終わったら
+		//ベクタークラスで
 		if (m_OnGroundCharCounter<=0/*DamegeUltActor.empty()==true*/)
 		{
 			for (auto actor : m_game->GetActors())
@@ -441,6 +451,10 @@ bool KnightPlayer::UltimaitSkillTime()
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//画面を暗くするフラグをfalseにする
+			m_game->SetUltTimeSkyFlag(false);
+			//画面が暗いのをリセットする
+			m_game->LightReset();
 			//中身を全て消去する
 			DamegeUltActor.clear();
 		}
@@ -482,12 +496,12 @@ void KnightPlayer::MakeUltSkill()
 	for (auto actor : DamegeUltActor)
 	{
 		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
-		if (GetName() == actor->GetName()||actor->GetDamegeUltFlag()==true)
+		/*if (GetName() == actor->GetName()||actor->GetDamegeUltFlag()==true)
 		{
 			continue;
-		}
+		}*/
 		//地上にいるAIにだけ雷を落とす
-		if (actor->IsGroundIn() == true)
+		//if (actor->IsGroundIn() == true)
 		{
 			//必殺技の雷の生成
 			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
@@ -512,21 +526,26 @@ void KnightPlayer::MakeUltSkill()
 			//m_OnGroundCharCounter--;
 
 			//雷を落とすキャラがリストの最後なら
-			if (actor == m_game->GetActors().back())
+			if (actor == DamegeUltActor.back())
 			{
 				//最後であることを知らせる
 				wizardUlt->ChangeUltEndFlag(true);
-				DamegeUltActor.clear();
+
+				//DamegeUltActor.clear();
+
+				m_UltshootTimer = 0.0f;
+				//一人ずつ必殺技を打つのでぬける
+				return;
 			}
-			//else
-			//{
-			//	std::vector<Actor*>::iterator it = std::find(
-			//		DamegeUltActor.begin(), // アクターのリストの最初
-			//		DamegeUltActor.end(),   // アクターのリストの最後
-			//		actor                     // 消したいアクター
-			//	);
-			//	DamegeUltActor.erase(it);
-			//}
+			else
+			{
+				std::vector<Actor*>::iterator it = std::find(
+					DamegeUltActor.begin(), // アクターのリストの最初
+					DamegeUltActor.end(),   // アクターのリストの最後
+					actor                     // 消したいアクター
+				);
+				DamegeUltActor.erase(it);
+			}
 
 			
 
@@ -677,7 +696,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		ThunderCharge->Play();
 	}
 
-	//必殺技のアニメーションで剣を振ったら
+	//必殺技のアニメーションで剣を空に掲げたら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
 		//雷を生成する
@@ -687,20 +706,20 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		for (auto actor : m_game->GetActors())
 		{
 			//名前が自身と同じもしくは一度調べたキャラならやり直す
-			if (GetName() == actor->GetName()|| actor->GetGroundChackflag()==true) {
+			if (GetName() == actor->GetName()|| m_game->IsActorGroundChack(actor)==false) {
 				continue;
 			}
-
-			if (actor->IsGroundIn()==true)
-			{
-				//地上にいるのでカウントを増やす
-				m_OnGroundCharCounter++;
-				//このキャラはグラウンドにいる
-				actor->ChangeGroundChackflag(true);
-				//雷を打たれるキャラの情報を入れる
-				DamegeUltActor.push_back(actor);
-			}
+			//地上にいるのでカウントを増やす
+			m_OnGroundCharCounter++;
+			//このキャラはグラウンドにいる
+			actor->ChangeGroundChackflag(true);
+			//雷を打たれるキャラの情報を入れる
+			DamegeUltActor.push_back(actor);
 		}
+		
+
+
+		//エネルギースラッシュ用
 		//必殺技の当たり判定のクラスを作成
 		//MakeUltSkill();
 		//レベルを下げる

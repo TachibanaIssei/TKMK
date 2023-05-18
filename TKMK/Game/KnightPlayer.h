@@ -44,6 +44,8 @@ private:
 	/// </summary>
 	void GrayScaleUI();
 
+
+
 private:
 	Game* m_game=nullptr;
 	//GameCamera* gameCamera = nullptr;

@@ -1021,7 +1021,7 @@ bool Game::IsActorGroundChack(Actor* actor)
 	//始点はエネミーの座標。
 	start.setOrigin(btVector3(actor->GetPosition().x, actor->GetPosition().y, actor->GetPosition().z));
 	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(actor->GetPosition().x, actor->GetPosition().y-5.0f, actor->GetPosition().z));
+	end.setOrigin(btVector3(actor->GetPosition().x, actor->GetPosition().y-2.0f, actor->GetPosition().z));
 
 	while (true)
 	{

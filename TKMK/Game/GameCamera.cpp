@@ -142,20 +142,24 @@ void GameCamera::StateControl()
 
 void GameCamera::NomarlCamera()
 {
-	for (auto actor : m_actors) {
-		//もしプレイヤーが必殺技を打ったら
-		if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag == false)
-		{
-			//溜めフラグをfalseにする
-			UltChargeFlag = false;
-			//必殺技フラグをたてる
-			KnightUltFlag = true;
-			//カメラステートを回転ステートに移る
-			m_enCameraState = m_enUltRotCameraState;
+		for (auto actor : m_actors) {
+			//AIが打った後に終わるまではこの処理をしないようにする
+			// 画面が切り替わりまくる
+			//もしプレイヤーが必殺技を打ったら
+			if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag == false)
+			{
+				//溜めフラグをfalseにする
+				UltChargeFlag = false;
+				//必殺技フラグをたてる
+				KnightUltFlag = true;
+				//カメラステートを回転ステートに移る
+				m_enCameraState = m_enUltRotCameraState;
 
-			ultactor = actor;
+				ultactor = actor;
+			}
 		}
-	}
+	
+	
 
 	//for (auto actor : m_actors) {
 	//	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
@@ -237,10 +241,14 @@ void GameCamera::UltRotCamera()
 	//プレイヤー以外ならこの先の処理はしない
 	if (ultactor->GetName() != player_actor->GetName())
 	{
+		//誰もいなかったら視点を戻す
+		if (ultactor->GetNoTargetActor() == true)
+			GameCameraUltEnd();
+		//
 		if (ultactor->GetChaseCameraFlag() == true) {
 			return;
 		}
-		else if (ultactor->GetChaseCameraFlag() == false) {
+		else if (ultactor->GetmUseUltimaitSkillFlag()==false/*ultactor->GetChaseCameraFlag() == false*/) {
 			//必殺技フラグをfalseにする
 			KnightUltFlag = false;
 			SetCameraCharFrontFlag = false;
@@ -250,7 +258,7 @@ void GameCamera::UltRotCamera()
 			return;
 		}
 		
-		
+		return;
 	}
 	
 	//誰かを見ている間は処理をしない

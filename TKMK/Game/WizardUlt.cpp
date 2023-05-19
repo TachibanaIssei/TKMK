@@ -16,11 +16,14 @@ WizardUlt::~WizardUlt()
 	DeleteGO(UltCollision);
 	// 全てを終わらせる！！！！！！！
 	//地上にいることを示すカウンターを減らす
-	m_CreatMeActor->SubOnGroundCharCounter();
+	//m_CreatMeActor->SubOnGroundCharCounter();
 	
 
 	//ターゲットの地上にいるフラグをfalseにする	
-	m_targetActor->ChangeGroundChackflag(false);
+	//m_targetActor->ChangeGroundChackflag(false);
+
+	//必殺技を食らったアクターをリストから削除する
+	m_CreatMeActor->EraseDamegeUltActor(m_targetActor);
 
 	//プレイヤーでないと実行しない
 	if (m_ThisCreatPlayerFlag == true)
@@ -29,6 +32,7 @@ WizardUlt::~WizardUlt()
 		//カメラがもう一度雷に打たれていないキャラを探すようにする
 		gameCamera->ChangeMoveCameraState(GameCamera::m_enUltRotCameraState);
 		gameCamera->ChangeTunderCameraFlag(false);
+
 
 	}
 	

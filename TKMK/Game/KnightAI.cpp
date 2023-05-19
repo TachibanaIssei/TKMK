@@ -1122,7 +1122,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		AtkCollistionFlag = true;
 		//剣１段目音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(13);
+		se->Init(enSound_ComboONE);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
@@ -1134,7 +1134,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		AtkCollistionFlag = true;
 		//剣２段目音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(14);
+		se->Init(enSound_ComboTwo);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
@@ -1146,7 +1146,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		AtkCollistionFlag = true;
 		//剣３段目音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(15);
+		se->Init(enSound_ComboThree);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
@@ -1166,7 +1166,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 
 		//スキル音を発生
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(11);
+		se->Init(enSound_Sword_Skill);
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}

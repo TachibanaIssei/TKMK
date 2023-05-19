@@ -383,7 +383,7 @@ void Game::BattleStart()
 		m_Map = NewGO<Map>(2, "map");
 		//BGMの再生
 		m_bgm = NewGO<SoundSource>(0);
-		m_bgm->Init(2);
+		m_bgm->Init(enSound_PlayBattle);
 		m_bgm->Play(true);
 		m_bgm->SetVolume(BGMVolume);
 		m_GameState = enGameState_Battle;
@@ -727,42 +727,47 @@ void Game::SetMusic()
 {
 	//バトル中のBGM
 	{
-		g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
+		//ゲームBGM
+		g_soundEngine->ResistWaveFileBank(enSound_PlayBattle, "Assets/sound/gameBGM/SentouBGM1.wav");
+		//ポーズ音
 	}
 	
 	//効果音
 	{
 	//剣士
 		{
-			//���X�L��
-			g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
+			//スキルの音
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill3.wav");
 			//�_���[�W�������Ƃ��̔ߖ�
 			g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
-			//���ʏ�U��
-			g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
-			g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
-			g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
+			//通常攻撃のコンボ音
+			g_soundEngine->ResistWaveFileBank(enSound_ComboONE, "Assets/sound/kenSE/ken1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_ComboTwo, "Assets/sound/kenSE/ken2.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_ComboThree, "Assets/sound/kenSE/ken3.wav");
 			//�A���e�B���b�g
 			g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
-			//���S�����Ƃ�
-			g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
-		}
-	//魔法使い
-		{
-
-		}
-	//ゾンビ
-		{
-
-		}
-	//魔物
-		{
+			//必殺技の音
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/playerScream3.wav");
+			//地面についたときの音
+			g_soundEngine->ResistWaveFileBank(enSound_Metal_Falling, "Assets/sound/playerSE/playerScream3.wav");
+			//レベルアップの音
+			g_soundEngine->ResistWaveFileBank(enSound_Level_UP, "Assets/sound/playerSE/playerScream3.wav");
+			//レベルダウンの音
+			g_soundEngine->ResistWaveFileBank(enSound_Level_Down, "Assets/sound/playerSE/playerScream3.wav");
+			//ヒール音
+			g_soundEngine->ResistWaveFileBank(enSound_Healing, "Assets/sound/playerSE/playerScream3.wav");
 
 		}
 
 	//中立の敵
 		{
-			g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
+			//鳴き声
+			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Voice, "Assets/sound/enemySE/enemyKoe.wav");
+			//ウサギが死んだときの音
+			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_Death, "Assets/sound/playerSE/playerScream3.wav");
+			//ウサギの足音
+			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_FootSteps, "Assets/sound/playerSE/playerScream3.wav");
+		
 		}
 		
 	}

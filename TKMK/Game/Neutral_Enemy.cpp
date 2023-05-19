@@ -1132,7 +1132,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		se->SetVolume(0.8f);*/
 		//攻撃の声
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(21);
+		se->Init(enSound_Enemy_Voice);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);

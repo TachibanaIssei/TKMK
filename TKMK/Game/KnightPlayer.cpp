@@ -435,16 +435,14 @@ bool KnightPlayer::UltimaitSkillTime()
 		}
 		
 		//全ての雷が落ちてから
-		
-		//地上にいるキャラに必殺技を打ち終わったら
-		//ベクタークラスで
-		if (m_OnGroundCharCounter<=0/*DamegeUltActor.empty()==true*/)
+		//雷を落とすアクターのリストの中身がなくなったら
+		if (DamegeUltActor.empty()==true)
 		{
-			for (auto actor : m_game->GetActors())
-			{
-				//必殺技打たれた状態を無くす
-				actor->ChangeDamegeUltFlag(false);
-			}
+			//for (auto actor : m_game->GetActors())
+			//{
+			//	//必殺技打たれた状態を無くす
+			//	actor->ChangeDamegeUltFlag(false);
+			//}
 
 			//レベルを下げる
 			UltimateSkill();
@@ -491,18 +489,10 @@ void KnightPlayer::Avoidance()
 /// </summary>
 void KnightPlayer::MakeUltSkill()
 {
-
+	//同じやつ二回当ててる
 	//必殺技の雷の生成
 	for (auto actor : DamegeUltActor)
 	{
-		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
-		/*if (GetName() == actor->GetName()||actor->GetDamegeUltFlag()==true)
-		{
-			continue;
-		}*/
-		//地上にいるAIにだけ雷を落とす
-		//if (actor->IsGroundIn() == true)
-		{
 			//必殺技の雷の生成
 			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
 			//生成したのがプレイヤーなのでtrue
@@ -520,10 +510,7 @@ void KnightPlayer::MakeUltSkill()
 			wizardUlt->SetGame(m_game);
 
 			//必殺技を打たれたのでフラグを立てる
-			actor->ChangeDamegeUltFlag(true);
-
-			//カウント減らす
-			//m_OnGroundCharCounter--;
+			//actor->ChangeDamegeUltFlag(true);
 
 			//雷を落とすキャラがリストの最後なら
 			if (actor == DamegeUltActor.back())
@@ -537,25 +524,10 @@ void KnightPlayer::MakeUltSkill()
 				//一人ずつ必殺技を打つのでぬける
 				return;
 			}
-			else
-			{
-				std::vector<Actor*>::iterator it = std::find(
-					DamegeUltActor.begin(), // アクターのリストの最初
-					DamegeUltActor.end(),   // アクターのリストの最後
-					actor                     // 消したいアクター
-				);
-				DamegeUltActor.erase(it);
-			}
-
-			
-
-		
-		//
 
 			m_UltshootTimer = 0.0f;
 			//一人ずつ必殺技を打つのでぬける
 			return;
-		}
 		
 	}
 	
@@ -709,14 +681,20 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 			if (GetName() == actor->GetName()|| m_game->IsActorGroundChack(actor)==false) {
 				continue;
 			}
-			//地上にいるのでカウントを増やす
-			m_OnGroundCharCounter++;
-			//このキャラはグラウンドにいる
-			actor->ChangeGroundChackflag(true);
+			////地上にいるのでカウントを増やす
+			//m_OnGroundCharCounter++;
+			////このキャラはグラウンドにいる
+			//actor->ChangeGroundChackflag(true);
 			//雷を打たれるキャラの情報を入れる
 			DamegeUltActor.push_back(actor);
 		}
-		
+
+		//プレイヤーのみの処理
+		//攻撃対象のアクターがいなかったら
+		if (DamegeUltActor.empty() == true) {
+
+			m_NoTargetActor = true;
+		}
 
 
 		//エネルギースラッシュ用

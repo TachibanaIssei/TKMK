@@ -557,33 +557,33 @@ public:
 	/// 地上にいるかのフラグを変える
 	/// </summary>
 	/// <param name="flag"></param>
-	void ChangeGroundChackflag(bool flag) {
-		m_GroundChackFlag = flag;
-	}
+	//void ChangeGroundChackflag(bool flag) {
+	//	m_GroundChackFlag = flag;
+	//}
 
 	/// <summary>
 	/// 地上にいるかのフラグを返す
 	/// </summary>
-	bool GetGroundChackflag()
+	/*bool GetGroundChackflag()
 	{
 		return m_GroundChackFlag;
-	}
+	}*/
 
 	/// <summary>
 	/// カメラで見たかのフラグを変える
 	/// </summary>
 	/// <param name="flag"></param>
-	void ChangeCameraSawCharFlag(bool flag)
+	/*void ChangeCameraSawCharFlag(bool flag)
 	{
 		m_CameraSawCharFlag = flag;
-	}
+	}*/
 
 	/// <summary>
-	/// カメラで見たかのフラグを返す
+	/// 必殺技の攻撃対象のアクターがいないかのフラグを返す
 	/// </summary>
-	bool GetCameraSawCharFlag()
+	bool GetNoTargetActor()
 	{
-		return m_CameraSawCharFlag;
+		return m_NoTargetActor;
 	}
 
 	int GetSaveEXP() const
@@ -616,6 +616,20 @@ public:
 	/// <returns></returns>
 	std::vector<Actor*>& GetDamegeUltActor() {
 		return DamegeUltActor;
+	}
+
+	/// <summary>
+	/// 必殺技を食らったアクターのデータをリストから削除する
+	/// </summary>
+	/// <param name="">必殺技を食らったアクター</param>
+	/// <returns></returns>
+	void EraseDamegeUltActor(Actor* targetActor) {
+		std::vector<Actor*>::iterator it = std::find(
+			DamegeUltActor.begin(), // アクターのリストの最初
+			DamegeUltActor.end(),   // アクターのリストの最後
+			targetActor                     // 消したいアクター
+		);
+		DamegeUltActor.erase(it);
 	}
 
 	void  DamegeUltActorClear() {
@@ -715,9 +729,9 @@ protected:
 	//必殺技を打たれたときに立てるフラグ(被害者のフラグ)
 	bool m_DamegeUltimaitSkillaFlag = false;
 	//グラウンドに降りているかチェックするフラグ
-	bool m_GroundChackFlag = false;
-	//プレイヤーが必殺技を打った時に雷を打たれたキャラをカメラで見たかのフラグ
-	bool m_CameraSawCharFlag = false;
+	//bool m_GroundChackFlag = false;
+
+	bool m_NoTargetActor = false;
 	//必殺技を打つ間隔を計るタイマー
 	float m_UltshootTimer = 0.9f;
 	//地上にいるキャラを数える

@@ -68,12 +68,12 @@ bool KnightPlayer::Start() {
 
 	m_modelRender.Update();
 
-	//スキルのクールタイムを表示するフォントの設定
-	Skillfont.SetPosition(485.0f, -243.0f, 0.0f);
-	Skillfont.SetScale(2.0f);
-	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	Skillfont.SetRotation(0.0f);
-	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
+	////スキルのクールタイムを表示するフォントの設定
+	//Skillfont.SetPosition(485.0f, -243.0f, 0.0f);
+	//Skillfont.SetScale(2.0f);
+	//Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//Skillfont.SetRotation(0.0f);
+	//Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 	//回避のフレームの設定
 	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
@@ -177,11 +177,6 @@ void KnightPlayer::Update()
 		oldLv = Lv;
 		//前フレームの座標を取得
 		OldPosition = m_position;
-
-		int SkillCoolTime = SkillTimer;
-		wchar_t Skill[255];
-		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
-		Skillfont.SetText(Skill);
 
 		//リスポーンしたときしか使えない
 		//飛び降りる処理
@@ -458,6 +453,8 @@ bool KnightPlayer::UltimaitSkillTime()
 			//	actor->ChangeDamegeUltFlag(false);
 			//}
 
+			//対象のアクターがいなかったフラグをfalseにする
+			m_NoTargetActor = false;
 			//レベルを下げる
 			UltimateSkill();
 			//時間を動かす

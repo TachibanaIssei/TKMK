@@ -987,7 +987,7 @@ void Game::UltTimeSky()
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = Vector3{ 0.4f, 0.4f, 0.4f };
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.65f,0.6f,0.7f });
+	g_renderingEngine->SetAmbient({ 0.55f,0.5f,0.6f });
 }
 
 void Game::LightReset()
@@ -1024,13 +1024,14 @@ struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
 //アクターが地面に接地しているか確かめる
 bool Game::IsActorGroundChack(Actor* actor)
 {
+	Vector3 actorpos = actor->GetPosition();
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();
 	//始点はエネミーの座標。
-	start.setOrigin(btVector3(actor->GetPosition().x, actor->GetPosition().y, actor->GetPosition().z));
+	start.setOrigin(btVector3(actorpos.x, actorpos.y+10.0f, actorpos.z));
 	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(actor->GetPosition().x, actor->GetPosition().y-2.0f, actor->GetPosition().z));
+	end.setOrigin(btVector3(actorpos.x, actorpos.y-2.0f, actorpos.z));
 
 	while (true)
 	{
@@ -1083,6 +1084,10 @@ void Game::Render(RenderContext& rc)
 		}
 	}
 	
+	if (UltStopFlag == true) {
+		return;
+	}
+
 	if (RabbitFlag == true && m_GameState == enGameState_Battle)
 	{
 		m_RabbitSprite.Draw(rc);

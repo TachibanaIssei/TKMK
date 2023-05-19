@@ -13,7 +13,7 @@ KnightBase::KnightBase()
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
-	Cooltime=5;            //スキルのクールタイム
+	Cooltime = 1.0f;            //スキルのクールタイム
 	SkillTimer = Cooltime;
 
 	AvoidanceCoolTime = 2;     ///回避のクールタイム
@@ -536,8 +536,6 @@ void KnightBase::AnimationMove(float Speed)
 	//移動速度を計算。
 	m_Skill_MoveSpeed = Vector3::AxisZ;
 	m_rot.Apply(m_Skill_MoveSpeed);
-	//動かずに2回目打つと反対方向に動く
-	m_rot.AddRotationDegY(360.0f);
 	//移動速度を決める
 	m_Skill_MoveSpeed *= Speed;
 }

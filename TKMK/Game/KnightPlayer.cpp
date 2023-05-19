@@ -7,6 +7,7 @@
 #include "Fade.h"
 #include "GameCamera.h"
 #include "WizardUlt.h"
+#include "ChaseEFK.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -354,45 +355,44 @@ void KnightPlayer::Attack()
 		{
 			//エフェクトの座標を更新させる
 			m_game->UnderSprite_Skill();
-			////剣にまとわせるエフェクト
-			//EffectKnightSkill = NewGO <EffectEmitter>(0);
-			//EffectKnightSkill->Init(EnEFK::enEffect_Knight_Skill);
-			//EffectKnightSkill->SetScale(Vector3::One * 30.0f);
-			//EffectKnightSkill->Play();
-			//Vector3 SwordeffectPosition = m_position;
-			//SwordeffectPosition.y += 50.0f;
-			//EffectKnightSkill->SetPosition(SwordeffectPosition);
-			//Quaternion SwordeffectRot = m_rot;
-			//EffectKnightSkill->SetRotation(SwordeffectRot);
-			//EffectKnightSkill->Update();
-
-			////床のエフェクト
-			//EffectEmitter* EffectKnightSkillGround;
-			//EffectKnightSkillGround = NewGO <EffectEmitter>(0);
-			//EffectKnightSkillGround->Init(EnEFK::enEffect_Knight_SkillGround);
-			//EffectKnightSkillGround->SetScale(Vector3::One * 40.0f);
-			//EffectKnightSkillGround->Play();
-			//Vector3 effectPosition = m_position;
-			//Quaternion EffRot = m_rot;
-			//EffectKnightSkillGround->SetPosition(effectPosition);
-			//EffectKnightSkillGround->SetRotation(m_rot);
-			//EffectKnightSkillGround->Update();
 
 			//剣にまとわせるエフェクト
+			if (EffectKnightSkill != nullptr) {
+				EffectKnightSkill->DeleteEffect();
+			}
 			EffectKnightSkill = NewGO <ChaseEFK>(4);
 			EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
+			EffectKnightSkill->AutoRot(true);
+			EffectKnightSkill->SetAutoRotAddY(360.0f);
+			// 座標の加算量を計算
+			Vector3 effectAddPos = Vector3::Zero;
+			effectAddPos.y = 50.0f;
+			EffectKnightSkill->SetAddPos(effectAddPos);
 
 			//床のエフェクト
-			EffectKnightSkillGround = NewGO <ChaseEFK>(4);
-			EffectKnightSkillGround->SetEffect(EnEFK::enEffect_Knight_SkillGround, this, Vector3::One * 40.0f);
+			EffectEmitter* EffectKnightSkillGround_;
+			EffectKnightSkillGround_ = NewGO <EffectEmitter>(0);
+			EffectKnightSkillGround_->Init(EnEFK::enEffect_Knight_SkillGround);
+			EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
+			EffectKnightSkillGround_->Play();
+			Vector3 effectPosition = m_position;
+			Quaternion EffRot = m_rot;
+			EffRot.AddRotationDegY(360.0f);
+			EffectKnightSkillGround_->SetPosition(effectPosition);
+			EffectKnightSkillGround_->SetRotation(EffRot);
+			EffectKnightSkillGround_->Update();
 
 			//土煙のエフェクト
+			if (FootSmoke != nullptr) {
+				FootSmoke->DeleteEffect();
+			}
 			FootSmoke = NewGO<ChaseEFK>(4);
 			FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
 			FootSmoke->AutoRot(true);
 
 		}
 		
+		SkillEndFlag = true;
 		
 		pushFlag = true;
 		SkillState = true;

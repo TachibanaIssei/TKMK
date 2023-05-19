@@ -163,16 +163,16 @@ void KnightPlayer::Update()
 			}
 			LevelUp_efk = NewGO<ChaseEFK>(4);
 			LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
-		}
-		else if (Lv < oldLv)
-		{
-			if (LevelDown_efk != nullptr) {
-				LevelDown_efk->DeleteEffect();
 			}
-			LevelDown_efk = NewGO<ChaseEFK>(4);
-			LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
-		}
-   }
+			else if (Lv < oldLv)
+			{
+				if (LevelDown_efk != nullptr) {
+					LevelDown_efk->DeleteEffect();
+				}
+				LevelDown_efk = NewGO<ChaseEFK>(4);
+				LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
+			}
+        }
 		//前フレームのレベルを取得
 		oldLv = Lv;
 		//前フレームの座標を取得

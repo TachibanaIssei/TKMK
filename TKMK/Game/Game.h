@@ -431,7 +431,7 @@ private:
 	//秒を計るタイマー
 	float SecondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 1.0f;
+	float MinutesTimer = 3.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;

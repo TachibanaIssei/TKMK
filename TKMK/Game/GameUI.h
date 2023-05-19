@@ -173,6 +173,8 @@ public:
 private:
 	FontRender m_ExpFont;
 
+	FontRender m_Skillfont;
+
 	FontRender m_HpFont;
 	FontRender m_HpNameFont;
 
@@ -236,41 +238,41 @@ private:
 	Vector3				m_finishCountScale = Vector3::One;
 
 	Vector3 PointPos[4] = {
-		Vector3(-850.0f, 150.0f, 0.0f),
-		Vector3(-850.0f, 50.0f, 0.0f), 
+		Vector3(-850.0f, 170.0f, 0.0f),
+		Vector3(-850.0f, 60.0f, 0.0f), 
 		Vector3(-850.0f, -50.0f, 0.0f), 
-		Vector3(-850.0f, -150.0f, 0.0f), 
+		Vector3(-850.0f, -160.0f, 0.0f), 
 	};															//ポイント
 
 	Vector3 LevelPos[3] = {
-		Vector3(-950.0f, 0.0f, 0.0f),
-		Vector3(-950.0f, -100.0f, 0.0f),
-		Vector3(-950.0f, -200.0f, 0.0f),
+		Vector3(-940.0f, 10.0f, 0.0f),
+		Vector3(-940.0f, -100.0f, 0.0f),
+		Vector3(-940.0f, -210.0f, 0.0f),
 	};															//レベル
 
 	Vector3 PointFlamePos[4] = {
 		Vector3(-850.0f, 120.0f, 0.0f),
-		Vector3(-850.0f, 20.0f, 0.0f),
-		Vector3(-850.0f, -80.0f, 0.0f),
-		Vector3(-850.0f, -180.0f, 0.0f),
+		Vector3(-850.0f, 10.0f, 0.0f),
+		Vector3(-850.0f, -100.0f, 0.0f),
+		Vector3(-850.0f, -210.0f, 0.0f),
 	};															//ポイントのフレーム
 
 	Vector3 CharIconPos[4] = {
-		Vector3(-920.0f, 120.0f, 0.0f),
-		Vector3(-920.0f, 20.0f, 0.0f),
-		Vector3(-920.0f, -80.0f, 0.0f),
-		Vector3(-920.0f, -180.0f, 0.0f),
+		Vector3(-905.0f, 145.0f, 0.0f),
+		Vector3(-905.0f, 35.0f, 0.0f),
+		Vector3(-905.0f, -75.0f, 0.0f),
+		Vector3(-905.0f, -185.0f, 0.0f),
 	};															//アイコン
 	
 	Vector3 CrownPos[4] = {
 		Vector3(-920.0f, 120.0f, 0.0f),
-		Vector3(-920.0f, 20.0f, 0.0f),
-		Vector3(-920.0f, -80.0f, 0.0f),
-		Vector3(-920.0f, -180.0f, 0.0f),
+		Vector3(-920.0f, 10.0f, 0.0f),
+		Vector3(-920.0f, -100.0f, 0.0f),
+		Vector3(-920.0f, -210.0f, 0.0f),
 	};															//王冠マーク
 
 	FontRender m_time_left;
-	float timerScale = 2.0f;
+	float timerScale = 1.65f;
 	bool timerScaleFlag = false;
 
 	const char* knightname = "knightplayer";
@@ -284,6 +286,9 @@ private:
 	int oldRespawnCount = 0;
 
 	int oldFinishCount = 0;
+
+	//
+	float PlayerCoolTime = 0;
 
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;

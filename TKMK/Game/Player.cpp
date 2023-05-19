@@ -300,6 +300,11 @@ void Player::CharResatSaveEXP() const
 	playerActor->ResatSaveEXP();
 }
 
+float Player::CharGetSkillCoolTimer() const
+{
+	return playerActor->GetSkillTimer();
+}
+
 float Player::CharGetRespawnTime() const
 {
 	return playerActor->GetRespawnTimer();

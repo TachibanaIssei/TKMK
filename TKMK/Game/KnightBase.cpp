@@ -846,11 +846,12 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 /// </summary>
 void KnightBase::OnProcessUlt_liberationStateTransition()
 {
-	//必殺技アニメーション再生が終わったら。
+	//必殺技の溜めのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//フラグをfalseにする
 		
+		//AIがカメラで見られるようにする
+		ChangeChaseCamera(true);
 		//必殺技ステート
 		m_charState = enCharState_UltimateSkill;
 		//アルティメットSE

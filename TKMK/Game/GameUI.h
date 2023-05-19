@@ -6,6 +6,7 @@ class Player;
 class Game;
 class Actor;
 class Fade;
+class ExpforKnight;
 
 class GameUI:public IGameObject
 {
@@ -27,6 +28,18 @@ public:
 	void SetSGame(Game* Cgame)
 	{
 		m_game = Cgame;
+	}
+
+	void ChangePlayerLevel(int lv)
+	{
+		m_NowPlayerLevel = lv;
+	}
+
+	void ChangeLevel();
+
+	void ChangeEXPUpFlag(bool flag)
+	{
+		m_EXPupFlag = flag;
 	}
 
 	/// <summary>
@@ -120,6 +133,13 @@ public:
 	void EXPBar();
 
 	/// <summary>
+	/// 経験値バーを徐々に上げる処理
+	/// </summary>
+	bool GrowEXP();
+
+	bool DownEXP(int NowPlayerLv);
+
+	/// <summary>
 	/// 
 	/// </summary>
 	void CharPoint();
@@ -163,6 +183,7 @@ private:
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
 	Fade* fade = nullptr;
+	ExpforKnight* expforKnight = nullptr;
 
 	std::vector<Actor*> m_Actors;
 
@@ -272,9 +293,21 @@ private:
 
 	bool GameEndFlag=false;
 
-	//前フレームの経験値
-	int oldEXP=0;
-	int oldEXPTable = 0;
+	
+	int							m_NowPlayerLevel = 1;							//現在のプレイヤーのレベルを格納
+	int							m_ChangePlayerLevel = 0;						//画像表示のための徐々にレベルを下げる
+	int 						m_oldPlayerLevel = 1;							//レベルが上がった時にtrueにする
+	int							final_exp = 0;									//最終的な経験値バーの増量
+	int							m_nowEXP = 0;									//現在のプレイヤーの経験値
+	float						nowEXPTable = 0;								//現在のプレイヤーの経験値テーブル
+	bool						m_DownFlag = false;
+	int 						m_MathExp = 0;									//経験値を増やしたり減らしたりする時はこれ
+	int							m_SaveExp = 0;
+	int							m_ExpTable = 0;
+	bool                        m_EXPupFlag = false;
+	
+
+
 
 	//キャラのポイント
 	int charPoint[4];

@@ -1,5 +1,6 @@
 #pragma once
 class Neutral_Enemy;
+class GameUI;
 
 class ExpforKnight : public IGameObject
 {
@@ -22,6 +23,8 @@ public:
 	}
 
 private:
+	GameUI* gameUI = nullptr;
+
 	SpriteRender m_NormalExp;
 	Vector3 m_EnemyPos = Vector3::Zero;
 	//ベジェ曲線専用

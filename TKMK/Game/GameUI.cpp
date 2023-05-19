@@ -6,7 +6,9 @@
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "Fade.h"
-
+#include "ExpforKnight.h"
+//todo２かいレベルが下がることがある
+//に回レベルダウンしている可能性
 namespace
 {
 	const int Characters = 4;
@@ -207,7 +209,13 @@ bool GameUI::Start()
 		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
 		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
 		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
-		m_ExperienceBar_flont.SetScale(0.5, 50.0, 1.0);
+		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
+		/// <summary>
+		/// /////////////////////////
+		/// </summary>
+		/// <returns></returns>
+		m_ExpTable = player->CharSetEXPTable();
+		m_MathExp = player->CharSetEXP();
 
 		//経験値バーの裏
 		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
@@ -230,6 +238,7 @@ bool GameUI::Start()
 		m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
 		m_LvNumber.SetPosition(LV_NUBER_POS);
 		m_LvNumber.SetScale(1.4, 1.4, 1.0);
+		m_ChangePlayerLevel = player->CharSetLevel();
 
 		//Lv1の裏の画像の読み込み
 		m_LvNumber_back.Init("Assets/sprite/gameUI/Lv1_back.DDS", 150.0f, 150.0f);
@@ -250,7 +259,7 @@ bool GameUI::Start()
 		m_SkillRenderOUT.SetPosition(Skill_Pos);
 		m_SkillRenderOUT.SetScale(1.1, 1.1);
 		//必殺技のアイコン
-		m_UltRenderIN.Init("Assets/sprite/gameUI/ULT_Icon_IN.DDS", 162, 162);
+		m_UltRenderIN.Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", 162, 162);
 		m_UltRenderIN.SetPosition(Ult_Pos);
 		m_UltRenderIN.SetScale(1.2, 1.2);
 		//必殺のアイコンフレーム
@@ -394,6 +403,7 @@ void GameUI::Update()
 		m_LvNumber_back.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
 	m_LvNumber_back.Update();
+
 
 	EXPBar();
 
@@ -623,6 +633,8 @@ void GameUI::Timer()
 			if (timerScale < 4.0f)
 			{
 				timerScale += 2.0f*g_gameTime->GetFrameDeltaTime();
+				//
+
 			}
 			else
 			{
@@ -716,50 +728,120 @@ void GameUI::EXPBar()
 {
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
-	//プレイヤーの経験値を取得
-	float nowEXP = player->CharSetEXP();
-	//今の経験値テーブルを取得
-	float nowEXPTable = player->CharSetEXPTable();
-	//前のレベルの経験値テーブルを取得
-	float oldEXPTable = player->CharSetOldEXPTable();
 
-	//最終的な経験値テーブル
-	float finalEXPTable = nowEXPTable - oldEXPTable;
-	//最終的な経験値
-	float finalEXP = nowEXP - oldEXPTable;
+	
+	if (m_MathExp != m_SaveExp) {
+		//EXPオーブが飛んできた後に増やす
+		//if (m_EXPupFlag == true) {
+			//増やすか減らす
+			if (m_MathExp < m_SaveExp)
+				m_MathExp++;
+		//}
+		else if (m_MathExp >= m_nowEXP)
+		{
+			m_MathExp--;
+			m_DownFlag = true;
+		}
+	}
+	else
+	{
+		//プレイヤーの経験値を取得
+		m_nowEXP = player->CharSetEXP();
+		//今の経験値テーブルを取得
+		nowEXPTable = player->CharSetEXPTable();
+		//経験値テーブルを
+		m_SaveExp = player->CharGetSaveEXP();
 
+		m_EXPupFlag = false;
+	}
+
+	if (m_oldPlayerLevel == 10)
+	{
+		EXPScale.x = 1.0f;
+	}
+	else
 	//HPバーの増えていく割合。
-	EXPScale.x = (float)finalEXP / (float)finalEXPTable;
-	m_ExperienceBar_flont.SetScale(EXPScale);
+	EXPScale.x = (float)m_MathExp / (float)m_ExpTable;
 
-	////EXPバー画像を左寄せに表示する
-	//Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
+	//経験値テーブルより獲得した経験値が多くなったら
+	//たまに二回ゲージが伸びる
+	if (m_MathExp >= m_ExpTable/*EXPScale.x >= 1.0f*/) {
+		//レベルが上がるか下がるかテーブルが変わる
+		//動く値
+		m_SaveExp -= m_ExpTable;
 
-	///*if (finalEXPTable != oldEXPTable)
+		if (m_SaveExp <= 0) {
+			//セーブした経験値をリセット
+			player->CharResatSaveEXP();
+			m_SaveExp= player->CharGetSaveEXP();
+		}
+
+		m_MathExp = 0;
+		//現在のプレイヤーの経験値テーブルを代入
+		m_ExpTable = player->CharSetEXPTable();
+		
+		//レベルアップの処理
+		if (m_oldPlayerLevel < m_NowPlayerLevel) {
+			m_oldPlayerLevel++;
+		}
+
+		LevelFontChange(m_oldPlayerLevel);
+	}
+
+	//レベルが下がったとき
+	if (m_oldPlayerLevel> m_NowPlayerLevel/*EXPScale.x <= 0.0f && m_DownFlag == true*/)
+	{
+		//現在のプレイヤーの経験値テーブルを代入
+		m_ExpTable = player->CharSetEXPTable();
+		//セーブした経験値をリセット
+		player->CharResatSaveEXP();
+		//動く値調
+		m_SaveExp = 0;
+		//m_MathExp = 0;
+		m_oldPlayerLevel--;
+		LevelFontChange(m_oldPlayerLevel);
+		m_DownFlag = false;
+	}
+	
+	//if (m_oldPlayerLevel != m_NowPlayerLevel)
 	//{
-	//	m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
-	//}*/
-
-	////経験値の量が変わったときだけ
-	//if (finalEXP != oldEXP)
-	//{
-	//	m_EXPBerPos.x -= BerSizeSubtraction.x;
+	//	LevelFontChange(m_NowPlayerLevel);
+	//	//セーブした経験値をリセット
+	//	//player->CharResatSaveEXP();
 	//}
-	//
-	//
-	//m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
-	//m_ExperienceBar_flont.SetScale(EXPScale);
+
+	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
+	
+	//m_oldPlayerLevel = m_NowPlayerLevel;
 
+	//デバッグ用
 	//レベルアップまでに必要な経験値の量
-	int UpToLevel = nowEXPTable - nowEXP;
+	int UpToLevel = m_MathExp/* - m_nowEXP*/;
 	wchar_t UTL[255];
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
 
-	oldEXP = finalEXP;
-	oldEXPTable = finalEXPTable;
+	//前フレームのレベル
+	//oldLevel = m_ChangePlayerLevel;
+	//前フレームの経験値テーブル
+	//oldEXPTable = nowEXPTable;
+}
+
+bool  GameUI::GrowEXP()
+{
+	return false;
+}
+
+bool GameUI::DownEXP(int NowPlayerLv)
+{
+	return false;
+}
+
+void GameUI::ChangeLevel()
+{
+	
 }
 
 //
@@ -840,7 +922,10 @@ void GameUI::Render(RenderContext& rc)
 		//経験値の裏
 		m_ExperienceBar_back.Draw(rc);
 		//経験値の表 変動する
-		m_ExperienceBar_flont.Draw(rc);
+		if (m_MathExp != 0) {
+			m_ExperienceBar_flont.Draw(rc);
+		}
+	
 		//経験値フレーム
 		m_ExperienceFlame.Draw(rc);
 		//

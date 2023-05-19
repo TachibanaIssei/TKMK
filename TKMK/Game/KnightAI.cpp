@@ -79,6 +79,8 @@ void KnightAI::Update()
 	Collition();
 	//アニメーションの再生
 	PlayAnimation();
+	// 追尾エフェクトのリセット
+	EffectNullptr();
 
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {
@@ -97,7 +99,7 @@ void KnightAI::Update()
 	}
 	HPBar();
 
-
+	
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer_AI(m_DeathToRespwanFlag) == true)
 	{
@@ -110,7 +112,7 @@ void KnightAI::Update()
 		return;
 	}
 	//攻撃アップ中の処理
-	AttackUP();
+	//AttackUP();
 
 	//重力
 	Move();
@@ -122,7 +124,10 @@ void KnightAI::Update()
 		//ステート
 		ManageState();
 	}
-
+	if (m_Status.Hp <= 0)
+	{
+		m_charState = enCharState_Death;
+	}
 	//必殺技の溜めのときに動かないようにする
 	//if (m_charState == enCharState_Ult_liberation)
 	//{
@@ -172,7 +177,6 @@ void KnightAI::Update()
 			ChaseAndEscape();
 		}
 		
-		
 		//攻撃
 		Attack();
 		
@@ -180,7 +184,8 @@ void KnightAI::Update()
 		Rotation();
 		//無敵時間
 		Invincible();
-		if (SkillState == true)
+
+		if (SkillState == true && CantMove == false)
 		{
 			m_charState = enCharState_Skill;
 			//スキルを使うときのスピードを使う
@@ -189,7 +194,7 @@ void KnightAI::Update()
 			////スキルを使うときのスピードを使う
 			////AnimationMove(SkillSpeed, m_forward);
 			move.y = 0.0f;
-			move *= 300.0f;
+			move *= 200.0f;
 
 			m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
 
@@ -272,6 +277,18 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 
 	//対象が自分だったら評価値を無限小にする
 	if (actor == this)
+	{
+		eval = -9999999;
+		chaseOrEscape = false;
+
+		returnData.eval = eval;
+		returnData.chaseOrEscape = chaseOrEscape;
+
+		return returnData;
+	}
+
+	// 対象が死亡ステートなら評価値を無限小にする
+	if (actor->GetCharState()== enCharState_Death)
 	{
 		eval = -9999999;
 		chaseOrEscape = false;
@@ -615,6 +632,9 @@ void KnightAI::ChaseAndEscape()
 	{
 		return;
 	}
+	if (CantMove) {
+		return;
+	}
 
 	// タイマーを減らす
 	if (m_EscapeTimer > 0.0f) {
@@ -660,6 +680,7 @@ void KnightAI::ChaseAndEscape()
 			m_EscapeTimer = 5.0f;
 			m_escapeActorBackup = m_escapeActor;
 		}
+
 		else {
 			// [Target] [自分] [Escape] みたいな配置
 			// 普通にターゲットを狙う
@@ -680,8 +701,8 @@ void KnightAI::ChaseAndEscape()
 	if (m_position.y >= 0.0f)
 	{
 		diffTarget.Normalize();
-		m_moveSpeed.x = diffTarget.x * (m_Status.Speed * 1.5);
-		m_moveSpeed.z = diffTarget.z * (m_Status.Speed * 1.5);
+		m_moveSpeed.x = diffTarget.x * (m_Status.Speed * 1.5f);
+		m_moveSpeed.z = diffTarget.z * (m_Status.Speed * 1.5f);
 	}
 
 	// 移動する（衝突解決）
@@ -766,42 +787,60 @@ void KnightAI::Attack()
 	{	
 		//連打で攻撃できなくなる
 		//スキルを発動する処理
-		if (m_targetActor != nullptr && SkillEndFlag==false && pushFlag == false)
+		if (m_targetActor != nullptr && SkillEndFlag==false)
 		{
 			//スキルを打つ
 			SkillState = true;
-			pushFlag = true;
 			m_skillMove = TargePos - m_position;
 			m_skillMove.Normalize();
+			//剣にまとわせるエフェクト
+			if (EffectKnightSkill != nullptr) {
+				EffectKnightSkill->DeleteEffect();
+			}
+			EffectKnightSkill = NewGO <ChaseEFK>(0);
+			EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
+			
+			//床のエフェクト
+			if (EffectKnightSkillGround != nullptr) {
+				EffectKnightSkillGround->DeleteEffect();
+			}
+			EffectKnightSkillGround = NewGO <ChaseEFK>(0);
+			EffectKnightSkillGround->SetEffect(EnEFK::enEffect_Knight_SkillGround, this, Vector3::One * 40.0f);
+
+			//土煙のエフェクト
+			if (FootSmoke != nullptr) {
+				FootSmoke->DeleteEffect();
+			}
+			FootSmoke = NewGO<ChaseEFK>(3);
+			FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
+			FootSmoke->AutoRot(true);
+			
 		}
 	}
 
 	if (CanAttack()) {
 
 		//一段目のアタックをしていないなら
-		if (AtkState == false&&pushFlag == false)
+		if (AtkState == false)
 		{
 			Vector3 diff = TargePos - m_position;
 			m_rot.SetRotationYFromDirectionXZ(diff);
 			m_charState = enCharState_Attack;
-
-			//FirstAtkFlag = true;
-			//コンボを1増やす
-			//ComboState++;
+			m_AtkTmingState = SecondAtk_State;
 
 			AtkState = true;
 		}
+
 		//一段目のアタックのアニメーションがスタートしたなら
-		if (m_AtkTmingState == FirstAtk_State)
+		if (m_AtkTmingState == FirstAtk_State && m_AtkTmingState != SecondAtk_State)
 		{
 			Vector3 diff = TargePos - m_position;
 			m_rot.SetRotationYFromDirectionXZ(diff);
 			//ステートを二段目のアタックのアニメーションスタートステートにする
-			m_AtkTmingState = SecondAtk_State;
-
+			m_AtkTmingState = SecondAtk_State;			
 		}
 
-		if (m_AtkTmingState == SecondAtkStart_State)
+		if (m_AtkTmingState == SecondAtkStart_State && m_AtkTmingState != LastAtk_State)
 		{
 			Vector3 diff = TargePos - m_position;
 			m_rot.SetRotationYFromDirectionXZ(diff);
@@ -814,7 +853,7 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を打たない
-		//return;
+		return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
@@ -1110,6 +1149,12 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
+	//三段目のアタックのアニメーションが始まったら
+	if (wcscmp(eventName, L"Move_True") == 0)
+	{
+		CantMove = true;
+
+	}
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
@@ -1179,11 +1224,11 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	///一段目のアタックのアニメーションが終わったら
 	if (wcscmp(eventName, L"FirstToIdle") == 0)
 	{
-		//ボタンが押されていなかったら
-		if (m_AtkTmingState != SecondAtk_State)
+		if (CanAttack()) {
+			m_AtkTmingState = SecondAtk_State;
+		}
+		else
 		{
-			//ボタンプッシュフラグをfalseにする
-			pushFlag = false;
 			AtkState = false;
 			m_charState = enCharState_Idle;
 			m_AtkTmingState = Num_State;
@@ -1193,22 +1238,24 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//二段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SecondAttack_End") == 0)
 	{
-
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
-		//ボタンが押されていなかったら
-		if (m_AtkTmingState != LastAtk_State)
+
+		if (CanAttack()) {
+			m_AtkTmingState = LastAtk_State;
+		}
+		else
 		{
-			//ボタンプッシュフラグをfalseにする
-			pushFlag = false;
 			AtkState = false;
 			m_charState = enCharState_Idle;
 			m_AtkTmingState = Num_State;
 		}
 	}
+	
 	//三段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"LastAttack_End") == 0)
 	{
+		CantMove = false;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//剣のコリジョンを生成しない
@@ -1218,8 +1265,11 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	if (m_modelRender.IsPlayingAnimation() == false) {
 		m_charState = enCharState_Idle;
 		AtkState = false;
-		//ボタンプッシュフラグをfalseにする
-		pushFlag = false;
+	}
+	//三段目のアタックのアニメーションで剣を振り終わったら移動できないように
+	if (wcscmp(eventName, L"Move_False") == 0)
+	{
+		CantMove = false;
 	}
 
 	//スキルのアニメーションで剣を振り終わったら
@@ -1282,8 +1332,6 @@ void KnightAI::AvoidanceSprite()
 		if (Math::PI * 0.5f >= fabsf(angle) && kyori.Length()<=100)
 		{
 			AvoidanceFlag = true;
-			//ボタンプッシュフラグをfalseにする
-			pushFlag = false;
 			//回避ステート
 			m_charState = enCharState_Avoidance;
 			return;
@@ -1294,6 +1342,10 @@ void KnightAI::AvoidanceSprite()
 
 void KnightAI::Rotation()
 {
+	if (CantMove) {
+		return;
+	}
+
 	if (fabsf(m_moveSpeed.x) < 0.001f
 		&& fabsf(m_moveSpeed.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは

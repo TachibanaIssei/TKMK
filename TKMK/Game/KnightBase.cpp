@@ -348,7 +348,7 @@ void KnightBase::Collition()
 void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
-	invincibleTimer = 2.0f;
+	invincibleTimer = 1.0f;
 
 	//自身のHPが0以下なら
 	if (m_Status.Hp <= 0) {
@@ -368,19 +368,19 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		EffectKnightDeath->SetPosition(effectPosition);
 		EffectKnightDeath->Play();
 
-		//攻撃UPおわり
-		if (PowerUpTimer > 0.0f)
-		{
-			PowerUpTimer = 0.0f;
-			AttackUPEnd();
-		}
-		// 念のためここでも消す
-		if (PowerUpEfk != nullptr)
-		{
-			PowerUpEfk->DeleteEffect();
-			DeleteGO(PowerUpEfk);
-			PowerUpEfk = nullptr;
-		}
+		////攻撃UPおわり
+		//if (PowerUpTimer > 0.0f)
+		//{
+		//	PowerUpTimer = 0.0f;
+		//	AttackUPEnd();
+		//}
+		//// 念のためここでも消す
+		//if (PowerUpEfk != nullptr)
+		//{
+		//	PowerUpEfk->DeleteEffect();
+		//	DeleteGO(PowerUpEfk);
+		//	PowerUpEfk = nullptr;
+		//}
 
 		//地上にいない
 		IsGroundFlag = false;
@@ -410,6 +410,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		AtkCollistionFlag = false;
 		m_AtkTmingState = Num_State;
 		pushFlag = false;
+		CantMove = false;
 
 		SoundSource * se = NewGO<SoundSource>(0);
 		se->Init(12);
@@ -765,7 +766,7 @@ void KnightBase::OnProcessChainAtkStateTransition()
 		else
 		{
 			//待機ステート
-		//攻撃を始めたかの判定をfalseにする
+			//攻撃を始めたかの判定をfalseにする
 			AtkState = false;
 			//ボタンプッシュフラグをfalseにする
 			pushFlag = false;

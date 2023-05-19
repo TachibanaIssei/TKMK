@@ -5,6 +5,8 @@
 #include "Fade.h"
 
 namespace SelectConst{
+	const float		MOVE_SPEED = 30.0f;
+
 	const Vector3	STATUS_POS = Vector3(400.0f, 250.0f, 0.0f);				//ステータスの座標
 
 	const Vector3	NORMAL_ATTACK_ICON_POS = Vector3(115.0f, -140.0f, 0.0f);//通常攻撃アイコンの座標
@@ -147,6 +149,18 @@ void CharacterSelect::Update()
 
 void CharacterSelect::PointerMove()
 {
+	m_moveSpeed = Vector3::Zero;
+
+	Vector3 stickL = Vector3::Zero;
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
+	stickL.z = 0.0f;
+
+	m_moveSpeed.x += stickL.x * SelectConst::MOVE_SPEED;
+	m_moveSpeed.y += stickL.y * SelectConst::MOVE_SPEED;
+
+	m_pointerPosition += m_moveSpeed;
+
 	PointerMoveX();
 	PointerMoveY();
 
@@ -159,53 +173,29 @@ void CharacterSelect::PointerMove()
 
 void CharacterSelect::PointerMoveX()
 {
-	//左に動く
-	if (g_pad[0]->GetLStickXF() <= -0.001f)
+	//画面の左端の場合はそれ以上外にいかないようにする
+	if (m_pointerPosition.x <= SelectConst::MIN_SCREEN_WIDTH)
 	{
-		m_pointerPosition.x -= SelectConst::POINTER_SPEED;
-
-		//画面の左端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.x <= SelectConst::MIN_SCREEN_WIDTH)
-		{
-			m_pointerPosition.x = SelectConst::MIN_SCREEN_WIDTH;
-		}
+		m_pointerPosition.x = SelectConst::MIN_SCREEN_WIDTH;
 	}
-	//右に動く
-	else if (g_pad[0]->GetLStickXF() >= 0.001f)
+	//画面の右端の場合はそれ以上外にいかないようにする
+	else if (m_pointerPosition.x >= SelectConst::MAX_SCREEN_WIDTH)
 	{
-		m_pointerPosition.x += SelectConst::POINTER_SPEED;
-
-		//画面の右端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.x >= SelectConst::MAX_SCREEN_WIDTH)
-		{
-			m_pointerPosition.x = SelectConst::MAX_SCREEN_WIDTH;
-		}
+		m_pointerPosition.x = SelectConst::MAX_SCREEN_WIDTH;
 	}
 }
 
 void CharacterSelect::PointerMoveY()
 {
-	//下に動く
-	if (g_pad[0]->GetLStickYF() <= -0.001f)
+	//画面の左端の場合はそれ以上外にいかないようにする
+	if (m_pointerPosition.y <= SelectConst::MIN_SCREEN_HEIGHT)
 	{
-		m_pointerPosition.y -= SelectConst::POINTER_SPEED;
-
-		//画面の左端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.y <= SelectConst::MIN_SCREEN_HEIGHT)
-		{
-			m_pointerPosition.y = SelectConst::MIN_SCREEN_HEIGHT;
-		}
+		m_pointerPosition.y = SelectConst::MIN_SCREEN_HEIGHT;
 	}
-	//上に動く
-	else if (g_pad[0]->GetLStickYF() >= 0.001f)
+	//画面の右端の場合はそれ以上外にいかないようにする
+	else if (m_pointerPosition.y >= SelectConst::MAX_SCREEN_HEIGHT)
 	{
-		m_pointerPosition.y += SelectConst::POINTER_SPEED;
-
-		//画面の右端の場合はそれ以上外にいかないようにする
-		if (m_pointerPosition.y >= SelectConst::MAX_SCREEN_HEIGHT)
-		{
-			m_pointerPosition.y = SelectConst::MAX_SCREEN_HEIGHT;
-		}
+		m_pointerPosition.y = SelectConst::MAX_SCREEN_HEIGHT;
 	}
 }
 
@@ -527,9 +517,9 @@ void CharacterSelect::Render(RenderContext& rc)
 	m_stage.Draw(rc);
 
 	m_status.Draw(rc);
-	m_hpBerLvmax.Draw(rc);
+	//m_hpBerLvmax.Draw(rc);
 	m_hpBerLv1.Draw(rc);
-	m_atkBerLvmax.Draw(rc);
+	//m_atkBerLvmax.Draw(rc);
 	m_atkBerLv1.Draw(rc);
 
 	m_hpBerFrame.Draw(rc);

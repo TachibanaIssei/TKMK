@@ -152,6 +152,8 @@ private:
 	Vector2	   	  m_HPWindow_Pos = Vector2::Zero;			   //HP枠のポジション
 	Vector2		  m_HPBack_Pos = Vector2::Zero;			       //HP背景のポジション
 	Actor* m_player = nullptr;
+	
 
+	int ATKtiming = 0;
 };
 

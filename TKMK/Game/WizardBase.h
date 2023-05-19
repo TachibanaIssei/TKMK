@@ -216,6 +216,13 @@ public:
 		respawnNumber = number;
 	}
 
+	// 追尾エフェクトの削除
+	void ChaseEffectDelete() {
+		if (GetHoimi != nullptr) {
+			GetHoimi->ResetTarget();
+		}
+	}
+
 protected:
 	void PlayAnimation();
 	//共通のステートの遷移処理

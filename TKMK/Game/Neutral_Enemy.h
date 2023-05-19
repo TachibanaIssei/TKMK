@@ -17,6 +17,7 @@ class MagicBall;
 class Actor;
 class Map;
 class ExpforKnight;
+class ChaseEFK;
 
 /// <summary>
 /// 中立の敵
@@ -58,6 +59,13 @@ public:
 		enAnimationClip_Damage,					//被ダメージアニメーション。
 		enAnimationClip_Death,					//ダウンアニメーション。
 		enAnimationClip_Num,					//アニメーションの数。
+	};
+
+	enum EnJumpFlag {
+		enJumpStart,
+		enJumpEnd,
+		enJumpnull,
+		enJumpNum
 	};
 	void SetNeutral_EnemyGame(Game* NEgame)
 	{
@@ -110,7 +118,7 @@ public:
 		return m_position;
 	}
 
-	
+
 	void Move();
 	/// <summary>
 	/// 追跡
@@ -277,7 +285,7 @@ public:
 	//自分を狙っている敵を返す
 	int GetBetargetCount()
 	{
-		return be_target.size();
+		return (int)be_target.size();
 	}
 	void modelUpdate();
 
@@ -307,10 +315,11 @@ public:
 		}
 	}
 
+
 private:
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
-	Vector3       m_position;                                  //座標
+	Vector3       m_position = Vector3::Zero;;                                 //座標
 	Vector3       m_moveSpeed;                                 //移動速度
 	Vector3       m_forward = Vector3::AxisZ;                  //正面のベクトル
 	Quaternion    m_rot;                                       //クォータニオン
@@ -390,5 +399,8 @@ private:
 	float isPatrolTimer = 0.0f;
 	float HPreductionbyTimer = 0.0f;
 	bool rabbitLife = false;
+	EffectEmitter* Rabbit_kirakira = nullptr;
+	Vector3 m_Rabbit_Pos = Vector3::Zero;
+	EnJumpFlag enJump = enJumpNum;
 };
 

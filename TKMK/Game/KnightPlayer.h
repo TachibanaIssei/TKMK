@@ -59,13 +59,9 @@ private:
 	Vector2 Avoidance_FlamePos = Vector2::Zero;
 	Vector2 Avoidance_BarPos = Vector2::Zero;
 
-	EffectEmitter* EffectKnightSkill;
-	bool m_swordEffectFlag = false;
-
 	float UltimateSkillTimer = 0;
   
 	//bool AtkCollistionFlag = false;
-	ChaseEFK* m_FootSmoke = nullptr;
 
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
@@ -74,7 +70,7 @@ private:
 	SpriteRender m_AtkUpIcon_Render;
 
 	//スキルを使った時の移動速度
-	float SkillSpeed = 270.0f;
+	float SkillSpeed = 200.0f;
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
@@ -89,6 +85,5 @@ private:
 	//攻撃の画像を出すかどうか
 	bool AttackSpriteFlag = false;
 
-	ChaseEFK* LevelUp = nullptr;
 };
 

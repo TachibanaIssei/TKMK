@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #define PLAYER 4
 #define MOVE 4
 
@@ -51,74 +53,104 @@ private:
 
 
 private:
-	int charPoints[PLAYER];		//プレイヤーのポイント
+	std::array<int, PLAYER> charPoints = {0,0,0,0};		//プレイヤーのポイント
 	int titleScene = 1;			//タイトルのシーン番号
 	int m_nowMoveRank = 0;
 	int m_nowMoveCharacter = 0;
 	int m_timer = 0;			//タイマー
-	int select = 0;				//セレクトポジ
-	float m_complement = 0.0f;	//線形補間の補完率
-	float WordScale = 3.0f;
-	float BGMVolume = 0.4f;
-	float SEVolume = 0.6f;
 
-	Score Player[PLAYER];
+	float m_complement = 0.0f;	//線形補間の補完率
+	float m_bgmVolume = 0.4f;
+	float m_seVolume = 0.6f;
+
+	bool m_selectFlag			= false;	//選択項目の切り替えフラグ
+	bool m_drawSelectSpriteFlag = false;	//選択項目の表示のフラグ
+
+	std::array<Score, PLAYER> m_playerScore;
 
 	ModelRender m_No1Charctar;		//一位のキャラのモデル
 
-	FontRender m_PlayerRank1;
-	FontRender m_PlayerRank2;
-	FontRender m_PlayerRank3;
-	FontRender m_PlayerRank4;
-	EnChange m_change = enChange_first;
+	FontRender	m_playerRank1;
+	FontRender	m_playerRank2;
+	FontRender	m_playerRank3;
+	FontRender	m_playerRank4;
+	EnChange	m_change = enChange_first;
 	EnCursorPos m_cursor;
 
-	Quaternion m_sRotation;
-	SpriteRender m_spriteRender;	//背景
-	SpriteRender m_GOtitle;			//"タイトルへ戻る"非選択
-	SpriteRender m_GOtitleST;		//"タイトルへ戻る"選択
-	SpriteRender m_gameover;		//"ゲーム終了"非選択
-	SpriteRender m_gameoverST;		//"タイトルへ戻る"選択
-	SpriteRender m_PlayerNameP;		//"Player"名前かぶりだから変える
-	SpriteRender m_CPUName1;		//CPU1
-	SpriteRender m_CPUName2;		//CPU2
-	SpriteRender m_CPUName3;		//CPU3
-	SpriteRender m_ResultLogo;		//リザルトのロゴ
+	SpriteRender	m_spriteRender;		//背景
+	SpriteRender	m_resultLogo;		//リザルトのロゴ
+	SpriteRender	m_goTitle;			//"タイトルへ戻る"非選択
+	SpriteRender	m_goTitleSelect;	//"タイトルへ戻る"選択
+	SpriteRender	m_gameover;			//"ゲーム終了"非選択
+	SpriteRender	m_gameoverST;		//"タイトルへ戻る"選択
 
-	SpriteRender m_choiceCursor;	//選択時のカーソル
+	std::array<SpriteRender, 4> m_pointsUnit;	//"p"の画像
+	std::array<SpriteRender, 4> m_knightFace;
+	std::array<SpriteRender, 4> m_namePlate;	//名前の背景画像
+	std::array<SpriteRender, 4> m_gameRank;		//順位の画像
 
+	SpriteRender	m_playerName;		//"Player"
+	SpriteRender	m_cpuName1;			//CPU1
+	SpriteRender	m_cpuName2;			//CPU2
+	SpriteRender	m_cpuName3;			//CPU3
+
+
+	SpriteRender m_choiceCursor;		//選択時のカーソル
 
 	Tittle* tittle = nullptr;
 	SoundSource* m_bgm = nullptr;
 	Fade* fade = nullptr;
 
-	Vector3 PointRight = { 200.0f,85.0f,0.0f };
-
-	//線形補間でここまで動かす
-	Vector3 RankPos[MOVE] = {
-		Vector3(0.0f, 160.0f, 0.0f),		//順位、１位
-		Vector3(0.0f, 20.0f, 0.0f),			//２位
-		Vector3(0.0f, -120.0f, 0.0f),		//３位
-		Vector3(0.0f, -255.0f, 0.0f)		//４位
+	//フォントの線形補間前の座標
+	std::array<Vector3, MOVE> m_lerpStartPos = {	//順位
+		Vector3(-2500.0f, 300.0f, 0.0f),		//１位
+		Vector3(-2500.0f, 145.0f, 0.0f),		//２位
+		Vector3(-2500.0f, 0.0f, 0.0f),		//３位
+		Vector3(-2500.0f, -145.0f, 0.0f)		//４位
 	};
 
-	//線形補間で動かすときのポジション
-	Vector3 MovePos[MOVE] = {
-		Vector3(g_vec3Zero),		//順位、１位
+	//スプライトの線形補間前の座標
+	std::array<Vector3, MOVE> m_spriteLerpStartPos = {	//順位
+		Vector3(-2500.0f, 180.0f, 0.0f),		//１位
+		Vector3(-2500.0f, 25.0f, 0.0f),			//２位
+		Vector3(-2500.0f, -117.0f, 0.0f),		//３位
+		Vector3(-2500.0f, -263.0f, 0.0f)		//４位
+	};
+
+	//フォントを線形補間でここまで動かす
+	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//順位
+		Vector3(70.0f, 300.0f, 0.0f),		//１位
+		Vector3(70.0f, 145.0f, 0.0f),		//２位
+		Vector3(70.0f, 4.0f, 0.0f),		//３位
+		Vector3(70.0f, -145.0f, 0.0f)		//４位
+	};
+
+	//スプライトを線形補間でここまで動かす
+	std::array<Vector3, MOVE> m_spriteLerpMoveEnd = {		//順位
+		Vector3(0.0f, 180.0f, 0.0f),		//１位
+		Vector3(0.0f, 25.0f, 0.0f),		//２位
+		Vector3(0.0f, -117.0f, 0.0f),		//３位
+		Vector3(0.0f, -265.0f, 0.0f)		//４位
+	};
+
+	//フォントを線形補間で動かすときの座標
+	std::array<Vector3, MOVE> m_lerpMoving = {		//順位
+		Vector3(g_vec3Zero),		//１位
 		Vector3(g_vec3Zero),		//２位
 		Vector3(g_vec3Zero),		//３位
 		Vector3(g_vec3Zero)			//４位
 	};
 
-	//画面外
-	Vector3 FirstPos[MOVE] = {
-		Vector3(-2500.0f, 160.0f, 0.0f),	//順位、１位
-		Vector3(-2500.0f, 20.0f, 0.0f),	//２位
-		Vector3(-2500.0f, -120.0f, 0.0f),	//３位
-		Vector3(-2500.0f, -255.0f, 0.0f)	//４位
+	//スプライトを線形補間で動かすときの座標
+	std::array<Vector3, MOVE> m_spriteLerpMoving = {		//順位
+		Vector3(g_vec3Zero),		//１位
+		Vector3(g_vec3Zero),		//２位
+		Vector3(g_vec3Zero),		//３位
+		Vector3(g_vec3Zero)			//４位
 	};
 
+
 	//透明度
-	Vector4 m_color = { 0.0f,0.0f,0.0f,0.0f };	//透明
-	Vector4 m_colorST = { g_vec4White };		//不透明
+	Vector4 m_alphaColorUnSelect	= { 0.0f,0.0f,0.0f,0.0f };	//透明
+	Vector4 m_alphaColorSelect		= { g_vec4White };			//不透明
 };

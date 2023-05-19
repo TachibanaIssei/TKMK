@@ -25,12 +25,17 @@ enum EnEFK {
 	enEffect_Knight_PowerUP,
 	enEffect_Knight_GetHoimi,
 	enEffect_Knight_LevelUp,
+	enEffect_Knight_LevelDown,
 	enEffect_Knight_Death_Blue,
 	enEffect_Knight_Death_Red,
 	enEffect_Knight_Death_Yellow,
 	enEffect_Knight_Death_Green,
 	enEffect_Neutral_Enemy_Death,
 	enEffect_Neutral_Enemy_head_butt,
+	enEffect_Neutral_Enemy_WhiteMagic,
+	enEffect_Neutral_Enemy_GreenMagic,
+	enEffect_Rabbit_Magic,
+	enEffect_Rabbit_kirakira,
 	enEffect_Num
 };
 

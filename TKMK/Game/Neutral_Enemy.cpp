@@ -13,6 +13,8 @@
 #include <cstring>
 #include <cwchar>
 #include "ExpforKnight.h"
+#include "ChaseEFK.h"
+#include "Effect.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -38,7 +40,6 @@ Neutral_Enemy::~Neutral_Enemy()
 	if (m_game != nullptr) {
 		m_game->RemoveEnemyFromList(this);
 
-
 		//自分がウサギなら、ウサギ生成フラグを戻す
 		if (m_enemyKinds == enEnemyKinds_Rabbit)
 		{
@@ -46,7 +47,17 @@ Neutral_Enemy::~Neutral_Enemy()
 			rabbitLife = false;
 		}
 	}
+
+	// キラキラの削除
+	if (m_enemyKinds == enEnemyKinds_Rabbit && Rabbit_kirakira != nullptr)
+	{
+		Rabbit_kirakira->AutoDelete(true);
+		Rabbit_kirakira->Stop();
+		DeleteGO(Rabbit_kirakira);
+	}
+
 	DeleteGO(this);
+	
 }
 
 //衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
@@ -74,19 +85,37 @@ bool Neutral_Enemy::Start()
 //アニメーションを読み込む。
 	if (m_enemyKinds == enEnemyKinds_Rabbit)
 	{
-		m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Rabbit/Run.tka");
+		m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Rabbit/Run3.tka");
 		m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-		m_animationClips[enAnimationClip_Run].Load("Assets/animData/Rabbit/Run.tka");
+		m_animationClips[enAnimationClip_Run].Load("Assets/animData/Rabbit/Run3.tka");
 		m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-		m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Rabbit/Run.tka");
+		m_animationClips[enAnimationClip_Attack].Load("Assets/animData/Rabbit/Run3.tka");
 		m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
 		m_animationClips[enAnimationClip_Death].Load("Assets/animData/Rabbit/Death.tka");
 		m_animationClips[enAnimationClip_Death].SetLoopFlag(false);
 		m_animationClips[enAnimationClip_Damage].Load("Assets/animData/Rabbit/Damage.tka");
 		m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
 
-		m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit2.tkm", m_animationClips, enAnimationClip_Num);
+		m_modelRender.Init("Assets/modelData/character/Rabbit/Rabbit_Last.tkm", m_animationClips, enAnimationClip_Num);
 
+		Rabbit_kirakira = NewGO <EffectEmitter>(1);
+		Rabbit_kirakira->Init(EnEFK::enEffect_Rabbit_kirakira);
+		Rabbit_kirakira->SetScale(Vector3::One * 15.0f);
+		Rabbit_kirakira->SetPosition(m_position);
+		Rabbit_kirakira->AutoDelete(false);
+		Rabbit_kirakira->Play();
+		Rabbit_kirakira->Update();
+
+		EffectEmitter* RabbitMagic;
+		RabbitMagic = NewGO<EffectEmitter>(0);
+		RabbitMagic->Init(EnEFK::enEffect_Rabbit_Magic);
+		RabbitMagic->SetScale(Vector3::One * 30.0f);
+		//Vector3 MagicPos = m_position;
+		//MagicPos.y -= 20;
+		RabbitMagic->SetPosition(m_position);
+		RabbitMagic->Play();
+		RabbitMagic->Update();
+		
 		m_scale = { 40.0f,40.0f,40.0f };
 	}
 	else
@@ -109,12 +138,30 @@ bool Neutral_Enemy::Start()
 			//白
 			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_white/Ghost_white.tkm", m_animationClips, enAnimationClip_Num/*, enModelUpAxisY*/);
 			m_enemyKinds = enEnemyKinds_White;
+			EffectEmitter* WhiteMagic;
+			WhiteMagic = NewGO<EffectEmitter>(0);
+			WhiteMagic->Init(EnEFK::enEffect_Neutral_Enemy_WhiteMagic);
+			WhiteMagic->SetScale(Vector3::One * 30.0f);
+			Vector3 MagicPos = m_position;
+			MagicPos.y -= 20;
+			WhiteMagic->SetPosition(MagicPos);
+			WhiteMagic->Play();
+			WhiteMagic->Update();
 		}
 		else if (enemyColorRam <= 7)
 		{
 			//緑
 			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
 			m_enemyKinds = enEnemyKinds_Green;
+			EffectEmitter* GreenMagic;
+			GreenMagic = NewGO<EffectEmitter>(0);
+			GreenMagic->Init(EnEFK::enEffect_Neutral_Enemy_GreenMagic);
+			GreenMagic->SetScale(Vector3::One * 30.0f);
+			Vector3 MagicPos = m_position;
+			MagicPos.y -= 20;
+			GreenMagic->SetPosition(MagicPos);
+			GreenMagic->Play();
+			GreenMagic->Update();
 		}
 		else if (enemyColorRam <= 9)
 		{
@@ -231,7 +278,7 @@ bool Neutral_Enemy::Start()
 		m_enemyMapSprite.Init("Assets/sprite/minimap_enemy_rabbit.DDS", 30, 30);
 	}
 
-
+	
 	// 準備完了
 	isStart = true;
 
@@ -266,17 +313,45 @@ void Neutral_Enemy::Update()
 	{
 		HPreductionbytime();
 	}
+
+	// キラキラ
+	if (Rabbit_kirakira != nullptr)
+	{
+		if (enJump == enJumpStart)
+		{
+			m_Rabbit_Pos.y += 2.0f;
+		}
+
+		if (enJump == enJumpEnd)
+		{
+			m_Rabbit_Pos.y -= 2.0f;
+		}
+
+		if (enJump == enJumpnull)
+		{
+			m_Rabbit_Pos.y = 0.0f;
+		}
+
+		Rabbit_kirakira->SetPosition(m_position + m_Rabbit_Pos);
+		Rabbit_kirakira->Update();
+	}
+	
 	//回転処理。
 	Rotation();
 	//ステートの遷移処理。
 	ManageState();
-	
+
 	// タイマーを減らす
 	if (isPatrolTimer > 0.0f) {
 		isPatrolTimer -= g_gameTime->GetFrameDeltaTime();
 	}
 	//モデルの更新。
 	//座標を設定
+	if (m_enemyKinds == enEnemyKinds_Rabbit)
+	{
+		m_position.y = 0.0f;
+		m_charaCon.SetPosition(m_position);
+	}
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
 	m_modelRender.SetRotation(m_rot);
@@ -291,7 +366,7 @@ void Neutral_Enemy::Move()
 {
 	Vector3 diff = m_forward;
 	diff.Normalize();
-	////移動速度を設定する。
+	//移動速度を設定する。
 	m_moveSpeed = diff * m_Status.Speed;
 	m_forward.Normalize();
 	Vector3 moveSpeed = m_forward * m_Status.Speed + m_hagikiPower;
@@ -301,6 +376,7 @@ void Neutral_Enemy::Move()
 	else {
 		m_hagikiPower = Vector3::Zero;
 	}
+
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 	m_modelRender.SetPosition(m_position);
 
@@ -318,7 +394,7 @@ void Neutral_Enemy::HPreductionbytime()
 			m_Status.Hp -= 1;
 			HPreductionbyTimer = 0.0f;
 		}
-	
+		
 	}
 	
 }
@@ -358,14 +434,16 @@ void Neutral_Enemy::Chase()
 	}
 	Vector3 m_targetActorPos = m_targetActor->GetPosition();
 	Vector3 diff = m_targetActorPos - m_position;
+	diff.y = 0.0f;
+
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();
 
 	//始点は自分の座標。
-	start.setOrigin(btVector3(m_position.x, m_position.y + 70.0f, m_position.z));
+	start.setOrigin(btVector3(m_position.x, 20.0f, m_position.z));
 	//終点はランダムの座標。
-	end.setOrigin(btVector3(m_targetActorPos.x, m_targetActorPos.y + 70.0f, m_targetActorPos.z));
+	end.setOrigin(btVector3(m_targetActorPos.x, 20.0f, m_targetActorPos.z));
 	SweepResultSlipThroughWall callback;
 	//コライダーを始点から終点まで動かして。
 	//衝突するかどうかを調べる。
@@ -382,6 +460,7 @@ void Neutral_Enemy::Chase()
 	diff.Normalize();
 	//移動速度を設定する。
 	m_moveSpeed = diff * m_Status.Speed;
+
 	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
 		//地面についた。
@@ -467,19 +546,15 @@ void Neutral_Enemy::Collision()
 				if (m_enemyKinds == enEnemyKinds_Green)
 				{
 					//回復量
-					int HpPass = m_Status.MaxHp/2;
+					int HpPass = m_lastAttackActor->GetMaxHp() / 2;
 					m_lastAttackActor->HpUp(HpPass);
-					if (m_lastAttackActor->GetMaxHp() < m_lastAttackActor->GetHp())
-					{
-						m_lastAttackActor->HpReset(m_lastAttackActor->GetMaxHp());
-					}
 				}
 
-				//赤の場合
-				else if (m_enemyKinds == enEnemyKinds_Red)
-				{
-					m_lastAttackActor->AtkUp(AtkPass);
-				}
+				////赤の場合
+				//else if (m_enemyKinds == enEnemyKinds_Red)
+				//{
+				//	m_lastAttackActor->AtkUp(AtkPass);
+				//}
 				//Deathflag = true;
 				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
@@ -1069,6 +1144,20 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		//ステートを切り替える
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
 	}
+
+	if (wcscmp(eventName, L"Jump_Start") == 0)
+	{
+		enJump = enJumpStart;
+	}
+	else if (wcscmp(eventName, L"Jump_End") == 0)
+	{
+		enJump = enJumpEnd;
+	}	
+	else if (wcscmp(eventName, L"JUMPISTHEEND") == 0)
+	{
+		enJump = enJumpnull;
+	}
+
 }
 
 const bool Neutral_Enemy::CanAttack()const

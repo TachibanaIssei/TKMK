@@ -43,10 +43,12 @@ public:
 	// 必殺技終了用の純粋仮想関数
 	virtual void UltEnd() = 0;
 
-protected:
-	void AttackUP();
+	virtual void ChaseEffectDelete() = 0;
 
-	void AttackUPEnd() {
+protected:
+	//void AttackUP();
+
+	/*void AttackUPEnd() {
 		m_Status.Atk -= PowerUp;
 
 		if (PowerUpEfk != nullptr)
@@ -55,7 +57,7 @@ protected:
 			DeleteGO(PowerUpEfk);
 			PowerUpEfk = nullptr;
 		}
-	}
+	}*/
 
 	/// <summary>
 	/// レベルアップ時に増加するステータス
@@ -77,6 +79,10 @@ protected:
 
 public:
 
+	EnCharState GetCharState()
+	{
+		return m_charState;
+	}
 	//ゲームクラスの現在の状態を示すステート
 	enum EnGameState
 	{
@@ -281,26 +287,26 @@ public:
 		return m_Status.Hp;
 	}
 
-	/// <summary>
-	/// 中立の赤色の敵を倒した時攻撃を上げる処理
-	/// </summary>
-	/// <param name="AtkUp">増加する攻撃力</param>
-	void AtkUp(int AtkUp)
-	{
-		//パワーUPじゃないとき
-		if (PowerUpTimer <= 0.0f)
-		{
-			PowerUp = AtkUp;
-			m_Status.Atk += PowerUp;
+	///// <summary>
+	///// 中立の赤色の敵を倒した時攻撃を上げる処理
+	///// </summary>
+	///// <param name="AtkUp">増加する攻撃力</param>
+	//void AtkUp(int AtkUp)
+	//{
+	//	//パワーUPじゃないとき
+	//	if (PowerUpTimer <= 0.0f)
+	//	{
+	//		PowerUp = AtkUp;
+	//		m_Status.Atk += PowerUp;
 
-			PowerUpEfk  = NewGO<ChaseEFK>(3);
-			PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 15.0f);
+	//		PowerUpEfk  = NewGO<ChaseEFK>(3);
+	//		PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 15.0f);
 
-			PowerUpEfk->AutoDelete(false);
-			PowerUpEfk->GetEffect()->AutoDelete(false);
-		}		
-		PowerUpTimer = 15.0f;
-	}
+	//		PowerUpEfk->AutoDelete(false);
+	//		PowerUpEfk->GetEffect()->AutoDelete(false);
+	//	}		
+	//	PowerUpTimer = 15.0f;
+	//}
 
 
 	/// <summary>
@@ -310,6 +316,11 @@ public:
 	void HpUp(int HpUp)
 	{
 		m_Status.Hp += HpUp;
+		// エフェクトがあるなら消す
+		if (GetHoimi != nullptr) {
+			GetHoimi->DeleteEffect();
+		}
+
 		GetHoimi = NewGO<ChaseEFK>(3);
 		GetHoimi->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
@@ -709,12 +720,15 @@ protected:
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
 	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）
 	Fade* m_fade = nullptr;
-
+				
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 	std::vector<Actor*> DamegeUltActor;             //必殺技で攻撃対象のアクター
 
-	ChaseEFK* PowerUpEfk = nullptr;
+	/*ChaseEFK* PowerUpEfk = nullptr;*/
 	ChaseEFK* GetHoimi = nullptr;
+	ChaseEFK* LevelUp_efk = nullptr;
+	ChaseEFK* LevelDown_efk = nullptr;
+
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;

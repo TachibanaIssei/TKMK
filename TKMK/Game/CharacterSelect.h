@@ -152,6 +152,7 @@ private:
 
 	EnCharacterSelect m_characterSelect;	//キャラクターセレクト
 
+	Vector3 m_moveSpeed = Vector3::Zero;
 	Vector3 m_pointerPosition	= Vector3(0.0f,90.0f,0.0f);
 
 	bool m_attackExplanationFlag = false;	//通常攻撃説明画像表示フラグ

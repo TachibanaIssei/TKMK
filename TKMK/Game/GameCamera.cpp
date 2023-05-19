@@ -269,8 +269,8 @@ void GameCamera::UltRotCamera()
 				TunderCameraFlag = true;
 				//カメラで見る対象のキャラ
 				victim_actor = actor;
-				//カメラで見たかのフラグを立てる
-				actor->ChangeCameraSawCharFlag(true);
+				////カメラで見たかのフラグを立てる
+				//actor->ChangeCameraSawCharFlag(true);
 
 				//二人までしか見れない
 				//Damege_actor_Name = actor->GetName();
@@ -280,12 +280,15 @@ void GameCamera::UltRotCamera()
 				return;
 			}
 			
+			
+
 			return;
 		}
 	}
 	
-	
-	
+	//誰もいなかったら視点を戻す
+	if (player_actor->GetNoTargetActor() == true)
+		GameCameraUltEnd();
 
 
 
@@ -351,15 +354,7 @@ void GameCamera::ChaseCamera()
 			return;
 		}
 	}
-	//雷はないが
-	//else if (wizardUlt == nullptr && TunderCameraFlag == true)
-	//{
-	//	//入ってる
-	//	//ターゲットを見ないようにする
-	//	TunderCameraFlag = false;
-	//	m_enCameraState = m_enUltRotCameraState;
-	//}
-
+	
 
 	//knightUlt = FindGO<KnightUlt>("knightUlt");
 	////knightUltが生成されている間
@@ -606,10 +601,10 @@ void GameCamera::GameCameraUltEnd() {
 	//ultactor->UltSkillEnd();
 
 	//全キャラのカメラで見たかのフラグをfalseにする
-	for (auto actor : game->GetActors())
+	/*for (auto actor : game->GetActors())
 	{
 		actor->ChangeCameraSawCharFlag(false);
-	}
+	}*/
 
 	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
 	//プレイヤーのカメラをリセットする

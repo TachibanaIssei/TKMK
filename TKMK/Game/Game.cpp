@@ -58,6 +58,7 @@ Game::~Game()
 
 	for (auto aoctor : m_Actors)
 	{
+		//たまにエラーあり
 		aoctor->ChaseEffectDelete();
 		DeleteGO(aoctor);
 	}

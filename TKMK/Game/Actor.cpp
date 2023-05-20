@@ -51,7 +51,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	//移動速度に前方向と右方向の入力量を加算する。
 	m_moveSpeed += right + forward;
 	//重力を付与する
-	m_moveSpeed.y -= 600.0f * g_gameTime->GetFrameDeltaTime();
+	m_moveSpeed.y -= 900.0f * g_gameTime->GetFrameDeltaTime();
 
 	//地面についた。
 	if (charcon.IsOnGround()) {
@@ -369,7 +369,7 @@ void Actor::RespawnMove()
 {
 	//飛び降りる
 	//ジャンプする
-		m_moveSpeed.y = 350.0f;
+		m_moveSpeed.y = 280.0f;
 		//position.y += jump;
 		//m_RespawnJumpFlag = true;
 }

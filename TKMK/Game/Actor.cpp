@@ -300,7 +300,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 		expTable = 5;
 	}
 
-	if (Lv >= 2) {
+	if (Lv >= 3) {
 		expTable = 10;
 	}
 

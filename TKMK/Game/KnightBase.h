@@ -438,7 +438,9 @@ protected:
 	float SkillSpeed = 270.0f;
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
-
+	//落下音のフラグ
+	bool FallSoundFlag = false;
+	
 	//ラストアタックのアニメーションで切った後に動けないようにする
 	//tureの時は動けなくなる
 	bool CantMove = false;

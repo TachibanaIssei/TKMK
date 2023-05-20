@@ -59,5 +59,6 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="ChaseEFK.h" />
     <ClInclude Include="ExpforKnight.h" />
+    <ClInclude Include="Sounds.h" />
   </ItemGroup>
 </Project>

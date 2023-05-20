@@ -20,17 +20,20 @@ void ChaseEFK::Update() {
 	if(m_targetActor != nullptr)
 	{
 		// アクター追尾
-		m_effect->SetPosition(m_targetActor->GetPosition());
+		m_effect->SetPosition(m_targetActor->GetPosition() + addPos);
 	}
 	else if (m_targetEnemy != nullptr)
 	{
 		//エネミー追尾
-		m_effect->SetPosition(m_targetEnemy->GetPosition());	
+		m_effect->SetPosition(m_targetEnemy->GetPosition() + addPos);
 	}
 
 	// 自動回転
 	if (autoRot && m_targetActor != nullptr) {
 		Quaternion rot = m_targetActor->GetRot();
+		// 回転を加算
+		rot.AddRotationDegY(autoRot_AddY_Rot);
+
 		m_effect->SetRotation(rot);
 	}
 

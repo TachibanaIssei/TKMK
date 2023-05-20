@@ -1,6 +1,7 @@
 #pragma once
 #include "Effect.h"
 #include "Level3DRender.h"
+#include "Sounds.h"
 
 class BackGround;
 class Result;
@@ -36,7 +37,9 @@ public:
 	};
 	
 
-	EnEFK m_EnEffect_Knight = enEffect_Num;
+	EnEFK m_EnEffect = enEffect_Num;
+
+	EnSound m_Sound = enSound_Num;
 
 	enum EnPauseMenu
 	{
@@ -57,6 +60,7 @@ public:
 	void Between();
 	void GoResult();
 	void GameState();
+	void Push_OK();							//決定音
 
 	/// <summary>
 	/// ポーズ時の移動処理
@@ -444,9 +448,9 @@ private:
 	bool EnemyRespawnFlag[10];
 
 	//秒を計るタイマー
-	float SecondsTimer = 0.0f;
+	float SecondsTimer = 5.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 3.0f;
+	float MinutesTimer = 0.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;

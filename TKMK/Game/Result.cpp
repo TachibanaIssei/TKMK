@@ -24,7 +24,7 @@ namespace ResultSpriteConst
 	const Vector3 NO1_FONT_POINT_ADD_POS = { 100.0f,-43.0f,0.0f };				//一番上のポイント数のフォントの位置
 
 	const Vector3 PLAYER_NAME_ALIGN = { 20.0f,0.0f,0.0f };						//プレイヤー名をCPUに揃えるために加算する値
-	const Vector3 LOSER_PLAYER_NAME_ALIGN = { 15.0f,-3.0f,0.0f };				//プレイヤー名をCPUに揃えるために加算する値
+	const Vector3 LOSER_PLAYER_NAME_ALIGN = { 0.0f,-3.0f,0.0f };				//プレイヤー名をCPUに揃えるために加算する値
 	
 	const Vector3 NO1_PLAYER_NAME_SCALE = { 1.2f,1.2f,1.0f };					//一位の名前の拡大率
 	const Vector3 LOSER_PLAYER_NAME_SCALE = { 0.85f,0.85f,1.0f };				//それ以外の名前の拡大率

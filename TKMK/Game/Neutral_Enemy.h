@@ -391,7 +391,7 @@ private:
 
 	//効果音
 	float SEVolume = 0.0f;
-	float MaxVolume = 2.0f;
+	float MaxVolume = 0.7f;
 	float MinVolume = 0.0f;
 
 	// ウサギ専用

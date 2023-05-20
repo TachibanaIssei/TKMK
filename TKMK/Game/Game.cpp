@@ -55,12 +55,14 @@ Game::~Game()
 		DeleteGO(seutral_Enemy);
 	}
 	//m_neutral_Enemys.clear();
-
-	for (auto aoctor : m_Actors)
-	{
-		//たまにエラーあり
-		aoctor->ChaseEffectDelete();
-		DeleteGO(aoctor);
+	if (GameObjectManager::GetInstance()->IsActive()) {
+		// ゲームオブジェクトマネージャーが有効なら
+		for (auto aoctor : m_Actors)
+		{
+			//たまにエラーあり
+			aoctor->ChaseEffectDelete();
+			DeleteGO(aoctor);
+		}
 	}
 
 	DeleteGO(player);

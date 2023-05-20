@@ -47,7 +47,7 @@ public:
 	virtual void UltEnd() = 0;
 
 	virtual void ChaseEffectDelete() = 0;
-
+	void OnDestroy() override;
 protected:
 	//void AttackUP();
 

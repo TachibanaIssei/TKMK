@@ -61,7 +61,14 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void ExecuteRender(RenderContext& rc);
 
-
+		/// <summary>
+		/// ゲームオブジェクトマネージャーがアクティブかどうか判定する。
+		/// </summary>
+		/// <returns></returns>
+		bool IsActive() const
+		{
+			return m_isActive;
+		}
 		/*!
 		*@brief	ゲームオブジェクトのnew
 		*@details
@@ -92,6 +99,7 @@ namespace nsK2EngineLow {
 			}
 			if (gameObject != nullptr)
 			{
+				gameObject->OnDestroy();
 				gameObject->Dead();
 			}
 		}

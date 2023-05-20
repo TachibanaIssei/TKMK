@@ -124,10 +124,15 @@ public:
 	/// 必殺技のダメージを決める
 	/// </summary>
 	/// <param name="level"></param>
-	void SetUltDamege(int level)
+	void SetAboutUlt(int level)
 	{
 		//レベル×50=必殺技のダメージ
 		m_UltDamege = 50 * level;
+
+		//レベル７以上なら
+		if (level >= 7) {
+			m_CharLevel7AndAdoveFlag = true;
+		}
 	}
 
 private:
@@ -156,6 +161,8 @@ private:
 	bool FallTunderFlag = false;
 	//自身を生成したのがプレイヤーならtrueにする
 	bool m_ThisCreatPlayerFlag = false;
+	//必殺技を打ったキャラがレベル７以上かどうかの判定
+	bool m_CharLevel7AndAdoveFlag = false;
 
 	//必殺技の初期ダメージ
 	int m_UltDamege = 0;

@@ -160,33 +160,33 @@ bool Game::Start()
 			if (objData.ForwardMatchName(L"CharPos") == true) {
 				//左上の座標
 
-				if (objData.number == 0) {
-					m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-					m_KnightAI->SetGame(this);
-					m_Actors.push_back(m_KnightAI);
-					m_KnightAI->SetPosition(objData.position);
-					m_KnightAI->SetCharaconPosition(objData.position);
-					m_KnightAI->SetPlayerActor(player->GetPlayerActor());
-					int Number = 0;
-					m_KnightAI->SetRespawnNumber(Number);
-					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+				//if (objData.number == 0) {
+				//	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+				//	m_KnightAI->SetGame(this);
+				//	m_Actors.push_back(m_KnightAI);
+				//	m_KnightAI->SetPosition(objData.position);
+				//	m_KnightAI->SetCharaconPosition(objData.position);
+				//	m_KnightAI->SetPlayerActor(player->GetPlayerActor());
+				//	int Number = 0;
+				//	m_KnightAI->SetRespawnNumber(Number);
+				//	m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
 
-					return true;
-				}
-				//右上の座標
-				if (objData.number == 1) {
-					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-					m_KnightAI1->SetGame(this);
-					m_Actors.push_back(m_KnightAI1);
-					m_KnightAI1->SetPosition(objData.position);
-					m_KnightAI1->SetCharaconPosition(objData.position);
-					m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
-					int Number = 1;
-					m_KnightAI1->SetRespawnNumber(Number);
-					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+				//	return true;
+				//}
+				////右上の座標
+				//if (objData.number == 1) {
+				//	m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+				//	m_KnightAI1->SetGame(this);
+				//	m_Actors.push_back(m_KnightAI1);
+				//	m_KnightAI1->SetPosition(objData.position);
+				//	m_KnightAI1->SetCharaconPosition(objData.position);
+				//	m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
+				//	int Number = 1;
+				//	m_KnightAI1->SetRespawnNumber(Number);
+				//	m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 
-					return true;
-				}
+				//	return true;
+				//}
 				//左下の座標
 				if (objData.number == 3) {
 					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
@@ -334,10 +334,10 @@ void Game::BattleStart()
 		//マップの生成
 		m_Map = NewGO<Map>(2, "map");
 		//BGMの再生
-		m_bgm = NewGO<SoundSource>(0);
-		m_bgm->Init(2);
+		/*m_bgm = NewGO<SoundSource>(0);
+		m_bgm->Init(enSound_PlayBattle);
 		m_bgm->Play(true);
-		m_bgm->SetVolume(BGMVolume);
+		m_bgm->SetVolume(BGMVolume);*/
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);
@@ -370,6 +370,10 @@ void Game::Battle()
 	//ポーズステートに変える
 	//スタートボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Pause_Screen);
+		se->SetVolume(1.0f);
+		se->Play(false);
 		//ゲームのステートをポーズにする
 			m_GameState = enGameState_Pause;
 			//生成されているキャラのステートをポーズステートに変更
@@ -685,42 +689,49 @@ void Game::SetMusic()
 {
 	//バトル中のBGM
 	{
-		g_soundEngine->ResistWaveFileBank(2, "Assets/sound/gameBGM/SentouBGM1.wav");
+		//ゲームBGM
+		g_soundEngine->ResistWaveFileBank(enSound_PlayBattle, "Assets/sound/gameBGM/SentouBGM1.wav");
+		//ポーズ音
+		g_soundEngine->ResistWaveFileBank(enSound_Pause_Screen, "Assets/sound/menu/game_stop/gameStop1.wav");
 	}
 	
 	//効果音
 	{
 	//剣士
 		{
-			//���X�L��
-			g_soundEngine->ResistWaveFileBank(11, "Assets/sound/playerSE/kenSkill3.wav");
+			//スキルの音
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill3.wav");
 			//�_���[�W�������Ƃ��̔ߖ�
-			g_soundEngine->ResistWaveFileBank(12, "Assets/sound/playerSE/playerScream1.wav");
-			//���ʏ�U��
-			g_soundEngine->ResistWaveFileBank(13, "Assets/sound/kenSE/ken1.wav");
-			g_soundEngine->ResistWaveFileBank(14, "Assets/sound/kenSE/ken2.wav");
-			g_soundEngine->ResistWaveFileBank(15, "Assets/sound/kenSE/ken3.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Knight_Receiving_Damage, "Assets/sound/playerSE/playerScream1.wav");
+			//通常攻撃のコンボ音
+			g_soundEngine->ResistWaveFileBank(enSound_ComboONE, "Assets/sound/kenSE/ken1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_ComboTwo, "Assets/sound/kenSE/ken2.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_ComboThree, "Assets/sound/kenSE/ken3.wav");
 			//�A���e�B���b�g
-			g_soundEngine->ResistWaveFileBank(16, "Assets/sound/playerSE/kenSkill1.wav");
-			//���S�����Ƃ�
-			g_soundEngine->ResistWaveFileBank(17, "Assets/sound/playerSE/playerScream3.wav");
-		}
-	//魔法使い
-		{
-
-		}
-	//ゾンビ
-		{
-
-		}
-	//魔物
-		{
+			g_soundEngine->ResistWaveFileBank(enSound_Knight_Charge_Power, "Assets/sound/playerSE/kenSkill1.wav");
+			//必殺技の音
+			g_soundEngine->ResistWaveFileBank(enSound_Knight_Death, "Assets/sound/playerSE/playerScream3.wav");
+			//地面についたときの音
+			g_soundEngine->ResistWaveFileBank(enSound_Metal_Falling, "Assets/sound/playerSE/fall/playerfall1.wav");
+			//レベルアップの音
+			g_soundEngine->ResistWaveFileBank(enSound_Level_UP, "Assets/sound/playerSE/Level_Up/playerLevelup1.wav");
+			//レベルダウンの音
+			//g_soundEngine->ResistWaveFileBank(enSound_Level_Down, "Assets/sound/playerSE/playerScream3.wav");
+			//ヒール音
+			g_soundEngine->ResistWaveFileBank(enSound_Healing, "Assets/sound/playerSE/heal/playerheal1.wav");
 
 		}
 
 	//中立の敵
 		{
-			g_soundEngine->ResistWaveFileBank(21, "Assets/sound/enemySE/enemyKoe.wav");
+			//鳴き声
+			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Voice, "Assets/sound/enemySE/enemyKoe.wav");
+			//ウサギが死んだときの音
+			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_Death, "Assets/sound/enemySE/rabbit/Die/rabbitDie2.wav");
+			//ウサギの足音
+			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_FootSteps, "Assets/sound/enemySE/rabbit/Jump/rabbitJump1.wav");
+			//中立の敵が死んだときの音
+			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Death, "Assets/sound/enemySE/rabbit/Die/rabbitDie1.wav");
 		}
 		
 	}
@@ -788,13 +799,21 @@ void Game::PauseMove()
 {
 	if (g_pad[0]->IsTrigger(enButtonDown))
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Title_Choise);
+		se->SetVolume(1.0f);
+		se->Play(false);
 		MenuNumber++;
 	}
+
 	if (g_pad[0]->IsTrigger(enButtonUp))
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Title_Choise);
+		se->SetVolume(1.0f);
+		se->Play(false);
 		MenuNumber--;
 	}
-
 }
 
 /// <summary>
@@ -882,9 +901,9 @@ void Game::Menu_Back()
 {
 	//Aボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonA)) {
+		Push_OK();
 		//ステートをバトルステートに戻す
 		m_GameState = enGameState_BetweenGameAndPause;
-		
 	}
 }
 //HowToPlayの処理
@@ -892,6 +911,7 @@ void Game::Menu_HowToPlay()
 {
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		Push_OK();
 		//フラグ反転
 		HowToPlaySpriteFlag = !HowToPlaySpriteFlag;
 	}
@@ -907,7 +927,6 @@ void Game::Menu_BGM()
 			m_bgm->SetVolume(BGMVolume);
 			SelectBar_BGMPos.x += m_nuwBGMPos;
 		}
-		
 	}
 	//音量を下げる
 	if (g_pad[0]->IsTrigger(enButtonLeft)) {
@@ -917,11 +936,18 @@ void Game::Menu_BGM()
 			m_bgm->SetVolume(BGMVolume);
 			SelectBar_BGMPos.x -= m_nuwBGMPos;
 		}
-	
 	}
+
 	//バーの座標を更新
 	m_Menu_SelectBar_BGM.SetPosition(SelectBar_BGMPos);
 	m_Menu_SelectBar_BGM.Update();
+}
+void Game::Push_OK()
+{
+	SoundSource* se = NewGO<SoundSource>(0);
+	se->Init(enSound_OK);
+	se->SetVolume(1.0f);
+	se->Play(false);
 }
 //SEの処理
 void Game::Menu_SE()
@@ -955,6 +981,7 @@ void Game::Menu_QuitGame()
 	//Aボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		Push_OK();
 		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
 		DeleteGO(this);
 	}

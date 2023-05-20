@@ -1,6 +1,7 @@
 #pragma once
 #include "Effect.h"
 #include "Level3DRender.h"
+#include "Sounds.h"
 
 class BackGround;
 class Result;
@@ -36,7 +37,9 @@ public:
 	};
 	
 
-	EnEFK m_EnEffect_Knight = enEffect_Num;
+	EnEFK m_EnEffect = enEffect_Num;
+
+	EnSound m_Sound = enSound_Num;
 
 	enum EnPauseMenu
 	{
@@ -57,6 +60,7 @@ public:
 	void Between();
 	void GoResult();
 	void GameState();
+	void Push_OK();							//決定音
 
 	/// <summary>
 	/// ポーズ時の移動処理

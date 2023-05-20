@@ -4,6 +4,8 @@
 #include "GameUI.h"
 #include "Player.h"
 #include "Effect.h"
+#include "Game.h"
+#include "Sounds.h"
 
 KnightBase::KnightBase()
 {
@@ -13,7 +15,7 @@ KnightBase::KnightBase()
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
-	Cooltime=5;            //スキルのクールタイム
+	Cooltime = 1.0f;            //スキルのクールタイム
 	SkillTimer = Cooltime;
 
 	AvoidanceCoolTime = 2;     ///回避のクールタイム
@@ -387,7 +389,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(17);
+		se->Init(enSound_Knight_Death);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
@@ -413,7 +415,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		CantMove = false;
 
 		SoundSource * se = NewGO<SoundSource>(0);
-		se->Init(12);
+		se->Init(enSound_Knight_Receiving_Damage);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
@@ -536,8 +538,6 @@ void KnightBase::AnimationMove(float Speed)
 	//移動速度を計算。
 	m_Skill_MoveSpeed = Vector3::AxisZ;
 	m_rot.Apply(m_Skill_MoveSpeed);
-	//動かずに2回目打つと反対方向に動く
-	m_rot.AddRotationDegY(360.0f);
 	//移動速度を決める
 	m_Skill_MoveSpeed *= Speed;
 }
@@ -856,7 +856,7 @@ void KnightBase::OnProcessUlt_liberationStateTransition()
 		m_charState = enCharState_UltimateSkill;
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(16);
+		se->Init(enSound_Sword_Ult);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
@@ -940,6 +940,11 @@ void KnightBase::OnProcessFallStateTransition()
 {
 	if (m_charCon.IsOnGround())
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Metal_Falling);
+		//プレイヤーとの距離によって音量調整
+		se->SetVolume(1.0f);
+		se->Play(false);
 		//�ҋ@�X�e�[�g
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();

@@ -3,10 +3,13 @@
 #include "Level3DRender.h"
 #include "Effect.h"
 #include "ChaseEFK.h"
+#include "Sounds.h"
+#include "Game.h"
 
 class Neutral_Enemy;
 class Player;
 class Fade;
+class Game;
 
 class Actor:public IGameObject
 {
@@ -320,7 +323,7 @@ public:
 		if (GetHoimi != nullptr) {
 			GetHoimi->DeleteEffect();
 		}
-
+		
 		GetHoimi = NewGO<ChaseEFK>(3);
 		GetHoimi->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら

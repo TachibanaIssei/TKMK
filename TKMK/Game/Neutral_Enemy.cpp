@@ -15,6 +15,7 @@
 #include "ExpforKnight.h"
 #include "ChaseEFK.h"
 #include "Effect.h"
+#include "Sounds.h"
 //#include <vector>
 //#include <algorithm>
 
@@ -376,7 +377,6 @@ void Neutral_Enemy::Move()
 	else {
 		m_hagikiPower = Vector3::Zero;
 	}
-
 	m_position = m_charaCon.Execute(moveSpeed, g_gameTime->GetFrameDeltaTime());
 	m_modelRender.SetPosition(m_position);
 
@@ -511,6 +511,10 @@ void Neutral_Enemy::Collision()
 				
 				if (m_enemyKinds == enEnemyKinds_Rabbit)
 				{
+					SoundSource* se = NewGO<SoundSource>(0);
+					se->Init(enSound_Rabbit_Death);
+					se->SetVolume(1.0f);
+					se->Play(false);
 					//相手に経験値を渡す
 					m_lastAttackActor->ExpProcess(60);
 					if (m_lastAttackActor == m_player)
@@ -522,18 +526,21 @@ void Neutral_Enemy::Collision()
 							ExpKnight->SetPosition(m_position);
 							ExpKnight->SetIsRabbitExp();
 						}
-
 					}
 				}
+
 				else
 				{
 					//相手に経験値を渡す
 					m_lastAttackActor->ExpProcess(Exp);
 					if (m_lastAttackActor == m_player)
 					{
+						SoundSource* se = NewGO<SoundSource>(0);
+						se->Init(enSound_Enemy_Death);
+						se->SetVolume(1.0f);
+						se->Play(false);
 						for (int i = 0; i < 3; i++)
 						{
-
 							ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
 							ExpKnight->SetPosition(m_position);
 						}
@@ -548,6 +555,10 @@ void Neutral_Enemy::Collision()
 					//回復量
 					int HpPass = m_lastAttackActor->GetMaxHp() / 2;
 					m_lastAttackActor->HpUp(HpPass);
+					SoundSource* se = NewGO<SoundSource>(0);
+					se->Init(enSound_Healing);
+					se->SetVolume(1.0f);
+					se->Play(false);
 				}
 
 				////赤の場合
@@ -1011,7 +1022,6 @@ void Neutral_Enemy::ProcessPatrolStateTransition()
 		{
 			RabbitSearch();
 			EscapeSearch();
-
 			return;
 		}
 
@@ -1132,7 +1142,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		se->SetVolume(0.8f);*/
 		//攻撃の声
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(21);
+		se->Init(enSound_Enemy_Voice);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(player, MaxVolume, MinVolume);
 		se->SetVolume(SEVolume);
@@ -1148,6 +1158,12 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 	if (wcscmp(eventName, L"Jump_Start") == 0)
 	{
 		enJump = enJumpStart;
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Rabbit_FootSteps);
+		se->Play(false);
+		//プレイヤーとの距離によって音量調整
+		SEVolume = SoundSet(player, MaxVolume, MinVolume);
+		se->SetVolume(SEVolume);
 	}
 	else if (wcscmp(eventName, L"Jump_End") == 0)
 	{

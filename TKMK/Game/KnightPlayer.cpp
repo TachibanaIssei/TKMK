@@ -7,6 +7,8 @@
 #include "Fade.h"
 #include "GameCamera.h"
 #include "WizardUlt.h"
+#include "ChaseEFK.h"
+#include "Sounds.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -147,7 +149,7 @@ void KnightPlayer::Update()
 		return;
 	}
 	
-
+	
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
@@ -163,16 +165,19 @@ void KnightPlayer::Update()
 			}
 			LevelUp_efk = NewGO<ChaseEFK>(4);
 			LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(enSound_Level_UP);
+			se->SetVolume(1.0f);
+			se->Play(false);
+		}
+		else if (Lv < oldLv)
+		{
+			if (LevelDown_efk != nullptr) {
+				LevelDown_efk->DeleteEffect();
 			}
-			else if (Lv < oldLv)
-			{
-				if (LevelDown_efk != nullptr) {
-					LevelDown_efk->DeleteEffect();
-				}
-				LevelDown_efk = NewGO<ChaseEFK>(4);
-				LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
-			}
-        }
+			LevelDown_efk = NewGO<ChaseEFK>(4);
+			LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
+		}
 		//前フレームのレベルを取得
 		oldLv = Lv;
 		//前フレームの座標を取得
@@ -261,7 +266,7 @@ void KnightPlayer::Update()
 
 		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
-
+	
 	//ジャンプ中ではないかつ落下中なら
 	if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
 	{
@@ -304,6 +309,7 @@ void KnightPlayer::Attack()
 			AtkState = true;
 		}
 	}
+
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
@@ -351,45 +357,44 @@ void KnightPlayer::Attack()
 		{
 			//エフェクトの座標を更新させる
 			m_game->UnderSprite_Skill();
-			////剣にまとわせるエフェクト
-			//EffectKnightSkill = NewGO <EffectEmitter>(0);
-			//EffectKnightSkill->Init(EnEFK::enEffect_Knight_Skill);
-			//EffectKnightSkill->SetScale(Vector3::One * 30.0f);
-			//EffectKnightSkill->Play();
-			//Vector3 SwordeffectPosition = m_position;
-			//SwordeffectPosition.y += 50.0f;
-			//EffectKnightSkill->SetPosition(SwordeffectPosition);
-			//Quaternion SwordeffectRot = m_rot;
-			//EffectKnightSkill->SetRotation(SwordeffectRot);
-			//EffectKnightSkill->Update();
-
-			////床のエフェクト
-			//EffectEmitter* EffectKnightSkillGround;
-			//EffectKnightSkillGround = NewGO <EffectEmitter>(0);
-			//EffectKnightSkillGround->Init(EnEFK::enEffect_Knight_SkillGround);
-			//EffectKnightSkillGround->SetScale(Vector3::One * 40.0f);
-			//EffectKnightSkillGround->Play();
-			//Vector3 effectPosition = m_position;
-			//Quaternion EffRot = m_rot;
-			//EffectKnightSkillGround->SetPosition(effectPosition);
-			//EffectKnightSkillGround->SetRotation(m_rot);
-			//EffectKnightSkillGround->Update();
 
 			//剣にまとわせるエフェクト
+			if (EffectKnightSkill != nullptr) {
+				EffectKnightSkill->DeleteEffect();
+			}
 			EffectKnightSkill = NewGO <ChaseEFK>(4);
 			EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
+			EffectKnightSkill->AutoRot(true);
+			EffectKnightSkill->SetAutoRotAddY(360.0f);
+			// 座標の加算量を計算
+			Vector3 effectAddPos = Vector3::Zero;
+			effectAddPos.y = 50.0f;
+			EffectKnightSkill->SetAddPos(effectAddPos);
 
 			//床のエフェクト
-			EffectKnightSkillGround = NewGO <ChaseEFK>(4);
-			EffectKnightSkillGround->SetEffect(EnEFK::enEffect_Knight_SkillGround, this, Vector3::One * 40.0f);
+			EffectEmitter* EffectKnightSkillGround_;
+			EffectKnightSkillGround_ = NewGO <EffectEmitter>(0);
+			EffectKnightSkillGround_->Init(EnEFK::enEffect_Knight_SkillGround);
+			EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
+			EffectKnightSkillGround_->Play();
+			Vector3 effectPosition = m_position;
+			Quaternion EffRot = m_rot;
+			EffRot.AddRotationDegY(360.0f);
+			EffectKnightSkillGround_->SetPosition(effectPosition);
+			EffectKnightSkillGround_->SetRotation(EffRot);
+			EffectKnightSkillGround_->Update();
 
 			//土煙のエフェクト
+			if (FootSmoke != nullptr) {
+				FootSmoke->DeleteEffect();
+			}
 			FootSmoke = NewGO<ChaseEFK>(4);
 			FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
 			FootSmoke->AutoRot(true);
 
 		}
 		
+		SkillEndFlag = true;
 		
 		pushFlag = true;
 		SkillState = true;
@@ -594,7 +599,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkCollistionFlag = true;
 		//剣１段目音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(13);
+		se->Init(enSound_ComboONE);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
@@ -609,7 +614,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkCollistionFlag = true;
 		//剣２段目音
 		SoundSource* se = NewGO<SoundSource>(0); 
-		se->Init(14);
+		se->Init(enSound_ComboTwo);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
@@ -624,7 +629,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkCollistionFlag = true;
 		//剣３段目音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(15);
+		se->Init(enSound_ComboThree);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
@@ -647,7 +652,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 
 		//スキル音を発生
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(11);
+		se->Init(enSound_Sword_Skill);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);

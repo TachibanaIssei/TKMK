@@ -702,16 +702,20 @@ void Game::SetMusic()
 	//剣士
 		{
 			//スキルの音
-			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill3.wav");
-			//�_���[�W�������Ƃ��̔ߖ�
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill2.wav");
+			//手を上に上げるときの音
+			g_soundEngine->ResistWaveFileBank(enSound_Hand, "Assets/sound/playerSE/kenSkill1.wav");
+			//雷の落下音
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/kenSkill1.wav");
+			//被ダメの声
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Receiving_Damage, "Assets/sound/playerSE/playerScream1.wav");
 			//通常攻撃のコンボ音
 			g_soundEngine->ResistWaveFileBank(enSound_ComboONE, "Assets/sound/kenSE/ken1.wav");
 			g_soundEngine->ResistWaveFileBank(enSound_ComboTwo, "Assets/sound/kenSE/ken2.wav");
 			g_soundEngine->ResistWaveFileBank(enSound_ComboThree, "Assets/sound/kenSE/ken3.wav");
-			//�A���e�B���b�g
+			//必殺チャージ音
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Charge_Power, "Assets/sound/playerSE/kenSkill1.wav");
-			//必殺技の音
+			//死んだときの声
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Death, "Assets/sound/playerSE/playerScream3.wav");
 			//地面についたときの音
 			g_soundEngine->ResistWaveFileBank(enSound_Metal_Falling, "Assets/sound/playerSE/fall/playerfall1.wav");

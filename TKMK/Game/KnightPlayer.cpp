@@ -414,7 +414,10 @@ void KnightPlayer::Attack()
 		
 		//必殺技の溜めステートに移行する
 		m_charState = enCharState_Ult_liberation;
-
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Knight_Charge_Power);
+		se->Play(false);
+		se->SetVolume(1.0f);
 		Vector3 m_SwordPos = Vector3::Zero;
 		Quaternion m_SwordRot;
 		//自身をまとうエフェクト

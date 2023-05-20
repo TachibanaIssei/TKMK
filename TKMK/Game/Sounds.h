@@ -6,6 +6,7 @@ enum EnSound {
 	enSound_ComboONE,				//プレイヤーの1回目のコンボの音
 	enSound_ComboTwo,				//プレイヤーの2回目のコンボの音
 	enSound_ComboThree,				//プレイヤーの3回目コンボの音
+	enSound_Hand,					//プレイヤーが手を上に上げるときの音
 	enSound_Sword_Ult,				//プレイヤーの必殺の音
 	enSound_Metal_Falling,			//プレイヤーが着地した時の音
 	enSound_Knight_Receiving_Damage,//プレイヤーの被ダメ声

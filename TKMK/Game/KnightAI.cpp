@@ -853,7 +853,7 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を打たない
-		return;
+		//return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
@@ -916,7 +916,8 @@ bool KnightAI::UltimaitSkillTime()
 			//	//必殺技打たれた状態を無くす
 			//	actor->ChangeDamegeUltFlag(false);
 			//}
-
+			//対象のアクターがいなかったフラグをfalseにする
+			m_NoTargetActor = false;
 			//レベルを下げる
 			UltimateSkill();
 			//時間を動かす
@@ -1193,6 +1194,11 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 				//雷を打たれるキャラの情報を入れる
 				DamegeUltActor.push_back(actor);
 			
+		}
+
+		//攻撃対象のアクターがいなかったら
+		if (DamegeUltActor.empty() == true) {
+			m_NoTargetActor = true;
 		}
 
 		//カメラで見るのを終わりにする

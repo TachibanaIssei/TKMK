@@ -118,7 +118,10 @@ void Map::EnemyMap()
 
 void Map::Render(RenderContext& rc) 
 {
-	
+	if (m_game->GetStopFlag() == true) {
+		return;
+	}
+
 	m_Map.Draw(rc);
 	//m_MapFrame.Draw(rc);
 	

@@ -19,7 +19,7 @@ namespace
 
 	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ステータスバーポジション
 	const Vector3 TIME_POS = Vector3(0.0,470.0f, 0.0f);	//制限時間の座標
-	const Vector3 TIME_FONT_POS = Vector3(-80.0, 500.0f,0.0f);	//制限時間の座標
+	const Vector3 TIME_FONT_POS = Vector3(-120.0, 536.0f,0.0f);	//制限時間の座標
 
 	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
@@ -58,9 +58,13 @@ namespace
 
 	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//の座標
 
-	const Vector3 ADDPOINTPOS = Vector3(20.0f, 10.0f, 0.0f);
+	const Vector3 ADDPOINTPOS = Vector3(20.0f, 11.0f, 0.0f);
 
 	const float WHITEHP_WAIT = 0.2f;
+
+	const float CHAR_ICON_SIZE = 74.0f;
+
+	const Vector3 CHAR_ICON_MAXSIZE = Vector3(1.2f, 1.2f, 1.0f);
 
 }
 GameUI::GameUI()
@@ -80,13 +84,13 @@ bool GameUI::Start()
 	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
 	//ブルー
-	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 70.0f, 70.0f);
+	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//レッド
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", 70.0f, 70.0f);
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//グリーン
-	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", 70.0f, 70.0f);
+	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//イエロー
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 70.0f, 70.0f);
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 
 	//ポイント関連
 	{
@@ -97,7 +101,7 @@ bool GameUI::Start()
 		{
 			//ポイントを表示
 			m_PointFont[num].SetPosition(PointPos[num]);
-			m_PointFont[num].SetScale(1.3f);
+			m_PointFont[num].SetScale(1.1f);
 			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 			m_PointFont[num].SetRotation(0.0f);
 			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
@@ -109,15 +113,15 @@ bool GameUI::Start()
 				
 				m_CharIcon[0].SetPosition(CharIconPos[num]);
 				//フレームをプレイヤー用にする
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 360.0f, 120.0f);
 			}
 			else
 			{
 				m_CharIcon[num].SetPosition(CharIconPos[num]);
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 360.0f, 120.0f);
 				//レベル
 				m_LevelFont[num - 1].SetPosition(LevelPos[num-1]);
-				m_LevelFont[num - 1].SetScale(0.8f);
+				m_LevelFont[num - 1].SetScale(0.6f);
 				m_LevelFont[num - 1].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 				m_LevelFont[num - 1].SetRotation(0.0f);
 				m_LevelFont[num - 1].SetShadowParam(true, 2.0f, g_vec4Black);
@@ -194,6 +198,14 @@ bool GameUI::Start()
 
 	//右下のフレーム
 	{
+		//スキルのクールタイムを表示するフォントの設定
+		m_Skillfont.SetPosition(479.0f, -220.0f, 0.0f);
+		m_Skillfont.SetScale(1.7f);
+		m_Skillfont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+		m_Skillfont.SetRotation(0.0f);
+		m_Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
+		PlayerCoolTime = player->CharGetSkillCoolTimer();
+
 		//レベルや経験値のフレーム
 		m_Flame.Init("Assets/sprite/gameUI/LevelBar.DDS", 1200.0f, 500.0f);
 		m_Flame.SetPosition(FLAME_POS);
@@ -284,7 +296,7 @@ bool GameUI::Start()
 	//HP関連
 	{
 		//HPのフォント
-		m_HpFont.SetPosition(-650.0f, -465.0f, 0.0f);
+		m_HpFont.SetPosition(-650.0f, -445.0f, 0.0f);
 		m_HpFont.SetScale(1.0f);
 		m_HpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_HpFont.SetRotation(0.0f);
@@ -325,7 +337,7 @@ bool GameUI::Start()
 	{
 		m_TimeAndPointRender.Init("Assets/sprite/gameUI/timer.DDS", 1100.0f, 400.0f);
 		m_TimeAndPointRender.SetPosition(TIME_POS);
-		m_TimeAndPointRender.SetScale(0.35, 0.3, 0.3);
+		m_TimeAndPointRender.SetScale(0.35, 0.3, 1.0);
 
 		//フォントの設定。
 		//m_GameTimePos = TIME_FONT_POS;
@@ -374,8 +386,13 @@ void GameUI::Update()
 	}
 
 	CharPoint();
+
 	Level();
 	
+	int SkillCoolTime = player->CharGetSkillCoolTimer();
+	wchar_t Skill[255];
+	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+	m_Skillfont.SetText(Skill);
 	
 	//レベルの点滅
 	if (m_flashNumberFlag==false)
@@ -885,24 +902,31 @@ void GameUI::CharPoint()
 		swprintf_s(P, 255, L"%dp", POINT);
 		m_PointFont[num].SetText(P);
 
-
+		//一番ポイントが多いキャラのフレーム
 		if (MaxPoint <= charPoint[num])
 		{
-			m_PointFont[num].SetScale(1.8f);
+			m_PointFont[num].SetScale(1.4f);
 			Vector3 FontPos;
 			FontPos= ADDPOINTPOS + PointPos[num];
 			m_PointFont[num].SetPosition(FontPos);
 
-			m_PointFlame[num].SetScale(1.7f,1.3f,0.0f);
+			m_PointFlame[num].SetScale(1.47f,1.1f,0.0f);
 			m_PointFlame[num].Update();
+
+			/*m_CharIcon[num].SetScale(CHAR_ICON_MAXSIZE);
+			m_CharIcon[num].Update();*/
+
 			MaxPoint = charPoint[num];
 		}
 		else
 		{
-			m_PointFont[num].SetScale(1.3f);
+			m_PointFont[num].SetScale(1.1f);
 			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
 			m_PointFlame[num].Update();
+
+			/*m_CharIcon[num].SetScale(Vector3::One);
+			m_CharIcon[num].Update();*/
 		}
 
 
@@ -915,6 +939,10 @@ void GameUI::CharPoint()
 
 void GameUI::Render(RenderContext& rc)
 {
+	if (m_game->GetStopFlag() == true)
+	{
+		return;
+	}
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
 		//レベルや経験値のフレーム
@@ -925,6 +953,13 @@ void GameUI::Render(RenderContext& rc)
 		if (m_MathExp != 0) {
 			m_ExperienceBar_flont.Draw(rc);
 		}
+
+		//スキルのクールタイムとタイマーが違う時だけ表示
+		if (player->CharGetSkillCoolTimer() != PlayerCoolTime)
+		{
+			m_Skillfont.Draw(rc);
+		}
+		
 	
 		//経験値フレーム
 		m_ExperienceFlame.Draw(rc);

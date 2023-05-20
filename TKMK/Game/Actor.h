@@ -544,25 +544,25 @@ public:
 	/// <summary>
 	/// このキャラに対して必殺技を打たれたらフラグを変える
 	/// </summary>
-	void ChangeDamegeUltFlag(bool flag)
+	/*void ChangeDamegeUltFlag(bool flag)
 	{
 		m_DamegeUltimaitSkillaFlag = flag;
-	}
+	}*/
 
 	/// <summary>
 	/// 必殺技を打たれたフラグを返す
 	/// </summary>
-	bool GetDamegeUltFlag() {
+	/*bool GetDamegeUltFlag() {
 		return m_DamegeUltimaitSkillaFlag;
-	}
+	}*/
 
 	/// <summary>
 	/// 地上にいるかのカウンターを減らす
 	/// </summary>
-	void SubOnGroundCharCounter()
+	/*void SubOnGroundCharCounter()
 	{
 		m_OnGroundCharCounter--;
-	}
+	}*/
 
 	/// <summary>
 	/// 地上にいるかのフラグを変える
@@ -573,12 +573,12 @@ public:
 	//}
 
 	/// <summary>
-	/// 地上にいるかのフラグを返す
+	/// スキルのクールタイムのタイマーを返す
 	/// </summary>
-	/*bool GetGroundChackflag()
+	float GetSkillTimer()
 	{
-		return m_GroundChackFlag;
-	}*/
+		return SkillTimer;
+	}
 
 	/// <summary>
 	/// カメラで見たかのフラグを変える
@@ -647,6 +647,13 @@ public:
 		DamegeUltActor.clear();
 	}
 
+	//必殺技を打ったかどうかのフラグを返す
+	//打っている間はtrue
+	bool GetmUseUltimaitSkillFlag()
+	{
+		return m_UseUltimaitSkillFlag;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -654,18 +661,21 @@ private:
 protected:
 	int									Lv;								//レベル
 	int									AtkSpeed;						//攻撃速度
-	float								Cooltime;						//スキルのクールタイム
-	float								AvoidanceCoolTime;				//回避のクールタイム
+	float								Cooltime=0;						//スキルのクールタイム
+	float								AvoidanceCoolTime=0;			//回避のクールタイム
 	bool								SkillState = false;				//スキルが使用可能かどうかの判定
-	int									Point;						    //敵を倒して手に入れたポイント
-	int									GetExp;						    //中立の敵を倒したときの経験値
-	int									ExpTable;						//経験値テーブル
+	int									Point=0;						//敵を倒して手に入れたポイント
+	int									GetExp=0;						//中立の敵を倒したときの経験値
+	int									ExpTable=0;						//経験値テーブル
 	int									m_oldExpTable = 0;				//前のレベルの経験値テーブル
 	int									respawnNumber;					//リスポーンする座標の番号
 	bool								isDeath = false;				//死んだかどうかの判定
 	bool								invincibleFlag = false;			//無敵時間フラグ
 	int									Ponit = 0;						//獲得したポイント
 	int									m_SaveEXP = 0;					//UIに表示するために経験値を保存する
+	float								SkillTimer = 0;					//スキルのクールタイムを計算するタイマー
+	float								AvoidanceTimer = 0;				//回避のクールタイムを計算するタイマー
+	float								invincibleTimer = 0;			//無敵時間を計算するタイマー
 
 	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
@@ -744,7 +754,6 @@ protected:
 	bool m_DamegeUltimaitSkillaFlag = false;
 	//グラウンドに降りているかチェックするフラグ
 	//bool m_GroundChackFlag = false;
-
 	bool m_NoTargetActor = false;
 	//必殺技を打つ間隔を計るタイマー
 	float m_UltshootTimer = 0.9f;

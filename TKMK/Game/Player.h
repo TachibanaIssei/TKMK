@@ -115,6 +115,8 @@ public:
 
 	void CharResatSaveEXP() const;
 
+	float CharGetSkillCoolTimer() const;
+
 	//プレイヤーのステートを取得
 	//auto CharGetState() const;
 	auto CharGetState() const

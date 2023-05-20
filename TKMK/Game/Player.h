@@ -111,6 +111,12 @@ public:
 
 	int CharSetOldEXPTable() const;
 
+	int CharGetSaveEXP() const;
+
+	void CharResatSaveEXP() const;
+
+	float CharGetSkillCoolTimer() const;
+
 	//プレイヤーのステートを取得
 	//auto CharGetState() const;
 	auto CharGetState() const

@@ -7,56 +7,56 @@
 
 namespace ResultSpriteConst
 {
-	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);
-	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);
+	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);		//"タイトルに戻る"の画像の横に出す剣の画像に加算する値
+	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);	//"ゲーム終了"の画像の横に出す剣の画像に加算する値
 
-	const Vector3 GO_TITLE_POS = Vector3(-500.0f, -450.0f, 0.0f);		//"タイトルに戻る"
-	const Vector3 GAME_FINISH_POS = Vector3(525.0f, -450.0f, 0.0f);		//"ゲームを終了"
+	const Vector3 GO_TITLE_POS = Vector3(-500.0f, -450.0f, 0.0f);				//"タイトルに戻る"の位置
+	const Vector3 GAME_FINISH_POS = Vector3(525.0f, -450.0f, 0.0f);				//"ゲームを終了"の位置
 
-	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);		//リザルトのロゴの座標
+	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);				//リザルトのロゴの座標
 	
-	const Vector3 POINTS_ALIGN = { 280.0f,-135.0f,0.0f };				//ポイントの"p"を揃える
-	const Vector3 No1POINTS_ALIGN = { 280.0f,-148.0f,0.0f };			//一番上のポイントの"p"を揃える
-	const Vector3 POINTS_SCALE = { 1.0f,1.0f,1.0f };
-	const Vector3 NO1_POINTS_SCALE = { 1.2f,1.2f,1.0f };
+	const Vector3 POINTS_ALIGN = { 280.0f,-135.0f,0.0f };						//ポイントの"p"を揃える
+	const Vector3 No1POINTS_ALIGN = { 280.0f,-148.0f,0.0f };					//一番上のポイントの"p"を揃える
+	const Vector3 POINTS_SCALE = { 1.0f,1.0f,1.0f };							//"p"の画像の拡大率
+	const Vector3 NO1_POINTS_SCALE = { 1.2f,1.2f,1.0f };						//一位の"p"の画像の拡大率
 
-	const Vector3 FONT_POINT_ADD_POS = { 110.0f,-52.0f,0.0f };			//ポイント数のフォントの位置
-	const Vector3 NO1_FONT_POINT_ADD_POS = { 70.0f,-23.0f,0.0f };		//一番上のポイント数のフォントの位置
+	const Vector3 FONT_POINT_ADD_POS = { 110.0f,-52.0f,0.0f };					//ポイント数のフォントの位置
+	const Vector3 NO1_FONT_POINT_ADD_POS = { 100.0f,-43.0f,0.0f };				//一番上のポイント数のフォントの位置
 
-	const Vector3 PLAYER_NAME_ALIGN = { 20.0f,0.0f,0.0f };				//プレイヤー名をCPUに揃えるために加算する値
-	const Vector3 LOSER_PLAYER_NAME_ALIGN = { 15.0f,-3.0f,0.0f };		//プレイヤー名をCPUに揃えるために加算する値
+	const Vector3 PLAYER_NAME_ALIGN = { 20.0f,0.0f,0.0f };						//プレイヤー名をCPUに揃えるために加算する値
+	const Vector3 LOSER_PLAYER_NAME_ALIGN = { 15.0f,-3.0f,0.0f };				//プレイヤー名をCPUに揃えるために加算する値
+	
+	const Vector3 NO1_PLAYER_NAME_SCALE = { 1.2f,1.2f,1.0f };					//一位の名前の拡大率
+	const Vector3 LOSER_PLAYER_NAME_SCALE = { 0.85f,0.85f,1.0f };				//それ以外の名前の拡大率
 
-	const Vector3 NO1_PLAYER_NAME_SCALE = { 1.2f,1.2f,1.0f };
-	const Vector3 LOSER_PLAYER_NAME_SCALE = { 0.85f,0.85f,1.0f };
+	const float NAME_WIDTH = 278.0f;											//プレイヤーとCPUの名前の幅
+	const float NAME_HEIGHT = 118.0f;											//プレイヤーとCPUの名前の高さ
 
-	const float NAME_WIDTH = 278.0f;
-	const float NAME_HEIGHT = 118.0f;
+	const Vector3 KNIGHT_FACE_ADD_POS = { -210.0f,0.0f,0.0f };					//剣士の顔の位置を調整するために加算する座標
+	const Vector3 NO1_KNIGHT_FACE_ADD_POS = { -210.0f,3.0f,0.0f };				//剣士の顔の位置を調整するために加算する座標
+	const Vector3 LOSER_KNIGHT_FACE_SCALE = { 0.8f,0.8f,1.0f };					//剣士の顔の拡大率
+	const float KNIGHT_FACE_WIDTH = 88.0f;										//剣士の顔の幅
+	const float KNIGHT_FACE_HEIGHT = 122.0f;									//剣士の顔の高さ
 
-	const Vector3 KNIGHT_FACE_ADD_POS = { -210.0f,0.0f,0.0f };	//剣士の顔の位置を調整するために加算する座標
-	const Vector3 NO1_KNIGHT_FACE_ADD_POS = { -210.0f,3.0f,0.0f };	//剣士の顔の位置を調整するために加算する座標
-	const Vector3 LOSER_KNIGHT_FACE_SCALE = { 0.8f,0.8f,1.0f };
-	const float KNIGHT_FACE_WIDTH = 88.0f;
-	const float KNIGHT_FACE_HEIGHT = 122.0f;
+	const float POINTS_UNIT_WIDTH  = 54.0f;										//ポイントの単位の幅
+	const float POINTS_UNIT_HEIGHT = 69.0f;										//ポイントの単位の高さ
 
-	const float POINTS_UNIT_WIDTH  = 54.0f;		//ポイントの単位の幅
-	const float POINTS_UNIT_HEIGHT = 69.0f;		//ポイントの単位の高さ
+	const Vector3 NO1_NAME_PLATE_ADD_POS = { 57.0f,-120.0f,0.0f };				//一位の名前の背景の画像に足す座標
+	const Vector3 LOSER_NAME_PLATE_ADD_POS = { 50.0f,-120.0f,0.0f };			//一位以外の名前の背景の画像に足す座標
+	const float NO1_NAME_PLATE_WIDTH = 818.0f;									//一位の名前の背景の画像の幅
+	const float NO1_NAME_PLATE_HEIGHT = 158.0f;									//一位の名前の背景の画像の高さ
+	const float LOSER_NAME_PLATE_WIDTH = 800.0f;								//一位以外の名前の背景の画像の幅
+	const float LOSER_NAME_PLATE_HEIGHT = 120.0f;								//一位以外の名前の背景の画像の高さ
 
-	const Vector3 NO1_NAME_PLATE_ADD_POS = { 57.0f,-120.0f,0.0f };	//一位の名前の背景の画像に足す座標
-	const Vector3 LOSER_NAME_PLATE_ADD_POS = { 50.0f,-120.0f,0.0f };	//一位以外の名前の背景の画像に足す座標
-	const float NO1_NAME_PLATE_WIDTH = 818.0f;					//一位の名前の背景の画像の幅
-	const float NO1_NAME_PLATE_HEIGHT = 158.0f;					//一位の名前の背景の画像の高さ
-	const float LOSER_NAME_PLATE_WIDTH = 800.0f;				//一位以外の名前の背景の画像の幅
-	const float LOSER_NAME_PLATE_HEIGHT = 120.0f;				//一位以外の名前の背景の画像の高さ
+	const Vector3 GAMERANK_ADD_POS = { -500.0f,-120.0f,0.0f };					//順位画像の位置
+	const Vector3 GAMERANK_1ST_SCALE = { 1.2f,1.2f,1.0f };						//１位の順位画像の位置
+	const float GAMERANK_WIDTH = 256.0f;										//順位画像の幅
+	const float GAMERANK_HEIGHT = 114.0f;										//順位画像の高さ
 
-	const Vector3 GAMERANK_ADD_POS = { -500.0f,-120.0f,0.0f };
-	const Vector3 GAMERANK_1ST_SCALE = { 1.2f,1.2f,1.0f };
-	const float GAMERANK_WIDTH = 256.0f;
-	const float GAMERANK_HEIGHT = 114.0f;
+	const float POINT_FONT_SHADOW_OFFSET = 2.0f;								//フォントの輪郭の太さ
 
-	const float POINT_FONT_SHADOW_OFFSET = 5.0f;
-
-	const float LOSER_WORD_SCALE = 1.8f;	//フォントの大きさ
-	const float NO1_WORD_SCALE = 2.5f;	//一番上のフォントの大きさ
+	const float LOSER_WORD_SCALE = 1.8f;										//フォントの大きさ
+	const float NO1_WORD_SCALE = 2.0f;											//一番上のフォントの大きさ
 }
 
 Result::Result()

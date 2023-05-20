@@ -6,7 +6,9 @@
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "Fade.h"
-
+#include "ExpforKnight.h"
+//todo２かいレベルが下がることがある
+//に回レベルダウンしている可能性
 namespace
 {
 	const int Characters = 4;
@@ -17,7 +19,7 @@ namespace
 
 	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ステータスバーポジション
 	const Vector3 TIME_POS = Vector3(0.0,470.0f, 0.0f);	//制限時間の座標
-	const Vector3 TIME_FONT_POS = Vector3(-80.0, 500.0f,0.0f);	//制限時間の座標
+	const Vector3 TIME_FONT_POS = Vector3(-120.0, 536.0f,0.0f);	//制限時間の座標
 
 	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
@@ -56,9 +58,13 @@ namespace
 
 	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//の座標
 
-	const Vector3 ADDPOINTPOS = Vector3(20.0f, 10.0f, 0.0f);
+	const Vector3 ADDPOINTPOS = Vector3(20.0f, 11.0f, 0.0f);
 
 	const float WHITEHP_WAIT = 0.2f;
+
+	const float CHAR_ICON_SIZE = 74.0f;
+
+	const Vector3 CHAR_ICON_MAXSIZE = Vector3(1.2f, 1.2f, 1.0f);
 
 }
 GameUI::GameUI()
@@ -78,13 +84,13 @@ bool GameUI::Start()
 	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
 	//ブルー
-	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", 70.0f, 70.0f);
+	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//レッド
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", 70.0f, 70.0f);
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//グリーン
-	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", 70.0f, 70.0f);
+	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//イエロー
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", 70.0f, 70.0f);
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 
 	//ポイント関連
 	{
@@ -95,7 +101,7 @@ bool GameUI::Start()
 		{
 			//ポイントを表示
 			m_PointFont[num].SetPosition(PointPos[num]);
-			m_PointFont[num].SetScale(1.3f);
+			m_PointFont[num].SetScale(1.1f);
 			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 			m_PointFont[num].SetRotation(0.0f);
 			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
@@ -107,15 +113,15 @@ bool GameUI::Start()
 				
 				m_CharIcon[0].SetPosition(CharIconPos[num]);
 				//フレームをプレイヤー用にする
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 360.0f, 120.0f);
 			}
 			else
 			{
 				m_CharIcon[num].SetPosition(CharIconPos[num]);
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 360.0f, 120.0f);
 				//レベル
 				m_LevelFont[num - 1].SetPosition(LevelPos[num-1]);
-				m_LevelFont[num - 1].SetScale(0.8f);
+				m_LevelFont[num - 1].SetScale(0.6f);
 				m_LevelFont[num - 1].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 				m_LevelFont[num - 1].SetRotation(0.0f);
 				m_LevelFont[num - 1].SetShadowParam(true, 2.0f, g_vec4Black);
@@ -192,6 +198,14 @@ bool GameUI::Start()
 
 	//右下のフレーム
 	{
+		//スキルのクールタイムを表示するフォントの設定
+		m_Skillfont.SetPosition(479.0f, -220.0f, 0.0f);
+		m_Skillfont.SetScale(1.7f);
+		m_Skillfont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+		m_Skillfont.SetRotation(0.0f);
+		m_Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
+		PlayerCoolTime = player->CharGetSkillCoolTimer();
+
 		//レベルや経験値のフレーム
 		m_Flame.Init("Assets/sprite/gameUI/LevelBar.DDS", 1200.0f, 500.0f);
 		m_Flame.SetPosition(FLAME_POS);
@@ -207,7 +221,13 @@ bool GameUI::Start()
 		m_ExperienceBar_flont.Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
 		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
 		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
-		m_ExperienceBar_flont.SetScale(0.5, 50.0, 1.0);
+		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
+		/// <summary>
+		/// /////////////////////////
+		/// </summary>
+		/// <returns></returns>
+		m_ExpTable = player->CharSetEXPTable();
+		m_MathExp = player->CharSetEXP();
 
 		//経験値バーの裏
 		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
@@ -230,6 +250,7 @@ bool GameUI::Start()
 		m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
 		m_LvNumber.SetPosition(LV_NUBER_POS);
 		m_LvNumber.SetScale(1.4, 1.4, 1.0);
+		m_ChangePlayerLevel = player->CharSetLevel();
 
 		//Lv1の裏の画像の読み込み
 		m_LvNumber_back.Init("Assets/sprite/gameUI/Lv1_back.DDS", 150.0f, 150.0f);
@@ -250,7 +271,7 @@ bool GameUI::Start()
 		m_SkillRenderOUT.SetPosition(Skill_Pos);
 		m_SkillRenderOUT.SetScale(1.1, 1.1);
 		//必殺技のアイコン
-		m_UltRenderIN.Init("Assets/sprite/gameUI/ULT_Icon_IN.DDS", 162, 162);
+		m_UltRenderIN.Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", 162, 162);
 		m_UltRenderIN.SetPosition(Ult_Pos);
 		m_UltRenderIN.SetScale(1.2, 1.2);
 		//必殺のアイコンフレーム
@@ -275,7 +296,7 @@ bool GameUI::Start()
 	//HP関連
 	{
 		//HPのフォント
-		m_HpFont.SetPosition(-650.0f, -465.0f, 0.0f);
+		m_HpFont.SetPosition(-650.0f, -445.0f, 0.0f);
 		m_HpFont.SetScale(1.0f);
 		m_HpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_HpFont.SetRotation(0.0f);
@@ -316,7 +337,7 @@ bool GameUI::Start()
 	{
 		m_TimeAndPointRender.Init("Assets/sprite/gameUI/timer.DDS", 1100.0f, 400.0f);
 		m_TimeAndPointRender.SetPosition(TIME_POS);
-		m_TimeAndPointRender.SetScale(0.35, 0.3, 0.3);
+		m_TimeAndPointRender.SetScale(0.35, 0.3, 1.0);
 
 		//フォントの設定。
 		//m_GameTimePos = TIME_FONT_POS;
@@ -365,8 +386,13 @@ void GameUI::Update()
 	}
 
 	CharPoint();
+
 	Level();
 	
+	int SkillCoolTime = player->CharGetSkillCoolTimer();
+	wchar_t Skill[255];
+	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+	m_Skillfont.SetText(Skill);
 	
 	//レベルの点滅
 	if (m_flashNumberFlag==false)
@@ -394,6 +420,7 @@ void GameUI::Update()
 		m_LvNumber_back.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
 	m_LvNumber_back.Update();
+
 
 	EXPBar();
 
@@ -623,6 +650,8 @@ void GameUI::Timer()
 			if (timerScale < 4.0f)
 			{
 				timerScale += 2.0f*g_gameTime->GetFrameDeltaTime();
+				//
+
 			}
 			else
 			{
@@ -716,50 +745,120 @@ void GameUI::EXPBar()
 {
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
-	//プレイヤーの経験値を取得
-	float nowEXP = player->CharSetEXP();
-	//今の経験値テーブルを取得
-	float nowEXPTable = player->CharSetEXPTable();
-	//前のレベルの経験値テーブルを取得
-	float oldEXPTable = player->CharSetOldEXPTable();
 
-	//最終的な経験値テーブル
-	float finalEXPTable = nowEXPTable - oldEXPTable;
-	//最終的な経験値
-	float finalEXP = nowEXP - oldEXPTable;
+	
+	if (m_MathExp != m_SaveExp) {
+		//EXPオーブが飛んできた後に増やす
+		//if (m_EXPupFlag == true) {
+			//増やすか減らす
+			if (m_MathExp < m_SaveExp)
+				m_MathExp++;
+		//}
+		else if (m_MathExp >= m_nowEXP)
+		{
+			m_MathExp--;
+			m_DownFlag = true;
+		}
+	}
+	else
+	{
+		//プレイヤーの経験値を取得
+		m_nowEXP = player->CharSetEXP();
+		//今の経験値テーブルを取得
+		nowEXPTable = player->CharSetEXPTable();
+		//経験値テーブルを
+		m_SaveExp = player->CharGetSaveEXP();
 
+		m_EXPupFlag = false;
+	}
+
+	if (m_oldPlayerLevel == 10)
+	{
+		EXPScale.x = 1.0f;
+	}
+	else
 	//HPバーの増えていく割合。
-	EXPScale.x = (float)finalEXP / (float)finalEXPTable;
-	m_ExperienceBar_flont.SetScale(EXPScale);
+	EXPScale.x = (float)m_MathExp / (float)m_ExpTable;
 
-	////EXPバー画像を左寄せに表示する
-	//Vector3 BerSizeSubtraction = HPBerSend(EXPBAR_SIZE, EXPScale);	//画像の元の大きさ
+	//経験値テーブルより獲得した経験値が多くなったら
+	//たまに二回ゲージが伸びる
+	if (m_MathExp >= m_ExpTable/*EXPScale.x >= 1.0f*/) {
+		//レベルが上がるか下がるかテーブルが変わる
+		//動く値
+		m_SaveExp -= m_ExpTable;
 
-	///*if (finalEXPTable != oldEXPTable)
+		if (m_SaveExp <= 0) {
+			//セーブした経験値をリセット
+			player->CharResatSaveEXP();
+			m_SaveExp= player->CharGetSaveEXP();
+		}
+
+		m_MathExp = 0;
+		//現在のプレイヤーの経験値テーブルを代入
+		m_ExpTable = player->CharSetEXPTable();
+		
+		//レベルアップの処理
+		if (m_oldPlayerLevel < m_NowPlayerLevel) {
+			m_oldPlayerLevel++;
+		}
+
+		LevelFontChange(m_oldPlayerLevel);
+	}
+
+	//レベルが下がったとき
+	if (m_oldPlayerLevel> m_NowPlayerLevel/*EXPScale.x <= 0.0f && m_DownFlag == true*/)
+	{
+		//現在のプレイヤーの経験値テーブルを代入
+		m_ExpTable = player->CharSetEXPTable();
+		//セーブした経験値をリセット
+		player->CharResatSaveEXP();
+		//動く値調
+		m_SaveExp = 0;
+		//m_MathExp = 0;
+		m_oldPlayerLevel--;
+		LevelFontChange(m_oldPlayerLevel);
+		m_DownFlag = false;
+	}
+	
+	//if (m_oldPlayerLevel != m_NowPlayerLevel)
 	//{
-	//	m_EXPBerPos.x = EXPERIENCE_BAR_POS.x;
-	//}*/
-
-	////経験値の量が変わったときだけ
-	//if (finalEXP != oldEXP)
-	//{
-	//	m_EXPBerPos.x -= BerSizeSubtraction.x;
+	//	LevelFontChange(m_NowPlayerLevel);
+	//	//セーブした経験値をリセット
+	//	//player->CharResatSaveEXP();
 	//}
-	//
-	//
-	//m_ExperienceBar_flont.SetPosition(Vector3(m_EXPBerPos.x, m_EXPBerPos.y, 0.0f));
-	//m_ExperienceBar_flont.SetScale(EXPScale);
+
+	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
+	
+	//m_oldPlayerLevel = m_NowPlayerLevel;
 
+	//デバッグ用
 	//レベルアップまでに必要な経験値の量
-	int UpToLevel = nowEXPTable - nowEXP;
+	int UpToLevel = m_MathExp/* - m_nowEXP*/;
 	wchar_t UTL[255];
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
 
-	oldEXP = finalEXP;
-	oldEXPTable = finalEXPTable;
+	//前フレームのレベル
+	//oldLevel = m_ChangePlayerLevel;
+	//前フレームの経験値テーブル
+	//oldEXPTable = nowEXPTable;
+}
+
+bool  GameUI::GrowEXP()
+{
+	return false;
+}
+
+bool GameUI::DownEXP(int NowPlayerLv)
+{
+	return false;
+}
+
+void GameUI::ChangeLevel()
+{
+	
 }
 
 //
@@ -803,24 +902,31 @@ void GameUI::CharPoint()
 		swprintf_s(P, 255, L"%dp", POINT);
 		m_PointFont[num].SetText(P);
 
-
+		//一番ポイントが多いキャラのフレーム
 		if (MaxPoint <= charPoint[num])
 		{
-			m_PointFont[num].SetScale(1.8f);
+			m_PointFont[num].SetScale(1.4f);
 			Vector3 FontPos;
 			FontPos= ADDPOINTPOS + PointPos[num];
 			m_PointFont[num].SetPosition(FontPos);
 
-			m_PointFlame[num].SetScale(1.7f,1.3f,0.0f);
+			m_PointFlame[num].SetScale(1.47f,1.1f,0.0f);
 			m_PointFlame[num].Update();
+
+			/*m_CharIcon[num].SetScale(CHAR_ICON_MAXSIZE);
+			m_CharIcon[num].Update();*/
+
 			MaxPoint = charPoint[num];
 		}
 		else
 		{
-			m_PointFont[num].SetScale(1.3f);
+			m_PointFont[num].SetScale(1.1f);
 			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
 			m_PointFlame[num].Update();
+
+			/*m_CharIcon[num].SetScale(Vector3::One);
+			m_CharIcon[num].Update();*/
 		}
 
 
@@ -833,6 +939,10 @@ void GameUI::CharPoint()
 
 void GameUI::Render(RenderContext& rc)
 {
+	if (m_game->GetStopFlag() == true)
+	{
+		return;
+	}
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
 		//レベルや経験値のフレーム
@@ -840,7 +950,17 @@ void GameUI::Render(RenderContext& rc)
 		//経験値の裏
 		m_ExperienceBar_back.Draw(rc);
 		//経験値の表 変動する
-		m_ExperienceBar_flont.Draw(rc);
+		if (m_MathExp != 0) {
+			m_ExperienceBar_flont.Draw(rc);
+		}
+
+		//スキルのクールタイムとタイマーが違う時だけ表示
+		if (player->CharGetSkillCoolTimer() != PlayerCoolTime)
+		{
+			m_Skillfont.Draw(rc);
+		}
+		
+	
 		//経験値フレーム
 		m_ExperienceFlame.Draw(rc);
 		//

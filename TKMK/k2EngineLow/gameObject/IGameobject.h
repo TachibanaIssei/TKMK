@@ -22,7 +22,7 @@ namespace nsK2EngineLow {
 		}
 	public:
 
-
+		virtual void OnDestroy() {}
 		/*!
 		*@brief	Updateの直前で呼ばれる開始処理。
 		*@details

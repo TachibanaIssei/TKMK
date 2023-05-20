@@ -14,11 +14,13 @@
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
 //たまに死んでも動ける
 //ジャンプ
-//必殺技打つときに一瞬止まるようにする
-//アニメーションイベント
-// 
 //三段目攻撃も途中にほかのキャラが必殺技を使うとフラグがかわらなくなる
-//死んだときにAIが必殺技を使うとカメラがおかしくなる時がある
+//必殺技が一人しか当たらないときにカメラに処理できていないかも
+//ベクタークラスでかんりする
+
+//必殺技中断された時ライトりせっと
+
+
 
 namespace {
 	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
@@ -68,12 +70,12 @@ bool KnightPlayer::Start() {
 
 	m_modelRender.Update();
 
-	//スキルのクールタイムを表示するフォントの設定
-	Skillfont.SetPosition(485.0f, -243.0f, 0.0f);
-	Skillfont.SetScale(2.0f);
-	Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	Skillfont.SetRotation(0.0f);
-	Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
+	////スキルのクールタイムを表示するフォントの設定
+	//Skillfont.SetPosition(485.0f, -243.0f, 0.0f);
+	//Skillfont.SetScale(2.0f);
+	//Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//Skillfont.SetRotation(0.0f);
+	//Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
 
 	//回避のフレームの設定
 	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
@@ -154,141 +156,136 @@ void KnightPlayer::Update()
 		//今のフレームと前のフレームのレベルが違っていたら
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
-			m_gameUI->LevelFontChange(Lv);
-		}
-		if (Lv > oldLv)
-		{
-			if (LevelUp_efk != nullptr) {
-				LevelUp_efk->DeleteEffect();
-			}
-			LevelUp_efk = NewGO<ChaseEFK>(4);
-			LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(enSound_Level_UP);
-			se->SetVolume(1.0f);
-			se->Play(false);
-		}
-		else if (Lv < oldLv)
-		{
-			if (LevelDown_efk != nullptr) {
-				LevelDown_efk->DeleteEffect();
-			}
-			LevelDown_efk = NewGO<ChaseEFK>(4);
-			LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
-		}
-		
-		//前フレームのレベルを取得
-		oldLv = Lv;
-		//前フレームの座標を取得
-		OldPosition = m_position;
-
-		int SkillCoolTime = SkillTimer;
-		wchar_t Skill[255];
-		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
-		Skillfont.SetText(Skill);
-
-		//リスポーンしたときしか使えない
-		//飛び降りる処理
-		//地上にいないならジャンプしかしないようにする
-		if (m_position.y > 1.0f) {
-			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+			m_gameUI->ChangePlayerLevel(Lv);
+			//m_gameUI->LevelFontChange(Lv);
+			if (Lv > oldLv)
 			{
-				pushFlag = true;
-				//jampAccumulateflag = true;
-				m_charState = enCharState_Jump;
+				if (LevelUp_efk != nullptr) {
+					LevelUp_efk->DeleteEffect();
+				}
+				LevelUp_efk = NewGO<ChaseEFK>(4);
+				LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(enSound_Level_UP);
+				se->SetVolume(1.0f);
+				se->Play(false);
+			}
+			else if (Lv < oldLv)
+			{
+				if (LevelDown_efk != nullptr) {
+					LevelDown_efk->DeleteEffect();
+				}
+				LevelDown_efk = NewGO<ChaseEFK>(4);
+				LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
 			}
 		}
+			//前フレームのレベルを取得
+			oldLv = Lv;
+			//前フレームの座標を取得
+			OldPosition = m_position;
+
+			//リスポーンしたときしか使えない
+			//飛び降りる処理
+			//地上にいないならジャンプしかしないようにする
+			if (m_position.y > 1.0f) {
+				if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+				{
+					pushFlag = true;
+					//jampAccumulateflag = true;
+					m_charState = enCharState_Jump;
+				}
+			}
+			else
+			{
+
+				if (m_charState != enCharState_Death)
+				{
+					//地上にいる
+					IsGroundFlag = true;
+				}
+				//攻撃処理
+				Attack();
+				//回避処理
+				Avoidance();
+			}
+
+			//攻撃上昇中
+			//AttackUP();
+
+			//移動処理
+			Vector3 stickL = Vector3::Zero;
+			if (CantMove == false)
+			{
+				stickL.x = g_pad[0]->GetLStickXF();
+				stickL.y = g_pad[0]->GetLStickYF();
+			}
+			Move(m_position, m_charCon, m_Status, stickL);
+
+
+			//回避中なら
+			if (AvoidanceFlag == true) {
+				m_charState = enCharState_Avoidance;
+				//移動処理を行う(直線移動のみ)。
+				MoveStraight();
+			}
+
+			//スキル使用中なら
+			if (SkillState == true) {
+				//スキルステート
+				m_charState = enCharState_Skill;
+				//移動処理を行う(直線移動のみ)。
+				MoveStraight();
+			}
+			//ステート
+			ManageState();
+			//無敵時間
+			Invincible();
+			//回転処理
+			Rotation();
+
+			CoolTimeProcess();
+			GrayScaleUI();
+
+		}
+		//速度を0にする(動かないようにする)
 		else
 		{
-
-			if (m_charState != enCharState_Death)
-			{
-				//地上にいる
-				IsGroundFlag = true;
-			}
-			//攻撃処理
-			Attack();
-			//回避処理
-			Avoidance();
+			m_moveSpeed = Vector3::Zero;
 		}
 
-		//攻撃上昇中
-		//AttackUP();
 
-		//移動処理
-		Vector3 stickL = Vector3::Zero;
-		if (CantMove == false)
+
+		if (AvoidanceTimer != AvoidanceCoolTime)
 		{
-			stickL.x = g_pad[0]->GetLStickXF();
-			stickL.y = g_pad[0]->GetLStickYF();
-		}
-		Move(m_position, m_charCon, m_Status, stickL);
-		
-
-		//回避中なら
-		if (AvoidanceFlag == true) {
-			m_charState = enCharState_Avoidance;
-			//移動処理を行う(直線移動のみ)。
-			MoveStraight();
+			//回避のスプライトの表示の処理
+			AvoidanceSprite();
 		}
 
-		//スキル使用中なら
-		if (SkillState == true) {
-			//スキルステート
-			m_charState = enCharState_Skill;
-			//移動処理を行う(直線移動のみ)。
-			MoveStraight();
+		//キャラクターコントローラーを使って座標を移動させる。
+		//ワープする時はキャラコンを移動させない
+		if (IsEnableMove() == true) {
+
+			m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		}
-		//ステート
-		ManageState();
-        //無敵時間
-	    Invincible();
-		//回転処理
-		Rotation();
 
-		CoolTimeProcess();
-		GrayScaleUI();
+		//ジャンプ中ではないかつ落下中なら
+		if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
+		{
+			m_charState = enCharState_Fall;
+		}
 
-	}
-	//速度を0にする(動かないようにする)
-	else
-	{
-		m_moveSpeed = Vector3::Zero;
-	}
+		if (m_moveSpeed.LengthSq() != 0.0f) {
+			m_forwardNow = m_moveSpeed;
+			m_forwardNow.Normalize();
+			m_forwardNow.y = 0.0f;
+		}
 
+		// レベルをゲームに教える（下部スプライト更新用）
+		m_game->UnderSprite_Level(Lv);
 
-
-	if (AvoidanceTimer != AvoidanceCoolTime)
-	{
-		//回避のスプライトの表示の処理
-		AvoidanceSprite();
-	}
-
-	//キャラクターコントローラーを使って座標を移動させる。
-	//ワープする時はキャラコンを移動させない
-	if (IsEnableMove() == true) {
-
-		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	}
+		m_modelRender.SetPosition(m_position);
+		m_modelRender.Update();
 	
-	//ジャンプ中ではないかつ落下中なら
-	if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
-	{
-		m_charState = enCharState_Fall;
-	}
-	
-	if (m_moveSpeed.LengthSq() != 0.0f) {
-		m_forwardNow = m_moveSpeed;
-		m_forwardNow.Normalize();
-		m_forwardNow.y = 0.0f;
-	}
-
-	// レベルをゲームに教える（下部スプライト更新用）
-	m_game->UnderSprite_Level(Lv);
-
-	m_modelRender.SetPosition(m_position);
-	m_modelRender.Update();
-
 }
 
 
@@ -408,7 +405,11 @@ void KnightPlayer::Attack()
 	//Xボタンが押されたら
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
+		//ゲーム側に教える
 		m_game->UnderSprite_Ult();
+		//画面を暗くする
+		m_game->SetUltTimeSkyFlag(true);
+
 		pushFlag = true;
 		
 		//必殺技の溜めステートに移行する
@@ -452,21 +453,26 @@ bool KnightPlayer::UltimaitSkillTime()
 		}
 		
 		//全ての雷が落ちてから
-		
-		//地上にいるキャラに必殺技を打ち終わったら
-		if (m_OnGroundCharCounter <= 0)
+		//雷を落とすアクターのリストの中身がなくなったら
+		if (DamegeUltActor.empty()==true)
 		{
-			for (auto actor : m_game->GetActors())
-			{
-				//必殺技打たれた状態を無くす
-				actor->ChangeDamegeUltFlag(false);
-			}
+			//for (auto actor : m_game->GetActors())
+			//{
+			//	//必殺技打たれた状態を無くす
+			//	actor->ChangeDamegeUltFlag(false);
+			//}
 
+			//対象のアクターがいなかったフラグをfalseにする
+			m_NoTargetActor = false;
 			//レベルを下げる
 			UltimateSkill();
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//画面を暗くするフラグをfalseにする
+			m_game->SetUltTimeSkyFlag(false);
+			//画面が暗いのをリセットする
+			m_game->LightReset();
 			//中身を全て消去する
 			DamegeUltActor.clear();
 		}
@@ -503,18 +509,10 @@ void KnightPlayer::Avoidance()
 /// </summary>
 void KnightPlayer::MakeUltSkill()
 {
-
+	//同じやつ二回当ててる
 	//必殺技の雷の生成
 	for (auto actor : DamegeUltActor)
 	{
-		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
-		if (GetName() == actor->GetName()||actor->GetDamegeUltFlag()==true)
-		{
-			continue;
-		}
-		//地上にいるAIにだけ雷を落とす
-		if (actor->IsGroundIn() == true)
-		{
 			//必殺技の雷の生成
 			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
 			//生成したのがプレイヤーなのでtrue
@@ -532,22 +530,24 @@ void KnightPlayer::MakeUltSkill()
 			wizardUlt->SetGame(m_game);
 
 			//必殺技を打たれたのでフラグを立てる
-			actor->ChangeDamegeUltFlag(true);
+			//actor->ChangeDamegeUltFlag(true);
 
 			//雷を落とすキャラがリストの最後なら
-			if (actor == m_game->GetActors().back())
+			if (actor == DamegeUltActor.back())
 			{
 				//最後であることを知らせる
 				wizardUlt->ChangeUltEndFlag(true);
+
+				//DamegeUltActor.clear();
+
+				m_UltshootTimer = 0.0f;
+				//一人ずつ必殺技を打つのでぬける
+				return;
 			}
-			//カウント減らす
-		//m_OnGroundCharCounter--;
-		//
 
 			m_UltshootTimer = 0.0f;
 			//一人ずつ必殺技を打つのでぬける
 			return;
-		}
 		
 	}
 	
@@ -688,7 +688,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		ThunderCharge->Play();
 	}
 
-	//必殺技のアニメーションで剣を振ったら
+	//必殺技のアニメーションで剣を空に掲げたら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
 		//雷を生成する
@@ -698,20 +698,26 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		for (auto actor : m_game->GetActors())
 		{
 			//名前が自身と同じもしくは一度調べたキャラならやり直す
-			if (GetName() == actor->GetName()|| actor->GetGroundChackflag()==true) {
+			if (GetName() == actor->GetName()|| m_game->IsActorGroundChack(actor)==false) {
 				continue;
 			}
-
-			if (actor->IsGroundIn()==true)
-			{
-				//地上にいるのでカウントを増やす
-				m_OnGroundCharCounter++;
-				//このキャラはグラウンドにいる
-				actor->ChangeGroundChackflag(true);
-				//雷を打たれるキャラの情報を入れる
-				DamegeUltActor.push_back(actor);
-			}
+			////地上にいるのでカウントを増やす
+			//m_OnGroundCharCounter++;
+			////このキャラはグラウンドにいる
+			//actor->ChangeGroundChackflag(true);
+			//雷を打たれるキャラの情報を入れる
+			DamegeUltActor.push_back(actor);
 		}
+
+		//プレイヤーのみの処理
+		//攻撃対象のアクターがいなかったら
+		if (DamegeUltActor.empty() == true) {
+
+			m_NoTargetActor = true;
+		}
+
+
+		//エネルギースラッシュ用
 		//必殺技の当たり判定のクラスを作成
 		//MakeUltSkill();
 		//レベルを下げる

@@ -21,7 +21,7 @@ bool BackGround::Start()
 	m_modelRenderGround.SetScale(m_scale);
 	m_modelRenderGround.Update();
 	m_physicsStaticObjectGround.CreateFromModel(m_modelRenderGround.GetModel(), m_modelRenderGround.GetModel().GetWorldMatrix());
-	m_physicsStaticObjectGround.GetbtCollisionObject()->setUserIndex(enCollisionAttr_SlipThroughWall);
+	m_physicsStaticObjectGround.GetbtCollisionObject()->setUserIndex(enCollisionAttr_Ground);
 
 	//塔と中心の壁
 	m_modelRenderObject.Init("Assets/modelData/background/stadium_object.tkm");

@@ -380,7 +380,7 @@ protected:
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
 
-	std::vector<Actor*> DamegeUltActor;
+	
 
 	enum AtkTimingState
 	{
@@ -411,12 +411,7 @@ protected:
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
 	int AtkEndPosId= -1;
-	//スキルのクールタイムを計算するタイマー
-	float SkillTimer = 0;
-	//回避のクールタイムを計算するタイマー
-	float AvoidanceTimer = 0;
-	//無敵時間を計算するタイマー
-	float invincibleTimer = 0;
+	
 	//獲得した経験値仮
 	int exp=1;
 	//Newtral_Enemyの攻撃力

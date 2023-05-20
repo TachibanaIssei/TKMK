@@ -869,10 +869,13 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を打たない
-		return;
+		//return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
+			//画面を暗くする
+			m_game->SetUltTimeSkyFlag(true);
+
 			pushFlag = true;
 			//必殺技の溜めステートに移行する
 			m_charState = enCharState_Ult_liberation;
@@ -903,11 +906,16 @@ void KnightAI::Attack()
 //必殺技を打っている間の処理
 bool KnightAI::UltimaitSkillTime()
 {
+	
+
 	if (m_UseUltimaitSkillFlag == true)
 	{
 		if (m_UltshootTimer > 1)
 		{
-			MakeUltSkill();
+			
+				MakeUltSkill();
+			
+			//MakeUltSkill();
 		}
 		else
 		{
@@ -917,19 +925,24 @@ bool KnightAI::UltimaitSkillTime()
 		//全ての雷が落ちてから
 
 		//地上にいるキャラに必殺技を打ち終わったら
-		if (m_OnGroundCharCounter <= 0)
+		if (DamegeUltActor.empty() == true/*m_OnGroundCharCounter <= 0 */ )
 		{
-			for (auto actor : m_game->GetActors())
-			{
-				//必殺技打たれた状態を無くす
-				actor->ChangeDamegeUltFlag(false);
-			}
-
+			//for (auto actor : m_game->GetActors())
+			//{
+			//	//必殺技打たれた状態を無くす
+			//	actor->ChangeDamegeUltFlag(false);
+			//}
+			//対象のアクターがいなかったフラグをfalseにする
+			m_NoTargetActor = false;
 			//レベルを下げる
 			UltimateSkill();
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//画面を暗くするフラグをfalseにする
+			m_game->SetUltTimeSkyFlag(false);
+			//画面が暗いのをリセットする
+			m_game->LightReset();
 			//中身を全て消す
 			DamegeUltActor.clear();
 		}
@@ -973,44 +986,47 @@ void KnightAI::AtkCollisiton()
 /// </summary>
 void KnightAI::MakeUltSkill()
 {
-	//必殺技の雷の生成
-	for (auto actor : DamegeUltActor/*m_game->GetActors()*/)
+	for (auto actor : DamegeUltActor)
 	{
-		//生成するキャラと自分のオブジェクトの名前が同じ、もしくは必殺技を打たれたキャラなら処理を飛ばす
-		if (GetName() == actor->GetName() || actor->GetDamegeUltFlag() == true/*||actor->GetGroundChackflag()==false*/)
-		{
-			continue;
-		}
-		//地上にいるAIにだけ雷を落とす
-		if (actor->IsGroundIn() == true)
-		{
-			//必殺技の雷の生成
-			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
-			//生成したのがプレイヤーではないからfalse
-			wizardUlt->SetThisCreatCharcter(false);
-			//自分のオブジェクトの名前をセット
-			wizardUlt->SetCreatorName(GetName());
-			//攻撃するアクターのオブジェクト名をセット
-			wizardUlt->SetActor(actor->GetName());
-			//攻撃力を決める
-			wizardUlt->SetUltDamege(Lv);
-			//攻撃するアクターの座標取得
-			Vector3 UltPos = actor->GetPosition();
-			UltPos.y += 100.0f;
-			wizardUlt->SetPosition(UltPos);
-			wizardUlt->SetGame(m_game);
+		//必殺技の雷の生成
+		WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+		//生成したのがプレイヤーなのでtrue
+		wizardUlt->SetThisCreatCharcter(true);
+		//自分のオブジェクトの名前をセット
+		wizardUlt->SetCreatorName(GetName());
+		//攻撃するアクターのオブジェクト名をセット
+		wizardUlt->SetActor(actor->GetName());
+		//攻撃力を決める
+		wizardUlt->SetUltDamege(Lv);
+		//攻撃するアクターの座標取得
+		Vector3 UltPos = actor->GetPosition();
+		UltPos.y += 100.0f;
+		wizardUlt->SetPosition(UltPos);
+		wizardUlt->SetGame(m_game);
 
-			//必殺技を打たれたのでフラグを立てる
-			actor->ChangeDamegeUltFlag(true);
+		//必殺技を打たれたのでフラグを立てる
+		//actor->ChangeDamegeUltFlag(true);
 
+		//雷を落とすキャラがリストの最後なら
+		if (actor == DamegeUltActor.back())
+		{
+			//最後であることを知らせる
+			wizardUlt->ChangeUltEndFlag(true);
+
+			//DamegeUltActor.clear();
+
+			m_UltshootTimer = 0.0f;
+			//一人ずつ必殺技を打つのでぬける
+			return;
 		}
-		//カウント減らす
-		//m_OnGroundCharCounter--;
-		//
+
 		m_UltshootTimer = 0.0f;
 		//一人ずつ必殺技を打つのでぬける
 		return;
+
 	}
+
+	
 
 	//KnightUlt* knightUlt = NewGO<KnightUlt>(0, "knightUlt");
 	////製作者の名前を入れる
@@ -1184,20 +1200,26 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//地上にいるキャラをカウントする
 		for (auto actor : m_game->GetActors())
 		{
-			if (GetName() == actor->GetName() || actor->GetGroundChackflag() == true) {
+			if (GetName() == actor->GetName() || m_game->IsActorGroundChack(actor) == false) {
 				continue;
 			}
-
-			if (actor->IsGroundIn() == true)
-			{
-				m_OnGroundCharCounter++;
+				/*m_OnGroundCharCounter++;
 				//このキャラはグラウンドにいる
-				actor->ChangeGroundChackflag(true);
+				actor->ChangeGroundChackflag(true);*/
 
 				//雷を打たれるキャラの情報を入れる
 				DamegeUltActor.push_back(actor);
-			}
+			
 		}
+
+		//攻撃対象のアクターがいなかったら
+		if (DamegeUltActor.empty() == true) {
+			m_NoTargetActor = true;
+		}
+
+		//カメラで見るのを終わりにする
+		ChangeChaseCamera(false);
+
 		//必殺技の当たり判定のクラスを作成
 		//MakeUltSkill();
 		

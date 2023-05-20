@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Fade.h"
 #include "ExpforKnight.h"
+#include "Sounds.h"
 //todo２かいレベルが下がることがある
 //に回レベルダウンしている可能性
 namespace
@@ -444,22 +445,35 @@ void GameUI::CountDown()
 
 	if (oldtStartCount != StartCountDown)
 	{
+		SoundSource* se;
 		switch (StartCountDown)
 		{
 		case 1:
 			m_CountNumper.Init("Assets/sprite/gameUI/count1.DDS", 1920.0f, 1080.0f);
 			m_gameCountScale = Vector3(0.2f, 0.2f, 0.0f);
 			m_Color = 1.0f;
+			se = NewGO<SoundSource>(0);
+			se->Init(enSound_CountDown1);
+			se->SetVolume(1.0f);
+			se->Play(false);
 			break;
 		case 2:
 			m_CountNumper.Init("Assets/sprite/gameUI/count2.DDS", 1920.0f, 1080.0f);
 			m_gameCountScale = Vector3(0.2f, 0.2f, 0.0f);
 			m_Color = 1.0f;
+			se = NewGO<SoundSource>(0);
+			se->Init(enSound_CountDown2);
+			se->SetVolume(1.0f);
+			se->Play(false);
 			break;
 		case 3:
 			m_CountNumper.Init("Assets/sprite/gameUI/count3.DDS", 1920.0f, 1080.0f);
 			m_gameCountScale = Vector3(0.2f, 0.2f, 0.0f);
 			m_Color = 1.0f;
+			se = NewGO<SoundSource>(0);
+			se->Init(enSound_CountDown3);
+			se->SetVolume(1.0f);
+			se->Play(false);
 			break;
 		default:
 			break;
@@ -498,6 +512,10 @@ void GameUI::CountDown()
 
 			if (m_gameCountScale.x > 0.8f) {
 				FightshotStopFlag = true;
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(enSound_CountFight);
+				se->SetVolume(1.0f);
+				se->Play(false);
 			}
 		}
 		else if(FightshotStopFlag == false) {

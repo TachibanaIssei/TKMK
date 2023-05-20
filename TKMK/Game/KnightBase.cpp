@@ -846,20 +846,20 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 /// </summary>
 void KnightBase::OnProcessUlt_liberationStateTransition()
 {
-	//必殺技アニメーション再生が終わったら。
+	//必殺技の溜めのアニメーション再生が終わったら。
 	if (m_modelRender.IsPlayingAnimation() == false)
 	{
-		//フラグをfalseにする
-		
+		//AIがカメラで見られるようにする
+		ChangeChaseCamera(true);
 		//必殺技ステート
 		m_charState = enCharState_UltimateSkill;
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Sword_Ult);
+		se->Init(enSound_Hand);
+		se->SetVolume(1.0);
 		se->Play(false);
-		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		////プレイヤーとの距離によって音量調整
+		
 	}
 }
 

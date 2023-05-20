@@ -172,7 +172,6 @@ void GameCamera::NomarlCamera()
 	if (player_actor->NowCharState() == Actor::enCharState_Ult_liberation)
 	{
 		UltChargeFlag = true;
-		
 		m_springCamera.Refresh();
 		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor);
 		return;

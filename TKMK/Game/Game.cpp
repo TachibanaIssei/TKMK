@@ -67,7 +67,7 @@ Game::~Game()
 
 	DeleteGO(player);
 	TowerDown->Stop();
-	DeleteGO(TowerDown);
+	//DeleteGO(TowerDown);
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	DeleteGO(m_bgm);
@@ -717,7 +717,7 @@ void Game::SetMusic()
 	//剣士
 		{
 			//スキルの音
-			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill2.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill3.wav");
 			//手を上に上げるときの音
 			g_soundEngine->ResistWaveFileBank(enSound_Hand, "Assets/sound/playerSE/kenSkill1.wav");
 			//雷の落下音
@@ -746,9 +746,9 @@ void Game::SetMusic()
 	//中立の敵
 		{
 			//中立の敵の鳴き声
-			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Voice, "Assets/sound/enemySE/enemyKoe.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Death, "Assets/sound/enemySE/enemyKoe.wav");
 			//中立の敵が死んだときの音
-			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Death, "Assets/sound/enemySE/rabbit/Die/rabbitDie1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Voice, "Assets/sound/enemySE/rabbit/Die/rabbitDie1.wav");
 			//ウサギが死んだときの音
 			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_Death, "Assets/sound/enemySE/rabbit/Die/rabbitDie2.wav");
 			//ウサギの足音

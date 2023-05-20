@@ -157,7 +157,7 @@ bool Tittle::Start()
 	g_soundEngine->ResistWaveFileBank(enSound_Title_Slash2, "Assets/sound/titleBGM/titleSE/zangeki2.wav");
 	g_soundEngine->ResistWaveFileBank(enSound_Title_Slash1, "Assets/sound/titleBGM/titleSE/zangeki1.wav");
 	//決定音
-	g_soundEngine->ResistWaveFileBank(enSound_OK, "Assets/sound/sentaku/kettei2.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_OK, "Assets/sound/sentaku/kettei3.wav");
 
 
 
@@ -351,7 +351,7 @@ void Tittle::Scene()
 		//ゲーム画面への遷移
 		if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
 			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(enSound_Title_Choise);
+			se->Init(enSound_OK);
 			se->Play(false);
 			se->SetVolume(1.0f);
 			//game画面へ遷移
@@ -365,7 +365,7 @@ void Tittle::Scene()
 	{
 		//線形変換に移る
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Title_Choise);
+		se->Init(enSound_OK);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		titleScene = 1;
@@ -480,7 +480,7 @@ void Tittle::Operation()
 	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Operation && m_operationLook == enOperationLook_UnSeem) {
 		//選択音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Title_Choise);
+		se->Init(enSound_OK);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//説明画面を表示
@@ -519,7 +519,7 @@ void Tittle::CharacterOp()
 	{
 		//選択音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Title_Choise);
+		se->Init(enSound_OK);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//キャラクター説明画面を表示

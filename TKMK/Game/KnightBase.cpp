@@ -4,6 +4,7 @@
 #include "GameUI.h"
 #include "Player.h"
 #include "Effect.h"
+#include "Game.h"
 
 KnightBase::KnightBase()
 {
@@ -285,6 +286,13 @@ void KnightBase::Collition()
 			if (m_charState == enCharState_Ult_liberation) {
 				//エフェクトを止める
 				Ult_Swordeffect->Stop();
+
+				//画面を暗くするフラグをfalseにする
+				UltimateDarknessFlag = false;
+				m_game = FindGO<Game>("game");
+				m_game->SetUltTimeSkyFlag(false);
+				//画面が暗いのをリセットする
+				m_game->LightReset();
 			}
 
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
@@ -548,6 +556,18 @@ void KnightBase::MoveStraight()
 	//キャラクターコントローラーを使って座標を移動させる。
 	m_position = m_charCon.Execute(m_Skill_MoveSpeed, 1.0f / 60.0f);
 }
+
+void KnightBase::CreatMagicCircle()
+{
+	EffectEmitter* MagicCircle = NewGO<EffectEmitter>(0);
+	MagicCircle->Init(EnEFK::enEffect_MasicCircle);
+	Vector3 CirclePos = m_position;
+	CirclePos.y += 3.0f;
+	MagicCircle->SetPosition(CirclePos);
+	MagicCircle->SetScale(Vector3::One * 30.0f);
+	MagicCircle->Play();
+}
+
 
 /// <summary>
 /// アニメーション再生の処理
@@ -852,8 +872,10 @@ void KnightBase::OnProcessUlt_liberationStateTransition()
 		
 		//AIがカメラで見られるようにする
 		ChangeChaseCamera(true);
-		//必殺技ステート
+		//必殺技ステートに移行
 		m_charState = enCharState_UltimateSkill;
+		
+
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(16);

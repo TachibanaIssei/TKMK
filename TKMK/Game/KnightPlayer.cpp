@@ -158,133 +158,134 @@ void KnightPlayer::Update()
 			//レベルに合わせてGameUIのレベルの画像を変更する
 			m_gameUI->ChangePlayerLevel(Lv);
 			//m_gameUI->LevelFontChange(Lv);
-		if (Lv > oldLv)
-		{
-			if (LevelUp_efk != nullptr) {
-				LevelUp_efk->DeleteEffect();
-			}
-			LevelUp_efk = NewGO<ChaseEFK>(4);
-			LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(enSound_Level_UP);
-			se->SetVolume(1.0f);
-			se->Play(false);
-		}
-		else if (Lv < oldLv)
-		{
-			if (LevelDown_efk != nullptr) {
-				LevelDown_efk->DeleteEffect();
-			}
-			LevelDown_efk = NewGO<ChaseEFK>(4);
-			LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
-		}
-		//前フレームのレベルを取得
-		oldLv = Lv;
-		//前フレームの座標を取得
-		OldPosition = m_position;
-
-		//リスポーンしたときしか使えない
-		//飛び降りる処理
-		//地上にいないならジャンプしかしないようにする
-		if (m_position.y > 1.0f) {
-			if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+			if (Lv > oldLv)
 			{
-				pushFlag = true;
-				//jampAccumulateflag = true;
-				m_charState = enCharState_Jump;
+				if (LevelUp_efk != nullptr) {
+					LevelUp_efk->DeleteEffect();
+				}
+				LevelUp_efk = NewGO<ChaseEFK>(4);
+				LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(enSound_Level_UP);
+				se->SetVolume(1.0f);
+				se->Play(false);
+			}
+			else if (Lv < oldLv)
+			{
+				if (LevelDown_efk != nullptr) {
+					LevelDown_efk->DeleteEffect();
+				}
+				LevelDown_efk = NewGO<ChaseEFK>(4);
+				LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
 			}
 		}
+			//前フレームのレベルを取得
+			oldLv = Lv;
+			//前フレームの座標を取得
+			OldPosition = m_position;
+
+			//リスポーンしたときしか使えない
+			//飛び降りる処理
+			//地上にいないならジャンプしかしないようにする
+			if (m_position.y > 1.0f) {
+				if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+				{
+					pushFlag = true;
+					//jampAccumulateflag = true;
+					m_charState = enCharState_Jump;
+				}
+			}
+			else
+			{
+
+				if (m_charState != enCharState_Death)
+				{
+					//地上にいる
+					IsGroundFlag = true;
+				}
+				//攻撃処理
+				Attack();
+				//回避処理
+				Avoidance();
+			}
+
+			//攻撃上昇中
+			//AttackUP();
+
+			//移動処理
+			Vector3 stickL = Vector3::Zero;
+			if (CantMove == false)
+			{
+				stickL.x = g_pad[0]->GetLStickXF();
+				stickL.y = g_pad[0]->GetLStickYF();
+			}
+			Move(m_position, m_charCon, m_Status, stickL);
+
+
+			//回避中なら
+			if (AvoidanceFlag == true) {
+				m_charState = enCharState_Avoidance;
+				//移動処理を行う(直線移動のみ)。
+				MoveStraight();
+			}
+
+			//スキル使用中なら
+			if (SkillState == true) {
+				//スキルステート
+				m_charState = enCharState_Skill;
+				//移動処理を行う(直線移動のみ)。
+				MoveStraight();
+			}
+			//ステート
+			ManageState();
+			//無敵時間
+			Invincible();
+			//回転処理
+			Rotation();
+
+			CoolTimeProcess();
+			GrayScaleUI();
+
+		}
+		//速度を0にする(動かないようにする)
 		else
 		{
-
-			if (m_charState != enCharState_Death)
-			{
-				//地上にいる
-				IsGroundFlag = true;
-			}
-			//攻撃処理
-			Attack();
-			//回避処理
-			Avoidance();
+			m_moveSpeed = Vector3::Zero;
 		}
 
-		//攻撃上昇中
-		//AttackUP();
 
-		//移動処理
-		Vector3 stickL = Vector3::Zero;
-		if (CantMove == false)
+
+		if (AvoidanceTimer != AvoidanceCoolTime)
 		{
-			stickL.x = g_pad[0]->GetLStickXF();
-			stickL.y = g_pad[0]->GetLStickYF();
-		}
-		Move(m_position, m_charCon, m_Status, stickL);
-		
-
-		//回避中なら
-		if (AvoidanceFlag == true) {
-			m_charState = enCharState_Avoidance;
-			//移動処理を行う(直線移動のみ)。
-			MoveStraight();
+			//回避のスプライトの表示の処理
+			AvoidanceSprite();
 		}
 
-		//スキル使用中なら
-		if (SkillState == true) {
-			//スキルステート
-			m_charState = enCharState_Skill;
-			//移動処理を行う(直線移動のみ)。
-			MoveStraight();
+		//キャラクターコントローラーを使って座標を移動させる。
+		//ワープする時はキャラコンを移動させない
+		if (IsEnableMove() == true) {
+
+			m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 		}
-		//ステート
-		ManageState();
-        //無敵時間
-	    Invincible();
-		//回転処理
-		Rotation();
 
-		CoolTimeProcess();
-		GrayScaleUI();
+		//ジャンプ中ではないかつ落下中なら
+		if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
+		{
+			m_charState = enCharState_Fall;
+		}
 
-	}
-	//速度を0にする(動かないようにする)
-	else
-	{
-		m_moveSpeed = Vector3::Zero;
-	}
+		if (m_moveSpeed.LengthSq() != 0.0f) {
+			m_forwardNow = m_moveSpeed;
+			m_forwardNow.Normalize();
+			m_forwardNow.y = 0.0f;
+		}
 
+		// レベルをゲームに教える（下部スプライト更新用）
+		m_game->UnderSprite_Level(Lv);
 
-
-	if (AvoidanceTimer != AvoidanceCoolTime)
-	{
-		//回避のスプライトの表示の処理
-		AvoidanceSprite();
-	}
-
-	//キャラクターコントローラーを使って座標を移動させる。
-	//ワープする時はキャラコンを移動させない
-	if (IsEnableMove() == true) {
-
-		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	}
+		m_modelRender.SetPosition(m_position);
+		m_modelRender.Update();
 	
-	//ジャンプ中ではないかつ落下中なら
-	if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
-	{
-		m_charState = enCharState_Fall;
-	}
-	
-	if (m_moveSpeed.LengthSq() != 0.0f) {
-		m_forwardNow = m_moveSpeed;
-		m_forwardNow.Normalize();
-		m_forwardNow.y = 0.0f;
-	}
-
-	// レベルをゲームに教える（下部スプライト更新用）
-	m_game->UnderSprite_Level(Lv);
-
-	m_modelRender.SetPosition(m_position);
-	m_modelRender.Update();
-
 }
 
 

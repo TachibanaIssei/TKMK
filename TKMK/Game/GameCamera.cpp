@@ -146,6 +146,11 @@ void GameCamera::NomarlCamera()
 			//AIが打った後に終わるまではこの処理をしないようにする
 			// 画面が切り替わりまくる
 			//もしプレイヤーが必殺技を打ったら
+			if (actor->GetmUseUltimaitSkillFlag() == true)
+			{
+				break;
+			}
+
 			if (actor->NowCharState() == Actor::enCharState_UltimateSkill && KnightUltFlag == false)
 			{
 				//溜めフラグをfalseにする
@@ -248,7 +253,7 @@ void GameCamera::UltRotCamera()
 		if (ultactor->GetChaseCameraFlag() == true) {
 			return;
 		}
-		else if (ultactor->GetmUseUltimaitSkillFlag()==false/*ultactor->GetChaseCameraFlag() == false*/) {
+		else if (ultactor->GetChaseCameraFlag() == false) {
 			//必殺技フラグをfalseにする
 			KnightUltFlag = false;
 			SetCameraCharFrontFlag = false;

@@ -177,6 +177,10 @@ void KnightPlayer::Update()
 				}
 				LevelDown_efk = NewGO<ChaseEFK>(4);
 				LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(enSound_Level_Down);
+				se->SetVolume(1.0f);
+				se->Play(false); 
 			}
 		}
 			//前フレームのレベルを取得

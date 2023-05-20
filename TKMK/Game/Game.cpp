@@ -672,6 +672,10 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	{
 		neutral_Enemy->ChangeRabbit();
 		neutral_Enemy->SetRabbitLifeFlag(true);
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Rabbit_Spawn);
+		se->SetVolume(1.0f);
+		se->Play(false);
 	}
 	neutral_Enemy->modelUpdate();
 
@@ -695,8 +699,19 @@ void Game::SetMusic()
 		g_soundEngine->ResistWaveFileBank(enSound_PlayBattle, "Assets/sound/gameBGM/SentouBGM1.wav");
 		//ポーズ音
 		g_soundEngine->ResistWaveFileBank(enSound_Pause_Screen, "Assets/sound/menu/game_stop/gameStop1.wav");
-	}
 	
+	}
+	//試合開始前
+	{
+		//カウントダウン3
+		g_soundEngine->ResistWaveFileBank(enSound_CountDown3, "Assets/sound/playerSE/CountStart/CountVoice3.wav");
+		//カウントダウン2
+		g_soundEngine->ResistWaveFileBank(enSound_CountDown2, "Assets/sound/playerSE/CountStart/CountVoice2.wav");
+		//カウントダウン2
+		g_soundEngine->ResistWaveFileBank(enSound_CountDown1, "Assets/sound/playerSE/CountStart/CountVoice1.wav");
+		//ファイト
+		g_soundEngine->ResistWaveFileBank(enSound_CountFight, "Assets/sound/playerSE/CountStart/Fight3.wav");
+	}
 	//効果音
 	{
 	//剣士
@@ -706,7 +721,7 @@ void Game::SetMusic()
 			//手を上に上げるときの音
 			g_soundEngine->ResistWaveFileBank(enSound_Hand, "Assets/sound/playerSE/kenSkill1.wav");
 			//雷の落下音
-			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/kenSkill1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/thunder/thunder2.wav");
 			//被ダメの声
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Receiving_Damage, "Assets/sound/playerSE/playerScream1.wav");
 			//通常攻撃のコンボ音
@@ -722,7 +737,7 @@ void Game::SetMusic()
 			//レベルアップの音
 			g_soundEngine->ResistWaveFileBank(enSound_Level_UP, "Assets/sound/playerSE/Level_Up/playerLevelup1.wav");
 			//レベルダウンの音
-			//g_soundEngine->ResistWaveFileBank(enSound_Level_Down, "Assets/sound/playerSE/playerScream3.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Level_Down, "Assets/sound/playerSE/Level_Down/LevelDown2.wav");
 			//ヒール音
 			g_soundEngine->ResistWaveFileBank(enSound_Healing, "Assets/sound/playerSE/heal/playerheal1.wav");
 
@@ -730,14 +745,16 @@ void Game::SetMusic()
 
 	//中立の敵
 		{
-			//鳴き声
+			//中立の敵の鳴き声
 			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Voice, "Assets/sound/enemySE/enemyKoe.wav");
+			//中立の敵が死んだときの音
+			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Death, "Assets/sound/enemySE/rabbit/Die/rabbitDie1.wav");
 			//ウサギが死んだときの音
 			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_Death, "Assets/sound/enemySE/rabbit/Die/rabbitDie2.wav");
 			//ウサギの足音
 			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_FootSteps, "Assets/sound/enemySE/rabbit/Jump/rabbitJump1.wav");
-			//中立の敵が死んだときの音
-			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Death, "Assets/sound/enemySE/rabbit/Die/rabbitDie1.wav");
+			//ウサギが出現した時の音
+			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_Spawn, "Assets/sound/enemySE/rabbit/Spawn/rabbitspawn1.wav");
 		}
 		
 	}

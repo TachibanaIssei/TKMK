@@ -66,8 +66,9 @@ Game::~Game()
 	}
 
 	DeleteGO(player);
-	TowerDown->Stop();
-	//DeleteGO(TowerDown);
+	if (GameObjectManager::GetInstance()->IsActive()) {
+		TowerDown->Stop();
+	}
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	DeleteGO(m_bgm);

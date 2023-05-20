@@ -747,6 +747,11 @@ void KnightBase::OnProcessJumpStateTransition()
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();
 	}
+
+	if (!m_modelRender.IsPlayingAnimation() && m_position.y <= 500.0f)
+	{
+		m_charState = enCharState_Fall;
+	}
 }
 
 /// <summary>
@@ -942,7 +947,7 @@ void KnightBase::OnProcessFallStateTransition()
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Metal_Falling);
 		//プレイヤーとの距離によって音量調整
-		se->SetVolume(1.0f);
+		se->SetVolume(0.6f);
 		se->Play(false);
 		//�ҋ@�X�e�[�g
 		m_charState = enCharState_Idle;

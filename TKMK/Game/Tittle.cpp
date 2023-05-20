@@ -34,7 +34,7 @@ bool Tittle::Start()
 	m_pressAButton.Update();
 	
 	//titleÇÃÉçÉS
-	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo.DDS", 1200.0f,200.0f);
+	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo_SWORDARENA.DDS", 1200.0f,200.0f);
 	m_titleLogo.SetPosition(m_titleLogoPosition);
 	m_titleLogo.SetMulColor(m_color);
 	m_titleLogo.SetScale(m_titleLogoScale);
@@ -53,7 +53,7 @@ bool Tittle::Start()
 	m_titleswordbrack.Update();
 
 	//âŒâ‘
-	m_fire.Init("Assets/sprite/Title/first_title/fireFlower.DDS", 1500.0f, 400.0f);
+	m_fire.Init("Assets/sprite/Title/first_title/fireFlower_SWORDARENA.DDS", 1500.0f, 400.0f);
 	m_fire.SetPosition(m_titleLogoPosition);
 	m_fire.SetMulColor(m_color);
 	m_fire.SetScale(g_vec3One);

@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "Player.h"
 #include "Fade.h"
-
+//todoレベルが上がった時経験値0スタートにする
 Actor::Actor()
 {
 
@@ -51,7 +51,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	//移動速度に前方向と右方向の入力量を加算する。
 	m_moveSpeed += right + forward;
 	//重力を付与する
-	m_moveSpeed.y -= 600.0f * g_gameTime->GetFrameDeltaTime();
+	m_moveSpeed.y -= 900.0f * g_gameTime->GetFrameDeltaTime();
 
 	//地面についた。
 	if (charcon.IsOnGround()) {
@@ -133,6 +133,10 @@ void Actor::GetRespawnPos()
 /// <param name="Level">現在のレベル</param>
 void Actor::LevelUp(LvUpStatus& lus, Status& nowStatus, int& Level)
 {
+	if (Level >= 10) {
+	return;
+	}
+
 	nowStatus.MaxHp += lus.LvHp;
 	nowStatus.Hp += lus.LvHp;
 	nowStatus.Atk += lus.LvAtk;
@@ -155,6 +159,7 @@ void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level, int downLe
 		Level = 1; 
 		return;
 	}
+	
 
 	nowStatus.MaxHp-= downLevel*lus.LvHp;
 	//もしHPがMaxHpを上回るなら
@@ -173,11 +178,13 @@ void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level, int downLe
 /// <param name="GetExp">中立の敵の経験値</param>
 void Actor::ExpProcess(int Exp)
 {
+	//ウサギを倒したときの処理がおかしくなる
 	//もしレベルが10(Max)なら
 	if (Lv == 10)return;
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
 	GetExp += Exp;
-
+	//経験値を保存する
+	m_SaveEXP += Exp;
 	while (true)
 	{
 		//もしレベルが10(Max)なら
@@ -189,40 +196,50 @@ void Actor::ExpProcess(int Exp)
 		}
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		else {
-			//レベルアップ
-			LevelUp(LvUPStatus, m_Status, Lv);
-			//今の経験値テーブルを代入
-			m_oldExpTable = ExpTable;
-			//経験値テーブルを更新する
-			switch (Lv)
+
+			while (true)
 			{
-			case 2:
-				ExpTable = 10;
-				break;
-			case 3:
-				ExpTable = 20;
-				break;
-			case 4:
-				ExpTable = 30;
-				break;
-			case 5:
-				ExpTable = 40;
-				break;
-			case 6:
-				ExpTable = 50;
-				break;
-			case 7:
-				ExpTable = 60;
-				break;
-			case 8:
-				ExpTable = 70;
-				break;
-			case 9:
-				ExpTable = 80;
-				break;
-			default:
-				break;
+				//もしレベルが10(Max)なら
+				if (Lv == 10)return;
+
+				//手に入れた経験値より経験値テーブルのほうが大きかったら
+				if (GetExp >= ExpTable) {
+					//レベルアップ
+					LevelUp(LvUPStatus, m_Status, Lv);
+				}
+
+				//今の経験値テーブルを代入
+				m_oldExpTable = ExpTable;
+				//経験値テーブルを更新する
+				//経験値を0にリセットする
+				//GetExp = 0;
+
+				GetExp -= ExpTable;
+
+				//テーブル変更
+				if (Lv >= 3) {
+					ExpTable = 10;
+					
+				}
+				else
+				{
+					ExpTable = 5;
+					//GetExp -= ExpTable;
+				}
+
+				
+
+				//経験値が0になったら抜け出す
+				if (GetExp == 0) {
+					GetExp = 0;
+					break;
+				}
+				else if (GetExp < 0)
+				{
+					break;
+				}
 			}
+			
 		}
 
 	}
@@ -235,8 +252,10 @@ void Actor::ExpProcess(int Exp)
 /// <param name="getExp">経験値</param>
 void Actor::ExpReset(int& Lv, int& getExp)
 {
+	getExp = 0;
+
 	//経験値をリセット
-	switch (Lv)
+	/*switch (Lv)
 	{
 	case 1:
 		getExp = 0;
@@ -268,7 +287,7 @@ void Actor::ExpReset(int& Lv, int& getExp)
 		
 	default:
 		break;
-	}
+	}*/
 }
 
 /// <summary>
@@ -278,7 +297,15 @@ void Actor::ExpReset(int& Lv, int& getExp)
 /// <param name="expTable">経験値テーブル</param>
 void Actor::ExpTableChamge(int& Lv, int& expTable)
 {
-	switch (Lv)
+	if (Lv == 1) {
+		expTable = 5;
+	}
+
+	if (Lv >= 2) {
+		expTable = 10;
+	}
+
+	/*switch (Lv)
 	{
 	case 1:
 		expTable = 5;
@@ -292,10 +319,24 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 	case 4:
 		expTable = 30;
 		break;
-
+	case 5:
+		expTable = 40;
+		break;
+	case 6:
+		expTable = 50;
+		break;
+	case 7:
+		expTable = 60;
+		break;
+	case 8:
+		expTable = 70;
+		break;
+	case 9:
+		expTable = 80;
+		break;
 	default:
 		break;
-	}
+	}*/
 }
 
 /// <summary>
@@ -329,7 +370,7 @@ void Actor::RespawnMove()
 {
 	//飛び降りる
 	//ジャンプする
-		m_moveSpeed.y = 350.0f;
+		m_moveSpeed.y = 280.0f;
 		//position.y += jump;
 		//m_RespawnJumpFlag = true;
 }

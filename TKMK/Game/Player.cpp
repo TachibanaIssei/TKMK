@@ -288,7 +288,25 @@ int Player::CharSetOldEXPTable() const
 	return playerActor->GetOldExpTable();
 }
 
+//セーブしている経験値を取得
+int Player::CharGetSaveEXP() const
+{
+	return playerActor->GetSaveEXP();
+}
+
+//セーブした経験値をリセット
+void Player::CharResatSaveEXP() const
+{
+	playerActor->ResatSaveEXP();
+}
+
+float Player::CharGetSkillCoolTimer() const
+{
+	return playerActor->GetSkillTimer();
+}
+
 float Player::CharGetRespawnTime() const
 {
 	return playerActor->GetRespawnTimer();
 }
+

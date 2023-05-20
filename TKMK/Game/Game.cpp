@@ -58,6 +58,7 @@ Game::~Game()
 
 	for (auto aoctor : m_Actors)
 	{
+		//たまにエラーあり
 		aoctor->ChaseEffectDelete();
 		DeleteGO(aoctor);
 	}
@@ -80,59 +81,8 @@ Game::~Game()
 
 bool Game::Start()
 {
-	//剣士のレベル変動する時のエフェクト
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelDown,u"Assets/effect/knight/LevelDown.efk");
-	//剣士の死んだときのエフェクトを読み込む。
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
-
-	//剣士が死んで倒れた時のエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Death_Blue.efk");
-	
-	//剣士の必殺技エフェクトを読み込む。
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder, u"Assets/effect/Knight/Knight_Thunder.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder_Charge, u"Assets/effect/Knight/Knight_Ult_Thunder_charge.efk");
-
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Delete_Blue, u"Assets/effect/Knight/Knight_Ult_full.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Red, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Green, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Yellow, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
-
-	//剣士の攻撃エフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Attack, u"Assets/effect/Knight/Knight_Attack_default.efk");
-	/*EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Blue, u"Assets/effect/Knight/Knight_Attack_blue.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Red, u"Assets/effect/Knight/Knight_Attack_Red.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Green, u"Assets/effect/Knight/Knight_Attack_green.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Yellow, u"Assets/effect/Knight/Knight_Attack_yellow.efk");*/
-
-	//剣士のスキル使用時のエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Skill, u"Assets/effect/Knight/Knight_Skill_Effect.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_SkillGround, u"Assets/effect/Knight/Knight_SkillGround_Effect.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_FootSmoke, u"Assets/effect/Knight/footsmoke.efk");
-	//剣士の必殺技発動時のオーラエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
-
-	//アタックチェックエフェクトを読み込む
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_AttackChack, u"Assets/effect/Knight/Knight_Attack_Check.efk");
-
-	//中立の敵を倒すとき得るもののエフェクト
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetHoimi, u"Assets/effect/Knight/Knight_GetHoimi.efk");
-
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp2.efk");
-	//エフェクトを読み込む。
-	//中立の敵の攻撃、死亡時エフェクトを読み込む。
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_head_butt, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_Death, u"Assets/effect/Neutral_Enemy/death.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_WhiteMagic, u"Assets/effect/Neutral_enemy/white_magic.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_GreenMagic, u"Assets/effect/Neutral_enemy/green_magic.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Rabbit_Magic, u"Assets/effect/Neutral_enemy/rabbit_magic.efk");
-	//タワーから降りるを示す↑のエフェクト
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_TowerDown, u"Assets/effect/Tower/TowerDown.efk");
-	//ウサギがキラキラするエフェクト
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Rabbit_kirakira, u"Assets/effect/Neutral_Enemy/kirakira.efk");
-	g_renderingEngine->UnUseHemiLight();
+	//エフェクト読み込み
+	SetEffects();
 
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
   
@@ -350,6 +300,8 @@ bool Game::Start()
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
 
+	m_boxCollider.Create(Vector3(1.0f,1.0f,1.0f));
+
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	return true;
@@ -396,6 +348,7 @@ void Game::BattleStart()
 //バトルステートの処理
 void Game::Battle()
 {
+	//↑の表示の処理
 	if (player->GetCharPosition().y <= 10 && m_underSprite_TowerDown == false)
 	{
 		m_underSprite_TowerDown = true;
@@ -407,6 +360,11 @@ void Game::Battle()
 		{
 			m_GameState = enGameState_Rezult;
 		}
+	}
+
+	//誰かが必殺技の溜め状態なら
+	if (UltTimeSkyFlag == true) {
+		UltTimeSky();
 	}
 	
 	//ポーズステートに変える
@@ -434,7 +392,7 @@ void Game::Battle()
 			}
 	}
 	
-	
+	//誰かが必殺技を使ったら処理を止める
 	if (UltStopFlag == true)
 	{
 		return;
@@ -780,6 +738,63 @@ void Game::SetMusic()
 	
 }
 
+void Game::SetEffects()
+{
+	//剣士のレベル変動する時のエフェクト
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelDown,u"Assets/effect/knight/LevelDown.efk");
+	//剣士の死んだときのエフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
+
+	//剣士が死んで倒れた時のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Death_Blue.efk");
+	
+	//剣士の必殺技エフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder, u"Assets/effect/Knight/Knight_Thunder.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder_Charge, u"Assets/effect/Knight/Knight_Ult_Thunder_charge.efk");
+
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Delete_Blue, u"Assets/effect/Knight/Knight_Ult_full.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Blue, u"Assets/effect/Knight/Knight_Ultimate.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Red, u"Assets/effect/Knight/Knight_Ultimate_Red.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Green, u"Assets/effect/Knight/Knight_Ultimate_Green.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Yellow, u"Assets/effect/Knight/Knight_Ultimate_Yellow.efk");
+
+	//剣士の攻撃エフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Attack, u"Assets/effect/Knight/Knight_Attack_default.efk");
+	/*EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Blue, u"Assets/effect/Knight/Knight_Attack_blue.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Red, u"Assets/effect/Knight/Knight_Attack_Red.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Green, u"Assets/effect/Knight/Knight_Attack_green.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Atk_Yellow, u"Assets/effect/Knight/Knight_Attack_yellow.efk");*/
+
+	//剣士のスキル使用時のエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Skill, u"Assets/effect/Knight/Knight_Skill_Effect.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_SkillGround, u"Assets/effect/Knight/Knight_SkillGround_Effect.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_FootSmoke, u"Assets/effect/Knight/footsmoke.efk");
+	//剣士の必殺技発動時のオーラエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Ult_Aura, u"Assets/effect/Knight/knight_ULT_swordEffect.efk");
+
+	//アタックチェックエフェクトを読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_AttackChack, u"Assets/effect/Knight/Knight_Attack_Check.efk");
+
+	//中立の敵を倒すとき得るもののエフェクト
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_GetHoimi, u"Assets/effect/Knight/Knight_GetHoimi.efk");
+
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_PowerUP, u"Assets/effect/Knight/Knight_PowerUp2.efk");
+	//エフェクトを読み込む。
+	//中立の敵の攻撃、死亡時エフェクトを読み込む。
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_head_butt, u"Assets/effect/Neutral_Enemy/head-butt1.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_Death, u"Assets/effect/Neutral_Enemy/death.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_WhiteMagic, u"Assets/effect/Neutral_enemy/white_magic.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Neutral_Enemy_GreenMagic, u"Assets/effect/Neutral_enemy/green_magic.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Rabbit_Magic, u"Assets/effect/Neutral_enemy/rabbit_magic.efk");
+	//タワーから降りるを示す↑のエフェクト
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_TowerDown, u"Assets/effect/Tower/TowerDown.efk");
+	//ウサギがキラキラするエフェクト
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Rabbit_kirakira, u"Assets/effect/Neutral_Enemy/kirakira.efk");
+	g_renderingEngine->UnUseHemiLight();
+}
+
 void Game::PauseMove()
 {
 	if (g_pad[0]->IsTrigger(enButtonDown))
@@ -991,6 +1006,90 @@ void Game::CountDown()
 	else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
 }
 
+void Game::UltTimeSky()
+{
+	m_skyCube->SetLuminance(0.2f);
+	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
+
+	directionLightDir.Normalize();
+	Vector3 directionLightColor = Vector3{ 0.4f, 0.4f, 0.4f };
+	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
+	g_renderingEngine->SetAmbient({ 0.55f,0.5f,0.6f });
+}
+
+void Game::LightReset()
+{
+	m_skyCube->SetLuminance(1.0f);
+	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
+
+	directionLightDir.Normalize();
+	Vector3 directionLightColor = Vector3{ 0.5f, 0.5f, 0.5f };
+	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
+	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f });
+}
+
+//衝突したときに呼ばれる関数オブジェクト(壁用)
+struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
+
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//壁とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Ground) {
+			//衝突したのは壁ではない。
+			return 0.0f;
+		}
+
+		//壁とぶつかったら。
+		//フラグをtrueに。
+		isHit = true;
+		return 0.0f;
+	}
+};
+
+//アクターが地面に接地しているか確かめる
+bool Game::IsActorGroundChack(Actor* actor)
+{
+	Vector3 actorpos = actor->GetPosition();
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(actorpos.x, actorpos.y+10.0f, actorpos.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(actorpos.x, actorpos.y-2.0f, actorpos.z));
+
+	while (true)
+	{
+		//壁の判定を返す
+		IsGroundResult callback_Ground;
+		//コライダーを始点から終点まで動かして。
+		//壁と衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_boxCollider.GetBody(), start, end, callback_Ground);
+		//壁と衝突した！
+		if (callback_Ground.isHit == true)
+		{
+			//地面にいても死んでいたら
+			if (actor->NowCharState() == Actor::enCharState_Death)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+			
+		}
+		else
+		{
+			return false;
+		}
+
+			
+	}
+}
+
 void Game::Render(RenderContext& rc)
 {
 	
@@ -1012,6 +1111,10 @@ void Game::Render(RenderContext& rc)
 		}
 	}
 	
+	if (UltStopFlag == true) {
+		return;
+	}
+
 	if (RabbitFlag == true && m_GameState == enGameState_Battle)
 	{
 		m_RabbitSprite.Draw(rc);

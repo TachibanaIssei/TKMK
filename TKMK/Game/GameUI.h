@@ -6,6 +6,7 @@ class Player;
 class Game;
 class Actor;
 class Fade;
+class ExpforKnight;
 
 class GameUI:public IGameObject
 {
@@ -27,6 +28,18 @@ public:
 	void SetSGame(Game* Cgame)
 	{
 		m_game = Cgame;
+	}
+
+	void ChangePlayerLevel(int lv)
+	{
+		m_NowPlayerLevel = lv;
+	}
+
+	void ChangeLevel();
+
+	void ChangeEXPUpFlag(bool flag)
+	{
+		m_EXPupFlag = flag;
 	}
 
 	/// <summary>
@@ -120,6 +133,13 @@ public:
 	void EXPBar();
 
 	/// <summary>
+	/// 経験値バーを徐々に上げる処理
+	/// </summary>
+	bool GrowEXP();
+
+	bool DownEXP(int NowPlayerLv);
+
+	/// <summary>
 	/// 
 	/// </summary>
 	void CharPoint();
@@ -153,6 +173,8 @@ public:
 private:
 	FontRender m_ExpFont;
 
+	FontRender m_Skillfont;
+
 	FontRender m_HpFont;
 	FontRender m_HpNameFont;
 
@@ -163,6 +185,7 @@ private:
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
 	Fade* fade = nullptr;
+	ExpforKnight* expforKnight = nullptr;
 
 	std::vector<Actor*> m_Actors;
 
@@ -215,41 +238,41 @@ private:
 	Vector3				m_finishCountScale = Vector3::One;
 
 	Vector3 PointPos[4] = {
-		Vector3(-850.0f, 150.0f, 0.0f),
-		Vector3(-850.0f, 50.0f, 0.0f), 
+		Vector3(-850.0f, 170.0f, 0.0f),
+		Vector3(-850.0f, 60.0f, 0.0f), 
 		Vector3(-850.0f, -50.0f, 0.0f), 
-		Vector3(-850.0f, -150.0f, 0.0f), 
+		Vector3(-850.0f, -160.0f, 0.0f), 
 	};															//ポイント
 
 	Vector3 LevelPos[3] = {
-		Vector3(-950.0f, 0.0f, 0.0f),
-		Vector3(-950.0f, -100.0f, 0.0f),
-		Vector3(-950.0f, -200.0f, 0.0f),
+		Vector3(-940.0f, 10.0f, 0.0f),
+		Vector3(-940.0f, -100.0f, 0.0f),
+		Vector3(-940.0f, -210.0f, 0.0f),
 	};															//レベル
 
 	Vector3 PointFlamePos[4] = {
 		Vector3(-850.0f, 120.0f, 0.0f),
-		Vector3(-850.0f, 20.0f, 0.0f),
-		Vector3(-850.0f, -80.0f, 0.0f),
-		Vector3(-850.0f, -180.0f, 0.0f),
+		Vector3(-850.0f, 10.0f, 0.0f),
+		Vector3(-850.0f, -100.0f, 0.0f),
+		Vector3(-850.0f, -210.0f, 0.0f),
 	};															//ポイントのフレーム
 
 	Vector3 CharIconPos[4] = {
-		Vector3(-920.0f, 120.0f, 0.0f),
-		Vector3(-920.0f, 20.0f, 0.0f),
-		Vector3(-920.0f, -80.0f, 0.0f),
-		Vector3(-920.0f, -180.0f, 0.0f),
+		Vector3(-905.0f, 145.0f, 0.0f),
+		Vector3(-905.0f, 35.0f, 0.0f),
+		Vector3(-905.0f, -75.0f, 0.0f),
+		Vector3(-905.0f, -185.0f, 0.0f),
 	};															//アイコン
 	
 	Vector3 CrownPos[4] = {
 		Vector3(-920.0f, 120.0f, 0.0f),
-		Vector3(-920.0f, 20.0f, 0.0f),
-		Vector3(-920.0f, -80.0f, 0.0f),
-		Vector3(-920.0f, -180.0f, 0.0f),
+		Vector3(-920.0f, 10.0f, 0.0f),
+		Vector3(-920.0f, -100.0f, 0.0f),
+		Vector3(-920.0f, -210.0f, 0.0f),
 	};															//王冠マーク
 
 	FontRender m_time_left;
-	float timerScale = 2.0f;
+	float timerScale = 1.65f;
 	bool timerScaleFlag = false;
 
 	const char* knightname = "knightplayer";
@@ -264,6 +287,9 @@ private:
 
 	int oldFinishCount = 0;
 
+	//
+	float PlayerCoolTime = 0;
+
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;
 	//分を計るタイマー
@@ -272,9 +298,21 @@ private:
 
 	bool GameEndFlag=false;
 
-	//前フレームの経験値
-	int oldEXP=0;
-	int oldEXPTable = 0;
+	
+	int							m_NowPlayerLevel = 1;							//現在のプレイヤーのレベルを格納
+	int							m_ChangePlayerLevel = 0;						//画像表示のための徐々にレベルを下げる
+	int 						m_oldPlayerLevel = 1;							//レベルが上がった時にtrueにする
+	int							final_exp = 0;									//最終的な経験値バーの増量
+	int							m_nowEXP = 0;									//現在のプレイヤーの経験値
+	float						nowEXPTable = 0;								//現在のプレイヤーの経験値テーブル
+	bool						m_DownFlag = false;
+	int 						m_MathExp = 0;									//経験値を増やしたり減らしたりする時はこれ
+	int							m_SaveExp = 0;
+	int							m_ExpTable = 0;
+	bool                        m_EXPupFlag = false;
+	
+
+
 
 	//キャラのポイント
 	int charPoint[4];

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ExpforKnight.h"
 #include "Game.h"
+#include "GameUI.h"
 namespace {
 	const Vector2 EXPERIENCE_BAR_POS = Vector2(900.0f, -620.0f);	//経験値バーの座標
 }
@@ -11,7 +12,8 @@ ExpforKnight::ExpforKnight()
 
 ExpforKnight::~ExpforKnight()
 {
-
+	gameUI = FindGO<GameUI>("m_gameUI");
+	gameUI->ChangeEXPUpFlag(true);
 }
 
 bool ExpforKnight::Start()

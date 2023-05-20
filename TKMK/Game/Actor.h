@@ -200,12 +200,17 @@ public:
 	/// <param name="level">自分の現在のレベル</param>
 	void PointProcess(int& level)
 	{
+		int AddPoint = 0;
 		//レベルが5以上なら
 		if (level > 5)
 		{
-			level = 5;
+			AddPoint = 5;
 		}
-		int AddPoint = level;
+		else
+		{
+			AddPoint = level;
+		}
+		
 		//レベル分ポイントを増やす
 		Point += AddPoint;
 	}
@@ -542,78 +547,139 @@ public:
 	/// <summary>
 	/// このキャラに対して必殺技を打たれたらフラグを変える
 	/// </summary>
-	void ChangeDamegeUltFlag(bool flag)
+	/*void ChangeDamegeUltFlag(bool flag)
 	{
 		m_DamegeUltimaitSkillaFlag = flag;
-	}
+	}*/
 
 	/// <summary>
 	/// 必殺技を打たれたフラグを返す
 	/// </summary>
-	bool GetDamegeUltFlag() {
+	/*bool GetDamegeUltFlag() {
 		return m_DamegeUltimaitSkillaFlag;
-	}
+	}*/
 
 	/// <summary>
 	/// 地上にいるかのカウンターを減らす
 	/// </summary>
-	void SubOnGroundCharCounter()
+	/*void SubOnGroundCharCounter()
 	{
 		m_OnGroundCharCounter--;
-	}
+	}*/
 
 	/// <summary>
 	/// 地上にいるかのフラグを変える
 	/// </summary>
 	/// <param name="flag"></param>
-	void ChangeGroundChackflag(bool flag) {
-		m_GroundChackFlag = flag;
-	}
+	//void ChangeGroundChackflag(bool flag) {
+	//	m_GroundChackFlag = flag;
+	//}
 
 	/// <summary>
-	/// 地上にいるかのフラグを返す
+	/// スキルのクールタイムのタイマーを返す
 	/// </summary>
-	bool GetGroundChackflag()
+	float GetSkillTimer()
 	{
-		return m_GroundChackFlag;
+		return SkillTimer;
 	}
 
 	/// <summary>
 	/// カメラで見たかのフラグを変える
 	/// </summary>
 	/// <param name="flag"></param>
-	void ChangeCameraSawCharFlag(bool flag)
+	/*void ChangeCameraSawCharFlag(bool flag)
 	{
 		m_CameraSawCharFlag = flag;
+	}*/
+
+	/// <summary>
+	/// 必殺技の攻撃対象のアクターがいないかのフラグを返す
+	/// </summary>
+	bool GetNoTargetActor()
+	{
+		return m_NoTargetActor;
+	}
+
+	int GetSaveEXP() const
+	{
+		return m_SaveEXP;
+	}
+
+	void ResatSaveEXP()
+	{
+		m_SaveEXP = 0;
 	}
 
 	/// <summary>
-	/// カメラで見たかのフラグを返す
+	/// 自身をカメラで見ているかのフラグを変える AI用
 	/// </summary>
-	bool GetCameraSawCharFlag()
+	/// <param name=""></param>
+	void ChangeChaseCamera(bool flag)
 	{
-		return m_CameraSawCharFlag;
+		ChaseCameraFlag = flag;
 	}
 
+	bool GetChaseCameraFlag()
+	{
+		return ChaseCameraFlag;
+	}
+
+	/// <summary>
+	/// 必殺技で攻撃対象のアクターを返す
+	/// </summary>
+	/// <returns></returns>
+	std::vector<Actor*>& GetDamegeUltActor() {
+		return DamegeUltActor;
+	}
+
+	/// <summary>
+	/// 必殺技を食らったアクターのデータをリストから削除する
+	/// </summary>
+	/// <param name="">必殺技を食らったアクター</param>
+	/// <returns></returns>
+	void EraseDamegeUltActor(Actor* targetActor) {
+		std::vector<Actor*>::iterator it = std::find(
+			DamegeUltActor.begin(), // アクターのリストの最初
+			DamegeUltActor.end(),   // アクターのリストの最後
+			targetActor                     // 消したいアクター
+		);
+		DamegeUltActor.erase(it);
+	}
+
+	void  DamegeUltActorClear() {
+		DamegeUltActor.clear();
+	}
+
+	//必殺技を打ったかどうかのフラグを返す
+	//打っている間はtrue
+	bool GetmUseUltimaitSkillFlag()
+	{
+		return m_UseUltimaitSkillFlag;
+	}
 
 private:
     Level3DRender m_respawnLevel;
 
 
 protected:
-	int Lv;                    //レベル
-	int AtkSpeed;              //攻撃速度
-	float Cooltime;            //スキルのクールタイム
-	float AvoidanceCoolTime;    //回避のクールタイム
-	bool SkillState = false;     //スキルが使用可能かどうかの判定
-	int Point;                 //敵を倒して手に入れたポイント
-	int GetExp;                //中立の敵を倒したときの経験値
-	int ExpTable;              //経験値テーブル
-	int m_oldExpTable = 0;         //前のレベルの経験値テーブル
-	int respawnNumber;         //リスポーンする座標の番号
-	bool isDeath = false;      //死んだかどうかの判定
-	bool invincibleFlag = false;     //無敵時間フラグ
-	int Ponit = 0;                  //獲得したポイント
+	int									Lv;								//レベル
+	int									AtkSpeed;						//攻撃速度
+	float								Cooltime=0;						//スキルのクールタイム
+	float								AvoidanceCoolTime=0;			//回避のクールタイム
+	bool								SkillState = false;				//スキルが使用可能かどうかの判定
+	int									Point=0;						//敵を倒して手に入れたポイント
+	int									GetExp=0;						//中立の敵を倒したときの経験値
+	int									ExpTable=0;						//経験値テーブル
+	int									m_oldExpTable = 0;				//前のレベルの経験値テーブル
+	int									respawnNumber;					//リスポーンする座標の番号
+	bool								isDeath = false;				//死んだかどうかの判定
+	bool								invincibleFlag = false;			//無敵時間フラグ
+	int									Ponit = 0;						//獲得したポイント
+	int									m_SaveEXP = 0;					//UIに表示するために経験値を保存する
+	float								SkillTimer = 0;					//スキルのクールタイムを計算するタイマー
+	float								AvoidanceTimer = 0;				//回避のクールタイムを計算するタイマー
+	float								invincibleTimer = 0;			//無敵時間を計算するタイマー
+
 	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Quaternion m_respawnRotation[4];
@@ -669,6 +735,7 @@ protected:
 	Fade* m_fade = nullptr;
 				
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
+	std::vector<Actor*> DamegeUltActor;             //必殺技で攻撃対象のアクター
 
 	/*ChaseEFK* PowerUpEfk = nullptr;*/
 	ChaseEFK* GetHoimi = nullptr;
@@ -679,7 +746,8 @@ protected:
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
-
+	//必殺技使用時にカメラで見ている間true AI用
+	bool ChaseCameraFlag = false;
 	////////////////////////////////////////////////
 	// 雷を打つときに使う変数
 	////////////////////////////////////////////////
@@ -688,9 +756,8 @@ protected:
 	//必殺技を打たれたときに立てるフラグ(被害者のフラグ)
 	bool m_DamegeUltimaitSkillaFlag = false;
 	//グラウンドに降りているかチェックするフラグ
-	bool m_GroundChackFlag = false;
-	//プレイヤーが必殺技を打った時に雷を打たれたキャラをカメラで見たかのフラグ
-	bool m_CameraSawCharFlag = false;
+	//bool m_GroundChackFlag = false;
+	bool m_NoTargetActor = false;
 	//必殺技を打つ間隔を計るタイマー
 	float m_UltshootTimer = 0.9f;
 	//地上にいるキャラを数える

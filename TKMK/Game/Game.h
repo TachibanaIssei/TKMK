@@ -88,6 +88,8 @@ public:
 	/// </summary>
 	void SetMusic();
 
+	void SetEffects();
+
 	/// <summary>
 	/// 効果音の音量を返す
 	/// </summary>
@@ -118,6 +120,12 @@ public:
 		EnemyRespawnPosition[number] = pos;
 		EnemyReapawnPot[number] = rot;
 	};
+
+	//キャラが必殺技を使った時に全体的に暗くする
+	void UltTimeSky();
+
+	//ライト系のリセット
+	void LightReset();
 
 	void Render(RenderContext& rc);
 
@@ -196,21 +204,56 @@ public:
 	{
 		return Ultactor;
 	}
+
+	/// <summary>
+	/// 必殺技の溜めに入った時と必殺技発動後に呼び出す
+	/// </summary>
+	/// <param name="flag"></param>
+	void SetUltTimeSkyFlag(bool flag)
+	{
+		UltTimeSkyFlag = flag;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	bool GetUltTimeSkyFlag()
+	{
+		return UltTimeSkyFlag;
+	}
+
+	/// <summary>
+	///	必殺技を使ったときに呼び出す
+	/// </summary>
+	/// <param name="ultstop"></param>
 	void SetStopFlag(bool ultstop)
 	{
 		UltStopFlag = ultstop;
 	}
 
+	/// <summary>
+	/// 必殺技でゲームが止まっているかのフラグを返す
+	/// </summary>
+	/// <returns></returns>
 	bool GetStopFlag()
 	{
 		return UltStopFlag;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="rabbit"></param>
 	void SetRabbitFlag(bool rabbit)
 	{
 		RabbitFlag = rabbit;
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="flag"></param>
 	void SetUltCanUseFlag(bool flag)
 	{
 		UltCanUseFlag = flag;
@@ -270,6 +313,8 @@ public:
 		}
 		UnderSpriteUpdate();
 	}
+
+	bool IsActorGroundChack(Actor* actor);
 
 private:
 	/// <summary>
@@ -373,6 +418,10 @@ private:
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Vector3 m_EFK_Pos = Vector3::Zero;
+
+	RigidBody				m_rigidBody;						//剛体。
+	BoxCollider			m_boxCollider;							//コライダー。
+
 	bool HowToPlaySpriteFlag = false;
 
 	float m_spriteAlpha = 0.0f;
@@ -386,12 +435,14 @@ private:
 	//秒を計るタイマー
 	float SecondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 1.0f;
+	float MinutesTimer = 3.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;
 	//必殺技中みんな止まる
 	bool UltStopFlag = false;
+	//必殺技の溜めから必殺技終了までtrue
+	bool UltTimeSkyFlag = false;
 
 	Actor* Ultactor = nullptr;
 

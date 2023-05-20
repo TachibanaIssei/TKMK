@@ -66,7 +66,11 @@ Game::~Game()
 	}
 
 	DeleteGO(player);
-	TowerDown->Stop();
+
+	if (TowerDown != nullptr)
+	{
+		TowerDown->Stop();
+	}
 	//DeleteGO(TowerDown);
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);

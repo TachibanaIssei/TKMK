@@ -149,13 +149,17 @@ bool Tittle::Start()
 	m_ilustoptionOp.Update();
 
 	//BGMの設定
-	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/titleBGM/fanfare1.wav");
-	g_soundEngine->ResistWaveFileBank(3, "Assets/sound/titleBGM/titleBGM2.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_Title_Fanfare, "Assets/sound/titleBGM/fanfare1.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_Title_BGM, "Assets/sound/titleBGM/titleBGM2.wav");
 	//選択音
-	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/sentaku/sentaku4.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_Title_Choise, "Assets/sound/sentaku/sentaku4.wav");
 	//斬撃音
-	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/titleBGM/titleSE/zangeki2.wav");
-	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/titleBGM/titleSE/zangeki1.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_Title_Slash2, "Assets/sound/titleBGM/titleSE/zangeki2.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_Title_Slash1, "Assets/sound/titleBGM/titleSE/zangeki1.wav");
+	//決定音
+	g_soundEngine->ResistWaveFileBank(enSound_OK, "Assets/sound/sentaku/kettei2.wav");
+
+
 
 	m_bgm = NewGO<SoundSource>(0);
 
@@ -202,7 +206,7 @@ void Tittle::Scene()
 			{
 				swordright -= 0.11;
 				SoundSource* se = NewGO<SoundSource>(0);
-				se->Init(6);
+				se->Init(enSound_Title_Slash1);
 				se->SetVolume(SEVolume);
 				se->Play(false);
 				m_linear = enLinear_sword2;
@@ -218,13 +222,14 @@ void Tittle::Scene()
 			//補完率
 			swordright += 0.07f;
 		}
+
 		else if (m_linear == enLinear_sword2)
 		{
 			if (swordleft >= 1.1f)
 			{
 				swordleft -= 0.11;
 				SoundSource* se = NewGO<SoundSource>(0);
-				se->Init(6);
+				se->Init(enSound_Title_Slash1);
 				se->SetVolume(SEVolume);
 				se->Play(false);
 				m_linear = enLinear_delay;
@@ -253,7 +258,7 @@ void Tittle::Scene()
 			if (firstLogo > 0.8f)
 			{
 				SoundSource* se = NewGO<SoundSource>(0);
-				se->Init(7);
+				se->Init(enSound_Title_Slash2);
 				se->SetVolume(SEVolume);
 				se->Play(false);
 				m_linear = enLinear_End;
@@ -346,7 +351,7 @@ void Tittle::Scene()
 		//ゲーム画面への遷移
 		if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Start) {
 			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(5);
+			se->Init(enSound_Title_Choise);
 			se->Play(false);
 			se->SetVolume(1.0f);
 			//game画面へ遷移
@@ -360,7 +365,7 @@ void Tittle::Scene()
 	{
 		//線形変換に移る
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		titleScene = 1;
@@ -381,7 +386,7 @@ void Tittle::Scene()
 		m_titleScene = enTitleScene_Change;
 		if (m_bgm->IsPlaying() == false)
 		{
-			m_bgm->Init(3);
+			m_bgm->Init(enSound_Title_BGM);
 			m_bgm->Play(true);
 			m_bgm->SetVolume(0.5f);
 		}
@@ -403,7 +408,7 @@ void Tittle::Select()
 			if (selectPosition > 2)
 				selectPosition = 0;
 			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(5);
+			se->Init(enSound_Title_Choise);
 			se->Play(false);
 			se->SetVolume(1.0f);
 		}
@@ -413,7 +418,7 @@ void Tittle::Select()
 			if (selectPosition < 0)
 				selectPosition = 2;
 			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(5);
+			se->Init(enSound_Title_Choise);
 			se->Play(false);
 			se->SetVolume(1.0f);
 		}
@@ -464,7 +469,7 @@ void Tittle::Operation()
 	if (g_pad[0]->IsTrigger(enButtonB) && m_operationLook == enOperationLook_Seem) {
 		//選択音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//説明画面を非表示
@@ -475,7 +480,7 @@ void Tittle::Operation()
 	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Operation && m_operationLook == enOperationLook_UnSeem) {
 		//選択音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//説明画面を表示
@@ -502,7 +507,7 @@ void Tittle::CharacterOp()
 	{
 		//選択音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//キャラクター説明画面を非表示
@@ -514,7 +519,7 @@ void Tittle::CharacterOp()
 	{
 		//選択音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//キャラクター説明画面を表示
@@ -533,7 +538,7 @@ void Tittle::CharacterOp()
 		{
 			characterOpPosition--;
 			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(5);
+			se->Init(enSound_Title_Choise);
 			se->Play(false);
 			se->SetVolume(1.0f);
 		}
@@ -542,7 +547,7 @@ void Tittle::CharacterOp()
 		{
 			characterOpPosition++;
 			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(5);
+			se->Init(enSound_Title_Choise);
 			se->Play(false);
 			se->SetVolume(1.0f);
 		}

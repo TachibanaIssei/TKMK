@@ -119,18 +119,14 @@ void CharacterSelect::Update()
 
 	PointerMove();
 	CheckIconOverlap();
-
-	if 
-	(
-		//スタートボタンを押したときか
-		g_pad[0]->IsTrigger(enButtonStart) ||
-		(
-			//STARTの範囲内でAボタンを押した時
-			m_underBarDrawFlag &&
-			g_pad[0]->IsTrigger(enButtonA)
-		)
-	)
+	//スタートボタンを押したときか				//STARTの範囲内でAボタンを押した時
+	if (g_pad[0]->IsTrigger(enButtonStart) || (m_underBarDrawFlag && g_pad[0]->IsTrigger(enButtonA)))
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_OK);
+		//プレイヤーとの距離によって音量調整
+		se->SetVolume(1.0f);
+		se->Play(false);
 		//フェードアウトを始める
 		fade->StartFadeIn(1.0f);
 		m_readyFlag = true;
@@ -139,6 +135,11 @@ void CharacterSelect::Update()
 	//Bボタンが押されたらタイトルに戻る
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_OK);
+		//プレイヤーとの距離によって音量調整
+		se->SetVolume(1.0f);
+		se->Play(false);
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
 		DeleteGO(this);
 		DeleteGO(m_bgm);

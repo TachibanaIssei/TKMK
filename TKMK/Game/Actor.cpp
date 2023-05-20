@@ -227,6 +227,7 @@ void Actor::ExpProcess(int Exp)
 
 	}
 }
+
 /// <summary>
 /// リスポーンしたときのレベルによって経験値を変更する
 /// </summary>
@@ -347,7 +348,7 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 	float Len = diff.Length();
 
 	const float min = 0.1f;
-	const float max = 1500.0f;
+	const float max = 1000.0f;
 
 	float nomalizeValue = (abs(Len) - min) / (max - min);
 

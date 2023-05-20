@@ -8,6 +8,7 @@
 #include "GameCamera.h"
 #include "WizardUlt.h"
 #include "ChaseEFK.h"
+#include "Sounds.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -146,7 +147,7 @@ void KnightPlayer::Update()
 		return;
 	}
 	
-
+	
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
@@ -162,6 +163,10 @@ void KnightPlayer::Update()
 			}
 			LevelUp_efk = NewGO<ChaseEFK>(4);
 			LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(enSound_Level_UP);
+			se->SetVolume(1.0f);
+			se->Play(false);
 		}
 		else if (Lv < oldLv)
 		{
@@ -171,7 +176,7 @@ void KnightPlayer::Update()
 			LevelDown_efk = NewGO<ChaseEFK>(4);
 			LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
 		}
-
+		
 		//前フレームのレベルを取得
 		oldLv = Lv;
 		//前フレームの座標を取得
@@ -265,7 +270,7 @@ void KnightPlayer::Update()
 
 		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
-
+	
 	//ジャンプ中ではないかつ落下中なら
 	if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
 	{
@@ -308,6 +313,7 @@ void KnightPlayer::Attack()
 			AtkState = true;
 		}
 	}
+
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{

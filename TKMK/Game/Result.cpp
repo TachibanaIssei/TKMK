@@ -532,7 +532,7 @@ void Result::Select()
 	{
 		m_selectFlag = false;
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->SetVolume(m_seVolume);
 		se->Play(false);
 	}
@@ -540,7 +540,7 @@ void Result::Select()
 	{
 		m_selectFlag = true;
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->SetVolume(m_seVolume);
 		se->Play(false);
 	}
@@ -569,7 +569,7 @@ void Result::Select()
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_title)
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->SetVolume(m_seVolume);
 		se->Play(false);
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
@@ -580,7 +580,7 @@ void Result::Select()
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_exit)
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(5);
+		se->Init(enSound_Title_Choise);
 		se->SetVolume(m_seVolume);
 		se->Play(false);
 		g_gameLoop.m_isLoop = false;

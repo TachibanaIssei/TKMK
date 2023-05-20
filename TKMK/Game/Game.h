@@ -60,6 +60,7 @@ public:
 	void Between();
 	void GoResult();
 	void GameState();
+	void Push_OK();							//決定音
 
 	/// <summary>
 	/// ポーズ時の移動処理

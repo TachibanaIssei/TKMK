@@ -657,6 +657,15 @@ public:
 		return m_UseUltimaitSkillFlag;
 	}
 
+	/// <summary>
+	/// 必殺技を打って画面を暗くするかのフラグを返す
+	/// </summary>
+	/// <returns></returns>
+	bool GetUltimateDarknessFlag() const
+	{
+		return UltimateDarknessFlag;
+	}
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -746,6 +755,8 @@ protected:
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
+	//必殺技を打った時に画面を暗くするするフラグ
+	bool UltimateDarknessFlag = false;
 	//必殺技使用時にカメラで見ている間true AI用
 	bool ChaseCameraFlag = false;
 	////////////////////////////////////////////////

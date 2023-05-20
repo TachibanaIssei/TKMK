@@ -274,6 +274,7 @@ private:
 	FontRender m_time_left;
 	float timerScale = 1.65f;
 	bool timerScaleFlag = false;
+	Vector4 limitColor = { 1.0f,1.0f,1.0f,1.0f };
 
 	const char* knightname = "knightplayer";
 	const char* wizardname = "wizardplayer";

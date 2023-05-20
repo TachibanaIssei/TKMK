@@ -14,20 +14,15 @@ WizardUlt::WizardUlt()
 WizardUlt::~WizardUlt()
 {
 	DeleteGO(UltCollision);
-	// 全てを終わらせる！！！！！！！
-	//地上にいることを示すカウンターを減らす
-	//m_CreatMeActor->SubOnGroundCharCounter();
-	
-
-	//ターゲットの地上にいるフラグをfalseにする	
-	//m_targetActor->ChangeGroundChackflag(false);
-
 	//必殺技を食らったアクターをリストから削除する
-	m_CreatMeActor->EraseDamegeUltActor(m_targetActor);
+	//m_CreatMeActor->EraseDamegeUltActor(m_targetActor);
 
 	//プレイヤーでないと実行しない
 	if (m_ThisCreatPlayerFlag == true)
 	{
+		//必殺技を食らったアクターをリストから削除する
+		m_CreatMeActor->EraseDamegeUltActor(m_targetActor);
+
 		gameCamera = FindGO<GameCamera>("gamecamera");
 		//カメラがもう一度雷に打たれていないキャラを探すようにする
 		gameCamera->ChangeMoveCameraState(GameCamera::m_enUltRotCameraState);
@@ -130,8 +125,17 @@ void WizardUlt::FallThunder()
 
 void WizardUlt::Damege()
 {
+	//レベル７以上なら
+	/*if (m_CharLevel7AndAdoveFlag == true) {
+		m_targetActor->
+	}*/
+
+
 	//攻撃対象のキャラにダメージを与える
 	m_targetActor->Dameged(m_UltDamege, m_CreatMeActor);
+
+	
+
 	int downlevel = 1;
 
 }

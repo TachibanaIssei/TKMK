@@ -859,6 +859,7 @@ void KnightAI::Attack()
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
+			UltimateDarknessFlag = true;
 
 			pushFlag = true;
 			//必殺技の溜めステートに移行する
@@ -916,13 +917,15 @@ bool KnightAI::UltimaitSkillTime()
 			//	//必殺技打たれた状態を無くす
 			//	actor->ChangeDamegeUltFlag(false);
 			//}
-			//対象のアクターがいなかったフラグをfalseにする
+			//対象のアクターがいなかったフラグをfalseに戻す
 			m_NoTargetActor = false;
 			//レベルを下げる
 			UltimateSkill();
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//画面を明るくする
+			UltimateDarknessFlag = false;
 			//画面を暗くするフラグをfalseにする
 			m_game->SetUltTimeSkyFlag(false);
 			//画面が暗いのをリセットする
@@ -981,7 +984,7 @@ void KnightAI::MakeUltSkill()
 		//攻撃するアクターのオブジェクト名をセット
 		wizardUlt->SetActor(actor->GetName());
 		//攻撃力を決める
-		wizardUlt->SetUltDamege(Lv);
+		wizardUlt->SetAboutUlt(Lv);
 		//攻撃するアクターの座標取得
 		Vector3 UltPos = actor->GetPosition();
 		UltPos.y += 100.0f;
@@ -1006,7 +1009,7 @@ void KnightAI::MakeUltSkill()
 
 		m_UltshootTimer = 0.0f;
 		//一人ずつ必殺技を打つのでぬける
-		return;
+		//return;
 
 	}
 

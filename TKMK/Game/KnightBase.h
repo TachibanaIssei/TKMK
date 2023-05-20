@@ -300,6 +300,10 @@ public:
 		}
 	}
 
+	void CreatMagicCircle();
+
+	
+
 protected:
 	/// <summary>
 	///無敵時間用
@@ -420,6 +424,8 @@ protected:
 	bool UltCollisionSetFlag = false;
 	//必殺技を打ったらしばらく止めるタイマー
 	float UltStopTimer = 1.0f;
+	
+
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
 

@@ -399,11 +399,15 @@ void KnightPlayer::Attack()
 	//Xボタンが押されたら
 	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
+		//画面を暗くする
+		UltimateDarknessFlag = true;
 		//ゲーム側に教える
 		m_game->UnderSprite_Ult();
 		//画面を暗くする
 		m_game->SetUltTimeSkyFlag(true);
-
+		//UltimateDarknessFlag = true;
+		//魔法陣生成
+		CreatMagicCircle();
 		pushFlag = true;
 		
 		//必殺技の溜めステートに移行する
@@ -460,6 +464,8 @@ bool KnightPlayer::UltimaitSkillTime()
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//画面を明るくする
+			UltimateDarknessFlag = false;
 			//画面を暗くするフラグをfalseにする
 			m_game->SetUltTimeSkyFlag(false);
 			//画面が暗いのをリセットする
@@ -513,7 +519,7 @@ void KnightPlayer::MakeUltSkill()
 			//攻撃するアクターのオブジェクト名をセット
 			wizardUlt->SetActor(actor->GetName());
 			//攻撃力を決める
-			wizardUlt->SetUltDamege(Lv);
+			wizardUlt->SetAboutUlt(Lv);
 			//攻撃するアクターの座標取得
 			Vector3 UltPos = actor->GetPosition();
 			UltPos.y += 100.0f;

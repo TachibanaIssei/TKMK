@@ -330,6 +330,7 @@ public:
 	/// <param name="targetActor">カメラのターゲットのアクター</param>
 	void ToggleObjectActive(bool IsUltFlag, Actor* targetActor);
 
+
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する

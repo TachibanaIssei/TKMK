@@ -21,7 +21,8 @@ enum EnSound {
 	enSound_Level_Down,				//レベルダウンした時の音
 	enSound_Healing,				//HP回復した時の音
 	enSound_Pause_Screen,			//ポーズ画面に入る時の音
-	enSound_OK,						//決定音
+	enSound_TitleOK,				//タイトル画面の決定音
+	enSound_OK,						//キャラセレクト画面の決定音
 	enSound_Title_BGM,              //タイトルのBGM
 	enSound_Title_Choise,			//タイトル画面での選択音
 	enSound_Title_Slash1,			//タイトル画面での斬撃音1
@@ -31,5 +32,6 @@ enum EnSound {
 	enSound_CountDown1,				//ゲームカウントダウン１
 	enSound_CountFight,				//ゲームカウントダウンファイト
 	enSound_Title_Fanfare,			//勝利した時BGM？
+	enSound_GameEnd,
 	enSound_Num,	
 };

@@ -34,6 +34,7 @@ public:
 	/// •KE‹Z‚Ì“–‚½‚è”»’è¶¬‚·‚é
 	void MakeUltSkill();
 	void AvoidanceSprite();
+
 	/// <summary>
 	/// ƒQ[ƒW‚ğ¶Šñ‚¹‚·‚éˆ—
 	/// </summary>

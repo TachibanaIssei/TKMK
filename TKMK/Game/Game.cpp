@@ -75,9 +75,11 @@ Game::~Game()
 	}
 
 	DeleteGO(player);
+  
 	if (GameObjectManager::GetInstance()->IsActive()) {
 		TowerDown->Stop();
 	}
+
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	DeleteGO(m_bgm);
@@ -722,6 +724,8 @@ void Game::SetMusic()
 		g_soundEngine->ResistWaveFileBank(enSound_PlayBattle, "Assets/sound/gameBGM/SentouBGM1.wav");
 		//ポーズ音
 		g_soundEngine->ResistWaveFileBank(enSound_Pause_Screen, "Assets/sound/menu/game_stop/gameStop1.wav");
+		//ゲーム終了
+		g_soundEngine->ResistWaveFileBank(enSound_GameEnd, "Assets/sound/playerSE/CountEnd/GameEnd1.wav");
 	
 	}
 	//試合開始前

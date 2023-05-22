@@ -136,7 +136,7 @@ void CharacterSelect::Update()
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_OK);
+		se->Init(enSound_TitleOK);
 		//ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‚É‚æ‚Á‚Ä‰¹—Ê’²®
 		se->SetVolume(1.0f);
 		se->Play(false);

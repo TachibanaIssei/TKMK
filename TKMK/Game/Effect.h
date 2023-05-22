@@ -2,6 +2,7 @@
 
 enum EnEFK {
 	enEffect_TowerDown,
+	enEffect_MasicCircle,
 	enEffect_Knight_Death,
 	enEffect_Knight_Thunder,
 	enEffect_Knight_Thunder_Charge,

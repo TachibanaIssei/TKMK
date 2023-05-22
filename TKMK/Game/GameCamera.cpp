@@ -24,16 +24,16 @@ namespace
 	const float CAMERA_POS_X = -160.0f;
 	const float CAMERA_POS_Y = 80.0f;
 
-	const float KNIGHT_CAMERA_POS_X = 80.0f;
-	const float KNIGHT_CAMERA_POS_Y = 0.0f;
+	const float KNIGHT_CAMERA_POS_X = 120.0f;
+	const float KNIGHT_CAMERA_POS_Y = 10.0f;
 
 	const float KNIGHT_ULT_POS_X = -90.0f;
 	const float KNIGHT_ULT_POS_Y = 40.0f;
 
 
 	//雷を落とす
-	const float KNIGHT_TUNDER_POS_X = 120.0f;
-	const float KNIGHT_TUNDER_POS_Y = -40.0f;
+	const float KNIGHT_TUNDER_POS_X = 110.0f;
+	const float KNIGHT_TUNDER_POS_Y = -45.0f;
 }
 
 GameCamera::GameCamera()
@@ -145,7 +145,7 @@ void GameCamera::NomarlCamera()
 		for (auto actor : m_actors) {
 			//AIが打った後に終わるまではこの処理をしないようにする
 			// 画面が切り替わりまくる
-			//もしプレイヤーが必殺技を打ったら
+			//もしアクターが必殺技を打ったら
 			if (actor->GetmUseUltimaitSkillFlag() == true)
 			{
 				break;
@@ -161,6 +161,9 @@ void GameCamera::NomarlCamera()
 				m_enCameraState = m_enUltRotCameraState;
 
 				ultactor = actor;
+
+				//gameにターゲットのみを映すようにするよう伝える
+				game->ToggleObjectActive(true, ultactor);
 			}
 		}
 	
@@ -233,6 +236,9 @@ void GameCamera::NomarlCamera()
 //雷に打たれていないキャラを探す
 void GameCamera::UltRotCamera()
 {
+	
+
+
 	//AIの場合はこの処理だけする
 	//一回だけの処理
 	if (SetCameraCharFrontFlag == false) {
@@ -270,30 +276,20 @@ void GameCamera::UltRotCamera()
 	{
 		for (auto actor : player_actor->GetDamegeUltActor()/*game->GetActors()*/)
 		{
-			//プレイヤーか一度見たキャラなら抜け出す
-			/*if (player_actor->GetName() == actor->GetName()||actor->GetCameraSawCharFlag()==true) {
-				continue;
-			}*/
-			//雷を打たれるなら
-			//if (actor->GetDamegeUltFlag() == true)
 			{
 				//雷を打たれているキャラにカメラを向けるフラグ
 				TunderCameraFlag = true;
 				//カメラで見る対象のキャラ
 				victim_actor = actor;
-				////カメラで見たかのフラグを立てる
-				//actor->ChangeCameraSawCharFlag(true);
 
-				//二人までしか見れない
-				//Damege_actor_Name = actor->GetName();
+				//gameにターゲットのみを映すようにするよう伝える
+				game->ToggleObjectActive(true, victim_actor);
+
 				wizardUlt = FindGO<WizardUlt>("wizardUlt");
 				//見るキャラがきまったら抜け出す
 				m_enCameraState = m_enChaseCameraState;
 				return;
 			}
-			
-			
-
 			return;
 		}
 	}
@@ -354,6 +350,8 @@ void GameCamera::UltRotCamera()
 
 void GameCamera::ChaseCamera()
 {
+	
+
 	wizardUlt = FindGO<WizardUlt>("wizardUlt");
 
 	if (wizardUlt != nullptr)
@@ -621,6 +619,9 @@ void GameCamera::GameCameraUltEnd() {
 	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
 	//プレイヤーのカメラをリセットする
 	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+
+	//gameにターゲットのみを映すようにするよう伝える
+	game->ToggleObjectActive(false, victim_actor);
 
 	m_enCameraState = m_enNomarlCameraState;
 

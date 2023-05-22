@@ -287,6 +287,16 @@ void KnightBase::Collition()
 			if (m_charState == enCharState_Ult_liberation) {
 				//エフェクトを止める
 				Ult_Swordeffect->Stop();
+				MagicCircle->Stop();
+				DeleteGO(Ult_Swordeffect);
+				DeleteGO(MagicCircle);
+
+				//画面を暗くするフラグをfalseにする
+				UltimateDarknessFlag = false;
+				m_game = FindGO<Game>("game");
+				m_game->SetUltTimeSkyFlag(false);
+				//画面が暗いのをリセットする
+				m_game->LightReset();
 			}
 
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
@@ -549,6 +559,18 @@ void KnightBase::MoveStraight()
 	m_position = m_charCon.Execute(m_Skill_MoveSpeed, 1.0f / 60.0f);
 }
 
+void KnightBase::CreatMagicCircle()
+{
+	MagicCircle = NewGO<EffectEmitter>(0);
+	MagicCircle->Init(EnEFK::enEffect_MasicCircle);
+	Vector3 CirclePos = m_position;
+	CirclePos.y += 3.0f;
+	MagicCircle->SetPosition(CirclePos);
+	MagicCircle->SetScale(Vector3::One * 30.0f);
+	MagicCircle->Play();
+}
+
+
 /// <summary>
 /// アニメーション再生の処理
 /// </summary>
@@ -747,6 +769,11 @@ void KnightBase::OnProcessJumpStateTransition()
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();
 	}
+
+	if (!m_modelRender.IsPlayingAnimation() && m_position.y <= 500.0f)
+	{
+		m_charState = enCharState_Fall;
+	}
 }
 
 /// <summary>
@@ -851,8 +878,10 @@ void KnightBase::OnProcessUlt_liberationStateTransition()
 	{
 		//AIがカメラで見られるようにする
 		ChangeChaseCamera(true);
-		//必殺技ステート
+		//必殺技ステートに移行
 		m_charState = enCharState_UltimateSkill;
+		
+
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Hand);
@@ -942,7 +971,7 @@ void KnightBase::OnProcessFallStateTransition()
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Metal_Falling);
 		//プレイヤーとの距離によって音量調整
-		se->SetVolume(1.0f);
+		se->SetVolume(0.6f);
 		se->Play(false);
 		//�ҋ@�X�e�[�g
 		m_charState = enCharState_Idle;

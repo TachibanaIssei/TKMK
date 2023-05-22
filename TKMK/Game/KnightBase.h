@@ -300,6 +300,10 @@ public:
 		}
 	}
 
+	void CreatMagicCircle();
+
+	
+
 protected:
 	/// <summary>
 	///無敵時間用
@@ -374,6 +378,7 @@ protected:
 	CharacterController m_charCon;                        //キャラクターコントロール
 
 	EffectEmitter* Ult_Swordeffect = nullptr;				//必殺技の溜めエフェクト
+	EffectEmitter* MagicCircle = nullptr;					//必殺技の魔法陣のエフェクト
 
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
@@ -420,6 +425,8 @@ protected:
 	bool UltCollisionSetFlag = false;
 	//必殺技を打ったらしばらく止めるタイマー
 	float UltStopTimer = 1.0f;
+	
+
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
 

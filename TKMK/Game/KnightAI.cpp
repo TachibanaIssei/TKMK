@@ -141,7 +141,7 @@ void KnightAI::Update()
 		//リスポーンしたときしか使えない
 		//飛び降りる処理
 		//地上にいないならジャンプしかしないようにする
-		if (m_position.y > 10.0f) {
+		if (IsActorGroundChack() != true) {
 			if (m_charCon.IsOnGround())
 			{
 				
@@ -151,14 +151,14 @@ void KnightAI::Update()
 		else
 		{
 			//やられているなら
-			if (m_charState == enCharState_Death)
-			{
-				//地上にいない
-				IsGroundFlag = false;
-			}
-			else
-				//地上にいる
-				IsGroundFlag = true;
+			//if (m_charState == enCharState_Death)
+			//{
+			//	//地上にいない
+			//	IsGroundFlag = false;
+			//}
+			//else
+			//	//地上にいる
+			//	IsGroundFlag = true;
 			
 		}
 
@@ -885,13 +885,17 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		//必殺技を打たない
-		//return;
+		return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
+
 			m_game->SetUltCanUseFlag(true);
+			UltimateDarknessFlag = true;
+			//魔法陣生成
+			CreatMagicCircle();
 			pushFlag = true;
 			//必殺技の溜めステートに移行する
 			m_charState = enCharState_Ult_liberation;
@@ -930,8 +934,6 @@ bool KnightAI::UltimaitSkillTime()
 		{
 			
 				MakeUltSkill();
-			
-			//MakeUltSkill();
 		}
 		else
 		{
@@ -943,18 +945,15 @@ bool KnightAI::UltimaitSkillTime()
 		//地上にいるキャラに必殺技を打ち終わったら
 		if (DamegeUltActor.empty() == true/*m_OnGroundCharCounter <= 0 */ )
 		{
-			//for (auto actor : m_game->GetActors())
-			//{
-			//	//必殺技打たれた状態を無くす
-			//	actor->ChangeDamegeUltFlag(false);
-			//}
-			//対象のアクターがいなかったフラグをfalseにする
+			//対象のアクターがいなかったフラグをfalseに戻す
 			m_NoTargetActor = false;
 			//レベルを下げる
 			UltimateSkill();
 			//時間を動かす
 			UltEnd();
 			m_game->SetStopFlag(false);
+			//画面を明るくする
+			UltimateDarknessFlag = false;
 			//画面を暗くするフラグをfalseにする
 			m_game->SetUltTimeSkyFlag(false);
 			//画面が暗いのをリセットする
@@ -1013,7 +1012,7 @@ void KnightAI::MakeUltSkill()
 		//攻撃するアクターのオブジェクト名をセット
 		wizardUlt->SetActor(actor->GetName());
 		//攻撃力を決める
-		wizardUlt->SetUltDamege(Lv);
+		wizardUlt->SetAboutUlt(Lv);
 		//攻撃するアクターの座標取得
 		Vector3 UltPos = actor->GetPosition();
 		UltPos.y += 100.0f;
@@ -1038,7 +1037,7 @@ void KnightAI::MakeUltSkill()
 
 		m_UltshootTimer = 0.0f;
 		//一人ずつ必殺技を打つのでぬける
-		return;
+		//return;
 
 	}
 
@@ -1202,12 +1201,32 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		se->Play(false);
 		se->SetVolume(0.3f);
 	}
+
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"timeStop") == 0)
 	{
 		m_game->SetStopFlag(true);
 		m_game->SetUltActor(this);
 	}
+
+	//必殺技 剣を空に掲げたら
+	if (wcscmp(eventName, L"UltimateAttack_Charge") == 0)
+	{
+		//雷チャージエフェクト生成
+		EffectEmitter* ThunderCharge = NewGO<EffectEmitter>(0);
+		ThunderCharge->Init(EnEFK::enEffect_Knight_Thunder_Charge);
+
+		Vector3 ChargePos = Vector3::Zero;
+		//「Sword」ボーンのワールド行列を取得する。
+		Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
+		matrix.Apply(ChargePos);
+
+		ChargePos.y += 20.0f;
+		ThunderCharge->SetPosition(ChargePos);
+		ThunderCharge->SetScale(Vector3::One * 5.0f);
+		ThunderCharge->Play();
+	}
+
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"UltimateAttack_Start") == 0)
 	{
@@ -1216,7 +1235,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//地上にいるキャラをカウントする
 		for (auto actor : m_game->GetActors())
 		{
-			if (GetName() == actor->GetName() || m_game->IsActorGroundChack(actor) == false) {
+			if (GetName() == actor->GetName() || actor->IsActorGroundChack() == false) {
 				continue;
 			}
 				/*m_OnGroundCharCounter++;
@@ -1410,7 +1429,10 @@ void KnightAI::Rotation()
 
 void KnightAI::Render(RenderContext& rc)
 {
-	m_modelRender.Draw(rc);
+	if (DarwFlag == true) {
+		m_modelRender.Draw(rc);
+	}
+
 	//スプライトフラグがtureなら
 	if (m_player->GetSpriteFlag())
 	{

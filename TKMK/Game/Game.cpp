@@ -30,6 +30,15 @@ namespace {
 	const Vector3 TOWEREXPOSITION_POS = Vector3(-90.0f, -2.0f, 0.0f);
 	const Vector3 RABBIT_POS = Vector3(0.0f, 1.13f, 0.0f);
 
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);//ディレクションライトのカラー
+	const Vector3 AMBIENT_COLOR = Vector3(0.6f, 0.6f, 0.6f);//環境光のカラー
+
+	//const Vector3 DARKNESS_DIRECTION = Vector3(0.4f, 0.4f, 0.4f);//必殺技発動時のディレクションライトのカラー
+	const float DARKNESS_DIRECTION = 0.4f;
+	const Vector3 DARKNESS_AMBIENT = Vector3(0.55f, 0.5f, 0.6f);//必殺技発動時の環境光のカラー
+
+	const float SKYCOLOR = 1.0f;
+	const float DARKNESS_SKY_COLOR = 0.2f;
 }
 
 Game::Game()
@@ -66,12 +75,11 @@ Game::~Game()
 	}
 
 	DeleteGO(player);
-
-	if (TowerDown != nullptr)
-	{
+  
+	if (GameObjectManager::GetInstance()->IsActive()) {
 		TowerDown->Stop();
 	}
-	//DeleteGO(TowerDown);
+
 	DeleteGO(m_gameUI);
 	DeleteGO(m_Map);
 	DeleteGO(m_bgm);
@@ -93,9 +101,15 @@ bool Game::Start()
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
   
 	directionLightDir.Normalize();
-	Vector3 directionLightColor = Vector3{ 0.5f, 0.5f, 0.5f};
+	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f});
+	g_renderingEngine->SetAmbient(AMBIENT_COLOR);
+	//暗いときの画面のカラー
+	//ディレクションライト
+	m_FluctuateDirectionColor = DIRECTION_RIGHT_COLOR.x;
+	//環境光
+	m_FluctuateAmbientColor = AMBIENT_COLOR;
+
 
 	InitSkyCube();
 
@@ -141,24 +155,7 @@ bool Game::Start()
 
 	
 
-	//中立の敵の生成
-	{
-		m_Enemylevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
-			//座標を記憶する
-			if (objData.ForwardMatchName(L"Pos") == true) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			}
-
-			//リスポーン番号1～8まで生成
-			//中立の敵の生成
-			if (objData.number != 0&& objData.number <= 8) {
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-
-			return true;
-			});
-	}
+	
 
 
 
@@ -306,7 +303,7 @@ bool Game::Start()
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
 
-	m_boxCollider.Create(Vector3(1.0f,1.0f,1.0f));
+	/*m_boxCollider.Create(Vector3(1.0f,1.0f,1.0f));*/
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -337,6 +334,25 @@ void Game::BattleStart()
 
 	if (m_StartToGameTimer < 0)
 	{
+		//中立の敵の生成
+		{
+			m_Enemylevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
+				//座標を記憶する
+				if (objData.ForwardMatchName(L"Pos") == true) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+				}
+
+				//リスポーン番号1～8まで生成
+				//中立の敵の生成
+				if (objData.number != 0 && objData.number <= 8) {
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+
+				return true;
+				});
+		}
+
 		//マップの生成
 		m_Map = NewGO<Map>(2, "map");
 		//BGMの再生
@@ -360,17 +376,17 @@ void Game::Battle()
 		m_underSprite_TowerDown = true;
 		UnderSpriteUpdate();
 	}
-	if (m_GameState == enGameState_Battle) {
-		//CTRLを押したら
-		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
-		{
-			m_GameState = enGameState_Rezult;
-		}
-	}
+
+	//foractor
+
 
 	//誰かが必殺技の溜め状態なら
 	if (UltTimeSkyFlag == true) {
-		UltTimeSky();
+		UltTimeSkyDarkness();
+	}
+	else
+	{
+		LightReset();
 	}
 	
 	//ポーズステートに変える
@@ -401,6 +417,8 @@ void Game::Battle()
 	//誰かが必殺技を使ったら処理を止める
 	if (UltStopFlag == true)
 	{
+		
+
 		return;
 	}
 
@@ -690,6 +708,9 @@ void Game::InitSkyCube()
 {
 	m_skyCube = NewGO<SkyCube>(0, "skyCube");
 	m_skyCube->SetScale(600.0f);
+	m_skyCube->SetLuminance(SKYCOLOR);
+	m_FluctuateSkyColor = SKYCOLOR;
+	DarknessSkyColor = DARKNESS_SKY_COLOR;
 }
 
 /// <summary>
@@ -769,6 +790,9 @@ void Game::SetMusic()
 
 void Game::SetEffects()
 {
+	//魔法陣のエフェクト読み込む
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_MasicCircle, u"Assets/effect/Knight/Knight_Ult_MagicCircle.efk");
+
 	//剣士のレベル変動する時のエフェクト
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelDown,u"Assets/effect/knight/LevelDown.efk");
@@ -1035,87 +1059,130 @@ void Game::CountDown()
 	else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
 }
 
-void Game::UltTimeSky()
+void Game::UltTimeSkyDarkness()
 {
-	m_skyCube->SetLuminance(0.2f);
+	//ディレクションライトを徐々に暗くする
+	if (DARKNESS_DIRECTION < m_FluctuateDirectionColor) {
+		m_FluctuateDirectionColor -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else
+	{
+		m_FluctuateDirectionColor = DARKNESS_DIRECTION;
+	}
+
+	//環境光を徐々に暗くする
+	if (DARKNESS_AMBIENT.x < m_FluctuateAmbientColor.x) {
+		m_FluctuateAmbientColor.x -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateAmbientColor.x = DARKNESS_AMBIENT.x;
+	}
+
+	if (DARKNESS_AMBIENT.y < m_FluctuateAmbientColor.y) {
+		m_FluctuateAmbientColor.y -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateAmbientColor.y = DARKNESS_AMBIENT.y;
+	}
+
+	if (DARKNESS_AMBIENT.z < m_FluctuateAmbientColor.z) {
+		m_FluctuateAmbientColor.z -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateAmbientColor.z = DARKNESS_AMBIENT.z;
+	}
+
+	//スカイキューブのカラーを暗くする
+	if (DARKNESS_SKY_COLOR < m_FluctuateSkyColor) {
+		m_FluctuateSkyColor -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateSkyColor = DARKNESS_SKY_COLOR;
+	}
+
+
+	m_skyCube->SetLuminance(m_FluctuateSkyColor);
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
 
 	directionLightDir.Normalize();
-	Vector3 directionLightColor = Vector3{ 0.4f, 0.4f, 0.4f };
-	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.55f,0.5f,0.6f });
+	directionLightColor2 = Vector3::Zero;
+	directionLightColor2.x += m_FluctuateDirectionColor;
+	directionLightColor2.y += m_FluctuateDirectionColor;
+	directionLightColor2.z += m_FluctuateDirectionColor;
+	//Vector3 directionLightColor = Vector3::One* m_FluctuateDirectionColor;
+	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor2);
+	g_renderingEngine->SetAmbient(m_FluctuateAmbientColor);
 }
 
 void Game::LightReset()
 {
-	m_skyCube->SetLuminance(1.0f);
+	//ディレクションライトを徐々に明るくする
+	if (DIRECTION_RIGHT_COLOR.x > m_FluctuateDirectionColor) {
+		m_FluctuateDirectionColor += 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else
+	{
+		m_FluctuateDirectionColor = DIRECTION_RIGHT_COLOR.x;
+	}
+
+	//環境光を徐々に明るくする
+	if (AMBIENT_COLOR.x > m_FluctuateAmbientColor.x) {
+		m_FluctuateAmbientColor.x += 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateAmbientColor.x = AMBIENT_COLOR.x;
+	}
+
+	if (AMBIENT_COLOR.y > m_FluctuateAmbientColor.y) {
+		m_FluctuateAmbientColor.y += 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateAmbientColor.y = AMBIENT_COLOR.y;
+	}
+
+	if (AMBIENT_COLOR.z > m_FluctuateAmbientColor.z) {
+		m_FluctuateAmbientColor.z += 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateAmbientColor.z = AMBIENT_COLOR.z;
+	}
+
+	//スカイキューブのカラーを明るくする
+	if (SKYCOLOR > m_FluctuateSkyColor) {
+		m_FluctuateSkyColor += 1.0f * g_gameTime->GetFrameDeltaTime();
+	}
+	else {
+		m_FluctuateSkyColor = SKYCOLOR;
+	}
+
+	m_skyCube->SetLuminance(m_FluctuateSkyColor);
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
 
 	directionLightDir.Normalize();
-	Vector3 directionLightColor = Vector3{ 0.5f, 0.5f, 0.5f };
-	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
-	g_renderingEngine->SetAmbient({ 0.6f,0.6f,0.6f });
+	directionLightColor2 = Vector3::Zero;
+	directionLightColor2.x += m_FluctuateDirectionColor;
+	directionLightColor2.y += m_FluctuateDirectionColor;
+	directionLightColor2.z += m_FluctuateDirectionColor;
+	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor2);
+	g_renderingEngine->SetAmbient(m_FluctuateAmbientColor);
 }
 
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
+void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
 {
-	bool isHit = false;						//衝突フラグ。
+	//for (auto actor : m_Actors) {
+	//	//必殺技発動時のカメラのターゲットでないなら
+	//	if (actor != targetActor) {
+	//		//必殺技発動中なら描画しない
+	//		if(IsUltFlag==true) actor->SetDarwFlag(false);
 
-	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-	{
-		//壁とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Ground) {
-			//衝突したのは壁ではない。
-			return 0.0f;
-		}
-
-		//壁とぶつかったら。
-		//フラグをtrueに。
-		isHit = true;
-		return 0.0f;
-	}
-};
-
-//アクターが地面に接地しているか確かめる
-bool Game::IsActorGroundChack(Actor* actor)
-{
-	Vector3 actorpos = actor->GetPosition();
-	btTransform start, end;
-	start.setIdentity();
-	end.setIdentity();
-	//始点はエネミーの座標。
-	start.setOrigin(btVector3(actorpos.x, actorpos.y+10.0f, actorpos.z));
-	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(actorpos.x, actorpos.y-2.0f, actorpos.z));
-
-	while (true)
-	{
-		//壁の判定を返す
-		IsGroundResult callback_Ground;
-		//コライダーを始点から終点まで動かして。
-		//壁と衝突するかどうかを調べる。
-		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_boxCollider.GetBody(), start, end, callback_Ground);
-		//壁と衝突した！
-		if (callback_Ground.isHit == true)
-		{
-			//地面にいても死んでいたら
-			if (actor->NowCharState() == Actor::enCharState_Death)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-			
-		}
-		else
-		{
-			return false;
-		}
-
-			
+	//		else actor->SetDarwFlag(true);
+	//	}
+	//}
+	for (auto enemy : m_neutral_Enemys) {
+			//必殺技発動中なら
+			if (IsUltFlag == true) enemy->Deactivate();
+			//必殺技終了なら
+			else enemy->Activate();
 	}
 }
 

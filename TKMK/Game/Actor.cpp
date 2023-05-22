@@ -305,7 +305,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 		expTable = 5;
 	}
 
-	if (Lv >= 2) {
+	if (Lv >= 3) {
 		expTable = 10;
 	}
 
@@ -457,4 +457,69 @@ bool Actor::DeathToRespawnTimer_AI(bool DeathToRespwanFlag)
 	}
 	//やられていない
 	return false;
+}
+
+//衝突したときに呼ばれる関数オブジェクト(壁用)
+struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
+{
+	bool isHit = false;						//衝突フラグ。
+
+	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
+	{
+		//壁とぶつかってなかったら。
+		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Ground) {
+			//衝突したのは壁ではない。
+			return 0.0f;
+		}
+
+		//壁とぶつかったら。
+		//フラグをtrueに。
+		isHit = true;
+		return 0.0f;
+	}
+};
+
+
+//アクターが地面に接地しているか確かめる
+bool Actor::IsActorGroundChack()
+{
+	m_boxCollider.Create(Vector3(1.0f, 1.0f, 1.0f));
+
+	Vector3 actorpos = GetPosition();
+	btTransform start, end;
+	start.setIdentity();
+	end.setIdentity();
+	//始点はエネミーの座標。
+	start.setOrigin(btVector3(actorpos.x, actorpos.y + 10.0f, actorpos.z));
+	//終点はプレイヤーの座標。
+	end.setOrigin(btVector3(actorpos.x, actorpos.y - 2.0f, actorpos.z));
+
+	while (true)
+	{
+		//壁の判定を返す
+		IsGroundResult callback_Ground;
+		//コライダーを始点から終点まで動かして。
+		//壁と衝突するかどうかを調べる。
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_boxCollider.GetBody(), start, end, callback_Ground);
+		//壁と衝突した！
+		if (callback_Ground.isHit == true)
+		{
+			//地面にいても死んでいたら
+			if (NowCharState() == enCharState_Death)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+
+		}
+		else
+		{
+			return false;
+		}
+
+
+	}
 }

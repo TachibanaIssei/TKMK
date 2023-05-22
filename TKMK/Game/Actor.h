@@ -657,6 +657,22 @@ public:
 		return m_UseUltimaitSkillFlag;
 	}
 
+	/// <summary>
+	/// 必殺技を打って画面を暗くするかのフラグを返す
+	/// </summary>
+	/// <returns></returns>
+	bool GetUltimateDarknessFlag() const
+	{
+		return UltimateDarknessFlag;
+	}
+
+	void SetDarwFlag(bool flag)
+	{
+		DarwFlag = flag;
+	}
+
+	bool IsActorGroundChack();
+
 private:
     Level3DRender m_respawnLevel;
 
@@ -742,10 +758,18 @@ protected:
 	ChaseEFK* LevelUp_efk = nullptr;
 	ChaseEFK* LevelDown_efk = nullptr;
 
+	RigidBody				m_rigidBody;						//剛体。
+	BoxCollider			m_boxCollider;							//コライダー。
+
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
 	bool m_atkUpSpriteFlag = false;
 
+	//自身を描画するかのフラグ trueのとき描画
+	bool DarwFlag = true;
+
+	//必殺技を打った時に画面を暗くするするフラグ
+	bool UltimateDarknessFlag = false;
 	//必殺技使用時にカメラで見ている間true AI用
 	bool ChaseCameraFlag = false;
 	////////////////////////////////////////////////

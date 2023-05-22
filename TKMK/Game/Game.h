@@ -315,13 +315,20 @@ public:
 		UnderSpriteUpdate();
 	}
 
-	bool IsActorGroundChack(Actor* actor);
+	/*bool IsActorGroundChack(Actor* actor);*/
 
 	//ゲームが制限時間時間に達したかのフラグを返す
 	bool IsGameEnd()
 	{
 		return GameEndFlag;
 	}
+
+	/// <summary>
+	/// ゲームオブジェクトのアクティブと非アクティブを切り替える
+	/// </summary>
+	/// <param name="IsUltFlag">必殺技発動するか終わりかのフラグ</param>
+	/// <param name="targetActor">カメラのターゲットのアクター</param>
+	void ToggleObjectActive(bool IsUltFlag, Actor* targetActor);
 
 private:
 	/// <summary>
@@ -358,6 +365,17 @@ private:
 			return;
 		}
 	}
+
+	/// <summary>
+	/// ターゲットのアクターをセット
+	/// </summary>
+	/// <param name="target"></param>
+	void SetTargetActor(Actor* target)
+	{
+		TargetActor = target;
+	}
+
+	
 
 	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
@@ -426,8 +444,8 @@ private:
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Vector3 m_EFK_Pos = Vector3::Zero;
 
-	RigidBody				m_rigidBody;						//剛体。
-	BoxCollider			m_boxCollider;							//コライダー。
+	//RigidBody				m_rigidBody;						//剛体。
+	//BoxCollider			m_boxCollider;							//コライダー。
 
 	float m_FluctuateSkyColor;
 	float DarknessSkyColor;
@@ -460,6 +478,8 @@ private:
 	bool UltTimeSkyFlag = false;
 
 	Actor* Ultactor = nullptr;
+	//必殺技発動時のターゲット
+	Actor* TargetActor = nullptr;
 
 	float m_StartToGameTimer = 6.0f;
 

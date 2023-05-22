@@ -287,6 +287,9 @@ void KnightBase::Collition()
 			if (m_charState == enCharState_Ult_liberation) {
 				//エフェクトを止める
 				Ult_Swordeffect->Stop();
+				MagicCircle->Stop();
+				DeleteGO(Ult_Swordeffect);
+				DeleteGO(MagicCircle);
 
 				//画面を暗くするフラグをfalseにする
 				UltimateDarknessFlag = false;
@@ -558,7 +561,7 @@ void KnightBase::MoveStraight()
 
 void KnightBase::CreatMagicCircle()
 {
-	EffectEmitter* MagicCircle = NewGO<EffectEmitter>(0);
+	MagicCircle = NewGO<EffectEmitter>(0);
 	MagicCircle->Init(EnEFK::enEffect_MasicCircle);
 	Vector3 CirclePos = m_position;
 	CirclePos.y += 3.0f;

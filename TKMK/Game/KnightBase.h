@@ -378,6 +378,7 @@ protected:
 	CharacterController m_charCon;                        //キャラクターコントロール
 
 	EffectEmitter* Ult_Swordeffect = nullptr;				//必殺技の溜めエフェクト
+	EffectEmitter* MagicCircle = nullptr;					//必殺技の魔法陣のエフェクト
 
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 

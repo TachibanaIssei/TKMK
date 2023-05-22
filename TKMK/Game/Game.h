@@ -316,6 +316,7 @@ public:
 
 	bool IsActorGroundChack(Actor* actor);
 
+
 private:
 	/// <summary>
 	/// 中立の敵の名前を設定する

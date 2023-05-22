@@ -179,7 +179,6 @@ void KnightAI::Update()
 		
 		//攻撃
 		Attack();
-		
 		//反転
 		Rotation();
 		//無敵時間
@@ -297,6 +296,11 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		returnData.chaseOrEscape = chaseOrEscape;
 
 		return returnData;
+	}
+
+	if (m_game->GetMinutesTimer() <= 1.5f)
+	{
+		eval += 4000;
 	}
 
 	//アクターの座標を取得
@@ -421,6 +425,14 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	// 距離で評価値を決める 近いほど高い
 	eval += 5000 - (int)Distance;
 
+	if (m_game->GetMinutesTimer() >= 1.5f)
+	{
+		eval += 4000;
+	}
+	else
+	{
+		eval -= 4000;
+	}
 	//エネミーが他のアクターに狙わているなら評価値を下げる
 	if (enemy->GetBetargetCount()>=1)
 	{
@@ -785,53 +797,57 @@ void KnightAI::Attack()
 
 	if (CanSkill())
 	{	
-		//連打で攻撃できなくなる
-		//スキルを発動する処理
-		if (m_targetActor != nullptr && SkillEndFlag==false)
+		if (m_charState == enCharState_UltimateSkill || m_charState == enCharState_Ult_liberation)
 		{
-			//スキルを打つ
-			SkillState = true;
-			m_skillMove = TargePos - m_position;
-			m_skillMove.Normalize();
-
-			//剣にまとわせるエフェクト
-			if (EffectKnightSkill != nullptr) {
-				EffectKnightSkill->DeleteEffect();
-			}
-			EffectKnightSkill = NewGO <ChaseEFK>(4);
-			EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
-			EffectKnightSkill->AutoRot(true);
-			EffectKnightSkill->SetAutoRotAddY(360.0f);
-			// 座標の加算量を計算
-			Vector3 effectAddPos = Vector3::Zero;
-			effectAddPos.y = 50.0f;
-			EffectKnightSkill->SetAddPos(effectAddPos);
-
-			//床のエフェクト
-			EffectEmitter* EffectKnightSkillGround_;
-			EffectKnightSkillGround_ = NewGO <EffectEmitter>(0);
-			EffectKnightSkillGround_->Init(EnEFK::enEffect_Knight_SkillGround);
-			EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
-			EffectKnightSkillGround_->Play();
-			Vector3 effectPosition = m_position;
-			//Quaternion EffRot = m_rot;
-			//EffRot.AddRotationDegY(360.0f);
-			Quaternion EffRot = Quaternion::Identity;
-			EffRot.SetRotationYFromDirectionXZ(m_skillMove);
-			EffRot.AddRotationDegY(360.0f);
-			EffectKnightSkillGround_->SetPosition(effectPosition);
-			EffectKnightSkillGround_->SetRotation(EffRot);
-			EffectKnightSkillGround_->Update();
-
-			//土煙のエフェクト
-			if (FootSmoke != nullptr) {
-				FootSmoke->DeleteEffect();
-			}
-			FootSmoke = NewGO<ChaseEFK>(4);
-			FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
-			FootSmoke->AutoRot(true);
-			
+			return;
 		}
+			//連打で攻撃できなくなる
+		//スキルを発動する処理
+			if (m_targetActor != nullptr && SkillEndFlag == false)
+			{
+				//スキルを打つ
+				SkillState = true;
+				m_skillMove = TargePos - m_position;
+				m_skillMove.Normalize();
+
+				//剣にまとわせるエフェクト
+				if (EffectKnightSkill != nullptr) {
+					EffectKnightSkill->DeleteEffect();
+				}
+				EffectKnightSkill = NewGO <ChaseEFK>(4);
+				EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
+				EffectKnightSkill->AutoRot(true);
+				EffectKnightSkill->SetAutoRotAddY(360.0f);
+				// 座標の加算量を計算
+				Vector3 effectAddPos = Vector3::Zero;
+				effectAddPos.y = 50.0f;
+				EffectKnightSkill->SetAddPos(effectAddPos);
+
+				//床のエフェクト
+				EffectEmitter* EffectKnightSkillGround_;
+				EffectKnightSkillGround_ = NewGO <EffectEmitter>(0);
+				EffectKnightSkillGround_->Init(EnEFK::enEffect_Knight_SkillGround);
+				EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
+				EffectKnightSkillGround_->Play();
+				Vector3 effectPosition = m_position;
+				//Quaternion EffRot = m_rot;
+				//EffRot.AddRotationDegY(360.0f);
+				Quaternion EffRot = Quaternion::Identity;
+				EffRot.SetRotationYFromDirectionXZ(m_skillMove);
+				EffRot.AddRotationDegY(360.0f);
+				EffectKnightSkillGround_->SetPosition(effectPosition);
+				EffectKnightSkillGround_->SetRotation(EffRot);
+				EffectKnightSkillGround_->Update();
+
+				//土煙のエフェクト
+				if (FootSmoke != nullptr) {
+					FootSmoke->DeleteEffect();
+				}
+				FootSmoke = NewGO<ChaseEFK>(4);
+				FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
+				FootSmoke->AutoRot(true);
+
+			}
 	}
 
 	if (CanAttack()) {
@@ -875,7 +891,7 @@ void KnightAI::Attack()
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
-
+			m_game->SetUltCanUseFlag(true);
 			pushFlag = true;
 			//必殺技の溜めステートに移行する
 			m_charState = enCharState_Ult_liberation;

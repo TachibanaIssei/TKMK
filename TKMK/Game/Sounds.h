@@ -32,5 +32,6 @@ enum EnSound {
 	enSound_CountDown1,				//ゲームカウントダウン１
 	enSound_CountFight,				//ゲームカウントダウンファイト
 	enSound_Title_Fanfare,			//勝利した時BGM？
+	enSound_GameEnd,
 	enSound_Num,	
 };

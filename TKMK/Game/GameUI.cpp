@@ -580,7 +580,7 @@ void GameUI::HPBar()
 	int HP = player->CharSetHp();
 	int MaxHP = player->CharSetMaxHp();
 	wchar_t hp[255];
-	swprintf_s(hp, 255, L"/%d/%d", HP, MaxHP);
+	swprintf_s(hp, 255, L"%d/%d", HP, MaxHP);
 	m_HpFont.SetText(hp);
 
 	Vector3 HpScale = Vector3::One;
@@ -663,7 +663,7 @@ void GameUI::Timer()
 	
 	m_time_left.SetText(wcsbuf);
 
-	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10&& m_game->GetSecondsTimer() > 1 )
+	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10&& m_game->GetSecondsTimer() > 0 )
 	{
 		if (timerScaleFlag == false)
 		{
@@ -732,8 +732,10 @@ void GameUI::EXPBar()
 {
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
+	//m_MathExp＝変動する
+	//m_SaveExp＝溜まっている経験値
 
-	
+	//変動する経験値とセーブした経験値が違うなら
 	if (m_MathExp != m_SaveExp) {
 		//EXPオーブが飛んできた後に増やす
 		//if (m_EXPupFlag == true) {
@@ -769,9 +771,8 @@ void GameUI::EXPBar()
 
 	//経験値テーブルより獲得した経験値が多くなったら
 	//たまに二回ゲージが伸びる
-	if (m_MathExp >= m_ExpTable/*EXPScale.x >= 1.0f*/) {
-		//レベルが上がるか下がるかテーブルが変わる
-		//動く値
+	if (m_MathExp >= m_ExpTable) {
+		
 		m_SaveExp -= m_ExpTable;
 
 		if (m_SaveExp <= 0) {

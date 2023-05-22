@@ -153,24 +153,7 @@ bool Game::Start()
 
 	
 
-	//中立の敵の生成
-	{
-		m_Enemylevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
-			//座標を記憶する
-			if (objData.ForwardMatchName(L"Pos") == true) {
-				SetRespawnPosition(objData.position, objData.rotation, objData.number);
-			}
-
-			//リスポーン番号1～8まで生成
-			//中立の敵の生成
-			if (objData.number != 0&& objData.number <= 8) {
-				CreateEnemy(objData.position, objData.rotation);
-				return true;
-			}
-
-			return true;
-			});
-	}
+	
 
 
 
@@ -178,33 +161,33 @@ bool Game::Start()
 			if (objData.ForwardMatchName(L"CharPos") == true) {
 				//左上の座標
 
-				//if (objData.number == 0) {
-				//	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-				//	m_KnightAI->SetGame(this);
-				//	m_Actors.push_back(m_KnightAI);
-				//	m_KnightAI->SetPosition(objData.position);
-				//	m_KnightAI->SetCharaconPosition(objData.position);
-				//	m_KnightAI->SetPlayerActor(player->GetPlayerActor());
-				//	int Number = 0;
-				//	m_KnightAI->SetRespawnNumber(Number);
-				//	m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+				if (objData.number == 0) {
+					m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+					m_KnightAI->SetGame(this);
+					m_Actors.push_back(m_KnightAI);
+					m_KnightAI->SetPosition(objData.position);
+					m_KnightAI->SetCharaconPosition(objData.position);
+					m_KnightAI->SetPlayerActor(player->GetPlayerActor());
+					int Number = 0;
+					m_KnightAI->SetRespawnNumber(Number);
+					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
 
-				//	return true;
-				//}
-				////右上の座標
-				//if (objData.number == 1) {
-				//	m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-				//	m_KnightAI1->SetGame(this);
-				//	m_Actors.push_back(m_KnightAI1);
-				//	m_KnightAI1->SetPosition(objData.position);
-				//	m_KnightAI1->SetCharaconPosition(objData.position);
-				//	m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
-				//	int Number = 1;
-				//	m_KnightAI1->SetRespawnNumber(Number);
-				//	m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+					return true;
+				}
+				//右上の座標
+				if (objData.number == 1) {
+					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+					m_KnightAI1->SetGame(this);
+					m_Actors.push_back(m_KnightAI1);
+					m_KnightAI1->SetPosition(objData.position);
+					m_KnightAI1->SetCharaconPosition(objData.position);
+					m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
+					int Number = 1;
+					m_KnightAI1->SetRespawnNumber(Number);
+					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 
-				//	return true;
-				//}
+					return true;
+				}
 				//左下の座標
 				if (objData.number == 3) {
 					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
@@ -318,7 +301,7 @@ bool Game::Start()
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
 
-	m_boxCollider.Create(Vector3(1.0f,1.0f,1.0f));
+	/*m_boxCollider.Create(Vector3(1.0f,1.0f,1.0f));*/
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -349,6 +332,25 @@ void Game::BattleStart()
 
 	if (m_StartToGameTimer < 0)
 	{
+		//中立の敵の生成
+		{
+			m_Enemylevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
+				//座標を記憶する
+				if (objData.ForwardMatchName(L"Pos") == true) {
+					SetRespawnPosition(objData.position, objData.rotation, objData.number);
+				}
+
+				//リスポーン番号1～8まで生成
+				//中立の敵の生成
+				if (objData.number != 0 && objData.number <= 8) {
+					CreateEnemy(objData.position, objData.rotation);
+					return true;
+				}
+
+				return true;
+				});
+		}
+
 		//マップの生成
 		m_Map = NewGO<Map>(2, "map");
 		//BGMの再生
@@ -373,7 +375,7 @@ void Game::Battle()
 		UnderSpriteUpdate();
 	}
 
-
+	//foractor
 
 
 	//誰かが必殺技の溜め状態なら
@@ -413,6 +415,8 @@ void Game::Battle()
 	//誰かが必殺技を使ったら処理を止める
 	if (UltStopFlag == true)
 	{
+		
+
 		return;
 	}
 
@@ -1159,65 +1163,22 @@ void Game::LightReset()
 	g_renderingEngine->SetAmbient(m_FluctuateAmbientColor);
 }
 
-//衝突したときに呼ばれる関数オブジェクト(壁用)
-struct IsGroundResult :public btCollisionWorld::ConvexResultCallback
+void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
 {
-	bool isHit = false;						//衝突フラグ。
+	//for (auto actor : m_Actors) {
+	//	//必殺技発動時のカメラのターゲットでないなら
+	//	if (actor != targetActor) {
+	//		//必殺技発動中なら描画しない
+	//		if(IsUltFlag==true) actor->SetDarwFlag(false);
 
-	virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
-	{
-		//壁とぶつかってなかったら。
-		if (convexResult.m_hitCollisionObject->getUserIndex() != enCollisionAttr_Ground) {
-			//衝突したのは壁ではない。
-			return 0.0f;
-		}
-
-		//壁とぶつかったら。
-		//フラグをtrueに。
-		isHit = true;
-		return 0.0f;
-	}
-};
-
-//アクターが地面に接地しているか確かめる
-bool Game::IsActorGroundChack(Actor* actor)
-{
-	Vector3 actorpos = actor->GetPosition();
-	btTransform start, end;
-	start.setIdentity();
-	end.setIdentity();
-	//始点はエネミーの座標。
-	start.setOrigin(btVector3(actorpos.x, actorpos.y+10.0f, actorpos.z));
-	//終点はプレイヤーの座標。
-	end.setOrigin(btVector3(actorpos.x, actorpos.y-2.0f, actorpos.z));
-
-	while (true)
-	{
-		//壁の判定を返す
-		IsGroundResult callback_Ground;
-		//コライダーを始点から終点まで動かして。
-		//壁と衝突するかどうかを調べる。
-		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_boxCollider.GetBody(), start, end, callback_Ground);
-		//壁と衝突した！
-		if (callback_Ground.isHit == true)
-		{
-			//地面にいても死んでいたら
-			if (actor->NowCharState() == Actor::enCharState_Death)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
-			
-		}
-		else
-		{
-			return false;
-		}
-
-			
+	//		else actor->SetDarwFlag(true);
+	//	}
+	//}
+	for (auto enemy : m_neutral_Enemys) {
+			//必殺技発動中なら
+			if (IsUltFlag == true) enemy->Deactivate();
+			//必殺技終了なら
+			else enemy->Activate();
 	}
 }
 

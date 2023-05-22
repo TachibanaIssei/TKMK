@@ -301,12 +301,12 @@ void Actor::ExpReset(int& Lv, int& getExp)
 /// <param name="expTable">経験値テーブル</param>
 void Actor::ExpTableChamge(int& Lv, int& expTable)
 {
-	if (Lv == 1) {
-		expTable = 5;
-	}
-
 	if (Lv >= 3) {
 		expTable = 10;
+	}
+	else
+	{
+		expTable = 5;
 	}
 
 	/*switch (Lv)

@@ -663,7 +663,7 @@ void GameUI::Timer()
 	
 	m_time_left.SetText(wcsbuf);
 
-	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10&& m_game->GetSecondsTimer() > 0 )
+	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10&& m_game->GetSecondsTimer() > 1 )
 	{
 		if (timerScaleFlag == false)
 		{
@@ -735,6 +735,46 @@ void GameUI::EXPBar()
 	//m_MathExp＝変動する
 	//m_SaveExp＝溜まっている経験値
 
+	//経験値テーブルより獲得した経験値が多くなったら
+	//たまに二回ゲージが伸びる
+	if (m_MathExp >= m_ExpTable) {
+
+		m_SaveExp -= m_ExpTable;
+
+		if (m_SaveExp <= 0) {
+			//セーブした経験値をリセット
+			player->CharResatSaveEXP();
+			m_SaveExp = player->CharGetSaveEXP();
+		}
+
+		m_MathExp = 0;
+		//現在のプレイヤーの経験値テーブルを代入
+		m_ExpTable = player->CharSetEXPTable();
+
+		//レベルアップの処理
+		if (m_oldPlayerLevel < player->CharSetLevel()) {
+			m_oldPlayerLevel++;
+		}
+
+		LevelFontChange(m_oldPlayerLevel);
+	}
+
+	//レベルが下がったとき
+	if (m_oldPlayerLevel > player->CharSetLevel()/*EXPScale.x <= 0.0f && m_DownFlag == true*/)
+	{
+		//現在のプレイヤーの経験値テーブルを代入
+		m_ExpTable = player->CharSetEXPTable();
+		//セーブした経験値をリセット
+		player->CharResatSaveEXP();
+		//動く値調
+		m_SaveExp = 0;
+		//m_MathExp = 0;
+		m_oldPlayerLevel--;
+		LevelFontChange(m_oldPlayerLevel);
+		m_DownFlag = false;
+	}
+
+
 	//変動する経験値とセーブした経験値が違うなら
 	if (m_MathExp != m_SaveExp) {
 		//EXPオーブが飛んできた後に増やす
@@ -743,7 +783,7 @@ void GameUI::EXPBar()
 			if (m_MathExp < m_SaveExp)
 				m_MathExp++;
 		//}
-		else if (m_MathExp >= m_nowEXP)
+		else if (m_MathExp > m_SaveExp)
 		{
 			m_MathExp--;
 			m_DownFlag = true;
@@ -766,54 +806,11 @@ void GameUI::EXPBar()
 		EXPScale.x = 1.0f;
 	}
 	else
-	//HPバーの増えていく割合。
-	EXPScale.x = (float)m_MathExp / (float)m_ExpTable;
-
-	//経験値テーブルより獲得した経験値が多くなったら
-	//たまに二回ゲージが伸びる
-	if (m_MathExp >= m_ExpTable) {
-		
-		m_SaveExp -= m_ExpTable;
-
-		if (m_SaveExp <= 0) {
-			//セーブした経験値をリセット
-			player->CharResatSaveEXP();
-			m_SaveExp= player->CharGetSaveEXP();
-		}
-
-		m_MathExp = 0;
-		//現在のプレイヤーの経験値テーブルを代入
-		m_ExpTable = player->CharSetEXPTable();
-		
-		//レベルアップの処理
-		if (m_oldPlayerLevel < m_NowPlayerLevel) {
-			m_oldPlayerLevel++;
-		}
-
-		LevelFontChange(m_oldPlayerLevel);
-	}
-
-	//レベルが下がったとき
-	if (m_oldPlayerLevel> m_NowPlayerLevel/*EXPScale.x <= 0.0f && m_DownFlag == true*/)
 	{
-		//現在のプレイヤーの経験値テーブルを代入
-		m_ExpTable = player->CharSetEXPTable();
-		//セーブした経験値をリセット
-		player->CharResatSaveEXP();
-		//動く値調
-		m_SaveExp = 0;
-		//m_MathExp = 0;
-		m_oldPlayerLevel--;
-		LevelFontChange(m_oldPlayerLevel);
-		m_DownFlag = false;
+		//HPバーの増えていく割合。
+		EXPScale.x = (float)m_MathExp / (float)m_ExpTable;
 	}
 	
-	//if (m_oldPlayerLevel != m_NowPlayerLevel)
-	//{
-	//	LevelFontChange(m_NowPlayerLevel);
-	//	//セーブした経験値をリセット
-	//	//player->CharResatSaveEXP();
-	//}
 
 	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();

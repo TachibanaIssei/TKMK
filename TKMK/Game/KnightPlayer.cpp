@@ -191,7 +191,7 @@ void KnightPlayer::Update()
 			//リスポーンしたときしか使えない
 			//飛び降りる処理
 			//地上にいないならジャンプしかしないようにする
-			if (m_position.y > 1.0f) {
+			if (IsActorGroundChack()!=true/*m_position.y > 1.0f*/) {
 				if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
 				{
 					pushFlag = true;
@@ -708,7 +708,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		for (auto actor : m_game->GetActors())
 		{
 			//名前が自身と同じもしくは一度調べたキャラならやり直す
-			if (GetName() == actor->GetName()|| m_game->IsActorGroundChack(actor)==false) {
+			if (GetName() == actor->GetName()|| actor->IsActorGroundChack()==false) {
 				continue;
 			}
 			////地上にいるのでカウントを増やす
@@ -841,10 +841,16 @@ void KnightPlayer::AvoidanceSprite()
 
 void KnightPlayer::Render(RenderContext& rc)
 {
-	m_modelRender.Draw(rc);
+
+	if (DarwFlag == true) {
+		m_modelRender.Draw(rc);
+	}
+	
+
 	//スキルのクールタイムとタイマーが違う時だけ表示
-	if(SkillTimer!=Cooltime)
-	Skillfont.Draw(rc);
+	/*if(SkillTimer!=Cooltime)
+	Skillfont.Draw(rc);*/
+
 	//回避のクールタイムとタイマーが違う時だけ表示
 	if (AvoidanceTimer != AvoidanceCoolTime)
 	{

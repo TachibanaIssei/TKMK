@@ -18,7 +18,7 @@ namespace
 	const float MAX_CAMERA_UNDER = 0.6f;	//カメラの下向きの最大値
 
 	const float TARGETPOS_YUP = 45.0f;
-	const float TARGETPOS_ULT_YUP = 50.0f;
+	
 
 	///注視点から視点までのベクトルを設定。
 	const float CAMERA_POS_X = -160.0f;
@@ -32,8 +32,9 @@ namespace
 
 
 	//雷を落とす
-	const float KNIGHT_TUNDER_POS_X = 110.0f;
-	const float KNIGHT_TUNDER_POS_Y = -45.0f;
+	const float KNIGHT_TUNDER_POS_X = 90.0f;
+	const float KNIGHT_TUNDER_POS_Y = -60.0f;
+	const float TARGETPOS_ULT_YUP = 70.0f;
 }
 
 GameCamera::GameCamera()
@@ -83,7 +84,7 @@ bool GameCamera::Start()
 
 	
 	//最初にキャラの背中を映すようにする
-	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+	CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 	m_springCamera.Refresh();
 
 	return true;
@@ -113,7 +114,7 @@ void GameCamera::Update()
 
 	//リスポーンしたらカメラを戻す
 	if (player_actor->RespawnFlag()==false&& PlayerRespawnFlag==true) {
-		CameraTarget(-CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+		CameraTarget(TARGETPOS_YUP ,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 		PlayerRespawnFlag = false;
 
 	}
@@ -189,7 +190,7 @@ void GameCamera::NomarlCamera()
 	{
 		UltChargeFlag = true;
 		m_springCamera.Refresh();
-		CameraTarget(KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor);
+		CameraTarget(TARGETPOS_YUP,KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor,false);
 		return;
 	}
 	//もし溜めている間に攻撃されたらカメラをリセット
@@ -197,14 +198,14 @@ void GameCamera::NomarlCamera()
 	{
 		UltChargeFlag = false;
 		m_springCamera.Refresh();
-		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+		CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 	}
 
 	//Yボタンが押されたら
 	//カメラの視点を最初の状態に戻す
 	if (g_pad[0]->IsTrigger(enButtonY))
 	{
-		CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+		CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 	}
 	//何も押されていないなら
 	else
@@ -244,7 +245,7 @@ void GameCamera::UltRotCamera()
 	if (SetCameraCharFrontFlag == false) {
 		//プレイヤーを下からの見上げるようにする
 		m_springCamera.Refresh();
-		CameraTarget(KNIGHT_TUNDER_POS_X, KNIGHT_TUNDER_POS_Y, ultactor);
+		CameraTarget(TARGETPOS_ULT_YUP,KNIGHT_TUNDER_POS_X, KNIGHT_TUNDER_POS_Y, ultactor,false);
 
 		SetCameraCharFrontFlag = true;
 	}
@@ -263,7 +264,7 @@ void GameCamera::UltRotCamera()
 			KnightUltFlag = false;
 			SetCameraCharFrontFlag = false;
 			m_springCamera.Refresh();
-			CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+			CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 			m_enCameraState = m_enNomarlCameraState;
 			return;
 		}
@@ -360,7 +361,10 @@ void GameCamera::ChaseCamera()
 		if (TunderCameraFlag == true) {
 			//雷に打たれているキャラの正面にカメラを合わせる
 			m_springCamera.Refresh();
-			CameraTarget(KNIGHT_TUNDER_POS_X, 0, victim_actor);
+			CameraTarget(TARGETPOS_YUP,KNIGHT_TUNDER_POS_X, 0, victim_actor,false);
+
+			if(wizardUlt->GetFallTunderFlag()==true)
+			ThunderCameraShake();
 			return;
 		}
 	}
@@ -435,7 +439,7 @@ void GameCamera::FollowThePlayer()
 /// <summary>
 /// カメラの視点をプレイヤーの背中を捉えるものに変更する
 /// </summary>
-void GameCamera::CameraTarget(float X, float Y,Actor*actor)
+void GameCamera::CameraTarget(float targrtYUp, float X, float Y,Actor*actor,bool cameraCollisionSolverFlag)
 {
 
 	//プレイヤーの前方向を取得
@@ -461,19 +465,28 @@ void GameCamera::CameraTarget(float X, float Y,Actor*actor)
 	m_toCameraPos.Set(newCameraPos);
 
 	//注視点の計算
-	Vector3 TargetPos;
+	/*Vector3 TargetPos;*/
 	TargetPos = actor->GetPosition();
-	TargetPos.y += TARGETPOS_YUP;
+	TargetPos.y += targrtYUp;
 	//視点から注視点へのベクトルを求める
 	newCameraPos += TargetPos;
 
-	//カメラの位置の衝突解決する
-	Vector3 newCamPos;
-	m_cameraCollisionSolver.Execute(
-		newCamPos,
-		newCameraPos,
-		TargetPos
-	);
+
+	if (cameraCollisionSolverFlag == true)
+	{
+		//カメラの位置の衝突解決する
+	//Vector3 newCamPos;
+		m_cameraCollisionSolver.Execute(
+			newCamPos,
+			newCameraPos,
+			TargetPos
+		);
+	}
+	else
+	{
+		newCamPos = newCameraPos;
+	}
+	
 
 	
 
@@ -599,6 +612,27 @@ void GameCamera::CameraShake(bool UpDown)
 	m_springCamera.Update();
 }
 
+void GameCamera::ThunderCameraShake()
+{
+	if (ShakeLeftAndLightFlag == false) {
+		TargetPos.x += 20.0f;
+		ShakeLeftAndLightFlag = true;
+		//TargetPos.x += 4.0f;
+		//m_ShakeMoveFlag = true;
+	}
+	else {
+		TargetPos.x -= 20.0f;
+		ShakeLeftAndLightFlag = false;
+		//TargetPos.x -= 4.0f;
+		//m_ShakeMoveFlag = false;
+	}
+
+	//視点と注視点を設定
+	m_springCamera.SetTarget(TargetPos);
+	m_springCamera.SetPosition(newCamPos);
+	m_springCamera.Update();
+}
+
 void GameCamera::GameCameraUltEnd() {
 	//全てリセット
 	m_springCamera.Refresh();
@@ -618,7 +652,7 @@ void GameCamera::GameCameraUltEnd() {
 
 	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
 	//プレイヤーのカメラをリセットする
-	CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, player_actor);
+	CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 
 	//gameにターゲットのみを映すようにするよう伝える
 	game->ToggleObjectActive(false, victim_actor);

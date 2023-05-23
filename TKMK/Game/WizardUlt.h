@@ -135,6 +135,11 @@ public:
 		}
 	}
 
+	bool GetFallTunderFlag()
+	{
+		return FallTunderFlag;
+	}
+
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;

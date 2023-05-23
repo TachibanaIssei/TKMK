@@ -157,6 +157,7 @@ void KnightPlayer::Update()
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
 			m_gameUI->ChangePlayerLevel(Lv);
+
 			//m_gameUI->LevelFontChange(Lv);
 			if (Lv > oldLv)
 			{

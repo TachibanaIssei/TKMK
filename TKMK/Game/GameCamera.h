@@ -34,7 +34,7 @@ public:
 	/// <summary>
 	/// カメラの視点を最初の状態に戻す
 	/// </summary>
-	void CameraTarget(float X,float Y,Actor*actor);
+	void CameraTarget(float targrtYUp, float X,float Y,Actor*actor, bool cameraCollisionSolverFlag);
 
 	/// <summary>
 	/// 剣士が必殺技を打った時のカメラワーク
@@ -50,6 +50,11 @@ public:
 	/// カメラを揺らす
 	/// </summary>
 	void CameraShake(bool UpDown);
+
+	/// <summary>
+	/// 雷が落ちた時に画面を揺らす
+	/// </summary>
+	void ThunderCameraShake();
 
 	void ChangeCameraShakeFlag(bool flag)
 	{
@@ -95,7 +100,7 @@ public:
 		TunderCameraFlag = flag;
 	}
 
-	bool UltTime(bool UltMoveFlag);
+	//bool UltTime(bool UltMoveFlag);
 
 	// 必殺カメラの終了
 	void GameCameraUltEnd();
@@ -159,6 +164,9 @@ private:
 	bool TunderCameraFlag = false;
 	//雷に打たれたキャラの名前を格納
 	const char* Damege_actor_Name = nullptr;
+
+	//false= true=
+	bool ShakeLeftAndLightFlag = false;
 	//////////////////////////////////////
 	
 	//前フレームのプレイヤーがリスポーン待機中かのフラグ

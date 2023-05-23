@@ -26,6 +26,10 @@ public:
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
+	/// <summary>
+	/// ラストアタックの移動計算
+	/// </summary>
+	void LastAttackMove() {}
 
 	inline Vector3 GetPosition() { return m_position; }
 

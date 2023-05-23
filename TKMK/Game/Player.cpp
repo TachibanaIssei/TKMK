@@ -129,13 +129,16 @@ int Player::CharSetHp()const
 		break;
 
 	case enZombie:
+		return -1;
 		break;
 
 	case enMonster:
+		return -1;
 		break;
 
 
 	default:
+		return -1;
 		break;
 	}
 }
@@ -157,13 +160,19 @@ int Player::CharSetMaxHp()const
 		break;
 
 	case enZombie:
+		return -1;
+
 		break;
 
 	case enMonster:
+		return -1;
+
 		break;
 
 
 	default:
+		return -1;
+
 		break;
 	}
 }
@@ -185,13 +194,18 @@ Quaternion Player::CharSetRot()const
 		break;
 
 	case enZombie:
+		return Quaternion::Identity;
 		break;
 
 	case enMonster:
+		return Quaternion::Identity;
+
 		break;
 
 
 	default:
+		return Quaternion::Identity;
+
 		break;
 	}
 }

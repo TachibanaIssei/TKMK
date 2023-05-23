@@ -701,7 +701,7 @@ protected:
 	Quaternion m_respawnRotation[4];
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 
-	Vector3 m_Forward;          //プレイヤーの前方向
+	Vector3 m_Forward = Vector3::Zero;          //プレイヤーの前方向
 	Vector3 m_forwardNow = Vector3::Zero;                 //現在の正面ベクトル
 
 	Vector3 m_position = Vector3::Zero;                   //座標
@@ -711,7 +711,7 @@ protected:
 	Status m_Status;                                      //ステータス
 	Status m_InitialStatus;                                //初期ステータス
 	//レベルアップ時に増加するステータス
-	LvUpStatus LvUPStatus = { 30,5,20.0f };
+	LvUpStatus LvUPStatus = { 30,5,5 };
 
 	//スポーン、リスポーンして塔から地上に降りたか
 	//空中にいるかの判定

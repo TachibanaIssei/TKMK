@@ -70,6 +70,15 @@ public:
 	void SetPlayerActor(Actor* actor) {
 		m_player = actor;
 	}
+
+	/// <summary>
+	/// ラストアタックの移動計算
+	/// </summary>
+	void LastAttackMove() {
+		m_LastAttackMove = TargePos - m_position;
+		m_LastAttackMove.Normalize();
+	}
+
 private:
 	// 評価値用の構造体
 	struct EvalData
@@ -83,7 +92,7 @@ private:
 	void EscapeChange(EvalData& evaldata, Vector3 targetPos);
 	//追跡と逃げる
 	void ChaseAndEscape();
-	void Rotation();
+	/*void Rotation();*/
 	void LotNextAction();
 
 	//アクターの評価値の計算
@@ -109,7 +118,7 @@ private:
 	Vector3                 TargePos = Vector3::Zero;
 	Vector3                 m_aiForward = Vector3::Zero;
 	Vector3                 m_patrolPos[5];
-	Vector3					m_forward;
+	Vector3					m_forward=Vector3::Zero;
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
 	FontRender              m_Name;
@@ -140,6 +149,7 @@ private:
 	//スキル発射時の移動量
 	Vector3 m_skillMove = Vector3::Zero;
 	
+	Vector3 m_LastAttackMove = Vector3::Zero;
 	///////////////
 	bool SkillFlag = false;
 	bool m_swordEffectFlag = false;

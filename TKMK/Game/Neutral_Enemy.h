@@ -105,6 +105,10 @@ public:
 		m_rot = rotation;
 	}
 
+	EnNEState GetEnemyState() {
+		return m_Neutral_EnemyState;
+	}
+
 	EnEnemyKinds GetenemyColor()
 	{
 		return m_enemyKinds;

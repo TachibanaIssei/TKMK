@@ -169,6 +169,10 @@ void KnightBase::ExpProcess(int Exp)
 /// </summary>
 void KnightBase::Rotation()
 {
+	if (CantMove) {
+		return;
+	}
+
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
@@ -819,6 +823,8 @@ void KnightBase::OnProcessSecondAtkStateTransition()
 		{
 			//攻撃を二段目にする
 			m_charState = enCharState_LastAttack;
+
+			LastAttackMove();
 		}
 		else
 		{

@@ -71,6 +71,7 @@ bool KnightAI::Start() {
 
 void KnightAI::Update()
 {
+	
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
@@ -81,7 +82,7 @@ void KnightAI::Update()
 	PlayAnimation();
 	// 追尾エフェクトのリセット
 	EffectNullptr();
-
+	
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {
 		return;
@@ -168,6 +169,7 @@ void KnightAI::Update()
 		AvoidanceSprite();
 		//スキルクールタイムの処理
 		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+		
 		// 次のアクションを抽選 
 		LotNextAction();
 
@@ -179,8 +181,10 @@ void KnightAI::Update()
 		
 		//攻撃
 		Attack();
+
 		//反転
 		Rotation();
+		
 		//無敵時間
 		Invincible();
 
@@ -196,9 +200,18 @@ void KnightAI::Update()
 			move *= 200.0f;
 
 			m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
-
 		}
 
+		if (m_charState == enCharState_LastAttack)
+		{
+			Vector3 LastAttackMove = m_LastAttackMove;
+			m_rot.SetRotationYFromDirectionXZ(m_LastAttackMove);
+			LastAttackMove.y = 0.0f;
+			LastAttackMove *= 100.0f;
+			m_position = m_charCon.Execute(LastAttackMove, g_gameTime->GetFrameDeltaTime());
+		}
+		
+		
 		//回避クールタイムの処理
 		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
@@ -334,6 +347,11 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		return returnData;
 	}
 
+	// 今狙っているターゲットと同じなら優先度を上げる
+	if (m_targetActor == actor) {
+		eval += 2000;
+	}
+
 	// 壁の向こうに対象がいるなら評価値を下げる
 	btTransform start, end;
 	start.setIdentity();
@@ -444,6 +462,11 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	{
 		eval += 3000;
 	}
+	//レベルがMAXなら中立はあまり狙わない
+	if (Lv >= 10)
+	{
+		eval -= 4000;
+	}
 
 	//自分にすごく近い敵が居たらをターゲットする
 	if (Distance <= 50.0f)
@@ -460,10 +483,17 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	{
 		eval += 600;
 	}
-	if (ColorEnemy == Neutral_Enemy::enEnemyKinds_Rabbit)
+	// ウサギを優先
+	if (ColorEnemy == Neutral_Enemy::enEnemyKinds_Rabbit && Lv >= 4 && Lv <= 8)
 	{
-
+		eval += 800;
 	}
+
+	// 今狙っているターゲットと同じなら優先度を上げる
+	if (m_targetEnemy == enemy) {
+		eval += 2000;
+	}
+
 	// 壁の向こうに対象がいるなら評価値を下げる
 	btTransform start, end;
 	start.setIdentity();
@@ -521,6 +551,10 @@ void KnightAI::EscapeChange(EvalData& evaldata, Vector3 targetPos)
 //狙う敵を選ぶ
 void KnightAI::LotNextAction()
 {
+	/*if (CantMove) {
+		return;
+	}*/
+
 	if (EvalTimer > 0.0f)
 	{
 		EvalTimer -= g_gameTime->GetFrameDeltaTime();
@@ -644,7 +678,11 @@ void KnightAI::ChaseAndEscape()
 	{
 		return;
 	}
-	if (CantMove) {
+	/*if (CantMove) {
+		return;
+	}*/
+	if (m_charState == enCharState_LastAttack)
+	{
 		return;
 	}
 
@@ -724,6 +762,10 @@ void KnightAI::ChaseAndEscape()
 
 void KnightAI::Move()
 {
+	/*if (CantMove) {
+		return;
+	}*/
+
 	//重力を付与する
 	m_moveSpeed.y -= 600.0f * g_gameTime->GetFrameDeltaTime();
 
@@ -771,6 +813,13 @@ const bool KnightAI::CanUlt()
 
 const bool KnightAI::CanAttack()
 {
+	// 対象が倒れているなら問答無用でfalse
+	if (m_targetEnemy != nullptr) {
+		if (m_targetEnemy->GetEnemyState() == Neutral_Enemy::enNeutral_Enemy_Death) {
+			return false;
+		}
+	}
+
 	Vector3 diff = TargePos - m_position;
 
 	if (diff.LengthSq() <= 50.0f * 50.0f)
@@ -863,29 +912,13 @@ void KnightAI::Attack()
 			AtkState = true;
 		}
 
-		//一段目のアタックのアニメーションがスタートしたなら
-		if (m_AtkTmingState == FirstAtk_State && m_AtkTmingState != SecondAtk_State)
-		{
-			Vector3 diff = TargePos - m_position;
-			m_rot.SetRotationYFromDirectionXZ(diff);
-			//ステートを二段目のアタックのアニメーションスタートステートにする
-			m_AtkTmingState = SecondAtk_State;			
-		}
-
-		if (m_AtkTmingState == SecondAtkStart_State && m_AtkTmingState != LastAtk_State)
-		{
-			Vector3 diff = TargePos - m_position;
-			m_rot.SetRotationYFromDirectionXZ(diff);
-			//ステートを三段目のアタックのアニメーションスタートステートにする
-			m_AtkTmingState = LastAtk_State;
-
-		}
+		
 	}
 	
 	if (CanUlt())
 	{
 		//必殺技を打たない
-		return;
+		//return;
 		//必殺技を発動する処理
 		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
 		{
@@ -1180,12 +1213,13 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		se->Init(enSound_ComboThree);
 		se->Play(false);
 		se->SetVolume(0.3f);
+		
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"Move_True") == 0)
 	{
 		CantMove = true;
-
+		/*m_moveSpeed = Vector3::Zero;*/
 	}
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
@@ -1327,6 +1361,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	if (wcscmp(eventName, L"Move_False") == 0)
 	{
 		CantMove = false;
+		
 	}
 
 	//スキルのアニメーションで剣を振り終わったら
@@ -1354,6 +1389,10 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 
 void KnightAI::AvoidanceSprite()
 {
+	if (m_charState == enCharState_LastAttack)
+	{
+		return;
+	}
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
 	if (IsEnableMove() == false)
 	{
@@ -1397,34 +1436,32 @@ void KnightAI::AvoidanceSprite()
 }
 
 
-void KnightAI::Rotation()
-{
-	if (CantMove) {
-		return;
-	}
-
-	if (fabsf(m_moveSpeed.x) < 0.001f
-		&& fabsf(m_moveSpeed.z) < 0.001f) {
-		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
-		//このフレームではキャラは移動していないので旋回する必要はない。
-		return;
-	}
-	//atan2はtanθの値を角度(ラジアン単位)に変換してくれる関数。
-	//m_moveSpeed.x / m_moveSpeed.zの結果はtanθになる。
-	//atan2を使用して、角度を求めている。
-	//これが回転角度になる。
-	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
-	//atanが返してくる角度はラジアン単位なので3
-	//SetRotationDegではなくSetRotationを使用する。
-	m_rot.SetRotationY(-angle);
-
-	//回転を設定する。
-	m_modelRender.SetRotation(m_rot);
-
-	//プレイヤーの前ベクトルを計算する。
-	m_forward = Vector3::AxisZ;
-	m_rot.Apply(m_forward);
-}
+//void KnightAI::Rotation()
+//{
+//	
+//
+//	if (fabsf(m_moveSpeed.x) < 0.001f
+//		&& fabsf(m_moveSpeed.z) < 0.001f) {
+//		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
+//		//このフレームではキャラは移動していないので旋回する必要はない。
+//		return;
+//	}
+//	//atan2はtanθの値を角度(ラジアン単位)に変換してくれる関数。
+//	//m_moveSpeed.x / m_moveSpeed.zの結果はtanθになる。
+//	//atan2を使用して、角度を求めている。
+//	//これが回転角度になる。
+//	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
+//	//atanが返してくる角度はラジアン単位なので3
+//	//SetRotationDegではなくSetRotationを使用する。
+//	m_rot.SetRotationY(-angle);
+//
+//	//回転を設定する。
+//	m_modelRender.SetRotation(m_rot);
+//
+//	//プレイヤーの前ベクトルを計算する。
+//	m_forward = Vector3::AxisZ;
+//	m_rot.Apply(m_forward);
+//}
 
 
 void KnightAI::Render(RenderContext& rc)

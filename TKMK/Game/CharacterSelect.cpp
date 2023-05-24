@@ -38,8 +38,12 @@ namespace SelectConst{
 	const Vector2 BER_PIVOT = Vector2(0.0f, 0.5f);							//バーのピボット
 
 	const Vector3	ATTACK_EXPLANATION_POS = Vector3(0.0f, 33.0f, 0.0f);	//通常攻撃説明画像の座標
-	const Vector3	SKILL_EXPLANATION_POS = Vector3(0.0f, 33.0f, 0.0f);		//スキル説明画像の座標
+	const Vector3	SKILL_EXPLANATION_POS = Vector3(0.0f, 0.0f, 0.0f);		//スキル説明画像の座標
 	const Vector3	ULT_EXPLANATION_POS = Vector3(0.0f, 30.0f, 0.0f);		//必殺技説明画像の座標
+
+	const Vector3	GUIDE_BUTTON_POS = Vector3(648.0f, -445.0f, 0.0f);
+	const float		GUIDE_BUTTON_WIDTH = 594.0f;
+	const float		GUIDE_BUTTON_HEIGHT = 81.0f;
 
 	const Vector3	KNIGHT_POS = Vector3(-150.0f, 0.0f, 0.0f);				//剣士の座標
 	const Vector3	PLATFORM_POS = Vector3(-150.0f, -40.0f, 0.0f);			//土台の座標
@@ -320,6 +324,11 @@ void CharacterSelect::InitSprite()
 		m_ultExplanation.SetScale(g_vec3One);
 		m_ultExplanation.Update();
 	}
+
+	//操作の表示
+	m_guideButton.Init("Assets/sprite/Select/guide_button.DDS", SelectConst::GUIDE_BUTTON_WIDTH, SelectConst::GUIDE_BUTTON_HEIGHT);
+	m_guideButton.SetPosition(SelectConst::GUIDE_BUTTON_POS);
+	m_guideButton.Update();
 }
 
 //ゲームに遷移する前にフェードアウトする
@@ -541,6 +550,8 @@ void CharacterSelect::Render(RenderContext& rc)
 	if (m_attackExplanationFlag)	m_attackExplanation.Draw(rc);
 	if (m_skillExplanationFlag)		m_skillExplanation.Draw(rc);
 	if (m_ultExplanationFlag)		m_ultExplanation.Draw(rc);
+
+	m_guideButton.Draw(rc);
 
 	//点滅早くtodo
 	if ((int)time % 2 == 0)

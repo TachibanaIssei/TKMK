@@ -356,10 +356,10 @@ void Game::BattleStart()
 		//マップの生成
 		m_Map = NewGO<Map>(2, "map");
 		//BGMの再生
-		/*m_bgm = NewGO<SoundSource>(0);
+		m_bgm = NewGO<SoundSource>(0);
 		m_bgm->Init(enSound_PlayBattle);
 		m_bgm->Play(true);
-		m_bgm->SetVolume(BGMVolume);*/
+		m_bgm->SetVolume(BGMVolume);
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);

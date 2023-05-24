@@ -23,7 +23,6 @@
     <ClCompile Include="KnightUlt.cpp" />
     <ClCompile Include="WizardUlt.cpp" />
     <ClCompile Include="KnightAI.cpp" />
-    <ClCompile Include="CharUltFlag.cpp" />
     <ClCompile Include="Lamp.cpp" />
     <ClCompile Include="CharacterSelect.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -52,7 +51,6 @@
     <ClInclude Include="KnightUlt.h" />
     <ClInclude Include="WizardUlt.h" />
     <ClInclude Include="KnightAI.h" />
-    <ClInclude Include="CharUltFlag.h" />
     <ClInclude Include="Lamp.h" />
     <ClInclude Include="CharacterSelect.h" />
     <ClInclude Include="Fade.h" />

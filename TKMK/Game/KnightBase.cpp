@@ -455,10 +455,6 @@ void KnightBase::UltimateSkill()
 	ExpReset(Lv, GetExp);
 	//レベルの経験値テーブルにする
 	ExpTableChamge(Lv, ExpTable);
-
-	//必殺技ステート
-	//m_charState = enCharState_UltimateSkill;
-
 }
 
 /// <summary>

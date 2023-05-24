@@ -1,4 +1,4 @@
-17
+18
 4,name,40,../../Game/Assets/sprite/Select/name.png,-657.6923076923076,-384.6153846153845,550,200,10,1.0,1.0,0.5,0.5,8,name.dds
 15,Ult_explanation,51,../../Game/Assets/sprite/Select/Ult_explanation.png,-48.07692307692298,-224.9999999999999,1700,501,10,1.0,1.0,0.5,0.5,19,Ult_explanation.dds
 17,Skill_explanation,53,../../Game/Assets/sprite/Select/Skill_explanation.png,-7.692307692307622,-240.38461538461524,1120,450,10,1.0,1.0,0.5,0.5,21,Skill_explanation.dds
@@ -16,3 +16,4 @@
 9,bar_Frame,45,../../Game/Assets/sprite/Select/bar_Frame.png,257.69230769230785,213.46153846153845,675,109,10,1.0,1.0,0.5,0.5,13,bar_Frame.dds
 13,Status_notBer,49,../../Game/Assets/sprite/Select/Status_notBer.png,-130.76923076923072,253.8461538461538,950,350,10,1.0,1.0,0.5,0.5,17,Status_notBer.dds
 8,bar_Blue,44,../../Game/Assets/sprite/Select/bar_Blue.png,521.1538461538462,305.7692307692307,649,96,10,1.0,1.0,0.5,0.5,12,bar_Blue.dds
+12,guide_button,48,../../Game/Assets/sprite/Select/guide_button.png,648.0769230769231,-455.7692307692306,594,81,10,1.0,1.0,0.5,0.5,16,guide_button.dds

@@ -404,13 +404,29 @@ public:
 	}
 
 	/// <summary>
+	/// レベルに応じた経験値テーブルを返す
+	/// </summary>
+	/// <param name="Level"></param>
+	/// <returns></returns>
+	int GetExpTableForLevel(int Level)
+	{
+		if (Level >= 3) {
+			return 10;
+		}
+		else
+		{
+			return 5;
+		}
+	}
+
+	/// <summary>
 	/// 前のレベルのの経験値テーブルを返す
 	/// </summary>
 	/// <returns></returns>
-	int GetOldExpTable()
+	/*int GetOldExpTable()
 	{
 		return m_oldExpTable;
-	}
+	}*/
 
 	/// <summary>
 	/// キャラコンが空中にあるか判定する
@@ -453,10 +469,10 @@ public:
 	}
 
 	/// <summary>
-	/// やられたときの
+	/// やられたときからリスポーンするまでのフラグ
 	/// </summary>
 	/// <returns></returns>
-	bool RespawnFlag() const
+	bool GetRespawnFlag() const
 	{
 		return m_DeathToRespwanFlag;
   }
@@ -507,7 +523,7 @@ public:
 	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
 	/// <param name="DeathToRespwanFlag"></param>
-	bool DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade);
+	bool DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade, bool fadeFlag);
 
 	/// <summary>
 	/// リスポーン待機時間を返す
@@ -531,11 +547,6 @@ public:
 	}
 
 	/// <summary>
-	/// 
-	/// </summary>
-	bool DeathToRespawnTimer_AI(bool DeathToRespwanFlag);
-
-	/// <summary>
 	/// 地上に降りているかのフラグ
 	/// </summary>
 	/// <returns></returns>
@@ -543,37 +554,6 @@ public:
 	{
 		return IsGroundFlag;
 	}
-
-	/// <summary>
-	/// このキャラに対して必殺技を打たれたらフラグを変える
-	/// </summary>
-	/*void ChangeDamegeUltFlag(bool flag)
-	{
-		m_DamegeUltimaitSkillaFlag = flag;
-	}*/
-
-	/// <summary>
-	/// 必殺技を打たれたフラグを返す
-	/// </summary>
-	/*bool GetDamegeUltFlag() {
-		return m_DamegeUltimaitSkillaFlag;
-	}*/
-
-	/// <summary>
-	/// 地上にいるかのカウンターを減らす
-	/// </summary>
-	/*void SubOnGroundCharCounter()
-	{
-		m_OnGroundCharCounter--;
-	}*/
-
-	/// <summary>
-	/// 地上にいるかのフラグを変える
-	/// </summary>
-	/// <param name="flag"></param>
-	//void ChangeGroundChackflag(bool flag) {
-	//	m_GroundChackFlag = flag;
-	//}
 
 	/// <summary>
 	/// スキルのクールタイムのタイマーを返す
@@ -605,9 +585,9 @@ public:
 		return m_SaveEXP;
 	}
 
-	void ResatSaveEXP()
+	void SetSaveEXP(int num)
 	{
-		m_SaveEXP = 0;
+		m_SaveEXP = num;
 	}
 
 	/// <summary>

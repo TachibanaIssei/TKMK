@@ -109,11 +109,11 @@ public:
 
 	int CharSetEXPTable() const;
 
-	int CharSetOldEXPTable() const;
+	int CharGetEXPTableForLevel(int Level) const;
 
 	int CharGetSaveEXP() const;
 
-	void CharResatSaveEXP() const;
+	void CharResatSaveEXP(int num) const;
 
 	float CharGetSkillCoolTimer() const;
 

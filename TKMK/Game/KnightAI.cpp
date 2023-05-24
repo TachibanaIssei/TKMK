@@ -102,7 +102,7 @@ void KnightAI::Update()
 
 	
 	//やられたらリスポーンするまで実行する
-	if (DeathToRespawnTimer_AI(m_DeathToRespwanFlag) == true)
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade,false) == true)
 	{
 		//m_charState = enCharState_Death;
 		//アニメーションの再生
@@ -1224,7 +1224,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
-		m_Status.Atk += 20;
+		//m_Status.Atk += 20;
 		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
@@ -1269,16 +1269,16 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//地上にいるキャラをカウントする
 		for (auto actor : m_game->GetActors())
 		{
-			if (GetName() == actor->GetName() || actor->IsActorGroundChack() == false) {
+			if (GetName() == actor->GetName()) {
 				continue;
 			}
 				/*m_OnGroundCharCounter++;
 				//このキャラはグラウンドにいる
 				actor->ChangeGroundChackflag(true);*/
-
+			if (actor->IsActorGroundChack() == true) {
 				//雷を打たれるキャラの情報を入れる
 				DamegeUltActor.push_back(actor);
-			
+			}
 		}
 
 		//攻撃対象のアクターがいなかったら
@@ -1367,7 +1367,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
-		m_Status.Atk -= 20;
+		//m_Status.Atk -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする

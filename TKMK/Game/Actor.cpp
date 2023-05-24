@@ -409,10 +409,10 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 }
 
 /// <summary>
-/// キャラがやられてからリスポーンするまでの時間を計る　プレイヤー用
+/// キャラがやられてからリスポーンするまでの時間を計る
 /// </summary>
 /// /// <param name="DeathToRespwanFlag"></param>
-bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
+bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade,bool fadeFlag)
 {
 	//キャラがやられたら
 	if (m_DeathToRespwanFlag == true)
@@ -422,34 +422,12 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
 		//2秒以上経ったら
 		if (m_respwanTimer <= 0.0f)
 		{
-			//フェードアウト
+			if (fadeFlag == true) {
+				//フェードアウト
 			//画面を明るくする
-			fade->StartFadeOut(1.0f);
-
-
-			m_DeathToRespwanFlag = false;
-		}
-		//やられている
-		return true;
-	}
-	//やられていない
-	return false;
-}
-
-/// <summary>
-/// キャラがやられてからリスポーンするまでの時間を計る　AI用
-/// </summary>
-/// /// <param name="DeathToRespwanFlag"></param>
-bool Actor::DeathToRespawnTimer_AI(bool DeathToRespwanFlag)
-{
-	//キャラがやられたら
-	if (m_DeathToRespwanFlag == true)
-	{
-		//タイマー減少
-		m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
-		//2秒以上経ったら
-		if (m_respwanTimer <= 0.0f)
-		{
+				fade->StartFadeOut(1.0f);
+			}
+			//
 			m_DeathToRespwanFlag = false;
 		}
 		//やられている
@@ -485,7 +463,7 @@ bool Actor::IsActorGroundChack()
 {
 	m_boxCollider.Create(Vector3(1.0f, 1.0f, 1.0f));
 
-	Vector3 actorpos = GetPosition();
+	Vector3 actorpos = m_position;
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();

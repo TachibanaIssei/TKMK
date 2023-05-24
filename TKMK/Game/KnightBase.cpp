@@ -15,7 +15,7 @@ KnightBase::KnightBase()
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
-	Cooltime = 6.0f;            //スキルのクールタイム
+	Cooltime = 5.0f;            //スキルのクールタイム
 	SkillTimer = Cooltime;
 
 	AvoidanceCoolTime = 2;     ///回避のクールタイム
@@ -384,6 +384,9 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		EffectKnightDeath->SetPosition(effectPosition);
 		EffectKnightDeath->Play();
 
+		//	もし必殺技溜めエフェクトが出ていたら消す
+
+
 		////攻撃UPおわり
 		//if (PowerUpTimer > 0.0f)
 		//{
@@ -399,7 +402,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//}
 
 		//地上にいない
-		IsGroundFlag = false;
+		//IsGroundFlag = false;
 
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);

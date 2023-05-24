@@ -142,6 +142,7 @@ private:
 	SpriteRender m_attackExplanation;		//UŒ‚‚Ìà–¾•¶
 	SpriteRender m_skillExplanation;		//ƒXƒLƒ‹‚Ìà–¾•¶
 	SpriteRender m_ultExplanation;			//•KE‹Z‚Ìà–¾•¶
+	SpriteRender m_guideButton;
 
 	ModelRender m_knight;					//Œ•m‚Ìƒ‚ƒfƒ‹
 	ModelRender m_platform;					//ƒ‚ƒfƒ‹‚ğæ‚¹‚é‘ä

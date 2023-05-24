@@ -94,10 +94,18 @@ bool Tittle::Start()
 	m_optionST.Update();
 
 	//操作説明画像
-	m_operationPic.Init("Assets/sprite/Controller.DDS", 1920.0f, 1080.0f);
-	m_operationPic.SetPosition(m_firstPosition);
+	m_operationPic.Init("Assets/sprite/Title/nonGame_howTo.DDS", 1920.0f, 1080.0f);
+	m_operationPic.SetPosition(g_vec3Zero);
 	m_operationPic.SetScale(g_vec3One);
 	m_operationPic.Update();
+
+	m_operationInGame.Init("Assets/sprite/Title/Game_howTo.DDS", 1920.0f, 1080.0f);
+	m_operationInGame.SetPosition(g_vec3Zero);
+	m_operationInGame.Update();
+
+	m_ghostExplanation.Init("Assets/sprite/Title/ghost_explanation.DDS", 1920.0f, 1080.0f);
+	m_ghostExplanation.SetPosition(g_vec3Zero);
+	m_ghostExplanation.Update();
 
 	//キャラクター説明画像
 	//セレクト画像
@@ -475,6 +483,7 @@ void Tittle::Operation()
 		se->SetVolume(1.0f);
 		//説明画面を非表示
 		m_operationLook = enOperationLook_UnSeem;
+		m_operationPageNumber = enOperationpage_Num;
 	}
 
 	//説明画面への遷移
@@ -486,16 +495,32 @@ void Tittle::Operation()
 		se->SetVolume(1.0f);
 		//説明画面を表示
 		m_operationLook = enOperationLook_Seem;
+		m_operationPageNumber = enOperationPage_nonGame;
 	}
-	//操作画面を表示
+	
+	//ページの切り替え処理
 	if (m_operationLook == enOperationLook_Seem)
 	{
-		m_operationPic.SetPosition(m_opPosition);
+		if (g_pad[0]->IsTrigger(enButtonLeft))
+		{
+			m_operationPageNumber--;
+			if (m_operationPageNumber < 0)
+			{
+				m_operationPageNumber = 0;
+			}
+		}
+		if (g_pad[0]->IsTrigger(enButtonRight))
+		{
+			m_operationPageNumber++;
+			if (m_operationPageNumber > 2)
+			{
+				m_operationPageNumber = 2;
+			}
+		}
 	}
-	//操作画面を非表示
-	if (m_operationLook == enOperationLook_UnSeem)
+	else
 	{
-		m_operationPic.SetPosition(m_firstPosition);
+		m_operationPageNumber = 3;
 	}
 	
 }
@@ -683,7 +708,22 @@ void Tittle::Render(RenderContext& rc)
 	m_operationST.Draw(rc);
 	m_option.Draw(rc);
 	m_optionST.Draw(rc);
-	m_operationPic.Draw(rc);
+
+	switch (m_operationPageNumber)
+	{
+	case(enOperationPage_nonGame):
+		m_operationPic.Draw(rc);
+		break;
+	case(enOperationPage_InGame):
+		m_operationInGame.Draw(rc);
+		break;
+	case(enOperationPage_Ghost):
+		m_ghostExplanation.Draw(rc);
+		break;
+	default:
+		break;
+	}
+
 	m_KnightOp.Draw(rc);
 	m_WizardOp.Draw(rc);
 	m_Opchoice.Draw(rc);

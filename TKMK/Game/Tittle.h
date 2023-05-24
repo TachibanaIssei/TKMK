@@ -60,6 +60,16 @@ public:
 		enOperationLook_Num,
 	};
 
+	/// <summary>
+	/// 操作説明画面のページの種類
+	/// </summary>
+	enum EnOperationPage {
+		enOperationPage_nonGame = 0,	//プレイ以外の操作説明
+		enOperationPage_InGame	= 1,		//プレイ中の操作説明
+		enOperationPage_Ghost	= 2,		//ゴーストの説明
+		enOperationpage_Num
+	};
+
 	//キャラクター説明画面が見えるか見えないか
 	enum EnCharacterOpLook {
 		enCharacterOpLook_UnSeem,					//見えない
@@ -89,6 +99,8 @@ private:
 	SpriteRender m_optionST;					//"OPTION"選択
 	SpriteRender m_fire;						//セレクト
 	SpriteRender m_operationPic;				//操作説明の画像
+	SpriteRender m_operationInGame;				//ゲーム中の操作
+	SpriteRender m_ghostExplanation;			//ゴーストの説明画像
 	SpriteRender m_KnightOp;					//剣士の説明画像
 	SpriteRender m_WizardOp;					//魔法使いの説明画像
 	SpriteRender m_ZombieOp;					//ゾンビの説明画像
@@ -106,6 +118,7 @@ private:
 	EnTitleScene m_titleScene;					//タイトルのポジション
 	EnSelectPosition m_tSelectPosition;			//セレクトのポジション
 	EnOperationLook m_operationLook;			//操作説明画像の表示
+	EnOperationPage m_enOperationPage = EnOperationPage::enOperationpage_Num;	//操作説明画面の種類
 	EnCharacterOpLook m_characterOpLook;		//キャラクター説明の表示
 	EnCharacterOpPosition m_characterOpPosition;//キャラクター説明のポジション
 	EnLinear m_linear;
@@ -168,6 +181,7 @@ private:
 	Vector4 m_color = { 1.0f,1.0f,1.0f,0.0f };		//選択されてないときに透明度を低くして強調しないようにする時に使う
 	Vector4 m_colorST = { g_vec4White };			//通常の透明度
 
+	int m_operationPageNumber = 3;
 	int selectPosition = 0;							//タイトルのセレクト画面でカーソルを移動するときに使う変数
 	int characterOpPosition = 0;					//キャラ説明画面でカーソルを移動するときに使う変数
 	int titleScene = 0;								//タイトルのシーン変換するときの変数

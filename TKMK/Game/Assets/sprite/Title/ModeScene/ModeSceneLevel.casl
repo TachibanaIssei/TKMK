@@ -1,3 +1,4 @@
-2
+3
 10,StageImage,55,../../Game/Assets/sprite/Title/ModeScene/StageImage.png,0.0,0.0,1901,664,10,1.0,1.0,0.5,0.5,14,StageImage.dds
-13,Start_Setumei,58,../../Game/Assets/sprite/Title/ModeScene/Start_Setumei.png,0.0,0.0,986,94,10,1.0,1.0,0.5,0.5,17,Start_Setumei.dds
+13,Start_Setumei,58,../../Game/Assets/sprite/Title/ModeScene/Start_Setumei.png,-36.53846153846143,-392.30769230769215,986,94,10,1.0,1.0,0.5,0.5,17,Start_Setumei.dds
+17,HowToPlay_Setumei,62,../../Game/Assets/sprite/Title/ModeScene/HowToPlay_Setumei.png,-17.307692307692264,-263.46153846153845,675,82,10,1.0,1.0,0.5,0.5,21,HowToPlay_Setumei.dds

@@ -861,14 +861,12 @@ void GameUI::DownExp()
 
 void GameUI::LevelDown()
 {
-	
-
 	PlayerLevel--;
 	//レベルに応じた経験値テーブルにする
 	m_ExpTable = player->CharGetEXPTableForLevel(PlayerLevel);
 
 	//セーブした経験値をリセット
-	player->CharResatSaveEXP(0);
+	//player->CharResatSaveEXP(0);
 	//動く値調
 	
 	//m_MathExp = 0;
@@ -880,12 +878,14 @@ void GameUI::LevelDown()
 		m_enExpProssesState = enChackExpState;
 		m_SaveExp = 0;
 		m_oldSaveExp = m_SaveExp;
+		m_MathExp = 0;
 		//セーブした経験値をリセット
-		player->CharResatSaveEXP(0);
+		//player->CharResatSaveEXP(0);
 		return;
 	}
 	else
 	{
+		//m_MathExp = m_ExpTable;
 		m_enExpProssesState = enDownExpState;
 	}
 }

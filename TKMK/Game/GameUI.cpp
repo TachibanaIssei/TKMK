@@ -8,8 +8,8 @@
 #include "Fade.h"
 #include "ExpforKnight.h"
 #include "Sounds.h"
-//todo２かいレベルが下がることがある
-//に回レベルダウンしている可能性
+//todo 2体同時に倒すとレベル上がらない
+
 namespace
 {
 	const int Characters = 4;
@@ -89,11 +89,11 @@ bool GameUI::Start()
 	//ブルー
 	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//レッド
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//グリーン
 	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//イエロー
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 
 	//ポイント関連
 	{
@@ -116,12 +116,12 @@ bool GameUI::Start()
 				
 				m_CharIcon[0].SetPosition(CharIconPos[num]);
 				//フレームをプレイヤー用にする
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 360.0f, 120.0f);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
 			}
 			else
 			{
-				m_CharIcon[num].SetPosition(CharIconPos[num]);
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 360.0f, 120.0f);
+				/*m_CharIcon[num].SetPosition(CharIconPos[num]);
+				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 360.0f, 120.0f);*/
 				//レベル
 				m_LevelFont[num - 1].SetPosition(LevelPos[num-1]);
 				m_LevelFont[num - 1].SetScale(0.6f);
@@ -129,16 +129,8 @@ bool GameUI::Start()
 				m_LevelFont[num - 1].SetRotation(0.0f);
 				m_LevelFont[num - 1].SetShadowParam(true, 2.0f, g_vec4Black);
 			}
-			//プレイヤーが魔法使いなら
-			//else if (actor->IsMatchName(wizardname))
-			//{
-			//	//アイコンを魔法使いにする
-			//	
-			//	//フレームをプレイヤー用にする
-			//	m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
-			//}
 			//赤の剣士AIなら
-			/*else if(actor->IsMatchName(KnightAI_Red))
+			if(actor->IsMatchName(KnightAI_Red))
 			{
 				m_CharIcon[1].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
@@ -152,7 +144,7 @@ bool GameUI::Start()
 			{
 				m_CharIcon[3].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
-			}*/
+			}
 
 			m_PointFlame[num].SetPosition(PointFlamePos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
@@ -225,10 +217,8 @@ bool GameUI::Start()
 		m_ExperienceBar_flont.SetPosition(m_EXPBerPos);
 		m_ExperienceBar_flont.SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
-		/// <summary>
-		/// /////////////////////////
-		/// </summary>
-		/// <returns></returns>
+		
+		//経験値テーブルと初期経験値
 		m_ExpTable = player->CharSetEXPTable();
 		m_MathExp = player->CharSetEXP();
 
@@ -394,11 +384,11 @@ void GameUI::Update()
 	}
 
 	
-
+	//制限時間
 	Timer();
-
+	//左のフレーム
 	CharPoint();
-
+	//左のフレームのレベル
 	Level();
 	
 	int SkillCoolTime = player->CharGetSkillCoolTimer();
@@ -433,11 +423,13 @@ void GameUI::Update()
 	}
 	m_LvNumber_back.Update();
 
-
-	EXPBar();
+	ExpState();
+	//EXPBar();
 
 	HPBar();
 }
+
+
 
 //ゲームスタートのカウントダウン
 void GameUI::CountDown()
@@ -727,95 +719,42 @@ void GameUI::Timer()
 	}
 }
 
-//プレイヤーの経験値の表示の処理todo
-void GameUI::EXPBar()
+void GameUI::ExpState()
 {
+	switch (m_enExpProssesState)
+	{
+	case GameUI::enChackExpState:
+		ChackExp();
+		break;
+	case GameUI::enUpExpState:
+		UpExp();
+		break;
+	case GameUI::enDownExpState:
+		DownExp();
+		break;
+	case GameUI::enLevelUpState:
+		LevelUp();
+		break;
+	case GameUI::enLevelDownState:
+		LevelDown();
+		break;
+	default:
+		break;
+	}
+
+	m_oldSaveExp = m_SaveExp;
+
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
-	//m_MathExp＝変動する
-	//m_SaveExp＝溜まっている経験値
-
-	//経験値テーブルより獲得した経験値が多くなったら
-	//たまに二回ゲージが伸びる
-	if (m_MathExp >= m_ExpTable) {
-
-		m_SaveExp -= m_ExpTable;
-
-		if (m_SaveExp <= 0) {
-			//セーブした経験値をリセット
-			player->CharResatSaveEXP();
-			m_SaveExp = player->CharGetSaveEXP();
-		}
-
-		m_MathExp = 0;
-		//現在のプレイヤーの経験値テーブルを代入
-		m_ExpTable = player->CharSetEXPTable();
-
-		//レベルアップの処理
-		if (m_oldPlayerLevel < player->CharSetLevel()) {
-			m_oldPlayerLevel++;
-		}
-
-		LevelFontChange(m_oldPlayerLevel);
-	}
-
-	//レベルが下がったとき
-	if (m_oldPlayerLevel > player->CharSetLevel()/*EXPScale.x <= 0.0f && m_DownFlag == true*/)
-	{
-		//現在のプレイヤーの経験値テーブルを代入
-		m_ExpTable = player->CharSetEXPTable();
-		//セーブした経験値をリセット
-		player->CharResatSaveEXP();
-		//動く値調
-		m_SaveExp = 0;
-		//m_MathExp = 0;
-		m_oldPlayerLevel--;
-		LevelFontChange(m_oldPlayerLevel);
-		m_DownFlag = false;
-	}
-
-
-	//変動する経験値とセーブした経験値が違うなら
-	if (m_MathExp != m_SaveExp) {
-		//EXPオーブが飛んできた後に増やす
-		//if (m_EXPupFlag == true) {
-			//増やすか減らす
-			if (m_MathExp < m_SaveExp)
-				m_MathExp++;
-		//}
-		else if (m_MathExp > m_SaveExp)
-		{
-			m_MathExp--;
-			m_DownFlag = true;
-		}
-	}
-	else
-	{
-		//プレイヤーの経験値を取得
-		m_nowEXP = player->CharSetEXP();
-		//今の経験値テーブルを取得
-		nowEXPTable = player->CharSetEXPTable();
-		//経験値テーブルを
-		m_SaveExp = player->CharGetSaveEXP();
-
-		m_EXPupFlag = false;
-	}
-
-	if (m_oldPlayerLevel == 10)
-	{
-		EXPScale.x = 1.0f;
-	}
-	else
-	{
-		//HPバーの増えていく割合。
-		EXPScale.x = (float)m_MathExp / (float)m_ExpTable;
-	}
 	
+		//HPバーの増えていく割合。
+	EXPScale.x = (float)m_MathExp / (float)m_ExpTable;
+
 
 	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
-	
+
 	//m_oldPlayerLevel = m_NowPlayerLevel;
 
 	//デバッグ用
@@ -824,26 +763,131 @@ void GameUI::EXPBar()
 	wchar_t UTL[255];
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
-
-	//前フレームのレベル
-	//oldLevel = m_ChangePlayerLevel;
-	//前フレームの経験値テーブル
-	//oldEXPTable = nowEXPTable;
 }
 
-bool  GameUI::GrowEXP()
+//取得した経験値の量が変わったか調べる
+void GameUI::ChackExp()
 {
-	return false;
-}
+	//レベルが下がったら
+	if (PlayerLevel > player->CharSetLevel()) {
+		m_enExpProssesState = enLevelDownState;
+		return;
+	}
 
-bool GameUI::DownEXP(int NowPlayerLv)
-{
-	return false;
-}
+	//プレイヤーの経験値を取得
+	//m_nowEXP = player->CharSetEXP();
+	////今の経験値テーブルを取得
+	//nowEXPTable = player->CharSetEXPTable();
+	////セーブした経験値が前フレームのセーブした経験値と違うなら
+	if (player->CharGetSaveEXP() != m_oldSaveExp) {
+		m_SaveExp = player->CharGetSaveEXP();
 
-void GameUI::ChangeLevel()
-{
+		m_enExpProssesState = enUpExpState;
+	}
 	
+}
+
+void GameUI::UpExp()
+{
+	//タイミングによって経験値が計算されない
+	//当たった当たり判定が違うと
+	if (m_MathExp >= m_ExpTable)
+	{
+		m_enExpProssesState = enLevelUpState;
+	}
+	else if (m_MathExp < m_SaveExp) {
+		m_MathExp++;
+	}
+	else {
+		m_enExpProssesState = enChackExpState;
+	}
+}
+
+void GameUI::LevelUp()
+{
+
+	m_SaveExp -= m_ExpTable;
+
+	m_MathExp = 0;
+
+	//レベルアップの処理
+	if (PlayerLevel < player->CharSetLevel()) {
+		PlayerLevel++;
+	}
+	//レベルに応じた経験値テーブルにする
+	m_ExpTable = player->CharGetEXPTableForLevel(PlayerLevel);
+
+	//フォント更新
+	LevelFontChange(PlayerLevel);
+
+	if (PlayerLevel == 10) {
+		m_SaveExp = 10;
+		player->CharResatSaveEXP(m_SaveExp);
+		m_oldSaveExp = m_SaveExp;
+		m_MathExp = m_SaveExp;
+		m_enExpProssesState = enChackExpState;
+		return;
+	}
+
+	if (m_SaveExp > 0) {
+		//セーブした経験値をリセット
+		//m_saveExpとプレイヤーのセーブした経験値を同じにする
+
+		player->CharResatSaveEXP(m_SaveExp);
+		m_oldSaveExp = player->CharGetSaveEXP();
+		m_enExpProssesState = enUpExpState;
+	}
+	else if (m_SaveExp <= 0) {
+		//セーブした経験値をリセット
+		player->CharResatSaveEXP(0);
+		m_SaveExp = player->CharGetSaveEXP();
+		m_oldSaveExp = m_SaveExp;
+
+		m_enExpProssesState = enChackExpState;
+	}
+}
+
+void GameUI::DownExp()
+{
+	if (m_MathExp <= 0) {
+		m_enExpProssesState = enLevelDownState;
+	}
+	else
+	{
+		m_MathExp--;
+		//m_DownFlag = true;
+	}
+}
+
+void GameUI::LevelDown()
+{
+	PlayerLevel--;
+	//レベルに応じた経験値テーブルにする
+	m_ExpTable = player->CharGetEXPTableForLevel(PlayerLevel);
+
+	//セーブした経験値をリセット
+	//player->CharResatSaveEXP(0);
+	//動く値調
+	
+	//m_MathExp = 0;
+	
+	LevelFontChange(PlayerLevel);
+
+	if (PlayerLevel <= player->CharSetLevel()) {
+		//レベルダウンの処理を終わる
+		m_enExpProssesState = enChackExpState;
+		m_SaveExp = 0;
+		m_oldSaveExp = m_SaveExp;
+		m_MathExp = 0;
+		//セーブした経験値をリセット
+		//player->CharResatSaveEXP(0);
+		return;
+	}
+	else
+	{
+		//m_MathExp = m_ExpTable;
+		m_enExpProssesState = enDownExpState;
+	}
 }
 
 //
@@ -869,6 +913,16 @@ void GameUI::CharPoint()
 	int num = 0;
 	for (auto actor:m_Actors)
 	{
+		//死んでいるかリスポーン中なら
+		if (actor->NowCharState() == Actor::enCharState_Death || actor->GetRespawnFlag() == true)
+		{
+			m_CharIcon[num].SetGrayScale(true);
+		}
+		else
+		{
+			m_CharIcon[num].SetGrayScale(false);
+		}
+
 		//制限時間が残り1分なら
 		if (m_game->GetMinutesTimer() < 1)
 		{
@@ -895,12 +949,9 @@ void GameUI::CharPoint()
 			FontPos= ADDPOINTPOS + PointPos[num];
 			m_PointFont[num].SetPosition(FontPos);
 
-			m_PointFlame[num].SetScale(1.47f,1.1f,0.0f);
+			m_PointFlame[num].SetScale(1.45f,1.2f,0.0f);
 			m_PointFlame[num].Update();
-
-			/*m_CharIcon[num].SetScale(CHAR_ICON_MAXSIZE);
-			m_CharIcon[num].Update();*/
-
+			m_CharIcon[num].Update();
 			MaxPoint = charPoint[num];
 		}
 		else
@@ -909,9 +960,7 @@ void GameUI::CharPoint()
 			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
 			m_PointFlame[num].Update();
-
-			/*m_CharIcon[num].SetScale(Vector3::One);
-			m_CharIcon[num].Update();*/
+			m_CharIcon[num].Update();
 		}
 
 
@@ -946,24 +995,22 @@ void GameUI::Render(RenderContext& rc)
 		}
 		
 	
-		//経験値フレーム
 		m_ExperienceFlame.Draw(rc);
-		//
 		m_ExpFont.Draw(rc);
-		
+
 		m_HpNameFont.Draw(rc);
 
 		m_TimeAndPointRender.Draw(rc);
-
 		m_time_left.Draw(rc);
 
 		m_statusBar.Draw(rc);
 		m_HpBar_White.Draw(rc);
 		m_hpBar.Draw(rc);
-		
 		m_HPFrame.Draw(rc);
+
 		m_SkillRenderIN.Draw(rc);
 		m_SkillRenderOUT.Draw(rc);
+
 		m_UltRenderIN.Draw(rc);
 		m_UltRenderOUT.Draw(rc);
 
@@ -980,10 +1027,15 @@ void GameUI::Render(RenderContext& rc)
 		for (auto actor:m_Actors) {
 			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
-			m_CharIcon[num].Draw(rc);
+			//m_CharIcon[num].Draw(rc);
 			if(num>=1)
 			m_LevelFont[num-1].Draw(rc);
 			num++;
+		}
+		int numa = 0;
+		for (auto actor : m_Actors) {
+			m_CharIcon[numa].Draw(rc);
+			numa++;
 		}
 		
 		//リスポーンするまでの時間

@@ -404,12 +404,19 @@ public:
 	}
 
 	/// <summary>
-	/// 前のレベルのの経験値テーブルを返す
+	/// レベルに応じた経験値テーブルを返す
 	/// </summary>
+	/// <param name="Level"></param>
 	/// <returns></returns>
-	int GetOldExpTable()
+	int GetExpTableForLevel(int Level)
 	{
-		return m_oldExpTable;
+		if (Level >= 3) {
+			return 10;
+		}
+		else
+		{
+			return 5;
+		}
 	}
 
 	/// <summary>
@@ -453,10 +460,10 @@ public:
 	}
 
 	/// <summary>
-	/// やられたときの
+	/// やられたときからリスポーンするまでのフラグ
 	/// </summary>
 	/// <returns></returns>
-	bool RespawnFlag() const
+	bool GetRespawnFlag() const
 	{
 		return m_DeathToRespwanFlag;
   }
@@ -507,7 +514,7 @@ public:
 	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
 	/// <param name="DeathToRespwanFlag"></param>
-	bool DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade);
+	bool DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade, bool fadeFlag);
 
 	/// <summary>
 	/// リスポーン待機時間を返す
@@ -531,11 +538,6 @@ public:
 	}
 
 	/// <summary>
-	/// 
-	/// </summary>
-	bool DeathToRespawnTimer_AI(bool DeathToRespwanFlag);
-
-	/// <summary>
 	/// 地上に降りているかのフラグ
 	/// </summary>
 	/// <returns></returns>
@@ -545,52 +547,12 @@ public:
 	}
 
 	/// <summary>
-	/// このキャラに対して必殺技を打たれたらフラグを変える
-	/// </summary>
-	/*void ChangeDamegeUltFlag(bool flag)
-	{
-		m_DamegeUltimaitSkillaFlag = flag;
-	}*/
-
-	/// <summary>
-	/// 必殺技を打たれたフラグを返す
-	/// </summary>
-	/*bool GetDamegeUltFlag() {
-		return m_DamegeUltimaitSkillaFlag;
-	}*/
-
-	/// <summary>
-	/// 地上にいるかのカウンターを減らす
-	/// </summary>
-	/*void SubOnGroundCharCounter()
-	{
-		m_OnGroundCharCounter--;
-	}*/
-
-	/// <summary>
-	/// 地上にいるかのフラグを変える
-	/// </summary>
-	/// <param name="flag"></param>
-	//void ChangeGroundChackflag(bool flag) {
-	//	m_GroundChackFlag = flag;
-	//}
-
-	/// <summary>
 	/// スキルのクールタイムのタイマーを返す
 	/// </summary>
 	float GetSkillTimer()
 	{
 		return SkillTimer;
 	}
-
-	/// <summary>
-	/// カメラで見たかのフラグを変える
-	/// </summary>
-	/// <param name="flag"></param>
-	/*void ChangeCameraSawCharFlag(bool flag)
-	{
-		m_CameraSawCharFlag = flag;
-	}*/
 
 	/// <summary>
 	/// 必殺技の攻撃対象のアクターがいないかのフラグを返す
@@ -605,9 +567,9 @@ public:
 		return m_SaveEXP;
 	}
 
-	void ResatSaveEXP()
+	void SetSaveEXP(int num)
 	{
-		m_SaveEXP = 0;
+		m_SaveEXP = num;
 	}
 
 	/// <summary>
@@ -701,7 +663,7 @@ protected:
 	Quaternion m_respawnRotation[4];
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 
-	Vector3 m_Forward;          //プレイヤーの前方向
+	Vector3 m_Forward = Vector3::Zero;          //プレイヤーの前方向
 	Vector3 m_forwardNow = Vector3::Zero;                 //現在の正面ベクトル
 
 	Vector3 m_position = Vector3::Zero;                   //座標
@@ -711,7 +673,7 @@ protected:
 	Status m_Status;                                      //ステータス
 	Status m_InitialStatus;                                //初期ステータス
 	//レベルアップ時に増加するステータス
-	LvUpStatus LvUPStatus = { 30,5,20.0f };
+	LvUpStatus LvUPStatus = { 30,5,5 };
 
 	//スポーン、リスポーンして塔から地上に降りたか
 	//空中にいるかの判定

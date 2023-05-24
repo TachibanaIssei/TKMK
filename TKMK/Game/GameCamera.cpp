@@ -101,7 +101,7 @@ void GameCamera::Update()
 
 
 	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
-	if (player_actor->RespawnFlag()==true)
+	if (player_actor->GetRespawnFlag()==true)
 	{
 		m_springCamera.Refresh();
 		//カメラの更新。
@@ -113,7 +113,7 @@ void GameCamera::Update()
 	}
 
 	//リスポーンしたらカメラを戻す
-	if (player_actor->RespawnFlag()==false&& PlayerRespawnFlag==true) {
+	if (player_actor->GetRespawnFlag()==false&& PlayerRespawnFlag==true) {
 		CameraTarget(TARGETPOS_YUP ,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 		PlayerRespawnFlag = false;
 
@@ -385,8 +385,7 @@ void GameCamera::ChaseCamera()
 
 void GameCamera::FollowThePlayer()
 {
-	////注視点の計算
-	//Vector3 TargetPos;
+	//注視点の計算
 	TargetPos = player->GetCharPosition();
 
 	TargetPos.y += TARGETPOS_YUP;

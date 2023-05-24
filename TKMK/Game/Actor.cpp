@@ -71,10 +71,6 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 			m_RespawnJumpFlag = false;
 		}
 	}
-
-	//↓生成するクラスでキャラコンを更新する
-	//キャラクターコントローラーを使って座標を移動させる。
-	//position = charcon.Execute(m_moveSpeed, 1.0f / 60.0f);
 }
 
 //リスポーンする座標を設定する
@@ -257,41 +253,6 @@ void Actor::ExpProcess(int Exp)
 void Actor::ExpReset(int& Lv, int& getExp)
 {
 	getExp = 0;
-
-	//経験値をリセット
-	/*switch (Lv)
-	{
-	case 1:
-		getExp = 0;
-		break;
-	case 2:
-		getExp = 5;
-		break;
-	case 3:
-		getExp = 10;
-		break;
-	case 4:
-		getExp = 20;
-		break;
-	case 5:
-		getExp = 30;
-		break;
-	case 6:
-		getExp = 40;
-		break;
-	case 7:
-		getExp = 50;
-		break;
-	case 8:
-		getExp = 60;
-		break;
-	case 9:
-		getExp = 70;
-		break;
-		
-	default:
-		break;
-	}*/
 }
 
 /// <summary>
@@ -308,39 +269,6 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 	{
 		expTable = 5;
 	}
-
-	/*switch (Lv)
-	{
-	case 1:
-		expTable = 5;
-		break;
-	case 2:
-		expTable = 10;
-		break;
-	case 3:
-		expTable = 20;
-		break;
-	case 4:
-		expTable = 30;
-		break;
-	case 5:
-		expTable = 40;
-		break;
-	case 6:
-		expTable = 50;
-		break;
-	case 7:
-		expTable = 60;
-		break;
-	case 8:
-		expTable = 70;
-		break;
-	case 9:
-		expTable = 80;
-		break;
-	default:
-		break;
-	}*/
 }
 
 /// <summary>
@@ -372,11 +300,8 @@ void Actor::COOlTIME(float Cooltime, bool& skillEndFlag,float& timer)
 /// </summary>
 void Actor::RespawnMove()
 {
-	//飛び降りる
 	//ジャンプする
-		m_moveSpeed.y = 280.0f;
-		//position.y += jump;
-		//m_RespawnJumpFlag = true;
+	m_moveSpeed.y = 280.0f;
 }
 
 /// <summary>
@@ -409,10 +334,10 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 }
 
 /// <summary>
-/// キャラがやられてからリスポーンするまでの時間を計る　プレイヤー用
+/// キャラがやられてからリスポーンするまでの時間を計る
 /// </summary>
 /// /// <param name="DeathToRespwanFlag"></param>
-bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
+bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade,bool fadeFlag)
 {
 	//キャラがやられたら
 	if (m_DeathToRespwanFlag == true)
@@ -422,34 +347,12 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade)
 		//2秒以上経ったら
 		if (m_respwanTimer <= 0.0f)
 		{
-			//フェードアウト
+			if (fadeFlag == true) {
+				//フェードアウト
 			//画面を明るくする
-			fade->StartFadeOut(1.0f);
-
-
-			m_DeathToRespwanFlag = false;
-		}
-		//やられている
-		return true;
-	}
-	//やられていない
-	return false;
-}
-
-/// <summary>
-/// キャラがやられてからリスポーンするまでの時間を計る　AI用
-/// </summary>
-/// /// <param name="DeathToRespwanFlag"></param>
-bool Actor::DeathToRespawnTimer_AI(bool DeathToRespwanFlag)
-{
-	//キャラがやられたら
-	if (m_DeathToRespwanFlag == true)
-	{
-		//タイマー減少
-		m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
-		//2秒以上経ったら
-		if (m_respwanTimer <= 0.0f)
-		{
+				fade->StartFadeOut(1.0f);
+			}
+			//
 			m_DeathToRespwanFlag = false;
 		}
 		//やられている
@@ -485,7 +388,7 @@ bool Actor::IsActorGroundChack()
 {
 	m_boxCollider.Create(Vector3(1.0f, 1.0f, 1.0f));
 
-	Vector3 actorpos = GetPosition();
+	Vector3 actorpos = m_position;
 	btTransform start, end;
 	start.setIdentity();
 	end.setIdentity();

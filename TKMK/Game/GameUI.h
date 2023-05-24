@@ -23,8 +23,27 @@ public:
 	};
 	GameUIState m_GameUIState;
 
+	enum EnExpProssesState
+	{
+		enChackExpState,
+		enUpExpState,
+		enDownExpState,
+		enLevelUpState,
+		enLevelDownState
+	};
+	EnExpProssesState m_enExpProssesState = enChackExpState;
+
 	bool Start();
 	void Update();
+
+	void ExpState();
+	void ChackExp();
+	void UpExp();
+	void DownExp();
+	void LevelUp();
+	void LevelDown();
+
+
 	void SetSGame(Game* Cgame)
 	{
 		m_game = Cgame;
@@ -34,8 +53,6 @@ public:
 	{
 		m_NowPlayerLevel = lv;
 	}
-
-	void ChangeLevel();
 
 	void ChangeEXPUpFlag(bool flag)
 	{
@@ -126,18 +143,6 @@ public:
 	/// 
 	/// </summary>
 	void RespawnCountDown();
-
-	/// <summary>
-	/// 
-	/// </summary>
-	void EXPBar();
-
-	/// <summary>
-	/// 経験値バーを徐々に上げる処理
-	/// </summary>
-	bool GrowEXP();
-
-	bool DownEXP(int NowPlayerLv);
 
 	/// <summary>
 	/// 
@@ -302,7 +307,7 @@ private:
 	
 	int							m_NowPlayerLevel = 1;							//現在のプレイヤーのレベルを格納
 	int							m_ChangePlayerLevel = 0;						//画像表示のための徐々にレベルを下げる
-	int 						m_oldPlayerLevel = 1;							//レベルが上がった時にtrueにする
+	int 						PlayerLevel = 1;							//レベルが上がった時にtrueにする
 	int							final_exp = 0;									//最終的な経験値バーの増量
 	int							m_nowEXP = 0;									//現在のプレイヤーの経験値
 	float						nowEXPTable = 0;								//現在のプレイヤーの経験値テーブル
@@ -313,7 +318,7 @@ private:
 	bool                        m_EXPupFlag = false;
 	
 
-
+	int m_oldSaveExp = 0;
 
 	//キャラのポイント
 	int charPoint[4];

@@ -129,13 +129,16 @@ int Player::CharSetHp()const
 		break;
 
 	case enZombie:
+		return -1;
 		break;
 
 	case enMonster:
+		return -1;
 		break;
 
 
 	default:
+		return -1;
 		break;
 	}
 }
@@ -157,13 +160,19 @@ int Player::CharSetMaxHp()const
 		break;
 
 	case enZombie:
+		return -1;
+
 		break;
 
 	case enMonster:
+		return -1;
+
 		break;
 
 
 	default:
+		return -1;
+
 		break;
 	}
 }
@@ -185,13 +194,18 @@ Quaternion Player::CharSetRot()const
 		break;
 
 	case enZombie:
+		return Quaternion::Identity;
 		break;
 
 	case enMonster:
+		return Quaternion::Identity;
+
 		break;
 
 
 	default:
+		return Quaternion::Identity;
+
 		break;
 	}
 }
@@ -279,14 +293,20 @@ int Player::CharSetEXPTable() const
 	return playerActor->GetExpTable();
 }
 
+int Player::CharGetEXPTableForLevel(int Level) const
+{
+	return playerActor->GetExpTableForLevel(Level);
+}
+
 /// <summary>
 /// プレイヤーの前のレベルの経験値テーブルを取得
 /// </summary>
 /// <returns></returns>
-int Player::CharSetOldEXPTable() const
-{
-	return playerActor->GetOldExpTable();
-}
+//int Player::CharSetOldEXPTable() const
+//{
+//	return 1;
+//	//return playerActor->GetOldExpTable();
+//}
 
 //セーブしている経験値を取得
 int Player::CharGetSaveEXP() const
@@ -295,9 +315,9 @@ int Player::CharGetSaveEXP() const
 }
 
 //セーブした経験値をリセット
-void Player::CharResatSaveEXP() const
+void Player::CharResatSaveEXP(int num) const
 {
-	playerActor->ResatSaveEXP();
+	playerActor->SetSaveEXP(num);
 }
 
 float Player::CharGetSkillCoolTimer() const

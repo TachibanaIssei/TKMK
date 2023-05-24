@@ -120,6 +120,11 @@ public:
 	virtual bool UltimaitSkillTime() = 0;
 
 	/// <summary>
+	/// ラストアタックの移動計算
+	/// </summary>
+	virtual void LastAttackMove() = 0;
+
+	/// <summary>
 	/// 座標のセット
 	/// </summary>
 	/// <param name="PS"></param>

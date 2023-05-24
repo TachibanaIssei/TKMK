@@ -13,7 +13,7 @@
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	// ƒQ[ƒ€‚Ì‰Šú‰»B
-	InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("FightingStadium"));
+	InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("SWORDARENA"));
 	
 	// k2EngineLow‚Ì‰Šú‰»B
 	g_k2EngineLow = new K2EngineLow();

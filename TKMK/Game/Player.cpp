@@ -279,14 +279,20 @@ int Player::CharSetEXPTable() const
 	return playerActor->GetExpTable();
 }
 
+int Player::CharGetEXPTableForLevel(int Level) const
+{
+	return playerActor->GetExpTableForLevel(Level);
+}
+
 /// <summary>
 /// プレイヤーの前のレベルの経験値テーブルを取得
 /// </summary>
 /// <returns></returns>
-int Player::CharSetOldEXPTable() const
-{
-	return playerActor->GetOldExpTable();
-}
+//int Player::CharSetOldEXPTable() const
+//{
+//	return 1;
+//	//return playerActor->GetOldExpTable();
+//}
 
 //セーブしている経験値を取得
 int Player::CharGetSaveEXP() const
@@ -295,9 +301,9 @@ int Player::CharGetSaveEXP() const
 }
 
 //セーブした経験値をリセット
-void Player::CharResatSaveEXP() const
+void Player::CharResatSaveEXP(int num) const
 {
-	playerActor->ResatSaveEXP();
+	playerActor->SetSaveEXP(num);
 }
 
 float Player::CharGetSkillCoolTimer() const

@@ -348,8 +348,6 @@ void KnightBase::Collition()
 		//コリジョンが自身のキャラコンに当たったら
 		if (collision->IsHit(m_charCon))
 		{
-			//エネミーの攻撃力を取ってくる
-
 			//hpを10減らす
 			Dameged(Enemy_atk, m_Neutral_enemy);
 
@@ -365,6 +363,16 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
 	invincibleTimer = 1.0f;
+
+	//もしスキルが使用中ならスキルの移動処理を無くす
+	if (SkillState == true)
+	{
+		AtkState = false;
+		SkillEndFlag = true;
+		//ボタンプッシュフラグをfalseにする
+		pushFlag = false;
+		SkillState = false;
+	}
 
 	//自身のHPが0以下なら
 	if (m_Status.Hp <= 0) {

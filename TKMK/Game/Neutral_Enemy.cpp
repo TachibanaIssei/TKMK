@@ -134,7 +134,7 @@ bool Neutral_Enemy::Start()
 
 		enemyColorRam = rand() % 10;
 
-		if (enemyColorRam <= 5)
+		if (enemyColorRam <= 7)
 		{
 			//白
 			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_white/Ghost_white.tkm", m_animationClips, enAnimationClip_Num/*, enModelUpAxisY*/);
@@ -149,7 +149,7 @@ bool Neutral_Enemy::Start()
 			WhiteMagic->Play();
 			WhiteMagic->Update();
 		}
-		else if (enemyColorRam <= 7)
+		else 
 		{
 			//緑
 			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Neutral_Enemy.tkm", m_animationClips, enAnimationClip_Num);
@@ -164,13 +164,6 @@ bool Neutral_Enemy::Start()
 			GreenMagic->Play();
 			GreenMagic->Update();
 		}
-		else if (enemyColorRam <= 9)
-		{
-			//赤
-			m_modelRender.Init("Assets/modelData/character/Neutral_Enemy/Ghost_Red/Ghost_Red.tkm", m_animationClips, enAnimationClip_Num);
-			m_enemyKinds = enEnemyKinds_Red;
-		}
-
 		//頭のボーンのIDを取得する
 		m_AttackBoneId = m_modelRender.FindBoneID(L"HeadTipJoint");
 	}
@@ -211,7 +204,7 @@ bool Neutral_Enemy::Start()
 		m_Status.Init("Enemy");
 	}
 	//巡回用のパスを読み込む
-	m_EnemyPoslevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
+	m_EnemyPoslevel.Init("Assets/level3D/RabbitPatrolPos2.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			SetPatrolPos(objData.position, objData.number);

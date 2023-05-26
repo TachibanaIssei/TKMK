@@ -89,11 +89,11 @@ bool GameUI::Start()
 	//ブルー
 	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//レッド
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//グリーン
 	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 	//イエロー
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
 
 	//ポイント関連
 	{
@@ -220,7 +220,7 @@ bool GameUI::Start()
 		
 		//経験値テーブルと初期経験値
 		m_ExpTable = player->CharSetEXPTable();
-		m_MathExp = player->CharSetEXP();
+		m_MathExp = player->CharGetEXP();
 
 		//経験値バーの裏
 		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
@@ -829,21 +829,37 @@ void GameUI::LevelUp()
 		return;
 	}
 
+	//まだセーブした経験値が残っているなら
 	if (m_SaveExp > 0) {
 		//セーブした経験値をリセット
 		//m_saveExpとプレイヤーのセーブした経験値を同じにする
-
-		player->CharResatSaveEXP(m_SaveExp);
+		if (player->CharGetEXP() > 0) {
+			player->CharResatSaveEXP(m_SaveExp);
+		}
+		
 		m_oldSaveExp = player->CharGetSaveEXP();
 		m_enExpProssesState = enUpExpState;
 	}
+	//もうレベルアップの処理が終わりなら
 	else if (m_SaveExp <= 0) {
-		//セーブした経験値をリセット
-		player->CharResatSaveEXP(0);
-		m_SaveExp = player->CharGetSaveEXP();
-		m_oldSaveExp = m_SaveExp;
 
-		m_enExpProssesState = enChackExpState;
+		//レベルアップの処理の間に中立の敵を倒していたなら
+		if (player->CharGetEXP() > 0) {
+			player->CharResatSaveEXP(player->CharGetEXP());
+			m_SaveExp = player->CharGetSaveEXP();
+			m_oldSaveExp = m_SaveExp;
+			//経験値の処理にいく
+			m_enExpProssesState = enUpExpState;
+		}
+		else
+		{
+			//セーブした経験値をリセット
+			player->CharResatSaveEXP(0);
+			m_SaveExp = player->CharGetSaveEXP();
+			m_oldSaveExp = m_SaveExp;
+
+			m_enExpProssesState = enChackExpState;
+		}
 	}
 }
 
@@ -880,12 +896,13 @@ void GameUI::LevelDown()
 		m_oldSaveExp = m_SaveExp;
 		m_MathExp = 0;
 		//セーブした経験値をリセット
-		//player->CharResatSaveEXP(0);
+		player->CharResatSaveEXP(0);
 		return;
 	}
 	else
 	{
-		//m_MathExp = m_ExpTable;
+		m_MathExp = m_ExpTable;
+
 		m_enExpProssesState = enDownExpState;
 	}
 }
@@ -996,7 +1013,7 @@ void GameUI::Render(RenderContext& rc)
 		
 	
 		m_ExperienceFlame.Draw(rc);
-		m_ExpFont.Draw(rc);
+		//m_ExpFont.Draw(rc);
 
 		m_HpNameFont.Draw(rc);
 

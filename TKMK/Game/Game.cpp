@@ -15,9 +15,8 @@
 #include "Lamp.h"
 #include "Fade.h"
 #include "ExpforKnight.h"
-//#include <vector>
-//#include <algorithm>
-//タワーのエフェクト消すときエラーあり
+#include "Pause.h"
+
 namespace {
 	const int ENEMY_AMOUNT = 10;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
@@ -27,9 +26,10 @@ namespace {
 	const Vector3 Menu_QuitGamePos = Vector3(0.0f, -320.0f, 0.0f);
 	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
 	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
-	const Vector3 TOWEREXPOSITION_POS = Vector3(-90.0f, -2.0f, 0.0f);
-	const Vector3 RABBIT_POS = Vector3(0.0f, 1.13f, 0.0f);
-
+	const Vector3 TOWEREXPOSITION_POS = Vector3(20.0f, -410.0f, 0.0f);
+	const Vector3 RABBIT_POS = Vector3(650.0f, 400.0f, 0.0f);
+	const Vector3 RabbitSpriteScale = Vector3(0.75f, 0.75f, 0.0f);
+	const Vector3 SpriteScale = Vector3::One;
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);//ディレクションライトのカラー
 	const Vector3 AMBIENT_COLOR = Vector3(0.6f, 0.6f, 0.6f);//環境光のカラー
 
@@ -58,7 +58,6 @@ Game::~Game()
 	}
 	DeleteGO(m_gamecamera);
 
-	//�����̓G�̃T�C�Y�𒲂ׂ�for���ŉ�
 	for (auto seutral_Enemy : m_neutral_Enemys)
 	{
 		DeleteGO(seutral_Enemy);
@@ -153,12 +152,6 @@ bool Game::Start()
 	//カメラの生成
 	m_gamecamera = NewGO<GameCamera>(1, "gamecamera");
 
-	
-
-	
-
-
-
 	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {		
 			if (objData.ForwardMatchName(L"CharPos") == true) {
 				//左上の座標
@@ -218,83 +211,16 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//ポーズ画面の画像読み込み
-	{
-		//背景
-		m_Pause_Back.Init("Assets/sprite/PauseMenu/pause_back.DDS", 1920.0f, 1080.0f);
-		m_Pause_Back.SetPosition(g_vec3Zero);
-		m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
-		m_Pause_Back.SetRotation(m_sRotation);
-		m_Pause_Back.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 0.4f));
-		m_Pause_Back.Update();
-		//ポーズメイン
-		m_Pause_Front.Init("Assets/sprite/PauseMenu/Pause2_flame.DDS", 1920.0f, 1080.0f);
-		m_Pause_Front.SetPosition(g_vec3Zero);
-		m_Pause_Front.SetScale(1.0f, 1.0f, 1.0f);
-		m_Pause_Front.SetRotation(m_sRotation);
-		m_Pause_Front.Update();
-
-		//Back
-		m_Menu_Back.Init("Assets/sprite/PauseMenu/Pause2_Back_decision.DDS", 300.0f, 100.0f);		m_Menu_Back.SetPosition(Menu_BackPos);
-		m_Menu_Back.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_Back.SetRotation(m_sRotation);
-		m_Menu_Back.Update();
-		//HowToPlay
-		m_Menu_HowToPlay.Init("Assets/sprite/PauseMenu/Pause2_HowToPlay.DDS", 620.0f, 120.0f);
-		m_Menu_HowToPlay.SetPosition(Menu_HowToPlayPos);
-		m_Menu_HowToPlay.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_HowToPlay.SetRotation(m_sRotation);
-		m_Menu_HowToPlay.Update();
-		//BGM
-		m_Menu_BGM.Init("Assets/sprite/PauseMenu/Pause2_BGM.DDS", 300.0f, 100.0f);
-		m_Menu_BGM.SetPosition(Menu_BGMPos);
-		m_Menu_BGM.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_BGM.SetRotation(m_sRotation);
-		m_Menu_BGM.Update();
-		//SE
-		m_Menu_SE.Init("Assets/sprite/PauseMenu/Pause2_SE.DDS", 300.0f, 100.0f);
-		m_Menu_SE.SetPosition(Menu_SEPos);
-		m_Menu_SE.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_SE.SetRotation(m_sRotation);
-		m_Menu_SE.Update();
-		//QuitGame  
-		m_Menu_QuitGame.Init("Assets/sprite/PauseMenu/Pause2_QuitGame.DDS", 620.0f, 120.0f);
-		m_Menu_QuitGame.SetPosition(Menu_QuitGamePos);
-		m_Menu_QuitGame.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_QuitGame.SetRotation(m_sRotation);
-		m_Menu_QuitGame.Update();
-		//m_Menu_SelectBar_BGM
-		m_Menu_SelectBar_BGM.Init("Assets/sprite/PauseMenu/Pause_selectBar.DDS", 50.0f, 100.0f);
-		m_Menu_SelectBar_BGM.SetPosition(Menu_SelectBar_BGMPos);
-		m_Menu_SelectBar_BGM.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_SelectBar_BGM.SetRotation(m_sRotation);
-		m_Menu_SelectBar_BGM.Update();
-		//m_Menu_SelectBar_SE
-		m_Menu_SelectBar_SE.Init("Assets/sprite/PauseMenu/Pause_selectBar.DDS", 50.0f, 100.0f);
-		m_Menu_SelectBar_SE.SetPosition(Menu_SelectBar_SEPos);
-		m_Menu_SelectBar_SE.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_SelectBar_SE.SetRotation(m_sRotation);
-		m_Menu_SelectBar_SE.Update();
-
-		SelectBar_BGMPos = Menu_SelectBar_BGMPos;
-		SelectBar_SEPos = Menu_SelectBar_SEPos;
-
-		m_operationPic.Init("Assets/sprite/Controller.DDS", 1920.0f, 1080.0f);
-		m_operationPic.SetPosition(Vector3::Zero);
-		m_operationPic.SetScale(g_vec3One);
-		m_operationPic.Update();
-
-
-		m_underSprite.Init("Assets/sprite/TowerDown.DDS", 1920.0f, 1080.0f);
+	
+		m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
 		m_underSprite.SetPosition(TOWEREXPOSITION_POS);
-		m_underSprite.SetScale(Vector3::One);
+		m_underSprite.SetScale(SpriteScale);
 		m_underSprite.Update();
 
-		m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 1920.0f, 1080.0f);
+		m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
 		m_RabbitSprite.SetPosition(RABBIT_POS);
-		m_RabbitSprite.SetScale(Vector3::One);
+		m_RabbitSprite.SetScale(RabbitSpriteScale);
 		m_RabbitSprite.Update();
-	}
 
 
 	//ゲームの状態をゲームステートにする
@@ -302,8 +228,6 @@ bool Game::Start()
 
 	//ゲーム中に再生される音を読み込む
 	SetMusic();
-
-	/*m_boxCollider.Create(Vector3(1.0f,1.0f,1.0f));*/
 
 	//当たり判定の可視化
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
@@ -356,10 +280,10 @@ void Game::BattleStart()
 		//マップの生成
 		m_Map = NewGO<Map>(2, "map");
 		//BGMの再生
-		/*m_bgm = NewGO<SoundSource>(0);
+		m_bgm = NewGO<SoundSource>(0);
 		m_bgm->Init(enSound_PlayBattle);
 		m_bgm->Play(true);
-		m_bgm->SetVolume(BGMVolume);*/
+		m_bgm->SetVolume(BGMVolume);
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);
@@ -412,6 +336,8 @@ void Game::Battle()
 			{
 				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
 			}
+
+			pause = NewGO<Pause>(0, "pause");
 	}
 	
 	//誰かが必殺技を使ったら処理を止める
@@ -451,24 +377,24 @@ void Game::Battle()
 }
 
 //ポーズ時の処理
-void Game::Pause()
-{
-	if (HowToPlaySpriteFlag == false)
-	{
-		//ポーズ時の移動処理
-		PauseMove();
-	}
-	
-	//前のフレームのメニュー番号と今のフレームのメニュー番号が違うなら
-	if (MenuNumber_old != MenuNumber) {
-		//メニューのステートを選ぶ
-		SelectMenu();
-	}
-	//ステートの管理
-	MenuState();
-
-	MenuNumber_old = MenuNumber;
-}
+//void Game::Pause()
+//{
+//	if (HowToPlaySpriteFlag == false)
+//	{
+//		//ポーズ時の移動処理
+//		PauseMove();
+//	}
+//	
+//	//前のフレームのメニュー番号と今のフレームのメニュー番号が違うなら
+//	if (MenuNumber_old != MenuNumber) {
+//		//メニューのステートを選ぶ
+//		SelectMenu();
+//	}
+//	//ステートの管理
+//	MenuState();
+//
+//	MenuNumber_old = MenuNumber;
+//}
 
 //タイムアップになったあとの処理
 void Game::End()
@@ -620,6 +546,7 @@ void Game::SetEnemyRespawnPos()
 	SearchRespawnPosNumber= rand() % 19 + 1;
 	return;
 }
+
 void Game::TowerEFK()
 {
 	TowerDown = NewGO <EffectEmitter>(0);
@@ -649,7 +576,7 @@ void Game::GameState()
 		break;
 
 	case enGameState_Pause:
-		Pause();
+		PauseTime();
 		break;
 
 	case enGamestate_End:
@@ -746,9 +673,9 @@ void Game::SetMusic()
 			//スキルの音
 			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill3.wav");
 			//手を上に上げるときの音
-			g_soundEngine->ResistWaveFileBank(enSound_Hand, "Assets/sound/playerSE/kenSkill1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Hand, "Assets/sound/playerSE/handup2.wav");
 			//雷の落下音
-			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/thunder/thunder2.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/thunder/thunder5.wav");
 			//被ダメの声
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Receiving_Damage, "Assets/sound/playerSE/playerScream1.wav");
 			//通常攻撃のコンボ音
@@ -756,7 +683,7 @@ void Game::SetMusic()
 			g_soundEngine->ResistWaveFileBank(enSound_ComboTwo, "Assets/sound/kenSE/ken2.wav");
 			g_soundEngine->ResistWaveFileBank(enSound_ComboThree, "Assets/sound/kenSE/ken3.wav");
 			//必殺チャージ音
-			g_soundEngine->ResistWaveFileBank(enSound_Knight_Charge_Power, "Assets/sound/playerSE/kenSkill1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Knight_Charge_Power, "Assets/sound/playerSE/ult2.wav");
 			//死んだときの声
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Death, "Assets/sound/playerSE/playerScream3.wav");
 			//地面についたときの音
@@ -848,196 +775,28 @@ void Game::SetEffects()
 	g_renderingEngine->UnUseHemiLight();
 }
 
-void Game::PauseMove()
+//ポーズ中の処理
+void Game::PauseTime()
 {
-	if (g_pad[0]->IsTrigger(enButtonDown))
+	if (pause == nullptr)
 	{
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Title_Choise);
-		se->SetVolume(1.0f);
-		se->Play(false);
-		MenuNumber++;
+		pause = FindGO<Pause>("pause");
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonUp))
+	if (pause->IsDeleteGame() == true)
 	{
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Title_Choise);
-		se->SetVolume(1.0f);
-		se->Play(false);
-		MenuNumber--;
+		//Push_OK();
+		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
+		DeleteGO(this);
 	}
 }
 
-/// <summary>
-/// 選んだ番号に対応したステートにする処理
-/// </summary>
-void Game::SelectMenu()
-{
-	if (MenuNumber == 0)
-	{
-		m_EnPauseMenu = enPauseMenuState_Back;
-		m_Menu_Back.Init("Assets/sprite/PauseMenu/Pause2_Back_decision.DDS", 300.0f, 100.0f);
-	}
-	else
-	{
-		m_Menu_Back.Init("Assets/sprite/PauseMenu/Pause2_Back.DDS", 300.0f, 100.0f);
-	}
-
-	if (MenuNumber == 1)
-	{
-		m_EnPauseMenu = enPauseMenuState_HowToPlay;
-		m_Menu_HowToPlay.Init("Assets/sprite/PauseMenu/Pause2_HowToPlay_decision.DDS", 620.0f, 120.0f);
-	}
-	else
-	{
-		m_Menu_HowToPlay.Init("Assets/sprite/PauseMenu/Pause2_HowToPlay.DDS", 620.0f, 120.0f);
-	}
-
-	if (MenuNumber == 2)
-	{
-		m_EnPauseMenu = enPauseMenuState_BGM;
-		m_Menu_BGM.Init("Assets/sprite/PauseMenu/Pause2_BGM_decision.DDS", 300.0f, 100.0f);
-	}
-	else
-	{
-		m_Menu_BGM.Init("Assets/sprite/PauseMenu/Pause2_BGM.DDS", 300.0f, 100.0f);
-	}
-
-	if (MenuNumber == 3)
-	{
-		m_EnPauseMenu = enPauseMenuState_SE;
-		m_Menu_SE.Init("Assets/sprite/PauseMenu/Pause2_SE_decision.DDS", 300.0f, 100.0f);
-	}
-	else
-	{
-		m_Menu_SE.Init("Assets/sprite/PauseMenu/Pause2_SE.DDS", 300.0f, 100.0f);
-	}
-
-	if (MenuNumber == 4)
-	{
-		m_EnPauseMenu = enPauseMenuState_QuitGame;
-		m_Menu_QuitGame.Init("Assets/sprite/PauseMenu/Pause2_QuitGame_decision.DDS", 620.0f, 120.0f);
-	}
-	else
-	{
-		m_Menu_QuitGame.Init("Assets/sprite/PauseMenu/Pause2_QuitGame.DDS", 620.0f, 120.0f);
-	}
-}
-
-/// <summary>
-/// メニュー時のステートの管理
-/// </summary>
-void Game::MenuState()
-{
-	switch (m_EnPauseMenu)
-	{
-	case enPauseMenuState_Back:
-		Menu_Back();
-		break;
-	case enPauseMenuState_HowToPlay:
-		Menu_HowToPlay();
-		break;
-	case enPauseMenuState_BGM:
-		Menu_BGM();
-		break;
-	case enPauseMenuState_SE:
-		Menu_SE();
-		break;
-	case enPauseMenuState_QuitGame:
-		Menu_QuitGame();
-		break;
-	}
-}
-//Backの処理
-void Game::Menu_Back()
-{
-	//Aボタンを押したら
-	if (g_pad[0]->IsTrigger(enButtonA)) {
-		Push_OK();
-		//ステートをバトルステートに戻す
-		m_GameState = enGameState_BetweenGameAndPause;
-	}
-}
-//HowToPlayの処理
-void Game::Menu_HowToPlay()
-{
-	if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		Push_OK();
-		//フラグ反転
-		HowToPlaySpriteFlag = !HowToPlaySpriteFlag;
-	}
-}
-//BGMの処理
-void Game::Menu_BGM()
-{
-	//音量を上げる
-	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if (BGMVolume < 8.0f)
-		{
-			BGMVolume += 0.5f;
-			m_bgm->SetVolume(BGMVolume);
-			SelectBar_BGMPos.x += m_nuwBGMPos;
-		}
-	}
-	//音量を下げる
-	if (g_pad[0]->IsTrigger(enButtonLeft)) {
-		if (BGMVolume > 0)
-		{
-			BGMVolume -= 0.2f;
-			m_bgm->SetVolume(BGMVolume);
-			SelectBar_BGMPos.x -= m_nuwBGMPos;
-		}
-	}
-
-	//バーの座標を更新
-	m_Menu_SelectBar_BGM.SetPosition(SelectBar_BGMPos);
-	m_Menu_SelectBar_BGM.Update();
-}
 void Game::Push_OK()
 {
 	SoundSource* se = NewGO<SoundSource>(0);
 	se->Init(enSound_OK);
 	se->SetVolume(1.0f);
 	se->Play(false);
-}
-//SEの処理
-void Game::Menu_SE()
-{
-	//音量を上げる
-	if (g_pad[0]->IsTrigger(enButtonRight)) {
-		if (SoundEffectVolume < 4.0f)
-		{
-			SoundEffectVolume += 0.4f;
-			SelectBar_SEPos.x += m_nuwSEPos;
-		}
-		
-	}
-	//音量を下げる
-	if (g_pad[0]->IsTrigger(enButtonLeft)) {
-		if (SoundEffectVolume > 0)
-		{
-			SoundEffectVolume -= 0.1f;
-			SelectBar_SEPos.x -= m_nuwSEPos;
-		}
-		
-	}
-	//バーの座標を更新
-	m_Menu_SelectBar_SE.SetPosition(SelectBar_SEPos);
-	m_Menu_SelectBar_SE.Update();
-}
-//QuitGameの処理
-void Game::Menu_QuitGame()
-{
-	//タイトルへの遷移
-	//Aボタンを押したら
-	if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		Push_OK();
-		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
-		DeleteGO(this);
-	}
 }
 
 //制限時間の処理
@@ -1187,26 +946,7 @@ void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
 }
 
 void Game::Render(RenderContext& rc)
-{
-	
-	if (m_GameState == enGameState_Pause)
-	{
-		m_Pause_Back.Draw(rc);
-		m_Pause_Front.Draw(rc);
-		m_Menu_Back.Draw(rc);        //Back
-		m_Menu_HowToPlay.Draw(rc);   //HowToPlay
-		m_Menu_BGM.Draw(rc);         //BGM
-		m_Menu_SE.Draw(rc);          //SE
-		m_Menu_QuitGame.Draw(rc);    //QuitGame
-		m_Menu_SelectBar_BGM.Draw(rc);
-		m_Menu_SelectBar_SE.Draw(rc);
-		
-		if (HowToPlaySpriteFlag == true)
-		{
-			m_operationPic.Draw(rc);
-		}
-	}
-	
+{	
 	if (UltStopFlag == true) {
 		return;
 	}
@@ -1225,7 +965,4 @@ void Game::Render(RenderContext& rc)
 
 		m_underSprite.Draw(rc);
 	}
-	
-	//m_fontRender.Draw(rc);
-	
 }

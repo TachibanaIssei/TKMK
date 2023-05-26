@@ -71,6 +71,8 @@ bool KnightAI::Start() {
 
 void KnightAI::Update()
 {
+	// 追尾エフェクトのリセット
+	EffectNullptr();
 	
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
@@ -80,8 +82,6 @@ void KnightAI::Update()
 	Collition();
 	//アニメーションの再生
 	PlayAnimation();
-	// 追尾エフェクトのリセット
-	EffectNullptr();
 	
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {
@@ -334,7 +334,6 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		eval += 2500;
 	}
 
-
 	// リスポーン前のアクターは狙わない
 	if (actorPos.y >= 100)
 	{
@@ -352,6 +351,27 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		eval += 2000;
 	}
 
+	//自分より相手のポイントが高い
+	if (actor->GetPoint() - Point >= 10)
+	{
+		eval += 5000;
+		if (actor->GetLevel() > 5 && Lv >= 5)
+		{
+			eval += 2000;
+		}
+	}
+	//ゲーム時間が残り30秒なったらポイント稼ぐために動く
+	if (m_game->GetMinutesTimer() == 0.0f && m_game->GetSecondsTimer() <= 30.0f)
+	{
+		eval += 3000;
+	}
+	//自分のHPが少ない時は逃げる
+	if (m_Status.Hp <= 80)
+	{
+		eval += 5000;
+		chaseOrEscape = true;
+	}
+	
 	// 壁の向こうに対象がいるなら評価値を下げる
 	btTransform start, end;
 	start.setIdentity();
@@ -376,15 +396,17 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	eval += (Lv - actorlv) * 500;
 
 	//自分のレベルが一定以上達したらキルモードに入る
-	if (Lv >= 4)
+	if (Lv >= 7)
 	{
 		eval += 2000;
 	}
-	//パワーアップ中はアクターを狙う
-	if (PowerUpTimer > 0.0f)
-	{
-		eval += 3000;
-	}
+
+	////パワーアップ中はアクターを狙う
+	//if (PowerUpTimer > 0.0f)
+	//{
+	//	eval += 3000;
+	//}
+
 	//自分を攻撃した相手が近い ＆ 相手とのHP差が大きかったら 逃げる
 	if (actor == m_lastAttackActor)
 	{
@@ -393,6 +415,7 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 			chaseOrEscape = true;
 		}
 	}
+	
 
 	//相手のレベルが自分よりたかったら逃げる
 	if (actor->GetLevel()- Lv > 5)
@@ -654,6 +677,7 @@ void KnightAI::LotNextAction()
 			m_targetActor->RemoveActorFromList(this);
 			m_nowActorTarget->AddActorFromList(this);
 		}
+
 		else if (m_targetActor != m_nowActorTarget && m_targetActor == nullptr) {
 			m_nowActorTarget->AddActorFromList(this);
 		}
@@ -854,6 +878,7 @@ void KnightAI::Attack()
 		//スキルを発動する処理
 			if (m_targetActor != nullptr && SkillEndFlag == false)
 			{
+				//m_charState = enCharState_Skill;
 				//スキルを打つ
 				SkillState = true;
 				m_skillMove = TargePos - m_position;
@@ -917,10 +942,13 @@ void KnightAI::Attack()
 	
 	if (CanUlt())
 	{
-		//必殺技を打たない
-		//return;
+		if (m_charState == enCharState_Attack || m_charState == enCharState_SecondAttack || m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance)
+		{
+			return;
+		}
+
 		//必殺技を発動する処理
-		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
+		if (pushFlag == false && m_targetActor!=nullptr&& Lv >= 4 && m_Status.Hp <= m_Status.MaxHp && m_targetActor->GetHp()< 210 && m_game->GetUltCanUseFlag()==false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);

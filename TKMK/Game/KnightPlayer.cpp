@@ -543,6 +543,12 @@ void KnightPlayer::MakeUltSkill()
 			//必殺技を打たれたのでフラグを立てる
 			//actor->ChangeDamegeUltFlag(true);
 
+			//効果音再生
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(enSound_Sword_Ult);
+			se->Play(false);
+			se->SetVolume(SEVolume);
+
 			//雷を落とすキャラがリストの最後なら
 			if (actor == DamegeUltActor.back())
 			{

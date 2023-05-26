@@ -746,9 +746,9 @@ void Game::SetMusic()
 			//スキルの音
 			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill3.wav");
 			//手を上に上げるときの音
-			g_soundEngine->ResistWaveFileBank(enSound_Hand, "Assets/sound/playerSE/kenSkill1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Hand, "Assets/sound/playerSE/handup2.wav");
 			//雷の落下音
-			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/thunder/thunder2.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Sword_Ult, "Assets/sound/playerSE/thunder/thunder5.wav");
 			//被ダメの声
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Receiving_Damage, "Assets/sound/playerSE/playerScream1.wav");
 			//通常攻撃のコンボ音
@@ -756,7 +756,7 @@ void Game::SetMusic()
 			g_soundEngine->ResistWaveFileBank(enSound_ComboTwo, "Assets/sound/kenSE/ken2.wav");
 			g_soundEngine->ResistWaveFileBank(enSound_ComboThree, "Assets/sound/kenSE/ken3.wav");
 			//必殺チャージ音
-			g_soundEngine->ResistWaveFileBank(enSound_Knight_Charge_Power, "Assets/sound/playerSE/kenSkill1.wav");
+			g_soundEngine->ResistWaveFileBank(enSound_Knight_Charge_Power, "Assets/sound/playerSE/ult2.wav");
 			//死んだときの声
 			g_soundEngine->ResistWaveFileBank(enSound_Knight_Death, "Assets/sound/playerSE/playerScream3.wav");
 			//地面についたときの音

@@ -88,8 +88,8 @@ bool Pause::Start()
 	m_Menu_Flame_SE.SetScale(1.0f, 1.0f, 1.0f);
 	m_Menu_Flame_SE.Update();
 
-
-	m_operationPic.Init("Assets/sprite/Controller.DDS", 1920.0f, 1080.0f);
+	//ëÄçÏê‡ñæ
+	m_operationPic.Init("Assets/sprite/PauseMenu/game_explanation.DDS", 1920.0f, 1080.0f);
 	m_operationPic.SetPosition(Vector3::Zero);
 	m_operationPic.SetScale(g_vec3One);
 	m_operationPic.Update();

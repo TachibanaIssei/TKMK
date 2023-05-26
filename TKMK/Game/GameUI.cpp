@@ -829,6 +829,7 @@ void GameUI::LevelUp()
 		return;
 	}
 
+	//まだセーブした経験値が残っているなら
 	if (m_SaveExp > 0) {
 		//セーブした経験値をリセット
 		//m_saveExpとプレイヤーのセーブした経験値を同じにする
@@ -839,13 +840,26 @@ void GameUI::LevelUp()
 		m_oldSaveExp = player->CharGetSaveEXP();
 		m_enExpProssesState = enUpExpState;
 	}
+	//もうレベルアップの処理が終わりなら
 	else if (m_SaveExp <= 0) {
-		//セーブした経験値をリセット
-		player->CharResatSaveEXP(0);
-		m_SaveExp = player->CharGetSaveEXP();
-		m_oldSaveExp = m_SaveExp;
 
-		m_enExpProssesState = enChackExpState;
+		//レベルアップの処理の間に中立の敵を倒していたなら
+		if (player->CharGetEXP() > 0) {
+			player->CharResatSaveEXP(player->CharGetEXP());
+			m_SaveExp = player->CharGetSaveEXP();
+			m_oldSaveExp = m_SaveExp;
+			//経験値の処理にいく
+			m_enExpProssesState = enUpExpState;
+		}
+		else
+		{
+			//セーブした経験値をリセット
+			player->CharResatSaveEXP(0);
+			m_SaveExp = player->CharGetSaveEXP();
+			m_oldSaveExp = m_SaveExp;
+
+			m_enExpProssesState = enChackExpState;
+		}
 	}
 }
 

@@ -211,73 +211,7 @@ bool Game::Start()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
-	//ポーズ画面の画像読み込み
-	{
-		//背景
-		m_Pause_Back.Init("Assets/sprite/PauseMenu/pause_back.DDS", 1920.0f, 1080.0f);
-		m_Pause_Back.SetPosition(g_vec3Zero);
-		m_Pause_Back.SetScale(1.0f, 1.0f, 1.0f);
-		m_Pause_Back.SetRotation(m_sRotation);
-		m_Pause_Back.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 0.4f));
-		m_Pause_Back.Update();
-		//ポーズメイン
-		m_Pause_Front.Init("Assets/sprite/PauseMenu/Pause2_flame.DDS", 1920.0f, 1080.0f);
-		m_Pause_Front.SetPosition(g_vec3Zero);
-		m_Pause_Front.SetScale(1.0f, 1.0f, 1.0f);
-		m_Pause_Front.SetRotation(m_sRotation);
-		m_Pause_Front.Update();
-
-		//Back
-		m_Menu_Back.Init("Assets/sprite/PauseMenu/Pause2_Back_decision.DDS", 300.0f, 100.0f);		m_Menu_Back.SetPosition(Menu_BackPos);
-		m_Menu_Back.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_Back.SetRotation(m_sRotation);
-		m_Menu_Back.Update();
-		//HowToPlay
-		m_Menu_HowToPlay.Init("Assets/sprite/PauseMenu/Pause2_HowToPlay.DDS", 620.0f, 120.0f);
-		m_Menu_HowToPlay.SetPosition(Menu_HowToPlayPos);
-		m_Menu_HowToPlay.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_HowToPlay.SetRotation(m_sRotation);
-		m_Menu_HowToPlay.Update();
-		//BGM
-		m_Menu_BGM.Init("Assets/sprite/PauseMenu/Pause2_BGM.DDS", 300.0f, 100.0f);
-		m_Menu_BGM.SetPosition(Menu_BGMPos);
-		m_Menu_BGM.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_BGM.SetRotation(m_sRotation);
-		m_Menu_BGM.Update();
-		//SE
-		m_Menu_SE.Init("Assets/sprite/PauseMenu/Pause2_SE.DDS", 300.0f, 100.0f);
-		m_Menu_SE.SetPosition(Menu_SEPos);
-		m_Menu_SE.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_SE.SetRotation(m_sRotation);
-		m_Menu_SE.Update();
-		//QuitGame  
-		m_Menu_QuitGame.Init("Assets/sprite/PauseMenu/Pause2_QuitGame.DDS", 620.0f, 120.0f);
-		m_Menu_QuitGame.SetPosition(Menu_QuitGamePos);
-		m_Menu_QuitGame.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_QuitGame.SetRotation(m_sRotation);
-		m_Menu_QuitGame.Update();
-		//m_Menu_SelectBar_BGM
-		m_Menu_SelectBar_BGM.Init("Assets/sprite/PauseMenu/Pause_selectBar.DDS", 50.0f, 100.0f);
-		m_Menu_SelectBar_BGM.SetPosition(Menu_SelectBar_BGMPos);
-		m_Menu_SelectBar_BGM.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_SelectBar_BGM.SetRotation(m_sRotation);
-		m_Menu_SelectBar_BGM.Update();
-		//m_Menu_SelectBar_SE
-		m_Menu_SelectBar_SE.Init("Assets/sprite/PauseMenu/Pause_selectBar.DDS", 50.0f, 100.0f);
-		m_Menu_SelectBar_SE.SetPosition(Menu_SelectBar_SEPos);
-		m_Menu_SelectBar_SE.SetScale(1.0f, 1.0f, 1.0f);
-		m_Menu_SelectBar_SE.SetRotation(m_sRotation);
-		m_Menu_SelectBar_SE.Update();
-
-		SelectBar_BGMPos = Menu_SelectBar_BGMPos;
-		SelectBar_SEPos = Menu_SelectBar_SEPos;
-
-		m_operationPic.Init("Assets/sprite/Controller.DDS", 1920.0f, 1080.0f);
-		m_operationPic.SetPosition(Vector3::Zero);
-		m_operationPic.SetScale(g_vec3One);
-		m_operationPic.Update();
-
-
+	
 		m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
 		m_underSprite.SetPosition(TOWEREXPOSITION_POS);
 		m_underSprite.SetScale(SpriteScale);
@@ -287,7 +221,6 @@ bool Game::Start()
 		m_RabbitSprite.SetPosition(RABBIT_POS);
 		m_RabbitSprite.SetScale(RabbitSpriteScale);
 		m_RabbitSprite.Update();
-	}
 
 
 	//ゲームの状態をゲームステートにする

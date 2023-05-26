@@ -71,6 +71,8 @@ bool KnightAI::Start() {
 
 void KnightAI::Update()
 {
+	// 追尾エフェクトのリセット
+	EffectNullptr();
 	
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
@@ -80,8 +82,6 @@ void KnightAI::Update()
 	Collition();
 	//アニメーションの再生
 	PlayAnimation();
-	// 追尾エフェクトのリセット
-	EffectNullptr();
 	
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {

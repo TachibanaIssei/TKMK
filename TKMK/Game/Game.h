@@ -19,6 +19,7 @@ class Actor;
 class Lamp;
 class Fade;
 class ExpforKnight;
+class Pause;
 
 class Game : public IGameObject
 {
@@ -55,33 +56,37 @@ public:
 	void Update();
 	void BattleStart();
 	void Battle();
-	void Pause();
+	void PauseTime();
 	void End();
 	void Between();
 	void GoResult();
 	void GameState();
 	void Push_OK();							//決定音
 
+	void ChangeGameState(EnGameState gamestate) {
+		m_GameState = gamestate;
+	}
+
 	/// <summary>
 	/// ポーズ時の移動処理
 	/// </summary>
-	void PauseMove();
+	//void PauseMove();
 
 	/// <summary>
 	/// 選んだ番号に対応したステートにする処理
 	/// </summary>
-	void SelectMenu();
+	//void SelectMenu();
 
 	/// <summary>
 	/// メニュー時のステートの管理
 	/// </summary>
-	void MenuState();
+	//void MenuState();
 	
-	void Menu_Back();
-	void Menu_HowToPlay();
-	void Menu_BGM();
-	void Menu_SE();
-	void Menu_QuitGame();
+	//void Menu_Back();
+	//void Menu_HowToPlay();
+	//void Menu_BGM();
+	//void Menu_SE();
+	//void Menu_QuitGame();
 
 	/// <summary>
 	/// ゲーム中に再生される音の読み込み
@@ -90,14 +95,68 @@ public:
 
 	void SetEffects();
 
+	void ChangeBGMVolume()
+	{
+		m_bgm->SetVolume(BGMVolume);
+	}
+
+	/// <summary>
+	/// BGMの音量調整
+	/// </summary>
+	/// <param name="Volume"></param>
+	void SetBGMVolume(float Volume)
+	{
+		BGMVolume += Volume;
+		if (BGMVolume >= MaxBGMVolume)
+		{
+			BGMVolume = MaxBGMVolume;
+		}
+		else if (BGMVolume <= 0.0f) {
+			BGMVolume = 0.0f;
+		}
+	}
+
+
+	float GetBGMVolume() const
+	{
+		return BGMVolume;
+	}
+
+	float GetMaxBGMVolume() const
+	{
+		return MaxBGMVolume;
+	}
+
+	/// <summary>
+	/// SEの音量調整
+	/// </summary>
+	/// <param name="Volume"></param>
+	void SetSoundEffectVolume(float Volume)
+	{
+		SoundEffectVolume += Volume;
+		if (SoundEffectVolume >= MaxSoundEffectVolume)
+		{
+			SoundEffectVolume = MaxSoundEffectVolume;
+		}
+		else if (SoundEffectVolume <= 0.0f) {
+			SoundEffectVolume = 0.0f;
+		}
+	}
+
 	/// <summary>
 	/// 効果音の音量を返す
 	/// </summary>
 	/// <returns>効果音の音量</returns>
-	const float SetSoundEffectVolume()const
+	const float GetSoundEffectVolume()
 	{
 		return SoundEffectVolume;
 	}
+
+	float GetMaxSoundEffectVolume() const
+	{
+		return MaxSoundEffectVolume;
+	}
+
 	/// <summary>
 	/// タワー上のエフェクト
 	/// </summary>
@@ -181,17 +240,17 @@ public:
 		return m_StartToGameTimer;
 	}
 
-	float GetSecondsTimer()
+	float GetSecondsTimer() const
 	{
 		return SecondsTimer;
 	}
 
-	float GetMinutesTimer()
+	float GetMinutesTimer() const
 	{
 		return MinutesTimer;
 	}
 
-	EnGameState NowGameState()
+	EnGameState NowGameState() const
 	{
 		return m_GameState;
 	}
@@ -200,7 +259,7 @@ public:
 	{
 		Ultactor = actor;
 	}
-	Actor* GetUltActor()
+	Actor* GetUltActor() const
 	{
 		return Ultactor;
 	}
@@ -218,7 +277,7 @@ public:
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	bool GetUltTimeSkyFlag()
+	bool GetUltTimeSkyFlag() const
 	{
 		return UltTimeSkyFlag;
 	}
@@ -236,7 +295,7 @@ public:
 	/// 必殺技でゲームが止まっているかのフラグを返す
 	/// </summary>
 	/// <returns></returns>
-	bool GetStopFlag()
+	bool GetStopFlag() const
 	{
 		return UltStopFlag;
 	}
@@ -266,7 +325,7 @@ public:
 
 	//AIの判断用
 	//必殺が使えるがどうか
-	bool GetUltCanUseFlag()
+	bool GetUltCanUseFlag() const
 	{
 		return UltCanUseFlag;
 	}
@@ -318,7 +377,7 @@ public:
 	/*bool IsActorGroundChack(Actor* actor);*/
 
 	//ゲームが制限時間時間に達したかのフラグを返す
-	bool IsGameEnd()
+	bool IsGameEnd() const
 	{
 		return GameEndFlag;
 	}
@@ -436,6 +495,7 @@ private:
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
 	Fade* fade = nullptr;
+	Pause* pause = nullptr;
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;
 	std::vector<Actor*> m_Actors;
@@ -497,9 +557,11 @@ private:
 	bool RabbitFlag = false;
 
 	//BGMの初期音量
-	float BGMVolume = 2.0f;
+	float BGMVolume = 1.0f;
+	const float MaxBGMVolume = 8.0f;
 	//効果音の初期音量1
 	float SoundEffectVolume = 2.0f;
+	const float MaxSoundEffectVolume = 8.0f;
 
 	//プレイヤーの使うキャラの番号
 	//０…剣士

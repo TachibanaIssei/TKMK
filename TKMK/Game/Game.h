@@ -68,27 +68,6 @@ public:
 	}
 
 	/// <summary>
-	/// ポーズ時の移動処理
-	/// </summary>
-	//void PauseMove();
-
-	/// <summary>
-	/// 選んだ番号に対応したステートにする処理
-	/// </summary>
-	//void SelectMenu();
-
-	/// <summary>
-	/// メニュー時のステートの管理
-	/// </summary>
-	//void MenuState();
-	
-	//void Menu_Back();
-	//void Menu_HowToPlay();
-	//void Menu_BGM();
-	//void Menu_SE();
-	//void Menu_QuitGame();
-
-	/// <summary>
 	/// ゲーム中に再生される音の読み込み
 	/// </summary>
 	void SetMusic();
@@ -449,17 +428,6 @@ private:
 	Quaternion m_sRotation = Quaternion::Identity;
 	Vector3 EnemyRespawnPosition[45];
 	Quaternion EnemyReapawnPot[45];
-	//ポーズの画像
-	SpriteRender m_Pause_Front;    //ポーズのメイン
-	SpriteRender m_Pause_Back;     //背景
-	SpriteRender m_Menu_Back;        //Back
-	SpriteRender m_Menu_HowToPlay;   //HowToPlay
-	SpriteRender m_Menu_BGM;         //BGM
-	SpriteRender m_Menu_SE;          //SE
-	SpriteRender m_Menu_QuitGame;    //QuitGame
-	SpriteRender m_Menu_SelectBar_BGM;   //SelectBar_BGM
-	SpriteRender m_Menu_SelectBar_SE;   //SelectBar_SE
-	SpriteRender m_operationPic;        //操作説明
 
 	//ゲームの説明
 	SpriteRender m_underSprite;			//下部に表示する説明の画像
@@ -470,12 +438,6 @@ private:
 	bool m_underSprite_Skill = false;
 	bool m_underSprite_Level = false;
 	bool m_underSprite_Ult = false;
-
-	Vector3 SelectBar_BGMPos = Vector3::AxisX;
-	Vector3 SelectBar_SEPos = Vector3::AxisX;
-
-	float m_nuwBGMPos=30.0f;
-	float m_nuwSEPos=30.0f;
 
 	SkyCube* m_skyCube = nullptr;
 	BackGround* m_backGround = nullptr;
@@ -504,9 +466,6 @@ private:
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Vector3 m_EFK_Pos = Vector3::Zero;
-
-	//RigidBody				m_rigidBody;						//剛体。
-	//BoxCollider			m_boxCollider;							//コライダー。
 
 	float m_FluctuateSkyColor;
 	float DarknessSkyColor;
@@ -569,11 +528,6 @@ private:
 	//２…ゾンビ
 	//３…魔物
 	int SelectCharNumber = 1;
-
-
-	//メニュー
-	int MenuNumber = 0;
-	int MenuNumber_old = 0;
 
 	int enemyNum = 0;
 	char* enemyName;

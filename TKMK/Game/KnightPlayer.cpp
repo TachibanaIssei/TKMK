@@ -192,7 +192,7 @@ void KnightPlayer::Update()
 			//リスポーンしたときしか使えない
 			//飛び降りる処理
 			//地上にいないならジャンプしかしないようにする
-			if (IsActorGroundChack()!=true/*m_position.y > 1.0f*/) {
+			if (IsActorGroundChack()!=true) {
 				if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
 				{
 					pushFlag = true;

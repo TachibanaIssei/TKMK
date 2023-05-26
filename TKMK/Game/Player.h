@@ -105,7 +105,7 @@ public:
 		return playerActor;
 	}
 
-	int CharSetEXP() const;
+	int CharGetEXP() const;
 
 	int CharSetEXPTable() const;
 

@@ -68,7 +68,6 @@ bool GameCamera::Start()
 	m_toCameraPos.Set(0.0f, 50.0f, -160.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
-
 	g_camera3D->SetNear(1.0f);
 	g_camera3D->SetFar(10000.0f);
 	m_cameraCollisionSolver.Init(1.0f);
@@ -532,7 +531,7 @@ void GameCamera::KnightUltCamera(Actor*actor, bool reset)
 		//m_toCameraPos.z -= 2.0f;
 
 		//カメラの位置の衝突解決する
-		Vector3 newCamPos;
+		//Vector3 newCamPos;
 		m_cameraCollisionSolver.Execute(
 			newCamPos,
 			TargetPos + m_toCameraPos,

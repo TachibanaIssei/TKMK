@@ -237,7 +237,7 @@ void KnightPlayer::Update()
 			//スキル使用中なら
 			if (SkillState == true) {
 				//スキルステート
-				m_charState = enCharState_Skill;
+				//m_charState = enCharState_Skill;
 				//移動処理を行う(直線移動のみ)。
 				MoveStraight();
 			}
@@ -401,7 +401,7 @@ void KnightPlayer::Attack()
 		}
 		
 		SkillEndFlag = true;
-		
+		m_charState = enCharState_Skill;
 		pushFlag = true;
 		SkillState = true;
 	}
@@ -507,11 +507,13 @@ void KnightPlayer::Avoidance()
 	}
 	//RBボタンが押されたら。
 	//回避
-	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false && g_pad[0]->IsTrigger(enButtonRB1)) {
-		//回避ステート
-		AnimationMove(AvoidanceSpeed);
-		pushFlag = true;
-		AvoidanceFlag = true;
+	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false) {
+		if (g_pad[0]->IsTrigger(enButtonRB1) || g_pad[0]->IsTrigger(enButtonLB1)) {
+			//回避ステート
+			AnimationMove(AvoidanceSpeed);
+			pushFlag = true;
+			AvoidanceFlag = true;
+		}
 	}
 }
 

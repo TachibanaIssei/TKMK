@@ -420,15 +420,6 @@ public:
 	}
 
 	/// <summary>
-	/// 前のレベルのの経験値テーブルを返す
-	/// </summary>
-	/// <returns></returns>
-	/*int GetOldExpTable()
-	{
-		return m_oldExpTable;
-	}*/
-
-	/// <summary>
 	/// キャラコンが空中にあるか判定する
 	/// </summary>
 	/// <param name="">キャラコン</param>
@@ -562,15 +553,6 @@ public:
 	{
 		return SkillTimer;
 	}
-
-	/// <summary>
-	/// カメラで見たかのフラグを変える
-	/// </summary>
-	/// <param name="flag"></param>
-	/*void ChangeCameraSawCharFlag(bool flag)
-	{
-		m_CameraSawCharFlag = flag;
-	}*/
 
 	/// <summary>
 	/// 必殺技の攻撃対象のアクターがいないかのフラグを返す

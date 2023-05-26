@@ -334,7 +334,6 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		eval += 2500;
 	}
 
-
 	// リスポーン前のアクターは狙わない
 	if (actorPos.y >= 100)
 	{
@@ -380,11 +379,13 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	{
 		eval += 2000;
 	}
-	//パワーアップ中はアクターを狙う
-	if (PowerUpTimer > 0.0f)
-	{
-		eval += 3000;
-	}
+
+	////パワーアップ中はアクターを狙う
+	//if (PowerUpTimer > 0.0f)
+	//{
+	//	eval += 3000;
+	//}
+
 	//自分を攻撃した相手が近い ＆ 相手とのHP差が大きかったら 逃げる
 	if (actor == m_lastAttackActor)
 	{
@@ -654,6 +655,7 @@ void KnightAI::LotNextAction()
 			m_targetActor->RemoveActorFromList(this);
 			m_nowActorTarget->AddActorFromList(this);
 		}
+
 		else if (m_targetActor != m_nowActorTarget && m_targetActor == nullptr) {
 			m_nowActorTarget->AddActorFromList(this);
 		}
@@ -917,10 +919,13 @@ void KnightAI::Attack()
 	
 	if (CanUlt())
 	{
-		//必殺技を打たない
-		//return;
+		if (m_charState == enCharState_Attack || m_charState == enCharState_SecondAttack || m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance)
+		{
+			return;
+		}
+
 		//必殺技を発動する処理
-		if (pushFlag == false && Lv >= 4&& m_targetActor!=nullptr&&m_targetActor->GetHp()<80&&m_game->GetUltCanUseFlag()==false)
+		if (pushFlag == false && m_targetActor!=nullptr&& Lv >= 4 && m_Status.Hp <= m_Status.MaxHp && m_targetActor->GetHp()< 210 && m_game->GetUltCanUseFlag()==false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);

@@ -861,14 +861,12 @@ void GameUI::DownExp()
 
 void GameUI::LevelDown()
 {
-	
-
 	PlayerLevel--;
 	//レベルに応じた経験値テーブルにする
 	m_ExpTable = player->CharGetEXPTableForLevel(PlayerLevel);
 
 	//セーブした経験値をリセット
-	player->CharResatSaveEXP(0);
+	//player->CharResatSaveEXP(0);
 	//動く値調
 	
 	//m_MathExp = 0;
@@ -880,12 +878,14 @@ void GameUI::LevelDown()
 		m_enExpProssesState = enChackExpState;
 		m_SaveExp = 0;
 		m_oldSaveExp = m_SaveExp;
+		m_MathExp = 0;
 		//セーブした経験値をリセット
-		player->CharResatSaveEXP(0);
+		//player->CharResatSaveEXP(0);
 		return;
 	}
 	else
 	{
+		//m_MathExp = m_ExpTable;
 		m_enExpProssesState = enDownExpState;
 	}
 }
@@ -951,9 +951,6 @@ void GameUI::CharPoint()
 
 			m_PointFlame[num].SetScale(1.45f,1.2f,0.0f);
 			m_PointFlame[num].Update();
-
-			/*m_CharIcon[num].SetScale(CHAR_ICON_MAXSIZE);
-			m_CharIcon[num].Update();*/
 			m_CharIcon[num].Update();
 			MaxPoint = charPoint[num];
 		}
@@ -963,8 +960,6 @@ void GameUI::CharPoint()
 			m_PointFont[num].SetPosition(PointPos[num]);
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
 			m_PointFlame[num].Update();
-
-			//m_CharIcon[num].SetScale(Vector3::One);
 			m_CharIcon[num].Update();
 		}
 
@@ -1000,24 +995,22 @@ void GameUI::Render(RenderContext& rc)
 		}
 		
 	
-		//経験値フレーム
 		m_ExperienceFlame.Draw(rc);
-		//
 		m_ExpFont.Draw(rc);
-		
+
 		m_HpNameFont.Draw(rc);
 
 		m_TimeAndPointRender.Draw(rc);
-
 		m_time_left.Draw(rc);
 
 		m_statusBar.Draw(rc);
 		m_HpBar_White.Draw(rc);
 		m_hpBar.Draw(rc);
-		
 		m_HPFrame.Draw(rc);
+
 		m_SkillRenderIN.Draw(rc);
 		m_SkillRenderOUT.Draw(rc);
+
 		m_UltRenderIN.Draw(rc);
 		m_UltRenderOUT.Draw(rc);
 

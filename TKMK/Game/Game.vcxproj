@@ -226,7 +226,6 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="CharacterSelect.cpp" />
-    <ClCompile Include="CharUltFlag.cpp" />
     <ClCompile Include="ChaseEFK.cpp" />
     <ClCompile Include="ExpforKnight.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -260,7 +259,6 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="CharacterSelect.h" />
-    <ClInclude Include="CharUltFlag.h" />
     <ClInclude Include="ChaseEFK.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="ExpforKnight.h" />

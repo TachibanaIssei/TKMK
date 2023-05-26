@@ -218,7 +218,7 @@ void Actor::ExpProcess(int Exp)
 
 				//テーブル変更
 				if (Lv >= 3) {
-					ExpTable = 10;
+				ExpTable = 10;
 					
 				}
 				else
@@ -232,12 +232,17 @@ void Actor::ExpProcess(int Exp)
 				//経験値が0になったら抜け出す
 				if (GetExp == 0) {
 					GetExp = 0;
-					break;
+					return;
 				}
-				else if (GetExp < 0)
+				else if (GetExp < ExpTable)
 				{
-					break;
+					//GetExp *= -1;
+					return;
 				}
+
+
+				//
+
 			}
 			
 		}

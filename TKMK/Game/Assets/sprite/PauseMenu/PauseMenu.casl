@@ -1,4 +1,4 @@
-12
+13
 12,Pause2_flame,51,../../Game/Assets/sprite/PauseMenu/Pause2_flame.png,0.0,1.1368683772161603e-13,1920,1080,10,1.0,1.0,0.5,0.5,16,Pause2_flame.dds
 16,Pause2_HowToPlay,55,../../Game/Assets/sprite/PauseMenu/Pause2_HowToPlay.png,0.0,60.0,620,120,10,1.0,1.0,0.5,0.5,20,Pause2_HowToPlay.dds
 25,Pause2_HowToPlay_decision,64,../../Game/Assets/sprite/PauseMenu/Pause2_HowToPlay_decision.png,0.0,60.0,620,120,10,1.0,1.0,0.5,0.5,29,Pause2_HowToPlay_decision.dds
@@ -10,4 +10,5 @@
 18,Pause2_SE_decision,57,../../Game/Assets/sprite/PauseMenu/Pause2_SE_decision.png,-245.0,-185.0,300,100,10,1.0,1.0,0.5,0.5,22,Pause2_SE_decision.dds
 15,Pause2_QuitGame,54,../../Game/Assets/sprite/PauseMenu/Pause2_QuitGame.png,0.0,-320.0,620,120,10,1.0,1.0,0.5,0.5,19,Pause2_QuitGame.dds
 24,Pause2_QuitGame_decision,63,../../Game/Assets/sprite/PauseMenu/Pause2_QuitGame_decision.png,0.0,-320.0,620,120,10,1.0,1.0,0.5,0.5,28,Pause2_QuitGame_decision.dds
-15,Pause_selectBar,54,../../Game/Assets/sprite/PauseMenu/Pause_selectBar.png,90.0,-68.0,50,100,10,1.0,1.0,0.5,0.5,19,Pause_selectBar.dds
+10,musicFlame,49,../../Game/Assets/sprite/PauseMenu/musicFlame.png,113.46153846153857,-73.0769230769231,480,60,10,1.0,1.0,0.5,0.5,14,musicFlame.dds
+8,musicBar,47,../../Game/Assets/sprite/PauseMenu/musicBar.png,113.46153846153857,-75.0,452,40,10,1.0,1.0,0.5,0.5,12,musicBar.dds

@@ -33,5 +33,7 @@ enum EnSound {
 	enSound_CountFight,				//ゲームカウントダウンファイト
 	enSound_Title_Fanfare,			//勝利した時BGM？
 	enSound_GameEnd,
+	enSound_KnightShouting,			//剣士の掛け声(キャラ選択画面)
+	enSound_CharSelectBGM,			//キャラ選択画面のBGM
 	enSound_Num,	
 };

@@ -241,6 +241,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Neutral_Enemy.cpp" />
+    <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="Status.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="MagicBall.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Neutral_Enemy.h" />
+    <ClInclude Include="Pause.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Sounds.h" />

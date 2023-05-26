@@ -351,6 +351,27 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		eval += 2000;
 	}
 
+	//自分より相手のポイントが高い
+	if (actor->GetPoint() - Point >= 10)
+	{
+		eval += 5000;
+		if (actor->GetLevel() > 5 && Lv >= 5)
+		{
+			eval += 2000;
+		}
+	}
+	//ゲーム時間が残り30秒なったらポイント稼ぐために動く
+	if (m_game->GetMinutesTimer() == 0.0f && m_game->GetSecondsTimer() <= 30.0f)
+	{
+		eval += 3000;
+	}
+	//自分のHPが少ない時は逃げる
+	if (m_Status.Hp <= 80)
+	{
+		eval += 5000;
+		chaseOrEscape = true;
+	}
+	
 	// 壁の向こうに対象がいるなら評価値を下げる
 	btTransform start, end;
 	start.setIdentity();
@@ -375,7 +396,7 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	eval += (Lv - actorlv) * 500;
 
 	//自分のレベルが一定以上達したらキルモードに入る
-	if (Lv >= 4)
+	if (Lv >= 7)
 	{
 		eval += 2000;
 	}
@@ -394,6 +415,7 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 			chaseOrEscape = true;
 		}
 	}
+	
 
 	//相手のレベルが自分よりたかったら逃げる
 	if (actor->GetLevel()- Lv > 5)

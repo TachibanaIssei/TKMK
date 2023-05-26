@@ -105,6 +105,15 @@ public:
 	// 必殺カメラの終了
 	void GameCameraUltEnd();
 
+	Vector3 GetCameraForword()
+	{
+		return newCamPos;
+	}
+
+	SpringCamera* GetSpringCamera() {
+		return &m_springCamera;
+	}
+
 private:
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
@@ -134,7 +143,7 @@ private:
 	Quaternion				m_rotation				= Quaternion::Identity;	//回転
 
 	//注視点の計算
-	Vector3 TargetPos;
+	Vector3 TargetPos = Vector3::Zero;
 	//Quaternion oldgetRot;
 	//カメラの最終的な視点
 	Vector3 newCamPos = Vector3::Zero;

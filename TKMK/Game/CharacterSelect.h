@@ -15,6 +15,14 @@ public:
 	void Render(RenderContext& rc);
 
 private:
+	//キャラクターの状態
+	enum CharacterState
+	{
+		enCharacterState_Idel,
+		enCharacterState_Start,
+		enCharacterState_Num
+	};
+
 	//アニメーション
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
@@ -78,6 +86,8 @@ private:
 	/// </summary>
 	void CheckIconOverlap();
 
+	void PlayAnimation();
+
 	/// <summary>
 	/// 通常攻撃のアイコンとカーソルが重なっているかをチェックする
 	/// </summary>
@@ -112,6 +122,7 @@ private:
 	/// <returns>右端、左端、上、下の値を持ったVector4を返す</returns>
 	Vector4 CalcIconPos(float posX,float posY, float W, float H);
 
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
 private:
 	SkyCube* m_skyCube = nullptr;
@@ -119,7 +130,8 @@ private:
 	Fade* fade = nullptr;
 	SoundSource* m_bgm = nullptr;
 
-	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
+	CharacterState m_charState = enCharacterState_Idel;		//キャラクターの状態
+	AnimationClip m_animationClips[enAnimationClip_Num];	//アニメーションクリップ
 
 	SpriteRender m_selectCursor;			//カーソル
 	SpriteRender m_pointerBlack;			//黒ポインター

@@ -163,33 +163,33 @@ bool Game::Start()
 			if (objData.ForwardMatchName(L"CharPos") == true) {
 				//左上の座標
 
-				//if (objData.number == 0) {
-				//	m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-				//	m_KnightAI->SetGame(this);
-				//	m_Actors.push_back(m_KnightAI);
-				//	m_KnightAI->SetPosition(objData.position);
-				//	m_KnightAI->SetCharaconPosition(objData.position);
-				//	m_KnightAI->SetPlayerActor(player->GetPlayerActor());
-				//	int Number = 0;
-				//	m_KnightAI->SetRespawnNumber(Number);
-				//	m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+				if (objData.number == 0) {
+					m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+					m_KnightAI->SetGame(this);
+					m_Actors.push_back(m_KnightAI);
+					m_KnightAI->SetPosition(objData.position);
+					m_KnightAI->SetCharaconPosition(objData.position);
+					m_KnightAI->SetPlayerActor(player->GetPlayerActor());
+					int Number = 0;
+					m_KnightAI->SetRespawnNumber(Number);
+					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
 
-				//	return true;
-				//}
-				////右上の座標
-				//if (objData.number == 1) {
-				//	m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-				//	m_KnightAI1->SetGame(this);
-				//	m_Actors.push_back(m_KnightAI1);
-				//	m_KnightAI1->SetPosition(objData.position);
-				//	m_KnightAI1->SetCharaconPosition(objData.position);
-				//	m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
-				//	int Number = 1;
-				//	m_KnightAI1->SetRespawnNumber(Number);
-				//	m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+					return true;
+				}
+				//右上の座標
+				if (objData.number == 1) {
+					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+					m_KnightAI1->SetGame(this);
+					m_Actors.push_back(m_KnightAI1);
+					m_KnightAI1->SetPosition(objData.position);
+					m_KnightAI1->SetCharaconPosition(objData.position);
+					m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
+					int Number = 1;
+					m_KnightAI1->SetRespawnNumber(Number);
+					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 
-				//	return true;
-				//}
+					return true;
+				}
 				//左下の座標
 				if (objData.number == 3) {
 					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
@@ -356,10 +356,10 @@ void Game::BattleStart()
 		//マップの生成
 		m_Map = NewGO<Map>(2, "map");
 		//BGMの再生
-		/*m_bgm = NewGO<SoundSource>(0);
+		m_bgm = NewGO<SoundSource>(0);
 		m_bgm->Init(enSound_PlayBattle);
 		m_bgm->Play(true);
-		m_bgm->SetVolume(BGMVolume);*/
+		m_bgm->SetVolume(BGMVolume);
 		m_GameState = enGameState_Battle;
 		//ゲームUIのステートをgameStateにする
 		m_gameUI->SetGameUIState(GameUI::m_GameState);

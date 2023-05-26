@@ -385,8 +385,7 @@ void GameCamera::ChaseCamera()
 
 void GameCamera::FollowThePlayer()
 {
-	////注視点の計算
-	//Vector3 TargetPos;
+	//注視点の計算
 	TargetPos = player->GetCharPosition();
 
 	TargetPos.y += TARGETPOS_YUP;

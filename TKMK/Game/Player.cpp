@@ -279,7 +279,7 @@ int Player::CharSetPoint()const
 /// プレイヤーの現在の経験値を取得
 /// </summary>
 /// <returns>プレイヤーの現在の経験値の量</returns>
-int Player::CharSetEXP() const
+int Player::CharGetEXP() const
 {
 	return playerActor->GetExperience();
 }

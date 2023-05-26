@@ -184,7 +184,8 @@ public:
 	/// 現在のヒットポイントを返す
 	/// </summary>
 	/// <returns>現在のHP</returns>
-	int& SetHp() {
+	int& SetHp() 
+	{
 		return m_Status.Hp;
 	}
 

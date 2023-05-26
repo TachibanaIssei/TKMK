@@ -856,6 +856,7 @@ void KnightAI::Attack()
 		//スキルを発動する処理
 			if (m_targetActor != nullptr && SkillEndFlag == false)
 			{
+				//m_charState = enCharState_Skill;
 				//スキルを打つ
 				SkillState = true;
 				m_skillMove = TargePos - m_position;

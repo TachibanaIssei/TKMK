@@ -278,14 +278,15 @@ public:
 	/// <summary>
 	/// 攻撃力を返す
 	/// </summary>
-	int GetAtk() {
+	int GetAtk() const
+	{
 		return m_Status.Atk;
 	}
 
 	/// <summary>
 	/// HPを返す
 	/// </summary>
-	int GetHP()
+	int GetHP() const
 	{
 		return m_Status.Hp;
 	}
@@ -343,9 +344,9 @@ public:
 	}
 
 	//MaxHpを渡す
-	int GetMaxHp() { return m_Status.MaxHp; };
+	int GetMaxHp()const { return m_Status.MaxHp; };
 	//今のHpを渡す
-	int GetHp() { return m_Status.Hp; };
+	int GetHp()const { return m_Status.Hp; };
 
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
@@ -365,7 +366,8 @@ public:
 	/// <summary>
 	/// 現在のポイント返す
 	/// </summary>
-	int GetPoint() {
+	int GetPoint()const 
+	{
 		return Point;
 	}
 
@@ -389,7 +391,7 @@ public:
 	/// 現在の経験値を返す
 	/// </summary>
 	/// <returns></returns>
-	int GetExperience()
+	int GetExperience()const
 	{
 		return GetExp;
 	}
@@ -398,7 +400,7 @@ public:
 	/// 現在の経験値テーブルを返す
 	/// </summary>
 	/// <returns></returns>
-	int GetExpTable()
+	int GetExpTable()const
 	{
 		return ExpTable;
 	}

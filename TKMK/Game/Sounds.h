@@ -35,5 +35,10 @@ enum EnSound {
 	enSound_GameEnd,
 	enSound_KnightShouting,			//剣士の掛け声(キャラ選択画面)
 	enSound_CharSelectBGM,			//キャラ選択画面のBGM
+	enSound_ResultBGM1,				//リザルトのBGM１
+	enSound_ResultBGM2,				//リザルトのBGM２
+	enSound_ResultBGM3,				//リザルトのBGM３
+	enSound_ResultDramRoll,			//リザルトのドラムロール
+	enSound_ResultDramJaan,			//リザルトのドラムの"ジャーン"の音
 	enSound_Num,	
 };

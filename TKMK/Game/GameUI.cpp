@@ -132,7 +132,7 @@ bool GameUI::Start()
 			//赤の剣士AIなら
 			if(actor->IsMatchName(KnightAI_Red))
 			{
-				m_CharIcon[1].SetPosition(CharIconPos[num]);
+				m_CharIcon[3].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
 			else if (actor->IsMatchName(KnightAI_Green))
@@ -142,7 +142,7 @@ bool GameUI::Start()
 			}
 			else if (actor->IsMatchName(KnightAI_Yellow))
 			{
-				m_CharIcon[3].SetPosition(CharIconPos[num]);
+				m_CharIcon[1].SetPosition(CharIconPos[num]);
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
 
@@ -707,6 +707,7 @@ void GameUI::Timer()
 		}
 
 		if (m_game->GetSecondsTimer() > 1) {
+			m_time_left.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
 			m_time_left.SetScale(timerScale);
 		}
 		
@@ -715,6 +716,7 @@ void GameUI::Timer()
 	}
 	else
 	{
+		
 		m_time_left.SetScale(TIMERSCALE);
 	}
 }
@@ -833,7 +835,8 @@ void GameUI::LevelUp()
 	if (m_SaveExp > 0) {
 		//セーブした経験値をリセット
 		//m_saveExpとプレイヤーのセーブした経験値を同じにする
-		if (player->CharGetEXP() > 0) {
+		if (player->CharGetSaveEXP() > 0) {
+			//セーブした経験値が変わらない
 			player->CharResatSaveEXP(m_SaveExp);
 		}
 		

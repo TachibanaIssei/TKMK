@@ -122,6 +122,11 @@ void Map::Render(RenderContext& rc)
 		return;
 	}
 
+	if (m_game->NowGameState() == Game::enGameState_Pause)
+	{
+		return;
+	}
+
 	m_Map.Draw(rc);
 	//m_MapFrame.Draw(rc);
 	

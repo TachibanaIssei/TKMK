@@ -211,7 +211,7 @@ bool Neutral_Enemy::Start()
 		m_Status.Init("Enemy");
 	}
 	//巡回用のパスを読み込む
-	m_EnemyPoslevel.Init("Assets/level3D/RabbitPatrolPos.tkl", [&](LevelObjectData& objData) {
+	m_EnemyPoslevel.Init("Assets/level3D/RabbitPatrolPos2.tkl", [&](LevelObjectData& objData) {
 
 		if (objData.ForwardMatchName(L"Pos") == true) {
 			SetPatrolPos(objData.position, objData.number);

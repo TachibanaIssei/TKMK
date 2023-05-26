@@ -357,12 +357,13 @@ private:
 
 		// Attack/Skill
 		if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level) {
-			m_underSprite.Init("Assets/sprite/Ult.DDS", 1920.0f, 1080.0f);
+			m_underSprite.Init("Assets/sprite/Ult.DDS", 797.0f, 229.0f);
+			m_underSprite.SetScale(Vector3(0.9f, 0.9f, 0.9f));
 			return;
 		}
 		// Down
 		if (m_underSprite_TowerDown) {
-			m_underSprite.Init("Assets/sprite/FirstAttack.DDS", 1920.0f, 1080.0f);
+			m_underSprite.Init("Assets/sprite/FirstAttack.DDS", 886.0f, 255.0f);
 			return;
 		}
 	}

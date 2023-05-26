@@ -663,7 +663,7 @@ protected:
 	Quaternion m_respawnRotation[4];
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
 
-	Vector3 m_Forward = Vector3::Zero;          //プレイヤーの前方向
+	Vector3 m_Forward = Vector3::Zero;			          //プレイヤーの前方向
 	Vector3 m_forwardNow = Vector3::Zero;                 //現在の正面ベクトル
 
 	Vector3 m_position = Vector3::Zero;                   //座標

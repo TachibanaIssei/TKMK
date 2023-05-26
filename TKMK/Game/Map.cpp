@@ -4,7 +4,7 @@
 #include "Neutral_Enemy.h"
 #include "Player.h"
 #include "Game.h"
-
+#include "GameCamera.h"
 
 namespace
 {
@@ -39,9 +39,14 @@ bool Map::Start()
 	//座標設定
 	m_MapPlayer.SetPosition(MAP_CENTER_POSITION);
 
+	m_PlayerCamera.Init("Assets/sprite/CameraAngle.DDS",50, 50);
+	m_PlayerCamera.SetPosition(MAP_CENTER_POSITION);
+	m_PlayerCamera.SetMulColor({ 1.0f, 1.0f, 1.0f, 0.5f });
+	m_PlayerCamera.SetPivot({ 0.5f,1.0f });
+
 	m_game = FindGO<Game>("game");
-	
-	
+
+	m_camera = FindGO<GameCamera>("gamecamera");
 	
 	player = FindGO<Player>("player");
 	
@@ -50,7 +55,7 @@ bool Map::Start()
 void Map::Update()
 {
 	PlayerMap();
-
+	CameraMap();
 	EnemyMap();
 	m_Map.Update();
 	//m_MapFrame.Update();
@@ -77,6 +82,40 @@ const bool Map::WorldPositionConvertToMapPosition(Vector3 worldCenterPosition, V
 	return true;
 }
 
+void Map::CameraMap()
+{
+	//カメラの座標
+	Vector3 CameraPosition = m_camera->GetSpringCamera()->GetRealPosition();
+	Vector3 playerPosition = player->GetCharPosition();
+	//カメラの回転
+	Quaternion CameraRot = Quaternion::Identity;
+	CameraRot.SetRotationYFromDirectionXZ(CameraPosition - playerPosition);
+	//カメラの前方向
+	Vector3 CameraIcon = Vector3::AxisZ;
+	//クォータニオンをベクトルに変える
+	CameraRot.Apply(CameraIcon);
+	//Ｙ座標にＺの値を入れる
+	CameraIcon.y = CameraIcon.z;
+	//Ｚを０にする
+	CameraIcon.z = 0;
+	//真上から今計算したベクトルに換算する
+	CameraRot.SetRotation(Vector3::AxisY, CameraIcon);
+	//画像を指定する
+	m_PlayerCamera.SetRotation(CameraRot);
+
+	Vector3 mapPosition;
+	CameraPosition = player->GetCharPosition();
+	Vector3 diff = player->GetPlayerActor()->GetForward();
+	diff *= -50.0f;
+	CameraPosition += diff;
+
+	if (WorldPositionConvertToMapPosition(Vector3::Zero, CameraPosition, mapPosition))
+	{
+		m_PlayerCamera.SetPosition(mapPosition + MAP_CENTER_POSITION);
+	}
+
+	m_PlayerCamera.Update();
+}
 
 void Map::PlayerMap()
 {
@@ -104,7 +143,6 @@ void Map::PlayerMap()
 	if (WorldPositionConvertToMapPosition(Vector3::Zero, playerPosition, mapPosition))
 	{
 		m_MapPlayer.SetPosition(mapPosition + MAP_CENTER_POSITION);
-		
 	}
 
 	m_MapPlayer.Update();
@@ -130,5 +168,6 @@ void Map::Render(RenderContext& rc)
 	{
 		enemy->EnemyMap(rc);
 		m_MapPlayer.Draw(rc);
+		m_PlayerCamera.Draw(rc);
 	}
 }

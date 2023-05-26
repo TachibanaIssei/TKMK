@@ -4,6 +4,8 @@ class KnightPlayer;
 class Neutral_Enemy;
 class Player;
 class Game;
+class GameCamera;
+class Actor;
 
 class Map:public IGameObject
 {
@@ -12,7 +14,7 @@ public:
 	~Map();
 	bool Start();
 	void Update();
-
+	
 	void Render(RenderContext& rc);
 	
 	/// <summary>
@@ -26,12 +28,14 @@ public:
 private:
 	void PlayerMap();
 	void EnemyMap();
+	void CameraMap();
 
 	//static const int enemys = 10;
 
 	SpriteRender m_Map;                  //マップ画像
 	SpriteRender m_MapFrame;             //マップの外枠の画像
 	SpriteRender m_MapPlayer;            //マップで映すプレイヤーの画像
+	SpriteRender m_PlayerCamera;         //プレイヤーが向いてる方向の画像
 	SpriteRender m_MapEnemy;                //マップで映す敵の画像
 	Quaternion rot;
 
@@ -41,7 +45,7 @@ private:
 	KnightPlayer* m_knightPlayer=nullptr;        //剣士プレイヤー
 	Player* player = nullptr;
 	Game* m_game = nullptr;
-
+	GameCamera* m_camera = nullptr;
 
 };
 

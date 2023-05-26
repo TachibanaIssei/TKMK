@@ -115,6 +115,9 @@ void CharacterSelect::Update()
 	//ポインターの点滅
 	time += g_gameTime->GetFrameDeltaTime();
 
+	ModelRotation();
+	PlayAnimation();
+
 	if (m_readyFlag == true)
 	{
 		Ready();
@@ -123,6 +126,7 @@ void CharacterSelect::Update()
 
 	PointerMove();
 	CheckIconOverlap();
+
 	//スタートボタンを押したときか				//STARTの範囲内でAボタンを押した時
 	if (g_pad[0]->IsTrigger(enButtonStart) || (m_underBarDrawFlag && g_pad[0]->IsTrigger(enButtonA)))
 	{
@@ -131,9 +135,7 @@ void CharacterSelect::Update()
 		//プレイヤーとの距離によって音量調整
 		se->SetVolume(1.0f);
 		se->Play(false);
-		//フェードアウトを始める
-		fade->StartFadeIn(1.0f);
-		m_readyFlag = true;
+		m_charState = enCharacterState_Start;
 	}
 
 	//Bボタンが押されたらタイトルに戻る
@@ -149,7 +151,6 @@ void CharacterSelect::Update()
 		DeleteGO(m_bgm);
 	}
 
-	ModelRotation();
 }
 
 void CharacterSelect::PointerMove()
@@ -401,6 +402,11 @@ void CharacterSelect::SetModel()
 	m_knight.SetScale(2.7f, 2.7f, 2.7f);
 	m_knight.Update();
 
+	//アニメーションイベント用の関数を設定する。
+	m_knight.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
 	//台の設定
 	m_platform.InitBackGround("Assets/modelData/platform/platform.tkm");
 	m_platform.SetPosition(SelectConst::PLATFORM_POS);
@@ -437,6 +443,19 @@ void CharacterSelect::CheckIconOverlap()
 	m_skillExplanationFlag	= CheckSkillIconOverlap();
 	m_ultExplanationFlag	= CheckUltIconOverlap();
 	m_underBarDrawFlag = CheckUnderBarOverlap();
+}
+
+void CharacterSelect::PlayAnimation()
+{
+	switch (m_charState)
+	{
+	case(enCharacterState_Idel):
+		m_knight.PlayAnimation(enAnimationClip_Idle, 0.1f);
+		break;
+	case(enCharacterState_Start):
+		m_knight.PlayAnimation(enAnimationClip_UltimateSkill, 0.1f);
+		break;
+	}
 }
 
 bool CharacterSelect::CheckNormalAttackIconOverlap()
@@ -516,6 +535,16 @@ Vector4 CharacterSelect::CalcIconPos(float posX, float posY, float W, float H)
 	pos.w = posY - (H / 2);
 
 	return pos;
+}
+
+void CharacterSelect::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	if (wcscmp(eventName, L"start_game") == 0)
+	{
+		//フェードアウトを始める
+		fade->StartFadeIn(1.0f);
+		m_readyFlag = true;
+	}
 }
 
 void CharacterSelect::Render(RenderContext& rc)

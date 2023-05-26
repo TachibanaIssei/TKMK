@@ -59,6 +59,9 @@ namespace SelectConst{
 
 	const float		MAX_SCREEN_HEIGHT = 540.0f;								//画面の縦の最大値
 	const float		MIN_SCREEN_HEIGHT = -540.0f;							//画面の縦の最小値
+
+	const float SE_OK_VOLUME = 0.3f;		//決定音の音量
+	const float SE_SHOUTING_VOLUME = 1.0f;	//掛け声の音量
 }
 
 CharacterSelect::CharacterSelect()
@@ -97,10 +100,11 @@ bool CharacterSelect::Start()
 	//画像の初期化
 	InitSprite();
 
-	g_soundEngine->ResistWaveFileBank(45, "Assets/sound/characterSelectBGM/characterSelect1.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_CharSelectBGM, "Assets/sound/characterSelectBGM/characterSelect1.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_KnightShouting, "Assets/sound/characterSelectBGM/knight_shouting.wav");
 
 	m_bgm = NewGO<SoundSource>(0);
-	m_bgm->Init(45);
+	m_bgm->Init(enSound_CharSelectBGM);
 	m_bgm->Play(true);
 	m_bgm->SetVolume(m_bgmVolume);
 
@@ -130,11 +134,20 @@ void CharacterSelect::Update()
 	//スタートボタンを押したときか				//STARTの範囲内でAボタンを押した時
 	if (g_pad[0]->IsTrigger(enButtonStart) || (m_underBarDrawFlag && g_pad[0]->IsTrigger(enButtonA)))
 	{
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_OK);
+		//決定音
+		SoundSource* okSE = NewGO<SoundSource>(0);
+		okSE->Init(enSound_OK);
 		//プレイヤーとの距離によって音量調整
-		se->SetVolume(1.0f);
-		se->Play(false);
+		okSE->SetVolume(SelectConst::SE_OK_VOLUME);
+		okSE->Play(false);
+
+		//掛け声
+		SoundSource* knightShouting = NewGO<SoundSource>(0);
+		knightShouting->Init(enSound_KnightShouting);
+		//プレイヤーとの距離によって音量調整
+		knightShouting->SetVolume(SelectConst::SE_SHOUTING_VOLUME);
+		knightShouting->Play(false);
+
 		m_charState = enCharacterState_Start;
 	}
 

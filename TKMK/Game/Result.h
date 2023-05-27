@@ -45,14 +45,39 @@ public:
 
 private:
 	void InitSprite();
+	void InitModel();
+	void InitSkyCube();
+	void SetCamera();
 	void Rank();
 	void MoveLerp();
 	void MovePointFont();
 	void Select();
 	void MoveName();
+	void PlayAnimation();
 
+	enum EnAnimationClip
+	{
+		enAnimationClip_Win,
+		enAnimationClip_Lose,
+		enAnimationClip_Num
+	};
+
+	enum EnCharacterState
+	{
+		enCharacterState_Win,
+		enCharacterState_Lose,
+		enCharacterState_Num
+	};
 
 private:
+	SkyCube* m_skyCube;					//スカイキューブ
+	ModelRender m_knightModel;			//剣士のモデル
+	ModelRender m_backGround;			//地面
+	ModelRender m_backWall;				//壁
+
+	AnimationClip m_animationClips[enAnimationClip_Num];
+	EnCharacterState m_charaState = enCharacterState_Num;
+
 	std::array<int, PLAYER> charPoints = {0,0,0,0};		//プレイヤーのポイント
 	int titleScene = 1;			//タイトルのシーン番号
 	int m_nowMoveRank = 0;
@@ -119,18 +144,18 @@ private:
 
 	//フォントを線形補間でここまで動かす
 	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//順位
-		Vector3(70.0f, 300.0f, 0.0f),		//１位
-		Vector3(70.0f, 145.0f, 0.0f),		//２位
-		Vector3(70.0f, 4.0f, 0.0f),		//３位
-		Vector3(70.0f, -145.0f, 0.0f)		//４位
+		Vector3(370.0f, 300.0f, 0.0f),		//１位
+		Vector3(370.0f, 145.0f, 0.0f),		//２位
+		Vector3(370.0f, 4.0f, 0.0f),		//３位
+		Vector3(370.0f, -145.0f, 0.0f)		//４位
 	};
 
 	//スプライトを線形補間でここまで動かす
 	std::array<Vector3, MOVE> m_spriteLerpMoveEnd = {		//順位
-		Vector3(0.0f, 180.0f, 0.0f),		//１位
-		Vector3(0.0f, 25.0f, 0.0f),		//２位
-		Vector3(0.0f, -117.0f, 0.0f),		//３位
-		Vector3(0.0f, -265.0f, 0.0f)		//４位
+		Vector3(300.0f, 180.0f, 0.0f),		//１位
+		Vector3(300.0f, 25.0f, 0.0f),		//２位
+		Vector3(300.0f, -117.0f, 0.0f),		//３位
+		Vector3(300.0f, -265.0f, 0.0f)		//４位
 	};
 
 	//フォントを線形補間で動かすときの座標

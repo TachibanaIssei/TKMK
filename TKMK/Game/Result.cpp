@@ -60,6 +60,14 @@ namespace ResultSpriteConst
 
 	const float SE_DRAM_JAAN_VOLUME = 1.0f;		//ドラムの"ジャーン"の音量
 	const float SE_DRAM_ROLL_VOLUME = 1.0f;		//ドラムロールの音量
+
+	const Vector3 KNIGHT_POS = { -500.0f,0.0f,0.0f };
+	const Vector3 BACK_MODEL_POS = { -500.0f,0.0f,0.0f };
+
+	const Vector3 SKYCUBE_POS = { 0.0f,-900.0f,-900.0f };					//スカイキューブの座標
+
+	const Vector3	CAMERA_TARGET_POS = Vector3(0.0f, 90.0f, -200.0f);		//カメラのターゲット
+	const Vector3	CAMERA_POSITION = Vector3(0.0f, 90.0f, -248.0f);		//カメラの座標
 }
 
 Result::Result()
@@ -69,11 +77,13 @@ Result::Result()
 
 Result::~Result()
 {
-
+	DeleteGO(m_skyCube);
 }
 
 bool Result::Start()
 {
+	SetCamera();
+
 	fade = FindGO<Fade>("fade");
 	fade->StartFadeOut(1.0f);
 
@@ -116,6 +126,8 @@ bool Result::Start()
 	DeleteGO(game);
 
 	InitSprite();
+	InitModel();
+	InitSkyCube();
 
 	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM1, "Assets/sound/resultBGM/Result1.wav");
 	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM2, "Assets/sound/resultBGM/Result2.wav");
@@ -128,12 +140,15 @@ bool Result::Start()
 	{
 	case 1:
 		m_bgm->Init(enSound_ResultBGM1);
+		m_charaState = enCharacterState_Win;
 		break;
 	case 4:
 		m_bgm->Init(enSound_ResultBGM3);
+		m_charaState = enCharacterState_Lose;
 		break;
 	default:
 		m_bgm->Init(enSound_ResultBGM2);
+		m_charaState = enCharacterState_Lose;
 		break;
 	}
 
@@ -147,6 +162,8 @@ bool Result::Start()
 
 void Result::Update()
 {
+	PlayAnimation();
+
 	//最初の処理
 	if (m_change == enChange_first)
 	{
@@ -322,6 +339,45 @@ void Result::InitSprite()
 	rot.SetRotationDegZ(225.0f);
 	m_choiceCursor.SetRotation(rot);
 	m_choiceCursor.Update();
+}
+
+void Result::InitModel()
+{
+	m_animationClips[enAnimationClip_Win].Load("Assets/animData/Knight/Knight_idle.tka");
+	m_animationClips[enAnimationClip_Win].SetLoopFlag(true);
+	m_animationClips[enAnimationClip_Lose].Load("Assets/animData/Knight/Knight_Walk.tka");
+	m_animationClips[enAnimationClip_Lose].SetLoopFlag(true);
+
+	//地面
+	m_backGround.InitBackGround("Assets/modelData/background/stadium_ground.tkm");
+	m_backGround.SetPosition(ResultSpriteConst::BACK_MODEL_POS);
+
+	//壁
+	m_backWall.Init("Assets/modelData/background/stadium05_Wall.tkm");
+	m_backWall.SetPosition(ResultSpriteConst::BACK_MODEL_POS);
+
+	//剣士
+	m_knightModel.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_knightModel.SetPosition(ResultSpriteConst::KNIGHT_POS);
+	m_knightModel.SetScale(2.7f, 2.7f, 2.7f);
+
+	m_backGround.Update();
+	m_backWall.Update();
+	m_knightModel.Update();
+}
+
+void Result::InitSkyCube()
+{
+	m_skyCube = NewGO<SkyCube>(0, "skyCube");
+	m_skyCube->SetPosition(ResultSpriteConst::SKYCUBE_POS);
+	m_skyCube->SetScale(600.0f);
+}
+
+void Result::SetCamera()
+{
+	g_camera3D->SetTarget(ResultSpriteConst::CAMERA_TARGET_POS);
+	g_camera3D->SetPosition(ResultSpriteConst::CAMERA_POSITION);
+	g_camera3D->Update();
 }
 
 void Result::Rank()
@@ -548,6 +604,19 @@ void Result::MoveName()
 	m_cpuName3.Update();
 }
 
+void Result::PlayAnimation()
+{
+	switch (m_charaState)
+	{
+	case(enCharacterState_Win):
+		m_knightModel.PlayAnimation(enAnimationClip_Win, 0.1f);
+		break;
+	case(enCharacterState_Lose):
+		m_knightModel.PlayAnimation(enAnimationClip_Lose, 0.1f);
+		break;
+	}
+}
+
 void Result::Select()
 {
 	if (g_pad[0]->IsTrigger(enButtonLeft) && m_selectFlag == true)
@@ -614,6 +683,10 @@ void Result::Select()
 
 void Result::Render(RenderContext& rc)
 {
+	m_backGround.Draw(rc);
+	m_backWall.Draw(rc);
+	m_knightModel.Draw(rc);
+
 	m_spriteRender.Draw(rc);	//背景
 	m_resultLogo.Draw(rc);		//リザルトロゴ
 

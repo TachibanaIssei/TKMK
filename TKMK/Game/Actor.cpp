@@ -342,10 +342,10 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 /// キャラがやられてからリスポーンするまでの時間を計る
 /// </summary>
 /// /// <param name="DeathToRespwanFlag"></param>
-bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade,bool fadeFlag)
+bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFlag)
 {
 	//キャラがやられたら
-	if (m_DeathToRespwanFlag == true)
+	if (DeathToRespwanFlag == true)
 	{
 		//タイマー減少
 		m_respwanTimer -= g_gameTime->GetFrameDeltaTime();
@@ -358,7 +358,9 @@ bool Actor::DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade,bool fadeFlag
 				fade->StartFadeOut(1.0f);
 			}
 			//
-			m_DeathToRespwanFlag = false;
+			DeathToRespwanFlag = false;
+			//やられていない
+			return false;
 		}
 		//やられている
 		return true;
@@ -402,8 +404,6 @@ bool Actor::IsActorGroundChack()
 	//終点はプレイヤーの座標。
 	end.setOrigin(btVector3(actorpos.x, actorpos.y - 2.0f, actorpos.z));
 
-	while (true)
-	{
 		//壁の判定を返す
 		IsGroundResult callback_Ground;
 		//コライダーを始点から終点まで動かして。
@@ -429,5 +429,5 @@ bool Actor::IsActorGroundChack()
 		}
 
 
-	}
+	
 }

@@ -34,7 +34,7 @@ namespace
 	//雷を落とす
 	const float KNIGHT_TUNDER_POS_X = 90.0f;
 	const float KNIGHT_TUNDER_POS_Y = -60.0f;
-	const float TARGETPOS_ULT_YUP = 70.0f;
+	const float TARGETPOS_ULT_YUP = 80.0f;
 }
 
 GameCamera::GameCamera()
@@ -189,7 +189,7 @@ void GameCamera::NomarlCamera()
 	{
 		UltChargeFlag = true;
 		m_springCamera.Refresh();
-		CameraTarget(TARGETPOS_YUP,KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor,false);
+		CameraTarget(TARGETPOS_YUP,KNIGHT_CAMERA_POS_X, KNIGHT_CAMERA_POS_Y, player_actor,true);
 		return;
 	}
 	//もし溜めている間に攻撃されたらカメラをリセット

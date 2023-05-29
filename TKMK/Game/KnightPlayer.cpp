@@ -70,13 +70,6 @@ bool KnightPlayer::Start() {
 
 	m_modelRender.Update();
 
-	////スキルのクールタイムを表示するフォントの設定
-	//Skillfont.SetPosition(485.0f, -243.0f, 0.0f);
-	//Skillfont.SetScale(2.0f);
-	//Skillfont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-	//Skillfont.SetRotation(0.0f);
-	//Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
-
 	//回避のフレームの設定
 	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
 	m_Avoidance_flameRender.SetPosition(AVOIDANCE_FLAME_POS);
@@ -175,6 +168,8 @@ void KnightPlayer::Update()
 				//地上にいるなら
 				if (IsActorGroundChack() == true) {
 					IsGroundFlag = true;
+					//地面に降りた時の音再生
+					SetAndPlaySoundSource(enSound_Metal_Falling);
 				}
 				else {
 					//ジャンプ
@@ -404,10 +399,9 @@ void KnightPlayer::Attack()
 		
 		//必殺技の溜めステートに移行する
 		m_charState = enCharState_Ult_liberation;
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Knight_Charge_Power);
-		se->Play(false);
-		se->SetVolume(m_game->GetSoundEffectVolume());
+
+		//地面に降りた時の音再生
+		SetAndPlaySoundSource(enSound_Knight_Charge_Power);
 
 		Vector3 m_SwordPos = Vector3::Zero;
 		Quaternion m_SwordRot;
@@ -418,10 +412,6 @@ void KnightPlayer::Attack()
 		Ult_Swordeffect->SetPosition(m_position);
 			//エフェクトを再生
 		Ult_Swordeffect->Play();
-		//m_swordEffectFlag = true;
-
-		//必殺技発動フラグをセット
-	/*	UltimateSkillFlag = true;*/
 	}
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
@@ -524,14 +514,8 @@ void KnightPlayer::MakeUltSkill()
 			wizardUlt->SetPosition(UltPos);
 			wizardUlt->SetGame(m_game);
 
-			//必殺技を打たれたのでフラグを立てる
-			//actor->ChangeDamegeUltFlag(true);
-
 			//効果音再生
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(enSound_Sword_Ult);
-			se->Play(false);
-			se->SetVolume(m_game->GetSoundEffectVolume());
+			SetAndPlaySoundSource(enSound_Sword_Ult);
 
 			//雷を落とすキャラがリストの最後なら
 			if (actor == DamegeUltActor.back())
@@ -603,10 +587,12 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 		//剣１段目音
-		SoundSource* se = NewGO<SoundSource>(0);
+		SetAndPlaySoundSource(enSound_ComboONE);
+
+		/*SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboONE);
 		se->Play(false);
-		se->SetVolume(m_game->GetSoundEffectVolume());
+		se->SetVolume(m_game->GetSoundEffectVolume());*/
 	}
 
 	//二段目のアタックのアニメーションが始まったら
@@ -616,10 +602,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 		//剣２段目音
-		SoundSource* se = NewGO<SoundSource>(0); 
-		se->Init(enSound_ComboTwo);
-		se->Play(false);
-		se->SetVolume(m_game->GetSoundEffectVolume());
+		SetAndPlaySoundSource(enSound_ComboTwo);
 	}
 
 	//三段目のアタックのアニメーションが始まったら
@@ -629,10 +612,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 		//剣３段目音
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_ComboThree);
-		se->Play(false);
-		se->SetVolume(m_game->GetSoundEffectVolume());
+		SetAndPlaySoundSource(enSound_ComboThree);
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"Move_True") == 0)
@@ -644,16 +624,11 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
-		//m_Status.Atk += 20;
-		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 
 		//スキル音を発生
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Sword_Skill);
-		se->Play(false);
-		se->SetVolume(m_game->GetSoundEffectVolume());
+		SetAndPlaySoundSource(enSound_Sword_Skill);
 	}
 	
 	//必殺技のアニメーションが始まったら
@@ -691,7 +666,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		for (auto actor : m_game->GetActors())
 		{
 			//名前が自身と同じもしくは一度調べたキャラならやり直す
-			if (GetName() == actor->GetName()/*|| actor->IsActorGroundChack()==false*/) {
+			if (GetName() == actor->GetName()) {
 				continue;
 			}
 
@@ -699,11 +674,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 				//雷を打たれるキャラの情報を入れる
 				DamegeUltActor.push_back(actor);
 			}
-
-			//if (actor->IsActorGroundChack() == true) {
-			//	//雷を打たれるキャラの情報を入れる
-			//	DamegeUltActor.push_back(actor);
-			//}
 		}
 
 		//プレイヤーのみの処理
@@ -824,10 +794,8 @@ void  KnightPlayer::IsLevelEffect(int oldlevel, int nowlevel)
 		}
 		LevelUp_efk = NewGO<ChaseEFK>(4);
 		LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Level_UP);
-		se->SetVolume(m_game->GetSoundEffectVolume());
-		se->Play(false);
+
+		SetAndPlaySoundSource(enSound_Level_UP);
 	}
 	else if (nowlevel < oldlevel)
 	{
@@ -836,10 +804,8 @@ void  KnightPlayer::IsLevelEffect(int oldlevel, int nowlevel)
 		}
 		LevelDown_efk = NewGO<ChaseEFK>(4);
 		LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Level_Down);
-		se->SetVolume(m_game->GetSoundEffectVolume());
-		se->Play(false);
+
+		SetAndPlaySoundSource(enSound_Level_Down);
 	}
 }
 
@@ -852,6 +818,15 @@ void KnightPlayer::AvoidanceSprite()
 
 	m_Avoidance_flameRender.Update();
 	m_Avoidance_barRender.Update();
+}
+
+//サウンドソースの読み込みと再生
+void KnightPlayer::SetAndPlaySoundSource(EnSound soundNumber)
+{
+	SoundSource* se = NewGO<SoundSource>(0);
+	se->Init(soundNumber);
+	se->SetVolume(m_game->GetSoundEffectVolume());
+	se->Play(false);
 }
 
 void KnightPlayer::Render(RenderContext& rc)

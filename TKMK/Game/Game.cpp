@@ -18,7 +18,7 @@
 #include "Pause.h"
 
 namespace {
-	const int ENEMY_AMOUNT = 10;
+	const int ENEMY_AMOUNT = 20;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
 	const Vector3 Menu_HowToPlayPos = Vector3(0.0f, 60.0f, 0.0f);
 	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);

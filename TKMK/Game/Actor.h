@@ -169,7 +169,7 @@ public:
 	/// <param name="lus">レベルアップ時に増加するステータス</param>
 	/// <param name="nowStatus">現在のステータス</param>
 	/// <param name="Level">現在のレベル</param>
-	void LevelUp(LvUpStatus& lus, Status& nowStatus,int& Level);
+	void LevelUp(int& Level);
 
 	/// <summary>
 	/// レベルダウンの処理
@@ -177,7 +177,7 @@ public:
 	/// <param name="lus">レベルアップ時に増加するステータス</param>
 	/// <param name="nowStatus">現在のステータス</param>
 	/// <param name="Level">現在のレベル</param>
-	void levelDown(LvUpStatus& lus, Status& nowStatus, int& Level,int downLevel);
+	void levelDown(int& Level,int downLevel);
 
 	/// <summary>
     /// リスポーンしたときのレベルによって経験値を変更する
@@ -192,6 +192,8 @@ public:
     /// <param name="Lv">現在のレベル</param>
     /// <param name="expTable">経験値テーブル</param>
 	void ExpTableChamge(int& Lv,int& expTable);
+
+	void LevelDownProcess(int downlevel);
 
 	/// <summary>
 	/// ポイントを増やす

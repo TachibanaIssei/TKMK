@@ -11,6 +11,11 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+
+private:
+	void InitSprite();
+	void ResistSound();
+	void SpriteUpdate();
 	void Scene();
 	void Select();
 	void Operation();
@@ -114,6 +119,7 @@ private:
 	SpriteRender m_titleswordwhite;				//白い剣
 	SpriteRender m_titleswordbrack;				//黒い剣
 	SpriteRender m_pressAButton;				//プレスAボタン
+	SpriteRender m_choiceCursor;				//選択中のものを指す剣画像
 
 	EnTitleScene m_titleScene;					//タイトルのポジション
 	EnSelectPosition m_tSelectPosition;			//セレクトのポジション
@@ -199,7 +205,7 @@ private:
 	bool m_titlefadeSeem = false;					//タイトルの
 	bool m_titleanim = false;						//タイトルのアニメーション中か
 	float SEVolume = 0.4f;
-
+	bool m_isComplement = true;						//線形補間中？trueなら補完中
 	bool GOBack = false;
 };
 

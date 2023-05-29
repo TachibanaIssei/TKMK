@@ -6,6 +6,9 @@
 namespace TitleConst
 {
 	const Vector3 START_IMAGE_SCALE = Vector3(0.4f, 0.4f, 1.0f);
+
+	const Vector3 START_CURSOR_POS = { -730.0f,-130.0f,0.0f };			//スタート選択時の剣のカーソルの位置
+	const Vector3 HOWTOPLAY_CURSOR_POS = { -830.0f,-245.0f,0.0f };		//遊び方選択時の剣のカーソルの位置
 }
 
 Tittle::Tittle()
@@ -20,8 +23,37 @@ Tittle::~Tittle()
 
 bool Tittle::Start()
 {
+	InitSprite();
+	ResistSound();
+
+	m_bgm = NewGO<SoundSource>(0);
+
+	return true;
+}
+
+void Tittle::Update()
+{
+	Scene();
+	Fade();
+
+	m_timer++;
+
+	SpriteUpdate();
+}
+
+void Tittle::InitSprite()
+{
+	//選択のカーソル
+	m_choiceCursor.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
+	m_choiceCursor.SetPosition(TitleConst::START_CURSOR_POS);
+	m_choiceCursor.SetScale(0.6f, 0.6f, 0.6f);
+	Quaternion rot;
+	rot.SetRotationDegZ(225.0f);
+	m_choiceCursor.SetRotation(rot);
+	m_choiceCursor.Update();
+
 	//背景の初期化
-	m_spriteRender.Init("Assets/sprite/Title/first_title/titleBack.DDS",1920.0f,1080.0f);
+	m_spriteRender.Init("Assets/sprite/Title/first_title/titleBack.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(g_vec3Zero);
 	m_spriteRender.SetScale(g_vec3One);
 	m_sRotation.SetRotationZ(0.0f);
@@ -29,19 +61,19 @@ bool Tittle::Start()
 	m_spriteRender.Update();
 
 	//PressAButton
-	m_pressAButton.Init("Assets/sprite/Title/first_title/PressAButton.DDS",700.0f,150.0f);
+	m_pressAButton.Init("Assets/sprite/Title/first_title/PressAButton.DDS", 700.0f, 150.0f);
 	m_pressAButton.SetPosition(0.0f, -300.0f, 0.0f);
 	m_pressAButton.Update();
-	
+
 	//titleのロゴ
-	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo_SWORDARENA.DDS", 1200.0f,200.0f);
+	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo_SWORDARENA.DDS", 1200.0f, 200.0f);
 	m_titleLogo.SetPosition(m_titleLogoPosition);
 	m_titleLogo.SetMulColor(m_color);
 	m_titleLogo.SetScale(m_titleLogoScale);
 	m_titleLogo.Update();
 
 	//titleの剣(右)
-	m_titleswordwhite.Init("Assets/sprite/Title/first_Title/sword_right.DDS", 300.0f,400.0f);
+	m_titleswordwhite.Init("Assets/sprite/Title/first_Title/sword_right.DDS", 300.0f, 400.0f);
 	m_titleswordwhite.SetPosition(m_Toprightfirstposition);
 	m_titleswordwhite.SetScale(g_vec3One);
 	m_titleswordwhite.Update();
@@ -82,16 +114,16 @@ bool Tittle::Start()
 	m_operationST.SetScale(g_vec3One);
 	m_operationST.Update();
 	//"OPTION"非選択
-	m_option.Init("Assets/sprite/Title/ModeScene/OPTION_white.DDS", 370.0f, 90.0f);
+	/*m_option.Init("Assets/sprite/Title/ModeScene/OPTION_white.DDS", 370.0f, 90.0f);
 	m_option.SetPosition(m_firstPosition);
 	m_option.SetScale(g_vec3One);
-	m_option.Update();
+	m_option.Update();*/
 	//"OPTION"選択
-	m_optionST.Init("Assets/sprite/Title/ModeScene/OPTION_color.DDS", 370.0f, 90.0f);
+	/*m_optionST.Init("Assets/sprite/Title/ModeScene/OPTION_color.DDS", 370.0f, 90.0f);
 	m_optionST.SetPosition(m_firstPosition);
 	m_optionST.SetMulColor(m_colorST);
 	m_optionST.SetScale(g_vec3One);
-	m_optionST.Update();
+	m_optionST.Update();*/
 
 	//操作説明画像
 	m_operationPic.Init("Assets/sprite/Title/nonGame_howTo.DDS", 1920.0f, 1080.0f);
@@ -155,7 +187,10 @@ bool Tittle::Start()
 	m_ilustoptionOp.SetPosition(m_RightfirstPosition);
 	m_ilustoptionOp.SetScale(g_vec3One);
 	m_ilustoptionOp.Update();
+}
 
+void Tittle::ResistSound()
+{
 	//BGMの設定
 	g_soundEngine->ResistWaveFileBank(enSound_Title_Fanfare, "Assets/sound/titleBGM/fanfare1.wav");
 	g_soundEngine->ResistWaveFileBank(enSound_Title_BGM, "Assets/sound/titleBGM/titleBGM2.wav");
@@ -168,21 +203,11 @@ bool Tittle::Start()
 	g_soundEngine->ResistWaveFileBank(enSound_OK, "Assets/sound/sentaku/kettei3.wav");
 	//タイトル画面決定音
 	g_soundEngine->ResistWaveFileBank(enSound_TitleOK, "Assets/sound/titleBGM/titleketei.wav");
-	
-
-	m_bgm = NewGO<SoundSource>(0);
-
-
-	return true;
 }
 
-void Tittle::Update()
+void Tittle::SpriteUpdate()
 {
-	Scene();
-	Fade();
-
-	m_timer++;
-
+	m_choiceCursor.Update();
 	m_spriteRender.Update();
 	m_titleLogo.Update();
 	m_pressAButton.Update();
@@ -190,7 +215,7 @@ void Tittle::Update()
 	m_fire.Update();
 	m_start.Update();
 	m_operation.Update();
-	m_option.Update();
+	//m_option.Update();
 	m_operationPic.Update();
 	m_iluststart.Update();
 	m_iluststartOp.Update();
@@ -296,7 +321,7 @@ void Tittle::Scene()
 		//画面外の下に移動する
 		m_start.SetPosition(m_firstPosition);
 		m_operation.SetPosition(m_firstPosition);
-		m_option.SetPosition(m_firstPosition);
+		//m_option.SetPosition(m_firstPosition);
 	}
 	//もしSelect画面だったら
 	if (m_titleScene == enTitleScene_Change)
@@ -326,7 +351,7 @@ void Tittle::Scene()
 				m_fire.SetScale(m_fireScale);
 				m_operation.SetPosition(m_operationPosition);
 				m_start.SetPosition(m_startPosition);
-				m_option.SetPosition(m_optionPosition);
+				//m_option.SetPosition(m_optionPosition);
 				m_titleLogo.SetPosition(m_LogoPosition);
 				m_titleLogo.SetScale(m_LogoScale);
 				m_iluststart.SetPosition(m_ilust);
@@ -350,7 +375,7 @@ void Tittle::Scene()
 			m_titleLogo.SetPosition(m_selectLogoPosition + m_LeftLogo);
 			m_start.SetPosition(m_Top);
 			m_operation.SetPosition(m_Central);
-			m_option.SetPosition(m_Under);
+			//m_option.SetPosition(m_Under);
 			m_titleLogo.SetScale(m_selectLogoScale);
 		}
 		Select();
@@ -390,6 +415,7 @@ void Tittle::Scene()
 	{
 	case 0:
 		m_titleScene = enTitleScene_PressAScene;
+		m_isComplement = true;
 		break;
 	case 1:
 		m_titleScene = enTitleScene_Change;
@@ -399,9 +425,11 @@ void Tittle::Scene()
 			m_bgm->Play(true);
 			m_bgm->SetVolume(0.5f);
 		}
+		m_isComplement = true;
 		break;
 	case 2:
 		m_titleScene = enTitleScene_Select;
+		m_isComplement = false;
 		break;
 	}
 }
@@ -414,7 +442,7 @@ void Tittle::Select()
 		if (g_pad[0]->IsTrigger(enButtonUp))
 		{
 			selectPosition++;
-			if (selectPosition > 2)
+			if (selectPosition > 1)
 				selectPosition = 0;
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(enSound_Title_Choise);
@@ -425,7 +453,7 @@ void Tittle::Select()
 		{
 			selectPosition--;
 			if (selectPosition < 0)
-				selectPosition = 2;
+				selectPosition = 1;
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(enSound_Title_Choise);
 			se->Play(false);
@@ -442,25 +470,31 @@ void Tittle::Select()
 		m_startST.SetPosition(m_Top);
 		//それ以外は画面外にする
 		m_operationST.SetPosition(m_firstPosition);
-		m_optionST.SetPosition(m_firstPosition);
+		//m_optionST.SetPosition(m_firstPosition);
+
+		//剣のカーソルの位置を設定
+		m_choiceCursor.SetPosition(TitleConst::START_CURSOR_POS);
 		break;
 	case 1:
-		//"操作説明"
-		m_tSelectPosition = enSelectPosition_Option;
-		//色が付いた"Option"を持ってくる
-		m_optionST.SetPosition(m_Under);
-		//それ以外は画面外にする
-		m_startST.SetPosition(m_firstPosition);
-		m_operationST.SetPosition(m_firstPosition);
-		break;
-	case 2:
 		//"キャラクター説明"
 		m_tSelectPosition = enSelectPosition_Operation;
 		//色が付いた"HOWTOPLAY"を持ってくる
 		m_operationST.SetPosition(m_Central);
 		//それ以外は画面外にする
 		m_startST.SetPosition(m_firstPosition);
-		m_optionST.SetPosition(m_firstPosition);
+		//m_optionST.SetPosition(m_firstPosition);
+
+		//剣のカーソルの位置を設定
+		m_choiceCursor.SetPosition(TitleConst::HOWTOPLAY_CURSOR_POS);
+		break;
+	case 2:
+		//"操作説明"
+		m_tSelectPosition = enSelectPosition_Option;
+		//色が付いた"Option"を持ってくる
+		//m_optionST.SetPosition(m_Under);
+		//それ以外は画面外にする
+		m_startST.SetPosition(m_firstPosition);
+		m_operationST.SetPosition(m_firstPosition);
 		break;
 	}	
 
@@ -468,8 +502,8 @@ void Tittle::Select()
 	m_startST.Update();
 	m_operation.Update();
 	m_operationST.Update();
-	m_option.Update();
-	m_optionST.Update();
+	//m_option.Update();
+	//m_optionST.Update();
 }
 //操作説明
 void Tittle::Operation()
@@ -558,7 +592,7 @@ void Tittle::CharacterOp()
 		m_fire.SetScale(0.6f, 1.0f, 0.0f);
 		m_start.SetPosition(m_firstPosition);
 		m_operation.SetPosition(m_firstPosition);
-		m_option.SetPosition(m_firstPosition);
+		//m_option.SetPosition(m_firstPosition);
 		//十字キー左を押したら
 		if (g_pad[0]->IsTrigger(enButtonLeft) && characterOpPosition != 0)
 		{
@@ -601,7 +635,7 @@ void Tittle::CharacterOp()
 		m_Opchoice.SetPosition(0.0f, 450.0f, 0.0f);
 		m_start.Update();
 		m_operation.Update();
-		m_option.Update();
+		//m_option.Update();
 	}
 	//キャラ説明画面を非表示にするときの処理
 	if (m_characterOpLook == enCharacterOpLook_UnSeem)
@@ -706,8 +740,10 @@ void Tittle::Render(RenderContext& rc)
 	m_startST.Draw(rc);
 	m_operation.Draw(rc);
 	m_operationST.Draw(rc);
-	m_option.Draw(rc);
-	m_optionST.Draw(rc);
+	//m_option.Draw(rc);
+	//m_optionST.Draw(rc);
+	//線形補間中は表示しない
+	if(!m_isComplement) m_choiceCursor.Draw(rc);
 
 	switch (m_operationPageNumber)
 	{

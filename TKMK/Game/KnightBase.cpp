@@ -230,7 +230,7 @@ void KnightBase::Collition()
 		return;
 	}
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (/*m_charState == enKnightState_Damege || */
+	if (m_charState == enCharState_Damege || 
 		m_charState == enCharState_Death ||
 		m_charState == enCharState_UltimateSkill ||
 		//m_charState == enCharState_Ult_liberation ||

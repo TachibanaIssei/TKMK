@@ -177,10 +177,26 @@ void KnightAI::Update()
 		{
 			//追跡
 			ChaseAndEscape();
+
+			if (SkillState == true && CantMove == false)
+			{
+				m_charState = enCharState_Skill;
+				//スキルを使うときのスピードを使う
+				Vector3 move = m_skillMove;
+				m_rot.SetRotationYFromDirectionXZ(move);
+				////スキルを使うときのスピードを使う
+				////AnimationMove(SkillSpeed, m_forward);
+				move.y = 0.0f;
+				move *= 200.0f;
+
+				m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
+			}
 		}
 		
 		//攻撃
 		Attack();
+
+		
 
 		//反転
 		Rotation();
@@ -931,7 +947,7 @@ void KnightAI::Attack()
 	if (CanUlt())
 	{
 		if (m_charState == enCharState_Attack || m_charState == enCharState_SecondAttack ||
-			m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance||m_charState==enCharState_Skill)
+			m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance)
 		{
 			return;
 		}

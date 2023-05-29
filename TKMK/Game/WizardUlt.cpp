@@ -125,17 +125,18 @@ void WizardUlt::FallThunder()
 
 void WizardUlt::Damege()
 {
-	//レベル７以上なら
-	/*if (m_CharLevel7AndAdoveFlag == true) {
-		m_targetActor->
-	}*/
-
-
 	//攻撃対象のキャラにダメージを与える
 	m_targetActor->Dameged(m_UltDamege, m_CreatMeActor);
 
-	
+	int downlevel = 0;
+	//レベル7以上なら
+	if (m_CharLevel7AndAdoveFlag == true) {
 
-	int downlevel = 1;
+		downlevel = m_CreatMeActor->GetLevel();
 
+		downlevel -= 6;
+		
+		m_targetActor->LevelDownProcess(downlevel);
+
+	}
 }

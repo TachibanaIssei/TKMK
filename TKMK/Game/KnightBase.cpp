@@ -178,12 +178,15 @@ void KnightBase::Rotation()
 	}
 }
 
-void KnightBase::Invincible()
+bool KnightBase::Invincible()
 {
 	if (invincibleTimer > 0)
 	{
 		invincibleTimer -= g_gameTime->GetFrameDeltaTime();
+		return true;
 	}
+	invincibleTimer = 0.0f;
+	return false;
 }
 
 /// <summary>
@@ -301,7 +304,7 @@ void KnightBase::Collition()
 			invincibleTimer = 1.0f;
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
-
+			return;
 		}
 	}
 	//敵の攻撃用のコリジョンを取得する
@@ -320,7 +323,7 @@ void KnightBase::Collition()
 				invincibleTimer = 1.0f;
 				//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 				Dameged(300, m_lastAttackActor);
-
+				return;
 			}
 		}
 	}
@@ -351,7 +354,7 @@ void KnightBase::Collition()
 			invincibleTimer = 1.0f;
 			//hpを10減らす
 			Dameged(Enemy_atk, m_Neutral_enemy);
-
+			return;
 		}
 	}
 }

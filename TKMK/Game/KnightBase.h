@@ -307,7 +307,8 @@ protected:
 	/// <summary>
 	///無敵時間用
 	/// </summary>
-	void Invincible();
+	bool Invincible();
+
 	void PlayAnimation();
 	//共通のステートの遷移処理
 	void OnProcessCommonStateTransition();

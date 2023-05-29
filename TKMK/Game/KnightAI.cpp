@@ -79,8 +79,13 @@ void KnightAI::Update()
 	if (m_GameState == enPause) {
 		return;
 	}
+	//無敵時間
+	if (Invincible() == false) {
+		//当たり判定
+		Collition();
+	}
 	//当たり判定
-	Collition();
+	//Collition();
 	//アニメーションの再生
 	PlayAnimation();
 	
@@ -212,8 +217,7 @@ void KnightAI::Update()
 		//反転
 		Rotation();
 		
-		//無敵時間
-		Invincible();
+		
 
 		
 

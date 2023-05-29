@@ -86,14 +86,10 @@ bool GameUI::Start()
 	player = FindGO<Player>("player");
 	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
-	//ブルー
-	m_CharIcon[0].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-	//レッド
-	m_CharIcon[3].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-	//グリーン
-	m_CharIcon[2].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-	//イエロー
-	m_CharIcon[1].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+	
+	
+	
+	
 
 	//ポイント関連
 	{
@@ -113,15 +109,15 @@ bool GameUI::Start()
 			if (actor->IsMatchName(knightname))
 			{
 				//アイコンを剣士にする(ブルー)
-				
-				m_CharIcon[0].SetPosition(CharIconPos[num]);
+				//ブルー
+				m_CharIcon[num].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+				m_CharIcon[num].SetPosition(CharIconPos[num]);
+				m_CharIcon[num].Update();
 				//フレームをプレイヤー用にする
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
 			}
 			else
 			{
-				/*m_CharIcon[num].SetPosition(CharIconPos[num]);
-				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 360.0f, 120.0f);*/
 				//レベル
 				m_LevelFont[num - 1].SetPosition(LevelPos[num-1]);
 				m_LevelFont[num - 1].SetScale(0.6f);
@@ -129,20 +125,32 @@ bool GameUI::Start()
 				m_LevelFont[num - 1].SetRotation(0.0f);
 				m_LevelFont[num - 1].SetShadowParam(true, 2.0f, g_vec4Black);
 			}
+
 			//赤の剣士AIなら
 			if(actor->IsMatchName(KnightAI_Red))
 			{
-				m_CharIcon[1].SetPosition(CharIconPos[num]);
+				//レッド
+				m_CharIcon[num].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+				m_CharIcon[num].SetPosition(CharIconPos[num]);
+				m_CharIcon[num].Update();
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
-			else if (actor->IsMatchName(KnightAI_Green))
+
+			if (actor->IsMatchName(KnightAI_Green))
 			{
-				m_CharIcon[2].SetPosition(CharIconPos[num]);
+				//グリーン
+				m_CharIcon[num].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+				m_CharIcon[num].SetPosition(CharIconPos[num]);
+				m_CharIcon[num].Update();
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
-			else if (actor->IsMatchName(KnightAI_Yellow))
+
+			if (actor->IsMatchName(KnightAI_Yellow))
 			{
-				m_CharIcon[3].SetPosition(CharIconPos[num]);
+				//イエロー
+				m_CharIcon[num].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+				m_CharIcon[num].SetPosition(CharIconPos[num]);
+				m_CharIcon[num].Update();
 				m_PointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
 
@@ -150,7 +158,7 @@ bool GameUI::Start()
 			m_PointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
 			m_PointFlame[num].Update();
 			//
-			m_CharIcon[num].Update();
+			
 
 			num++;
 		}
@@ -707,6 +715,7 @@ void GameUI::Timer()
 		}
 
 		if (m_game->GetSecondsTimer() > 1) {
+			m_time_left.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
 			m_time_left.SetScale(timerScale);
 		}
 		
@@ -715,6 +724,7 @@ void GameUI::Timer()
 	}
 	else
 	{
+		
 		m_time_left.SetScale(TIMERSCALE);
 	}
 }
@@ -833,7 +843,8 @@ void GameUI::LevelUp()
 	if (m_SaveExp > 0) {
 		//セーブした経験値をリセット
 		//m_saveExpとプレイヤーのセーブした経験値を同じにする
-		if (player->CharGetEXP() > 0) {
+		if (player->CharGetSaveEXP() > 0) {
+			//セーブした経験値が変わらない
 			player->CharResatSaveEXP(m_SaveExp);
 		}
 		
@@ -966,7 +977,7 @@ void GameUI::CharPoint()
 			FontPos= ADDPOINTPOS + PointPos[num];
 			m_PointFont[num].SetPosition(FontPos);
 
-			m_PointFlame[num].SetScale(1.45f,1.2f,0.0f);
+			m_PointFlame[num].SetScale(1.7f,1.2f,0.0f);
 			m_PointFlame[num].Update();
 			m_CharIcon[num].Update();
 			MaxPoint = charPoint[num];
@@ -994,6 +1005,26 @@ void GameUI::Render(RenderContext& rc)
 	{
 		return;
 	}
+
+	//リスポーンするまでの時間
+	if (player->CharGetRespawnTime() > 0)
+	{
+		//制限時間
+		m_TimeAndPointRender.Draw(rc);
+		m_time_left.Draw(rc);
+
+		m_Respawn_Back.Draw(rc);
+		m_RespawnIn.Draw(rc);
+		m_RespawnCountNumber.Draw(rc);
+
+		//試合終了まで残り10秒なら
+		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
+		{
+			m_FinishCountNumber.Draw(rc);
+		}
+		return;
+	}
+
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
 		//レベルや経験値のフレーム
@@ -1010,13 +1041,12 @@ void GameUI::Render(RenderContext& rc)
 		{
 			m_Skillfont.Draw(rc);
 		}
-		
 	
 		m_ExperienceFlame.Draw(rc);
-		//m_ExpFont.Draw(rc);
-
+	
 		m_HpNameFont.Draw(rc);
 
+		//制限時間
 		m_TimeAndPointRender.Draw(rc);
 		m_time_left.Draw(rc);
 
@@ -1039,30 +1069,16 @@ void GameUI::Render(RenderContext& rc)
 
 		//ポイントを描画
 		//左のフレームの色々を描画
-
 		int num = 0;
 		for (auto actor:m_Actors) {
 			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
-			//m_CharIcon[num].Draw(rc);
+			m_CharIcon[num].Draw(rc);
 			if(num>=1)
 			m_LevelFont[num-1].Draw(rc);
 			num++;
 		}
-		int numa = 0;
-		for (auto actor : m_Actors) {
-			m_CharIcon[numa].Draw(rc);
-			numa++;
-		}
 		
-		//リスポーンするまでの時間
-		if (player->CharGetRespawnTime() > 0)
-		{
-			m_Respawn_Back.Draw(rc);
-			m_RespawnIn.Draw(rc);
-			m_RespawnCountNumber.Draw(rc);
-		}
-
 		//試合終了まで残り10秒なら
 		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
 		{
@@ -1077,5 +1093,7 @@ void GameUI::Render(RenderContext& rc)
 			m_CountNumper.Draw(rc);
 		}
 	}
+
+	
 	
 }

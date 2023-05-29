@@ -57,6 +57,9 @@ namespace ResultSpriteConst
 
 	const float LOSER_WORD_SCALE = 1.8f;										//フォントの大きさ
 	const float NO1_WORD_SCALE = 2.0f;											//一番上のフォントの大きさ
+
+	const float SE_DRAM_JAAN_VOLUME = 1.0f;		//ドラムの"ジャーン"の音量
+	const float SE_DRAM_ROLL_VOLUME = 1.0f;		//ドラムロールの音量
 }
 
 Result::Result()
@@ -114,25 +117,30 @@ bool Result::Start()
 
 	InitSprite();
 
-	g_soundEngine->ResistWaveFileBank(40, "Assets/sound/resultBGM/Result1.wav");
-	g_soundEngine->ResistWaveFileBank(41, "Assets/sound/resultBGM/Result2.wav");
-	g_soundEngine->ResistWaveFileBank(42, "Assets/sound/resultBGM/Result3.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM1, "Assets/sound/resultBGM/Result1.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM2, "Assets/sound/resultBGM/Result2.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM3, "Assets/sound/resultBGM/Result3.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultDramRoll, "Assets/sound/resultBGM/dram_roll.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultDramJaan, "Assets/sound/resultBGM/dram_jaan.wav");
 
 	m_bgm = NewGO<SoundSource>(0);
 	switch (m_playerScore[0].Rank)
 	{
 	case 1:
-		m_bgm->Init(40);
+		m_bgm->Init(enSound_ResultBGM1);
 		break;
 	case 4:
-		m_bgm->Init(42);
+		m_bgm->Init(enSound_ResultBGM3);
 		break;
 	default:
-		m_bgm->Init(41);
+		m_bgm->Init(enSound_ResultBGM2);
 		break;
 	}
-	m_bgm->Play(true);
-	m_bgm->SetVolume(m_bgmVolume);
+
+	SoundSource* dramJaan = NewGO<SoundSource>(0);
+	dramJaan->Init(enSound_ResultDramRoll);
+	dramJaan->SetVolume(ResultSpriteConst::SE_DRAM_ROLL_VOLUME);
+	dramJaan->Play(false);
 
 	return true;
 }
@@ -163,7 +171,7 @@ void Result::Update()
 void Result::InitSprite()
 {
 	//Resultの初期化
-	m_spriteRender.Init("Assets/sprite/Result/titleBack.DDS", 1920.0f, 1080.0f);
+	m_spriteRender.Init("Assets/sprite/Result/titleBack_break.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(g_vec3Zero);
 	m_spriteRender.SetScale(g_vec3One);
 	m_spriteRender.Update();
@@ -208,7 +216,7 @@ void Result::InitSprite()
 
 			m_gameRank[i].Init("Assets/sprite/Result/Number_1st.DDS", ResultSpriteConst::GAMERANK_WIDTH, ResultSpriteConst::GAMERANK_HEIGHT);
 			m_gameRank[i].SetPosition(m_spriteLerpStartPos[i]);
-			m_gameRank[i].SetScale(ResultSpriteConst::GAMERANK_1ST_SCALE);
+			//m_gameRank[i].SetScale(ResultSpriteConst::GAMERANK_1ST_SCALE);
 			break;
 		case(1):
 			m_knightFace[i].Init("Assets/sprite/Result/KnightYellowFace.DDS", ResultSpriteConst::KNIGHT_FACE_WIDTH, ResultSpriteConst::KNIGHT_FACE_HEIGHT);
@@ -374,12 +382,25 @@ void Result::MoveLerp()
 		//補完率が1を超えたらリセット
 		m_complement = 0.0f;
 
+		//一位以外の画像のとき"ジャン"の効果音を再生
+		if (m_change != enChange_1st)
+		{
+			SoundSource* dramJaan = NewGO<SoundSource>(0);
+			dramJaan->Init(enSound_ResultDramJaan);
+			dramJaan->SetVolume(ResultSpriteConst::SE_DRAM_JAAN_VOLUME);
+			dramJaan->Play(false);
+		}
+
 		//次のステートに移行
 		switch (m_change)
 		{
 		case enChange_1st:
 			m_change = enChange_stop;
 			m_drawSelectSpriteFlag = true;
+
+			//BGM再生
+			m_bgm->Play(true);
+			m_bgm->SetVolume(m_bgmVolume);
 			return;
 			break;
 		case enChange_2nd:
@@ -390,6 +411,7 @@ void Result::MoveLerp()
 			break;
 		case enChange_4th:
 			m_change = enChange_3rd;
+			break;
 		}
 	}
 

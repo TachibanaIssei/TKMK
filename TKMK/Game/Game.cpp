@@ -951,18 +951,22 @@ void Game::Render(RenderContext& rc)
 		return;
 	}
 
-	if (RabbitFlag == true && m_GameState == enGameState_Battle)
-	{
-		m_RabbitSprite.Draw(rc);
+	if (player->CharGetRespawnTime() <= 0) {
+		if (RabbitFlag == true && m_GameState == enGameState_Battle)
+		{
+			m_RabbitSprite.Draw(rc);
 
-	}
-
-	if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
-
-		if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
-			return;
 		}
 
-		m_underSprite.Draw(rc);
+		if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
+
+			if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
+				return;
+			}
+
+			m_underSprite.Draw(rc);
+		}
 	}
+
+	
 }

@@ -198,18 +198,18 @@ public:
 	/// </summary>
 	/// <param name="point">倒された相手の現在のポイント</param>
 	/// <param name="level">自分の現在のレベル</param>
-	void PointProcess(int& level)
+	void PointProcess(int level)
 	{
-		int AddPoint = 0;
+		int AddPoint = level;
 		//レベルが5以上なら
-		if (level > 5)
+		if (AddPoint > 5)
 		{
 			AddPoint = 5;
 		}
-		else
+		/*else
 		{
 			AddPoint = level;
-		}
+		}*/
 		
 		//レベル分ポイントを増やす
 		Point += AddPoint;
@@ -278,14 +278,15 @@ public:
 	/// <summary>
 	/// 攻撃力を返す
 	/// </summary>
-	int GetAtk() {
+	int GetAtk() const
+	{
 		return m_Status.Atk;
 	}
 
 	/// <summary>
 	/// HPを返す
 	/// </summary>
-	int GetHP()
+	int GetHP() const
 	{
 		return m_Status.Hp;
 	}
@@ -343,9 +344,9 @@ public:
 	}
 
 	//MaxHpを渡す
-	int GetMaxHp() { return m_Status.MaxHp; };
+	int GetMaxHp()const { return m_Status.MaxHp; };
 	//今のHpを渡す
-	int GetHp() { return m_Status.Hp; };
+	int GetHp()const { return m_Status.Hp; };
 
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
@@ -365,7 +366,8 @@ public:
 	/// <summary>
 	/// 現在のポイント返す
 	/// </summary>
-	int GetPoint() {
+	int GetPoint()const 
+	{
 		return Point;
 	}
 
@@ -389,7 +391,7 @@ public:
 	/// 現在の経験値を返す
 	/// </summary>
 	/// <returns></returns>
-	int GetExperience()
+	int GetExperience()const
 	{
 		return GetExp;
 	}
@@ -398,10 +400,21 @@ public:
 	/// 現在の経験値テーブルを返す
 	/// </summary>
 	/// <returns></returns>
-	int GetExpTable()
+	int GetExpTable()const
 	{
 		return ExpTable;
 	}
+
+	int GetSaveEXP() const
+	{
+		return m_SaveEXP;
+	}
+
+	void SetSaveEXP(int num)
+	{
+		m_SaveEXP = num;
+	}
+
 
 	/// <summary>
 	/// レベルに応じた経験値テーブルを返す
@@ -514,7 +527,7 @@ public:
 	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
 	/// <param name="DeathToRespwanFlag"></param>
-	bool DeathToRespawnTimer(bool DeathToRespwanFlag,Fade* fade, bool fadeFlag);
+	bool DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade, bool fadeFlag);
 
 	/// <summary>
 	/// リスポーン待機時間を返す
@@ -541,7 +554,7 @@ public:
 	/// 地上に降りているかのフラグ
 	/// </summary>
 	/// <returns></returns>
-	bool IsGroundIn()
+	bool GetIsGroundFlag()const
 	{
 		return IsGroundFlag;
 	}
@@ -561,17 +574,7 @@ public:
 	{
 		return m_NoTargetActor;
 	}
-
-	int GetSaveEXP() const
-	{
-		return m_SaveEXP;
-	}
-
-	void SetSaveEXP(int num)
-	{
-		m_SaveEXP = num;
-	}
-
+	
 	/// <summary>
 	/// 自身をカメラで見ているかのフラグを変える AI用
 	/// </summary>
@@ -680,8 +683,6 @@ protected:
 	bool m_AirFlag = false;
 	//ジャンプフラグ
 	bool m_RespawnJumpFlag = false;
-	//地上に降りたかどうかの判定
-	bool IsGroundFlag = false;
 
 	//自分をターゲットしてるアクターのリスト
 	std::vector<Actor*> be_target;
@@ -693,6 +694,7 @@ protected:
 	//やられた後のリスポーンするまで時間を計る処理をするかのフラグ
 	//falseでしない、trueでする
 	bool m_DeathToRespwanFlag = false;
+
 	//やられた後にもう一度復帰するまでの時間2
 	float m_respwanTimer = 0.0f;
 	///////////////////////////////
@@ -746,8 +748,9 @@ protected:
 	bool m_NoTargetActor = false;
 	//必殺技を打つ間隔を計るタイマー
 	float m_UltshootTimer = 0.9f;
-	//地上にいるキャラを数える
-	int  m_OnGroundCharCounter = 0;
+
+	//地上に降りたらtrueにする
+	bool IsGroundFlag = false;
 	////////////////////////////////////////////////
 };
 

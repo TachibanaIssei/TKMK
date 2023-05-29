@@ -108,6 +108,7 @@ void KnightPlayer::Update()
 		return;
 	}
 	
+	//一度死んだらデスステートのままにする
 
 	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
@@ -132,13 +133,6 @@ void KnightPlayer::Update()
 		m_gameUI = FindGO<GameUI>("m_gameUI");
 	}
 
-	//ステートがデスステートなら
-	/*if (m_Status.Hp<=0)
-	{
-		m_modelRender.Update();
-		return;
-	}*/
-
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade,true) == true)
 	{
@@ -146,9 +140,18 @@ void KnightPlayer::Update()
 		//アニメーションの再生
 		PlayAnimation();
 		m_modelRender.Update();
+		
 		return;
 	}
-	
+
+	if (m_charState == enCharState_Death) {
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
+		//ステート
+		ManageState();
+		return;
+	}
 	
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -192,26 +195,28 @@ void KnightPlayer::Update()
 			//リスポーンしたときしか使えない
 			//飛び降りる処理
 			//地上にいないならジャンプしかしないようにする
-			if (IsActorGroundChack()!=true/*m_position.y > 1.0f*/) {
-				if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
-				{
-					pushFlag = true;
-					//jampAccumulateflag = true;
-					m_charState = enCharState_Jump;
+			if (GetIsGroundFlag() == false) {
+				//地上にいるなら
+				if (IsActorGroundChack() == true) {
+					IsGroundFlag = true;
+				}
+				else {
+					//ジャンプ
+					if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+					{
+						pushFlag = true;
+						m_charState = enCharState_Jump;
+					}
+
 				}
 			}
 			else
 			{
-
-				if (m_charState != enCharState_Death)
-				{
-					//地上にいる
-					IsGroundFlag = true;
-				}
 				//攻撃処理
 				Attack();
 				//回避処理
 				Avoidance();
+				
 			}
 
 			//攻撃上昇中
@@ -278,7 +283,7 @@ void KnightPlayer::Update()
 		{
 			m_charState = enCharState_Fall;
 		}
-
+		//前方向
 		if (m_moveSpeed.LengthSq() != 0.0f) {
 			m_forwardNow = m_moveSpeed;
 			m_forwardNow.Normalize();
@@ -721,10 +726,15 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 				continue;
 			}
 
-			if (actor->IsActorGroundChack() == true) {
+			if (actor->GetIsGroundFlag() == true) {
 				//雷を打たれるキャラの情報を入れる
 				DamegeUltActor.push_back(actor);
 			}
+
+			//if (actor->IsActorGroundChack() == true) {
+			//	//雷を打たれるキャラの情報を入れる
+			//	DamegeUltActor.push_back(actor);
+			//}
 		}
 
 		//プレイヤーのみの処理

@@ -26,12 +26,7 @@ KnightBase::KnightBase()
 	ExpTable=5;              //経験値テーブル
 	//respawnNumber = 0;        //リスポーンする座標の番号
 
-	
-
-	//斬撃エフェクトの再生。
-	/*Ult_Swordeffect = NewGO<EffectEmitter>(2);
-	Ult_Swordeffect->Init(2);
-	Ult_Swordeffect->SetScale({ 20.0f,20.0f,20.0f });*/
+	IsGroundFlag = false;    //地上にいないのでfalse
 }
 
 KnightBase::~KnightBase()
@@ -235,7 +230,7 @@ void KnightBase::Collition()
 		return;
 	}
 	//被ダメージ、ダウン中、必殺技、通常攻撃時はダメージ判定をしない。
-	if (/*m_charState == enKnightState_Damege || */
+	if (m_charState == enCharState_Damege || 
 		m_charState == enCharState_Death ||
 		m_charState == enCharState_UltimateSkill ||
 		//m_charState == enCharState_Ult_liberation ||
@@ -409,7 +404,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//}
 
 		//地上にいない
-		//IsGroundFlag = false;
+		IsGroundFlag = false;
 
 		//デスボイス再生
 		SoundSource* se = NewGO<SoundSource>(0);
@@ -696,7 +691,6 @@ void KnightBase::OnProcessCommonStateTransition()
 /// </summary>
 void KnightBase::OnProcessIdleStateTransition()
 {
-	//todoいいかどうかわからん
 	pushFlag = false;
 	AtkState = false;
 	OnProcessCommonStateTransition();
@@ -956,7 +950,7 @@ void KnightBase::UltEnd() {
 	//必殺技使用時のフラグを戻す
 	m_UseUltimaitSkillFlag = false;
 	//カウンターリセット
-	m_OnGroundCharCounter = 0;
+	/*m_OnGroundCharCounter = 0;*/
 
 	m_game->SetUltCanUseFlag(true);
 	m_game->SetUltCanUseTimer(8.0f);

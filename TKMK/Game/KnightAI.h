@@ -34,7 +34,7 @@ public:
 	/// 必殺技の当たり判定生成する
 	void MakeUltSkill();
 	void AvoidanceSprite();
-
+	void HPZero();
 	/// <summary>
 	/// ゲージを左寄せする処理
 	/// </summary>
@@ -79,6 +79,7 @@ public:
 		m_LastAttackMove.Normalize();
 	}
 
+
 private:
 	// 評価値用の構造体
 	struct EvalData
@@ -103,14 +104,13 @@ private:
 	EvalData CalculateTargetEnemy(Neutral_Enemy* enemy);
 	EvalData CalculateTargetAI(Actor* actor);
 
+	void IsLevelEffect(int oldlevel, int nowlevel);
+
 	enum Action {
 		AttackAI,
 		AttackEnemy,
 
 	};
-
-	Game*                   m_game;//ゲーム
-	Actor*                  Lvactor = nullptr; 
 
 	KnightPlayer* m_knightPlayer;		//剣士プレイヤーvoid Rotation();
 

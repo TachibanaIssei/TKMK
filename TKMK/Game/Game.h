@@ -229,6 +229,11 @@ public:
 		return MinutesTimer;
 	}
 
+	void SetUltCanUseTimer(float timer)
+	{
+		UltCanUseTimer = timer;
+	}
+
 	EnGameState NowGameState() const
 	{
 		return m_GameState;
@@ -288,6 +293,7 @@ public:
 		RabbitFlag = rabbit;
 	}
 
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -295,11 +301,6 @@ public:
 	void SetUltCanUseFlag(bool flag)
 	{
 		UltCanUseFlag = flag;
-		// タイマーをセット
-		if (UltCanUseFlag == true)
-		{
-			UltCanUseTimer = 3.0f;
-		}
 	}
 
 	//AIの判断用
@@ -505,8 +506,6 @@ private:
 	float m_StartToGameTimer = 6.0f;
 
 	float m_EndtoResultTimer = 0.0f;
-	//必殺使えるかどうかのタイマー
-	float m_UltCanUseTimer = 0.0f;
 	//リスポーンタイマー
 	float m_RespawnTimer = 0.0f;
 	//リスポーンタイマー（ウサギ用）

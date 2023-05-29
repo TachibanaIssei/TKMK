@@ -106,7 +106,7 @@ void KnightBase::SetModel()
 		m_position
 	);
 
-	m_player = FindGO<Player>("player");
+	player = FindGO<Player>("player");
 }
 
 /// <summary>
@@ -124,7 +124,7 @@ void KnightBase::ExpProcess(int Exp)
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
-		LevelUp(LvUPStatus,m_Status,Lv);
+		LevelUp(Lv);
 		//レベルに合わせてレベルの画像を変更する
 		m_gameUI->LevelFontChange(Lv);
 		switch (Lv)
@@ -292,7 +292,6 @@ void KnightBase::Collition()
 
 				//画面を暗くするフラグをfalseにする
 				UltimateDarknessFlag = false;
-				m_game = FindGO<Game>("game");
 				m_game->SetUltTimeSkyFlag(false);
 				//画面が暗いのをリセットする
 				m_game->LightReset();
@@ -357,6 +356,7 @@ void KnightBase::Collition()
 void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
+	//無敵時間リセット
 	invincibleTimer = 1.0f;
 
 	//もしスキルが使用中ならスキルの移動処理を無くす
@@ -412,8 +412,8 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Init(enSound_Knight_Death);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		//SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
+		se->SetVolume(1.0f);
 
 		m_Status.Hp = 0;
 		//攻撃された相手が中立の敵以外なら
@@ -438,8 +438,8 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Init(enSound_Knight_Receiving_Damage);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		//SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
+		se->SetVolume(1.0f);
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}
@@ -453,7 +453,7 @@ void KnightBase::UltimateSkill()
 	int DownLv = Lv - 1;
 	
 	//レベルを1に下げる
-	levelDown(LvUPStatus, m_Status, Lv, DownLv);
+	levelDown(Lv, DownLv);
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//レベルの経験値テーブルにする
@@ -487,16 +487,13 @@ void KnightBase::Death()
 	////死亡ステート
 	//m_charState = enCharState_Death;
 	//レベルを１下げる
-	levelDown(LvUPStatus, m_Status, Lv,1);
+	levelDown(Lv,1);
 	//HPを最大にする
 	m_Status.Hp = m_Status.MaxHp;
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//一つ下のレベルの経験値テーブルにする
 	ExpTableChamge(Lv,ExpTable);
-
-	//レベルに合わせてレベルの画像を変更する
-	//m_gameUI->LevelFontChange(Lv);
 }
 
 /// <summary>
@@ -952,6 +949,9 @@ void KnightBase::UltEnd() {
 	m_UseUltimaitSkillFlag = false;
 	//カウンターリセット
 	/*m_OnGroundCharCounter = 0;*/
+
+	m_game->SetUltCanUseFlag(true);
+	m_game->SetUltCanUseTimer(8.0f);
 
 	//待機ステート
 	m_charState = enCharState_Idle;

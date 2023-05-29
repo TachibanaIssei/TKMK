@@ -92,7 +92,7 @@ void WizardBase::ExpProcess(int Exp)
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
-		LevelUp(LvUpStatus, m_Status, Lv);
+		LevelUp(Lv);
 		//レベルに合わせてレベルの画像を変更する
 		gameUI->LevelFontChange(Lv);
 		switch (Lv)
@@ -241,7 +241,7 @@ void WizardBase::Death()
 	////死亡ステート
 	//m_charState = enKnightState_Death;
 	//レベルを１下げる
-	levelDown(LvUpStatus, m_Status, Lv, 1);
+	levelDown(Lv, 1);
 	//HPを最大にする
 	m_Status.Hp = m_Status.MaxHp;
 	//経験値をリセット

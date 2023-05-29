@@ -160,32 +160,8 @@ void KnightPlayer::Update()
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
 			m_gameUI->ChangePlayerLevel(Lv);
-
-			//m_gameUI->LevelFontChange(Lv);
-			if (Lv > oldLv)
-			{
-				if (LevelUp_efk != nullptr) {
-					LevelUp_efk->DeleteEffect();
-				}
-				LevelUp_efk = NewGO<ChaseEFK>(4);
-				LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
-				SoundSource* se = NewGO<SoundSource>(0);
-				se->Init(enSound_Level_UP);
-				se->SetVolume(1.0f);
-				se->Play(false);
-			}
-			else if (Lv < oldLv)
-			{
-				if (LevelDown_efk != nullptr) {
-					LevelDown_efk->DeleteEffect();
-				}
-				LevelDown_efk = NewGO<ChaseEFK>(4);
-				LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
-				SoundSource* se = NewGO<SoundSource>(0);
-				se->Init(enSound_Level_Down);
-				se->SetVolume(1.0f);
-				se->Play(false); 
-			}
+			//エフェクトを出す
+			IsLevelEffect(oldLv, Lv);
 		}
 			//前フレームのレベルを取得
 			oldLv = Lv;
@@ -431,7 +407,8 @@ void KnightPlayer::Attack()
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Knight_Charge_Power);
 		se->Play(false);
-		se->SetVolume(1.0f);
+		se->SetVolume(m_game->GetSoundEffectVolume());
+
 		Vector3 m_SwordPos = Vector3::Zero;
 		Quaternion m_SwordRot;
 		//自身をまとうエフェクト
@@ -554,7 +531,7 @@ void KnightPlayer::MakeUltSkill()
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(enSound_Sword_Ult);
 			se->Play(false);
-			se->SetVolume(SEVolume);
+			se->SetVolume(m_game->GetSoundEffectVolume());
 
 			//雷を落とすキャラがリストの最後なら
 			if (actor == DamegeUltActor.back())
@@ -629,9 +606,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboONE);
 		se->Play(false);
-		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_game->GetSoundEffectVolume());
 	}
 
 	//二段目のアタックのアニメーションが始まったら
@@ -644,9 +619,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0); 
 		se->Init(enSound_ComboTwo);
 		se->Play(false);
-		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_game->GetSoundEffectVolume());
 	}
 
 	//三段目のアタックのアニメーションが始まったら
@@ -659,9 +632,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboThree);
 		se->Play(false);
-		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_game->GetSoundEffectVolume());
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"Move_True") == 0)
@@ -682,9 +653,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Sword_Skill);
 		se->Play(false);
-		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(m_player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		se->SetVolume(m_game->GetSoundEffectVolume());
 	}
 	
 	//必殺技のアニメーションが始まったら
@@ -843,6 +812,34 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AvoidanceFlag = false;
 		//m_AtkTmingState = Num_State;
 	
+	}
+}
+
+void  KnightPlayer::IsLevelEffect(int oldlevel, int nowlevel)
+{
+	if (nowlevel > oldlevel)
+	{
+		if (LevelUp_efk != nullptr) {
+			LevelUp_efk->DeleteEffect();
+		}
+		LevelUp_efk = NewGO<ChaseEFK>(4);
+		LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Level_UP);
+		se->SetVolume(m_game->GetSoundEffectVolume());
+		se->Play(false);
+	}
+	else if (nowlevel < oldlevel)
+	{
+		if (LevelDown_efk != nullptr) {
+			LevelDown_efk->DeleteEffect();
+		}
+		LevelDown_efk = NewGO<ChaseEFK>(4);
+		LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Level_Down);
+		se->SetVolume(m_game->GetSoundEffectVolume());
+		se->Play(false);
 	}
 }
 

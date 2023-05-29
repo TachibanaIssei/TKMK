@@ -98,7 +98,6 @@ bool Game::Start()
 	SetEffects();
 
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
-  
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);

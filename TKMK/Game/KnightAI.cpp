@@ -162,6 +162,7 @@ void KnightAI::Update()
 			if (IsActorGroundChack() == true) {
 				//地面にいる
 				IsGroundFlag = true;
+				SetAndPlaySoundSource(enSound_Metal_Falling);
 			}
 			else {
 				//ジャンプ
@@ -980,11 +981,12 @@ void KnightAI::Attack()
 				//エフェクトを再生
 			Ult_Swordeffect->Play();
 			//アルティメットSE
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(enSound_Knight_Charge_Power);
-			//se->SetVolume(1.0f);
-			se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-			se->Play(false);
+			SetAndPlaySoundSource(enSound_Knight_Charge_Power);
+			//SoundSource* se = NewGO<SoundSource>(0);
+			//se->Init(enSound_Knight_Charge_Power);
+			////se->SetVolume(1.0f);
+			//se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+			//se->Play(false);
 
 			//必殺技発動フラグをセット
 			//UltimateSkillFlag = true;
@@ -1090,10 +1092,11 @@ void KnightAI::MakeUltSkill()
 		wizardUlt->SetGame(m_game);
 
 		//効果音再生
-		SoundSource* se = NewGO<SoundSource>(0);
+		SetAndPlaySoundSource(enSound_Sword_Ult);
+		/*SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Sword_Ult);
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);
+		se->Play(false);*/
 		//se->SetVolume(1.0f);
 
 		//必殺技を打たれたのでフラグを立てる
@@ -1229,10 +1232,11 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 		//剣１段目音
-		SoundSource* se = NewGO<SoundSource>(0);
+		SetAndPlaySoundSource(enSound_ComboONE);
+		/*SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboONE);
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);
+		se->Play(false);*/
 		//se->SetVolume(1.0f);
 	}
 	//二段目のアタックのアニメーションが始まったら
@@ -1242,10 +1246,11 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 		//剣２段目音
-		SoundSource* se = NewGO<SoundSource>(0);
+		SetAndPlaySoundSource(enSound_ComboTwo);
+		/*SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboTwo);
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);
+		se->Play(false);*/
 		//se->SetVolume(1.0f);
 	}
 	//三段目のアタックのアニメーションが始まったら
@@ -1255,10 +1260,11 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
 		//剣３段目音
-		SoundSource* se = NewGO<SoundSource>(0);
+		SetAndPlaySoundSource(enSound_ComboThree);
+		/*SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboThree);
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);
+		se->Play(false);*/
 		//se->SetVolume(1.0f);
 	}
 	//三段目のアタックのアニメーションが始まったら
@@ -1276,10 +1282,11 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		AtkCollistionFlag = true;
 
 		//スキル音を発生
-		SoundSource* se = NewGO<SoundSource>(0);
+		SetAndPlaySoundSource(enSound_Sword_Skill);
+		/*SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Sword_Skill);
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);
+		se->Play(false);*/
 		//se->SetVolume(1.0f);
 	}
 
@@ -1324,11 +1331,6 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 				//雷を打たれるキャラの情報を入れる
 				DamegeUltActor.push_back(actor);
 			}
-				
-			//if (actor->IsActorGroundChack() == true) {
-			//	//雷を打たれるキャラの情報を入れる
-			//	DamegeUltActor.push_back(actor);
-			//}
 		}
 
 		//攻撃対象のアクターがいなかったら
@@ -1495,9 +1497,11 @@ void  KnightAI::IsLevelEffect(int oldlevel, int nowlevel)
 		LevelUp_efk = NewGO<ChaseEFK>(4);
 		LevelUp_efk->SetEffect(EnEFK::enEffect_Knight_LevelUp, this, Vector3::One * 15.0f);
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Level_UP);
-		se->SetVolume(m_game->GetSoundEffectVolume());
-		se->Play(false);
+
+		SetAndPlaySoundSource(enSound_Level_UP);
+		/*se->Init(enSound_Level_UP);
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		se->Play(false);*/
 	}
 	else if (nowlevel < oldlevel)
 	{
@@ -1507,12 +1511,21 @@ void  KnightAI::IsLevelEffect(int oldlevel, int nowlevel)
 		LevelDown_efk = NewGO<ChaseEFK>(4);
 		LevelDown_efk->SetEffect(EnEFK::enEffect_Knight_LevelDown, this, Vector3::One * 15.0f);
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Level_Down);
-		se->SetVolume(m_game->GetSoundEffectVolume());
-		se->Play(false);
+
+		SetAndPlaySoundSource(enSound_Level_Down);
+		/*se->Init(enSound_Level_Down);
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		se->Play(false);*/
 	}
 }
 
+void KnightAI::SetAndPlaySoundSource(EnSound soundNumber)
+{
+	SoundSource* se = NewGO<SoundSource>(0);
+	se->Init(soundNumber);
+	se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+	se->Play(false);
+}
 
 void KnightAI::Render(RenderContext& rc)
 {

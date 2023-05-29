@@ -40,6 +40,7 @@ public:
 	/// </summary>
 	void MakeUltSkill();
 
+	void SetAndPlaySoundSource(EnSound soundNumber);
 
 private:
 	void CoolTimeProcess();

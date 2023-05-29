@@ -301,6 +301,8 @@ public:
 
 	virtual void IsLevelEffect(int oldlevel,int nowlevel) = 0;
 
+	virtual void SetAndPlaySoundSource(EnSound soundNumber) = 0;
+
 protected:
 	/// <summary>
 	///無敵時間用

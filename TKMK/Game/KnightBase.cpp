@@ -297,6 +297,8 @@ void KnightBase::Collition()
 				m_game->LightReset();
 			}
 
+			//無敵時間リセット
+			invincibleTimer = 1.0f;
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 
@@ -314,6 +316,8 @@ void KnightBase::Collition()
 			//コリジョンを作ったアクターが自分でないなら
 			if (collision->IsHit(m_charCon) && m_lastAttackActor != this)
 			{
+				//無敵時間リセット
+				invincibleTimer = 1.0f;
 				//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 				Dameged(300, m_lastAttackActor);
 
@@ -327,6 +331,7 @@ void KnightBase::Collition()
 		m_charState == enCharState_Attack||
 		m_charState == enCharState_SecondAttack||
 		m_charState == enCharState_LastAttack||
+		m_charState == enCharState_Skill||
 		m_charState == enCharState_Avoidance||
 		m_charState == enCharState_UltimateSkill ||
 		m_charState == enCharState_Ult_liberation
@@ -342,6 +347,8 @@ void KnightBase::Collition()
 		//コリジョンが自身のキャラコンに当たったら
 		if (collision->IsHit(m_charCon))
 		{
+			//無敵時間リセット
+			invincibleTimer = 1.0f;
 			//hpを10減らす
 			Dameged(Enemy_atk, m_Neutral_enemy);
 
@@ -357,7 +364,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
 	//無敵時間リセット
-	invincibleTimer = 1.0f;
+	//invincibleTimer = 1.0f;
 
 	//もしスキルが使用中ならスキルの移動処理を無くす
 	if (SkillState == true)
@@ -412,8 +419,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Init(enSound_Knight_Death);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
-		se->SetVolume(SEVolume);
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 
 		m_Status.Hp = 0;
 		//攻撃された相手が中立の敵以外なら
@@ -438,8 +444,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Init(enSound_Knight_Receiving_Damage);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
-		se->SetVolume(SEVolume);
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}
@@ -845,7 +850,7 @@ void KnightBase::OnProcessUlt_liberationStateTransition()
 		//アルティメットSE
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Hand);
-		se->SetVolume(1.0);
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
 		////プレイヤーとの距離によって音量調整
 		
@@ -911,9 +916,7 @@ void KnightBase::OnProcessDeathStateTransition()
 		pushFlag = false;
 		AtkState = false;
 		CantMove = false;
-		
-		
-
+		AvoidanceFlag = false;
 		//リスポーン待機フラグを立てる
 		m_DeathToRespwanFlag = true;
 		//リスポーンするまでの時間を設定
@@ -926,17 +929,8 @@ void KnightBase::OnProcessDeathStateTransition()
 
 void KnightBase::OnProcessFallStateTransition()
 {
-	if (m_charCon.IsOnGround())
-	{
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Metal_Falling);
-		//プレイヤーとの距離によって音量調整
-		se->SetVolume(0.6f);
-		se->Play(false);
-		//�ҋ@�X�e�[�g
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();
-	}
 }
 
 void KnightBase::UltEnd() {

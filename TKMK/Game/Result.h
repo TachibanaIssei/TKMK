@@ -47,6 +47,7 @@ private:
 	void InitSprite();
 	void InitModel();
 	void InitSkyCube();
+	void InitEffect();
 	void SetCamera();
 	void Rank();
 	void MoveLerp();
@@ -59,6 +60,7 @@ private:
 	{
 		enAnimationClip_Win,
 		enAnimationClip_Lose,
+		enAnimationClip_4th,
 		enAnimationClip_Num
 	};
 
@@ -66,6 +68,7 @@ private:
 	{
 		enCharacterState_Win,
 		enCharacterState_Lose,
+		enCharacterState_4th,
 		enCharacterState_Num
 	};
 
@@ -74,6 +77,8 @@ private:
 	ModelRender m_knightModel;			//剣士のモデル
 	ModelRender m_backGround;			//地面
 	ModelRender m_backWall;				//壁
+
+	EffectEmitter* m_fireWorks;
 
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	EnCharacterState m_charaState = enCharacterState_Num;
@@ -90,6 +95,8 @@ private:
 
 	bool m_selectFlag			= false;	//選択項目の切り替えフラグ
 	bool m_drawSelectSpriteFlag = false;	//選択項目の表示のフラグ
+
+	bool m_isInit = false;
 
 	std::array<Score, PLAYER> m_playerScore;
 
@@ -118,7 +125,6 @@ private:
 	SpriteRender	m_cpuName1;			//CPU1
 	SpriteRender	m_cpuName2;			//CPU2
 	SpriteRender	m_cpuName3;			//CPU3
-
 
 	SpriteRender m_choiceCursor;		//選択時のカーソル
 
@@ -173,7 +179,6 @@ private:
 		Vector3(g_vec3Zero),		//３位
 		Vector3(g_vec3Zero)			//４位
 	};
-
 
 	//透明度
 	Vector4 m_alphaColorUnSelect	= { 0.0f,0.0f,0.0f,0.0f };	//透明

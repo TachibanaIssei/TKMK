@@ -292,7 +292,6 @@ void KnightBase::Collition()
 
 				//画面を暗くするフラグをfalseにする
 				UltimateDarknessFlag = false;
-				m_game = FindGO<Game>("game");
 				m_game->SetUltTimeSkyFlag(false);
 				//画面が暗いのをリセットする
 				m_game->LightReset();
@@ -950,6 +949,9 @@ void KnightBase::UltEnd() {
 	m_UseUltimaitSkillFlag = false;
 	//カウンターリセット
 	/*m_OnGroundCharCounter = 0;*/
+
+	m_game->SetUltCanUseFlag(true);
+	m_game->SetUltCanUseTimer(8.0f);
 
 	//待機ステート
 	m_charState = enCharState_Idle;

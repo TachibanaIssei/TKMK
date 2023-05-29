@@ -34,7 +34,7 @@ public:
 	/// 必殺技の当たり判定生成する
 	void MakeUltSkill();
 	void AvoidanceSprite();
-
+	void HPZero();
 	/// <summary>
 	/// ゲージを左寄せする処理
 	/// </summary>
@@ -111,9 +111,6 @@ private:
 		AttackEnemy,
 
 	};
-
-	Game*                   m_game;//ゲーム
-	Actor*                  Lvactor = nullptr; 
 
 	KnightPlayer* m_knightPlayer;		//剣士プレイヤーvoid Rotation();
 

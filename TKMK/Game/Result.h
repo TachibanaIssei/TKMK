@@ -45,14 +45,44 @@ public:
 
 private:
 	void InitSprite();
+	void InitModel();
+	void InitSkyCube();
+	void InitEffect();
+	void SetCamera();
 	void Rank();
 	void MoveLerp();
 	void MovePointFont();
 	void Select();
 	void MoveName();
+	void PlayAnimation();
 
+	enum EnAnimationClip
+	{
+		enAnimationClip_Win,
+		enAnimationClip_Lose,
+		enAnimationClip_4th,
+		enAnimationClip_Num
+	};
+
+	enum EnCharacterState
+	{
+		enCharacterState_Win,
+		enCharacterState_Lose,
+		enCharacterState_4th,
+		enCharacterState_Num
+	};
 
 private:
+	SkyCube* m_skyCube;					//スカイキューブ
+	ModelRender m_knightModel;			//剣士のモデル
+	ModelRender m_backGround;			//地面
+	ModelRender m_backWall;				//壁
+
+	EffectEmitter* m_fireWorks;
+
+	AnimationClip m_animationClips[enAnimationClip_Num];
+	EnCharacterState m_charaState = enCharacterState_Num;
+
 	std::array<int, PLAYER> charPoints = {0,0,0,0};		//プレイヤーのポイント
 	int titleScene = 1;			//タイトルのシーン番号
 	int m_nowMoveRank = 0;
@@ -65,6 +95,8 @@ private:
 
 	bool m_selectFlag			= false;	//選択項目の切り替えフラグ
 	bool m_drawSelectSpriteFlag = false;	//選択項目の表示のフラグ
+
+	bool m_isInit = false;
 
 	std::array<Score, PLAYER> m_playerScore;
 
@@ -94,7 +126,6 @@ private:
 	SpriteRender	m_cpuName2;			//CPU2
 	SpriteRender	m_cpuName3;			//CPU3
 
-
 	SpriteRender m_choiceCursor;		//選択時のカーソル
 
 	Tittle* tittle = nullptr;
@@ -119,18 +150,18 @@ private:
 
 	//フォントを線形補間でここまで動かす
 	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//順位
-		Vector3(70.0f, 300.0f, 0.0f),		//１位
-		Vector3(70.0f, 145.0f, 0.0f),		//２位
-		Vector3(70.0f, 4.0f, 0.0f),		//３位
-		Vector3(70.0f, -145.0f, 0.0f)		//４位
+		Vector3(370.0f, 300.0f, 0.0f),		//１位
+		Vector3(370.0f, 145.0f, 0.0f),		//２位
+		Vector3(370.0f, 4.0f, 0.0f),		//３位
+		Vector3(370.0f, -145.0f, 0.0f)		//４位
 	};
 
 	//スプライトを線形補間でここまで動かす
 	std::array<Vector3, MOVE> m_spriteLerpMoveEnd = {		//順位
-		Vector3(0.0f, 180.0f, 0.0f),		//１位
-		Vector3(0.0f, 25.0f, 0.0f),		//２位
-		Vector3(0.0f, -117.0f, 0.0f),		//３位
-		Vector3(0.0f, -265.0f, 0.0f)		//４位
+		Vector3(300.0f, 180.0f, 0.0f),		//１位
+		Vector3(300.0f, 25.0f, 0.0f),		//２位
+		Vector3(300.0f, -117.0f, 0.0f),		//３位
+		Vector3(300.0f, -265.0f, 0.0f)		//４位
 	};
 
 	//フォントを線形補間で動かすときの座標
@@ -148,7 +179,6 @@ private:
 		Vector3(g_vec3Zero),		//３位
 		Vector3(g_vec3Zero)			//４位
 	};
-
 
 	//透明度
 	Vector4 m_alphaColorUnSelect	= { 0.0f,0.0f,0.0f,0.0f };	//透明

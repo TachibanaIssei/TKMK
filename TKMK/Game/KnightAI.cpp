@@ -930,7 +930,8 @@ void KnightAI::Attack()
 	
 	if (CanUlt())
 	{
-		if (m_charState == enCharState_Attack || m_charState == enCharState_SecondAttack || m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance)
+		if (m_charState == enCharState_Attack || m_charState == enCharState_SecondAttack ||
+			m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance||m_charState==enCharState_Skill)
 		{
 			return;
 		}

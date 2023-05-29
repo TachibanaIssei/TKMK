@@ -88,6 +88,12 @@ void KnightAI::Update()
 		return;
 	}
 
+	if (m_Status.Hp <= 0)
+	{
+		m_charState == enCharState_Death;
+	}
+	
+
 	//自分の以外の必殺中は止まります
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
@@ -173,26 +179,23 @@ void KnightAI::Update()
 		// 次のアクションを抽選 
 		LotNextAction();
 
-		if (m_charState != enCharState_Ult_liberation)
+		//追跡
+		ChaseAndEscape();
+
+		if (SkillState == true && CantMove == false && SkillEndFlag == false)
 		{
-			//追跡
-			ChaseAndEscape();
+			m_charState = enCharState_Skill;
+			//スキルを使うときのスピードを使う
+			Vector3 move = m_skillMove;
+			m_rot.SetRotationYFromDirectionXZ(move);
+			////スキルを使うときのスピードを使う
+			////AnimationMove(SkillSpeed, m_forward);
+			move.y = 0.0f;
+			move *= 200.0f;
 
-			if (SkillState == true && CantMove == false)
-			{
-				m_charState = enCharState_Skill;
-				//スキルを使うときのスピードを使う
-				Vector3 move = m_skillMove;
-				m_rot.SetRotationYFromDirectionXZ(move);
-				////スキルを使うときのスピードを使う
-				////AnimationMove(SkillSpeed, m_forward);
-				move.y = 0.0f;
-				move *= 200.0f;
-
-				m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
-			}
+			m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
 		}
-		
+
 		//攻撃
 		Attack();
 
@@ -821,7 +824,7 @@ const bool KnightAI::CanUlt()
 {
 	Vector3 diff = TargePos - m_position;
 
-	if (diff.LengthSq() <= 300.0f * 300.0f)
+	if (diff.LengthSq() >= 200.0f * 200.0f)
 	{
 		return true;
 	}
@@ -945,9 +948,12 @@ void KnightAI::Attack()
 		{
 			return;
 		}
-
+		if (m_position.y > 10.0f)
+		{
+			return;
+		}
 		//必殺技を発動する処理
-		if (m_targetActor != nullptr && Lv >= 4 && (m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 && m_game->GetUltCanUseFlag() == false)
+		if (m_targetActor != nullptr && Lv >= 4 && /*(m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);

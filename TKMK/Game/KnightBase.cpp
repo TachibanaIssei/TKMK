@@ -953,7 +953,7 @@ void KnightBase::UltEnd() {
 	/*m_OnGroundCharCounter = 0;*/
 
 	m_game->SetUltCanUseFlag(true);
-	m_game->SetUltCanUseTimer(8.0f);
+	m_game->SetUltCanUseTimer(15.0f);
 
 	//待機ステート
 	m_charState = enCharState_Idle;

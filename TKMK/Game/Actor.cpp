@@ -131,16 +131,16 @@ void Actor::GetRespawnPos()
 /// <param name="lus">レベルアップ時に増加するステータス</param>
 /// <param name="nowStatus">現在のステータス</param>
 /// <param name="Level">現在のレベル</param>
-void Actor::LevelUp(LvUpStatus& lus, Status& nowStatus, int& Level)
+void Actor::LevelUp(int& Level)
 {
 	if (Level >= 10) {
 	return;
 	}
 
-	nowStatus.MaxHp += lus.LvHp;
-	nowStatus.Hp += lus.LvHp;
-	nowStatus.Atk += lus.LvAtk;
-	nowStatus.Speed += lus.LvSpeed;
+	m_Status.MaxHp += LvUPStatus.LvHp;
+	m_Status.Hp += LvUPStatus.LvHp;
+	m_Status.Atk += LvUPStatus.LvAtk;
+	m_Status.Speed += LvUPStatus.LvSpeed;
 	Level++;
 }
 
@@ -151,26 +151,54 @@ void Actor::LevelUp(LvUpStatus& lus, Status& nowStatus, int& Level)
 /// <param name="nowStatus">現在のステータス</param>
 /// <param name="Level">現在のレベル</param>
 /// <param name="downLevel">下げるレベルの数</param>
-void Actor::levelDown(LvUpStatus& lus, Status& nowStatus, int& Level, int downLevel)
+void Actor::levelDown(int& Level, int downLevel)
 {
-	Level-= downLevel;
 	//もしレベルが0なら1にする
-	if (Level == 0) {
-		Level = 1; 
+	if (Level == 1) {
+		Level = 1;
 		return;
 	}
-	
 
-	nowStatus.MaxHp-= downLevel*lus.LvHp;
-	//もしHPがMaxHpを上回るなら
-	if (nowStatus.Hp > nowStatus.MaxHp)
-	{
-		//HPとMaxHpを同じにする
-		nowStatus.Hp = nowStatus.MaxHp;
+	for (int count = 0; count < downLevel; count++) {
+
+		if (Level == 1) {
+			return;
+		}
+
+		m_Status.MaxHp-= LvUPStatus.LvHp;
+		//もしHPがMaxHpを上回るなら
+		if (m_Status.Hp > m_Status.MaxHp)
+		{
+			//HPとMaxHpを同じにする
+			m_Status.Hp = m_Status.MaxHp;
+		}
+
+		m_Status.Atk -= LvUPStatus.LvAtk;
+		m_Status.Speed -= LvUPStatus.LvSpeed;
+
+		Level -= 1;
+	
 	}
 
-	nowStatus.Atk -= downLevel*lus.LvAtk;
-	nowStatus.Speed -= downLevel*lus.LvSpeed;
+
+	//Level-= downLevel;
+	////もしレベルが0なら1にする
+	//if (Level == 0) {
+	//	Level = 1; 
+	//	return;
+	//}
+	//
+
+	//m_Status.MaxHp-= downLevel* LvUPStatus.LvHp;
+	////もしHPがMaxHpを上回るなら
+	//if (m_Status.Hp > m_Status.MaxHp)
+	//{
+	//	//HPとMaxHpを同じにする
+	//	m_Status.Hp = m_Status.MaxHp;
+	//}
+
+	//m_Status.Atk -= downLevel* LvUPStatus.LvAtk;
+	//m_Status.Speed -= downLevel* LvUPStatus.LvSpeed;
 }
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
@@ -205,7 +233,7 @@ void Actor::ExpProcess(int Exp)
 				//手に入れた経験値より経験値テーブルのほうが大きかったら
 				if (GetExp >= ExpTable) {
 					//レベルアップ
-					LevelUp(LvUPStatus, m_Status, Lv);
+					LevelUp(Lv);
 				}
 
 				//今の経験値テーブルを代入
@@ -248,6 +276,17 @@ void Actor::ExpProcess(int Exp)
 		}
 
 	}
+}
+
+//レベルを下げる
+void Actor::LevelDownProcess(int downlevel)
+{
+	//レベルを１下げる
+	levelDown(Lv, downlevel);
+	//経験値をリセット
+	ExpReset(Lv, GetExp);
+	//一つ下のレベルの経験値テーブルにする
+	ExpTableChamge(Lv, ExpTable);
 }
 
 /// <summary>

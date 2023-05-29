@@ -37,6 +37,7 @@ enum EnEFK {
 	enEffect_Neutral_Enemy_GreenMagic,
 	enEffect_Rabbit_Magic,
 	enEffect_Rabbit_kirakira,
+	enEffect_FireWorks,
 	enEffect_Num
 };
 

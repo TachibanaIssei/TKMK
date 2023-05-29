@@ -79,6 +79,8 @@ public:
 		m_LastAttackMove.Normalize();
 	}
 
+	void SetAndPlaySoundSource(EnSound soundNumber);
+
 private:
 	// ï]âøílópÇÃç\ë¢ëÃ
 	struct EvalData
@@ -102,6 +104,8 @@ private:
 
 	EvalData CalculateTargetEnemy(Neutral_Enemy* enemy);
 	EvalData CalculateTargetAI(Actor* actor);
+
+	void IsLevelEffect(int oldlevel, int nowlevel);
 
 	enum Action {
 		AttackAI,

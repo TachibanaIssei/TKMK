@@ -506,7 +506,7 @@ void Neutral_Enemy::Collision()
 				{
 					SoundSource* se = NewGO<SoundSource>(0);
 					se->Init(enSound_Rabbit_Death);
-					se->SetVolume(1.0f);
+					se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 					se->Play(false);
 					//相手に経験値を渡す
 					
@@ -550,7 +550,7 @@ void Neutral_Enemy::Collision()
 					{
 						SoundSource* se = NewGO<SoundSource>(0);
 						se->Init(enSound_Enemy_Death);
-						se->SetVolume(1.0f);
+						se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 						se->Play(false);
 						for (int i = 0; i < 3; i++)
 						{
@@ -570,7 +570,7 @@ void Neutral_Enemy::Collision()
 					m_lastAttackActor->HpUp(HpPass);
 					SoundSource* se = NewGO<SoundSource>(0);
 					se->Init(enSound_Healing);
-					se->SetVolume(1.0f);
+					se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 					se->Play(false);
 				}
 
@@ -1157,8 +1157,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Enemy_Voice);
 		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
 	}
 	//キーの名前がattack_endの時
@@ -1174,9 +1173,7 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Rabbit_FootSteps);
 		se->Play(false);
-		//プレイヤーとの距離によって音量調整
-		SEVolume = SoundSet(player, MaxVolume, MinVolume);
-		se->SetVolume(SEVolume);
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 	}
 	else if (wcscmp(eventName, L"Jump_End") == 0)
 	{

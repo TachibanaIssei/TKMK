@@ -202,15 +202,6 @@ public:
 	int& SetMaxHp() {
 		return m_Status.MaxHp;
 	}
-	//////////////////////////////////////////////////////////////////////////////
-	/// <summary>
-	/// プレイヤーのステートを変更
-	/// </summary>
-	/// <param name="gamescene">変更したいステートの名前</param>
-	/*void SetPlayerState(PlayerState gamescene) {
-		m_charState = gamescene;
-		m_charState = gamescene;
-	}*/
 
 	/// <summary>
 	/// リスポーンする番号を決める
@@ -308,7 +299,9 @@ public:
 
 	void CreatMagicCircle();
 
-	
+	virtual void IsLevelEffect(int oldlevel,int nowlevel) = 0;
+
+	virtual void SetAndPlaySoundSource(EnSound soundNumber) = 0;
 
 protected:
 	/// <summary>
@@ -367,7 +360,7 @@ protected:
 
 	Game* m_game=nullptr;
 	GameUI* m_gameUI = nullptr;
-	Player* m_player = nullptr;
+	Player* player = nullptr;
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
 	
@@ -423,6 +416,9 @@ protected:
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
 	int AtkEndPosId= -1;
 	
+	//前フレームのレベル
+	int oldLv = 1;
+
 	//獲得した経験値仮
 	int exp=1;
 	//Newtral_Enemyの攻撃力

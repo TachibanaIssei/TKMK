@@ -92,10 +92,6 @@ Result::~Result()
 
 bool Result::Start()
 {
-	Vector3 dir = { 0.5f,-1.0f,0.5f };
-	dir.Normalize();
-	Vector3 color = { 0.8f,0.8f,0.8f };
-	g_renderingEngine->SetDirectionLight(0, dir, color);
 
 	//エフェクトの読み込み
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireWorks, u"Assets/effect/Neutral_Enemy/fireworks.efk");
@@ -114,10 +110,6 @@ bool Result::Start()
 	{
 		m_playerScore[i] = { charPoints[i],i+1};
 	}
-
-	m_playerScore[1].Point = 1;
-	m_playerScore[2].Point = 0;
-	m_playerScore[3].Point = 0;
 
 	//順位付け
 	for (j = 0; j < PLAYER; j++)
@@ -147,6 +139,11 @@ bool Result::Start()
 	}
 
 	DeleteGO(game);
+
+	Vector3 dir = { 0.5f,-1.0f,0.5f };
+	dir.Normalize();
+	Vector3 color = { 0.8f,0.8f,0.8f };
+	g_renderingEngine->SetDirectionLight(0, dir, color);
 
 	InitSprite();
 	InitModel();

@@ -131,7 +131,7 @@ void Pause::PauseMove()
 		{
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(enSound_Title_Choise);
-			se->SetVolume(1.0f);
+			se->SetVolume(game->GetSoundEffectVolume());
 			se->Play(false);
 			MenuNumber++;
 		}
@@ -142,7 +142,7 @@ void Pause::PauseMove()
 		{
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(enSound_Title_Choise);
-			se->SetVolume(1.0f);
+			se->SetVolume(game->GetSoundEffectVolume());
 			se->Play(false);
 			MenuNumber--;
 		}
@@ -323,7 +323,7 @@ void Pause::Push_OK()
 {
 	SoundSource* se = NewGO<SoundSource>(0);
 	se->Init(enSound_OK);
-	se->SetVolume(1.0f);
+	se->SetVolume(game->GetSoundEffectVolume());
 	se->Play(false);
 }
 

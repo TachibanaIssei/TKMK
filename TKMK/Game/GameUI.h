@@ -243,10 +243,10 @@ private:
 	Vector3				m_finishCountScale = Vector3::One;
 
 	Vector3 PointPos[4] = {
-		Vector3(-850.0f, 170.0f, 0.0f),
-		Vector3(-850.0f, 60.0f, 0.0f), 
-		Vector3(-850.0f, -50.0f, 0.0f), 
-		Vector3(-850.0f, -160.0f, 0.0f), 
+		Vector3(-860.0f, 170.0f, 0.0f),
+		Vector3(-860.0f, 60.0f, 0.0f), 
+		Vector3(-860.0f, -50.0f, 0.0f), 
+		Vector3(-860.0f, -160.0f, 0.0f), 
 	};															//ポイント
 
 	Vector3 LevelPos[3] = {
@@ -263,7 +263,7 @@ private:
 	};															//ポイントのフレーム
 
 	Vector3 CharIconPos[4] = {
-		Vector3(-905.0f, 145.0f, 0.0f),
+		Vector3(-905.0f, 120.0f, 0.0f),
 		Vector3(-905.0f, 35.0f, 0.0f),
 		Vector3(-905.0f, -75.0f, 0.0f),
 		Vector3(-905.0f, -185.0f, 0.0f),

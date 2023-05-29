@@ -165,6 +165,11 @@ void Map::Render(RenderContext& rc)
 		return;
 	}
 
+	if (player->CharGetRespawnTime() > 0)
+	{
+		return;
+	}
+
 	m_Map.Draw(rc);
 	//m_MapFrame.Draw(rc);
 	

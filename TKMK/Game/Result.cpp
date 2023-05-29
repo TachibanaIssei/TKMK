@@ -7,8 +7,11 @@
 #include "Effect.h"
 #include "graphics/effect/EffectEmitter.h"
 
+
 namespace ResultSpriteConst
 {
+	const float COMPLEMENT = 0.022f;
+
 	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);		//"タイトルに戻る"の画像の横に出す剣の画像に加算する値
 	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);	//"ゲーム終了"の画像の横に出す剣の画像に加算する値
 
@@ -63,15 +66,15 @@ namespace ResultSpriteConst
 	const float SE_DRAM_JAAN_VOLUME = 1.0f;		//ドラムの"ジャーン"の音量
 	const float SE_DRAM_ROLL_VOLUME = 1.0f;		//ドラムロールの音量
 
-	const Vector3 KNIGHT_POS = { -65.0f,0.0f,-150.0f };		//剣士の座標
-	const float KNIGHT_ROT = 160.0f;						//剣士の回転
-	const Vector3 BACK_MODEL_POS = { -500.0f,0.0f,0.0f };	//背景の座標
+	const Vector3 KNIGHT_POS = { -80.0f,0.0f,-150.0f };		//剣士の座標
+	const float KNIGHT_ROT = 150.0f;						//剣士の回転
+	const Vector3 BACK_MODEL_POS = { 0.0f,0.0f,0.0f };	//背景の座標
 
-	const Vector3 FIREWORKS_EFFECT_POS = { -250.0f,0.0f,200.0f };
+	const Vector3 FIREWORKS_EFFECT_POS = { -80.0f,0.0f,200.0f };
 
 	const Vector3 SKYCUBE_POS = { 0.0f,-900.0f,-900.0f };					//スカイキューブの座標
 
-	const Vector3	CAMERA_TARGET_POS = Vector3(0.0f, 35.0f, 100.0f);		//カメラのターゲット
+	const Vector3	CAMERA_TARGET_POS = Vector3(0.0f, 50.0f, -150.0f);		//カメラのターゲット
 	const Vector3	CAMERA_POSITION = Vector3(0.0f, 60.0f, -280.0f);		//カメラの座標
 }
 
@@ -82,9 +85,8 @@ Result::Result()
 
 Result::~Result()
 {
-	if (GameObjectManager::GetInstance()->IsActive()) {
+	if (m_fireWorksInitFlag && GameObjectManager::GetInstance()->IsActive()) {
 		m_fireWorks->Stop();
-		DeleteGO(m_fireWorks);
 	}
 
 	DeleteGO(m_skyCube);
@@ -92,16 +94,11 @@ Result::~Result()
 
 bool Result::Start()
 {
-
-	//エフェクトの読み込み
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireWorks, u"Assets/effect/Neutral_Enemy/fireworks.efk");
-
-	SetCamera();
-
 	fade = FindGO<Fade>("fade");
 	fade->StartFadeOut(1.0f);
 
 	Game* game = FindGO<Game>("game");
+
 	game->GetActorPoints(charPoints.data());
 
 	int i, j, k, l, m;
@@ -139,11 +136,18 @@ bool Result::Start()
 	}
 
 	DeleteGO(game);
+	
+	//エフェクトの読み込み
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireWorks, u"Assets/effect/Neutral_Enemy/fireworks.efk");
 
-	Vector3 dir = { 0.5f,-1.0f,0.5f };
+	SetCamera();
+
+	Vector3 dir = { 0.1f,-1.0f,0.5f };
 	dir.Normalize();
-	Vector3 color = { 0.8f,0.8f,0.8f };
+	Vector3 color = { 0.7f,0.7f,0.7f };
 	g_renderingEngine->SetDirectionLight(0, dir, color);
+	Vector3 ambient = { 0.6f,0.6f,0.6f };
+	g_renderingEngine->SetAmbient(ambient);
 
 	InitSprite();
 	InitModel();
@@ -162,16 +166,16 @@ bool Result::Start()
 	{
 	case 1:
 		m_bgm->Init(enSound_ResultBGM1);
-		m_charaState = enCharacterState_Win;
+		m_stayCharaState = enCharacterState_Win;
 		InitEffect();
 		break;
 	case 4:
 		m_bgm->Init(enSound_ResultBGM3);
-		m_charaState = enCharacterState_4th;
+		m_stayCharaState = enCharacterState_4th;
 		break;
 	default:
 		m_bgm->Init(enSound_ResultBGM2);
-		m_charaState = enCharacterState_Lose;
+		m_stayCharaState = enCharacterState_Lose;
 		break;
 	}
 
@@ -187,6 +191,7 @@ void Result::Update()
 {
 	PlayAnimation();
 	m_knightModel.Update();
+	m_camera.Update();
 
 	//最初の処理
 	if (m_change == enChange_first)
@@ -367,6 +372,8 @@ void Result::InitSprite()
 
 void Result::InitModel()
 {
+	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/Knight/Knight_idle.tka");
+	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Win].Load("Assets/animData/Knight/Knight_Victory.tka");
 	m_animationClips[enAnimationClip_Win].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Lose].Load("Assets/animData/Knight/Knight_Defeat.tka");
@@ -392,6 +399,8 @@ void Result::InitModel()
 	m_knightModel.SetRotation(rot);
 	m_knightModel.SetScale(1.3f,1.3f,1.3f);
 
+	m_charaState = enCharacterState_Idle;
+
 	m_backGround.Update();
 	m_backWall.Update();
 	m_knightModel.Update();
@@ -406,6 +415,8 @@ void Result::InitSkyCube()
 
 void Result::InitEffect()
 {
+	m_fireWorksInitFlag = true;
+
 	//花火エフェクト再生
 	m_fireWorks = NewGO<EffectEmitter>(0);
 	m_fireWorks->Init(EnEFK::enEffect_FireWorks);
@@ -417,9 +428,12 @@ void Result::InitEffect()
 
 void Result::SetCamera()
 {
-	g_camera3D->SetTarget(ResultSpriteConst::CAMERA_TARGET_POS);
-	g_camera3D->SetPosition(ResultSpriteConst::CAMERA_POSITION);
-	g_camera3D->Update();
+	m_camera.Init(*g_camera3D, 1.0f, true, 10.0f);
+
+	m_camera.SetTarget(ResultSpriteConst::CAMERA_TARGET_POS);
+	m_camera.SetPosition(ResultSpriteConst::CAMERA_POSITION);
+	m_camera.Refresh();
+	m_camera.Update();
 }
 
 void Result::Rank()
@@ -474,7 +488,7 @@ void Result::MoveLerp()
 	//補完率を増加させる
 	if (m_complement <= 1.0f)
 	{
-		m_complement += 0.02f;
+		m_complement += ResultSpriteConst::COMPLEMENT;
 	}
 	else {
 		//補完率が1を超えたらリセット
@@ -495,6 +509,7 @@ void Result::MoveLerp()
 		case enChange_1st:
 			m_change = enChange_stop;
 			m_drawSelectSpriteFlag = true;
+			m_charaState = m_stayCharaState;
 
 			//BGM再生
 			m_bgm->Play(true);
@@ -650,14 +665,17 @@ void Result::PlayAnimation()
 {
 	switch (m_charaState)
 	{
+	case(enCharacterState_Idle):
+		m_knightModel.PlayAnimation(enAnimationClip_Idle, 0.1f);
+		break;
 	case(enCharacterState_Win):
-		m_knightModel.PlayAnimation(enAnimationClip_Win, 0.1f);
+		m_knightModel.PlayAnimation(enAnimationClip_Win, 0.5f);
 		break;
 	case(enCharacterState_Lose):
-		m_knightModel.PlayAnimation(enAnimationClip_Lose, 0.1f);
+		m_knightModel.PlayAnimation(enAnimationClip_Lose, 0.5f);
 		break;
 	case(enCharacterState_4th):
-		m_knightModel.PlayAnimation(enAnimationClip_4th, 0.1f);
+		m_knightModel.PlayAnimation(enAnimationClip_4th, 0.5f);
 		break;
 	}
 }
@@ -732,7 +750,7 @@ void Result::Render(RenderContext& rc)
 	m_backWall.Draw(rc);
 	m_knightModel.Draw(rc);
 
-	m_spriteRender.Draw(rc);	//背景
+	//m_spriteRender.Draw(rc);	//背景
 	m_resultLogo.Draw(rc);		//リザルトロゴ
 
 	//名前の背景画像

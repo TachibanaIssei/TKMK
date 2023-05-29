@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include "SpringCamera.h"
 
 #define PLAYER 4
 #define MOVE 4
@@ -58,6 +59,7 @@ private:
 
 	enum EnAnimationClip
 	{
+		enAnimationClip_Idle,
 		enAnimationClip_Win,
 		enAnimationClip_Lose,
 		enAnimationClip_4th,
@@ -66,6 +68,7 @@ private:
 
 	enum EnCharacterState
 	{
+		enCharacterState_Idle,
 		enCharacterState_Win,
 		enCharacterState_Lose,
 		enCharacterState_4th,
@@ -73,6 +76,8 @@ private:
 	};
 
 private:
+	SpringCamera m_camera;
+
 	SkyCube* m_skyCube;					//スカイキューブ
 	ModelRender m_knightModel;			//剣士のモデル
 	ModelRender m_backGround;			//地面
@@ -82,6 +87,7 @@ private:
 
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	EnCharacterState m_charaState = enCharacterState_Num;
+	EnCharacterState m_stayCharaState = enCharacterState_Num;
 
 	std::array<int, PLAYER> charPoints = {0,0,0,0};		//プレイヤーのポイント
 	int titleScene = 1;			//タイトルのシーン番号
@@ -95,6 +101,7 @@ private:
 
 	bool m_selectFlag			= false;	//選択項目の切り替えフラグ
 	bool m_drawSelectSpriteFlag = false;	//選択項目の表示のフラグ
+	bool m_fireWorksInitFlag = false;
 
 	bool m_isInit = false;
 
@@ -134,18 +141,18 @@ private:
 
 	//フォントの線形補間前の座標
 	std::array<Vector3, MOVE> m_lerpStartPos = {	//順位
-		Vector3(-2500.0f, 300.0f, 0.0f),		//１位
-		Vector3(-2500.0f, 145.0f, 0.0f),		//２位
-		Vector3(-2500.0f, 0.0f, 0.0f),		//３位
-		Vector3(-2500.0f, -145.0f, 0.0f)		//４位
+		Vector3(-2100.0f, 300.0f, 0.0f),		//１位
+		Vector3(-2100.0f, 145.0f, 0.0f),		//２位
+		Vector3(-2100.0f, 0.0f, 0.0f),		//３位
+		Vector3(-2100.0f, -145.0f, 0.0f)		//４位
 	};
 
 	//スプライトの線形補間前の座標
 	std::array<Vector3, MOVE> m_spriteLerpStartPos = {	//順位
-		Vector3(-2500.0f, 180.0f, 0.0f),		//１位
-		Vector3(-2500.0f, 25.0f, 0.0f),			//２位
-		Vector3(-2500.0f, -117.0f, 0.0f),		//３位
-		Vector3(-2500.0f, -263.0f, 0.0f)		//４位
+		Vector3(-2100.0f, 180.0f, 0.0f),		//１位
+		Vector3(-2100.0f, 25.0f, 0.0f),			//２位
+		Vector3(-2100.0f, -117.0f, 0.0f),		//３位
+		Vector3(-2100.0f, -263.0f, 0.0f)		//４位
 	};
 
 	//フォントを線形補間でここまで動かす

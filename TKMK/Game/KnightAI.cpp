@@ -112,6 +112,15 @@ void KnightAI::Update()
 		m_modelRender.Update();
 		return;
 	}
+
+	if (m_charState == enCharState_Death) {
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
+		//ステート
+		ManageState();
+		return;
+	}
 	//攻撃アップ中の処理
 	//AttackUP();
 
@@ -125,10 +134,7 @@ void KnightAI::Update()
 		//ステート
 		ManageState();
 	}
-	if (m_Status.Hp <= 0)
-	{
-		m_charState = enCharState_Death;
-	}
+	
 	//必殺技の溜めのときに動かないようにする
 	//if (m_charState == enCharState_Ult_liberation)
 	//{
@@ -141,26 +147,20 @@ void KnightAI::Update()
 	{
 		//リスポーンしたときしか使えない
 		//飛び降りる処理
-		//地上にいないならジャンプしかしないようにする
-		if (IsActorGroundChack() != true) {
-			if (m_charCon.IsOnGround())
-			{
-				
-				m_charState = enCharState_Jump;
+		//地上にいない間の処理
+		if (GetIsGroundFlag() == false) {
+			if (IsActorGroundChack() == true) {
+				//地面にいる
+				IsGroundFlag = true;
 			}
-		}
-		else
-		{
-			//やられているなら
-			//if (m_charState == enCharState_Death)
-			//{
-			//	//地上にいない
-			//	IsGroundFlag = false;
-			//}
-			//else
-			//	//地上にいる
-			//	IsGroundFlag = true;
-			
+			else {
+				//ジャンプ
+				if (m_charCon.IsOnGround())
+				{
+
+					m_charState = enCharState_Jump;
+				}
+			}
 		}
 
 		//ステート
@@ -188,19 +188,7 @@ void KnightAI::Update()
 		//無敵時間
 		Invincible();
 
-		if (SkillState == true && CantMove == false)
-		{
-			m_charState = enCharState_Skill;
-			//スキルを使うときのスピードを使う
-			Vector3 move = m_skillMove;
-			m_rot.SetRotationYFromDirectionXZ(move);
-			////スキルを使うときのスピードを使う
-			////AnimationMove(SkillSpeed, m_forward);
-			move.y = 0.0f;
-			move *= 200.0f;
-
-			m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
-		}
+		
 
 		if (m_charState == enCharState_LastAttack)
 		{
@@ -942,7 +930,8 @@ void KnightAI::Attack()
 	
 	if (CanUlt())
 	{
-		if (m_charState == enCharState_Attack || m_charState == enCharState_SecondAttack || m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance)
+		if (m_charState == enCharState_Attack || m_charState == enCharState_SecondAttack ||
+			m_charState == enCharState_LastAttack || m_charState == enCharState_Avoidance||m_charState==enCharState_Skill)
 		{
 			return;
 		}
@@ -1300,13 +1289,16 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 			if (GetName() == actor->GetName()) {
 				continue;
 			}
-				/*m_OnGroundCharCounter++;
-				//このキャラはグラウンドにいる
-				actor->ChangeGroundChackflag(true);*/
-			if (actor->IsActorGroundChack() == true) {
+
+			if (actor->GetIsGroundFlag() == true) {
 				//雷を打たれるキャラの情報を入れる
 				DamegeUltActor.push_back(actor);
 			}
+				
+			//if (actor->IsActorGroundChack() == true) {
+			//	//雷を打たれるキャラの情報を入れる
+			//	DamegeUltActor.push_back(actor);
+			//}
 		}
 
 		//攻撃対象のアクターがいなかったら

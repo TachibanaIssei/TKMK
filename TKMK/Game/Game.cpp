@@ -169,34 +169,34 @@ bool Game::Start()
 
 					return true;
 				}
-				////右上の座標
-				//if (objData.number == 1) {
-				//	m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-				//	m_KnightAI1->SetGame(this);
-				//	m_Actors.push_back(m_KnightAI1);
-				//	m_KnightAI1->SetPosition(objData.position);
-				//	m_KnightAI1->SetCharaconPosition(objData.position);
-				//	m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
-				//	int Number = 1;
-				//	m_KnightAI1->SetRespawnNumber(Number);
-				//	m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+				//右上の座標
+				if (objData.number == 1) {
+					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+					m_KnightAI1->SetGame(this);
+					m_Actors.push_back(m_KnightAI1);
+					m_KnightAI1->SetPosition(objData.position);
+					m_KnightAI1->SetCharaconPosition(objData.position);
+					m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
+					int Number = 1;
+					m_KnightAI1->SetRespawnNumber(Number);
+					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
 
-				//	return true;
-				//}
-				////左下の座標
-				//if (objData.number == 3) {
-				//	m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
-				//	m_KnightAI2->SetGame(this);
-				//	m_Actors.push_back(m_KnightAI2);
-				//	m_KnightAI2->SetPosition(objData.position);
-				//	m_KnightAI2->SetCharaconPosition(objData.position);
-				//	m_KnightAI2->SetPlayerActor(player->GetPlayerActor());
-				//	int Number = 3;
-				//	m_KnightAI2->SetRespawnNumber(Number);
-				//	m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+					return true;
+				}
+				//左下の座標
+				if (objData.number == 3) {
+					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
+					m_KnightAI2->SetGame(this);
+					m_Actors.push_back(m_KnightAI2);
+					m_KnightAI2->SetPosition(objData.position);
+					m_KnightAI2->SetCharaconPosition(objData.position);
+					m_KnightAI2->SetPlayerActor(player->GetPlayerActor());
+					int Number = 3;
+					m_KnightAI2->SetRespawnNumber(Number);
+					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 
-				//	return true;
-				//}
+					return true;
+				}
 				if (objData.number == 4)
 				{
 					m_EFK_Pos = objData.position;
@@ -951,18 +951,22 @@ void Game::Render(RenderContext& rc)
 		return;
 	}
 
-	if (RabbitFlag == true && m_GameState == enGameState_Battle)
-	{
-		m_RabbitSprite.Draw(rc);
+	if (player->CharGetRespawnTime() <= 0) {
+		if (RabbitFlag == true && m_GameState == enGameState_Battle)
+		{
+			m_RabbitSprite.Draw(rc);
 
-	}
-
-	if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
-
-		if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
-			return;
 		}
 
-		m_underSprite.Draw(rc);
+		if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
+
+			if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
+				return;
+			}
+
+			m_underSprite.Draw(rc);
+		}
 	}
+
+	
 }

@@ -6,6 +6,9 @@
 namespace TitleConst
 {
 	const Vector3 START_IMAGE_SCALE = Vector3(0.4f, 0.4f, 1.0f);
+
+	const Vector3 START_CURSOR_POS = { -730.0f,-130.0f,0.0f };			//スタート選択時の剣のカーソルの位置
+	const Vector3 HOWTOPLAY_CURSOR_POS = { -830.0f,-245.0f,0.0f };		//遊び方選択時の剣のカーソルの位置
 }
 
 Tittle::Tittle()
@@ -20,8 +23,37 @@ Tittle::~Tittle()
 
 bool Tittle::Start()
 {
+	InitSprite();
+	ResistSound();
+
+	m_bgm = NewGO<SoundSource>(0);
+
+	return true;
+}
+
+void Tittle::Update()
+{
+	Scene();
+	Fade();
+
+	m_timer++;
+
+	SpriteUpdate();
+}
+
+void Tittle::InitSprite()
+{
+	//選択のカーソル
+	m_choiceCursor.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
+	m_choiceCursor.SetPosition(TitleConst::START_CURSOR_POS);
+	m_choiceCursor.SetScale(0.6f, 0.6f, 0.6f);
+	Quaternion rot;
+	rot.SetRotationDegZ(225.0f);
+	m_choiceCursor.SetRotation(rot);
+	m_choiceCursor.Update();
+
 	//背景の初期化
-	m_spriteRender.Init("Assets/sprite/Title/first_title/titleBack.DDS",1920.0f,1080.0f);
+	m_spriteRender.Init("Assets/sprite/Title/first_title/titleBack.DDS", 1920.0f, 1080.0f);
 	m_spriteRender.SetPosition(g_vec3Zero);
 	m_spriteRender.SetScale(g_vec3One);
 	m_sRotation.SetRotationZ(0.0f);
@@ -29,19 +61,19 @@ bool Tittle::Start()
 	m_spriteRender.Update();
 
 	//PressAButton
-	m_pressAButton.Init("Assets/sprite/Title/first_title/PressAButton.DDS",700.0f,150.0f);
+	m_pressAButton.Init("Assets/sprite/Title/first_title/PressAButton.DDS", 700.0f, 150.0f);
 	m_pressAButton.SetPosition(0.0f, -300.0f, 0.0f);
 	m_pressAButton.Update();
-	
+
 	//titleのロゴ
-	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo_SWORDARENA.DDS", 1200.0f,200.0f);
+	m_titleLogo.Init("Assets/sprite/Title/first_title/gameTitleLogo_SWORDARENA.DDS", 1200.0f, 200.0f);
 	m_titleLogo.SetPosition(m_titleLogoPosition);
 	m_titleLogo.SetMulColor(m_color);
 	m_titleLogo.SetScale(m_titleLogoScale);
 	m_titleLogo.Update();
 
 	//titleの剣(右)
-	m_titleswordwhite.Init("Assets/sprite/Title/first_Title/sword_right.DDS", 300.0f,400.0f);
+	m_titleswordwhite.Init("Assets/sprite/Title/first_Title/sword_right.DDS", 300.0f, 400.0f);
 	m_titleswordwhite.SetPosition(m_Toprightfirstposition);
 	m_titleswordwhite.SetScale(g_vec3One);
 	m_titleswordwhite.Update();
@@ -155,7 +187,10 @@ bool Tittle::Start()
 	m_ilustoptionOp.SetPosition(m_RightfirstPosition);
 	m_ilustoptionOp.SetScale(g_vec3One);
 	m_ilustoptionOp.Update();
+}
 
+void Tittle::ResistSound()
+{
 	//BGMの設定
 	g_soundEngine->ResistWaveFileBank(enSound_Title_Fanfare, "Assets/sound/titleBGM/fanfare1.wav");
 	g_soundEngine->ResistWaveFileBank(enSound_Title_BGM, "Assets/sound/titleBGM/titleBGM2.wav");
@@ -168,21 +203,11 @@ bool Tittle::Start()
 	g_soundEngine->ResistWaveFileBank(enSound_OK, "Assets/sound/sentaku/kettei3.wav");
 	//タイトル画面決定音
 	g_soundEngine->ResistWaveFileBank(enSound_TitleOK, "Assets/sound/titleBGM/titleketei.wav");
-	
-
-	m_bgm = NewGO<SoundSource>(0);
-
-
-	return true;
 }
 
-void Tittle::Update()
+void Tittle::SpriteUpdate()
 {
-	Scene();
-	Fade();
-
-	m_timer++;
-
+	m_choiceCursor.Update();
 	m_spriteRender.Update();
 	m_titleLogo.Update();
 	m_pressAButton.Update();
@@ -390,6 +415,7 @@ void Tittle::Scene()
 	{
 	case 0:
 		m_titleScene = enTitleScene_PressAScene;
+		m_isComplement = true;
 		break;
 	case 1:
 		m_titleScene = enTitleScene_Change;
@@ -399,9 +425,11 @@ void Tittle::Scene()
 			m_bgm->Play(true);
 			m_bgm->SetVolume(0.5f);
 		}
+		m_isComplement = true;
 		break;
 	case 2:
 		m_titleScene = enTitleScene_Select;
+		m_isComplement = false;
 		break;
 	}
 }
@@ -443,6 +471,9 @@ void Tittle::Select()
 		//それ以外は画面外にする
 		m_operationST.SetPosition(m_firstPosition);
 		//m_optionST.SetPosition(m_firstPosition);
+
+		//剣のカーソルの位置を設定
+		m_choiceCursor.SetPosition(TitleConst::START_CURSOR_POS);
 		break;
 	case 1:
 		//"キャラクター説明"
@@ -452,6 +483,9 @@ void Tittle::Select()
 		//それ以外は画面外にする
 		m_startST.SetPosition(m_firstPosition);
 		//m_optionST.SetPosition(m_firstPosition);
+
+		//剣のカーソルの位置を設定
+		m_choiceCursor.SetPosition(TitleConst::HOWTOPLAY_CURSOR_POS);
 		break;
 	case 2:
 		//"操作説明"
@@ -708,6 +742,8 @@ void Tittle::Render(RenderContext& rc)
 	m_operationST.Draw(rc);
 	//m_option.Draw(rc);
 	//m_optionST.Draw(rc);
+	//線形補間中は表示しない
+	if(!m_isComplement) m_choiceCursor.Draw(rc);
 
 	switch (m_operationPageNumber)
 	{

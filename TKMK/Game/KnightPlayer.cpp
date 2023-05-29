@@ -90,8 +90,12 @@ void KnightPlayer::Update()
 {
 	//アニメーションの再生
 	PlayAnimation();
-	//当たり判定
-	Collition();
+	//無敵時間
+	if (Invincible() == false) {
+		//当たり判定
+		Collition();
+	}
+	
 
 	// 追尾エフェクトのリセット
 	EffectNullptr();
@@ -219,8 +223,7 @@ void KnightPlayer::Update()
 			}
 			//ステート
 			ManageState();
-			//無敵時間
-			Invincible();
+			
 			//回転処理
 			Rotation();
 

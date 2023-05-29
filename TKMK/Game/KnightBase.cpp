@@ -412,8 +412,8 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Init(enSound_Knight_Death);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
-		//SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
-		se->SetVolume(1.0f);
+		SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
+		se->SetVolume(SEVolume);
 
 		m_Status.Hp = 0;
 		//攻撃された相手が中立の敵以外なら
@@ -438,8 +438,8 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Init(enSound_Knight_Receiving_Damage);
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
-		//SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
-		se->SetVolume(1.0f);
+		SEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
+		se->SetVolume(SEVolume);
 		//無敵時間フラグ
 		//invincibleFlag = true;
 	}

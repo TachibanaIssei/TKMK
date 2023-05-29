@@ -982,8 +982,8 @@ void KnightAI::Attack()
 			//アルティメットSE
 			SoundSource* se = NewGO<SoundSource>(0);
 			se->Init(enSound_Knight_Charge_Power);
-			se->SetVolume(1.0f);
-			//se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+			//se->SetVolume(1.0f);
+			se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 			se->Play(false);
 
 			//必殺技発動フラグをセット
@@ -1092,9 +1092,9 @@ void KnightAI::MakeUltSkill()
 		//効果音再生
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Sword_Ult);
-		//se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
-		se->SetVolume(1.0f);
+		//se->SetVolume(1.0f);
 
 		//必殺技を打たれたのでフラグを立てる
 		//actor->ChangeDamegeUltFlag(true);
@@ -1231,9 +1231,9 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//剣１段目音
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboONE);
-		//se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
-		se->SetVolume(1.0f);
+		//se->SetVolume(1.0f);
 	}
 	//二段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"SecondAttack_Start") == 0)
@@ -1244,9 +1244,9 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//剣２段目音
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboTwo);
-		//se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
-		se->SetVolume(1.0f);
+		//se->SetVolume(1.0f);
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"LastAttack_Start") == 0)
@@ -1257,9 +1257,9 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//剣３段目音
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_ComboThree);
-		//se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
-		se->SetVolume(1.0f);
+		//se->SetVolume(1.0f);
 	}
 	//三段目のアタックのアニメーションが始まったら
 	if (wcscmp(eventName, L"Move_True") == 0)
@@ -1278,9 +1278,9 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//スキル音を発生
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Sword_Skill);
-		//se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
-		se->SetVolume(1.0f);
+		//se->SetVolume(1.0f);
 	}
 
 	//必殺技のアニメーションが始まったら

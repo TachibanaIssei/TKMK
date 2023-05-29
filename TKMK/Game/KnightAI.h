@@ -79,6 +79,7 @@ public:
 		m_LastAttackMove.Normalize();
 	}
 
+	void SetAndPlaySoundSource(EnSound soundNumber);
 
 private:
 	// •]‰¿’l—p‚Ì\‘¢‘Ì

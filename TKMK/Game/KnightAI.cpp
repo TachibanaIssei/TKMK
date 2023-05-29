@@ -99,7 +99,6 @@ void KnightAI::Update()
 		return;
 	}
 	HPBar();
-
 	
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade,false) == true)
@@ -112,9 +111,6 @@ void KnightAI::Update()
 		m_modelRender.Update();
 		return;
 	}
-	//攻撃アップ中の処理
-	//AttackUP();
-
 	//重力
 	Move();
 	//カントダウン中だったら
@@ -129,12 +125,6 @@ void KnightAI::Update()
 	{
 		m_charState = enCharState_Death;
 	}
-	//必殺技の溜めのときに動かないようにする
-	//if (m_charState == enCharState_Ult_liberation)
-	//{
-	//	m_modelRender.Update();
-	//	return;
-	//}
 		
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -145,22 +135,9 @@ void KnightAI::Update()
 		if (IsActorGroundChack() != true) {
 			if (m_charCon.IsOnGround())
 			{
-				
+
 				m_charState = enCharState_Jump;
 			}
-		}
-		else
-		{
-			//やられているなら
-			//if (m_charState == enCharState_Death)
-			//{
-			//	//地上にいない
-			//	IsGroundFlag = false;
-			//}
-			//else
-			//	//地上にいる
-			//	IsGroundFlag = true;
-			
 		}
 
 		//ステート
@@ -169,7 +146,7 @@ void KnightAI::Update()
 		AvoidanceSprite();
 		//スキルクールタイムの処理
 		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
-		
+
 		// 次のアクションを抽選 
 		LotNextAction();
 
@@ -178,13 +155,13 @@ void KnightAI::Update()
 			//追跡
 			ChaseAndEscape();
 		}
-		
+
 		//攻撃
 		Attack();
 
 		//反転
 		Rotation();
-		
+
 		//無敵時間
 		Invincible();
 
@@ -210,30 +187,13 @@ void KnightAI::Update()
 			LastAttackMove *= 100.0f;
 			m_position = m_charCon.Execute(LastAttackMove, g_gameTime->GetFrameDeltaTime());
 		}
-		
-		
+
+
 		//回避クールタイムの処理
 		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 
 	}
-
-	// 名前描画
-	Vector2 namePos = Vector2::Zero;
-	g_camera3D->CalcScreenPositionFromWorldPosition(namePos, m_position);
-	namePos.y += 60.0f;
-
-	wchar_t wcsbuf[256];
-	std::size_t len = std::strlen(GetName());
-	std::size_t converted = 0;
-	wchar_t* wcstr = new wchar_t[len + 1];
-	mbstowcs_s(&converted, wcstr, len + 1, GetName(), _TRUNCATE);
-	m_Name.SetText(wcstr);
-	m_Name.SetPosition(Vector3(namePos.x, namePos.y, 0.0f));
-	//フォントの大きさを設定。
-	m_Name.SetScale(0.5f);
-	//フォントの色を設定。
-	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
 	if (m_moveSpeed.LengthSq() != 0.0f) {
 		m_forwardNow = m_moveSpeed;
@@ -311,11 +271,6 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		return returnData;
 	}
 
-	if (m_game->GetMinutesTimer() <= 1.5f)
-	{
-		eval += 4000;
-	}
-
 	//アクターの座標を取得
 	Vector3 actorPos = actor->GetPosition();
 	//アクターたちと自分の座標を引く
@@ -360,6 +315,11 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 			eval += 2000;
 		}
 	}
+	//ゲーム時間1分40秒以下ポイントのためにちょっと動く
+	if (m_game->GetMinutesTimer() == 1.0f && m_game->GetSecondsTimer() <= 40.0f)
+	{
+		eval += 1000;
+	}
 	//ゲーム時間が残り30秒なったらポイント稼ぐために動く
 	if (m_game->GetMinutesTimer() == 0.0f && m_game->GetSecondsTimer() <= 30.0f)
 	{
@@ -400,12 +360,6 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	{
 		eval += 2000;
 	}
-
-	////パワーアップ中はアクターを狙う
-	//if (PowerUpTimer > 0.0f)
-	//{
-	//	eval += 3000;
-	//}
 
 	//自分を攻撃した相手が近い ＆ 相手とのHP差が大きかったら 逃げる
 	if (actor == m_lastAttackActor)
@@ -466,10 +420,14 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	// 距離で評価値を決める 近いほど高い
 	eval += 5000 - (int)Distance;
 
-	if (m_game->GetMinutesTimer() >= 1.5f)
+	if (Lv <= 6)
 	{
-		eval += 4000;
+		if (m_game->GetMinutesTimer() >= 2.0f && m_game->GetSecondsTimer() >= 30.0f)
+		{
+			eval += 4000;
+		}
 	}
+	
 	else
 	{
 		eval -= 4000;
@@ -577,7 +535,11 @@ void KnightAI::LotNextAction()
 	/*if (CantMove) {
 		return;
 	}*/
-
+	
+	if (m_Status.Hp <= 0)
+	{
+		return;
+	}
 	if (EvalTimer > 0.0f)
 	{
 		EvalTimer -= g_gameTime->GetFrameDeltaTime();
@@ -828,7 +790,7 @@ const bool KnightAI::CanUlt()
 {
 	Vector3 diff = TargePos - m_position;
 
-	if (diff.LengthSq() <= 450.0f * 450.0f)
+	if (diff.LengthSq() <= 300.0f * 300.0f)
 	{
 		return true;
 	}
@@ -866,7 +828,10 @@ void KnightAI::Attack()
 	{
 		return;
 	}
-	
+	if (m_position.y > 10.0f)
+	{
+		return;
+	}
 
 	if (CanSkill())
 	{	
@@ -948,16 +913,14 @@ void KnightAI::Attack()
 		}
 
 		//必殺技を発動する処理
-		if (pushFlag == false && m_targetActor!=nullptr&& Lv >= 4 && m_Status.Hp <= m_Status.MaxHp && m_targetActor->GetHp()< 210 && m_game->GetUltCanUseFlag()==false)
+		if (m_targetActor!=nullptr&& Lv >= 4 && (m_Status.MaxHp-m_Status.Hp)<=120 && m_targetActor->GetHP()<=200 && m_game->GetUltCanUseFlag() == false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
 
-			m_game->SetUltCanUseFlag(true);
 			UltimateDarknessFlag = true;
 			//魔法陣生成
 			CreatMagicCircle();
-			pushFlag = true;
 			//必殺技の溜めステートに移行する
 			m_charState = enCharState_Ult_liberation;
 
@@ -1317,16 +1280,6 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		//カメラで見るのを終わりにする
 		ChangeChaseCamera(false);
 
-		//必殺技の当たり判定のクラスを作成
-		//MakeUltSkill();
-		
-		////必殺技の当たり判定のクラスを作成
-		//MakeUltSkill();
-		////レベルを下げる
-		//UltimateSkill();
-		//エフェクトを移動
-		//m_swordEffectFlag = false;
-
 	}
 	//ジャンプのアニメーションが始まったら
 	if (wcscmp(eventName, L"Jump_Start") == 0)
@@ -1463,35 +1416,6 @@ void KnightAI::AvoidanceSprite()
 	}
 }
 
-
-//void KnightAI::Rotation()
-//{
-//	
-//
-//	if (fabsf(m_moveSpeed.x) < 0.001f
-//		&& fabsf(m_moveSpeed.z) < 0.001f) {
-//		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
-//		//このフレームではキャラは移動していないので旋回する必要はない。
-//		return;
-//	}
-//	//atan2はtanθの値を角度(ラジアン単位)に変換してくれる関数。
-//	//m_moveSpeed.x / m_moveSpeed.zの結果はtanθになる。
-//	//atan2を使用して、角度を求めている。
-//	//これが回転角度になる。
-//	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
-//	//atanが返してくる角度はラジアン単位なので3
-//	//SetRotationDegではなくSetRotationを使用する。
-//	m_rot.SetRotationY(-angle);
-//
-//	//回転を設定する。
-//	m_modelRender.SetRotation(m_rot);
-//
-//	//プレイヤーの前ベクトルを計算する。
-//	m_forward = Vector3::AxisZ;
-//	m_rot.Apply(m_forward);
-//}
-
-
 void KnightAI::Render(RenderContext& rc)
 {
 	if (DarwFlag == true) {
@@ -1508,8 +1432,5 @@ void KnightAI::Render(RenderContext& rc)
 			m_HP_Frame.Draw(rc);
 		}
 	}
-	//フォントを描画する。
-	//m_Name.Draw(rc);
-
 }
 

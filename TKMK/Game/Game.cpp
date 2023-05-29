@@ -343,8 +343,6 @@ void Game::Battle()
 	//誰かが必殺技を使ったら処理を止める
 	if (UltStopFlag == true)
 	{
-		
-
 		return;
 	}
 
@@ -359,21 +357,23 @@ void Game::Battle()
 		m_RespawnTimer = 0.0f;
 	}
 	m_RabbitRespawnTimer += g_gameTime->GetFrameDeltaTime();
-	if (m_RabbitRespawnTimer >= 5.0f)
+	if (m_RabbitRespawnTimer >= 30.0f)
 	{
 		RabbitRespawn();
 		m_RabbitRespawnTimer = 0.0f;
 	}
 
-	if (UltStopFlag == true)
+	if (UltCanUseFlag == true)
 	{
 		UltCanUseTimer -= g_gameTime->GetFrameDeltaTime();
-		if (UltCanUseTimer <= 0)
+
+		if (UltCanUseTimer <= 0.0f)
 		{
 			UltCanUseFlag = false;
 			UltCanUseTimer = 0.0f;
-		}
+		}	
 	}
+	
 }
 
 //ポーズ時の処理

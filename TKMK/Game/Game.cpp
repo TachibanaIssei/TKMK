@@ -18,7 +18,7 @@
 #include "Pause.h"
 
 namespace {
-	const int ENEMY_AMOUNT = 20;
+	const int ENEMY_AMOUNT = 14;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
 	const Vector3 Menu_HowToPlayPos = Vector3(0.0f, 60.0f, 0.0f);
 	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);
@@ -211,15 +211,15 @@ bool Game::Start()
 	m_gameUI->SetSGame(this);
 
 	
-		m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
-		m_underSprite.SetPosition(TOWEREXPOSITION_POS);
-		m_underSprite.SetScale(SpriteScale);
-		m_underSprite.Update();
+	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
+	m_underSprite.SetPosition(TOWEREXPOSITION_POS);
+	m_underSprite.SetScale(SpriteScale);
+	m_underSprite.Update();
 
-		m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
-		m_RabbitSprite.SetPosition(RABBIT_POS);
-		m_RabbitSprite.SetScale(RabbitSpriteScale);
-		m_RabbitSprite.Update();
+	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
+	m_RabbitSprite.SetPosition(RABBIT_POS);
+	m_RabbitSprite.SetScale(RabbitSpriteScale);
+	m_RabbitSprite.Update();
 
 
 	//ゲームの状態をゲームステートにする

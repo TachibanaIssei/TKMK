@@ -240,9 +240,18 @@ void Pause::Menu_HowToPlay()
 {
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		Push_OK();
-		//ƒtƒ‰ƒO”½“]
-		HowToPlaySpriteFlag = !HowToPlaySpriteFlag;
+		if (!HowToPlaySpriteFlag) {
+			Push_OK();
+			//ƒtƒ‰ƒO”½“]
+			HowToPlaySpriteFlag = true;
+		}
+	}
+	else if (g_pad[0]->IsTrigger(enButtonB))
+	{
+		if (HowToPlaySpriteFlag) {
+			Push_OK();
+			HowToPlaySpriteFlag = false;
+		}
 	}
 }
 
@@ -319,10 +328,19 @@ void Pause::Menu_QuitGame()
 
 void Pause::Push_OK()
 {
-	SoundSource* se = NewGO<SoundSource>(0);
-	se->Init(enSound_Pause_Screen);
-	se->SetVolume(game->GetSoundEffectVolume());
-	se->Play(false);
+	if (!HowToPlaySpriteFlag) {
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Pause_Screen);
+		se->SetVolume(game->GetSoundEffectVolume());
+		se->Play(false);
+	}
+	else {
+		SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_Cancel);
+		se->SetVolume(game->GetSoundEffectVolume());
+		se->Play(false);
+	}
+
 }
 
 void Pause::SetBGMBarScale()

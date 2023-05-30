@@ -1570,7 +1570,7 @@ void KnightAI::Render(RenderContext& rc)
 	{
 		if (DrawHP())
 		{
-			if (m_game->GetStopFlag() == false)
+			if (m_game->GetStopFlag() == false && m_game->NowGameState() != enPause)
 			{
 				m_HP_Back.Draw(rc);
 				m_HP_Bar.Draw(rc);

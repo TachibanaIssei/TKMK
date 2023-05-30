@@ -731,6 +731,16 @@ void GameUI::Timer()
 
 void GameUI::ExpState()
 {
+	//レベルが下がったら
+	if (PlayerLevel > player->CharSetLevel()) {
+		m_EXPupFlag = true;
+		m_enExpProssesState = enLevelDownState;
+	}
+
+	if (m_EXPupFlag == false) {
+		return;
+	}
+
 	switch (m_enExpProssesState)
 	{
 	case GameUI::enChackExpState:
@@ -764,10 +774,6 @@ void GameUI::ExpState()
 	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
-
-	//m_oldPlayerLevel = m_NowPlayerLevel;
-
-	//デバッグ用
 	//レベルアップまでに必要な経験値の量
 	int UpToLevel = m_MathExp/* - m_nowEXP*/;
 	wchar_t UTL[255];
@@ -809,6 +815,8 @@ void GameUI::UpExp()
 		m_MathExp++;
 	}
 	else {
+		m_EXPupFlag = false;
+
 		m_enExpProssesState = enChackExpState;
 	}
 }
@@ -836,6 +844,7 @@ void GameUI::LevelUp()
 		m_oldSaveExp = m_SaveExp;
 		m_MathExp = m_SaveExp;
 		m_enExpProssesState = enChackExpState;
+		m_EXPupFlag = false;
 		return;
 	}
 
@@ -853,6 +862,8 @@ void GameUI::LevelUp()
 	}
 	//もうレベルアップの処理が終わりなら
 	else if (m_SaveExp <= 0) {
+
+		m_EXPupFlag = false;
 
 		//レベルアップの処理の間に中立の敵を倒していたなら
 		if (player->CharGetEXP() > 0) {
@@ -901,6 +912,7 @@ void GameUI::LevelDown()
 	LevelFontChange(PlayerLevel);
 
 	if (PlayerLevel <= player->CharSetLevel()) {
+		m_EXPupFlag = false;
 		//レベルダウンの処理を終わる
 		m_enExpProssesState = enChackExpState;
 		m_SaveExp = 0;
@@ -1001,6 +1013,13 @@ void GameUI::CharPoint()
 
 void GameUI::Render(RenderContext& rc)
 {
+	//finishの画像
+	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
+	{
+		m_FinishCountNumber.Draw(rc);
+		return;
+	}
+
 	if (m_game->GetStopFlag() == true)
 	{
 		return;
@@ -1079,7 +1098,7 @@ void GameUI::Render(RenderContext& rc)
 			num++;
 		}
 		
-		//試合終了まで残り10秒なら
+		//finishの画像
 		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
 		{
 			m_FinishCountNumber.Draw(rc);

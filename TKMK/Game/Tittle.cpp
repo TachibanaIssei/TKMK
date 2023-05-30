@@ -201,6 +201,8 @@ void Tittle::ResistSound()
 	g_soundEngine->ResistWaveFileBank(enSound_Title_Slash1, "Assets/sound/titleBGM/titleSE/zangeki1.wav");
 	//キャラ決定音
 	g_soundEngine->ResistWaveFileBank(enSound_OK, "Assets/sound/sentaku/kettei3.wav");
+	//キャンセル音
+	g_soundEngine->ResistWaveFileBank(enSound_Cancel, "Assets/sound/sentaku/cancel.wav");
 	//タイトル画面決定音
 	g_soundEngine->ResistWaveFileBank(enSound_TitleOK, "Assets/sound/titleBGM/titleketei.wav");
 }
@@ -510,9 +512,9 @@ void Tittle::Operation()
 {
 	//説明画面からタイトル画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonB) && m_operationLook == enOperationLook_Seem) {
-		//選択音
+		//キャンセル音
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_TitleOK);
+		se->Init(enSound_Cancel);
 		se->Play(false);
 		se->SetVolume(1.0f);
 		//説明画面を非表示
@@ -522,7 +524,7 @@ void Tittle::Operation()
 
 	//説明画面への遷移
 	if (g_pad[0]->IsTrigger(enButtonA) && m_tSelectPosition == enSelectPosition_Operation && m_operationLook == enOperationLook_UnSeem) {
-		//選択音
+		//決定音
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_TitleOK);
 		se->Play(false);
@@ -541,7 +543,14 @@ void Tittle::Operation()
 			if (m_operationPageNumber < 0)
 			{
 				m_operationPageNumber = 0;
+				return;
 			}
+
+			//選択音
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(enSound_Title_Choise);
+			se->Play(false);
+			se->SetVolume(1.0f);
 		}
 		if (g_pad[0]->IsTrigger(enButtonRight))
 		{
@@ -549,7 +558,14 @@ void Tittle::Operation()
 			if (m_operationPageNumber > 2)
 			{
 				m_operationPageNumber = 2;
+				return;
 			}
+
+			//選択音
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(enSound_Title_Choise);
+			se->Play(false);
+			se->SetVolume(1.0f);
 		}
 	}
 	else

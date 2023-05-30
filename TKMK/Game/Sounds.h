@@ -40,5 +40,6 @@ enum EnSound {
 	enSound_ResultBGM3,				//リザルトのBGM３
 	enSound_ResultDramRoll,			//リザルトのドラムロール
 	enSound_ResultDramJaan,			//リザルトのドラムの"ジャーン"の音
+	enSound_Cancel,					//キャンセル音
 	enSound_Num,	
 };

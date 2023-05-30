@@ -173,6 +173,8 @@ void GameCamera::NomarlCamera()
 		}
 	
 	
+		//もしAIの必殺技が当たったらカメラを揺らす
+
 
 	//for (auto actor : m_actors) {
 	//	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)

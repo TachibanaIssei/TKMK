@@ -86,10 +86,6 @@ bool GameUI::Start()
 	player = FindGO<Player>("player");
 	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
-	
-	
-	
-	
 
 	//ポイント関連
 	{

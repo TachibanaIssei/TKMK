@@ -317,7 +317,7 @@ void Game::Battle()
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Pause_Screen);
-		se->SetVolume(1.0f);
+		se->SetVolume(SoundEffectVolume);
 		se->Play(false);
 		//ゲームのステートをポーズにする
 			m_GameState = enGameState_Pause;
@@ -622,7 +622,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 		neutral_Enemy->SetRabbitLifeFlag(true);
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Rabbit_Spawn);
-		se->SetVolume(1.0f);
+		se->SetVolume(SoundEffectVolume);
 		se->Play(false);
 	}
 	neutral_Enemy->modelUpdate();
@@ -794,7 +794,7 @@ void Game::Push_OK()
 {
 	SoundSource* se = NewGO<SoundSource>(0);
 	se->Init(enSound_OK);
-	se->SetVolume(1.0f);
+	se->SetVolume(SoundEffectVolume);
 	se->Play(false);
 }
 

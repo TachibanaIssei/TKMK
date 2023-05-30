@@ -1,14 +1,14 @@
 /*!
- * @brief	�X�v���C�g�p�̃V�F�[�_�[�B
+ * @brief	スプライト用のシェーダー
  */
 
 cbuffer cb : register(b0){
-	float4x4 mvp;		//���[���h�r���[�v���W�F�N�V�����s��B
-	float4 mulColor;	//��Z�J���[�B
+	float4x4 mvp;
+	float4 mulColor;
 };
 
 cbuffer SpriteCB : register(b1){
-	bool grayScale;
+	bool grayScale;		//グレースケールするかどうか
 }
 
 struct VSInput{
@@ -24,6 +24,8 @@ struct PSInput{
 Texture2D<float4> colorTexture : register(t0);	//�J���[�e�N�X�`���B
 sampler Sampler : register(s0);
 
+float4 CalcGrayScale(float4 color);
+
 PSInput VSMain(VSInput In) 
 {
 	PSInput psIn;
@@ -33,19 +35,22 @@ PSInput VSMain(VSInput In)
 }
 float4 PSMain( PSInput In ) : SV_Target0
 {
+	float4 color = colorTexture.Sample(Sampler, In.uv) * mulColor;
+	
 	if(grayScale)
 	{
-		float4 color = colorTexture.Sample(Sampler, In.uv) * mulColor;
+		return CalcGrayScale(color);
+	}
 
-		float Y = color.r * 0.29891f + color.g * 0.58661f + color.b * 0.11448f;
+	return color;
+}
+
+float4 CalcGrayScale(float4 color)
+{
+	float Y = color.r * 0.29891f + color.g * 0.58661f + color.b * 0.11448f;
 		color.r = Y;
 		color.g = Y;
 		color.b = Y;
 
 		return color;
-	}
-	else
-	{
-		return colorTexture.Sample(Sampler, In.uv) * mulColor;
-	}
 }

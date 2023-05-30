@@ -90,6 +90,7 @@ private:
 	EnCharacterState m_stayCharaState = enCharacterState_Num;
 
 	std::array<int, PLAYER> charPoints = {0,0,0,0};		//プレイヤーのポイント
+
 	int titleScene = 1;			//タイトルのシーン番号
 	int m_nowMoveRank = 0;
 	int m_nowMoveCharacter = 0;

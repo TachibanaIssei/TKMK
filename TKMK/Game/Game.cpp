@@ -18,7 +18,7 @@
 #include "Pause.h"
 
 namespace {
-	const int ENEMY_AMOUNT = 10;
+	const int ENEMY_AMOUNT = 20;
 	const Vector3 Menu_BackPos = Vector3(0.0f, 210.0f, 0.0f);
 	const Vector3 Menu_HowToPlayPos = Vector3(0.0f, 60.0f, 0.0f);
 	const Vector3 Menu_BGMPos = Vector3(-245.0f, -70.0f, 0.0f);
@@ -942,6 +942,22 @@ void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
 			//必殺技終了なら
 			else enemy->Activate();
 	}
+}
+
+int Game::GetNowRank(Actor* actor)
+{
+	int rank = 1;
+	for (int i = 0; i < m_Actors.size(); i++)
+	{
+		if (m_Actors[i] == actor) {
+			continue;
+		}
+		if (m_Actors[i]->GetPoint() > actor->GetPoint())
+		{
+			rank++;
+		}
+	}
+	return rank;
 }
 
 void Game::Render(RenderContext& rc)

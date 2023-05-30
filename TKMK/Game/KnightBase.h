@@ -359,7 +359,7 @@ protected:
 		enAnimationClip_Num,
 	};
 
-	Game* m_game=nullptr;
+	
 	GameUI* m_gameUI = nullptr;
 	Player* player = nullptr;
 

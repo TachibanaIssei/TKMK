@@ -509,6 +509,7 @@ void Neutral_Enemy::Collision()
 					se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 					se->Play(false);
 					//相手に経験値を渡す
+					
 					m_lastAttackActor->ExpProcess(60);
 					if (m_lastAttackActor == m_player)
 					{
@@ -525,7 +526,26 @@ void Neutral_Enemy::Collision()
 				else
 				{
 					//相手に経験値を渡す
-					m_lastAttackActor->ExpProcess(Exp);
+					if (m_lastAttackActor->GetLevel() <= 2)
+					{
+						m_lastAttackActor->ExpProcess(5);
+					}
+					else if (m_lastAttackActor->GetLevel() == 3)
+					{
+						m_lastAttackActor->ExpProcess(4);
+					}
+					else if (m_lastAttackActor->GetLevel() >= 3 && m_lastAttackActor->GetLevel()<=6)
+					{
+						m_lastAttackActor->ExpProcess(3);
+					}
+					else if (m_lastAttackActor->GetLevel() >= 6 && m_lastAttackActor->GetLevel()<= 8)
+					{
+						m_lastAttackActor->ExpProcess(2);
+					}
+					else
+					{
+						m_lastAttackActor->ExpProcess(1);
+					}
 					if (m_lastAttackActor == m_player)
 					{
 						SoundSource* se = NewGO<SoundSource>(0);

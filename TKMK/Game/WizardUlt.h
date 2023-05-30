@@ -140,6 +140,11 @@ public:
 		return FallTunderFlag;
 	}
 
+	bool GetCameraShakeFlag()
+	{
+		return m_cameraShakeFlag;
+	}
+
 private:
 	Player* player = nullptr;
 	KnightAI* knightAI = nullptr;
@@ -168,6 +173,8 @@ private:
 	bool m_ThisCreatPlayerFlag = false;
 	//必殺技を打ったキャラがレベル6以上かどうかの判定
 	bool m_CharLevel7AndAdoveFlag = false;
+
+	bool m_cameraShakeFlag = true;
 
 	//必殺技の初期ダメージ
 	int m_UltDamege = 0;

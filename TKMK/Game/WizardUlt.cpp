@@ -69,6 +69,11 @@ void WizardUlt::Update()
 		DeleteGO(this);
 	}
 
+	if (m_timer > 0.6f)
+	{
+		m_cameraShakeFlag = false;
+	}
+
 	if (Thunder->IsPlay() == false)
 	{
 		

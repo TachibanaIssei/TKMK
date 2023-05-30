@@ -328,9 +328,9 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		eval += 2500;
 	}
 
-	if (Distance <= 100.0f)
+	if (Distance <= 50.0f)
 	{
-		eval += 2500;
+		eval += 5000;
 	}
 
 	//ゲーム時間1分40秒以下ポイントのためにちょっと動く
@@ -349,7 +349,10 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 
 		return returnData;
 	}
-
+	if (actor->GetCharState() == enCharState_Ult_liberation)
+	{
+		eval += 8000;
+	}
 	// 今狙っているターゲットと同じなら優先度を上げる
 	if (m_targetActor == actor) {
 		eval += 2000;
@@ -968,7 +971,7 @@ void KnightAI::Attack()
 			return;
 		}
 		//必殺技を発動する処理
-		if (m_targetActor != nullptr && Lv >= 11 && /*(m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
+		if (m_targetActor != nullptr && Lv >= 6 && /*(m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
@@ -1487,7 +1490,7 @@ void KnightAI::AvoidanceSprite()
 		Vector3 kyori = atkPos - m_position;
 
 		//プレイヤーが視界内に居たら
-		if (Math::PI * 0.5f >= fabsf(angle) && kyori.Length()<=100)
+		if (Math::PI * 0.5f >= fabsf(angle) && kyori.Length()<=80)
 		{
 			AvoidanceFlag = true;
 			//回避ステート

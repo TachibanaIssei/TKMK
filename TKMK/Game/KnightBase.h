@@ -341,6 +341,7 @@ protected:
 	//必殺技の終了
 	void UltEnd();
 
+	
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
 		enAnimationClip_Walk,

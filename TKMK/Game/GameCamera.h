@@ -56,6 +56,8 @@ public:
 	/// </summary>
 	void ThunderCameraShake();
 
+	void ThunderCameraShakeForPlayer();
+
 	void ChangeCameraShakeFlag(bool flag)
 	{
 		m_cameraShakeFlag = flag;
@@ -113,6 +115,18 @@ public:
 	SpringCamera* GetSpringCamera() {
 		return &m_springCamera;
 	}
+
+	void SetPlayerShakeFlag(bool flag)
+	{
+		PlayerShakeFlag = flag;
+	}
+
+	bool GetPlayerShakeFlag()
+	{
+		return PlayerShakeFlag;
+	}
+
+	void setShakeMulPower(int revel);
 
 private:
 
@@ -181,7 +195,14 @@ private:
 	//前フレームのプレイヤーがリスポーン待機中かのフラグ
 	bool PlayerRespawnFlag = false;
 
+	//プレイヤーが必殺技を受けたときにカメラを揺らすフラグ
+	bool PlayerShakeFlag = false;
+
 	//アクターの情報
 	std::vector<Actor*> m_actors;
+
+	float shakePower = 0.0f;
+
+	float shakeMulPower = 0.0f;
 };
 

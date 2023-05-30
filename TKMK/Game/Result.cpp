@@ -85,7 +85,7 @@ Result::Result()
 
 Result::~Result()
 {
-	if (m_fireWorksInitFlag && GameObjectManager::GetInstance()->IsActive()) {
+	if (m_fireWorksPlayFlag && GameObjectManager::GetInstance()->IsActive()) {
 		m_fireWorks->Stop();
 	}
 
@@ -167,7 +167,7 @@ bool Result::Start()
 	case 1:
 		m_bgm->Init(enSound_ResultBGM1);
 		m_stayCharaState = enCharacterState_Win;
-		InitEffect();
+		m_fireWorksPlayFlag = true;
 		break;
 	case 4:
 		m_bgm->Init(enSound_ResultBGM3);
@@ -413,10 +413,8 @@ void Result::InitSkyCube()
 	m_skyCube->SetScale(600.0f);
 }
 
-void Result::InitEffect()
+void Result::PlayEffect()
 {
-	m_fireWorksInitFlag = true;
-
 	//花火エフェクト再生
 	m_fireWorks = NewGO<EffectEmitter>(0);
 	m_fireWorks->Init(EnEFK::enEffect_FireWorks);
@@ -510,6 +508,11 @@ void Result::MoveLerp()
 			m_change = enChange_stop;
 			m_drawSelectSpriteFlag = true;
 			m_charaState = m_stayCharaState;
+
+			//プレイヤーが一位の場合、花火エフェクトを再生する
+			if (m_fireWorksPlayFlag) {
+				PlayEffect();
+			}
 
 			//BGM再生
 			m_bgm->Play(true);
@@ -723,7 +726,7 @@ void Result::Select()
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_title)
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Title_Choise);
+		se->Init(enSound_TitleOK);
 		se->SetVolume(m_seVolume);
 		se->Play(false);
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
@@ -734,7 +737,7 @@ void Result::Select()
 	if (g_pad[0]->IsTrigger(enButtonA) && m_cursor == enCursorPos_exit)
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Title_Choise);
+		se->Init(enSound_TitleOK);
 		se->SetVolume(m_seVolume);
 		se->Play(false);
 		g_gameLoop.m_isLoop = false;

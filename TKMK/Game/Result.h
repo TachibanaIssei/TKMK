@@ -48,7 +48,7 @@ private:
 	void InitSprite();
 	void InitModel();
 	void InitSkyCube();
-	void InitEffect();
+	void PlayEffect();
 	void SetCamera();
 	void Rank();
 	void MoveLerp();
@@ -97,11 +97,11 @@ private:
 
 	float m_complement = 0.0f;	//線形補間の補完率
 	float m_bgmVolume = 0.4f;
-	float m_seVolume = 0.6f;
+	float m_seVolume = 1.0f;
 
 	bool m_selectFlag			= false;	//選択項目の切り替えフラグ
 	bool m_drawSelectSpriteFlag = false;	//選択項目の表示のフラグ
-	bool m_fireWorksInitFlag = false;
+	bool m_fireWorksPlayFlag = false;		//花火エフェクト初期化フラグ
 
 	bool m_isInit = false;
 

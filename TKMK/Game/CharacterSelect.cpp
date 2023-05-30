@@ -155,13 +155,13 @@ void CharacterSelect::Update()
 	if (g_pad[0]->IsTrigger(enButtonB))
 	{
 		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_TitleOK);
+		se->Init(enSound_Cancel);
 		//ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‚É‚æ‚Á‚Ä‰¹—Ê’²®
 		se->SetVolume(1.0f);
 		se->Play(false);
 		Tittle* tittle = NewGO<Tittle>(0, "tittle");
-		DeleteGO(this);
 		DeleteGO(m_bgm);
+		DeleteGO(this);
 	}
 
 }

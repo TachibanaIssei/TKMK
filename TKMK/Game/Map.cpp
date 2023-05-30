@@ -156,6 +156,10 @@ void Map::EnemyMap()
 
 void Map::Render(RenderContext& rc) 
 {
+	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0) {
+		return;
+	}
+
 	if (m_game->GetStopFlag() == true) {
 		return;
 	}

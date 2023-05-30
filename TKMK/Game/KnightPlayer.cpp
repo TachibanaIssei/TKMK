@@ -475,6 +475,8 @@ bool KnightPlayer::UltimaitSkillTime()
 /// </summary>
 void KnightPlayer::Avoidance()
 {
+	
+
 	//ステートがデスのとき
 	if (m_charState == enCharState_Death)
 	{

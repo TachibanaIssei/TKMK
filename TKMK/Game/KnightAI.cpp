@@ -351,7 +351,7 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	}
 	if (actor->GetCharState() == enCharState_Ult_liberation)
 	{
-		eval += 8000;
+		eval += 20000;
 	}
 	// 今狙っているターゲットと同じなら優先度を上げる
 	if (m_targetActor == actor) {

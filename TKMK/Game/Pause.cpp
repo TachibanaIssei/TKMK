@@ -108,7 +108,7 @@ void Pause::Update()
 		if(g_pad[0]->IsTrigger(enButtonStart))
 		{
 			game->ChangeGameState(Game::enGameState_BetweenGameAndPause);
-
+			Push_OK();
 			DeleteGO(this);
 		}
 	}
@@ -231,7 +231,7 @@ void Pause::Menu_Back()
 	if (g_pad[0]->IsTrigger(enButtonA)) {
 
 		game->ChangeGameState(Game::enGameState_BetweenGameAndPause);
-
+		Push_OK();
 		DeleteGO(this);
 	}
 }
@@ -254,10 +254,6 @@ void Pause::Menu_BGM()
 		{
 			game->SetBGMVolume(m_addVolume);
 			game->ChangeBGMVolume();
-
-			/*if (game->GetBGMVolume() >= game->GetMaxBGMVolume()) {
-				game->SetBGMVolume(game->GetMaxBGMVolume());
-			}*/
 		}
 	}
 	//‰¹—Ê‚ð‰º‚°‚é
@@ -314,6 +310,8 @@ void Pause::Menu_QuitGame()
 {
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		SoundSource* se = NewGO<SoundSource>(0);
+		Push_OK();
 		QuitGameFlag = true;
 		DeleteGO(this);
 	}
@@ -322,7 +320,7 @@ void Pause::Menu_QuitGame()
 void Pause::Push_OK()
 {
 	SoundSource* se = NewGO<SoundSource>(0);
-	se->Init(enSound_OK);
+	se->Init(enSound_Pause_Screen);
 	se->SetVolume(game->GetSoundEffectVolume());
 	se->Play(false);
 }

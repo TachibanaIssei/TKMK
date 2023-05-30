@@ -851,11 +851,12 @@ void KnightBase::OnProcessUlt_liberationStateTransition()
 		
 
 		//アルティメットSE
+		////プレイヤーとの距離によって音量調整
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Hand);
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		se->Play(false);
-		////プレイヤーとの距離によって音量調整
+	
 		
 	}
 }

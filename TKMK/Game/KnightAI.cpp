@@ -968,7 +968,7 @@ void KnightAI::Attack()
 			return;
 		}
 		//必殺技を発動する処理
-		if (m_targetActor != nullptr && Lv >= 4 && /*(m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
+		if (m_targetActor != nullptr && Lv >= 11 && /*(m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
@@ -1548,9 +1548,12 @@ void KnightAI::Render(RenderContext& rc)
 	{
 		if (DrawHP())
 		{
-			m_HP_Back.Draw(rc);
-			m_HP_Bar.Draw(rc);
-			m_HP_Frame.Draw(rc);
+			if (m_game->GetStopFlag() == false)
+			{
+				m_HP_Back.Draw(rc);
+				m_HP_Bar.Draw(rc);
+				m_HP_Frame.Draw(rc);
+			}			
 		}
 	}
 }

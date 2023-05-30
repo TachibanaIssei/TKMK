@@ -367,7 +367,7 @@ void GameCamera::ChaseCamera()
 			m_springCamera.Refresh();
 			CameraTarget(TARGETPOS_YUP,KNIGHT_TUNDER_POS_X, 0, victim_actor,false);
 
-			if(wizardUlt->GetFallTunderFlag()==true)
+			if(wizardUlt->GetFallTunderFlag() && wizardUlt->GetCameraShakeFlag())
 			ThunderCameraShake();
 			return;
 		}
@@ -618,13 +618,15 @@ void GameCamera::CameraShake(bool UpDown)
 void GameCamera::ThunderCameraShake()
 {
 	if (ShakeLeftAndLightFlag == false) {
-		TargetPos.x += 20.0f;
+		TargetPos.x += 5.0f;
+		TargetPos.y -= 8.0f;
 		ShakeLeftAndLightFlag = true;
 		//TargetPos.x += 4.0f;
 		//m_ShakeMoveFlag = true;
 	}
 	else {
-		TargetPos.x -= 20.0f;
+		TargetPos.x -= 5.0f;
+		TargetPos.y += 8.0f;
 		ShakeLeftAndLightFlag = false;
 		//TargetPos.x -= 4.0f;
 		//m_ShakeMoveFlag = false;

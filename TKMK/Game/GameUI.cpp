@@ -29,7 +29,7 @@ namespace
 	const float HP_BAR_HIGHT = 200.0f;      //HPバーの高さ
 	const Vector3 HP_BAR_SIZE = Vector3(HP_BAR_WIDTH, HP_BAR_HIGHT, 0.0f);  //HPバーのサイズ
 
-	const Vector3 Skill_Pos = Vector3(520.0f, -280.0f, 0.0f);   //スキルアイコンポジション
+	const Vector3 Skill_Pos = Vector3(522.0f, -275.0f, 0.0f);   //スキルアイコンポジション
 	const Vector3 Ult_Pos = Vector3(470.0f, -445.0f, 0.0f);     //必殺技アイコンポジション
 
 	const Vector3 LV_NUBER_POS = Vector3(780.0f, -360.0f, 0.0f);
@@ -86,10 +86,6 @@ bool GameUI::Start()
 	player = FindGO<Player>("player");
 	fade = FindGO<Fade>("fade");
 	//キャラのアイコン
-	
-	
-	
-	
 
 	//ポイント関連
 	{

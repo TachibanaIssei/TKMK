@@ -123,7 +123,7 @@ private:
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
 	FontRender              m_Name;
-	FontRender				m_fontRender;
+	FontRender				m_fontLv;
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
 	
@@ -160,9 +160,10 @@ private:
 	SpriteRender		m_HP_Bar;		//HPバー画像
 	SpriteRender		m_HP_Frame;		//HP枠画像
 	SpriteRender		m_HP_Back;		//HP背景画像
-	Vector2		  m_HPBer_Pos = Vector2::Zero;				   //HPバーのポジション
-	Vector2	   	  m_HPWindow_Pos = Vector2::Zero;			   //HP枠のポジション
-	Vector2		  m_HPBack_Pos = Vector2::Zero;			       //HP背景のポジション
+	Vector2			m_HPBer_Pos = Vector2::Zero;		//HPバーのポジション
+	Vector2			m_HPWindow_Pos = Vector2::Zero;		//HP枠のポジション
+	Vector2			m_HPBack_Pos = Vector2::Zero;		//HP背景のポジション
+	Vector2			m_levelFontPos = Vector2::Zero;		//HPバーの横に表示するレベル
 	Actor* m_player = nullptr;
 	
 

@@ -16,6 +16,8 @@ namespace
 	const float HP_BER_HEIGHT = 22.0f;
 	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
 	const float RADIUS = 100.0f;
+	const float LEVEL_FONT_ADD_POS_X = -30.0f;
+	const float LEVEL_FONT_ADD_POS_Y = 50.0f;
 
 }
 KnightAI::KnightAI()
@@ -67,6 +69,12 @@ bool KnightAI::Start() {
 	m_HP_Back.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
 
 	m_HP_Frame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
+
+	//HPバーの横に表示するレベル
+	m_fontLv.SetColor(g_vec4White);
+	m_fontLv.SetShadowParam(true, 0.2f, g_vec4Black);
+	m_fontLv.SetScale(0.5f);
+
 	return true;
 }
 
@@ -1169,6 +1177,10 @@ void KnightAI::HPBar()
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindow_Pos, BerPosition);
 	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBack_Pos, BerPosition);
 
+	m_levelFontPos = m_HPBer_Pos;
+	m_levelFontPos.x += LEVEL_FONT_ADD_POS_X;
+	m_levelFontPos.y += LEVEL_FONT_ADD_POS_Y;
+
 	//HPバー画像を左寄せに表示する
 	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
 	m_HPBer_Pos.x -= BerSizeSubtraction.x;
@@ -1184,6 +1196,13 @@ void KnightAI::HPBar()
 	//フォントの色を設定。
 	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
+	//HPバーの横に表示するレベル
+	wchar_t level[255];
+	swprintf_s(level, 255, L"Lv%d",Lv);
+	m_fontLv.SetText(level);
+	m_fontLv.SetPosition(m_levelFontPos.x, m_levelFontPos.y,0.0f);
+
+	//HPバーの座標
 	m_HP_Bar.SetPosition(Vector3(m_HPBer_Pos.x, m_HPBer_Pos.y, 0.0f));
 	m_HP_Frame.SetPosition(Vector3(m_HPWindow_Pos.x, m_HPWindow_Pos.y, 0.0f));
 	m_HP_Back.SetPosition(Vector3(m_HPBack_Pos.x, m_HPBack_Pos.y, 0.0f));
@@ -1553,6 +1572,7 @@ void KnightAI::Render(RenderContext& rc)
 				m_HP_Back.Draw(rc);
 				m_HP_Bar.Draw(rc);
 				m_HP_Frame.Draw(rc);
+				m_fontLv.Draw(rc);
 			}			
 		}
 	}

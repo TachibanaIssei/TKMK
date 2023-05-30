@@ -114,6 +114,11 @@ void GameCamera::Update()
 	//リスポーンしたらカメラを戻す
 	if (player_actor->GetRespawnFlag()==false&& PlayerRespawnFlag==true) {
 		CameraTarget(TARGETPOS_YUP ,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
+
+		m_springCamera.Refresh();
+		//カメラの更新。
+		m_springCamera.Update();
+
 		PlayerRespawnFlag = false;
 
 	}

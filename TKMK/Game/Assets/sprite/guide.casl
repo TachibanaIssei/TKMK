@@ -1,0 +1,5 @@
+4
+9,TowerDown,38,../../Game/Assets/sprite/TowerDown.png,0.0,0.0,886,255,10,1.0,1.0,0.5,0.5,13,TowerDown.dds
+3,Ult,32,../../Game/Assets/sprite/Ult.png,-1.9230769230769056,-298.076923076923,886,255,10,1.0,1.0,0.5,0.5,7,Ult.dds
+11,FirstAttack,40,../../Game/Assets/sprite/FirstAttack.png,-440.38461538461536,303.8461538461538,886,255,10,1.0,1.0,0.5,0.5,15,FirstAttack.dds
+6,rabbit,35,../../Game/Assets/sprite/rabbit.png,448.0769230769231,298.0769230769231,886,255,10,1.0,1.0,0.5,0.5,10,rabbit.dds

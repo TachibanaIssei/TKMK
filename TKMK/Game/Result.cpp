@@ -10,13 +10,13 @@
 
 namespace ResultSpriteConst
 {
-	const float COMPLEMENT = 0.022f;
+	const float COMPLEMENT = 0.022f;											//補完を進める値
 
 	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);		//"タイトルに戻る"の画像の横に出す剣の画像に加算する値
 	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);	//"ゲーム終了"の画像の横に出す剣の画像に加算する値
 
-	const Vector3 GO_TITLE_POS = Vector3(-500.0f, -450.0f, 0.0f);				//"タイトルに戻る"の位置
-	const Vector3 GAME_FINISH_POS = Vector3(525.0f, -450.0f, 0.0f);				//"ゲームを終了"の位置
+	const Vector3 GO_TITLE_POS = Vector3(-400.0f, -450.0f, 0.0f);				//"タイトルに戻る"の位置
+	const Vector3 GAME_FINISH_POS = Vector3(425.0f, -450.0f, 0.0f);				//"ゲームを終了"の位置
 
 	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);				//リザルトのロゴの座標
 	
@@ -68,7 +68,7 @@ namespace ResultSpriteConst
 
 	const Vector3 KNIGHT_POS = { -80.0f,0.0f,-150.0f };		//剣士の座標
 	const float KNIGHT_ROT = 150.0f;						//剣士の回転
-	const Vector3 BACK_MODEL_POS = { 0.0f,0.0f,0.0f };	//背景の座標
+	const Vector3 BACK_MODEL_POS = { 0.0f,0.0f,0.0f };		//背景の座標
 
 	const Vector3 FIREWORKS_EFFECT_POS = { -80.0f,0.0f,200.0f };
 

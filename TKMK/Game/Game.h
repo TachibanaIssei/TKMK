@@ -2,6 +2,7 @@
 #include "Effect.h"
 #include "Level3DRender.h"
 #include "Sounds.h"
+#include <array>
 
 class BackGround;
 class Result;
@@ -369,6 +370,7 @@ public:
 	/// <param name="targetActor">カメラのターゲットのアクター</param>
 	void ToggleObjectActive(bool IsUltFlag, Actor* targetActor);
 
+	int GetNowRank(Actor* actor);
 
 private:
 	/// <summary>
@@ -538,7 +540,6 @@ private:
 	float UltCanUseTimer = 0.0f;
 
 	EffectEmitter* TowerDown = nullptr;
-
 
 };
 

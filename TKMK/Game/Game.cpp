@@ -944,6 +944,22 @@ void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
 	}
 }
 
+int Game::GetNowRank(Actor* actor)
+{
+	int rank = 1;
+	for (int i = 0; i < m_Actors.size(); i++)
+	{
+		if (m_Actors[i] == actor) {
+			continue;
+		}
+		if (m_Actors[i]->GetPoint() > actor->GetPoint())
+		{
+			rank++;
+		}
+	}
+	return rank;
+}
+
 void Game::Render(RenderContext& rc)
 {	
 	if (UltStopFlag == true) {

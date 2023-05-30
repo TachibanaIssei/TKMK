@@ -212,7 +212,23 @@ public:
 		{
 			AddPoint = level;
 		}*/
-		
+
+		if (m_game->GetMinutesTimer() == 0)
+		{
+			int Rank = m_game->GetNowRank(this);
+			if (Rank == 2)
+			{
+				AddPoint = (int)( (float)AddPoint * 1.2f );
+			}
+			else if (Rank == 3)
+			{
+				AddPoint = (int)( (float)AddPoint * 1.5f );
+			}
+			else if (Rank == 4)
+			{
+				AddPoint = (int)( (float)AddPoint * 2.0f );
+			}
+		}
 		//レベル分ポイントを増やす
 		Point += AddPoint;
 	}
@@ -292,28 +308,6 @@ public:
 	{
 		return m_Status.Hp;
 	}
-
-	///// <summary>
-	///// 中立の赤色の敵を倒した時攻撃を上げる処理
-	///// </summary>
-	///// <param name="AtkUp">増加する攻撃力</param>
-	//void AtkUp(int AtkUp)
-	//{
-	//	//パワーUPじゃないとき
-	//	if (PowerUpTimer <= 0.0f)
-	//	{
-	//		PowerUp = AtkUp;
-	//		m_Status.Atk += PowerUp;
-
-	//		PowerUpEfk  = NewGO<ChaseEFK>(3);
-	//		PowerUpEfk->SetEffect(EnEFK::enEffect_Knight_PowerUP, this, Vector3::One * 15.0f);
-
-	//		PowerUpEfk->AutoDelete(false);
-	//		PowerUpEfk->GetEffect()->AutoDelete(false);
-	//	}		
-	//	PowerUpTimer = 15.0f;
-	//}
-
 
 	/// <summary>
 	/// HP回復させる処理
@@ -709,7 +703,7 @@ protected:
 	float SEVolume = 0.0f;
 	float MaxVolume = 2.0f;
 	const float MinVolume = 0.0f;
-
+	Game* m_game = nullptr;
 	Player* m_player = nullptr;
 	Actor* m_targetActor = nullptr;
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター

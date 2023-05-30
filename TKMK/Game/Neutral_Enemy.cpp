@@ -1157,7 +1157,8 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Enemy_Voice);
 		//プレイヤーとの距離によって音量調整
-		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		float neutralAttackSEVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
+		se->SetVolume(neutralAttackSEVolume * 0.2f);
 		se->Play(false);
 	}
 	//キーの名前がattack_endの時
@@ -1173,7 +1174,8 @@ void Neutral_Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Rabbit_FootSteps);
 		se->Play(false);
-		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		float rabbitVolume = SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f);
+		se->SetVolume(rabbitVolume * 0.2f);
 	}
 	else if (wcscmp(eventName, L"Jump_End") == 0)
 	{

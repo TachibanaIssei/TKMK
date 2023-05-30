@@ -127,7 +127,7 @@ public:
 	void SetAboutUlt(int level)
 	{
 		//レベル×50=必殺技のダメージ
-		m_UltDamege = 50 * level;
+		m_UltDamege = 40 * level;
 
 		//レベル7以上なら
 		if (level >= 7) {
@@ -164,6 +164,8 @@ private:
 
 	float m_timer = 0.0f;
 	const char* m_targrtName = nullptr;
+
+	const char* m_playerName = "knightplayer";
 
 	//雷を地上にいるキャラ全てに打ち終わったら
 	bool UltEndFlag = false;

@@ -35,6 +35,9 @@ namespace
 	const float KNIGHT_TUNDER_POS_X = 90.0f;
 	const float KNIGHT_TUNDER_POS_Y = -60.0f;
 	const float TARGETPOS_ULT_YUP = 80.0f;
+
+	const float SETSHAKEPOWER = 2.0f;
+	const float SETSHAKEPOWERFORAI = 1.0f;
 }
 
 GameCamera::GameCamera()
@@ -63,6 +66,9 @@ bool GameCamera::Start()
 			player_actor = player;
 		}
 	}
+
+	//揺れる力を初期化する
+	shakePower = SETSHAKEPOWER;
 
 	//注視点から視点までのベクトルを設定。80-160
 	m_toCameraPos.Set(0.0f, 50.0f, -160.0f);
@@ -123,6 +129,25 @@ void GameCamera::Update()
 
 	}
 
+	//もしAIの必殺技が当たったらカメラを揺らす
+	if (GetPlayerShakeFlag() == true) {
+		wizardUlt = FindGO<WizardUlt>("wizardUlt");
+		if (wizardUlt == nullptr)
+		{
+			//揺れる力を初期化する
+			shakePower = SETSHAKEPOWER;
+			SetPlayerShakeFlag(false);
+		}
+		else if (wizardUlt->GetFallTunderFlag() && wizardUlt->GetCameraShakeFlag()) {
+			ThunderCameraShakeForPlayer();
+			return;
+		}
+		
+	}
+
+	
+		
+
 	//カメラステート管理
 	StateControl();
 }
@@ -171,8 +196,6 @@ void GameCamera::NomarlCamera()
 				game->ToggleObjectActive(true, ultactor);
 			}
 		}
-	
-	
 
 	//for (auto actor : m_actors) {
 	//	//もしプレイヤーが必殺技を打ったら(7=必殺技ステート)
@@ -241,9 +264,6 @@ void GameCamera::NomarlCamera()
 //雷に打たれていないキャラを探す
 void GameCamera::UltRotCamera()
 {
-	
-
-
 	//AIの場合はこの処理だけする
 	//一回だけの処理
 	if (SetCameraCharFrontFlag == false) {
@@ -252,6 +272,8 @@ void GameCamera::UltRotCamera()
 		CameraTarget(TARGETPOS_ULT_YUP,KNIGHT_TUNDER_POS_X, KNIGHT_TUNDER_POS_Y, ultactor,false);
 
 		SetCameraCharFrontFlag = true;
+		//揺れる力に掛ける値を決める
+		setShakeMulPower(ultactor->GetLevel());
 	}
 	//プレイヤー以外ならこの先の処理はしない
 	if (ultactor->GetName() != player_actor->GetName())
@@ -279,7 +301,7 @@ void GameCamera::UltRotCamera()
 	//誰かを見ている間は処理をしない
 	if (TunderCameraFlag == false)
 	{
-		for (auto actor : player_actor->GetDamegeUltActor()/*game->GetActors()*/)
+		for (auto actor : player_actor->GetDamegeUltActor())
 		{
 			{
 				//雷を打たれているキャラにカメラを向けるフラグ
@@ -293,6 +315,8 @@ void GameCamera::UltRotCamera()
 				wizardUlt = FindGO<WizardUlt>("wizardUlt");
 				//見るキャラがきまったら抜け出す
 				m_enCameraState = m_enChaseCameraState;
+				//揺れる力を初期化する
+				shakePower = SETSHAKEPOWERFORAI;
 				return;
 			}
 			return;
@@ -304,7 +328,7 @@ void GameCamera::UltRotCamera()
 		GameCameraUltEnd();
 
 
-
+	
 
 	//カメラを剣士の正面にセットしていないなら
 	//if (SetCameraCharFrontFlag == false)
@@ -600,13 +624,9 @@ void GameCamera::CameraShake(bool UpDown)
 {
 	if (UpDown == false) {
 		TargetPos.y += 10.0f;
-		//TargetPos.x += 4.0f;
-		//m_ShakeMoveFlag = true;
 	}
 	else {
 		TargetPos.y -= 10.0f;
-		//TargetPos.x -= 4.0f;
-		//m_ShakeMoveFlag = false;
 	}
 	
 	//視点と注視点を設定
@@ -618,19 +638,41 @@ void GameCamera::CameraShake(bool UpDown)
 void GameCamera::ThunderCameraShake()
 {
 	if (ShakeLeftAndLightFlag == false) {
-		TargetPos.x += 5.0f;
-		TargetPos.y -= 8.0f;
+		TargetPos.x += shakePower/2.0f;
+		TargetPos.y -= shakePower/2.0f;
 		ShakeLeftAndLightFlag = true;
-		//TargetPos.x += 4.0f;
-		//m_ShakeMoveFlag = true;
 	}
 	else {
-		TargetPos.x -= 5.0f;
-		TargetPos.y += 8.0f;
+		TargetPos.x -= shakePower/2.0f;
+		TargetPos.y += shakePower/2.0f;
 		ShakeLeftAndLightFlag = false;
-		//TargetPos.x -= 4.0f;
-		//m_ShakeMoveFlag = false;
 	}
+
+	
+	shakePower *= shakeMulPower;
+
+	//視点と注視点を設定
+	m_springCamera.SetTarget(TargetPos);
+	m_springCamera.SetPosition(newCamPos);
+	m_springCamera.Update();
+}
+
+void GameCamera::ThunderCameraShakeForPlayer()
+{
+
+
+	if (ShakeLeftAndLightFlag == false) {
+		newCamPos.y += shakePower;
+		TargetPos.y += shakePower;
+		ShakeLeftAndLightFlag = true;
+	}
+	else {
+		newCamPos.y -= shakePower;
+		TargetPos.y -= shakePower;
+		ShakeLeftAndLightFlag = false;
+	}
+
+	shakePower *= shakeMulPower*1.4f;
 
 	//視点と注視点を設定
 	m_springCamera.SetTarget(TargetPos);
@@ -664,4 +706,17 @@ void GameCamera::GameCameraUltEnd() {
 
 	m_enCameraState = m_enNomarlCameraState;
 
+}
+
+void GameCamera::setShakeMulPower(int revel)
+{
+	if (revel < 5) {
+		shakeMulPower = 1.2f;
+	}
+	else if (revel < 9) {
+		shakeMulPower = 1.3f;
+	}
+	else if (revel == 10) {
+		shakeMulPower = 1.4f;
+	}
 }

@@ -14,8 +14,6 @@ WizardUlt::WizardUlt()
 WizardUlt::~WizardUlt()
 {
 	DeleteGO(UltCollision);
-	//必殺技を食らったアクターをリストから削除する
-	//m_CreatMeActor->EraseDamegeUltActor(m_targetActor);
 
 	//プレイヤーでないと実行しない
 	if (m_ThisCreatPlayerFlag == true)
@@ -27,8 +25,6 @@ WizardUlt::~WizardUlt()
 		//カメラがもう一度雷に打たれていないキャラを探すようにする
 		gameCamera->ChangeMoveCameraState(GameCamera::m_enUltRotCameraState);
 		gameCamera->ChangeTunderCameraFlag(false);
-
-
 	}
 	
 	//自分が必殺技を打った最後の雷なら
@@ -57,6 +53,12 @@ bool WizardUlt::Start()
 	Thunder->SetPosition(ThunderPos);
 	Thunder->SetScale(Vector3::One * 12.0f);
 	Thunder->Play();
+
+	//当たったキャラがプレイヤーなら
+	if (m_targetActor->IsMatchName(m_playerName) == true) {
+		gameCamera = FindGO<GameCamera>("gamecamera");
+		gameCamera->SetPlayerShakeFlag(true);
+	}
 
 	return true;
 }

@@ -202,7 +202,7 @@ void GameCamera::NomarlCamera()
 
 	//Yボタンが押されたら
 	//カメラの視点を最初の状態に戻す
-	if (g_pad[0]->IsTrigger(enButtonY))
+	if (g_pad[0]->IsTrigger(enButtonRB3))
 	{
 		CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 	}

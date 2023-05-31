@@ -236,7 +236,7 @@ void KnightBase::Collition()
 	if (m_charState == enCharState_Damege || 
 		m_charState == enCharState_Death ||
 		m_charState == enCharState_UltimateSkill ||
-		m_charState == enCharState_Ult_liberation ||
+		//m_charState == enCharState_Ult_liberation ||
 		m_charState == enCharState_Avoidance)
 	{
 		return;

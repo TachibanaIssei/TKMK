@@ -19,6 +19,7 @@ enum EnEFK {
 	enEffect_Knight_Atk_Yellow,*/
 	enEffect_Knight_FootSmoke,
 	enEffect_Knight_AttackChack,
+	enEffect_Knight_TowerJump,
 	enEffect_Knight_Skill,
 	enEffect_Knight_SkillGround,
 	enEffect_Knight_Death_Num,

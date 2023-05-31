@@ -174,6 +174,10 @@ void KnightPlayer::Update()
 					IsGroundFlag = true;
 					//地面に降りた時の音再生
 					SetAndPlaySoundSource(enSound_Metal_Falling);
+					if (m_position.y < 15.0f)
+					{
+						TowerJumpEFK();
+					}
 				}
 				else {
 					//ジャンプ
@@ -752,6 +756,12 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//カメラを揺らすフラグを立てる
 		GameCamera* gameCamera = FindGO<GameCamera>("gamecamera");
 		gameCamera->ChangeCameraShakeFlag(true);
+		EffectEmitter* EffectKnight_TowerJump;
+		EffectKnight_TowerJump = NewGO <EffectEmitter>(0);
+		EffectKnight_TowerJump->Init(EnEFK::enEffect_Knight_TowerJump);
+		EffectKnight_TowerJump->SetScale(Vector3::One * 15.0f);
+		EffectKnight_TowerJump->SetPosition(m_position);
+		EffectKnight_TowerJump->Play();
 	}
 	//三段目のアタックのアニメーションで剣を振り終わったら移動できないように
 	if (wcscmp(eventName, L"Move_False") == 0)
@@ -824,7 +834,15 @@ void KnightPlayer::AvoidanceSprite()
 	m_Avoidance_flameRender.Update();
 	m_Avoidance_barRender.Update();
 }
-
+void KnightPlayer::TowerJumpEFK()
+{
+	EffectEmitter* EffectKnight_TowerJump;
+	EffectKnight_TowerJump = NewGO <EffectEmitter>(0);
+	EffectKnight_TowerJump->Init(EnEFK::enEffect_Knight_TowerJump);
+	EffectKnight_TowerJump->SetScale(Vector3::One * 30.0f);
+	EffectKnight_TowerJump->SetPosition(m_position);
+	EffectKnight_TowerJump->Play();
+}
 //サウンドソースの読み込みと再生
 void KnightPlayer::SetAndPlaySoundSource(EnSound soundNumber)
 {

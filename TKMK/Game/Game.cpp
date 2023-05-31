@@ -647,7 +647,7 @@ void Game::SetMusic()
 	//バトル中のBGM
 	{
 		//ゲームBGM
-		g_soundEngine->ResistWaveFileBank(enSound_PlayBattle, "Assets/sound/gameBGM/SentouBGM1.wav");
+		g_soundEngine->ResistWaveFileBank(enSound_PlayBattle, "Assets/sound/gameBGM/SentouBGM2.wav");
 		//ポーズ音
 		g_soundEngine->ResistWaveFileBank(enSound_Pause_Screen, "Assets/sound/menu/game_stop/gameStop1.wav");
 		//ゲーム終了

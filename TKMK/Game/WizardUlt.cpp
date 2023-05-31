@@ -133,15 +133,27 @@ void WizardUlt::Damege()
 	//攻撃対象のキャラにダメージを与える
 	m_targetActor->Dameged(m_UltDamege, m_CreatMeActor);
 
-	int downlevel = 0;
-	//レベル7以上なら
-	if (m_CharLevel7AndAdoveFlag == true) {
-
-		downlevel = m_CreatMeActor->GetLevel();
-
-		downlevel -= 6;
-		
-		m_targetActor->LevelDownProcess(downlevel);
-
+	if (m_targetActor->GetLevel() - m_CreatMeActor->GetLevel() <= 3)
+	{
+		m_targetActor->LevelDownProcess(1);
 	}
+
+	
+	else if (m_targetActor->GetLevel() - m_CreatMeActor->GetLevel() <= 5)
+	{
+		m_targetActor->LevelDownProcess(2);
+	}
+
+	//int downlevel = 0;
+	////レベル7以上なら
+	//if (m_CharLevel7AndAdoveFlag == true) {
+
+	//	
+	//	downlevel = m_CreatMeActor->GetLevel();
+
+	//	downlevel -= 6;
+	//	
+	//	m_targetActor->LevelDownProcess(downlevel);
+
+	//}
 }

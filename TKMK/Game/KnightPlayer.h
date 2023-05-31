@@ -21,7 +21,7 @@ public:
 	void Attack();
 
 	bool UltimaitSkillTime();
-
+	void TowerJumpEFK();
 	void Avoidance();
 	void Render(RenderContext& rc);
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);

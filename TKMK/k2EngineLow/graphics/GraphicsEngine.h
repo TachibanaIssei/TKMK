@@ -348,6 +348,7 @@ namespace nsK2EngineLow {
 		std::unique_ptr<DirectX::GraphicsMemory> m_directXTKGfxMemroy;					//DirectXTKのグラフィックメモリシステム。
 		bool m_isExecuteCommandList = false;											//コマンドリストをGPUに流した？
 		std::list< RequestDelayReleaseD3D12Object > m_reqDelayRelease3d12ObjectList;	// D3D12オブジェクトの遅延解放リクエストのリスト。
+		D3D12_VIEWPORT viewPorts[4];   //分割ビューポート、これをモデルの描画前に設定する
 	};
 	extern GraphicsEngine* g_graphicsEngine;	//グラフィックスエンジン
 	extern Camera* g_camera2D;					//2Dカメラ。

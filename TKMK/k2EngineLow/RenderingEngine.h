@@ -5,6 +5,8 @@
 #include "Shadow.h"
 
 namespace nsK2EngineLow {
+	static const int m_viewPortCount = 4;
+
 	class ModelRender;
 	class SpriteRender;
 	class FontRender;
@@ -465,6 +467,11 @@ namespace nsK2EngineLow {
 
 	private:
 		/// <summary>
+		/// ビューポートをInitする
+		/// </summary>
+		void InitViewPorts();
+
+		/// <summary>
 		/// モデルを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
@@ -493,5 +500,8 @@ namespace nsK2EngineLow {
 
 		Shadow						m_shadow;					//シャドウマップ
 		PostEffect					m_postEffect;				//ポストエフェクト
+
+		D3D12_VIEWPORT m_viewPorts[m_viewPortCount];	//画面分割用のビューポート
+
 	};
 }

@@ -14,7 +14,7 @@ void nsK2EngineLow::RenderingEngine::Init()
 
 void nsK2EngineLow::RenderingEngine::InitRenderTargets()
 {
-	//ƒƒCƒ“ƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒg
+	//ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½^ï¿½[ï¿½Qï¿½bï¿½g
 	m_mainRenderTarget.Create(
 		FRAME_BUFFER_W,
 		FRAME_BUFFER_H,
@@ -29,50 +29,50 @@ void nsK2EngineLow::RenderingEngine::InitCopyToFrameBufferSprite()
 {
 	SpriteInitData spriteInitData;
 
-	//ƒeƒNƒXƒ`ƒƒ‚ÍmainRenderTarget‚ÌƒJƒ‰[ƒoƒbƒtƒ@
+	//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½mainRenderTargetï¿½ÌƒJï¿½ï¿½ï¿½[ï¿½oï¿½bï¿½tï¿½@
 	spriteInitData.m_textures[0] = &m_mainRenderTarget.GetRenderTargetTexture();
 	spriteInitData.m_width = m_mainRenderTarget.GetWidth();
 	spriteInitData.m_height = m_mainRenderTarget.GetHeight();
 
 	spriteInitData.m_fxFilePath = "Assets/shader/sprite.fx";
 
-	//ƒXƒvƒ‰ƒCƒg‚ğ‰Šú‰»
+	//ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	m_copyToFrameBufferSprite.Init(spriteInitData);
 }
 
 void nsK2EngineLow::RenderingEngine::InitViewPorts()
 {
-	//‚±‚ê‚ª¶ã‰æ–Ê
-	m_viewPorts[0].Width = FRAME_BUFFER_W / 2;   //‰æ–Ê‚Ì‰¡ƒTƒCƒY
-	m_viewPorts[0].Height = FRAME_BUFFER_H / 2;   //‰æ–Ê‚ÌcƒTƒCƒY
-	m_viewPorts[0].TopLeftX = 0;   //‰æ–Ê¶ã‚ÌxÀ•W
-	m_viewPorts[0].TopLeftY = 0;   //‰æ–Ê¶ã‚ÌyÀ•W
-	m_viewPorts[0].MinDepth = 0.0f;   //[“x’l‚ÌÅ¬’l
-	m_viewPorts[0].MaxDepth = 1.0f;   //[“x’l‚ÌÅ‘å’l
+	//ï¿½ï¿½ï¿½ê‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	m_viewPorts[0].Width = FRAME_BUFFER_W / 2;   //ï¿½ï¿½Ê‚Ì‰ï¿½ï¿½Tï¿½Cï¿½Y
+	m_viewPorts[0].Height = FRAME_BUFFER_H / 2;   //ï¿½ï¿½Ê‚Ìcï¿½Tï¿½Cï¿½Y
+	m_viewPorts[0].TopLeftX = 0;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½W
+	m_viewPorts[0].TopLeftY = 0;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½W
+	m_viewPorts[0].MinDepth = 0.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅï¿½ï¿½l
+	m_viewPorts[0].MaxDepth = 1.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅ‘ï¿½l
 
-	//‚±‚ê‚ª¶‰º‰æ–Ê
-	m_viewPorts[1].Width = FRAME_BUFFER_W / 2;   //‰æ–Ê‚Ì‰¡ƒTƒCƒY
-	m_viewPorts[1].Height = FRAME_BUFFER_H / 2;   //‰æ–Ê‚ÌcƒTƒCƒY
-	m_viewPorts[1].TopLeftX = 0;   //‰æ–Ê¶ã‚ÌxÀ•W
-	m_viewPorts[1].TopLeftY = FRAME_BUFFER_H / 2;   //‰æ–Ê¶ã‚ÌyÀ•W
-	m_viewPorts[1].MinDepth = 0.0f;   //[“x’l‚ÌÅ¬’l
-	m_viewPorts[1].MaxDepth = 1.0f;   //[“x’l‚ÌÅ‘å’l
+	//ï¿½ï¿½ï¿½ê‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	m_viewPorts[1].Width = FRAME_BUFFER_W / 2;   //ï¿½ï¿½Ê‚Ì‰ï¿½ï¿½Tï¿½Cï¿½Y
+	m_viewPorts[1].Height = FRAME_BUFFER_H / 2;   //ï¿½ï¿½Ê‚Ìcï¿½Tï¿½Cï¿½Y
+	m_viewPorts[1].TopLeftX = 0;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½W
+	m_viewPorts[1].TopLeftY = FRAME_BUFFER_H / 2;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½W
+	m_viewPorts[1].MinDepth = 0.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅï¿½ï¿½l
+	m_viewPorts[1].MaxDepth = 1.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅ‘ï¿½l
 
-	//‚±‚ê‚ª‰Eã‰æ–Ê
-	m_viewPorts[2].Width = FRAME_BUFFER_W / 2;   //‰æ–Ê‚Ì‰¡ƒTƒCƒY
-	m_viewPorts[2].Height = FRAME_BUFFER_H / 2;   //‰æ–Ê‚ÌcƒTƒCƒY
-	m_viewPorts[2].TopLeftX = FRAME_BUFFER_W / 2;   //‰æ–Ê¶ã‚ÌxÀ•W
-	m_viewPorts[2].TopLeftY = 0;   //‰æ–Ê¶ã‚ÌyÀ•W
-	m_viewPorts[2].MinDepth = 0.0f;   //[“x’l‚ÌÅ¬’l
-	m_viewPorts[2].MaxDepth = 1.0f;   //[“x’l‚ÌÅ‘å’l
+	//ï¿½ï¿½ï¿½ê‚ªï¿½Eï¿½ï¿½ï¿½ï¿½
+	m_viewPorts[2].Width = FRAME_BUFFER_W / 2;   //ï¿½ï¿½Ê‚Ì‰ï¿½ï¿½Tï¿½Cï¿½Y
+	m_viewPorts[2].Height = FRAME_BUFFER_H / 2;   //ï¿½ï¿½Ê‚Ìcï¿½Tï¿½Cï¿½Y
+	m_viewPorts[2].TopLeftX = FRAME_BUFFER_W / 2;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½W
+	m_viewPorts[2].TopLeftY = 0;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½W
+	m_viewPorts[2].MinDepth = 0.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅï¿½ï¿½l
+	m_viewPorts[2].MaxDepth = 1.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅ‘ï¿½l
 
-	//‚±‚ê‚ª‰E‰º‰æ–Ê
-	m_viewPorts[3].Width = FRAME_BUFFER_W / 2;   //‰æ–Ê‚Ì‰¡ƒTƒCƒY
-	m_viewPorts[3].Height = FRAME_BUFFER_H / 2;   //‰æ–Ê‚ÌcƒTƒCƒY
-	m_viewPorts[3].TopLeftX = FRAME_BUFFER_W / 2;   //‰æ–Ê¶ã‚ÌxÀ•W
-	m_viewPorts[3].TopLeftY = FRAME_BUFFER_H / 2;   //‰æ–Ê¶ã‚ÌyÀ•W
-	m_viewPorts[3].MinDepth = 0.0f;   //[“x’l‚ÌÅ¬’l
-	m_viewPorts[3].MaxDepth = 1.0f;   //[“x’l‚ÌÅ‘å’l
+	//ï¿½ï¿½ï¿½ê‚ªï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½
+	m_viewPorts[3].Width = FRAME_BUFFER_W / 2;   //ï¿½ï¿½Ê‚Ì‰ï¿½ï¿½Tï¿½Cï¿½Y
+	m_viewPorts[3].Height = FRAME_BUFFER_H / 2;   //ï¿½ï¿½Ê‚Ìcï¿½Tï¿½Cï¿½Y
+	m_viewPorts[3].TopLeftX = FRAME_BUFFER_W / 2;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½W
+	m_viewPorts[3].TopLeftY = FRAME_BUFFER_H / 2;   //ï¿½ï¿½Êï¿½ï¿½ï¿½ï¿½yï¿½ï¿½ï¿½W
+	m_viewPorts[3].MinDepth = 0.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅï¿½ï¿½l
+	m_viewPorts[3].MaxDepth = 1.0f;   //ï¿½[ï¿½xï¿½lï¿½ÌÅ‘ï¿½l
 }
 
 void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
@@ -119,7 +119,7 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 
 	m_shadow.Render(rc);
 
-	//ƒƒCƒ“ƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒg‚É•ÏX
+	//ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½É•ÏX
 	rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
 	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
 	rc.ClearRenderTargetView(m_mainRenderTarget);
@@ -127,10 +127,11 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	for (int i = 0; i < m_viewPortCount; i++)
 	{
 		rc.SetViewport(m_viewPorts[i]);
-		//ƒ‚ƒfƒ‹‚ğ•`‰æ
+		//ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½
 		ModelRendering(rc);
+	}
 
-		//ƒŒƒ“ƒ_ƒŠƒ“ƒOƒ^[ƒQƒbƒg‚Ö‚Ì‘‚«‚İI—¹‘Ò‚¿
+		//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½^ï¿½[ï¿½Qï¿½bï¿½gï¿½Ö‚Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İIï¿½ï¿½ï¿½Ò‚ï¿½
 		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
 
 		m_postEffect.Render(rc, m_mainRenderTarget);
@@ -141,11 +142,11 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	);
 	m_copyToFrameBufferSprite.Draw(rc);
 
-	//ƒXƒvƒ‰ƒCƒg‚ğ•`‰æ
+	//ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½ï¿½`ï¿½ï¿½
 	SpriteRendering(rc);
-	//•¶š‚ğ•`‰æ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½
 	FontRendering(rc);
-	//ƒXƒvƒ‰ƒCƒg‚ğ•¶š‚Ìã‚É•`‰æ‚·‚é
+	//ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½ğ•¶ï¿½ï¿½Ìï¿½É•`ï¿½æ‚·ï¿½ï¿½
 	SpriteRendering(rc, true);
 
 	m_modelList.clear();

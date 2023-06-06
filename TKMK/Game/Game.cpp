@@ -94,6 +94,8 @@ Game::~Game()
 
 bool Game::Start()
 {
+	g_renderingEngine->SetSplitScreenFlag(true);
+
 	//エフェクト読み込み
 	SetEffects();
 
@@ -411,6 +413,7 @@ void Game::GoResult()
 {
 	if (fade->GetCurrentAlpha() >= 1.0f)
 	Result* result = NewGO<Result>(0, "Result");
+	g_renderingEngine->SetSplitScreenFlag(false);
 	//DeleteGO(this);
 }
 

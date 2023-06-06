@@ -465,11 +465,26 @@ namespace nsK2EngineLow {
 			return m_sceneLight.HemiLightIsUse();
 		}
 
+	////////////////////////////////////////////////////////////////////////////////
+	///画面分割の関数
+	////////////////////////////////////////////////////////////////////////////////
+
+		/// <summary>
+		/// 画面分割をするフラグを設定
+		/// </summary>
+		/// <param name="flag">trueなら分割する</param>
+		void SetSplitScreenFlag(bool flag)
+		{
+			m_isSplitScreen = flag;
+		}
+
 	private:
 		/// <summary>
 		/// ビューポートをInitする
 		/// </summary>
 		void InitViewPorts();
+
+		void ExcuteModelRender(RenderContext& rc);
 
 		/// <summary>
 		/// モデルを描画する
@@ -487,6 +502,8 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void FontRendering(RenderContext& rc);
 
+
+
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
@@ -502,6 +519,7 @@ namespace nsK2EngineLow {
 		PostEffect					m_postEffect;				//ポストエフェクト
 
 		D3D12_VIEWPORT m_viewPorts[m_viewPortCount];	//画面分割用のビューポート
+		bool m_isSplitScreen = false;					//画面分割をする？trueならする
 
 	};
 }

@@ -1,6 +1,11 @@
 #include "k2EngineLowPreCompile.h"
 #include "Bloom.h"
 
+namespace BloomConst
+{
+	const int BLUR_POWER = 10;
+}
+
 void nsK2EngineLow::Bloom::Init(RenderTarget& mainRenderTarget)
 {
 	InitRenderTarget(mainRenderTarget);
@@ -92,10 +97,10 @@ void nsK2EngineLow::Bloom::OnRender(RenderContext& rc, RenderTarget& mainRenderT
 	rc.WaitUntilFinishDrawingToRenderTarget(m_luminnceRenderTarget);
 
 	//ガウシアンブラーを実行する
-	m_gaussianBlur[0].ExecuteOnGPU(rc, 10);
-	m_gaussianBlur[1].ExecuteOnGPU(rc, 10);
-	m_gaussianBlur[2].ExecuteOnGPU(rc, 10);
-	m_gaussianBlur[3].ExecuteOnGPU(rc, 10);
+	m_gaussianBlur[0].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
+	m_gaussianBlur[1].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
+	m_gaussianBlur[2].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
+	m_gaussianBlur[3].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
 
 	//ボケ画像をメインレンダリングターゲットに加算合成
 	rc.WaitUntilToPossibleSetRenderTarget(mainRenderTarget);

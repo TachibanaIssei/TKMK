@@ -75,6 +75,12 @@ namespace nsK2EngineLow {
 			m_commandList->RSSetViewports(1, &viewport);
 			m_currentViewport = viewport;
 		}
+		void SetViewport(D3D12_VIEWPORT& viewport)
+		{
+			m_commandList->RSSetViewports(1, &viewport);
+			m_currentViewport = viewport;
+		}
+
 		/// <summary>
 		/// ビューポートを取得。
 		/// </summary>

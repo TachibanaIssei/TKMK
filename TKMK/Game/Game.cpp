@@ -26,7 +26,7 @@ namespace {
 	const Vector3 Menu_QuitGamePos = Vector3(0.0f, -320.0f, 0.0f);
 	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
 	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
-	const Vector3 TOWEREXPOSITION_POS = Vector3(20.0f, -410.0f, 0.0f);
+	const Vector3 TOWER_X_POS = Vector3(20.0f, -410.0f, 0.0f);
 	const Vector3 RABBIT_POS = Vector3(650.0f, 400.0f, 0.0f);
 	const Vector3 RabbitSpriteScale = Vector3(0.75f, 0.75f, 0.0f);
 	const Vector3 SpriteScale = Vector3::One;
@@ -142,85 +142,16 @@ bool Game::Start()
 
 	});
 
-	//プレイヤーの生成
-	player = NewGO<Player>(0, "player");
-	player->CharSelect(SelectCharNumber);
-	player->CreaetPlayer();
-	m_Actors.push_back(player->GetPlayerActor());
+	//ソロプレイだったら
+	if (m_gameMode == enGameMode_SoloPlay)
+	{
+		InitSoloPlay();
+	}
+	//複数人プレイだったら
+	else if (m_gameMode == enGameMode_MultiPlay)
+	{
 
-	//カメラの生成
-	m_gamecamera = NewGO<GameCamera>(1, "gamecamera");
-
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {		
-			if (objData.ForwardMatchName(L"CharPos") == true) {
-				//左上の座標
-
-				if (objData.number == 0) {
-					m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-					m_KnightAI->SetGame(this);
-					m_Actors.push_back(m_KnightAI);
-					m_KnightAI->SetPosition(objData.position);
-					m_KnightAI->SetCharaconPosition(objData.position);
-					m_KnightAI->SetPlayerActor(player->GetPlayerActor());
-					int Number = 0;
-					m_KnightAI->SetRespawnNumber(Number);
-					m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
-
-					return true;
-				}
-				//右上の座標
-				if (objData.number == 1) {
-					m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-					m_KnightAI1->SetGame(this);
-					m_Actors.push_back(m_KnightAI1);
-					m_KnightAI1->SetPosition(objData.position);
-					m_KnightAI1->SetCharaconPosition(objData.position);
-					m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
-					int Number = 1;
-					m_KnightAI1->SetRespawnNumber(Number);
-					m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
-
-					return true;
-				}
-				//左下の座標
-				if (objData.number == 3) {
-					m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
-					m_KnightAI2->SetGame(this);
-					m_Actors.push_back(m_KnightAI2);
-					m_KnightAI2->SetPosition(objData.position);
-					m_KnightAI2->SetCharaconPosition(objData.position);
-					m_KnightAI2->SetPlayerActor(player->GetPlayerActor());
-					int Number = 3;
-					m_KnightAI2->SetRespawnNumber(Number);
-					m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
-
-					return true;
-				}
-				if (objData.number == 4)
-				{
-					m_EFK_Pos = objData.position;
-				}
-				return true;
-			}
-		return true;
-    });  
-	
-	
-	//GameUIの生成
-	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
-	m_gameUI->SetSGame(this);
-
-	
-	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
-	m_underSprite.SetPosition(TOWEREXPOSITION_POS);
-	m_underSprite.SetScale(SpriteScale);
-	m_underSprite.Update();
-
-	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
-	m_RabbitSprite.SetPosition(RABBIT_POS);
-	m_RabbitSprite.SetScale(RabbitSpriteScale);
-	m_RabbitSprite.Update();
-
+	}
 
 	//ゲームの状態をゲームステートにする
 	m_GameState = enGameState_Start;
@@ -243,7 +174,6 @@ void Game::Update()
 	}
 
 	GameState();
-
 }
 
 void Game::BattleStart()
@@ -411,6 +341,7 @@ void Game::GoResult()
 {
 	if (fade->GetCurrentAlpha() >= 1.0f)
 	Result* result = NewGO<Result>(0, "Result");
+	g_renderingEngine->SetSplitScreenFlag(false);
 	//DeleteGO(this);
 }
 
@@ -602,6 +533,95 @@ void Game::GetActorPoints(int charPoints[])
 		charPoints[count] = actor->GetPoint();
 		count++;
 	}
+}
+
+void Game::InitSoloPlay()
+{
+	//画面分割をしない
+	g_renderingEngine->SetSplitScreenFlag(true);
+
+	//プレイヤーの生成
+	player = NewGO<Player>(0, "player");
+	player->CharSelect(SelectCharNumber);
+	player->CreaetPlayer();
+	m_Actors.push_back(player->GetPlayerActor());
+
+	//カメラの生成
+	m_gamecamera = NewGO<GameCamera>(1, "gamecamera");
+
+	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+		if (objData.ForwardMatchName(L"CharPos") == true) {
+			//左上の座標
+
+			if (objData.number == 0) {
+				m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
+				m_KnightAI->SetGame(this);
+				m_Actors.push_back(m_KnightAI);
+				m_KnightAI->SetPosition(objData.position);
+				m_KnightAI->SetCharaconPosition(objData.position);
+				m_KnightAI->SetPlayerActor(player->GetPlayerActor());
+				int Number = 0;
+				m_KnightAI->SetRespawnNumber(Number);
+				m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+
+				return true;
+			}
+			//右上の座標
+			if (objData.number == 1) {
+				m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+				m_KnightAI1->SetGame(this);
+				m_Actors.push_back(m_KnightAI1);
+				m_KnightAI1->SetPosition(objData.position);
+				m_KnightAI1->SetCharaconPosition(objData.position);
+				m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
+				int Number = 1;
+				m_KnightAI1->SetRespawnNumber(Number);
+				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+
+				return true;
+			}
+			//左下の座標
+			if (objData.number == 3) {
+				m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
+				m_KnightAI2->SetGame(this);
+				m_Actors.push_back(m_KnightAI2);
+				m_KnightAI2->SetPosition(objData.position);
+				m_KnightAI2->SetCharaconPosition(objData.position);
+				m_KnightAI2->SetPlayerActor(player->GetPlayerActor());
+				int Number = 3;
+				m_KnightAI2->SetRespawnNumber(Number);
+				m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+
+				return true;
+			}
+			if (objData.number == 4)
+			{
+				m_EFK_Pos = objData.position;
+			}
+			return true;
+		}
+		return true;
+		});
+
+
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
+	m_gameUI->SetSGame(this);
+
+
+	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
+	m_underSprite.SetPosition(TOWER_X_POS);
+	m_underSprite.SetScale(SpriteScale);
+	m_underSprite.Update();
+
+	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
+	m_RabbitSprite.SetPosition(RABBIT_POS);
+	m_RabbitSprite.SetScale(RabbitSpriteScale);
+	m_RabbitSprite.Update();
+}
+
+void Game::InitMultiPlay()
+{
 }
 
 //中立の敵の生成処理

@@ -351,6 +351,7 @@ void CharacterSelect::Ready()
 	if (fade->GetCurrentAlpha() >= 1.0f)
 	{
 		Game* game = NewGO<Game>(5, "game");
+		game->SetGameMode(game->enGameMode_SoloPlay);
 		//キャラクターセレクトが
 		switch (m_characterSelect)
 		{

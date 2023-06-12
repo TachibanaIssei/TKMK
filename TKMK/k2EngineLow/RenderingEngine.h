@@ -5,7 +5,7 @@
 #include "Shadow.h"
 
 namespace nsK2EngineLow {
-	static const int m_viewPortCount = 4;
+	static const int m_viewPortCount = 2;
 
 	class ModelRender;
 	class SpriteRender;
@@ -478,13 +478,22 @@ namespace nsK2EngineLow {
 			m_isSplitScreen = flag;
 		}
 
+		bool GetSplitScreenFlag()
+		{
+			return m_isSplitScreen;
+		}
+
 	private:
 		/// <summary>
 		/// ビューポートをInitする
 		/// </summary>
 		void InitViewPorts();
 
-		void ExcuteModelRender(RenderContext& rc);
+		/// <summary>
+		/// モデル描画をビューポートの数実行する関数
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		void DrawModelInViewPorts(RenderContext& rc);
 
 		/// <summary>
 		/// モデルを描画する

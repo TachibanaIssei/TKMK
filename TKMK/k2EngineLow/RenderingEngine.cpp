@@ -41,40 +41,24 @@ void nsK2EngineLow::RenderingEngine::InitCopyToFrameBufferSprite()
 
 void nsK2EngineLow::RenderingEngine::InitViewPorts()
 {
-	//左上の画面
+	//左の画面
 	m_viewPorts[0].Width = FRAME_BUFFER_W / 2;		//画面の横サイズ
-	m_viewPorts[0].Height = FRAME_BUFFER_H / 2;		//画面の縦サイズ
+	m_viewPorts[0].Height = FRAME_BUFFER_H;	//画面の縦サイズ
 	m_viewPorts[0].TopLeftX = 0;					//画面左上のx座標
 	m_viewPorts[0].TopLeftY = 0;					//画面左上のy座標
 	m_viewPorts[0].MinDepth = 0.0f;					//深度値の最小値
 	m_viewPorts[0].MaxDepth = 1.0f;					//深度値の最大値
 
-	//左下の画面
+	//右の画面
 	m_viewPorts[1].Width = FRAME_BUFFER_W / 2;		//画面の横サイズ
-	m_viewPorts[1].Height = FRAME_BUFFER_H / 2;		//画面の縦サイズ
-	m_viewPorts[1].TopLeftX = 0;					//画面左上のx座標
-	m_viewPorts[1].TopLeftY = FRAME_BUFFER_H / 2;   //画面左上のy座標
+	m_viewPorts[1].Height = FRAME_BUFFER_H;	//画面の縦サイズ
+	m_viewPorts[1].TopLeftX = FRAME_BUFFER_W / 2;	//画面左上のx座標
+	m_viewPorts[1].TopLeftY = 0;					//画面左上のy座標
 	m_viewPorts[1].MinDepth = 0.0f;					//深度値の最小値
 	m_viewPorts[1].MaxDepth = 1.0f;					//深度値の最大値
-
-	//右上の画面
-	m_viewPorts[2].Width = FRAME_BUFFER_W / 2;		//画面の横サイズ
-	m_viewPorts[2].Height = FRAME_BUFFER_H / 2;		//画面の縦サイズ
-	m_viewPorts[2].TopLeftX = FRAME_BUFFER_W / 2;   //画面左上のx座標
-	m_viewPorts[2].TopLeftY = 0;					//画面左上のy座標
-	m_viewPorts[2].MinDepth = 0.0f;					//深度値の最小値
-	m_viewPorts[2].MaxDepth = 1.0f;					//深度値の最大値
-
-	//右下の画面
-	m_viewPorts[3].Width = FRAME_BUFFER_W / 2;		//画面の横サイズ
-	m_viewPorts[3].Height = FRAME_BUFFER_H / 2;		//画面の縦サイズ
-	m_viewPorts[3].TopLeftX = FRAME_BUFFER_W / 2;   //画面左上のx座標
-	m_viewPorts[3].TopLeftY = FRAME_BUFFER_H / 2;   //画面左上のy座標
-	m_viewPorts[3].MinDepth = 0.0f;					//深度値の最小値
-	m_viewPorts[3].MaxDepth = 1.0f;					//深度値の最大値
 }
 
-void nsK2EngineLow::RenderingEngine::ExcuteModelRender(RenderContext& rc)
+void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 {
 	if (m_isSplitScreen)
 	{
@@ -140,7 +124,7 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
 	rc.ClearRenderTargetView(m_mainRenderTarget);
 
-	ExcuteModelRender(rc);
+	DrawModelInViewPorts(rc);
 
 	//書き込み終了待ち
 	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);

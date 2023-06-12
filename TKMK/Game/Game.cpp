@@ -538,7 +538,7 @@ void Game::GetActorPoints(int charPoints[])
 void Game::InitSoloPlay()
 {
 	//画面分割をしない
-	g_renderingEngine->SetSplitScreenFlag(false);
+	g_renderingEngine->SetSplitScreenFlag(true);
 
 	//プレイヤーの生成
 	player = NewGO<Player>(0, "player");

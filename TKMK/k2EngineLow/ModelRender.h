@@ -40,7 +40,7 @@ namespace nsK2EngineLow {
 		/// <returns>モデル</returns>
 		Model& GetModel()
 		{
-			return m_model;
+			return m_model[0];
 		}
 
 		/// <summary>
@@ -125,12 +125,12 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
 		{
-			m_model.Draw(rc);
+			m_model[g_renderingEngine->GetCameraDrawing()].Draw(rc,1,g_renderingEngine->GetCameraDrawing());
 		}
 
-		void OnRenderShadowModel(RenderContext& rc,Camera& camera)
+		void OnRenderShadowModel(RenderContext& rc,Camera& camera,int number)
 		{
-			m_shadowModel.Draw(rc,camera);
+			m_shadowModel[number].Draw(rc, camera);
 		}
 
 		/// <summary>
@@ -225,10 +225,10 @@ namespace nsK2EngineLow {
 		Vector3						m_scale				= Vector3::One;			//大きさ
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
 
-		Model						m_model;									//Modelクラス
+		Model						m_model[2];									//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
 
-		Model						m_shadowModel;								//シャドウマップ描画用
+		Model						m_shadowModel[2];								//シャドウマップ描画用
 	};
 
 }

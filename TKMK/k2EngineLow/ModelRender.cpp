@@ -28,15 +28,21 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 	MakeDirectionData();
 
 	//モデルクラスの初期化
-	m_model.Init(m_modelInitData);
-
-	//シャドウマップ描画用のモデルの初期化
-	if (shadow)
+	for (int i = 0; i < 2; i++)
 	{
-		m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
-		m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
+		m_model[i].Init(m_modelInitData);
+	}
 
-		m_shadowModel.Init(m_modelInitData);
+	for(int i=0;i<2;i++){
+		//シャドウマップ描画用のモデルの初期化
+		if (shadow)
+		{
+			m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
+			m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
+
+			m_shadowModel[i].Init(m_modelInitData);
+		}
+
 	}
 
 }
@@ -53,34 +59,43 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 
 	MakeDirectionData();
 
-	m_model.Init(m_modelInitData);
+	for (int i = 0; i < 2; i++)
+	{
+		m_model[i].Init(m_modelInitData);
+	}
 }
 
 void nsK2EngineLow::ModelRender::InitSkyCube(ModelInitData& initData)
 {
 	initData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
-	m_model.Init(initData);
+	for (int i = 0; i < 2; i++)
+	{
+		m_model[i].Init(initData);
+		m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
+	}
 
-	m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 }
 
 void nsK2EngineLow::ModelRender::Update()
 {
-	//ワールド行列の更新(座標、回転、大きさ)
-	m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
-
-	//スケルトンが初期化されていたら
-	if (m_skeleton.IsInited())
+	for (int i = 0; i < 2; i++)
 	{
-		//スケルトンを更新する
-		m_skeleton.Update(m_model.GetWorldMatrix());
-	}
+		//ワールド行列の更新(座標、回転、大きさ)
+		m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
 
-	//シャドウモデルが初期化されていたら
-	if (m_shadowModel.IsInited())
-	{
-		m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
-		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+		//スケルトンが初期化されていたら
+		if (m_skeleton.IsInited())
+		{
+			//スケルトンを更新する
+			m_skeleton.Update(m_model[i].GetWorldMatrix());
+		}
+
+		//シャドウモデルが初期化されていたら
+		if (m_shadowModel[i].IsInited())
+		{
+			m_shadowModel[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
+			g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+		}
 	}
 
 	//アニメーションを進める

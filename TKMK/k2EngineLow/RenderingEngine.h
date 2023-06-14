@@ -15,6 +15,16 @@ namespace nsK2EngineLow {
 	class RenderingEngine
 	{
 	public:
+		/// <summary>
+		/// 現在のカメラ描画
+		/// </summary>
+		enum EnCameraDrawing
+		{
+			enCameraDrawing_Left,
+			enCameraDrawing_Right,
+			enCameraDrawing_Num
+		};
+
 		void Init();
 
 		void InitRenderTargets();
@@ -55,7 +65,7 @@ namespace nsK2EngineLow {
 		/// シャドウモデルを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void ShadowModelRendering(RenderContext& rc, Camera& camera);
+		void ShadowModelRendering(RenderContext& rc, Camera& camera,int number);
 
 		/// <summary>
 		/// 描画処理を実行
@@ -477,11 +487,24 @@ namespace nsK2EngineLow {
 		{
 			m_isSplitScreen = flag;
 		}
-
+		/// <summary>
+		/// 画面分割をするかのフラグを取得
+		/// </summary>
+		/// <returns></returns>
 		bool GetSplitScreenFlag()
 		{
 			return m_isSplitScreen;
 		}
+		/// <summary>
+		/// どちらのカメラを描画中か
+		/// </summary>
+		/// <returns></returns>
+		EnCameraDrawing GetCameraDrawing()
+		{
+			return m_cameraDrawing;
+		}
+
+		void EffectBeginRender();
 
 	private:
 		/// <summary>
@@ -510,8 +533,11 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void FontRendering(RenderContext& rc);
-
-
+		/// <summary>
+		/// エフェクト描画を実行する
+		/// </summary>
+		/// <param name="rc"></param>
+		void ExcuteEffectRender(RenderContext& rc);
 
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
@@ -527,6 +553,9 @@ namespace nsK2EngineLow {
 		Shadow						m_shadow;					//シャドウマップ
 		PostEffect					m_postEffect;				//ポストエフェクト
 
+		EnCameraDrawing m_cameraDrawing = enCameraDrawing_Left;
+
+		D3D12_VIEWPORT m_soloViewPort;					//1画面用のビューポート
 		D3D12_VIEWPORT m_viewPorts[m_viewPortCount];	//画面分割用のビューポート
 		bool m_isSplitScreen = false;					//画面分割をする？trueならする
 

@@ -181,7 +181,7 @@ void KnightPlayer::Update()
 				}
 				else {
 					//ジャンプ
-					if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
+					if (pushFlag == false && m_charCon.IsOnGround() && g_pad[m_playerNumber]->IsTrigger(enButtonA))
 					{
 						pushFlag = true;
 						m_charState = enCharState_Jump;
@@ -205,8 +205,8 @@ void KnightPlayer::Update()
 			Vector3 stickL = Vector3::Zero;
 			if (CantMove == false)
 			{
-				stickL.x = g_pad[0]->GetLStickXF();
-				stickL.y = g_pad[0]->GetLStickYF();
+				stickL.x = g_pad[m_playerNumber]->GetLStickXF();
+				stickL.y = g_pad[m_playerNumber]->GetLStickYF();
 			}
 			Move(m_position, m_charCon, m_Status, stickL);
 
@@ -290,7 +290,7 @@ void KnightPlayer::Attack()
 	if (pushFlag==false&&AtkState == false)
 	{
 		//Aボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonA))
 		{
 			m_charState = enCharState_Attack;
 			m_game->UnderSprite_Attack();
@@ -302,7 +302,7 @@ void KnightPlayer::Attack()
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA)&& m_AtkTmingState!= SecondAtk_State)
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonA)&& m_AtkTmingState!= SecondAtk_State)
 		{
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
@@ -320,7 +320,7 @@ void KnightPlayer::Attack()
 	//二段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == SecondAtkStart_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA)&&m_AtkTmingState != LastAtk_State)
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonA)&&m_AtkTmingState != LastAtk_State)
 		{
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
@@ -339,7 +339,7 @@ void KnightPlayer::Attack()
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB)&&m_Status.Hp>0)
+	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[m_playerNumber]->IsTrigger(enButtonB)&&m_Status.Hp>0)
 	{
 		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed);
@@ -391,7 +391,7 @@ void KnightPlayer::Attack()
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	if (pushFlag == false && Lv >= 4 && g_pad[m_playerNumber]->IsTrigger(enButtonX))
 	{
 		//画面を暗くする
 		UltimateDarknessFlag = true;
@@ -489,7 +489,7 @@ void KnightPlayer::Avoidance()
 	//RBボタンが押されたら。
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false) {
-		if (g_pad[0]->IsTrigger(enButtonRB1) || g_pad[0]->IsTrigger(enButtonLB1)) {
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonRB1) || g_pad[m_playerNumber]->IsTrigger(enButtonLB1)) {
 			//回避ステート
 			AnimationMove(AvoidanceSpeed);
 			pushFlag = true;

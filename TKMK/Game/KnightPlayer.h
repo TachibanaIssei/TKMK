@@ -42,6 +42,31 @@ public:
 
 	void SetAndPlaySoundSource(EnSound soundNumber);
 
+	/// <summary>
+	/// プレイヤーの番号を設定する。
+	/// 最大2人プレイの予定のため0か1になるようにしている
+	/// </summary>
+	/// <param name="number"></param>
+	void SetPlayerNumber(int number)
+	{
+		if (number == 1)
+		{
+			m_playerNumber = number;
+		}
+		else
+		{
+			m_playerNumber = 0;
+		}
+	}
+	/// <summary>
+	/// プレイヤーの番号を取得する
+	/// </summary>
+	/// <returns>プレイヤーの番号</returns>
+	int GetPlayerNumber()
+	{
+		return m_playerNumber;
+	}
+
 private:
 	void CoolTimeProcess();
 	/// <summary>
@@ -80,6 +105,7 @@ private:
 	float AvoidanceSpeed = 170.0f;
 
 	int dddd = 20;
+	int m_playerNumber = 0;	//プレイヤーの番号(ゲームパッドの番号などで使用)
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 

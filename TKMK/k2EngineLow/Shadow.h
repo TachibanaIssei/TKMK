@@ -6,9 +6,9 @@ namespace nsK2EngineLow {
 		void Init();
 		void Render(RenderContext& rc);
 
-		Texture& GetShadowMapTexture()
+		Texture& GetShadowMapTexture(int number = 0)
 		{
-			return m_shadowMap.GetRenderTargetTexture();
+			return m_shadowMap[number].GetRenderTargetTexture();
 		}
 
 		Camera& GetLightCamera()
@@ -24,7 +24,7 @@ namespace nsK2EngineLow {
 
 	private:
 		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
-		RenderTarget m_shadowMap;
+		RenderTarget m_shadowMap[2];
 		Camera m_lightCamera;
 
 		Vector3 m_lightCameraPosition = Vector3(0.0f,1200.0f,150.0f);

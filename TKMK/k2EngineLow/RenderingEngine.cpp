@@ -55,8 +55,8 @@ void nsK2EngineLow::RenderingEngine::InitViewPorts()
 {
 	m_soloViewPort.Width = FRAME_BUFFER_W;		//画面の横サイズ
 	m_soloViewPort.Height = FRAME_BUFFER_H;		//画面の縦サイズ
-	m_soloViewPort.TopLeftX = 0;					//画面左上のx座標
-	m_soloViewPort.TopLeftY = 0;					//画面左上のy座標
+	m_soloViewPort.TopLeftX = 0;				//画面左上のx座標
+	m_soloViewPort.TopLeftY = 0;				//画面左上のy座標
 	m_soloViewPort.MinDepth = 0.0f;				//深度値の最小値
 	m_soloViewPort.MaxDepth = 1.0f;				//深度値の最大値
 
@@ -162,6 +162,12 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), 1);
 			EffectEngine::GetInstance()->Draw(1);
 		}
+
+		//1画面のスプライトのアスペクト比に合わせる。
+		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
+		//ビューポートを1画面全体用に切り替える
+		rc.SetViewportAndScissor(m_soloViewPort);
+
 	}
 	//1画面
 	else {

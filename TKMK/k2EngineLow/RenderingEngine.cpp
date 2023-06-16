@@ -102,8 +102,9 @@ void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 	}
 	else
 	{
-		ModelRendering(rc);
+		rc.SetViewport(m_soloViewPort);
 		m_cameraDrawing = enCameraDrawing_Left;
+		ModelRendering(rc);
 	}
 }
 

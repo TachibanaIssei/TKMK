@@ -504,6 +504,9 @@ namespace nsK2EngineLow {
 			return m_cameraDrawing;
 		}
 
+		/// <summary>
+		/// フレームの最初に行われるエフェクトの処理
+		/// </summary>
 		void EffectBeginRender();
 
 	private:

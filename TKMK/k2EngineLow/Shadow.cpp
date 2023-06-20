@@ -3,8 +3,8 @@
 
 namespace ShadowConst
 {
-	const int RENDER_TARGET_WIDTH	= 4000;	//レンダリングターゲットの幅
-	const int RENDER_TARGET_HEIGHT	= 4000;	//レンダリングターゲットの高さ
+	const int RENDER_TARGET_WIDTH	= 10000;	//レンダリングターゲットの幅
+	const int RENDER_TARGET_HEIGHT	= 10000;	//レンダリングターゲットの高さ
 
 	const float LIGHT_CAMERA_WIDTH = 2500.0f;
 	const float LIGHT_CAMERA_HEIGHT = 2500.0f;

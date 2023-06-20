@@ -56,7 +56,6 @@ Game::~Game()
 	{
 		DeleteGO(m_backGround);
 	}
-	DeleteGO(m_gamecamera);
 
 	for (auto seutral_Enemy : m_neutral_Enemys)
 	{
@@ -73,7 +72,14 @@ Game::~Game()
 		}
 	}
 
-	DeleteGO(player);
+	for (int i = 0; i < 2; i++) {
+		DeleteGO(m_gamecamera[i]);
+
+		if (player[i] != nullptr)
+		{
+			DeleteGO(player[i]);
+		}
+	}
   
 	if (GameObjectManager::GetInstance()->IsActive()) {
 		TowerDown->Stop();
@@ -150,7 +156,7 @@ bool Game::Start()
 	//複数人プレイだったら
 	else if (m_gameMode == enGameMode_MultiPlay)
 	{
-
+		InitMultiPlay();
 	}
 
 	//ゲームの状態をゲームステートにする
@@ -224,7 +230,7 @@ void Game::BattleStart()
 void Game::Battle()
 {
 	//↑の表示の処理
-	if (player->GetCharPosition().y <= 10 && m_underSprite_TowerDown == false)
+	if (player[0]->GetCharcterPosition().y <= 10 && m_underSprite_TowerDown == false)
 	{
 		m_underSprite_TowerDown = true;
 		UnderSpriteUpdate();
@@ -259,7 +265,9 @@ void Game::Battle()
 			//UIのステートをポーズステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 			//カメラのステートをポーズステートに変更
-			m_gamecamera->SetCameraState(m_gamecamera->enPauseState);
+			for (int i = 0; i < 2; i++) {
+				m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enPauseState);
+			}
 			//生成されている中立の敵のステートをポーズステートに変更
 			for (auto seutral_Enemy : m_neutral_Enemys)
 			{
@@ -359,7 +367,9 @@ void Game::Between()
 		//UIのステートをゲームステートに戻す
 		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 		//カメラのステートをゲームステートに戻す
-		m_gamecamera->SetCameraState(m_gamecamera->enGameState);
+		for (int i = 0; i < 2; i++) {
+			m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enGameState);
+		}
 		//生成されている中立の敵のステートをゲームステートに戻す
 		for (auto seutral_Enemy : m_neutral_Enemys)
 		{
@@ -385,7 +395,7 @@ void Game::Respawn()
 	//中立の敵の総数が生成されている中立の敵と数が違うなら
 	if (ENEMY_AMOUNT != m_neutral_Enemys.size()) {
 		//足りない中立の敵の数を調べる
-		int spawnAmount = ENEMY_AMOUNT - m_neutral_Enemys.size();
+		int spawnAmount = ENEMY_AMOUNT - (int)m_neutral_Enemys.size();
 		for (int generate = 0; generate < spawnAmount; generate++) {
 			//ランダムに番号を決める(0以外)
 			RandamRespawnPosNumber = rand() % 19 + 1;
@@ -538,28 +548,28 @@ void Game::GetActorPoints(int charPoints[])
 void Game::InitSoloPlay()
 {
 	//画面分割をしない
-	g_renderingEngine->SetSplitScreenFlag(true);
+	g_renderingEngine->SetSplitScreenFlag(false);
 
 	//プレイヤーの生成
-	player = NewGO<Player>(0, "player");
-	player->CharSelect(SelectCharNumber);
-	player->CreaetPlayer();
-	m_Actors.push_back(player->GetPlayerActor());
+	player[0] = NewGO<Player>(0, "player");
+	player[0]->SelectCharcter(SelectCharNumber);
+	player[0]->CreatePlayer();
+	m_Actors.push_back(player[0]->GetPlayerActor());
 
 	//カメラの生成
-	m_gamecamera = NewGO<GameCamera>(1, "gamecamera");
+	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gamecamera[0]->SetSplitCameraLR(m_gamecamera[0]->enSplitCamera_Left);
 
 	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
-
 			if (objData.number == 0) {
 				m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
 				m_KnightAI->SetGame(this);
 				m_Actors.push_back(m_KnightAI);
 				m_KnightAI->SetPosition(objData.position);
 				m_KnightAI->SetCharaconPosition(objData.position);
-				m_KnightAI->SetPlayerActor(player->GetPlayerActor());
+				m_KnightAI->SetPlayerActor(player[0]->GetPlayerActor());
 				int Number = 0;
 				m_KnightAI->SetRespawnNumber(Number);
 				m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
@@ -573,7 +583,7 @@ void Game::InitSoloPlay()
 				m_Actors.push_back(m_KnightAI1);
 				m_KnightAI1->SetPosition(objData.position);
 				m_KnightAI1->SetCharaconPosition(objData.position);
-				m_KnightAI1->SetPlayerActor(player->GetPlayerActor());
+				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor());
 				int Number = 1;
 				m_KnightAI1->SetRespawnNumber(Number);
 				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
@@ -587,7 +597,7 @@ void Game::InitSoloPlay()
 				m_Actors.push_back(m_KnightAI2);
 				m_KnightAI2->SetPosition(objData.position);
 				m_KnightAI2->SetCharaconPosition(objData.position);
-				m_KnightAI2->SetPlayerActor(player->GetPlayerActor());
+				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor());
 				int Number = 3;
 				m_KnightAI2->SetRespawnNumber(Number);
 				m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
@@ -622,6 +632,85 @@ void Game::InitSoloPlay()
 
 void Game::InitMultiPlay()
 {
+	//画面分割をする
+	g_renderingEngine->SetSplitScreenFlag(true);
+
+	//プレイヤーの生成
+	player[0] = NewGO<Player>(0, "player");
+	player[0]->SelectCharcter(SelectCharNumber);
+	player[0]->CreatePlayer();
+	m_Actors.push_back(player[0]->GetPlayerActor());
+
+	player[1] = NewGO<Player>(0, "player2");
+	player[1]->SelectCharcter(SelectCharNumber);
+	player[1]->CreatePlayer();
+	m_Actors.push_back(player[1]->GetPlayerActor());
+
+	//カメラの生成
+	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gamecamera[0]->SetSplitCameraLR(m_gamecamera[0]->enSplitCamera_Left);
+	m_gamecamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
+	m_gamecamera[1]->SetSplitCameraLR(m_gamecamera[1]->enSplitCamera_Right);
+
+	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+		if (objData.ForwardMatchName(L"CharPos") == true) {
+			//左上の座標
+			if (objData.number == 0) {
+
+				return true;
+			}
+			//右上の座標
+			if (objData.number == 1) {
+				m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
+				m_KnightAI1->SetGame(this);
+				m_Actors.push_back(m_KnightAI1);
+				m_KnightAI1->SetPosition(objData.position);
+				m_KnightAI1->SetCharaconPosition(objData.position);
+				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor());
+				int Number = 1;
+				m_KnightAI1->SetRespawnNumber(Number);
+				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+
+				return true;
+			}
+			//左下の座標
+			if (objData.number == 3) {
+				m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
+				m_KnightAI2->SetGame(this);
+				m_Actors.push_back(m_KnightAI2);
+				m_KnightAI2->SetPosition(objData.position);
+				m_KnightAI2->SetCharaconPosition(objData.position);
+				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor());
+				int Number = 3;
+				m_KnightAI2->SetRespawnNumber(Number);
+				m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+
+				return true;
+			}
+			if (objData.number == 4)
+			{
+				m_EFK_Pos = objData.position;
+			}
+			return true;
+		}
+		return true;
+		});
+
+
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
+	m_gameUI->SetSGame(this);
+
+
+	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
+	m_underSprite.SetPosition(TOWER_X_POS);
+	m_underSprite.SetScale(SpriteScale);
+	m_underSprite.Update();
+
+	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
+	m_RabbitSprite.SetPosition(RABBIT_POS);
+	m_RabbitSprite.SetScale(RabbitSpriteScale);
+	m_RabbitSprite.Update();
 }
 
 //中立の敵の生成処理
@@ -633,7 +722,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	
 	Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(1, CreateEnemyName());
 	neutral_Enemy->SetNeutral_EnemyGame(this);
-	neutral_Enemy->SetPlayerActor(player->GetPlayerActor());
+	neutral_Enemy->SetPlayerActor(player[0]->GetPlayerActor());
 	neutral_Enemy->SetPosition(pos);
 	neutral_Enemy->SetRotation(rot);
 	if (isRabiit == true)
@@ -987,7 +1076,7 @@ void Game::Render(RenderContext& rc)
 		return;
 	}
 
-	if (player->CharGetRespawnTime() <= 0) {
+	if (player[0]->CharGetRespawnTime() <= 0) {
 		if (RabbitFlag == true && m_GameState == enGameState_Battle)
 		{
 			m_RabbitSprite.Draw(rc);

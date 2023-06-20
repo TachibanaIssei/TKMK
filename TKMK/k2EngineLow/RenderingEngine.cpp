@@ -1,6 +1,10 @@
 #include "k2EngineLowPreCompile.h"
 #include "RenderingEngine.h"
 
+namespace {
+	const UINT FRAME_BUFFER_WIDTH_HALF = FRAME_BUFFER_W / 2;	//画面分割用のビューポートで使用する横幅
+}
+
 void nsK2EngineLow::RenderingEngine::Init()
 {
 	InitViewPorts();
@@ -61,49 +65,48 @@ void nsK2EngineLow::RenderingEngine::InitViewPorts()
 	m_soloViewPort.MaxDepth = 1.0f;				//深度値の最大値
 
 	//左の画面
-	m_viewPorts[0].Width = FRAME_BUFFER_W / 2;		//画面の横サイズ
-	m_viewPorts[0].Height = FRAME_BUFFER_H;			//画面の縦サイズ
-	m_viewPorts[0].TopLeftX = 0;					//画面左上のx座標
-	m_viewPorts[0].TopLeftY = 0;					//画面左上のy座標
-	m_viewPorts[0].MinDepth = 0.0f;					//深度値の最小値
-	m_viewPorts[0].MaxDepth = 1.0f;					//深度値の最大値
+	m_viewPorts[enCameraDrawing_Left].Width		= FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
+	m_viewPorts[enCameraDrawing_Left].Height	= FRAME_BUFFER_H;			//画面の縦サイズ
+	m_viewPorts[enCameraDrawing_Left].TopLeftX	= 0;						//画面左上のx座標
+	m_viewPorts[enCameraDrawing_Left].TopLeftY	= 0;						//画面左上のy座標
+	m_viewPorts[enCameraDrawing_Left].MinDepth	= 0.0f;						//深度値の最小値
+	m_viewPorts[enCameraDrawing_Left].MaxDepth	= 1.0f;						//深度値の最大値
 
 	//右の画面
-	m_viewPorts[1].Width = FRAME_BUFFER_W / 2;		//画面の横サイズ
-	m_viewPorts[1].Height = FRAME_BUFFER_H;			//画面の縦サイズ
-	m_viewPorts[1].TopLeftX = FRAME_BUFFER_W / 2;	//画面左上のx座標
-	m_viewPorts[1].TopLeftY = 0;					//画面左上のy座標
-	m_viewPorts[1].MinDepth = 0.0f;					//深度値の最小値
-	m_viewPorts[1].MaxDepth = 1.0f;					//深度値の最大値
+	m_viewPorts[enCameraDrawing_Right].Width	= FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
+	m_viewPorts[enCameraDrawing_Right].Height	= FRAME_BUFFER_H;			//画面の縦サイズ
+	m_viewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF;	//画面左上のx座標
+	m_viewPorts[enCameraDrawing_Right].TopLeftY = 0;						//画面左上のy座標
+	m_viewPorts[enCameraDrawing_Right].MinDepth = 0.0f;						//深度値の最小値
+	m_viewPorts[enCameraDrawing_Right].MaxDepth = 1.0f;						//深度値の最大値
 }
 
 void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 {
+	//画面分割をする
 	if (m_isSplitScreen)
 	{
-		for (int i = 0; i < m_viewPortCount; i++)
+		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
-			if (i == 0)
+			if (i == enCameraDrawing_Left)
 			{
 				m_cameraDrawing = enCameraDrawing_Left;
 			}
-			else if (i == 1)
+			else if (i == enCameraDrawing_Right)
 			{
 				m_cameraDrawing = enCameraDrawing_Right;
 			}
-
-			g_camera3D[i]->SetTarget({ 0.0f,50.0f,200.0f*i });
-			g_camera3D[i]->Update();
 
 			rc.SetViewport(m_viewPorts[i]);
 			//モデル描画
 			ModelRendering(rc);
 		}
 	}
+	//画面分割をしない
 	else
 	{
 		rc.SetViewport(m_soloViewPort);
-		m_cameraDrawing = enCameraDrawing_Left;
+		m_cameraDrawing = enCameraDrawing_Solo;
 		ModelRendering(rc);
 	}
 }
@@ -149,24 +152,24 @@ void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc)
 void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 {
 	if (GetSplitScreenFlag()) {
-		g_camera2D->SetWidth(g_graphicsEngine->GetFrameBufferWidth() / 2);
+		g_camera2D->SetWidth(FRAME_BUFFER_WIDTH_HALF);
 		
 		//左画面
 		{
-			rc.SetViewport(m_viewPorts[0]);
-			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), 0);
-			EffectEngine::GetInstance()->Draw(0);
+			rc.SetViewport(m_viewPorts[enCameraDrawing_Left]);
+			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Left);
+			EffectEngine::GetInstance()->Draw(enCameraDrawing_Left);
 		}
 		//右画面
 		{
-			rc.SetViewport(m_viewPorts[1]);
-			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), 1);
-			EffectEngine::GetInstance()->Draw(1);
+			rc.SetViewport(m_viewPorts[enCameraDrawing_Right]);
+			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Right);
+			EffectEngine::GetInstance()->Draw(enCameraDrawing_Right);
 		}
 
 		//1画面のスプライトのアスペクト比に合わせる。
 		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
-		//ビューポートを1画面全体用に切り替える
+		//ビューポートを画面全体用に切り替える
 		rc.SetViewportAndScissor(m_soloViewPort);
 
 	}
@@ -178,16 +181,24 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 		rc.SetViewport(m_soloViewPort);
 
 		//1画面オンリーのエフェクト更新
-		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), 0);
+		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Solo);
 		//1画面オンリーのエフェクト描画
-		EffectEngine::GetInstance()->Draw(0);
+		EffectEngine::GetInstance()->Draw(enCameraDrawing_Solo);
 	}
 	
 }
 
+void nsK2EngineLow::RenderingEngine::ClearVectorList()
+{
+	m_modelList.clear();
+	m_spriteList.clear();
+	m_laterSpriteList.clear();
+	m_fontList.clear();
+}
+
 void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
-	SetEyePos(g_camera3D[0]->GetPosition());
+	SetEyePos(g_camera3D[enCameraDrawing_Left]->GetPosition());
 
 	m_shadow.Render(rc);
 
@@ -218,8 +229,5 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	//文字の上に画像を描画
 	SpriteRendering(rc, true);
 
-	m_modelList.clear();
-	m_spriteList.clear();
-	m_laterSpriteList.clear();
-	m_fontList.clear();
+	ClearVectorList();
 }

@@ -5,7 +5,7 @@
 #include "Shadow.h"
 
 namespace nsK2EngineLow {
-	static const int m_viewPortCount = 2;
+	static const int MAX_VIEWPORT = 2;
 
 	class ModelRender;
 	class SpriteRender;
@@ -20,8 +20,9 @@ namespace nsK2EngineLow {
 		/// </summary>
 		enum EnCameraDrawing
 		{
-			enCameraDrawing_Left,
-			enCameraDrawing_Right,
+			enCameraDrawing_Solo = 0,	//1画面だけのとき
+			enCameraDrawing_Left = 0,	//左画面
+			enCameraDrawing_Right = 1,	//右画面
 			enCameraDrawing_Num
 		};
 
@@ -541,6 +542,10 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc"></param>
 		void ExcuteEffectRender(RenderContext& rc);
+		/// <summary>
+		/// vectorコンテナのリストを消去する
+		/// </summary>
+		void ClearVectorList();
 
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
@@ -559,7 +564,7 @@ namespace nsK2EngineLow {
 		EnCameraDrawing m_cameraDrawing = enCameraDrawing_Left;
 
 		D3D12_VIEWPORT m_soloViewPort;					//1画面用のビューポート
-		D3D12_VIEWPORT m_viewPorts[m_viewPortCount];	//画面分割用のビューポート
+		D3D12_VIEWPORT m_viewPorts[MAX_VIEWPORT];	//画面分割用のビューポート
 		bool m_isSplitScreen = false;					//画面分割をする？trueならする
 
 	};

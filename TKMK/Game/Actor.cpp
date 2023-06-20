@@ -20,7 +20,7 @@ void Actor::OnDestroy()
 {
 	K2_LOG("Actor::OnDestroy\n");
 }
-void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
+void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL, int number)
 {
 	//特定のアニメーションが再生中なら
 	if (IsEnableMove() == false)
@@ -33,8 +33,8 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	m_moveSpeed.z = 0.0f;
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
-	Vector3 forward = g_camera3D->GetForward();
-	Vector3 right = g_camera3D->GetRight();
+	Vector3 forward = g_camera3D[number]->GetForward();
+	Vector3 right = g_camera3D[number]->GetRight();
 	//y方向には移動させない。
 	forward.y = 0.0f;
 	right.y = 0.0f;
@@ -189,16 +189,16 @@ void Actor::levelDown(int& Level, int downLevel)
 	//}
 	//
 
-	//m_Status.MaxHp-= downLevel* LvUPStatus.LvHp;
+	//m_status.MaxHp-= downLevel* LvUPStatus.LvHp;
 	////もしHPがMaxHpを上回るなら
-	//if (m_Status.Hp > m_Status.MaxHp)
+	//if (m_status.Hp > m_status.MaxHp)
 	//{
 	//	//HPとMaxHpを同じにする
-	//	m_Status.Hp = m_Status.MaxHp;
+	//	m_status.Hp = m_status.MaxHp;
 	//}
 
-	//m_Status.Atk -= downLevel* LvUPStatus.LvAtk;
-	//m_Status.Speed -= downLevel* LvUPStatus.LvSpeed;
+	//m_status.Atk -= downLevel* LvUPStatus.LvAtk;
+	//m_status.Speed -= downLevel* LvUPStatus.LvSpeed;
 }
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
@@ -321,7 +321,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 /// <param name="SkillCooltimer">クールタイム</param>
 /// <param name="skillstate">スキルや回避が終わったかの判定</param>
 /// <param name="timer">クールタイムを計算する変数</param>
-void Actor::COOlTIME(float Cooltime, bool& skillEndFlag,float& timer)
+void Actor::CoolTime(float Cooltime, bool& skillEndFlag,float& timer)
 {
 
 	//スキルのアニメーション再生が終わったら
@@ -357,7 +357,7 @@ void Actor::RespawnMove()
 /// <returns>音量</returns>
 float Actor::SoundSet(Player* player, float Max, float Min)
 {
-	Vector3 diff = player->GetCharPosition() - m_position;
+	Vector3 diff = player->GetCharcterPosition() - m_position;
 
 	float Len = diff.Length();
 

@@ -128,8 +128,8 @@
 </details>
 
 # 4. 操作説明
-![タイトル～ゲーム開始前・リザルト画面](nonGameHowToPlay-1.jpg)<br>
-![ゲームプレイ中](inGameHowToPlay-1.jpg)<br>
+![タイトル～ゲーム開始前・リザルト画面](README_IMAGE/nonGameHowToPlay.jpg)<br>
+![ゲームプレイ中](README_IMAGE/inGameHowToPlay.jpg)<br>
 
 # 5. 技術紹介
 ## 5.1. デプスシャドウ

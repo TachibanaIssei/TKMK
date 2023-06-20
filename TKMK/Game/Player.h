@@ -26,6 +26,7 @@ public:
 		enMonster,
 		enNum,
 	};
+	// TODO:publicになっているのでprivateに
 	SelectCharctar m_selectCharctar;
 
 	//プレイヤーのステートを
@@ -34,54 +35,55 @@ public:
 		enPause,
 		enGame,
 	};
+	// TODO:publicになっているのでprivateに
 	EnPlayerStateChange m_playerStateChange;
 	
 	/// <summary>
 	/// プレイヤーを生成する
 	/// </summary>
-	void CreaetPlayer();
+	void CreatePlayer();
 
 	/// <summary>
 	/// 生成するキャラを選ぶ
 	/// </summary>
 	/// <param name="number">キャラの番号</param>
-	void CharSelect(int number);
+	void SelectCharcter(int number);
 
 	/// <summary>
 	/// キャラの座標を取得
 	/// </summary>
 	/// <returns>選択されているキャラの座標</returns>
-	Vector3 GetCharPosition()const;
+	Vector3 GetCharcterPosition()const;
 
 	/// <summary>
 	/// キャラの現在のレベルを返す
 	/// </summary>
 	/// <returns>選択されたキャラの現在のレベルを返す関数</returns>
-	int CharSetLevel()const;
+	int GetCharacterLevel()const;
 
 	/// <summary>
 	/// キャラの現在のヒットポイントを返す
 	/// </summary>
 	/// <returns>選択されたキャラの現在のヒットポイントを返す関数</returns>
-	int CharSetHp()const;
+	int GetCharacterHp()const;
 
 	/// <summary>
 	/// キャラの最大ヒットポイントを返す
 	/// </summary>
 	/// <returns>選択されたキャラの最大ヒットポイントを返す関数</returns>
-	int CharSetMaxHp()const;
+	int GetCharcterMaxHp()const;
 
 	/// <summary>
 	/// キャラの回転量を返す
 	/// </summary>
 	/// <returns>選択されたキャラの回転量を返す関数</returns>
-	Quaternion CharSetRot()const;
+	Quaternion GetCharcterRotation()const;
 	
 	/// <summary>
 	/// キャラの前方向を返す
 	/// </summary>
 	/// <returns>選択されたキャラの前方向を返す関数	</returns>
-	Vector3 CharSetForward()const;
+	Vector3 GetCharcterForward()const;
 
 	/// <summary>
 	/// キャラのスプライトフラグを返す
@@ -102,7 +104,15 @@ public:
 	float CharGetRespawnTime()const;
 
 	Actor* GetPlayerActor() {
-		return playerActor;
+		return m_playerActor;
+	}
+
+	/// <summary>
+	/// 剣士プレイヤーのポインタを返す
+	/// </summary>
+	KnightPlayer* GetKnightPlayer()
+	{
+		return m_knightPlayer;
 	}
 
 	int CharGetEXP() const;
@@ -121,7 +131,7 @@ public:
 	//auto CharGetState() const;
 	auto CharGetState() const
 	{
-		return playerActor->NowCharState();
+		return m_playerActor->NowCharState();
 	}
 
 	/// <summary>
@@ -129,19 +139,17 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const char* GetName() {
-		return player_name;
+		return m_playerName;
 	}
 private:
 
-	Game* game = nullptr;
-	GameUI* gameUI = nullptr;
-	KnightPlayer* knightPlayer = nullptr;
-	WizardPlayer* wizardPlayer = nullptr;
-	Status m_Status;
+	Game* m_game = nullptr;
+	GameUI* m_gameUI = nullptr;
+	KnightPlayer* m_knightPlayer = nullptr;
+	WizardPlayer* m_wizardPlayer = nullptr;
+	Status m_status;
 
-	Actor* playerActor = nullptr;
-
-
-	const char* player_name = nullptr;
+	Actor* m_playerActor = nullptr;
+	const char* m_playerName = nullptr;
 };
 

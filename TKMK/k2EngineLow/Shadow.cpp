@@ -22,7 +22,7 @@ void nsK2EngineLow::Shadow::Render(RenderContext& rc)
 {
 	UpdateLightCamera();
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < MAX_VIEWPORT; i++)
 	{
 		rc.WaitUntilToPossibleSetRenderTarget(m_shadowMap[i]);
 		rc.SetRenderTargetAndViewport(m_shadowMap[i]);
@@ -36,7 +36,7 @@ void nsK2EngineLow::Shadow::Render(RenderContext& rc)
 void nsK2EngineLow::Shadow::InitRenderTarget()
 {
 	//シャドウマップ描画用のレンダリングターゲット
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < m_maxViewPort; i++)
 	{
 		m_shadowMap[i].Create(
 			ShadowConst::RENDER_TARGET_WIDTH,
@@ -53,8 +53,8 @@ void nsK2EngineLow::Shadow::InitRenderTarget()
 void nsK2EngineLow::Shadow::InitLightCamera()
 {
 	m_lightCamera.SetPosition(m_lightCameraPosition);
-	m_lightCamera.SetTarget(0, 0, 0);
-	m_lightCamera.SetUp(1, 0, 0);
+	m_lightCamera.SetTarget(Vector3::Zero);
+	m_lightCamera.SetUp(Vector3::Right);
 	m_lightCamera.SetViewAngle(Math::DegToRad(ShadowConst::LIGHT_CAMERA_ANGLE));
 	
 	//影が動かないようにするためにカメラを平行投影にする
@@ -67,7 +67,7 @@ void nsK2EngineLow::Shadow::InitLightCamera()
 void nsK2EngineLow::Shadow::UpdateLightCamera()
 {
 	//ライトカメラの位置を計算する
-	Vector3 lightCamPos = g_camera3D[0]->GetTarget();
+	Vector3 lightCamPos = g_camera3D[RenderingEngine::enCameraDrawing_Left]->GetTarget();
 	lightCamPos.x += m_lightCameraPosition.x;
 	lightCamPos.y = m_lightCameraPosition.y;
 	lightCamPos.z += m_lightCameraPosition.z;

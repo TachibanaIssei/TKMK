@@ -2,6 +2,7 @@
 
 struct Status
 {
+public:
 	int MaxHp;                 //最大ヒットポイント
 	int Hp;                    //ヒットポイント(体力)
 	int Atk;                   //攻撃力

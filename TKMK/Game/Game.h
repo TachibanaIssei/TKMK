@@ -223,7 +223,7 @@ public:
 	/// <returns></returns>
 	int CountDownMinutes() const
 	{
-		return m_StartToGameTimer;
+		return (int)m_StartToGameTimer;
 	}
 
 	float GetSecondsTimer() const
@@ -475,7 +475,7 @@ private:
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
-	GameCamera* m_gamecamera = nullptr;
+	GameCamera* m_gamecamera[MAX_VIEWPORT] = { nullptr,nullptr };
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	KnightAI* m_KnightAI = nullptr;
@@ -485,7 +485,7 @@ private:
 	Map* m_Map = nullptr;
 	SoundSource* m_bgm = nullptr;	
 	WizardPlayer* wizardPlayer = nullptr;
-	Player* player = nullptr;
+	Player* player[2] = { nullptr,nullptr };
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
 	Fade* fade = nullptr;

@@ -282,6 +282,7 @@ private:
 	Vector4 limitColor = { 1.0f,1.0f,1.0f,1.0f };
 
 	const char* knightname = "knightplayer";
+	const char* knightname2 = "knightplayer2";
 	const char* wizardname = "wizardplayer";
 	const char* KnightAI_Red = "KnightAI";
 	const char* KnightAI_Green = "KnightAI1";

@@ -54,14 +54,27 @@ public:
 		return m_spriteFlag;
 	}
 
+	/// <summary>
+	/// プレイヤーの番号を設定する
+	/// </summary>
+	void SetPlayerNumber(const int number)
+	{
+		m_playerNumber = number;
+	}
+
+	int GetPlayerNumber()
+	{
+		return m_playerNumber;
+	}
+
 	//void Death()
 	//{
 	//	////死亡ステート
 	//	//m_charState = enKnightState_Death;
 	//	//レベルを１下げる
-	//	levelDown(LvUpStatus, m_Status, Lv, 1);
+	//	levelDown(LvUpStatus, m_status, Lv, 1);
 	//	//HPを最大にする
-	//	m_Status.Hp = m_Status.MaxHp;
+	//	m_status.Hp = m_status.MaxHp;
 	//	//経験値をリセット
 	//	ExpReset(Lv, GetExp);
 	//	//一つ下のレベルの経験値テーブルにする
@@ -108,5 +121,7 @@ private:
 	int dddd = 10;
 
 	int oldLv = 0;
+
+	int m_playerNumber = 0;
 };
 

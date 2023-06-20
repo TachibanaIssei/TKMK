@@ -83,6 +83,8 @@ bool KnightPlayer::Start() {
 	m_AtkUpIcon_Render.SetScale(ATKUPICON_SCALE);
 	m_AtkUpIcon_Render.Update();
 
+	//Lv = 10;
+
 	return true;
 }
 
@@ -93,7 +95,7 @@ void KnightPlayer::Update()
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定
-		Collition();
+		Collision();
 	}
 	
 
@@ -208,7 +210,7 @@ void KnightPlayer::Update()
 				stickL.x = g_pad[m_playerNumber]->GetLStickXF();
 				stickL.y = g_pad[m_playerNumber]->GetLStickYF();
 			}
-			Move(m_position, m_charCon, m_Status, stickL);
+			Move(m_position, m_charCon, m_Status, stickL, m_playerNumber);
 
 
 			//回避中なら
@@ -566,10 +568,10 @@ void KnightPlayer::MakeUltSkill()
 void KnightPlayer::CoolTimeProcess()
 {
 	//スキルクールタイムの処理
-	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+	CoolTime(Cooltime, SkillEndFlag, SkillTimer);
 
 	//回避クールタイムの処理
-	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+	CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 }
 
@@ -650,6 +652,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技 剣を空に掲げたら
 	if (wcscmp(eventName, L"UltimateAttack_Charge") == 0)
 	{
+
 		//雷チャージエフェクト生成
 		EffectEmitter* ThunderCharge = NewGO<EffectEmitter>(0);
 		ThunderCharge->Init(EnEFK::enEffect_Knight_Thunder_Charge);
@@ -781,7 +784,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
-		//m_Status.Atk -= 20;
+		//m_status.Atk -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする

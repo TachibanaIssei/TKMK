@@ -153,6 +153,7 @@ private:
 	Actor* m_CreatMeActor = nullptr;
 	Actor* m_GivePointActor = nullptr;
 	GameCamera* gameCamera = nullptr;
+	GameCamera* gameCamera2 = nullptr;
 
 	EffectEmitter* Thunder;
 

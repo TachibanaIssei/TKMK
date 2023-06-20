@@ -6,14 +6,19 @@
 - [1. 作品概要](#1-作品概要)
 - [2. 担当ソースコード](#2-担当ソースコード)
 - [3. 改造したエンジンコード](#3-改造したエンジンコード)
-- [4. ゲーム内容](#4-ゲーム内容)
-- [5. 操作説明](#5-操作説明)
-- [6. 技術紹介](#6-技術紹介)
+- [4. 操作説明](#4-操作説明)
+- [5. 技術紹介](#5-技術紹介)
+  - [5.1. デプスシャドウ](#51-デプスシャドウ)
+  - [5.2. 川瀬式ブルームフィルター](#52-川瀬式ブルームフィルター)
 
 ---
 # 1. 作品概要
 * タイトル<br>
   * **SWORD ARENA**
+
+* ゲーム内容
+  * プレイヤー1人と3体のAIが、それぞれ敵となりフィールド上で戦います
+  * 3分間で獲得したポイント数を競い、最も多くのポイントを獲得した者が勝利となります
 
 * 学校
   * 河原電子ビジネス専門学校
@@ -69,7 +74,32 @@
   cppファイル,hファイル
   </summary>
 
-* a
+* Bloom.cpp
+* Bloom.h
+* CameraCollisionSolver.cpp
+* CameraCollisionSolver.h
+* CollisionObject.cpp
+* CollisionObject.h
+* FontRender.cpp
+* FontRender.h
+* Level3DRender.cpp
+* Level3DRender.h
+* Light.cpp
+* Light.h
+* ModelRender.cpp
+* ModelRender.h
+* PostEffect.cpp
+* PostEffect.h
+* RenderingEngine.cpp
+* RenderingEngine.h
+* Shadow.cpp
+* Shadow.h
+* SkyCube.cpp
+* SkyCube.h
+* SpriteRender.cpp
+* SpriteRender.h
+* Result.cpp
+* Result.h
 
 </details>
 
@@ -77,7 +107,14 @@
   fxファイル
   </summary>
 
-* a
+* model.fx
+* ShadowReciever.fx
+* skyCubeMap.fx
+* sprite.fx(一部)
+  * 定数バッファ"SpriteCB"の追加
+  * CalcGrayScale関数の追加
+* gaussianBlur.fx
+* postEffect.fx
 
 </details>
 
@@ -90,9 +127,11 @@
 
 </details>
 
-# 4. ゲーム内容
+# 4. 操作説明
+![タイトル～ゲーム開始前・リザルト画面](README_IMAGE/nonGameHowToPlay.jpg)<br>
+![ゲームプレイ中](README_IMAGE/inGameHowToPlay.jpg)<br>
 
-# 5. 操作説明
+# 5. 技術紹介
+## 5.1. デプスシャドウ
 
-# 6. 技術紹介
-
+## 5.2. 川瀬式ブルームフィルター

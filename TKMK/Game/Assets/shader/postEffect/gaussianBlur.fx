@@ -84,7 +84,6 @@ PS_BlurInput VSXBlur(VSInput In)
     Out.tex0.xy = float2(1.0f / texSize.x, 0.0f);
 
     // 基準テクセルからU座標を+3テクセルずらすためのオフセットを計算する
-
     Out.tex1.xy = float2(3.0f / texSize.x, 0.0f);
 
     // 基準テクセルからU座標を+5テクセルずらすためのオフセットを計算する

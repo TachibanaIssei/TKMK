@@ -151,7 +151,7 @@ public:
 	/// 現在のヒットポイントを返す
 	/// </summary>
 	/// <returns>現在のHP</returns>
-	int& SetHp() {
+	int& GetHitPoint() {
 		return m_Status.Hp;
 	}
 
@@ -194,7 +194,7 @@ public:
 	/// プレイヤーの回転量を取得
 	/// </summary>
 	/// <returns></returns>
-	Quaternion& GetRot()
+	Quaternion& GetRotation()
 	{
 		return m_rot;
 	}
@@ -270,7 +270,7 @@ protected:
 	AnimationClip m_animationClips[enAnimationClip_Num]; //アニメーションクリップ
 
 	//初期ステータス 最大HP、HP、攻撃力、スピード
-	//Status m_Status;
+	//Status m_status;
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUpStatus = { 30,5,10.0f };
 

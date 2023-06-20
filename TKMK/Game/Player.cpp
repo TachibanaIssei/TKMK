@@ -12,36 +12,47 @@ Player::Player()
 
 Player::~Player()
 {
-	//DeleteGO(knightPlayer);
-	//DeleteGO(wizardPlayer);
+	//DeleteGO(m_knightPlayer);
+	//DeleteGO(m_wizardPlayer);
 }
 
-void Player::CreaetPlayer()
+void Player::CreatePlayer()
 {
-	game = FindGO<Game>("game");
-	gameUI = FindGO<GameUI>("m_gameUI");
+	m_game = FindGO<Game>("game");
+	m_gameUI = FindGO<GameUI>("m_gameUI");
 
 	//選択されたキャラを生成する
 	switch (m_selectCharctar)
 	{
 	case enKnight:
 		//剣士プレイヤーを生成
-		knightPlayer = NewGO<KnightPlayer>(0, "knightplayer");
-		knightPlayer->SetSGame(game);
-		knightPlayer->SetGameUI(gameUI);
-		knightPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
-		knightPlayer->SetKnightColor(KnightBase::enKnightKinds_Blue);
-		player_name = knightPlayer->GetName();
-		playerActor = knightPlayer;
+		if (IGameObject::m_name == "player2")
+		{
+			m_knightPlayer = NewGO<KnightPlayer>(0, "knightplayer2");
+			m_knightPlayer->SetPlayerNumber(1);
+			m_knightPlayer->SetKnightColor(KnightBase::enKnightKinds_Red);
+		}
+		else {
+			m_knightPlayer = NewGO<KnightPlayer>(0, "knightplayer");
+			m_knightPlayer->SetKnightColor(KnightBase::enKnightKinds_Blue);
+
+		}
+		
+		m_knightPlayer->SetSGame(m_game);
+		m_knightPlayer->SetGameUI(m_gameUI);
+		m_knightPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
+		m_playerName = m_knightPlayer->GetName();
+
+		m_playerActor = m_knightPlayer;
 		break;
 
 	case enWizard:
 		//魔法使いプレイヤーの生成
-		wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
-		wizardPlayer->SetSGame(game);
-		wizardPlayer->SetGameUI(gameUI);
-		wizardPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
-		playerActor = wizardPlayer;
+		m_wizardPlayer = NewGO<WizardPlayer>(0, "wizardPlayer");
+		m_wizardPlayer->SetSGame(m_game);
+		m_wizardPlayer->SetGameUI(m_gameUI);
+		m_wizardPlayer->SetAIorPlayer(Actor::EnAIorPlayer::enPlayer);
+		m_playerActor = m_wizardPlayer;
 		break;
 
 	default:
@@ -53,7 +64,7 @@ void Player::CreaetPlayer()
 	/// 生成するキャラを選ぶ
 	/// </summary>
 	/// <param name="number">キャラの番号</param>
-void Player::CharSelect(int number)
+void Player::SelectCharcter(int number)
 {
 	switch (number)
 	{
@@ -79,17 +90,17 @@ void Player::CharSelect(int number)
 /// キャラの座標を取得カメラで使う
 /// </summary>
 /// <returns>選択されているキャラの座標</returns>
-Vector3 Player::GetCharPosition()const
+Vector3 Player::GetCharcterPosition()const
 {
-	return playerActor->GetPosition();
+	return m_playerActor->GetPosition();
 	/*switch (m_selectCharctar)
 	{
 	case enKnight:
-		return knightPlayer->GetPosition();
+		return m_knightPlayer->GetPosition();
 		break;
 
 	case enWizard:
-		return wizardPlayer->GetPosition();
+		return m_wizardPlayer->GetPosition();
 		break;
 
 	case enZombie:
@@ -107,25 +118,25 @@ Vector3 Player::GetCharPosition()const
 /// キャラの現在のレベルを返す
 /// </summary>
 /// <returns>選択されたキャラの現在のレベルを返す関数</returns>
-int Player::CharSetLevel()const
+int Player::GetCharacterLevel()const
 {
-	return playerActor->GetLevel();
+	return m_playerActor->GetLevel();
 }
 
 /// <summary>
 /// キャラの現在のヒットポイントを返す
 /// </summary>
 /// <returns>選択されたキャラの現在のヒットポイントを返す関数</returns>
-int Player::CharSetHp()const
+int Player::GetCharacterHp()const
 {
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		return knightPlayer->SetHp();
+		return m_knightPlayer->GetHitPoint();
 		break;
 
 	case enWizard:
-		return wizardPlayer->SetHp();
+		return m_wizardPlayer->GetHitPoint();
 		break;
 
 	case enZombie:
@@ -147,16 +158,16 @@ int Player::CharSetHp()const
 /// キャラの最大ヒットポイントを返す
 /// </summary>
 /// <returns>選択されたキャラの最大ヒットポイントを返す関数</returns>
-int Player::CharSetMaxHp()const
+int Player::GetCharcterMaxHp()const
 {
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		return knightPlayer->SetMaxHp();
+		return m_knightPlayer->SetMaxHp();
 		break;
 
 	case enWizard:
-		return wizardPlayer->SetMaxHp();
+		return m_wizardPlayer->SetMaxHp();
 		break;
 
 	case enZombie:
@@ -181,16 +192,16 @@ int Player::CharSetMaxHp()const
 /// キャラの回転量を返す
 /// </summary>
 /// <returns>選択されたキャラの回転量を返す関数</returns>
-Quaternion Player::CharSetRot()const
+Quaternion Player::GetCharcterRotation()const
 {
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		return knightPlayer->GetRot();
+		return m_knightPlayer->GetRotation();
 		break;
 
 	case enWizard:
-		return wizardPlayer->GetRot();
+		return m_wizardPlayer->GetRotation();
 		break;
 
 	case enZombie:
@@ -214,26 +225,16 @@ Quaternion Player::CharSetRot()const
 /// キャラの前方向を取得するカメラで使う
 /// </summary>
 /// <returns>選択されたキャラの前方向を取得する関数</returns>
-Vector3 Player::CharSetForward()const
+Vector3 Player::GetCharcterForward()const
 {
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		return knightPlayer->GetForward();
+		return m_knightPlayer->GetForward();
 		break;
 
 	case enWizard:
-		return wizardPlayer->GetForward();
-		break;
-
-	case enZombie:
-		break;
-
-	case enMonster:
-		break;
-
-
-	default:
+		return m_wizardPlayer->GetForward();
 		break;
 	}
 }
@@ -247,21 +248,11 @@ bool Player::CharSetSpriteFlag()const
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		return knightPlayer->GetSpriteFlag();
+		return m_knightPlayer->GetSpriteFlag();
 		break;
 
 	case enWizard:
-		return wizardPlayer->GetSpriteFlag();
-		break;
-
-	case enZombie:
-		break;
-
-	case enMonster:
-		break;
-
-
-	default:
+		return m_wizardPlayer->GetSpriteFlag();
 		break;
 	}
 }
@@ -272,7 +263,7 @@ bool Player::CharSetSpriteFlag()const
 /// <returns>プレイヤーの現在のポイント</returns>
 int Player::CharSetPoint()const
 {
-	return playerActor->GetPoint();
+	return m_playerActor->GetPoint();
 }
 
 /// <summary>
@@ -281,7 +272,7 @@ int Player::CharSetPoint()const
 /// <returns>プレイヤーの現在の経験値の量</returns>
 int Player::CharGetEXP() const
 {
-	return playerActor->GetExperience();
+	return m_playerActor->GetExperience();
 }
 
 /// <summary>
@@ -290,12 +281,12 @@ int Player::CharGetEXP() const
 /// <returns>プレイヤーの現在の経験値テーブル</returns>
 int Player::CharSetEXPTable() const
 {
-	return playerActor->GetExpTable();
+	return m_playerActor->GetExpTable();
 }
 
 int Player::CharGetEXPTableForLevel(int Level) const
 {
-	return playerActor->GetExpTableForLevel(Level);
+	return m_playerActor->GetExpTableForLevel(Level);
 }
 
 /// <summary>
@@ -305,28 +296,28 @@ int Player::CharGetEXPTableForLevel(int Level) const
 //int Player::CharSetOldEXPTable() const
 //{
 //	return 1;
-//	//return playerActor->GetOldExpTable();
+//	//return m_playerActor->GetOldExpTable();
 //}
 
 //セーブしている経験値を取得
 int Player::CharGetSaveEXP() const
 {
-	return playerActor->GetSaveEXP();
+	return m_playerActor->GetSaveEXP();
 }
 
 //セーブした経験値をリセット
 void Player::CharResatSaveEXP(int num) const
 {
-	playerActor->SetSaveEXP(num);
+	m_playerActor->SetSaveEXP(num);
 }
 
 float Player::CharGetSkillCoolTimer() const
 {
-	return playerActor->GetSkillTimer();
+	return m_playerActor->GetSkillTimer();
 }
 
 float Player::CharGetRespawnTime() const
 {
-	return playerActor->GetRespawnTimer();
+	return m_playerActor->GetRespawnTimer();
 }
 

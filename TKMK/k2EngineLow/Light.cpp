@@ -20,5 +20,5 @@ void nsK2EngineLow::SceneLight::Init()
     m_light.hemisphereLight.skyColor = Vector3(0.0116f, 0.0766f, 0.0766f);
     m_light.hemisphereLight.groundNormal = Vector3(0.0f, 1.0f, 0.0f);
 
-    m_light.cameraEyePos = g_camera3D->GetPosition();
+    m_light.cameraEyePos = g_camera3D[0]->GetPosition();
 }

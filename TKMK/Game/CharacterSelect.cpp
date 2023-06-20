@@ -84,9 +84,9 @@ bool CharacterSelect::Start()
 
 	//カメラの座標を設定
 	Quaternion rot;
-	g_camera3D->SetTarget(SelectConst::CAMERA_TARGET_POS);
-	g_camera3D->SetPosition(SelectConst::CAMERA_POSITION);
-	g_camera3D->Update();
+	g_camera3D[0]->SetTarget(SelectConst::CAMERA_TARGET_POS);
+	g_camera3D[0]->SetPosition(SelectConst::CAMERA_POSITION);
+	g_camera3D[0]->Update();
 
 	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
 	Vector3 dir = Vector3(0.0f,-1.0f,0.5f);
@@ -351,7 +351,7 @@ void CharacterSelect::Ready()
 	if (fade->GetCurrentAlpha() >= 1.0f)
 	{
 		Game* game = NewGO<Game>(5, "game");
-		game->SetGameMode(game->enGameMode_SoloPlay);
+		game->SetGameMode(game->enGameMode_MultiPlay);
 		//キャラクターセレクトが
 		switch (m_characterSelect)
 		{

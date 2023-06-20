@@ -90,10 +90,10 @@ void KnightAI::Update()
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定
-		Collition();
+		Collision();
 	}
 	//当たり判定
-	//Collition();
+	//Collision();
 	//アニメーションの再生
 	PlayAnimation();
 	
@@ -104,7 +104,7 @@ void KnightAI::Update()
 
 	if (m_Status.Hp <= 0)
 	{
-		m_charState == enCharState_Death;
+		m_charState = enCharState_Death;
 	}
 	
 
@@ -198,7 +198,7 @@ void KnightAI::Update()
 		//回避
 		AvoidanceSprite();
 		//スキルクールタイムの処理
-		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+		CoolTime(Cooltime, SkillEndFlag, SkillTimer);
 		
 		// 次のアクションを抽選 
 		LotNextAction();
@@ -223,15 +223,9 @@ void KnightAI::Update()
 		//攻撃
 		Attack();
 
-		
-
 		//反転
 		Rotation();
 		
-		
-
-		
-
 		if (m_charState == enCharState_LastAttack)
 		{
 			Vector3 LastAttackMove = m_LastAttackMove;
@@ -243,7 +237,7 @@ void KnightAI::Update()
 		
 		
 		//回避クールタイムの処理
-		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+		CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 
 	}
@@ -617,8 +611,8 @@ void KnightAI::LotNextAction()
 	CalculatAIAttackEvaluationValue();
 
 	//評価値無限小
-	int noweval_Target = -99999999;
-	int noweval_Escape = -99999999;
+	int noweval_Target = INT_MIN;
+	int noweval_Escape = INT_MIN;
 	//今のターゲットエネミー
 	Neutral_Enemy* m_nowEnemyTarget = nullptr;
 	Actor* m_nowActorTarget = nullptr;
@@ -765,7 +759,7 @@ void KnightAI::ChaseAndEscape()
 			//diffEscape.Normalize();
 
 			////移動速度を設定する。
-			//m_moveSpeed = diffEscape * m_Status.Speed;
+			//m_moveSpeed = diffEscape * m_status.Speed;
 
 			diffTarget.Normalize();
 
@@ -846,6 +840,7 @@ const bool KnightAI::CanSkill()
 	
 	return false;
 }
+
 const bool KnightAI::CanUlt()
 {
 	Vector3 diff = TargePos - m_position;
@@ -979,7 +974,7 @@ void KnightAI::Attack()
 			return;
 		}
 		//必殺技を発動する処理
-		if (m_targetActor != nullptr && Lv >= 6 && /*(m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
+		if (m_targetActor != nullptr && Lv >= 6 && /*(m_status.MaxHp - m_status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
@@ -1176,9 +1171,9 @@ void KnightAI::HPBar()
 	Vector3 BerPosition = m_position;
 	BerPosition.y += 75.0f;
 	//座標を変換する
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBer_Pos, BerPosition);
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindow_Pos, BerPosition);
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBack_Pos, BerPosition);
+	g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_HPBer_Pos, BerPosition);
+	g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_HPWindow_Pos, BerPosition);
+	g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_HPBack_Pos, BerPosition);
 
 	m_levelFontPos = m_HPBer_Pos;
 	m_levelFontPos.x += LEVEL_FONT_ADD_POS_X;
@@ -1187,7 +1182,6 @@ void KnightAI::HPBar()
 	//HPバー画像を左寄せに表示する
 	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
 	m_HPBer_Pos.x -= BerSizeSubtraction.x;
-	wchar_t wcsbuf[256];
 	std::size_t len = std::strlen(GetName());
 	std::size_t converted = 0;
 	wchar_t* wcstr = new wchar_t[len + 1];
@@ -1229,8 +1223,8 @@ Vector3 KnightAI::HPBerSend(Vector3 size, Vector3 scale)
 
 bool KnightAI::DrawHP()
 {
-	Vector3 toCameraTarget = g_camera3D->GetTarget() - g_camera3D->GetPosition();
-	Vector3 toMush = m_position - g_camera3D->GetPosition();
+	Vector3 toCameraTarget = g_camera3D[0]->GetTarget() - g_camera3D[0]->GetPosition();
+	Vector3 toMush = m_position - g_camera3D[0]->GetPosition();
 	toCameraTarget.y = 0.0f;
 	toMush.y = 0.0f;
 	toCameraTarget.Normalize();
@@ -1308,7 +1302,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
-		//m_Status.Atk += 20;
+		//m_status.Atk += 20;
 		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
@@ -1451,7 +1445,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
-		//m_Status.Atk -= 20;
+		//m_status.Atk -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする

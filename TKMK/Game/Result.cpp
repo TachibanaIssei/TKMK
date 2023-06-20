@@ -426,7 +426,7 @@ void Result::PlayEffect()
 
 void Result::SetCamera()
 {
-	m_camera.Init(*g_camera3D, 1.0f, true, 10.0f);
+	m_camera.Init(*g_camera3D[0], 1.0f, true, 10.0f);
 
 	m_camera.SetTarget(ResultSpriteConst::CAMERA_TARGET_POS);
 	m_camera.SetPosition(ResultSpriteConst::CAMERA_POSITION);

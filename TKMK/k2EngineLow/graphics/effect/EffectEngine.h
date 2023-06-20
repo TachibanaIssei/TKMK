@@ -12,7 +12,7 @@ namespace nsK2EngineLow {
 		EffekseerRenderer::RendererRef m_renderer[2];	//レンダラー。
 		Effekseer::RefPtr<EffekseerRenderer::SingleFrameMemoryPool> m_memoryPool[2];	//メモリプール。
 		Effekseer::RefPtr<EffekseerRenderer::CommandList> m_commandList[2];			//コマンドリスト。
-		Effekseer::ManagerRef m_manager;
+		Effekseer::ManagerRef m_manager[2];
 		std::map< int, Effekseer::EffectRef > m_effectMap;
 	public:
 		/// <summary>
@@ -48,7 +48,7 @@ namespace nsK2EngineLow {
 		/// <returns></returns>
 		bool IsPlay(int handle) const
 		{
-			return m_manager->GetShown(handle);
+			return m_manager[0]->GetShown(handle);
 		}
 		/// <summary>
 		/// エフェクトのワールド行列を更新。
@@ -83,7 +83,8 @@ namespace nsK2EngineLow {
 			baseMat.Value[3][1] = mBase.m[3][1];
 			baseMat.Value[3][2] = mBase.m[3][2];
 
-			m_manager->SetBaseMatrix(handle, baseMat);
+			m_manager[0]->SetBaseMatrix(handle, baseMat);
+			m_manager[1]->SetBaseMatrix(handle, baseMat);
 		}
 		/// <summary>
 		/// エフェクトを再生。
@@ -104,11 +105,11 @@ namespace nsK2EngineLow {
 		/// 更新
 		/// </summary>
 		/// <param name="deltaTime">1フレームの経過時間。</param>
-		void Update(float deltaTime);
+		void Update(float deltaTime, int cameraNumber);
 		/// <summary>
 		/// 描画。
 		/// </summary>
-		void Draw();
+		void Draw(int cameraNumber);
 		/// <summary>
 		/// エフェクトを読み込んで登録する。
 		/// </summary>
@@ -118,7 +119,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// フレームの開始時に呼び出す必要がある処理。
 		/// </summary>
-		void BeginFrame();
+		void BeginFrame(int cameraNumber);
 	private:
 		EffectEngine();
 		~EffectEngine();

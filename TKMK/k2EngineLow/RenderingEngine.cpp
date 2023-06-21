@@ -13,7 +13,8 @@ void nsK2EngineLow::RenderingEngine::Init()
 	m_postEffect.Init(m_mainRenderTarget);
 	InitCopyToFrameBufferSprite();
 
-	m_sceneLight.Init();
+	m_sceneLight[enCameraDrawing_Left].Init();
+	m_sceneLight[enCameraDrawing_Right].Init();
 }
 
 void nsK2EngineLow::RenderingEngine::InitRenderTargets()

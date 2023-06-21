@@ -56,7 +56,14 @@ bool KnightPlayer::Start() {
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	respawnNumber = 2;        //リスポーンする座標の番号0
+
+	if (IGameObject::m_name == "knightplayer2")
+	{
+		respawnNumber = 0;
+	}
+	else {
+		respawnNumber = 2;        //リスポーンする座標の番号
+	}
 
 	//リスポーンする座標のセット
 	//キャラコン

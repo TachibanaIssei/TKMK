@@ -24,12 +24,11 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 		m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 	}
 	
-	//ディレクションライトの情報を作成
-	MakeDirectionData();
-
 	//モデルクラスの初期化
 	for (int i = 0; i < 2; i++)
 	{
+		//ディレクションライトの情報を作成
+		MakeDirectionData(i);
 		m_model[i].Init(m_modelInitData);
 	}
 
@@ -52,15 +51,12 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
 	m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
 
-	m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture();
-
-	//ライトカメラのビュープロジェクション行列を設定する
-	g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
-
-	MakeDirectionData();
-
 	for (int i = 0; i < 2; i++)
 	{
+		m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture(i);
+		//ライトカメラのビュープロジェクション行列を設定する
+		g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
+		MakeDirectionData(i);
 		m_model[i].Init(m_modelInitData);
 	}
 }
@@ -94,7 +90,7 @@ void nsK2EngineLow::ModelRender::Update()
 		if (m_shadowModel[i].IsInited())
 		{
 			m_shadowModel[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
-			g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+			g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
 		}
 	}
 
@@ -102,10 +98,10 @@ void nsK2EngineLow::ModelRender::Update()
 	m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
 }
 
-void nsK2EngineLow::ModelRender::MakeDirectionData()
+void nsK2EngineLow::ModelRender::MakeDirectionData(int lightNumber)
 {
-	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
-	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
+	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight(lightNumber);
+	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight(lightNumber));
 }
 
 void nsK2EngineLow::ModelRender::InitSkeleton(const char* filePath)

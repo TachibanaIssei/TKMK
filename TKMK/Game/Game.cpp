@@ -896,6 +896,9 @@ void Game::PauseTime()
 	{
 		//Push_OK();
 		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
+
+		g_renderingEngine->SetSplitScreenFlag(false);
+
 		DeleteGO(this);
 	}
 }

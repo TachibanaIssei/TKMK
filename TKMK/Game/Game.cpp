@@ -265,8 +265,10 @@ void Game::Battle()
 			//UIのステートをポーズステートに変更
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 			//カメラのステートをポーズステートに変更
-			for (int i = 0; i < 2; i++) {
-				m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enPauseState);
+			m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
+			if (m_gameMode == enGameMode_MultiPlay)
+			{
+				m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
 			}
 			//生成されている中立の敵のステートをポーズステートに変更
 			for (auto seutral_Enemy : m_neutral_Enemys)

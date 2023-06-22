@@ -9,9 +9,9 @@ namespace nsK2EngineLow {
 	/// </summary>
 	class EffectEngine : public Noncopyable {
 		static EffectEngine* m_instance;	//唯一のインスタンス。
-		EffekseerRenderer::RendererRef m_renderer[2];	//レンダラー。
-		Effekseer::RefPtr<EffekseerRenderer::SingleFrameMemoryPool> m_memoryPool[2];	//メモリプール。
-		Effekseer::RefPtr<EffekseerRenderer::CommandList> m_commandList[2];			//コマンドリスト。
+		EffekseerRenderer::RendererRef m_renderer[2][2];	//レンダラー。
+		Effekseer::RefPtr<EffekseerRenderer::SingleFrameMemoryPool> m_memoryPool[2][2];	//メモリプール。
+		Effekseer::RefPtr<EffekseerRenderer::CommandList> m_commandList[2][2];			//コマンドリスト。
 		Effekseer::ManagerRef m_manager[2];
 		std::map< int, Effekseer::EffectRef > m_effectMap;
 	public:

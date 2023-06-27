@@ -163,9 +163,6 @@ void GameCamera::Update()
 		
 	}
 
-	
-		
-
 	//カメラステート管理
 	StateControl();
 }

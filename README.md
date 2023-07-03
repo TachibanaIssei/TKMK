@@ -79,6 +79,11 @@
   * OS
     * Windows11
 
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
+
 # 2. 担当ソースコード
 <details><summary>
   cppファイル,hファイル
@@ -136,9 +141,19 @@
 </details>
 -->
 
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
+
 # 3. 操作説明
 <img src="README_IMAGE/nonGameHowToPlay.jpg" width="480" alt="タイトル～ゲーム開始前・リザルト画面"><br>
 <img src="README_IMAGE/inGameHowToPlay.jpg" width="480" alt="ゲームプレイ中"><br>
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
 
 # 4. 技術紹介
 ## 4.1. デプスシャドウ
@@ -186,6 +201,11 @@ if(zInLVP > zInShadowMap)
 ```
 ↓実際のゲーム画面<br>
 <img src="README_IMAGE/depthShadow.png" width="480" alt="デプスシャドウ">
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
 
 ## 4.2. 川瀬式ブルームフィルター
 ポストエフェクトの１つであるブルームを川瀬正樹氏が発表した川瀬式ブルームフィルターを使用して実装しました。<br>
@@ -241,4 +261,8 @@ if(zInLVP > zInShadowMap)
 作成した4枚のボケ画像の平均を取って合成し、シーンに加算合成します。<br>
 <img src="README_IMAGE/bloomAfter.png" width="480" alt="ブルーム">
 
-⇑[目次へ](#目次)
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>

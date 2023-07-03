@@ -2,7 +2,8 @@
 ### 河原電子ビジネス専門学校ゲームクリエイター科　2年<br>
 ### 氏名：橘　一生
 ---
-# 目次 <!-- omit in toc -->
+# 目次
+- [目次](#目次)
 - [1. 作品概要](#1-作品概要)
 - [2. 担当ソースコード](#2-担当ソースコード)
 - [3. 操作説明](#3-操作説明)
@@ -176,12 +177,12 @@ float zInLVP = psIn.posInLVP.z / psIn.posInLVP.w;
 ```HLSL
 // シャドウマップに描き込まれているZ値と比較する
 // UV座標を使って、シャドウマップから深度値をサンプリング
-        float zInShadowMap = g_shadowMap.Sample(g_sampler,shadowMapUV).r;
-        if(zInLVP > zInShadowMap)
-        {
-            // 遮蔽されている
-            albedoColor.xyz *= 0.7f;
-        }
+float zInShadowMap = g_shadowMap.Sample(g_sampler,shadowMapUV).r;
+if(zInLVP > zInShadowMap)
+{
+  // 遮蔽されている
+  albedoColor.xyz *= 0.7f;
+}
 ```
 ↓実際のゲーム画面<br>
 <img src="README_IMAGE/depthShadow.png" width="480" alt="デプスシャドウ">
@@ -239,3 +240,5 @@ float zInLVP = psIn.posInLVP.z / psIn.posInLVP.w;
 ### 7. 4枚のボケ画像の合成し、シーンに加算合成する
 作成した4枚のボケ画像の平均を取って合成し、シーンに加算合成します。<br>
 <img src="README_IMAGE/bloomAfter.png" width="480" alt="ブルーム">
+
+⇑[目次へ](#目次)

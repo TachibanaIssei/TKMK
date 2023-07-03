@@ -181,11 +181,15 @@ float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
 
 <img src="README_IMAGE/shadowMapTexture.png" width="480" alt="シャドウマップ">
 
+---
+
 ### 2.ライトビュースクリーン空間でのZ値を計算する
 影を受けるモデルのライトビュースクリーン空間でZ値を計算します。
 ```HLSL
 float zInLVP = psIn.posInLVP.z / psIn.posInLVP.w;
 ```
+
+---
 
 ### 3.シャドウマップに書き込まれているZ値と比較する
 シャドウマップに書き込まれているZ値と2.で求めたライトビュースクリーン空間でのZ値を比較して、遮蔽されていれば影を落とします。
@@ -224,16 +228,22 @@ if(zInLVP > zInShadowMap)
 
 >ブルーム効果がわかりやすいようにライトの明るさを上げています。
    
+---
+
 ### 1.モデルを描画する
 ポストエフェクトはレンダリングした絵に対し、レタッチを行ってエフェクトを追加していく処理のことです。
 <br>そのため、まず全てのモデルを描画していきます。
 
 <img src="README_IMAGE/bloomBefore.png" width="480" alt="モデル描画">
 
+---
+
 ### 2.輝度抽出をする
 レンダリング後の画面から輝度抽出をします。
 
 <img src="README_IMAGE/luminance.png" width="480" alt="輝度抽出">
+
+---
 
 ### 3.輝度抽出したテクスチャにガウシアンブラーをかけボケ画像を作成
 輝度抽出したテクスチャをダウンサンプリングして、ガウシアンブラーをかけます。<br>
@@ -242,25 +252,34 @@ if(zInLVP > zInShadowMap)
 
 <img src="README_IMAGE/boke1.png" width="480" alt="ボケ画像1">
 
+---
+
 ### 4. 3で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 3で作成したボケ画像を960x540 → 480x270にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
 <img src="README_IMAGE/boke2.png" width="480" alt="ボケ画像2">
+
+---
 
 ### 5. 4で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 4で作成したボケ画像を480x270 → 240x135にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
 <img src="README_IMAGE/boke3.png" width="480" alt="ボケ画像3">
 
+---
+
 ### 6. 5で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 5で作成したボケ画像を240x135 → 120x67にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
 <img src="README_IMAGE/boke4.png" width="480" alt="ボケ画像4">
 
+---
+
 ### 7. 4枚のボケ画像の合成し、シーンに加算合成する
 作成した4枚のボケ画像の平均を取って合成し、シーンに加算合成します。<br>
 <img src="README_IMAGE/bloomAfter.png" width="480" alt="ブルーム">
 
+---
 
 <div style="text-align: right;">
 

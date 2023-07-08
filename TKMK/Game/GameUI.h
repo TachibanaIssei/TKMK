@@ -206,10 +206,10 @@ private:
 	std::vector<Actor*> m_Actors;
 
 	//UI
-	SpriteRender			m_hpBar;							//HPバーの画像
-	SpriteRender            m_HpBar_White;                      //HPバーの白い部分
-	SpriteRender			m_statusBar;						//ステータスの画像
-	SpriteRender			m_HPFrame;							//プレイヤーの顔画像の枠
+	std::array<SpriteRender,enPlayerNumber_Num>		m_hpBar;		//HPバーの画像
+	std::array<SpriteRender, enPlayerNumber_Num>	m_HpBar_White;	//HPバーの白い部分
+	std::array<SpriteRender, enPlayerNumber_Num>	m_hpBarBack;	//ステータスの画像
+	std::array<SpriteRender, enPlayerNumber_Num>	m_HPFrame;		//HPバーのフレーム
 	SpriteRender			m_playerFaceBack;					//プレイヤーの顔画像の背景
 	SpriteRender            m_SkillRenderIN;					//スキルのアイコン
 	SpriteRender            m_SkillRenderOUT;					//スキルのアイコンのフレーム
@@ -235,13 +235,6 @@ private:
 	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
 	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
-
-
-	Vector2				m_GameTimePos = Vector2::Zero;
-	Vector2				m_HPBerPos = Vector2::Zero;				//HPバーのポジション
-	Vector2				m_HPWindowPos = Vector2::Zero;			//HP枠のポジション
-	Vector2				m_HPBackPos = Vector2::Zero;			//HP背景のポジション
-	          
 
 	Vector3				m_EXPBerPos = /*Vector3(750.0f, -500.0f, 0.0f)*/Vector3::Zero;				   //EXPバーのポジション
 
@@ -337,11 +330,10 @@ private:
 
 	int MaxPoint = 1;
 
-	int White_BackHp = 0;
-	float WhiteHp_Timer = 0.0f;
+	std::array<int, enPlayerNumber_Num> White_BackHp = { 0,0 };
+	std::array<float, enPlayerNumber_Num> WhiteHp_Timer = { 0.0f,0.0f };
 
-	int BackUPLV = 0;
-
+	std::array<int, enPlayerNumber_Num> BackUPLV = { 0,0 };
 
 	bool FightScale = false;
 	bool FightshotStopFlag = false;

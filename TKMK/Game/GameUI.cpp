@@ -23,7 +23,9 @@ namespace
 	const Vector3 TIME_FONT_POS = Vector3(7.0f, 534.0f,0.0f);	//制限時間の座標
 
 	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
+	const Vector3 HP_BAR_POS_RIGHT = Vector3(-670.0f, 480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_POS_RIGHT = Vector3(-960.0f, 480.0f, 0.0f);	//HPバーの表のポジション
 
 	const float HP_BAR_WIDTH = 1400.0f;     //HPバーの長さ
 	const float HP_BAR_HIGHT = 200.0f;      //HPバーの高さ
@@ -312,34 +314,54 @@ void GameUI::InitAssets()
 		m_HpFont.SetRotation(0.0f);
 		m_HpFont.SetShadowParam(true, 2.0f, g_vec4Black);
 
-		//HPゲージ裏の画像を読み込む
-		m_statusBar.Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", 600.0f, 120.0f);
-		m_statusBar.SetPosition(HP_BAR_POS);
-		m_statusBar.SetScale(1.0f, 0.7f, 1.0f);
+		for (int i = 0; i < enPlayerNumber_Num; i++)
+		{
+			//HPゲージ裏の画像を読み込む
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", 600.0f, 120.0f);
+			m_hpBarBack[i].SetPosition(HP_BAR_POS);
+			m_hpBarBack[i].SetScale(1.0f, 0.7f, 1.0f);
 
-		//HPゲージの表の画像を読み込む
-		m_hpBar.Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 80.0f);
-		//ピボットを設定する
-		m_hpBar.SetPivot(HPGAUGE_PIVOT);
-		m_hpBar.SetPosition(HP_BAR_FLONT_POS);
+			//HPゲージの表の画像を読み込む
+			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 80.0f);
+			//ピボットを設定する
+			m_hpBar[i].SetPivot(HPGAUGE_PIVOT);
+			m_hpBar[i].SetPosition(HP_BAR_FLONT_POS);
+			m_hpBar[i].Update();
 
-		//HPゲージのフレームの画像を読み込む
-		m_HPFrame.Init("Assets/sprite/gameUI/HPBar_flame.DDS", 600.0f, 120.0f);
-		m_HPFrame.SetPosition(HP_BAR_POS);
-		m_HPFrame.SetScale(1.0f, 0.7f, 1.0f);
-		//HPバーの白い部分
-		m_HpBar_White.Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", 580.0f, 80.0f);
-		m_HpBar_White.SetPivot(HPGAUGE_PIVOT);
-		m_HpBar_White.SetPosition(HP_BAR_FLONT_POS);
-		//更新処理
-		m_statusBar.Update();
-		m_HPFrame.Update();
-		m_HpBar_White.Update();
-		m_hpBar.Update();
+			//HPゲージのフレームの画像を読み込む
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", 600.0f, 120.0f);
+			m_HPFrame[i].SetPosition(HP_BAR_POS);
+			m_HPFrame[i].SetScale(1.0f, 0.7f, 1.0f);
+			//HPバーの白い部分
+			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", 580.0f, 80.0f);
+			m_HpBar_White[i].SetPivot(HPGAUGE_PIVOT);
+			m_HpBar_White[i].SetPosition(HP_BAR_FLONT_POS);
+			//更新処理
+			m_hpBarBack[i].Update();
+			m_HPFrame[i].Update();
+			m_HpBar_White[i].Update();
+		}
+
+		m_hpBar[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
+		m_hpBarBack[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
+		m_HPFrame[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
+		m_HpBar_White[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
+
+		m_hpBar[enPlayerNumber_2P].Update();
+		m_hpBarBack[enPlayerNumber_2P].Update();
+		m_HPFrame[enPlayerNumber_2P].Update();
+		m_HpBar_White[enPlayerNumber_2P].Update();
+
 		//プレイヤーのHPを取得　白い部分用
-		White_BackHp = m_player1P->GetCharacterHp();
-		WhiteHp_Timer = WHITEHP_WAIT;
-		BackUPLV = m_player1P->GetCharacterLevel();
+		White_BackHp[enPlayerNumber_1P] = m_player1P->GetCharacterHp();
+		WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
+		BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
+		if (m_isMultiPlay)
+		{
+			White_BackHp[enPlayerNumber_2P] = m_player2P->GetCharacterHp();
+			WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
+			BackUPLV[enPlayerNumber_2P] = m_player2P->GetCharacterLevel();
+		}
 
 	}
 
@@ -613,47 +635,96 @@ void GameUI::HPBar()
 	Vector3 HpScale = Vector3::One;
 	//HPバーの減っていく割合。
 	HpScale.x = (float)m_player1P->GetCharacterHp() / (float)m_player1P->GetCharcterMaxHp();
-	m_hpBar.SetScale(HpScale);
+	m_hpBar[enPlayerNumber_1P].SetScale(HpScale);
 
-	m_hpBar.Update();
+	m_hpBar[enPlayerNumber_1P].Update();
 	
 	//レベルが下がった時の処理
-	if (BackUPLV > m_player1P->GetCharacterLevel())
+	if (BackUPLV[enPlayerNumber_1P] > m_player1P->GetCharacterLevel())
 	{
-		White_BackHp = HP;
+		White_BackHp[enPlayerNumber_1P] = HP;
 	}
-	BackUPLV = m_player1P->GetCharacterLevel();
+	BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
 
 	//Hp削られたら白い部分も減らす
-	if (HP < White_BackHp)
+	if (HP < White_BackHp[enPlayerNumber_1P])
 	{
-		if (WhiteHp_Timer > 0.0f)
+		if (WhiteHp_Timer[enPlayerNumber_1P] > 0.0f)
 		{
-			WhiteHp_Timer -= g_gameTime->GetFrameDeltaTime();
+			WhiteHp_Timer[enPlayerNumber_1P] -= g_gameTime->GetFrameDeltaTime();
 		}
 		else
 		{
-			White_BackHp -= 2;
+			White_BackHp[enPlayerNumber_1P] -= 2;
 
 			//HPバーの減っていく割合。
-			HpScale.x = (float)White_BackHp / (float)MaxHP;
-			m_HpBar_White.SetScale(HpScale);
+			HpScale.x = (float)White_BackHp[enPlayerNumber_1P] / (float)MaxHP;
+			m_HpBar_White[enPlayerNumber_1P].SetScale(HpScale);
 
-			if (White_BackHp <= HP)
+			if (White_BackHp[enPlayerNumber_1P] <= HP)
 			{
-				White_BackHp = HP;
-				WhiteHp_Timer = WHITEHP_WAIT;
+				White_BackHp[enPlayerNumber_1P] = HP;
+				WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
 			}
 		}
 	}
-	else if (HP > White_BackHp)
+	else if (HP > White_BackHp[enPlayerNumber_1P])
 	{
-		White_BackHp = HP;
+		White_BackHp[enPlayerNumber_1P] = HP;
 	}
-	m_HpBar_White.Update();
+	m_HpBar_White[enPlayerNumber_1P].Update();
 
+	//マルチプレイ時
+	if (!m_isMultiPlay)
+	{
+		return;
+	}
 
-	//AI用のHP
+	HP = m_player2P->GetCharacterHp();
+	MaxHP = m_player2P->GetCharcterMaxHp();
+
+	HpScale = Vector3::One;
+	//HPバーの減っていく割合。
+	HpScale.x = (float)m_player2P->GetCharacterHp() / (float)m_player2P->GetCharcterMaxHp();
+	m_hpBar[enPlayerNumber_2P].SetScale(HpScale);
+
+	m_hpBar[enPlayerNumber_2P].Update();
+
+	//レベルが下がった時の処理
+	if (BackUPLV[enPlayerNumber_2P] > m_player2P->GetCharacterLevel())
+	{
+		White_BackHp[enPlayerNumber_2P] = HP;
+	}
+	BackUPLV[enPlayerNumber_2P] = m_player2P->GetCharacterLevel();
+
+	//Hp削られたら白い部分も減らす
+	if (HP < White_BackHp[enPlayerNumber_2P])
+	{
+		if (WhiteHp_Timer[enPlayerNumber_2P] > 0.0f)
+		{
+			WhiteHp_Timer[enPlayerNumber_2P] -= g_gameTime->GetFrameDeltaTime();
+		}
+		else
+		{
+			White_BackHp[enPlayerNumber_2P] -= 2;
+
+			//HPバーの減っていく割合。
+			HpScale.x = (float)White_BackHp[enPlayerNumber_2P] / (float)MaxHP;
+			m_HpBar_White[enPlayerNumber_2P].SetScale(HpScale);
+
+			if (White_BackHp[enPlayerNumber_2P] <= HP)
+			{
+				White_BackHp[enPlayerNumber_2P] = HP;
+				WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
+			}
+		}
+	}
+	else if (HP > White_BackHp[enPlayerNumber_2P])
+	{
+		White_BackHp[enPlayerNumber_2P] = HP;
+	}
+	m_HpBar_White[enPlayerNumber_2P].Update();
+
 }
 
 //AIのレベルの表示
@@ -1102,10 +1173,13 @@ void GameUI::Render(RenderContext& rc)
 		m_TimeAndPointRender.Draw(rc);
 		m_time_left.Draw(rc);
 
-		m_statusBar.Draw(rc);
-		m_HpBar_White.Draw(rc);
-		m_hpBar.Draw(rc);
-		m_HPFrame.Draw(rc);
+		for (int i = 0; i < enPlayerNumber_Num; i++)
+		{
+			m_hpBarBack[i].Draw(rc);
+			m_HpBar_White[i].Draw(rc);
+			m_hpBar[i].Draw(rc);
+			m_HPFrame[i].Draw(rc);
+		}
 
 		m_SkillRenderIN.Draw(rc);
 		m_SkillRenderOUT.Draw(rc);

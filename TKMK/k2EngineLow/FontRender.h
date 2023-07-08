@@ -91,27 +91,21 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// ピボットを設定する。
-		/// x = 0.5, y = 0.5で画像の中心。
-		/// x = 0.0, y = 0.0で画像の左下。
-		/// x = 1.0, y = 1.0で画像の右上。
+		/// ピボットの中心から値分ずらす。
 		/// </summary>
-		/// <param name="pivot">ピボット</param>
-		void SetPivot(const Vector2& pivot)
+		/// <param name="pivot">オフセット</param>
+		void SetPivotOffSet(const Vector2& offset)
 		{
-			m_pivot = pivot;
+			m_pivotOffSet = offset;
 		}
 		/// <summary>
-		/// ピボットを設定する。
-		/// x = 0.5, y = 0.5で画像の中心。
-		/// x = 0.0, y = 0.0で画像の左下。
-		/// x = 1.0, y = 1.0で画像の右上。
+		/// ピボットの中心から値分ずらす。
 		/// </summary>
-		/// <param name="x">X軸のピボット</param>
-		/// <param name="y">Y軸のピボット</param>
-		void SetPivot(float x, float y)
+		/// <param name="x">X軸のオフセット</param>
+		/// <param name="y">Y軸のオフセット</param>
+		void SetPivotOffSet(float x, float y)
 		{
-			SetPivot({ x,y });
+			SetPivotOffSet({ x,y });
 		}
 		/// <summary>
 		/// ピボットを取得する
@@ -119,7 +113,7 @@ namespace nsK2EngineLow {
 		/// <returns>ピボット</returns>
 		const Vector2& GetPivot() const
 		{
-			return m_pivot;
+			return m_pivotOffSet;
 		}
 
 		/// <summary>
@@ -170,7 +164,7 @@ namespace nsK2EngineLow {
 		void OnRenderFont(RenderContext& rc)
 		{
 			m_font.Begin(rc);
-			m_font.Draw(m_text, Vector2(m_position.x, m_position.y), m_color, m_rotation, m_scale, m_pivot);
+			m_font.Draw(m_text, Vector2(m_position.x, m_position.y), m_color, m_rotation, m_scale, m_pivotOffSet);
 			m_font.End(rc);
 		}
 
@@ -179,7 +173,7 @@ namespace nsK2EngineLow {
 		float		m_scale = 1.0f;						//大きさ
 		Vector4		m_color = g_vec4White;				//文字の色。デフォルトは白
 		float		m_rotation = 0.0f;					//回転
-		Vector2		m_pivot = Sprite::DEFAULT_PIVOT;	//ピボット
+		Vector2		m_pivotOffSet = Sprite::DEFAULT_PIVOT;	//オフセット(ピボット中心)
 		wchar_t		m_text[MAX_TEXT_SIZE];				//文字
 		Font		m_font;								//フォント
 	};

@@ -38,6 +38,13 @@ public:
 		enCharState_Num,
 	};
 
+	enum EnPlayerNumber
+	{
+		enPlayerNumber_1P,
+		enPlayerNumber_2P,
+		enPlayerNumber_AI
+	};
+
 	// 必殺技の終了
 	void UltSkillEnd() {
 		m_charState = enCharState_Idle;
@@ -660,6 +667,7 @@ protected:
 	float								AvoidanceTimer = 0;				//回避のクールタイムを計算するタイマー
 	float								invincibleTimer = 0;			//無敵時間を計算するタイマー
 
+	EnPlayerNumber m_enPlayerNumber = enPlayerNumber_AI;
 	//Status m_status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Quaternion m_respawnRotation[4];

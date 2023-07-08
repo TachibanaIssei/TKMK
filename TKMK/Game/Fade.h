@@ -73,7 +73,7 @@ private:
 private:
 	static const int m_fadeSpriteCount = enFadeSpriteType_Num;
 	std::array<EnFadeState, m_fadeSpriteCount> m_fadeState = { enFadeState_fadeIdle, enFadeState_fadeIdle, enFadeState_fadeIdle };
-	std::array<SpriteRender, m_fadeSpriteCount> m_blackSprite;					//左右用のスプライト
+	std::array<SpriteRender, m_fadeSpriteCount> m_blackSprite;					//スプライト
 	std::array<float, m_fadeSpriteCount> m_currentAlpha = { 0.0f,0.0f,0.0f };	//現在のα値。ここを変更すると画像が透明になる。
 	std::array<float, m_fadeSpriteCount> m_fadeSpeed = { 1.0f,1.0f,1.0f };		//フェードの速度
 };

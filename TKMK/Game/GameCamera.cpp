@@ -115,9 +115,6 @@ void GameCamera::Update()
 		return;
 	}
 
-
-
-
 	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
 	if (player_actor->GetRespawnFlag()==true)
 	{

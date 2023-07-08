@@ -60,9 +60,11 @@ bool KnightPlayer::Start() {
 	if (IGameObject::m_name == "knightplayer2")
 	{
 		respawnNumber = 0;
+		m_enPlayerNumber = enPlayerNumber_2P;
 	}
 	else {
 		respawnNumber = 2;        //リスポーンする座標の番号
+		m_enPlayerNumber = enPlayerNumber_1P;
 	}
 
 	//リスポーンする座標のセット

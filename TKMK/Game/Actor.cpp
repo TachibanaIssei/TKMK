@@ -392,9 +392,22 @@ bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFla
 		if (m_respwanTimer <= 0.0f)
 		{
 			if (fadeFlag == true) {
-				//フェードアウト
-			//画面を明るくする
-				fade->StartFadeOut(1.0f);
+				if (g_renderingEngine->GetSplitScreenFlag())
+				{
+					if (m_enPlayerNumber == enPlayerNumber_1P)
+					{
+						fade->StartFadeOut(1.0f,Fade::enFadeSpriteType_Left);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_2P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Right);
+					}
+				}
+				else {
+					//フェードアウト
+					//画面を明るくする
+					fade->StartFadeOut(1.0f);
+				}
 			}
 			//
 			DeathToRespwanFlag = false;

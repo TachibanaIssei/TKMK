@@ -14,6 +14,13 @@ public:
 	GameUI();
 	~GameUI();
 
+	enum EnPlayerNumber
+	{
+		enPlayerNumber_1P = 0,
+		enPlayerNumber_2P = 1,
+		enPlayerNumber_Num = 2
+	};
+
 	enum GameUIState
 	{
 		m_GameStartState,
@@ -142,7 +149,7 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	void RespawnCountDown();
+	void RespawnCountDown(EnPlayerNumber playerNumber);
 
 	/// <summary>
 	/// 
@@ -176,6 +183,9 @@ public:
 	}
 
 private:
+	void InitAssets();
+
+private:
 	FontRender m_ExpFont;
 
 	FontRender m_Skillfont;
@@ -186,7 +196,8 @@ private:
 	FontRender m_PointFont[4];
 	FontRender m_LevelFont[3];
 
-	Player* player = nullptr;
+	Player* m_player1P = nullptr;
+	Player* m_player2P = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
 	Fade* fade = nullptr;
@@ -290,7 +301,7 @@ private:
 
 	int oldtStartCount = 0;
 
-	int oldRespawnCount = 0;
+	std::array<int, enPlayerNumber_Num> oldRespawnCount = { 0,0 };
 
 	int oldFinishCount = 0;
 
@@ -334,5 +345,7 @@ private:
 
 	bool FightScale = false;
 	bool FightshotStopFlag = false;
+
+	bool m_isMultiPlay = false;	//2人プレイかどうか（tureだったら2人プレイ）
 };
 

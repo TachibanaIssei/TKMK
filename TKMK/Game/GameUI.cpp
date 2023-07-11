@@ -215,15 +215,13 @@ void GameUI::InitAssets()
 		//スキルのクールタイムを表示するフォントの設定
 		m_Skillfont.SetPosition(479.0f, -220.0f, 0.0f);
 		m_Skillfont.SetScale(1.7f);
-		m_Skillfont.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
-		m_Skillfont.SetRotation(0.0f);
+		m_Skillfont.SetColor(g_vec4Red);
 		m_Skillfont.SetShadowParam(true, 2.0f, g_vec4Black);
 		PlayerCoolTime = m_player1P->CharGetSkillCoolTimer();
 
 		//レベルや経験値のフレーム
 		m_Flame.Init("Assets/sprite/gameUI/LevelBar.DDS", 1200.0f, 500.0f);
 		m_Flame.SetPosition(FLAME_POS);
-		m_Flame.SetScale(1.0, 1.0, 1.0);
 
 		//経験値のフレーム
 		m_ExperienceFlame.Init("Assets/sprite/gameUI/ExperienceBar.DDS", 600.0f, 120.0f);

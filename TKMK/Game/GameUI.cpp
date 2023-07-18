@@ -22,14 +22,18 @@ namespace
 	const Vector3 TIME_POS = Vector3(0.0f,470.0f, 0.0f);	//制限時間の座標
 	const Vector3 TIME_FONT_POS = Vector3(7.0f, 534.0f,0.0f);	//制限時間の座標
 
-	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
-	const Vector3 HP_BAR_POS_RIGHT = Vector3(-670.0f, 480.0f, 0.0f);	//HPバーポジション
-	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
-	const Vector3 HP_BAR_FLONT_POS_RIGHT = Vector3(-960.0f, 480.0f, 0.0f);	//HPバーの表のポジション
+	const float HP_BAR_BACK_WIDTH = 600.0f;
+	const float HP_BAR_BACK_HEIGHT = 120.0f;
+	const float HP_BAR_FOWARD_WIDTH = 580.0f;
+	const float HP_BAR_FOWARD_HEIGHT = 80.0f;
+	const float HP_BAR_SPLITSCREEN_WIDTH = 380.0f;
+	const float HP_BAR_SPLITSCREEN_HEIGHT = 80.0f;
 
-	const float HP_BAR_WIDTH = 1400.0f;     //HPバーの長さ
-	const float HP_BAR_HIGHT = 200.0f;      //HPバーの高さ
-	const Vector3 HP_BAR_SIZE = Vector3(HP_BAR_WIDTH, HP_BAR_HIGHT, 0.0f);  //HPバーのサイズ
+	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
+	const Vector3 HP_BAR_POS_RIGHT = Vector3(720.0f, -480.0f, 0.0f);	//HPバーポジション
+	const Vector3 HP_BAR_POS_LEFT = Vector3(-720.0f, -480.0f, 0.0f);	//HPバーポジション
+	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_POS_RIGHT = Vector3(960.0f - HP_BAR_SPLITSCREEN_WIDTH, -480.0f, 0.0f);	//HPバーの表のポジション
 
 	const Vector3 Skill_Pos = Vector3(522.0f, -275.0f, 0.0f);   //スキルアイコンポジション
 	const Vector3 Ult_Pos = Vector3(470.0f, -445.0f, 0.0f);     //必殺技アイコンポジション
@@ -38,7 +42,11 @@ namespace
 	const Vector3 LvPos = Vector3(640.0f, -310.0f, 0.0f);       //Lv
 	const Vector3 MaxLvPos = Vector3(920.0f, -400.0f, 0.0f);       // /10
 
+	const float FLAME_WIDTH = 600.0f;
+	const float FLAME_HEIGHT = 250.0f;
 	const Vector3 FLAME_POS = Vector3(920.0f,-480.0f,0.0f);    //レベルや経験値のフレーム
+	const Vector3 FLAME_POS_RIGHT = Vector3(0.0f - FLAME_WIDTH / 2,-427.0f,0.0f);
+	const Vector3 FLAME_POS_LEFT = Vector3(725.0f,-480.0f,0.0f);
 
 	const float DownPointPosY = 100.0f;
 
@@ -220,8 +228,8 @@ void GameUI::InitAssets()
 		PlayerCoolTime = m_player1P->CharGetSkillCoolTimer();
 
 		//レベルや経験値のフレーム
-		m_Flame.Init("Assets/sprite/gameUI/LevelBar.DDS", 1200.0f, 500.0f);
-		m_Flame.SetPosition(FLAME_POS);
+		m_Flame.Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH, FLAME_HEIGHT);
+		m_Flame.SetPosition(FLAME_POS_RIGHT);
 
 		//経験値のフレーム
 		m_ExperienceFlame.Init("Assets/sprite/gameUI/ExperienceBar.DDS", 600.0f, 120.0f);
@@ -315,40 +323,44 @@ void GameUI::InitAssets()
 		for (int i = 0; i < enPlayerNumber_Num; i++)
 		{
 			//HPゲージ裏の画像を読み込む
-			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", 600.0f, 120.0f);
-			m_hpBarBack[i].SetPosition(HP_BAR_POS);
-			m_hpBarBack[i].SetScale(1.0f, 0.7f, 1.0f);
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_BACK_WIDTH, HP_BAR_BACK_HEIGHT);
 
-			//HPゲージの表の画像を読み込む
-			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", 580.0f, 80.0f);
-			//ピボットを設定する
+			if (m_isMultiPlay)
+			{
+				//HPゲージの画像を読み込む
+				m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+				//HPバーの白い部分
+				m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_FOWARD_WIDTH, HP_BAR_FOWARD_HEIGHT);
+			}
+			else
+			{
+				//HPゲージの画像を読み込む
+				m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_FOWARD_WIDTH, HP_BAR_FOWARD_HEIGHT);
+				//HPバーの白い部分
+				m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_FOWARD_WIDTH, HP_BAR_FOWARD_HEIGHT);
+			}
+
 			m_hpBar[i].SetPivot(HPGAUGE_PIVOT);
-			m_hpBar[i].SetPosition(HP_BAR_FLONT_POS);
-			m_hpBar[i].Update();
+			m_HpBar_White[i].SetPivot(HPGAUGE_PIVOT);
 
 			//HPゲージのフレームの画像を読み込む
-			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", 600.0f, 120.0f);
-			m_HPFrame[i].SetPosition(HP_BAR_POS);
-			m_HPFrame[i].SetScale(1.0f, 0.7f, 1.0f);
-			//HPバーの白い部分
-			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", 580.0f, 80.0f);
-			m_HpBar_White[i].SetPivot(HPGAUGE_PIVOT);
-			m_HpBar_White[i].SetPosition(HP_BAR_FLONT_POS);
-			//更新処理
-			m_hpBarBack[i].Update();
-			m_HPFrame[i].Update();
-			m_HpBar_White[i].Update();
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_BACK_WIDTH, HP_BAR_BACK_HEIGHT);
 		}
+		//1P用画像
+		m_hpBarBack[enPlayerNumber_1P].SetPosition(HP_BAR_POS);
+		m_hpBarBack[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
+		m_hpBar[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS);
+		m_HPFrame[enPlayerNumber_1P].SetPosition(HP_BAR_POS);
+		m_HPFrame[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
+		m_HpBar_White[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS);
 
-		m_hpBar[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
+		//2P用画像
 		m_hpBarBack[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
+		m_hpBarBack[enPlayerNumber_2P].SetScale(0.8f, 0.7f, 1.0f);
+		m_hpBar[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
 		m_HPFrame[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
+		m_HPFrame[enPlayerNumber_2P].SetScale(0.8f, 0.7f, 1.0f);
 		m_HpBar_White[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
-
-		m_hpBar[enPlayerNumber_2P].Update();
-		m_hpBarBack[enPlayerNumber_2P].Update();
-		m_HPFrame[enPlayerNumber_2P].Update();
-		m_HpBar_White[enPlayerNumber_2P].Update();
 
 		//プレイヤーのHPを取得　白い部分用
 		White_BackHp[enPlayerNumber_1P] = m_player1P->GetCharacterHp();
@@ -359,8 +371,18 @@ void GameUI::InitAssets()
 			White_BackHp[enPlayerNumber_2P] = m_player2P->GetCharacterHp();
 			WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
 			BackUPLV[enPlayerNumber_2P] = m_player2P->GetCharacterLevel();
+
+			m_HPFrame[enPlayerNumber_1P].SetPosition(HP_BAR_POS_LEFT);
+			m_HPFrame[enPlayerNumber_1P].SetScale(0.8f, 0.7f, 1.0f);
 		}
 
+		for (int i = 0; i < enPlayerNumber_Num; i++)
+		{
+			m_hpBar[i].Update();
+			m_hpBarBack[i].Update();
+			m_HPFrame[i].Update();
+			m_HpBar_White[i].Update();
+		}
 	}
 
 	//制限時間と獲得ポイント
@@ -1171,12 +1193,22 @@ void GameUI::Render(RenderContext& rc)
 		m_TimeAndPointRender.Draw(rc);
 		m_time_left.Draw(rc);
 
-		for (int i = 0; i < enPlayerNumber_Num; i++)
+		if (m_isMultiPlay)
 		{
-			m_hpBarBack[i].Draw(rc);
-			m_HpBar_White[i].Draw(rc);
-			m_hpBar[i].Draw(rc);
-			m_HPFrame[i].Draw(rc);
+			for (int i = 0; i < enPlayerNumber_Num; i++)
+			{
+				m_hpBarBack[i].Draw(rc);
+				m_HpBar_White[i].Draw(rc);
+				m_hpBar[i].Draw(rc);
+				m_HPFrame[i].Draw(rc);
+			}
+		}
+		else
+		{
+			m_hpBarBack[enPlayerNumber_1P].Draw(rc);
+			m_HpBar_White[enPlayerNumber_1P].Draw(rc);
+			m_hpBar[enPlayerNumber_1P].Draw(rc);
+			m_HPFrame[enPlayerNumber_1P].Draw(rc);
 		}
 
 		m_SkillRenderIN.Draw(rc);

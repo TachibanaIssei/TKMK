@@ -9,7 +9,7 @@ namespace nsK2EngineLow {
 	/// </summary>
 	class EffectEngine : public Noncopyable {
 		static EffectEngine* m_instance;	//唯一のインスタンス。
-		EffekseerRenderer::RendererRef m_renderer[2][2];	//レンダラー。
+		EffekseerRenderer::RendererRef m_renderer[2];	//レンダラー。
 		Effekseer::RefPtr<EffekseerRenderer::SingleFrameMemoryPool> m_memoryPool[2][2];	//メモリプール。
 		Effekseer::RefPtr<EffekseerRenderer::CommandList> m_commandList[2][2];			//コマンドリスト。
 		Effekseer::ManagerRef m_manager[2];
@@ -106,6 +106,8 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="deltaTime">1フレームの経過時間。</param>
 		void Update(float deltaTime, int cameraNumber);
+		void BeginDraw();
+		void EndDraw();
 		/// <summary>
 		/// 描画。
 		/// </summary>

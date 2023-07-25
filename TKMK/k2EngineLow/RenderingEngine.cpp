@@ -154,20 +154,19 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 {
 	if (GetSplitScreenFlag()) {
 		g_camera2D->SetWidth(FRAME_BUFFER_WIDTH_HALF);
-		
+		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Left);
+		EffectEngine::GetInstance()->BeginDraw();
 		//左画面
 		{
 			rc.SetViewport(m_viewPorts[enCameraDrawing_Left]);
-			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Left);
 			EffectEngine::GetInstance()->Draw(enCameraDrawing_Left);
 		}
 		//右画面
 		{
 			rc.SetViewport(m_viewPorts[enCameraDrawing_Right]);
-			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Right);
 			EffectEngine::GetInstance()->Draw(enCameraDrawing_Right);
 		}
-
+		EffectEngine::GetInstance()->EndDraw();
 		//1画面のスプライトのアスペクト比に合わせる。
 		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
 		//ビューポートを画面全体用に切り替える

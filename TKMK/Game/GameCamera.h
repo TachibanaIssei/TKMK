@@ -34,7 +34,7 @@ public:
 	};
 
 	enum EnCameraState {
-		enNomarlCameraState,
+		enNormalCameraState,
 		enUltRotCameraState,
 		enChaseCameraState
 	};	
@@ -162,7 +162,7 @@ public:
 	void setShakeMulPower(int revel);
 
 private:
-	EnCameraState  m_enCameraState = enNomarlCameraState;
+	EnCameraState  m_enCameraState = enNormalCameraState;
 	EnSplitCameraLR m_splitCameraLR = enSplitCamera_Solo;
 	CameraState m_cameraState = enGameState;
 	PlayerNumber m_playerNumber = enPlayerNumber_1P;

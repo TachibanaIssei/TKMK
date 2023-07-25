@@ -586,11 +586,22 @@ void KnightPlayer::CoolTimeProcess()
 
 void KnightPlayer::GrayScaleUI()
 {
-	if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true);
-	else				m_gameUI->SetSkillIconGrayScale(false);
+	if (IsMatchName("knightplayer"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_1P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_1P);
 
-	if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true);
-	else				m_gameUI->SetULTIconGrayScale(false);
+		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_1P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_1P);
+	}
+	else if(IsMatchName("knightplayer2"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_2P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_2P);
+
+		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_2P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_2P);
+	}
 }
 
 /// <summary>

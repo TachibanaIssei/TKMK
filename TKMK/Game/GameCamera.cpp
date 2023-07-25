@@ -168,7 +168,7 @@ void GameCamera::StateControl()
 {
 	switch (m_enCameraState)
 	{
-	case enNomarlCameraState:
+	case enNormalCameraState:
 		NomarlCamera();
 		break;
 	case enUltRotCameraState:
@@ -303,7 +303,7 @@ void GameCamera::UltRotCamera()
 			SetCameraCharFrontFlag = false;
 			m_springCamera.Refresh();
 			CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
-			m_enCameraState = enNomarlCameraState;
+			m_enCameraState = enNormalCameraState;
 			return;
 		}
 		
@@ -716,7 +716,7 @@ void GameCamera::GameCameraUltEnd() {
 	//gameにターゲットのみを映すようにするよう伝える
 	game->ToggleObjectActive(false, victim_actor);
 
-	m_enCameraState = enNomarlCameraState;
+	m_enCameraState = enNormalCameraState;
 
 }
 

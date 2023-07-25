@@ -168,30 +168,30 @@ public:
 	/// スキルのアイコンをグレースケールにする
 	/// </summary>
 	/// <param name="flag">trueの場合グレースケールにする</param>
-	void SetSkillIconGrayScale(bool flag)
+	void SetSkillIconGrayScale(bool flag, EnPlayerNumber playerNumber)
 	{
-		m_SkillRenderIN.SetGrayScale(flag);
+		m_SkillRenderIN[playerNumber].SetGrayScale(flag);
 	}
 
 	/// <summary>
 	/// 必殺のアイコンをグレースケールにする
 	/// </summary>
 	/// <param name="flag">trueの場合グレースケールにする</param>
-	void SetULTIconGrayScale(bool flag)
+	void SetULTIconGrayScale(bool flag, EnPlayerNumber playerNumber)
 	{
-		m_UltRenderIN.SetGrayScale(flag);
+		m_UltRenderIN[playerNumber].SetGrayScale(flag);
 	}
 
 private:
 	void InitAssets();
+	void SkillCoolTimeFont();
 
 private:
 	FontRender m_ExpFont;
 
-	FontRender m_Skillfont;
+	std::array<FontRender,enPlayerNumber_Num> m_skillFont;
 
-	FontRender m_HpFont;
-	FontRender m_HpNameFont;
+	std::array<FontRender,enPlayerNumber_Num> m_HpFont;
 
 	FontRender m_PointFont[4];
 	FontRender m_LevelFont[3];
@@ -211,25 +211,25 @@ private:
 	std::array<SpriteRender, enPlayerNumber_Num>	m_hpBarBack;	//ステータスの画像
 	std::array<SpriteRender, enPlayerNumber_Num>	m_HPFrame;		//HPバーのフレーム
 	SpriteRender			m_playerFaceBack;					//プレイヤーの顔画像の背景
-	SpriteRender            m_SkillRenderIN;					//スキルのアイコン
-	SpriteRender            m_SkillRenderOUT;					//スキルのアイコンのフレーム
-	SpriteRender            m_UltRenderIN;						//必殺アイコン
-	SpriteRender            m_UltRenderOUT;						//必殺アイコンのフレーム
+	std::array<SpriteRender, enPlayerNumber_Num>    m_SkillRenderIN;	//スキルのアイコン
+	std::array<SpriteRender, enPlayerNumber_Num>    m_SkillRenderOUT;	//スキルのアイコンのフレーム
+	std::array<SpriteRender, enPlayerNumber_Num>    m_UltRenderIN;		//必殺アイコン
+	std::array<SpriteRender, enPlayerNumber_Num>    m_UltRenderOUT;		//必殺アイコンのフレーム
 	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
-	SpriteRender            m_Lv;
+	std::array<SpriteRender, enPlayerNumber_Num>	m_Lv;
 	SpriteRender            m_LvNumber;
 	SpriteRender            m_LvNumber_back;							//レベルの裏
 	float					m_LvNumberColor = 1.0f;
 	bool					m_flashNumberFlag = false;
 	SpriteRender            m_MaxLv;
-	SpriteRender            m_Flame;							//制限時間と獲得ポイントやHPバーの画像を
+	std::array<SpriteRender,enPlayerNumber_Num>	m_Flame;		//制限時間と獲得ポイントやHPバーの画像を
 	SpriteRender            m_Point;							//ポイント
 	SpriteRender            m_ExperienceFlame;					//経験値のフレーム
 	SpriteRender            m_ExperienceBar_flont;				//経験値バーの表
 	SpriteRender            m_ExperienceBar_back;				//経験値バーの裏
 	SpriteRender			m_Crown;							//ポイントが一番多いキャラにつける王冠マーク
-	SpriteRender			m_PointFlame[4];					//ポイントを表示するフレーム
-	SpriteRender            m_CharIcon[4];                      //キャラのアイコン
+	std::array<SpriteRender,4>	m_PointFlame;					//ポイントを表示するフレーム
+	std::array<SpriteRender, 4> m_CharIcon;                      //キャラのアイコン
 	SpriteRender			m_CountNumper;						//カウントダウン
 	SpriteRender			m_RespawnIn;						//Respawn inの画像
 	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
@@ -294,12 +294,11 @@ private:
 
 	int oldtStartCount = 0;
 
-	std::array<int, enPlayerNumber_Num> oldRespawnCount = { 0,0 };
+	std::array<int, enPlayerNumber_Num> oldRespawnCount = { 0, 0 };
 
 	int oldFinishCount = 0;
 
-	//
-	float PlayerCoolTime = 0;
+	std::array<float, enPlayerNumber_Num> playerCoolTime = { 0, 0 };
 
 	//秒を計るタイマー
 	float SecondsTimer=0.0f;

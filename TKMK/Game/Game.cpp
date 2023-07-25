@@ -369,8 +369,14 @@ void Game::Between()
 		//UIのステートをゲームステートに戻す
 		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 		//カメラのステートをゲームステートに戻す
-		for (int i = 0; i < 2; i++) {
-			m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enGameState);
+		if (g_renderingEngine->GetSplitScreenFlag())
+		{
+			for (int i = 0; i < enGameMode_Num; i++) {
+				m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enGameState);
+			}
+		}
+		else {
+			m_gamecamera[enGameMode_SoloPlay]->SetCameraState(m_gamecamera[enGameMode_SoloPlay]->enGameState);
 		}
 		//生成されている中立の敵のステートをゲームステートに戻す
 		for (auto seutral_Enemy : m_neutral_Enemys)

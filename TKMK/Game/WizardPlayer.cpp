@@ -78,7 +78,7 @@ void WizardPlayer::Update()
 		//今のフレームと前のフレームのレベルが違っていたら
 		if (oldLv != Lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
-			gameUI->LevelFontChange(Lv);
+			gameUI->LevelSpriteChange(Lv);
 		}
 
 		oldLv = Lv;
@@ -117,7 +117,7 @@ void WizardPlayer::Update()
 		//	if (Lv != 10)
 		//		ExpProcess(exp);
 		//	//m_status.GetExp += 5;
-		//	//m_gameUI->LevelFontChange(Lv);
+		//	//m_gameUI->LevelSpriteChange(Lv);
 		//}
 
 		//リスポーンしたときしか使えない

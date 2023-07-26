@@ -92,8 +92,6 @@ bool KnightPlayer::Start() {
 	m_AtkUpIcon_Render.SetScale(ATKUPICON_SCALE);
 	m_AtkUpIcon_Render.Update();
 
-	//Lv = 10;
-
 	return true;
 }
 

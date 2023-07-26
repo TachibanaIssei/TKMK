@@ -63,61 +63,14 @@ public:
 
 	void ChangeEXPUpFlag(bool flag)
 	{
-		m_EXPupFlag = flag;
+		m_expUpFlag = flag;
 	}
 
 	/// <summary>
 	/// プレイヤーのレベルに合わせてレベルの画像を変更する
 	/// </summary>
 	/// <param name="lv">プレイヤーの現在のレベル</param>
-	void LevelFontChange(int lv)
-	{
-		switch (lv)
-		{
-		case 1:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv1_back.DDS", 150.0f, 150.0f);
-			break;
-		case 2:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv2.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv2_back.DDS", 150.0f, 150.0f);
-			break;
-		case 3:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv3.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv3_back.DDS", 150.0f, 150.0f);
-			break;
-		case 4:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv4.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv4_back.DDS", 150.0f, 150.0f);
-			break;
-		case 5:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv5.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv5_back.DDS", 150.0f, 150.0f);
-			break;
-		case 6:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv6.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv6_back.DDS", 150.0f, 150.0f);
-			break;
-		case 7:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv7.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv7_back.DDS", 150.0f, 150.0f);
-			break;
-		case 8:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv8.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv8_back.DDS", 150.0f, 150.0f);
-			break;
-		case 9:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv9.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv9_back.DDS", 150.0f, 150.0f);
-			break;
-		case 10:
-			m_LvNumber.Init("Assets/sprite/gameUI/Lv10.DDS", 150.0f, 150.0f);
-			m_LvNumber_back.Init("Assets/sprite/gameUI/Lv10_back.DDS", 150.0f, 150.0f);
-			break;
-		default:
-			break;
-		}
-	}
+	void LevelSpriteChange(int lv);
 
 	void Render(RenderContext& rc);
 
@@ -217,11 +170,11 @@ private:
 	std::array<SpriteRender, enPlayerNumber_Num>    m_UltRenderOUT;		//必殺アイコンのフレーム
 	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
 	std::array<SpriteRender, enPlayerNumber_Num>	m_Lv;
-	SpriteRender            m_LvNumber;
-	SpriteRender            m_LvNumber_back;							//レベルの裏
+	std::array<SpriteRender, enPlayerNumber_Num>	m_LvNumber;
+	std::array<SpriteRender, enPlayerNumber_Num>	m_LvNumber_back;							//レベルの裏
 	float					m_LvNumberColor = 1.0f;
 	bool					m_flashNumberFlag = false;
-	SpriteRender            m_MaxLv;
+	std::array<SpriteRender, enPlayerNumber_Num>	m_MaxLv;
 	std::array<SpriteRender,enPlayerNumber_Num>	m_Flame;		//制限時間と獲得ポイントやHPバーの画像を
 	SpriteRender            m_Point;							//ポイント
 	SpriteRender            m_ExperienceFlame;					//経験値のフレーム
@@ -246,44 +199,44 @@ private:
 
 	Vector3				m_finishCountScale = Vector3::One;
 
-	Vector3 PointPos[4] = {
+	std::array<Vector3,4> PointPos = {
 		Vector3(-860.0f, 170.0f, 0.0f),
 		Vector3(-860.0f, 60.0f, 0.0f), 
 		Vector3(-860.0f, -50.0f, 0.0f), 
 		Vector3(-860.0f, -160.0f, 0.0f), 
 	};															//ポイント
 
-	Vector3 LevelPos[3] = {
+	std::array<Vector3, 3> LevelPos = {
 		Vector3(-940.0f, 10.0f, 0.0f),
 		Vector3(-940.0f, -100.0f, 0.0f),
 		Vector3(-940.0f, -210.0f, 0.0f),
 	};															//レベル
 
-	Vector3 PointFlamePos[4] = {
+	std::array<Vector3, 4> PointFlamePos = {
 		Vector3(-850.0f, 120.0f, 0.0f),
 		Vector3(-850.0f, 10.0f, 0.0f),
 		Vector3(-850.0f, -100.0f, 0.0f),
 		Vector3(-850.0f, -210.0f, 0.0f),
 	};															//ポイントのフレーム
 
-	Vector3 CharIconPos[4] = {
+	std::array<Vector3, 4> CharIconPos = {
 		Vector3(-905.0f, 120.0f, 0.0f),
 		Vector3(-905.0f, 35.0f, 0.0f),
 		Vector3(-905.0f, -75.0f, 0.0f),
 		Vector3(-905.0f, -185.0f, 0.0f),
 	};															//アイコン
 	
-	Vector3 CrownPos[4] = {
+	std::array<Vector3, 4> CrownPos = {
 		Vector3(-920.0f, 120.0f, 0.0f),
 		Vector3(-920.0f, 10.0f, 0.0f),
 		Vector3(-920.0f, -100.0f, 0.0f),
 		Vector3(-920.0f, -210.0f, 0.0f),
 	};															//王冠マーク
 
-	FontRender m_time_left;
-	float timerScale = 1.65f;
-	bool timerScaleFlag = false;
-	Vector4 limitColor = { 1.0f,1.0f,1.0f,1.0f };
+	FontRender m_timeLeft;
+	float m_timerScale = 1.65f;
+	bool m_timerScaleFlag = false;
+	Vector4 m_limitColor = { 1.0f,1.0f,1.0f,1.0f };
 
 	const char* knightname = "knightplayer";
 	const char* knightname2 = "knightplayer2";
@@ -310,16 +263,11 @@ private:
 
 	
 	int							m_NowPlayerLevel = 1;							//現在のプレイヤーのレベルを格納
-	int							m_ChangePlayerLevel = 0;						//画像表示のための徐々にレベルを下げる
-	int 						PlayerLevel = 1;							//レベルが上がった時にtrueにする
-	int							final_exp = 0;									//最終的な経験値バーの増量
-	int							m_nowEXP = 0;									//現在のプレイヤーの経験値
-	float						nowEXPTable = 0;								//現在のプレイヤーの経験値テーブル
-	bool						m_DownFlag = false;
-	int 						m_MathExp = 0;									//経験値を増やしたり減らしたりする時はこれ
-	int							m_SaveExp = 0;
-	int							m_ExpTable = 0;
-	bool                        m_EXPupFlag = false;
+	int 						m_playerLevel = 1;								//レベルが上がった時にtrueにする
+	int 						m_mathExp = 0;									//経験値を増やしたり減らしたりする時はこれ
+	int							m_saveExp = 0;
+	int							m_expTable = 0;
+	bool                        m_expUpFlag = false;
 	
 
 	int m_oldSaveExp = 0;

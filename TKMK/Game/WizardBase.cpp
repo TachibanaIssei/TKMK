@@ -94,7 +94,7 @@ void WizardBase::ExpProcess(int Exp)
 		//レベルアップ
 		LevelUp(Lv);
 		//レベルに合わせてレベルの画像を変更する
-		gameUI->LevelFontChange(Lv);
+		gameUI->LevelSpriteChange(Lv);
 		switch (Lv)
 		{
 		case 2:
@@ -251,7 +251,7 @@ void WizardBase::Death()
 
 
 	//レベルに合わせてレベルの画像を変更する
-	gameUI->LevelFontChange(Lv);
+	gameUI->LevelSpriteChange(Lv);
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)

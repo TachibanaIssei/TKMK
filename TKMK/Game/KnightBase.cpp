@@ -126,7 +126,7 @@ void KnightBase::ExpProcess(int Exp)
 		//レベルアップ
 		LevelUp(Lv);
 		//レベルに合わせてレベルの画像を変更する
-		m_gameUI->LevelFontChange(Lv);
+		m_gameUI->LevelSpriteChange(Lv);
 		switch (Lv)
 		{
 		case 2:

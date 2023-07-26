@@ -38,7 +38,7 @@ public:
 		enLevelUpState,
 		enLevelDownState
 	};
-	EnExpProssesState m_enExpProssesState = enChackExpState;
+	EnExpProssesState m_enExpProcessState = enChackExpState;
 
 	bool Start();
 	void Update();

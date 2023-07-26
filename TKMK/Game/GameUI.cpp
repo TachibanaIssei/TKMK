@@ -1011,14 +1011,14 @@ void GameUI::ExpState()
 	//レベルが下がったら
 	if (m_playerLevel > m_player1P->GetCharacterLevel()) {
 		m_expUpFlag = true;
-		m_enExpProssesState = enLevelDownState;
+		m_enExpProcessState = enLevelDownState;
 	}
 
 	if (m_expUpFlag == false) {
 		return;
 	}
 
-	switch (m_enExpProssesState)
+	switch (m_enExpProcessState)
 	{
 	case GameUI::enChackExpState:
 		ChackExp();
@@ -1063,30 +1063,24 @@ void GameUI::ChackExp()
 {
 	//レベルが下がったら
 	if (m_playerLevel > m_player1P->GetCharacterLevel()) {
-		m_enExpProssesState = enLevelDownState;
+		m_enExpProcessState = enLevelDownState;
 		return;
 	}
 
-	//プレイヤーの経験値を取得
-	//m_nowEXP = player->CharSetEXP();
-	////今の経験値テーブルを取得
-	//nowEXPTable = player->CharSetEXPTable();
-	////セーブした経験値が前フレームのセーブした経験値と違うなら
+	//セーブした経験値が前フレームのセーブした経験値と違うなら
 	if (m_player1P->CharGetSaveEXP() != m_oldSaveExp) {
 		m_saveExp = m_player1P->CharGetSaveEXP();
 
-		m_enExpProssesState = enUpExpState;
+		m_enExpProcessState = enUpExpState;
 	}
 	
 }
 
 void GameUI::UpExp()
 {
-	//タイミングによって経験値が計算されない
-	//当たった当たり判定が違うと
 	if (m_mathExp >= m_expTable)
 	{
-		m_enExpProssesState = enLevelUpState;
+		m_enExpProcessState = enLevelUpState;
 	}
 	else if (m_mathExp < m_saveExp) {
 		m_mathExp++;
@@ -1094,7 +1088,7 @@ void GameUI::UpExp()
 	else {
 		m_expUpFlag = false;
 
-		m_enExpProssesState = enChackExpState;
+		m_enExpProcessState = enChackExpState;
 	}
 }
 
@@ -1120,7 +1114,7 @@ void GameUI::LevelUp()
 		m_player1P->CharResatSaveEXP(m_saveExp);
 		m_oldSaveExp = m_saveExp;
 		m_mathExp = m_saveExp;
-		m_enExpProssesState = enChackExpState;
+		m_enExpProcessState = enChackExpState;
 		m_expUpFlag = false;
 		return;
 	}
@@ -1135,7 +1129,7 @@ void GameUI::LevelUp()
 		}
 		
 		m_oldSaveExp = m_player1P->CharGetSaveEXP();
-		m_enExpProssesState = enUpExpState;
+		m_enExpProcessState = enUpExpState;
 	}
 	//もうレベルアップの処理が終わりなら
 	else if (m_saveExp <= 0) {
@@ -1148,7 +1142,7 @@ void GameUI::LevelUp()
 			m_saveExp = m_player1P->CharGetSaveEXP();
 			m_oldSaveExp = m_saveExp;
 			//経験値の処理にいく
-			m_enExpProssesState = enUpExpState;
+			m_enExpProcessState = enUpExpState;
 		}
 		else
 		{
@@ -1157,7 +1151,7 @@ void GameUI::LevelUp()
 			m_saveExp = m_player1P->CharGetSaveEXP();
 			m_oldSaveExp = m_saveExp;
 
-			m_enExpProssesState = enChackExpState;
+			m_enExpProcessState = enChackExpState;
 		}
 	}
 }
@@ -1165,7 +1159,7 @@ void GameUI::LevelUp()
 void GameUI::DownExp()
 {
 	if (m_mathExp <= 0) {
-		m_enExpProssesState = enLevelDownState;
+		m_enExpProcessState = enLevelDownState;
 	}
 	else
 	{
@@ -1179,19 +1173,13 @@ void GameUI::LevelDown()
 	m_playerLevel--;
 	//レベルに応じた経験値テーブルにする
 	m_expTable = m_player1P->CharGetEXPTableForLevel(m_playerLevel);
-
-	//セーブした経験値をリセット
-	//player->CharResatSaveEXP(0);
-	//動く値調
-	
-	//m_MathExp = 0;
 	
 	LevelSpriteChange(m_playerLevel);
 
 	if (m_playerLevel <= m_player1P->GetCharacterLevel()) {
 		m_expUpFlag = false;
 		//レベルダウンの処理を終わる
-		m_enExpProssesState = enChackExpState;
+		m_enExpProcessState = enChackExpState;
 		m_saveExp = 0;
 		m_oldSaveExp = m_saveExp;
 		m_mathExp = 0;
@@ -1203,7 +1191,7 @@ void GameUI::LevelDown()
 	{
 		m_mathExp = m_expTable;
 
-		m_enExpProssesState = enDownExpState;
+		m_enExpProcessState = enDownExpState;
 	}
 }
 
@@ -1283,60 +1271,52 @@ void GameUI::CharPoint()
 
 		num++;
 	}
-
-	
-	//誰に王冠マークつけるか決める
 }
 
 void GameUI::LevelSpriteChange(int lv)
 {
-	for (int i = 0; i < enPlayerNumber_Num; i++)
+	switch (lv)
 	{
-		switch (lv)
-		{
-		case 1:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv1.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv1_back.DDS", 150.0f, 150.0f);
-			break;
-		case 2:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv2.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv2_back.DDS", 150.0f, 150.0f);
-			break;
-		case 3:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv3.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv3_back.DDS", 150.0f, 150.0f);
-			break;
-		case 4:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv4.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv4_back.DDS", 150.0f, 150.0f);
-			break;
-		case 5:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv5.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv5_back.DDS", 150.0f, 150.0f);
-			break;
-		case 6:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv6.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv6_back.DDS", 150.0f, 150.0f);
-			break;
-		case 7:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv7.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv7_back.DDS", 150.0f, 150.0f);
-			break;
-		case 8:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv8.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv8_back.DDS", 150.0f, 150.0f);
-			break;
-		case 9:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv9.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv9_back.DDS", 150.0f, 150.0f);
-			break;
-		case 10:
-			m_LvNumber[i].Init("Assets/sprite/gameUI/Lv10.DDS", 150.0f, 150.0f);
-			m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv10_back.DDS", 150.0f, 150.0f);
-			break;
-		default:
-			break;
-		}
+	case 1:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv1.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv1_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 2:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv2.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv2_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 3:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv3.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv3_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 4:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv4.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv4_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 5:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv5.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv5_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 6:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv6.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv6_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 7:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv7.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv7_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 8:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv8.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv8_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 9:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv9.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv9_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
+	case 10:
+		m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv10.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv10_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		break;
 	}
 }
 

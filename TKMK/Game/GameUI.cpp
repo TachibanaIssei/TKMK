@@ -331,6 +331,10 @@ void GameUI::InitAssets()
 			m_MaxLv[enPlayerNumber_2P].Init("Assets/sprite/gameUI/maxLv.DDS", LEVEL_MAX_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
 			m_MaxLv[enPlayerNumber_2P].SetPosition(MAX_LEVEL_POS_2P);
 			m_MaxLv[enPlayerNumber_2P].SetScale(MAX_LEVEL_SCALE);
+
+			//経験値テーブルと初期経験値
+			m_expTable[enPlayerNumber_2P] = m_player2P->CharSetEXPTable();
+			m_mathExp[enPlayerNumber_2P] = m_player1P->CharGetEXP();
 		}
 		else
 		{
@@ -396,8 +400,8 @@ void GameUI::InitAssets()
 		m_ExperienceBar_flont.SetScale(0.5, 0.5, 1.0);
 
 		//経験値テーブルと初期経験値
-		m_expTable = m_player1P->CharSetEXPTable();
-		m_mathExp = m_player1P->CharGetEXP();
+		m_expTable[enPlayerNumber_1P] = m_player1P->CharSetEXPTable();
+		m_mathExp[enPlayerNumber_1P] = m_player1P->CharGetEXP();
 
 		//経験値バーの裏
 		m_ExperienceBar_back.Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
@@ -417,6 +421,7 @@ void GameUI::InitAssets()
 		
 		for (int i = 0; i < enPlayerNumber_Num; i++)
 		{
+			//スプライト更新
 			m_Lv[i].Update();
 			m_Flame[i].Update();
 			m_SkillRenderIN[i].Update();
@@ -640,6 +645,10 @@ void GameUI::Update()
 	m_LvNumber_back[enPlayerNumber_2P].Update();
 
 	ExpState(m_player1P);
+	if (m_isMultiPlay)
+	{
+		ExpState(m_player2P);
+	}
 
 	HPBar();
 }
@@ -1007,139 +1016,145 @@ void GameUI::Timer()
 
 void GameUI::ExpState(const Player* player)
 {
+	EnPlayerNumber enPlayerNumber = enPlayerNumber_1P;
+	if (player == m_player2P)
+	{
+		enPlayerNumber = enPlayerNumber_2P;
+	}
+
 	//レベルが下がったら
-	if (m_playerLevel > player->GetCharacterLevel()) {
-		m_expUpFlag = true;
+	if (m_playerLevel[enPlayerNumber] > player->GetCharacterLevel()) {
+		m_expUpFlag[enPlayerNumber] = true;
 		m_enExpProcessState = enLevelDownState;
 	}
 
-	if (m_expUpFlag == false) {
+	if (m_expUpFlag[enPlayerNumber] == false) {
 		return;
 	}
 
 	switch (m_enExpProcessState)
 	{
 	case GameUI::enChackExpState:
-		ChackExp(player);
+		ChackExp(player, enPlayerNumber);
 		break;
 	case GameUI::enUpExpState:
-		UpExp(player);
+		UpExp(player, enPlayerNumber);
 		break;
 	case GameUI::enDownExpState:
-		DownExp();
+		DownExp(enPlayerNumber);
 		break;
 	case GameUI::enLevelUpState:
-		LevelUp(player);
+		LevelUp(player, enPlayerNumber);
 		break;
 	case GameUI::enLevelDownState:
-		LevelDown(player);
+		LevelDown(player, enPlayerNumber);
 		break;
 	default:
 		break;
 	}
 
-	m_oldSaveExp = m_saveExp;
+	m_oldSaveExp[enPlayerNumber] = m_saveExp[enPlayerNumber];
 
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
 	
 		//HPバーの増えていく割合。
-	EXPScale.x = (float)m_mathExp / (float)m_expTable;
+	EXPScale.x = (float)m_mathExp[enPlayerNumber] / (float)m_expTable[enPlayerNumber];
 
 
 	m_ExperienceBar_flont.SetScale(EXPScale);
 	m_ExperienceBar_flont.Update();
 
 	//レベルアップまでに必要な経験値の量
-	int UpToLevel = m_mathExp/* - m_nowEXP*/;
+	int UpToLevel = m_mathExp[enPlayerNumber]/* - m_nowEXP*/;
 	wchar_t UTL[255];
 	swprintf_s(UTL, 255, L"%d", UpToLevel);
 	m_ExpFont.SetText(UTL);
 }
 
 //取得した経験値の量が変わったか調べる
-void GameUI::ChackExp(const Player* player)
+void GameUI::ChackExp(const Player* player, const EnPlayerNumber playerNumber)
 {
 	//レベルが下がったら
-	if (m_playerLevel > player->GetCharacterLevel()) {
+	if (m_playerLevel[playerNumber] > player->GetCharacterLevel()) {
 		m_enExpProcessState = enLevelDownState;
 		return;
 	}
 
 	//セーブした経験値が前フレームのセーブした経験値と違うなら
-	if (player->CharGetSaveEXP() != m_oldSaveExp) {
-		m_saveExp = player->CharGetSaveEXP();
+	if (player->CharGetSaveEXP() != m_oldSaveExp[playerNumber]) {
+		m_saveExp[playerNumber] = player->CharGetSaveEXP();
 
 		m_enExpProcessState = enUpExpState;
 	}
 	
 }
 
-void GameUI::UpExp(const Player* player)
+void GameUI::UpExp(const Player* player, const EnPlayerNumber playerNumber)
 {
-	if (m_mathExp >= m_expTable)
+	if (m_mathExp[playerNumber] >= m_expTable[playerNumber])
 	{
 		m_enExpProcessState = enLevelUpState;
 	}
-	else if (m_mathExp < m_saveExp) {
-		m_mathExp++;
+	else if (m_mathExp[playerNumber] < m_saveExp[playerNumber]) {
+		m_mathExp[playerNumber]++;
 	}
 	else {
-		m_expUpFlag = false;
+		m_expUpFlag[playerNumber] = false;
 
 		m_enExpProcessState = enChackExpState;
 	}
 }
 
-void GameUI::LevelUp(const Player* player)
+void GameUI::LevelUp(const Player* player, const EnPlayerNumber playerNumber)
 {
 
-	m_saveExp -= m_expTable;
+	m_saveExp[playerNumber] -= m_expTable[playerNumber];
 
-	m_mathExp = 0;
+	m_mathExp[playerNumber] = 0;
 
 	//レベルアップの処理
-	if (m_playerLevel < player->GetCharacterLevel()) {
-		m_playerLevel++;
+	if (m_playerLevel[playerNumber] < player->GetCharacterLevel()) {
+		m_playerLevel[playerNumber]++;
 	}
 	//レベルに応じた経験値テーブルにする
-	m_expTable = player->CharGetEXPTableForLevel(m_playerLevel);
+	m_expTable[playerNumber] = player->CharGetEXPTableForLevel(m_playerLevel[playerNumber]);
 
 	//レベル画像変更
-	LevelSpriteChange(m_playerLevel);
+	LevelSpriteChange(m_playerLevel[playerNumber]);
 
-	if (m_playerLevel == 10) {
-		m_saveExp = 10;
-		player->CharResatSaveEXP(m_saveExp);
-		m_oldSaveExp = m_saveExp;
-		m_mathExp = m_saveExp;
+	if (m_playerLevel[playerNumber] == 10) {
+		m_saveExp[playerNumber] = 10;
+		player->CharResatSaveEXP(m_saveExp[playerNumber]);
+		m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+		m_mathExp[playerNumber] = m_saveExp[playerNumber];
 		m_enExpProcessState = enChackExpState;
-		m_expUpFlag = false;
+		m_expUpFlag[playerNumber] = false;
 		return;
 	}
 
 	//まだセーブした経験値が残っているなら
-	if (m_saveExp > 0) {
+	if (m_saveExp[playerNumber] > 0) {
 		//セーブした経験値をリセット
 		//m_saveExpとプレイヤーのセーブした経験値を同じにする
 		if (player->CharGetSaveEXP() > 0) {
 			//セーブした経験値が変わらない
-			player->CharResatSaveEXP(m_saveExp);
+			player->CharResatSaveEXP(m_saveExp[playerNumber]);
 		}
 		
-		m_oldSaveExp = player->CharGetSaveEXP();
+		m_oldSaveExp[playerNumber] = player->CharGetSaveEXP();
 		m_enExpProcessState = enUpExpState;
 	}
 	//もうレベルアップの処理が終わりなら
-	else if (m_saveExp <= 0) {
+	else if (m_saveExp[playerNumber] <= 0) {
 
-		m_expUpFlag = false;
+		m_expUpFlag[playerNumber] = false;
 
 		//レベルアップの処理の間に中立の敵を倒していたなら
 		if (player->CharGetEXP() > 0) {
 			player->CharResatSaveEXP(player->CharGetEXP());
-			m_saveExp = player->CharGetSaveEXP();
-			m_oldSaveExp = m_saveExp;
+			m_saveExp[playerNumber] = player->CharGetSaveEXP();
+			m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
 			//経験値の処理にいく
 			m_enExpProcessState = enUpExpState;
 		}
@@ -1147,53 +1162,52 @@ void GameUI::LevelUp(const Player* player)
 		{
 			//セーブした経験値をリセット
 			player->CharResatSaveEXP(0);
-			m_saveExp = player->CharGetSaveEXP();
-			m_oldSaveExp = m_saveExp;
+			m_saveExp[playerNumber] = player->CharGetSaveEXP();
+			m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
 
 			m_enExpProcessState = enChackExpState;
 		}
 	}
 }
 
-void GameUI::DownExp()
+void GameUI::DownExp(const EnPlayerNumber playerNumber)
 {
-	if (m_mathExp <= 0) {
+	if (m_mathExp[playerNumber] <= 0) {
 		m_enExpProcessState = enLevelDownState;
 	}
 	else
 	{
-		m_mathExp--;
+		m_mathExp[playerNumber]--;
 	}
 }
 
-void GameUI::LevelDown(const Player* player)
+void GameUI::LevelDown(const Player* player, const EnPlayerNumber playerNumber)
 {
-	m_playerLevel--;
+	m_playerLevel[playerNumber]--;
 	//レベルに応じた経験値テーブルにする
-	m_expTable = player->CharGetEXPTableForLevel(m_playerLevel);
+	m_expTable[playerNumber] = player->CharGetEXPTableForLevel(m_playerLevel[playerNumber]);
 	
-	LevelSpriteChange(m_playerLevel);
+	LevelSpriteChange(m_playerLevel[playerNumber]);
 
-	if (m_playerLevel <= player->GetCharacterLevel()) {
-		m_expUpFlag = false;
+	if (m_playerLevel[playerNumber] <= player->GetCharacterLevel()) {
+		m_expUpFlag[playerNumber] = false;
 		//レベルダウンの処理を終わる
 		m_enExpProcessState = enChackExpState;
-		m_saveExp = 0;
-		m_oldSaveExp = m_saveExp;
-		m_mathExp = 0;
+		m_saveExp[playerNumber] = 0;
+		m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+		m_mathExp[playerNumber] = 0;
 		//セーブした経験値をリセット
 		player->CharResatSaveEXP(0);
 		return;
 	}
 	else
 	{
-		m_mathExp = m_expTable;
+		m_mathExp[playerNumber] = m_expTable[playerNumber];
 
 		m_enExpProcessState = enDownExpState;
 	}
 }
 
-//
 Vector3& GameUI::HPBerSend(Vector3 size, Vector3 scale)
 {
 	Vector3 expBerSize = size;								//画像の元の大きさ
@@ -1374,7 +1388,7 @@ void GameUI::Render(RenderContext& rc)
 		//経験値の裏
 		m_ExperienceBar_back.Draw(rc);
 		//経験値の表 変動する
-		if (m_mathExp != 0) {
+		if (m_mathExp[enPlayerNumber_1P] != 0) {
 			m_ExperienceBar_flont.Draw(rc);
 		}
 
@@ -1447,8 +1461,10 @@ void GameUI::Render(RenderContext& rc)
 			m_PointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
 			m_CharIcon[num].Draw(rc);
-			if(num>=1)
-			m_LevelFont[num-1].Draw(rc);
+			if (num >= 1)
+			{
+				m_LevelFont[num - 1].Draw(rc);
+			}
 			num++;
 		}
 		

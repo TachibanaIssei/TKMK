@@ -164,8 +164,6 @@ void KnightPlayer::Update()
 	{
 		//今のフレームと前のフレームのレベルが違っていたら
 		if (oldLv != Lv) {
-			//レベルに合わせてGameUIのレベルの画像を変更する
-			m_gameUI->ChangePlayerLevel(Lv);
 			//エフェクトを出す
 			IsLevelEffect(oldLv, Lv);
 		}

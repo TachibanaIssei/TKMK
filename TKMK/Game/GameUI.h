@@ -44,11 +44,11 @@ public:
 	void Update();
 
 	void ExpState(const Player* player);
-	void ChackExp(const Player* player);
-	void UpExp(const Player* player);
-	void DownExp();
-	void LevelUp(const Player* player);
-	void LevelDown(const Player* player);
+	void ChackExp(const Player* player, const EnPlayerNumber playerNumber);
+	void UpExp(const Player* player, const EnPlayerNumber playerNumber);
+	void DownExp(const EnPlayerNumber playerNumber);
+	void LevelUp(const Player* player, const EnPlayerNumber playerNumber);
+	void LevelDown(const Player* player, const EnPlayerNumber playerNumber);
 
 
 	void SetSGame(Game* Cgame)
@@ -56,14 +56,10 @@ public:
 		m_game = Cgame;
 	}
 
-	void ChangePlayerLevel(int lv)
-	{
-		m_NowPlayerLevel = lv;
-	}
-
 	void ChangeEXPUpFlag(bool flag)
 	{
-		m_expUpFlag = flag;
+		m_expUpFlag[enPlayerNumber_1P] = flag;
+		m_expUpFlag[enPlayerNumber_2P] = flag;
 	}
 
 	/// <summary>
@@ -146,8 +142,8 @@ private:
 
 	std::array<FontRender,enPlayerNumber_Num> m_HpFont;
 
-	FontRender m_PointFont[4];
-	FontRender m_LevelFont[3];
+	std::array < FontRender, 4> m_PointFont;
+	std::array < FontRender, 3> m_LevelFont;
 
 	Player* m_player1P = nullptr;
 	Player* m_player2P = nullptr;
@@ -261,16 +257,14 @@ private:
 
 	bool GameEndFlag=false;
 
-	
-	int							m_NowPlayerLevel = 1;							//現在のプレイヤーのレベルを格納
-	int 						m_playerLevel = 1;								//レベルが上がった時にtrueにする
-	int 						m_mathExp = 0;									//経験値を増やしたり減らしたりする時はこれ
-	int							m_saveExp = 0;
-	int							m_expTable = 0;
-	bool                        m_expUpFlag = false;
+	std::array<int, enPlayerNumber_Num>		m_playerLevel = { 1,1 };
+	std::array<int, enPlayerNumber_Num>		m_mathExp = { 0,0 };			//経験値を増やしたり減らしたりする時はこれ
+	std::array<int, enPlayerNumber_Num>		m_saveExp = { 0,0 };
+	std::array<int, enPlayerNumber_Num>		m_expTable = { 0,0 };
+	std::array<bool, enPlayerNumber_Num>	m_expUpFlag = { false,false };
 	
 
-	int m_oldSaveExp = 0;
+	std::array<int, enPlayerNumber_Num>		m_oldSaveExp = { 0,0 };
 
 	//キャラのポイント
 	int charPoint[4];

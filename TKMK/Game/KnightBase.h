@@ -1,9 +1,6 @@
 #pragma once
-
 #include "Actor.h"
 
-
-//class Status;
 class Game;
 class GameUI;
 class Player;

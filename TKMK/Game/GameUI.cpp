@@ -639,8 +639,7 @@ void GameUI::Update()
 	m_LvNumber_back[enPlayerNumber_1P].Update();
 	m_LvNumber_back[enPlayerNumber_2P].Update();
 
-	ExpState();
-	//EXPBar();
+	ExpState(m_player1P);
 
 	HPBar();
 }
@@ -1006,10 +1005,10 @@ void GameUI::Timer()
 	}
 }
 
-void GameUI::ExpState()
+void GameUI::ExpState(const Player* player)
 {
 	//レベルが下がったら
-	if (m_playerLevel > m_player1P->GetCharacterLevel()) {
+	if (m_playerLevel > player->GetCharacterLevel()) {
 		m_expUpFlag = true;
 		m_enExpProcessState = enLevelDownState;
 	}
@@ -1021,19 +1020,19 @@ void GameUI::ExpState()
 	switch (m_enExpProcessState)
 	{
 	case GameUI::enChackExpState:
-		ChackExp();
+		ChackExp(player);
 		break;
 	case GameUI::enUpExpState:
-		UpExp();
+		UpExp(player);
 		break;
 	case GameUI::enDownExpState:
 		DownExp();
 		break;
 	case GameUI::enLevelUpState:
-		LevelUp();
+		LevelUp(player);
 		break;
 	case GameUI::enLevelDownState:
-		LevelDown();
+		LevelDown(player);
 		break;
 	default:
 		break;
@@ -1059,24 +1058,24 @@ void GameUI::ExpState()
 }
 
 //取得した経験値の量が変わったか調べる
-void GameUI::ChackExp()
+void GameUI::ChackExp(const Player* player)
 {
 	//レベルが下がったら
-	if (m_playerLevel > m_player1P->GetCharacterLevel()) {
+	if (m_playerLevel > player->GetCharacterLevel()) {
 		m_enExpProcessState = enLevelDownState;
 		return;
 	}
 
 	//セーブした経験値が前フレームのセーブした経験値と違うなら
-	if (m_player1P->CharGetSaveEXP() != m_oldSaveExp) {
-		m_saveExp = m_player1P->CharGetSaveEXP();
+	if (player->CharGetSaveEXP() != m_oldSaveExp) {
+		m_saveExp = player->CharGetSaveEXP();
 
 		m_enExpProcessState = enUpExpState;
 	}
 	
 }
 
-void GameUI::UpExp()
+void GameUI::UpExp(const Player* player)
 {
 	if (m_mathExp >= m_expTable)
 	{
@@ -1092,7 +1091,7 @@ void GameUI::UpExp()
 	}
 }
 
-void GameUI::LevelUp()
+void GameUI::LevelUp(const Player* player)
 {
 
 	m_saveExp -= m_expTable;
@@ -1100,18 +1099,18 @@ void GameUI::LevelUp()
 	m_mathExp = 0;
 
 	//レベルアップの処理
-	if (m_playerLevel < m_player1P->GetCharacterLevel()) {
+	if (m_playerLevel < player->GetCharacterLevel()) {
 		m_playerLevel++;
 	}
 	//レベルに応じた経験値テーブルにする
-	m_expTable = m_player1P->CharGetEXPTableForLevel(m_playerLevel);
+	m_expTable = player->CharGetEXPTableForLevel(m_playerLevel);
 
-	//フォント更新
+	//レベル画像変更
 	LevelSpriteChange(m_playerLevel);
 
 	if (m_playerLevel == 10) {
 		m_saveExp = 10;
-		m_player1P->CharResatSaveEXP(m_saveExp);
+		player->CharResatSaveEXP(m_saveExp);
 		m_oldSaveExp = m_saveExp;
 		m_mathExp = m_saveExp;
 		m_enExpProcessState = enChackExpState;
@@ -1123,12 +1122,12 @@ void GameUI::LevelUp()
 	if (m_saveExp > 0) {
 		//セーブした経験値をリセット
 		//m_saveExpとプレイヤーのセーブした経験値を同じにする
-		if (m_player1P->CharGetSaveEXP() > 0) {
+		if (player->CharGetSaveEXP() > 0) {
 			//セーブした経験値が変わらない
-			m_player1P->CharResatSaveEXP(m_saveExp);
+			player->CharResatSaveEXP(m_saveExp);
 		}
 		
-		m_oldSaveExp = m_player1P->CharGetSaveEXP();
+		m_oldSaveExp = player->CharGetSaveEXP();
 		m_enExpProcessState = enUpExpState;
 	}
 	//もうレベルアップの処理が終わりなら
@@ -1137,9 +1136,9 @@ void GameUI::LevelUp()
 		m_expUpFlag = false;
 
 		//レベルアップの処理の間に中立の敵を倒していたなら
-		if (m_player1P->CharGetEXP() > 0) {
-			m_player1P->CharResatSaveEXP(m_player1P->CharGetEXP());
-			m_saveExp = m_player1P->CharGetSaveEXP();
+		if (player->CharGetEXP() > 0) {
+			player->CharResatSaveEXP(player->CharGetEXP());
+			m_saveExp = player->CharGetSaveEXP();
 			m_oldSaveExp = m_saveExp;
 			//経験値の処理にいく
 			m_enExpProcessState = enUpExpState;
@@ -1147,8 +1146,8 @@ void GameUI::LevelUp()
 		else
 		{
 			//セーブした経験値をリセット
-			m_player1P->CharResatSaveEXP(0);
-			m_saveExp = m_player1P->CharGetSaveEXP();
+			player->CharResatSaveEXP(0);
+			m_saveExp = player->CharGetSaveEXP();
 			m_oldSaveExp = m_saveExp;
 
 			m_enExpProcessState = enChackExpState;
@@ -1164,19 +1163,18 @@ void GameUI::DownExp()
 	else
 	{
 		m_mathExp--;
-		//m_DownFlag = true;
 	}
 }
 
-void GameUI::LevelDown()
+void GameUI::LevelDown(const Player* player)
 {
 	m_playerLevel--;
 	//レベルに応じた経験値テーブルにする
-	m_expTable = m_player1P->CharGetEXPTableForLevel(m_playerLevel);
+	m_expTable = player->CharGetEXPTableForLevel(m_playerLevel);
 	
 	LevelSpriteChange(m_playerLevel);
 
-	if (m_playerLevel <= m_player1P->GetCharacterLevel()) {
+	if (m_playerLevel <= player->GetCharacterLevel()) {
 		m_expUpFlag = false;
 		//レベルダウンの処理を終わる
 		m_enExpProcessState = enChackExpState;
@@ -1184,7 +1182,7 @@ void GameUI::LevelDown()
 		m_oldSaveExp = m_saveExp;
 		m_mathExp = 0;
 		//セーブした経験値をリセット
-		m_player1P->CharResatSaveEXP(0);
+		player->CharResatSaveEXP(0);
 		return;
 	}
 	else

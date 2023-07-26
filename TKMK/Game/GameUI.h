@@ -43,12 +43,12 @@ public:
 	bool Start();
 	void Update();
 
-	void ExpState();
-	void ChackExp();
-	void UpExp();
+	void ExpState(const Player* player);
+	void ChackExp(const Player* player);
+	void UpExp(const Player* player);
 	void DownExp();
-	void LevelUp();
-	void LevelDown();
+	void LevelUp(const Player* player);
+	void LevelDown(const Player* player);
 
 
 	void SetSGame(Game* Cgame)

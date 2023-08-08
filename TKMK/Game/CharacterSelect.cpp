@@ -596,7 +596,6 @@ void CharacterSelect::Render(RenderContext& rc)
 
 	m_guideButton.Draw(rc);
 
-	//ì_ñ≈ëÅÇ≠todo
 	if ((int)time % 2 == 0)
 	{
 		m_pointerWhite.Draw(rc);

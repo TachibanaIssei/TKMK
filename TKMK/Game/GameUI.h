@@ -38,7 +38,7 @@ public:
 		enLevelUpState,
 		enLevelDownState
 	};
-	EnExpProssesState m_enExpProcessState = enChackExpState;
+	std::array<EnExpProssesState, enPlayerNumber_Num> m_enExpProcessState = { enChackExpState,enChackExpState };
 
 	bool Start();
 	void Update();
@@ -66,7 +66,7 @@ public:
 	/// プレイヤーのレベルに合わせてレベルの画像を変更する
 	/// </summary>
 	/// <param name="lv">プレイヤーの現在のレベル</param>
-	void LevelSpriteChange(int lv);
+	void LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber = enPlayerNumber_1P);
 
 	void Render(RenderContext& rc);
 
@@ -111,7 +111,7 @@ public:
 	/// <param name="size"></param>
 	/// <param name="scale"></param>
 	/// <returns></returns>
-	Vector3& HPBerSend(Vector3 size, Vector3 scale);
+	Vector3 HPBerSend(Vector3 size, Vector3 scale);
 
 	/// <summary>
 	/// スキルのアイコンをグレースケールにする

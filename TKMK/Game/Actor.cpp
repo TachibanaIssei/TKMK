@@ -10,15 +10,9 @@ Actor::Actor()
 
 Actor::~Actor()
 {
-	K2_LOG("Actor::~Actor\n");
-	/*if (PowerUpEfk != nullptr) {
-		PowerUpEfk->DeleteEffect();
-		DeleteGO(PowerUpEfk);
-	}*/
 }
 void Actor::OnDestroy() 
 {
-	K2_LOG("Actor::OnDestroy\n");
 }
 void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL, int number)
 {

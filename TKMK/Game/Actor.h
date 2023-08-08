@@ -168,6 +168,7 @@ public:
 	
 	/// <summary>
 	/// 現在のレベルを返す
+	/// </summary>
 	/// <returns></returns>
 	inline int& GetLevel() { return Lv; }
 

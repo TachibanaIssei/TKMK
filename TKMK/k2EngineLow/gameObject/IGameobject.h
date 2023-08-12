@@ -151,7 +151,7 @@ namespace nsK2EngineLow {
 		bool m_isStart = false;							//Startの開始フラグ。
 		bool m_isDead = false;							//死亡フラグ。
 		bool m_isRegistDeadList = false;				//死亡リストに積まれている。
-		bool m_isNewFromGameObjectManager;	//GameObjectManagerでnewされた。
+		bool m_isNewFromGameObjectManager = false;	//GameObjectManagerでnewされた。
 		bool m_isRegist = false;							//GameObjectManagerに登録されている？
 		bool m_isActive = true;							//Activeフラグ。
 	};

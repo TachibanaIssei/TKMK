@@ -174,7 +174,7 @@ namespace nsK2EngineLow {
 		Vector4		m_color = g_vec4White;				//文字の色。デフォルトは白
 		float		m_rotation = 0.0f;					//回転
 		Vector2		m_pivotOffSet = Sprite::DEFAULT_PIVOT;	//オフセット(ピボット中心)
-		wchar_t		m_text[MAX_TEXT_SIZE];				//文字
+		wchar_t		m_text[MAX_TEXT_SIZE]{};				//文字
 		Font		m_font;								//フォント
 	};
 }

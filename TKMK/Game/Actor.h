@@ -52,7 +52,7 @@ protected:
 	//void AttackUP();
 
 	/*void AttackUPEnd() {
-		m_status.Atk -= PowerUp;
+		m_Status.Atk -= PowerUp;
 
 		if (PowerUpEfk != nullptr)
 		{
@@ -118,8 +118,7 @@ public:
 	/// <param name="charcon">キャラコン</param>
 	/// <param name="status">キャラのステータス</param>
 	/// <param name="stickL">移動の入力量</param>
-	/// <param name="number">プレイヤーの番号</param>
-	void Move(Vector3& position,CharacterController& charcon, Status& status,Vector3 stickL,int number);
+	void Move(Vector3& position,CharacterController& charcon, Status& status,Vector3 stickL);
 
 	/// <summary>
 	/// 移動処理したくないアニメーションのステートを書く
@@ -157,7 +156,7 @@ public:
 	/// <param name="SkillCooltimer">クールタイム</param>
 	/// <param name="skillstate">スキルや回避が終わったかの判定</param>
 	/// <param name="timer">クールタイムを計算する変数</param>
-	void CoolTime(float Cooltime, bool& skillEndFlag, float& timer);
+	void COOlTIME(float Cooltime, bool& skillEndFlag, float& timer);
 	
 	/// <summary>
 	/// 現在のレベルを返す
@@ -290,7 +289,7 @@ public:
 		return m_spriteFlag;
 	}
 
-	Quaternion& GetRotation()
+	Quaternion& GetRot()
 	{
 		return m_rot;
 	}
@@ -605,9 +604,7 @@ public:
 			DamegeUltActor.end(),   // アクターのリストの最後
 			targetActor                     // 消したいアクター
 		);
-		if (*it != nullptr) {
-			DamegeUltActor.erase(it);
-		}
+		DamegeUltActor.erase(it);
 	}
 
 	void  DamegeUltActorClear() {
@@ -660,7 +657,7 @@ protected:
 	float								AvoidanceTimer = 0;				//回避のクールタイムを計算するタイマー
 	float								invincibleTimer = 0;			//無敵時間を計算するタイマー
 
-	//Status m_status;           //ステータス
+	//Status m_Status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Quaternion m_respawnRotation[4];
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量

@@ -37,12 +37,6 @@ public:
 		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
-
-	enum EnGameMode {
-		enGameMode_SoloPlay = 0,
-		enGameMode_MultiPlay,
-		enGameMode_Num
-	};
 	
 
 	EnEFK m_EnEffect = enEffect_Num;
@@ -223,7 +217,7 @@ public:
 	/// <returns></returns>
 	int CountDownMinutes() const
 	{
-		return (int)m_StartToGameTimer;
+		return m_StartToGameTimer;
 	}
 
 	float GetSecondsTimer() const
@@ -378,28 +372,7 @@ public:
 
 	int GetNowRank(Actor* actor);
 
-	/// <summary>
-	/// ゲームモードを設定する
-	/// </summary>
-	/// <param name="gameMode"></param>
-	void SetGameMode(EnGameMode gameMode)
-	{
-		m_gameMode = gameMode;
-	}
-
-	/// <summary>
-	/// ゲームモードを取得する
-	/// </summary>
-	/// <returns>ゲームモード</returns>
-	EnGameMode GetGameMode()
-	{
-		return m_gameMode;
-	}
-
 private:
-	void InitSoloPlay();
-	void InitMultiPlay();
-
 	/// <summary>
 	/// 中立の敵の名前を設定する
 	/// </summary>
@@ -449,7 +422,6 @@ private:
 
 	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
-	EnGameMode m_gameMode = enGameMode_Num;
 
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;
@@ -475,7 +447,7 @@ private:
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
-	GameCamera* m_gamecamera[MAX_VIEWPORT] = { nullptr,nullptr };
+	GameCamera* m_gamecamera = nullptr;
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	KnightAI* m_KnightAI = nullptr;
@@ -485,7 +457,7 @@ private:
 	Map* m_Map = nullptr;
 	SoundSource* m_bgm = nullptr;	
 	WizardPlayer* wizardPlayer = nullptr;
-	Player* player[2] = { nullptr,nullptr };
+	Player* player = nullptr;
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
 	Fade* fade = nullptr;

@@ -226,7 +226,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 	
 }
 
-void KnightBase::Collision()
+void KnightBase::Collition()
 {
 	if (invincibleTimer > 0)
 	{
@@ -307,9 +307,9 @@ void KnightBase::Collision()
 			return;
 		}
 	}
-	//必殺技のコリジョンを取得する
+	//敵の攻撃用のコリジョンを取得する
 	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
-	//コリジョンの配列をfor文で回す
+	//子リジョンの配列をfor文で回す
 	for (auto collision : Ultcollisions)
 	{
 		if (collision->IsHit(m_charCon))
@@ -595,7 +595,7 @@ void KnightBase::PlayAnimation()
 	case enCharState_UltimateSkill:
 		//ここ調整必要！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 		m_modelRender.SetAnimationSpeed(0.8f);
-		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1f);
+		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1);
 		break;
 	//回避
 	case enCharState_Avoidance:

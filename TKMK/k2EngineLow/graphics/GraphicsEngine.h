@@ -341,18 +341,17 @@ namespace nsK2EngineLow {
 		UINT m_frameBufferWidth = 0;				//フレームバッファの幅。
 		UINT m_frameBufferHeight = 0;				//フレームバッファの高さ。
 		Camera m_camera2D;							//2Dカメラ。
-		Camera m_camera3D[2];			//3Dカメラ。
+		Camera m_camera3D;							//3Dカメラ。
 		raytracing::Engine m_raytracingEngine;		//レイトレエンジン。
 		NullTextureMaps m_nullTextureMaps;			//ヌルテクスチャマップ。
 		FontEngine m_fontEngine;					//フォントエンジン。
 		std::unique_ptr<DirectX::GraphicsMemory> m_directXTKGfxMemroy;					//DirectXTKのグラフィックメモリシステム。
 		bool m_isExecuteCommandList = false;											//コマンドリストをGPUに流した？
 		std::list< RequestDelayReleaseD3D12Object > m_reqDelayRelease3d12ObjectList;	// D3D12オブジェクトの遅延解放リクエストのリスト。
-		D3D12_VIEWPORT viewPorts[4];   //分割ビューポート、これをモデルの描画前に設定する
 	};
 	extern GraphicsEngine* g_graphicsEngine;	//グラフィックスエンジン
 	extern Camera* g_camera2D;					//2Dカメラ。
-	extern Camera* g_camera3D[2];					//3Dカメラ。
+	extern Camera* g_camera3D;					//3Dカメラ。
 
 	/// <summary>
 	/// D3D12オブジェクトを解放。

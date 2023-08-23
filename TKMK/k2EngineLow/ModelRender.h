@@ -40,7 +40,7 @@ namespace nsK2EngineLow {
 		/// <returns>モデル</returns>
 		Model& GetModel()
 		{
-			return m_model[0];
+			return m_model;
 		}
 
 		/// <summary>
@@ -125,12 +125,12 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
 		{
-			m_model[g_renderingEngine->GetCameraDrawing()].Draw(rc,1,g_renderingEngine->GetCameraDrawing());
+			m_model.Draw(rc);
 		}
 
-		void OnRenderShadowModel(RenderContext& rc,Camera& camera,int number)
+		void OnRenderShadowModel(RenderContext& rc,Camera& camera)
 		{
-			m_shadowModel[number].Draw(rc, camera);
+			m_shadowModel.Draw(rc,camera);
 		}
 
 		/// <summary>
@@ -211,7 +211,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの情報を作成
 		/// </summary>
-		void MakeDirectionData(int lightNumber);
+		void MakeDirectionData();
 
 	//メンバ変数
 	private:
@@ -225,10 +225,10 @@ namespace nsK2EngineLow {
 		Vector3						m_scale				= Vector3::One;			//大きさ
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
 
-		Model						m_model[2];									//Modelクラス
+		Model						m_model;									//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
 
-		Model						m_shadowModel[2];								//シャドウマップ描画用
+		Model						m_shadowModel;								//シャドウマップ描画用
 	};
 
 }

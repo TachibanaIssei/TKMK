@@ -25,7 +25,7 @@ bool ExpforKnight::Start()
 	//ワールド座標をスクリン座標に変換
 	Vector3 EFKWorldPOS = m_EnemyPos;
 
-	g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_EFKSCPOS, EFKWorldPOS);
+	g_camera3D->CalcScreenPositionFromWorldPosition(m_EFKSCPOS, EFKWorldPOS);
 	center.x = (m_EFKSCPOS.x - EXPERIENCE_BAR_POS.x) / 2.0f;
 	center.y = (m_EFKSCPOS.y - EXPERIENCE_BAR_POS.y) / 2.0f;
 	center.x -= 200.0f;

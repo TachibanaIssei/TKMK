@@ -46,7 +46,7 @@ public:
 	/// <summary>
 	/// 自身の当たり判定
 	/// </summary>
-	void Collision();
+	void Collition();
 
 	/// <summary>
 	/// ダメージを受けたときの処理
@@ -184,12 +184,12 @@ public:
 	/// 現在のヒットポイントを返す
 	/// </summary>
 	/// <returns>現在のHP</returns>
-	int& GetHitPoint() 
+	int& SetHp() 
 	{
 		return m_Status.Hp;
 	}
 
-	Quaternion& GetRotation()
+	Quaternion& GetRot()
 	{
 		return m_rot;
 	}

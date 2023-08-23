@@ -87,15 +87,14 @@ namespace nsK2EngineLow {
 	}
 	void Model::Draw(
 		RenderContext& rc,
-		int numInstance,
-		int cameraNumber
+		int numInstance
 	)
 	{
 		m_meshParts.Draw(
 			rc,
 			m_worldMatrix,
-			g_camera3D[cameraNumber]->GetViewMatrix(),
-			g_camera3D[cameraNumber]->GetProjectionMatrix(),
+			g_camera3D->GetViewMatrix(),
+			g_camera3D->GetProjectionMatrix(),
 			numInstance
 		);
 	}

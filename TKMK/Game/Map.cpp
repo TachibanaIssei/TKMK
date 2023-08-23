@@ -86,7 +86,7 @@ void Map::CameraMap()
 {
 	//カメラの座標
 	Vector3 CameraPosition = m_camera->GetSpringCamera()->GetRealPosition();
-	Vector3 playerPosition = player->GetCharcterPosition();
+	Vector3 playerPosition = player->GetCharPosition();
 	//カメラの回転
 	Quaternion CameraRot = Quaternion::Identity;
 	CameraRot.SetRotationYFromDirectionXZ(CameraPosition - playerPosition);
@@ -104,7 +104,7 @@ void Map::CameraMap()
 	m_PlayerCamera.SetRotation(CameraRot);
 
 	Vector3 mapPosition;
-	CameraPosition = player->GetCharcterPosition();
+	CameraPosition = player->GetCharPosition();
 	Vector3 diff = player->GetPlayerActor()->GetForward();
 	diff *= -50.0f;
 	CameraPosition += diff;
@@ -120,11 +120,11 @@ void Map::CameraMap()
 void Map::PlayerMap()
 {
 	//Vector3 playerPosition = m_knightPlayer->GetPosition();
-	Vector3 playerPosition = player->GetCharcterPosition();
+	Vector3 playerPosition = player->GetCharPosition();
 
 	//プレイヤーの回転を取得する
-	//Quaternion playerIconRot = m_knightPlayer->GetRotation();
-	Quaternion playerIconRot = player->GetCharcterRotation();
+	//Quaternion playerIconRot = m_knightPlayer->GetRot();
+	Quaternion playerIconRot = player->CharSetRot();
 	//プレイヤーの前方向
 	Vector3 playerIcon = Vector3::AxisZ;
 	//クォータニオンをベクトルに変える

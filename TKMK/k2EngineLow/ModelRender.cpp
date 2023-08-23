@@ -24,24 +24,19 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 		m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 	}
 	
+	//ディレクションライトの情報を作成
+	MakeDirectionData();
+
 	//モデルクラスの初期化
-	for (int i = 0; i < 2; i++)
+	m_model.Init(m_modelInitData);
+
+	//シャドウマップ描画用のモデルの初期化
+	if (shadow)
 	{
-		//ディレクションライトの情報を作成
-		MakeDirectionData(i);
-		m_model[i].Init(m_modelInitData);
-	}
+		m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
+		m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
 
-	for(int i=0;i<2;i++){
-		//シャドウマップ描画用のモデルの初期化
-		if (shadow)
-		{
-			m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
-			m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
-
-			m_shadowModel[i].Init(m_modelInitData);
-		}
-
+		m_shadowModel.Init(m_modelInitData);
 	}
 
 }
@@ -51,57 +46,51 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
 	m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
 
-	for (int i = 0; i < 2; i++)
-	{
-		m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture(i);
-		//ライトカメラのビュープロジェクション行列を設定する
-		g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
-		MakeDirectionData(i);
-		m_model[i].Init(m_modelInitData);
-	}
+	m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture();
+
+	//ライトカメラのビュープロジェクション行列を設定する
+	g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
+
+	MakeDirectionData();
+
+	m_model.Init(m_modelInitData);
 }
 
 void nsK2EngineLow::ModelRender::InitSkyCube(ModelInitData& initData)
 {
 	initData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
-	for (int i = 0; i < 2; i++)
-	{
-		m_model[i].Init(initData);
-		m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
-	}
+	m_model.Init(initData);
 
+	m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
 }
 
 void nsK2EngineLow::ModelRender::Update()
 {
-	for (int i = 0; i < 2; i++)
+	//ワールド行列の更新(座標、回転、大きさ)
+	m_model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+
+	//スケルトンが初期化されていたら
+	if (m_skeleton.IsInited())
 	{
-		//ワールド行列の更新(座標、回転、大きさ)
-		m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		//スケルトンを更新する
+		m_skeleton.Update(m_model.GetWorldMatrix());
+	}
 
-		//スケルトンが初期化されていたら
-		if (m_skeleton.IsInited())
-		{
-			//スケルトンを更新する
-			m_skeleton.Update(m_model[i].GetWorldMatrix());
-		}
-
-		//シャドウモデルが初期化されていたら
-		if (m_shadowModel[i].IsInited())
-		{
-			m_shadowModel[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
-			g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
-		}
+	//シャドウモデルが初期化されていたら
+	if (m_shadowModel.IsInited())
+	{
+		m_shadowModel.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+		g_renderingEngine->SetmLVP(g_renderingEngine->GetLightCamera().GetViewProjectionMatrix());
 	}
 
 	//アニメーションを進める
 	m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
 }
 
-void nsK2EngineLow::ModelRender::MakeDirectionData(int lightNumber)
+void nsK2EngineLow::ModelRender::MakeDirectionData()
 {
-	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight(lightNumber);
-	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight(lightNumber));
+	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
+	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
 }
 
 void nsK2EngineLow::ModelRender::InitSkeleton(const char* filePath)

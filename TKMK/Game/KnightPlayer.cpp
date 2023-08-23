@@ -56,14 +56,7 @@ bool KnightPlayer::Start() {
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-
-	if (IGameObject::m_name == "knightplayer2")
-	{
-		respawnNumber = 0;
-	}
-	else {
-		respawnNumber = 2;        //リスポーンする座標の番号
-	}
+	respawnNumber = 2;        //リスポーンする座標の番号0
 
 	//リスポーンする座標のセット
 	//キャラコン
@@ -90,8 +83,6 @@ bool KnightPlayer::Start() {
 	m_AtkUpIcon_Render.SetScale(ATKUPICON_SCALE);
 	m_AtkUpIcon_Render.Update();
 
-	//Lv = 10;
-
 	return true;
 }
 
@@ -102,7 +93,7 @@ void KnightPlayer::Update()
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定
-		Collision();
+		Collition();
 	}
 	
 
@@ -190,7 +181,7 @@ void KnightPlayer::Update()
 				}
 				else {
 					//ジャンプ
-					if (pushFlag == false && m_charCon.IsOnGround() && g_pad[m_playerNumber]->IsTrigger(enButtonA))
+					if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
 					{
 						pushFlag = true;
 						m_charState = enCharState_Jump;
@@ -214,10 +205,10 @@ void KnightPlayer::Update()
 			Vector3 stickL = Vector3::Zero;
 			if (CantMove == false)
 			{
-				stickL.x = g_pad[m_playerNumber]->GetLStickXF();
-				stickL.y = g_pad[m_playerNumber]->GetLStickYF();
+				stickL.x = g_pad[0]->GetLStickXF();
+				stickL.y = g_pad[0]->GetLStickYF();
 			}
-			Move(m_position, m_charCon, m_Status, stickL, m_playerNumber);
+			Move(m_position, m_charCon, m_Status, stickL);
 
 
 			//回避中なら
@@ -299,7 +290,7 @@ void KnightPlayer::Attack()
 	if (pushFlag==false&&AtkState == false)
 	{
 		//Aボタン押されたら攻撃する
-		if (g_pad[m_playerNumber]->IsTrigger(enButtonA))
+		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			m_charState = enCharState_Attack;
 			m_game->UnderSprite_Attack();
@@ -311,7 +302,7 @@ void KnightPlayer::Attack()
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
-		if (g_pad[m_playerNumber]->IsTrigger(enButtonA)&& m_AtkTmingState!= SecondAtk_State)
+		if (g_pad[0]->IsTrigger(enButtonA)&& m_AtkTmingState!= SecondAtk_State)
 		{
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
@@ -329,7 +320,7 @@ void KnightPlayer::Attack()
 	//二段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == SecondAtkStart_State)
 	{
-		if (g_pad[m_playerNumber]->IsTrigger(enButtonA)&&m_AtkTmingState != LastAtk_State)
+		if (g_pad[0]->IsTrigger(enButtonA)&&m_AtkTmingState != LastAtk_State)
 		{
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
@@ -348,7 +339,7 @@ void KnightPlayer::Attack()
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[m_playerNumber]->IsTrigger(enButtonB)&&m_Status.Hp>0)
+	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB)&&m_Status.Hp>0)
 	{
 		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed);
@@ -400,7 +391,7 @@ void KnightPlayer::Attack()
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	if (pushFlag == false && Lv >= 4 && g_pad[m_playerNumber]->IsTrigger(enButtonX))
+	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		//画面を暗くする
 		UltimateDarknessFlag = true;
@@ -498,7 +489,7 @@ void KnightPlayer::Avoidance()
 	//RBボタンが押されたら。
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false) {
-		if (g_pad[m_playerNumber]->IsTrigger(enButtonRB1) || g_pad[m_playerNumber]->IsTrigger(enButtonLB1)) {
+		if (g_pad[0]->IsTrigger(enButtonRB1) || g_pad[0]->IsTrigger(enButtonLB1)) {
 			//回避ステート
 			AnimationMove(AvoidanceSpeed);
 			pushFlag = true;
@@ -575,10 +566,10 @@ void KnightPlayer::MakeUltSkill()
 void KnightPlayer::CoolTimeProcess()
 {
 	//スキルクールタイムの処理
-	CoolTime(Cooltime, SkillEndFlag, SkillTimer);
+	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
 
 	//回避クールタイムの処理
-	CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 }
 
@@ -659,7 +650,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技 剣を空に掲げたら
 	if (wcscmp(eventName, L"UltimateAttack_Charge") == 0)
 	{
-
 		//雷チャージエフェクト生成
 		EffectEmitter* ThunderCharge = NewGO<EffectEmitter>(0);
 		ThunderCharge->Init(EnEFK::enEffect_Knight_Thunder_Charge);
@@ -791,7 +781,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
-		//m_status.Atk -= 20;
+		//m_Status.Atk -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする

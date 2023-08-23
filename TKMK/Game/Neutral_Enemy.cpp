@@ -144,7 +144,7 @@ bool Neutral_Enemy::Start()
 			WhiteMagic->Init(EnEFK::enEffect_Neutral_Enemy_WhiteMagic);
 			WhiteMagic->SetScale(Vector3::One * 30.0f);
 			Vector3 MagicPos = m_position;
-			MagicPos.y -= 20.0f;
+			MagicPos.y -= 20;
 			WhiteMagic->SetPosition(MagicPos);
 			WhiteMagic->Play();
 			WhiteMagic->Update();
@@ -159,7 +159,7 @@ bool Neutral_Enemy::Start()
 			GreenMagic->Init(EnEFK::enEffect_Neutral_Enemy_GreenMagic);
 			GreenMagic->SetScale(Vector3::One * 30.0f);
 			Vector3 MagicPos = m_position;
-			MagicPos.y -= 20.0f;
+			MagicPos.y -= 20;
 			GreenMagic->SetPosition(MagicPos);
 			GreenMagic->Play();
 			GreenMagic->Update();
@@ -494,7 +494,7 @@ void Neutral_Enemy::Collision()
 			else
 			{
 				m_Status.Hp -= m_lastAttackActor->GetAtk();
-				//m_status.Hp -= m_knightAI->SetKnightAIAtk();
+				//m_Status.Hp -= m_knightAI->SetKnightAIAtk();
 			}
 
 				//HPが0になったら
@@ -893,10 +893,10 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 
 		//攻撃されたら距離関係無しに、取り敢えず追跡させる。
 		m_Neutral_EnemyState = enNeutral_Enemy_Chase;
-		//Vector3 diff = player->GetCharcterPosition() - m_position;
+		//Vector3 diff = player->GetCharPosition() - m_position;
 		//diff.Normalize();
 		//移動速度を設定する。
-		//m_moveSpeed = diff * m_status.Speed;
+		//m_moveSpeed = diff * m_Status.Speed;
 		m_targetActor = m_lastAttackActor;
 
 	}
@@ -1242,7 +1242,7 @@ void Neutral_Enemy::modelUpdate()
 /// <returns>音量</returns>
 float Neutral_Enemy::SoundSet(Player* player, float Max, float Min)
 {
-	Vector3 diff = player->GetCharcterPosition() - m_position;
+	Vector3 diff = player->GetCharPosition() - m_position;
 
 	float Len = diff.Length();
 

@@ -5,8 +5,6 @@
 #include "Shadow.h"
 
 namespace nsK2EngineLow {
-	static const int MAX_VIEWPORT = 2;
-
 	class ModelRender;
 	class SpriteRender;
 	class FontRender;
@@ -15,17 +13,6 @@ namespace nsK2EngineLow {
 	class RenderingEngine
 	{
 	public:
-		/// <summary>
-		/// 現在のカメラ描画
-		/// </summary>
-		enum EnCameraDrawing
-		{
-			enCameraDrawing_Solo = 0,	//1画面だけのとき
-			enCameraDrawing_Left = 0,	//左画面
-			enCameraDrawing_Right = 1,	//右画面
-			enCameraDrawing_Num
-		};
-
 		void Init();
 
 		void InitRenderTargets();
@@ -66,7 +53,7 @@ namespace nsK2EngineLow {
 		/// シャドウモデルを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void ShadowModelRendering(RenderContext& rc, Camera& camera,int number);
+		void ShadowModelRendering(RenderContext& rc, Camera& camera);
 
 		/// <summary>
 		/// 描画処理を実行
@@ -78,18 +65,18 @@ namespace nsK2EngineLow {
 		/// シーンライトを取得
 		/// </summary>
 		/// <returns>シーンライト</returns>
-		SceneLight& GetSceneLight(int lightNumber)
+		SceneLight& GetSceneLight()
 		{
-			return m_sceneLight[lightNumber];
+			return m_sceneLight;
 		}
 
 		/// <summary>
 		/// ライトビュープロジェクション行列を設定する
 		/// </summary>
 		/// <param name="LVP">ライトビュープロジェクション行列</param>
-		void SetmLVP(int cameraDrawing, Matrix LVP)
+		void SetmLVP(Matrix LVP)
 		{
-			m_sceneLight[cameraDrawing].SetmLVP(LVP);
+			m_sceneLight.SetmLVP(LVP);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -99,18 +86,18 @@ namespace nsK2EngineLow {
 		/// シャドウマップのテクスチャを取得
 		/// </summary>
 		/// <returns>シャドウマップのテクスチャ</returns>
-		Texture& GetShadowMapTexture(int number)
+		Texture& GetShadowMapTexture()
 		{
-			return m_shadow.GetShadowMapTexture(number);
+			return m_shadow.GetShadowMapTexture();
 		}
 
 		/// <summary>
 		/// ライトカメラを取得
 		/// </summary>
 		/// <returns>ライトカメラ</returns>
-		Camera& GetLightCamera(int number)
+		Camera& GetLightCamera()
 		{
-			return m_shadow.GetLightCamera(number);
+			return m_shadow.GetLightCamera();
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -124,8 +111,7 @@ namespace nsK2EngineLow {
 		/// <param name="color">ライト色</param>
 		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetDirectionLight(lightNo, direction, color);
-			m_sceneLight[enCameraDrawing_Right].SetDirectionLight(lightNo, direction, color);
+			m_sceneLight.SetDirectionLight(lightNo, direction, color);
 		}
 		/// <summary>
 		/// ディレクションライトの光の方向を設定する
@@ -133,8 +119,7 @@ namespace nsK2EngineLow {
 		/// <param name="direction">方向</param>
 		void SetDirLightDirection(Vector3 direction)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetDirLightDirection(direction);
-			m_sceneLight[enCameraDrawing_Right].SetDirLightDirection(direction);
+			m_sceneLight.SetDirLightDirection(direction);
 		}
 		/// <summary>
 		/// ディレクションライトの光の色を設定する
@@ -142,25 +127,24 @@ namespace nsK2EngineLow {
 		/// <param name="color">色</param>
 		void SetDirLightColor(Vector3 color)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetDirLightColor(color);
-			m_sceneLight[enCameraDrawing_Right].SetDirLightColor(color);
+			m_sceneLight.SetDirLightColor(color);
 		}
 
 		/// <summary>
 		/// ディレクションライトの光の方向を取得する
 		/// </summary>
 		/// <returns>光の方向</returns>
-		const Vector3& GetDirLigDirection(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetDirLigDirection() const
 		{
-			return m_sceneLight[cameraDrawing].GetDirLigDirection();
+			return m_sceneLight.GetDirLigDirection();
 		}
 		/// <summary>
 		/// ディレクションライトの光の色を取得する
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetDirLigColor(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetDirLigColor() const
 		{
-			return m_sceneLight[cameraDrawing].GetDirLigColor();
+			return m_sceneLight.GetDirLigColor();
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -172,8 +156,7 @@ namespace nsK2EngineLow {
 		/// <param name="ambient">環境光</param>
 		void SetAmbient(Vector3 ambient)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetAmbient(ambient);
-			m_sceneLight[enCameraDrawing_Right].SetAmbient(ambient);
+			m_sceneLight.SetAmbient(ambient);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -185,8 +168,7 @@ namespace nsK2EngineLow {
 		/// <param name="eyePos"></param>
 		void SetEyePos(Vector3 eyePos)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetEyePos(eyePos);
-			m_sceneLight[enCameraDrawing_Right].SetEyePos(eyePos);
+			m_sceneLight.SetEyePos(eyePos);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -200,8 +182,7 @@ namespace nsK2EngineLow {
 		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
 		void SetPointLight(Vector3 pos, Vector3 color, Vector3 range)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetPointLight(pos, color, range);
-			m_sceneLight[enCameraDrawing_Right].SetPointLight(pos, color, range);
+			m_sceneLight.SetPointLight(pos, color, range);
 		}
 		/// <summary>
 		/// ポイントライトの座標を設定する
@@ -209,8 +190,7 @@ namespace nsK2EngineLow {
 		/// <param name="pos"></param>
 		void SetPointLightPosition(Vector3 pos)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetPointLightPosition(pos);
-			m_sceneLight[enCameraDrawing_Right].SetPointLightPosition(pos);
+			m_sceneLight.SetPointLightPosition(pos);
 		}
 		/// <summary>
 		/// ポイントライトの色を設定する
@@ -218,8 +198,7 @@ namespace nsK2EngineLow {
 		/// <param name="color">色</param>
 		void SetPointLightColor(Vector3 color)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetPointLightColor(color);
-			m_sceneLight[enCameraDrawing_Right].SetPointLightColor(color);
+			m_sceneLight.SetPointLightColor(color);
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
@@ -227,57 +206,54 @@ namespace nsK2EngineLow {
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
 		void SetPointLightAttn(Vector3 attn)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetPointLightAttn(attn);
-			m_sceneLight[enCameraDrawing_Right].SetPointLightAttn(attn);
+			m_sceneLight.SetPointLightAttn(attn);
 		}
 		/// <summary>
 		/// ポイントライトを使用する
 		/// </summary>
 		void UsePointLight()
 		{
-			m_sceneLight[enCameraDrawing_Left].UsePointLight();
-			m_sceneLight[enCameraDrawing_Right].UsePointLight();
+			m_sceneLight.UsePointLight();
 		}
 		/// <summary>
 		/// ポイントライトを使用しない
 		/// </summary>
 		void UnUsePointLight()
 		{
-			m_sceneLight[enCameraDrawing_Left].UnUsePointLight();
-			m_sceneLight[enCameraDrawing_Right].UnUsePointLight();
+			m_sceneLight.UnUsePointLight();
 		}
 
 		/// <summary>
 		/// ポイントライトの位置を取得する
 		/// </summary>
 		/// <returns>座標</returns>
-		const Vector3& GetPointLightPosition(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetPointLightPosition() const
 		{
-			return m_sceneLight[cameraDrawing].GetPointLightPosition();
+			return m_sceneLight.GetPointLightPosition();
 		}
 		/// <summary>
 		/// ポイントライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetPointLightColor(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetPointLightColor() const
 		{
-			return m_sceneLight[cameraDrawing].GetPointLightColor();
+			return m_sceneLight.GetPointLightColor();
 		}
 		/// <summary>
 		/// スポットライトの影響範囲と累乗するパラメータを取得
 		/// </summary>
 		/// <returns>Xに影響範囲,Yに累乗するパラメータ</returns>
-		const Vector3& GetPointLightAttn(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetPointLightAttn() const
 		{
-			return m_sceneLight[cameraDrawing].GetPointLightAttn();
+			return m_sceneLight.GetPointLightAttn();
 		}
 		/// <summary>
 		/// ポイントライトは使用中?
 		/// </summary>
 		/// <returns>使用中ならtrue</returns>
-		const int PointLightIsUse(EnCameraDrawing cameraDrawing) const
+		const int PointLightIsUse() const
 		{
-			return m_sceneLight[cameraDrawing].PointLightIsUse();
+			return m_sceneLight.PointLightIsUse();
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -293,8 +269,7 @@ namespace nsK2EngineLow {
 		/// <param name="angle">xは照射角度,ｙは影響に累乗するパラメータ</param>
 		void SetSpotLight(Vector3 pos, Vector3 color, Vector3 attn, Vector3 direction, Vector3 angle)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetSpotLight(pos, color, attn, direction, angle);
-			m_sceneLight[enCameraDrawing_Right].SetSpotLight(pos, color, attn, direction, angle);
+			m_sceneLight.SetSpotLight(pos, color, attn, direction, angle);
 		}
 		/// <summary>
 		/// スポットライトの位置を設定する
@@ -302,8 +277,7 @@ namespace nsK2EngineLow {
 		/// <param name="pos">座標</param>
 		void SetSpotLightPosition(Vector3 pos)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetSpotLightPosition(pos);
-			m_sceneLight[enCameraDrawing_Right].SetSpotLightPosition(pos);
+			m_sceneLight.SetSpotLightPosition(pos);
 		}
 		/// <summary>
 		/// スポットライトのライト色の設定
@@ -311,8 +285,7 @@ namespace nsK2EngineLow {
 		/// <param name="color">色</param>
 		void SetSpotLightColor(Vector3 color)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetSpotLightColor(color);
-			m_sceneLight[enCameraDrawing_Right].SetSpotLightColor(color);
+			m_sceneLight.SetSpotLightColor(color);
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
@@ -320,8 +293,7 @@ namespace nsK2EngineLow {
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
 		void SetSpotLightAttn(Vector3 attn)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetSpotLightAttn(attn);
-			m_sceneLight[enCameraDrawing_Right].SetSpotLightAttn(attn);
+			m_sceneLight.SetSpotLightAttn(attn);
 		}
 		/// <summary>
 		/// スポットライトのライトの方向を設定
@@ -329,8 +301,7 @@ namespace nsK2EngineLow {
 		/// <param name="direction">方向</param>
 		void SetSpotLightDirection(Vector3 direction)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetSpotLightDirection(direction);
-			m_sceneLight[enCameraDrawing_Right].SetSpotLightDirection(direction);
+			m_sceneLight.SetSpotLightDirection(direction);
 		}
 		/// <summary>
 		/// スポットライトのライトの角度を設定
@@ -338,73 +309,70 @@ namespace nsK2EngineLow {
 		/// <param name="angle">角度</param>
 		void SetSpotLightAngle(Vector3 angle)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetSpotLightAngle(angle);
-			m_sceneLight[enCameraDrawing_Right].SetSpotLightAngle(angle);
+			m_sceneLight.SetSpotLightAngle(angle);
 		}
 		/// <summary>
 		/// スポットライトを使用する
 		/// </summary>
 		void UseSpotLight()
 		{
-			m_sceneLight[enCameraDrawing_Left].UseSpotLight();
-			m_sceneLight[enCameraDrawing_Right].UseSpotLight();
+			m_sceneLight.UseSpotLight();
 		}
 		/// <summary>
 		/// スポットライトを使用しない
 		/// </summary>
 		void UnUseSpotLight()
 		{
-			m_sceneLight[enCameraDrawing_Left].UnUseSpotLight();
-			m_sceneLight[enCameraDrawing_Right].UnUseSpotLight();
+			m_sceneLight.UnUseSpotLight();
 		}
 
 		/// <summary>
 		/// スポットライトの位置を取得
 		/// </summary>
 		/// <returns>座標</returns>
-		const Vector3& GetSpotLightPosition(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetSpotLightPosition() const
 		{
-			return m_sceneLight[cameraDrawing].GetSpotLightPosition();
+			return m_sceneLight.GetSpotLightPosition();
 		}
 		/// <summary>
 		/// スポットライトの光の色を取得
 		/// </summary>
 		/// <returns>色</returns>
-		const Vector3& GetSpotLightColor(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetSpotLightColor() const
 		{
-			return m_sceneLight[cameraDrawing].GetSpotLightColor();
+			return m_sceneLight.GetSpotLightColor();
 		}
 		/// <summary>
 		/// スポットライトの影響範囲と累乗するパラメータを取得
 		/// </summary>
 		/// <returns></returns>
-		const Vector3& GetSpotLightAttn(EnCameraDrawing cameraDrawing)const
+		const Vector3& GetSpotLightAttn()const
 		{
-			return m_sceneLight[cameraDrawing].GetSpotLightAttn();
+			return m_sceneLight.GetSpotLightAttn();
 		}
 		/// <summary>
 		/// スポットライトの光の方向を取得する
 		/// </summary>
 		/// <returns>方向</returns>
-		const Vector3& GetSpotLightDirection(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetSpotLightDirection() const
 		{
-			return m_sceneLight[cameraDrawing].GetSpotLightDirection();
+			return m_sceneLight.GetSpotLightDirection();
 		}
 		/// <summary>
 		/// スポットライトの角度を取得する
 		/// </summary>
 		/// <returns>角度</returns>
-		const Vector3& GetSpotLightAngle(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetSpotLightAngle() const
 		{
-			return m_sceneLight[cameraDrawing].GetSpotLightAngle();
+			return m_sceneLight.GetSpotLightAngle();
 		}
 		/// <summary>
 		/// スポットライトは使用中？
 		/// </summary>
 		/// <returns>使用中の場合true</returns>
-		const int SpotLightIsUse(EnCameraDrawing cameraDrawing) const
+		const int SpotLightIsUse() const
 		{
-			return m_sceneLight[cameraDrawing].SpotLightIsUse();
+			return m_sceneLight.SpotLightIsUse();
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -429,8 +397,7 @@ namespace nsK2EngineLow {
 		/// <param name="groundColor">地面色</param>
 		void SetHemiLightGroundColor(Vector3 groundColor)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetHemiLightGroundColor(groundColor);
-			m_sceneLight[enCameraDrawing_Right].SetHemiLightGroundColor(groundColor);
+			m_sceneLight.SetHemiLightGroundColor(groundColor);
 		}
 		/// <summary>
 		/// 半球ライトの天球色を設定
@@ -438,8 +405,7 @@ namespace nsK2EngineLow {
 		/// <param name="skyColor">天球色</param>
 		void SetHemiLightSkyColor(Vector3 skyColor)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetHemiLightSkyColor(skyColor);
-			m_sceneLight[enCameraDrawing_Right].SetHemiLightSkyColor(skyColor);
+			m_sceneLight.SetHemiLightSkyColor(skyColor);
 		}
 		/// <summary>
 		/// 半球ライトの地面の法線
@@ -447,105 +413,57 @@ namespace nsK2EngineLow {
 		/// <param name="normal">地面の法線</param>
 		void SetHemiLightGroundNormal(Vector3 normal)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetHemiLightGroundNormal(normal);
-			m_sceneLight[enCameraDrawing_Right].SetHemiLightGroundNormal(normal);
+			m_sceneLight.SetHemiLightGroundNormal(normal);
 		}
 		/// <summary>
 		/// 半球ライトを使用する
 		/// </summary>
 		void UseHemiLight()
 		{
-			m_sceneLight[enCameraDrawing_Left].UseHemiLight();
-			m_sceneLight[enCameraDrawing_Right].UseHemiLight();
+			m_sceneLight.UseHemiLight();
 		}
 		/// <summary>
 		/// 半球ライトを使用しない
 		/// </summary>
 		void UnUseHemiLight()
 		{
-			m_sceneLight[enCameraDrawing_Left].UnUseHemiLight();
-			m_sceneLight[enCameraDrawing_Right].UnUseHemiLight();
+			m_sceneLight.UnUseHemiLight();
 		}
 
 		/// <summary>
 		/// 半球ライトの地面色を取得する
 		/// </summary>
 		/// <returns>地面色</returns>
-		const Vector3& GetHemiLightGroundColor(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetHemiLightGroundColor() const
 		{
-			return m_sceneLight[cameraDrawing].GetHemiLightGroundColor();
+			return m_sceneLight.GetHemiLightGroundColor();
 		}
 		/// <summary>
 		/// 半球ライトの天球色を取得する
 		/// </summary>
 		/// <returns></returns>
-		const Vector3& GetHemiLightSkyColor(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetHemiLightSkyColor() const
 		{
-			return m_sceneLight[cameraDrawing].GetHemiLightSkyColor();
+			return m_sceneLight.GetHemiLightSkyColor();
 		}
 		/// <summary>
 		/// 半球ライトの地面の法線を取得する
 		/// </summary>
 		/// <returns></returns>
-		const Vector3& GetHemiLightGroundNormal(EnCameraDrawing cameraDrawing) const
+		const Vector3& GetHemiLightGroundNormal() const
 		{
-			return m_sceneLight[cameraDrawing].GetHemiLightGroundNormal();
+			return m_sceneLight.GetHemiLightGroundNormal();
 		}
 		/// <summary>
 		/// 半球ライトは使用中?
 		/// </summary>
 		/// <returns>使用中のときtrue</returns>
-		const int HemiLightIsUse(EnCameraDrawing cameraDrawing) const
+		const int HemiLightIsUse() const
 		{
-			return m_sceneLight[cameraDrawing].HemiLightIsUse();
+			return m_sceneLight.HemiLightIsUse();
 		}
-
-	////////////////////////////////////////////////////////////////////////////////
-	///画面分割の関数
-	////////////////////////////////////////////////////////////////////////////////
-
-		/// <summary>
-		/// 画面分割をするフラグを設定
-		/// </summary>
-		/// <param name="flag">trueなら分割する</param>
-		void SetSplitScreenFlag(bool flag)
-		{
-			m_isSplitScreen = flag;
-		}
-		/// <summary>
-		/// 画面分割をするかのフラグを取得
-		/// </summary>
-		/// <returns></returns>
-		bool GetSplitScreenFlag()
-		{
-			return m_isSplitScreen;
-		}
-		/// <summary>
-		/// どちらのカメラを描画中か
-		/// </summary>
-		/// <returns></returns>
-		EnCameraDrawing GetCameraDrawing()
-		{
-			return m_cameraDrawing;
-		}
-
-		/// <summary>
-		/// フレームの最初に行われるエフェクトの処理
-		/// </summary>
-		void EffectBeginRender();
 
 	private:
-		/// <summary>
-		/// ビューポートをInitする
-		/// </summary>
-		void InitViewPorts();
-
-		/// <summary>
-		/// モデル描画をビューポートの数実行する関数
-		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void DrawModelInViewPorts(RenderContext& rc);
-
 		/// <summary>
 		/// モデルを描画する
 		/// </summary>
@@ -561,15 +479,6 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void FontRendering(RenderContext& rc);
-		/// <summary>
-		/// エフェクト描画を実行する
-		/// </summary>
-		/// <param name="rc"></param>
-		void ExcuteEffectRender(RenderContext& rc);
-		/// <summary>
-		/// vectorコンテナのリストを消去する
-		/// </summary>
-		void ClearVectorList();
 
 	private:
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
@@ -577,19 +486,12 @@ namespace nsK2EngineLow {
 		std::vector<SpriteRender*>	m_laterSpriteList;			//描画順が遅いスプライトクラスのリスト
 		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
 
-		SceneLight					m_sceneLight[MAX_VIEWPORT];				//シーンライト
+		SceneLight					m_sceneLight;				//シーンライト
 
 		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 
 		Shadow						m_shadow;					//シャドウマップ
 		PostEffect					m_postEffect;				//ポストエフェクト
-
-		EnCameraDrawing m_cameraDrawing = enCameraDrawing_Left;
-
-		D3D12_VIEWPORT m_soloViewPort;					//1画面用のビューポート
-		D3D12_VIEWPORT m_viewPorts[MAX_VIEWPORT];	//画面分割用のビューポート
-		bool m_isSplitScreen = false;					//画面分割をする？trueならする
-
 	};
 }

@@ -252,8 +252,8 @@ namespace nsK2EngineLow {
 
         m_constantBufferCPU.mvp = m_world * viewMatrix * projMatrix;
         m_constantBufferCPU.mulColor = m_mulColor;
-        m_constantBufferCPU.screenParam.x = g_camera3D[0]->GetNear();
-        m_constantBufferCPU.screenParam.y = g_camera3D[0]->GetFar();
+        m_constantBufferCPU.screenParam.x = g_camera3D->GetNear();
+        m_constantBufferCPU.screenParam.y = g_camera3D->GetFar();
         m_constantBufferCPU.screenParam.z = FRAME_BUFFER_W;
         m_constantBufferCPU.screenParam.w = FRAME_BUFFER_H;
 

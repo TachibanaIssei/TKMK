@@ -84,7 +84,7 @@ void WizardPlayer::Update()
 		oldLv = Lv;
 
 		//関数にする
-		int SkillCoolTime = (int)SkillTimer;
+		int SkillCoolTime = SkillTimer;
 		wchar_t Skill[255];
 		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 		Skillfont.SetText(Skill);
@@ -94,9 +94,9 @@ void WizardPlayer::Update()
 
 		//移動処理
 		Vector3 stickL;
-		stickL.x = g_pad[m_playerNumber]->GetLStickXF();
-		stickL.y = g_pad[m_playerNumber]->GetLStickYF();
-		Move(m_position, m_charCon, m_Status, stickL,m_playerNumber);
+		stickL.x = g_pad[0]->GetLStickXF();
+		stickL.y = g_pad[0]->GetLStickYF();
+		Move(m_position, m_charCon, m_Status, stickL);
 
 		//回避中なら
 		if (AvoidanceFlag == true) {
@@ -106,17 +106,17 @@ void WizardPlayer::Update()
 		}
 
 		//スキルクールタイムの処理
-		CoolTime(Cooltime, SkillEndFlag, SkillTimer);
+		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
 
 		//回避クールタイムの処理
-		CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 		//レベルアップする
 		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
 		//{
 		//	if (Lv != 10)
 		//		ExpProcess(exp);
-		//	//m_status.GetExp += 5;
+		//	//m_Status.GetExp += 5;
 		//	//m_gameUI->LevelFontChange(Lv);
 		//}
 

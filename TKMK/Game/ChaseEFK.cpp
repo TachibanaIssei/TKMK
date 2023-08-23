@@ -30,7 +30,7 @@ void ChaseEFK::Update() {
 
 	// Ž©“®‰ñ“]
 	if (autoRot && m_targetActor != nullptr) {
-		Quaternion rot = m_targetActor->GetRotation();
+		Quaternion rot = m_targetActor->GetRot();
 		// ‰ñ“]‚ð‰ÁŽZ
 		rot.AddRotationDegY(autoRot_AddY_Rot);
 

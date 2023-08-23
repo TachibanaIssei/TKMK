@@ -18,15 +18,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	// k2EngineLowの初期化。
 	g_k2EngineLow = new K2EngineLow();
 	g_k2EngineLow->Init(g_hWnd, FRAME_BUFFER_W, FRAME_BUFFER_H);
-	g_camera3D[0]->SetPosition({0.0f, 100.0f, -200.0f});
-	g_camera3D[0]->SetTarget({0.0f, 50.0f, 0.0f});
-	g_camera3D[1]->SetPosition({ 0.0f, 100.0f, -200.0f });
-	g_camera3D[1]->SetTarget({ 0.0f, 50.0f, 0.0f });
+	g_camera3D->SetPosition({ 0.0f, 100.0f, -200.0f });
+	g_camera3D->SetTarget({ 0.0f, 50.0f, 0.0f });
 
 	Tittle* tittle = NewGO<Tittle>(0, "tittle");
 	//フェードクラス生成
 	Fade* fade = NewGO<Fade>(5, "fade");
-	//Game* m_game = NewGO<Game>(0,"m_game");
+	//Game* game = NewGO<Game>(0,"game");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)

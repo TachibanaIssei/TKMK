@@ -1,6 +1,6 @@
 #pragma once
 #include "Status.h"
-struct Status;
+class Status;
 
 class MagicBall:public IGameObject
 {

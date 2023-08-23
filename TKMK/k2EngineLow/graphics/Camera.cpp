@@ -8,15 +8,7 @@ namespace nsK2EngineLow {
 	void Camera::Update()
 	{
 		//アスペクト比を計算する。
-		//画面分割してるとき
-		if (g_renderingEngine->GetSplitScreenFlag()) {
-			m_aspect = (float)g_graphicsEngine->GetFrameBufferWidth() / 2 / (float)g_graphicsEngine->GetFrameBufferHeight();
-		}
-		//画面分割してないとき
-		else {
-			m_aspect = (float)g_graphicsEngine->GetFrameBufferWidth() / (float)g_graphicsEngine->GetFrameBufferHeight();
-		}
-
+		m_aspect = (float)g_graphicsEngine->GetFrameBufferWidth() / (float)g_graphicsEngine->GetFrameBufferHeight();
 		if (m_isNeedUpdateProjectionMatrix) {
 			if (m_updateProjMatrixFunc == enUpdateProjMatrixFunc_Perspective) {
 				//透視変換行列を計算。

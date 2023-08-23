@@ -312,8 +312,8 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 	Vector3 WarpPos = position;
 
 	Vector3 moreWarpPos = position;
-	float warpkyori = 0.0f;
-	float kyori = 500.0f;
+	int warpkyori = 0;
+	int kyori = 500;
 	m_moveSpeed = Vector3::AxisZ;
 	rotation.Apply(m_moveSpeed);
 	WarpPos += m_moveSpeed * kyori;
@@ -340,7 +340,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 		{
 			//ワープさせない。
 			//ワープの距離を縮める(壁)
-			kyori -= 10.0f;
+			kyori -= 10;
 			WarpPos = position;
 			WarpPos += m_moveSpeed * kyori;
 			//ワープ先の座標を変える。
@@ -355,7 +355,7 @@ void WizardBase::Skill(Vector3& position,Quaternion& rotation, CharacterControll
 		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_sphereCollider.GetBody(), start, end, callback_SlipThroughWall);
 		if (callback_SlipThroughWall.isHit == true)
 		{
-			warpkyori += 200.0f;
+			warpkyori += 200;
 			//ワープ先の座標をさらに100移動させる
 			moreWarpPos = WarpPos;
 			moreWarpPos += m_moveSpeed * warpkyori;
@@ -426,8 +426,8 @@ void WizardBase::AnimationMove(float moveSpeed, Vector3 stickL)
 	m_Skill_Right = Vector3::Zero;
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
-	m_Skill_Forward = g_camera3D[0]->GetForward();
-	m_Skill_Right = g_camera3D[0]->GetRight();
+	m_Skill_Forward = g_camera3D->GetForward();
+	m_Skill_Right = g_camera3D->GetRight();
 	//y方向には移動させない。
 	m_Skill_Forward.y = 0.0f;
 	m_Skill_Right.y = 0.0f;
@@ -493,7 +493,7 @@ void WizardBase::PlayAnimation()
 		m_modelRender.PlayAnimation(enAnimationClip_Skill, 0.6f);
 		break;
 	case enWizardState_UltimateSkill:
-		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill, 0.1f);
+		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill, 0.1);
 		break;
 	case enWizardState_Avoidance:
 		m_modelRender.SetAnimationSpeed(1.5f);

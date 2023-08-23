@@ -23,34 +23,13 @@ public:
 	void UltRotCamera();
 	void ChaseCamera();
 
-	/// <summary>
-	/// 画面分割時に画面のどちらを移すカメラか
-	/// </summary>
-	enum EnSplitCameraLR
-	{
-		enSplitCamera_Left,
-		enSplitCamera_Right,
-		enSplitCamera_Solo
-	};
-
 	enum EnCameraState {
-		enNomarlCameraState,
-		enUltRotCameraState,
-		enChaseCameraState
-	};	
-
-	//カメラのステート
-	enum CameraState
-	{
-		enGameState,
-		enPauseState,
+		m_enNomarlCameraState,
+		m_enUltRotCameraState,
+		m_enChaseCameraState
 	};
-
-	enum PlayerNumber
-	{
-		enPlayerNumber_1P = 0,
-		enPlayerNumber_2P = 1
-	};
+	EnCameraState  m_enCameraState = m_enNomarlCameraState;
+	
 
 	/// <summary>
 	/// カメラの視点を最初の状態に戻す
@@ -84,7 +63,13 @@ public:
 		m_cameraShakeFlag = flag;
 	}
 
-	
+	//カメラのステート
+	enum CameraState
+	{
+		enGameState,
+		enPauseState,
+	};
+	CameraState m_cameraState;
 
 	void SetKnight(KnightPlayer* knightplayer)
 	{
@@ -102,24 +87,6 @@ public:
 
 	void ChangeMoveCameraState(EnCameraState state) {
 		m_enCameraState = state;
-	}
-
-	/// <summary>
-	/// 画面分割時に画面のどちらを移すカメラかを設定する
-	/// </summary>
-	/// <param name="cameraLR"></param>
-	void SetSplitCameraLR(EnSplitCameraLR cameraLR)
-	{
-		m_splitCameraLR = cameraLR;
-	}
-
-	/// <summary>
-	/// 画面分割時に画面のどちらを移すカメラかを取得する
-	/// </summary>
-	/// <returns></returns>
-	EnSplitCameraLR GetSplitCameraLR()
-	{
-		return m_splitCameraLR;
 	}
 
 	/// <summary>
@@ -162,10 +129,6 @@ public:
 	void setShakeMulPower(int revel);
 
 private:
-	EnCameraState  m_enCameraState = enNomarlCameraState;
-	EnSplitCameraLR m_splitCameraLR = enSplitCamera_Solo;
-	CameraState m_cameraState = enGameState;
-	PlayerNumber m_playerNumber = enPlayerNumber_1P;
 
 	CameraCollisionSolver	m_cameraCollisionSolver;
 	SpringCamera			m_springCamera;

@@ -3,11 +3,6 @@
 
 #include"level3D/TklFile.h"
 
-namespace Level3DConst
-{
-	const int MAX_FONT_COUNT = 256;
-}
-
 nsK2EngineLow::Level3DRender::~Level3DRender()
 {
 }
@@ -95,7 +90,7 @@ void nsK2EngineLow::Level3DRender::MatrixTklToLevel()
 		invBindPoseMatirx.m[2][3] = 0.0f;
 		invBindPoseMatirx.m[3][3] = 1.0f;
 
-		wchar_t boneName[Level3DConst::MAX_FONT_COUNT];
+		wchar_t boneName[256];
 
 		/// <summary>
 		/// tklのオブジェクト名の型をワイド文字に変換。
@@ -104,7 +99,7 @@ void nsK2EngineLow::Level3DRender::MatrixTklToLevel()
 		/// 変換結果のwchar_t型文字列。
 		/// サイズ
 		/// </summary>
-		mbstowcs(boneName, tklObj.name.get(), Level3DConst::MAX_FONT_COUNT);
+		mbstowcs(boneName, tklObj.name.get(), 256);
 		BonePtr bone = std::make_unique<Bone>(
 			boneName,
 			bindPoseMatrix,

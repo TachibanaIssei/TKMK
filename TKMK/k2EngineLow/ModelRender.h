@@ -1,9 +1,8 @@
 #pragma once
 
 namespace nsK2EngineLow {
-	class ModelRender
+	class ModelRender : public Noncopyable
 	{
-	//メンバ関数
 	public:
 		/// <summary>
 		/// 通常の初期化
@@ -15,18 +14,16 @@ namespace nsK2EngineLow {
 		void Init(
 			const char* tkmFilepath,
 			AnimationClip* animationClips = nullptr,
-			int numAnimationClips = 0,
-			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
-			bool shadow = true
+			const int numAnimationClips = 0,
+			const EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
+			const bool shadow = true
 		);
 
 		/// <summary>
 		/// 影を受けるモデルの初期化
 		/// </summary>
 		/// <param name="tkmFilepath"></param>
-		void InitBackGround(
-			const char* tkmFilepath
-		);
+		void InitBackGround(const char* tkmFilepath);
 
 		/// <summary>
 		/// スカイキューブを初期化する
@@ -71,7 +68,7 @@ namespace nsK2EngineLow {
 		/// <param name="x">X軸</param>
 		/// <param name="y">Y軸</param>
 		/// <param name="z">Z軸</param>
-		void SetPosition(float x, float y, float z)
+		void SetPosition(const float x, const float y, const float z)
 		{
 			SetPosition({ x, y, z });
 		};
@@ -100,7 +97,7 @@ namespace nsK2EngineLow {
 		/// <param name="x">X軸</param>
 		/// <param name="y">Y軸</param>
 		/// <param name="z">Z軸</param>
-		void SetScale(float x, float y, float z)
+		void SetScale(const float x, const float y, const float z)
 		{
 			SetScale({ x,y,z });
 		};
@@ -138,7 +135,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="boneName">ボーンの名前</param>
 		/// <returns>ボーン番号。見つからなかった場合は-1が返る</returns>
-		int FindBoneID(const wchar_t* boneName)const
+		const int FindBoneID(const wchar_t* boneName)const
 		{
 			return m_skeleton.FindBoneID(boneName);
 		}
@@ -148,7 +145,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="boneNo">ボーン番号</param>
 		/// <returns>ボーン</returns>
-		Bone* GetBone(int boneNo) const
+		const Bone* GetBone(int boneNo) const
 		{
 			return m_skeleton.GetBone(boneNo);
 		}
@@ -157,7 +154,7 @@ namespace nsK2EngineLow {
 		/// アニメーションイベントを追加する
 		/// </summary>
 		/// <param name="eventListener"></param>
-		void AddAnimationEvent(AnimationEventListener eventListener)
+		void AddAnimationEvent(const AnimationEventListener eventListener)
 		{
 			m_animation.AddAnimationEventListener(eventListener);
 		}
@@ -167,7 +164,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="animNo">アニメーションクリップの番号。</param>
 		/// <param name="interpolateTime">補完時間(単位：秒。)</param>
-		void PlayAnimation(int animNo, float interpolateTime = 0.0f)
+		void PlayAnimation(const int animNo, const float interpolateTime = 0.0f)
 		{
 			m_animation.Play(animNo, interpolateTime);
 		}
@@ -204,8 +201,8 @@ namespace nsK2EngineLow {
 		/// <param name="enModelUpAxis">モデルの上向き。</param>
 		void InitAnimation(
 			AnimationClip* animationClips,
-			int numAnimationClips,
-			EnModelUpAxis enModelUpAxis
+			const int numAnimationClips,
+			const EnModelUpAxis enModelUpAxis
 		);
 
 		/// <summary>

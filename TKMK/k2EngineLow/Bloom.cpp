@@ -15,7 +15,7 @@ namespace nsK2EngineLow {
 		InitFinalSprite(mainRenderTarget);
 	}
 
-	void Bloom::InitRenderTarget(RenderTarget& mainRenderTarget)
+	void Bloom::InitRenderTarget(const RenderTarget& mainRenderTarget)
 	{
 		//輝度抽出用のレンダリングターゲット
 		m_luminnceRenderTarget.Create(
@@ -48,7 +48,7 @@ namespace nsK2EngineLow {
 		m_luminanceSprite.Init(luminanceSpriteInitData);
 	}
 
-	void Bloom::InitFinalSprite(RenderTarget& mainRenderTarget)
+	void Bloom::InitFinalSprite(const RenderTarget& mainRenderTarget)
 	{
 		SpriteInitData finalSpriteInitData;
 		finalSpriteInitData.m_textures[0] = &m_gaussianBlur[0].GetBokeTexture();

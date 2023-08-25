@@ -11,7 +11,7 @@ namespace nsK2EngineLow {
 		/// レンダリングターゲットの初期化
 		/// </summary>
 		/// <param name="mainRenderTarget">メインレンダリングターゲット</param>
-		void InitRenderTarget(RenderTarget& mainRenderTarget);
+		void InitRenderTarget(const RenderTarget& mainRenderTarget);
 		/// <summary>
 		/// 輝度抽出用のスプライトの初期化
 		/// </summary>
@@ -21,7 +21,7 @@ namespace nsK2EngineLow {
 		/// ボケ画像を加算合成するスプライトの初期化
 		/// </summary>
 		/// <param name="mainRenderTarget">メインレンダリングターゲット</param>
-		void InitFinalSprite(RenderTarget& mainRenderTarget);
+		void InitFinalSprite(const RenderTarget& mainRenderTarget);
 		/// <summary>
 		/// ガウシアンブラーの初期化
 		/// </summary>

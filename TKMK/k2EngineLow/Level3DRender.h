@@ -7,21 +7,22 @@
 
 namespace nsK2EngineLow {
 	/// <summary>
-	/// オブジェクト名
+	/// オブジェクトデータ
 	/// </summary>
-	struct LevelObjectData {
-		Vector3 position;		//座標
-		Quaternion rotation;	//回転
-		Vector3 scale;			//拡大率
-		const wchar_t* name;	//名前
-		int number = 0;
+	struct LevelObjectData : public Noncopyable
+	{
+		Vector3			position;		//座標
+		Quaternion		rotation;		//回転
+		Vector3			scale;			//拡大率
+		const wchar_t*	name;			//名前
+		int				number = 0;		//オブジェクトに指定した番号
 
 		/// <summary>
 		/// 引数で渡したオブジェクト名のオブジェクトか調べる
 		/// </summary>
 		/// <param name="objName">調べる名前</param>
 		/// <returns>名前が同じ場合trueを返す</returns>
-		bool EqualObjectName(const wchar_t* objName)
+		const bool EqualObjectName(const wchar_t* objName) const
 		{
 			return wcscmp(objName, name) == 0;
 		}
@@ -31,7 +32,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="n">調べる名前</param>
 		/// <returns>一致していたらtrueを返す</returns>
-		bool ForwardMatchName(const wchar_t* n)
+		const bool ForwardMatchName(const wchar_t* n) const
 		{
 			auto len = wcslen(n);
 			auto namelen = wcslen(name);
@@ -43,7 +44,10 @@ namespace nsK2EngineLow {
 		}
 	};
 
-	class Level3DRender
+	/// <summary>
+	/// レベルレンダー
+	/// </summary>
+	class Level3DRender : public Noncopyable
 	{
 	public:
 		~Level3DRender();

@@ -6,7 +6,7 @@ namespace nsK2EngineLow {
 	{
 	public:
 		Vector3 m_rayDir;
-		SConvexSweepCallback(Vector3 rayDir) :
+		SConvexSweepCallback(const Vector3 rayDir) :
 			btCollisionWorld::ClosestConvexResultCallback(btVector3(0.0f, 0.0f, 0.0f), btVector3(0.0f, 0.0f, 0.0f)),
 			m_rayDir(rayDir) {}
 		virtual	btScalar	addSingleResult(btCollisionWorld::LocalConvexResult& convexResult, bool normalInWorldSpace)
@@ -20,54 +20,54 @@ namespace nsK2EngineLow {
 			return btCollisionWorld::ClosestConvexResultCallback::addSingleResult(convexResult, normalInWorldSpace);
 		}
 	};
-}
 
-nsK2EngineLow::CameraCollisionSolver::CameraCollisionSolver()
-{
-}
-
-nsK2EngineLow::CameraCollisionSolver::~CameraCollisionSolver()
-{
-}
-
-void nsK2EngineLow::CameraCollisionSolver::Init(float radius)
-{
-	m_radius = radius;
-	m_collider.Create(radius);
-	m_isInited = true;	//初期化済みのフラグを立てる。
-}
-
-bool nsK2EngineLow::CameraCollisionSolver::Execute(Vector3& result, const Vector3& position, const Vector3& target)
-{
-	//初期化していない
-	if (m_isInited == false)
+	CameraCollisionSolver::CameraCollisionSolver()
 	{
-		return false;
 	}
 
-	result = position;
-	Vector3 vWk;
-	vWk.Subtract(target, position);
-	if (vWk.LengthSq() < FLT_EPSILON) {
-		//視点と注視点がほぼ同じ座標にある。
+	CameraCollisionSolver::~CameraCollisionSolver()
+	{
+	}
+
+	void CameraCollisionSolver::Init(const float radius)
+	{
+		m_radius = radius;
+		m_collider.Create(radius);
+		m_isInited = true;	//初期化済みのフラグを立てる。
+	}
+
+	const bool CameraCollisionSolver::Execute(Vector3& result, const Vector3& position, const Vector3& target)
+	{
+		//初期化していない
+		if (m_isInited == false)
+		{
+			return false;
+		}
+
+		result = position;
+		Vector3 vWk;
+		vWk.Subtract(target, position);
+		if (vWk.LengthSq() < FLT_EPSILON) {
+			//視点と注視点がほぼ同じ座標にある。
+			return false;
+		}
+		vWk.Normalize();
+		//レイを作成する。
+		btTransform btStart, btEnd;
+		btStart.setIdentity();
+		btEnd.setIdentity();
+		btStart.setOrigin(btVector3(target.x, target.y, target.z));
+		btEnd.setOrigin(btVector3(position.x, position.y, position.z));
+
+		SConvexSweepCallback callback(vWk);
+		PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_collider.GetBody(), btStart, btEnd, callback);
+		if (callback.hasHit()) {
+			Vector3 vHitPos = Vector3(callback.m_hitPointWorld.x(), callback.m_hitPointWorld.y(), callback.m_hitPointWorld.z());
+			Vector3 vOffset = Vector3(callback.m_hitNormalWorld.x(), callback.m_hitNormalWorld.y(), callback.m_hitNormalWorld.z());
+			vOffset.Scale(m_radius);
+			result.Add(vHitPos, vOffset);
+			return true;
+		}
 		return false;
 	}
-	vWk.Normalize();
-	//レイを作成する。
-	btTransform btStart, btEnd;
-	btStart.setIdentity();
-	btEnd.setIdentity();
-	btStart.setOrigin(btVector3(target.x, target.y, target.z));
-	btEnd.setOrigin(btVector3(position.x, position.y, position.z));
-	
-	SConvexSweepCallback callback(vWk);
-	PhysicsWorld::GetInstance()->ConvexSweepTest((const btConvexShape*)m_collider.GetBody(), btStart, btEnd, callback);
-	if (callback.hasHit()) {
-		Vector3 vHitPos = Vector3(callback.m_hitPointWorld.x(), callback.m_hitPointWorld.y(), callback.m_hitPointWorld.z());
-		Vector3 vOffset = Vector3(callback.m_hitNormalWorld.x(), callback.m_hitNormalWorld.y(), callback.m_hitNormalWorld.z());
-		vOffset.Scale(m_radius);
-		result.Add(vHitPos, vOffset);
-		return true;
-	}
-	return false;
 }

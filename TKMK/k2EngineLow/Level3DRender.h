@@ -65,7 +65,7 @@ namespace nsK2EngineLow {
 
 	private:
 		using BonePtr = std::unique_ptr<Bone>;
-		std::vector<BonePtr> m_bonelist;
-		TklFile m_tklFile;
+		std::vector<BonePtr>	m_bonelist;		//ボーンのリスト
+		TklFile					m_tklFile;		//TKLファイル
 	};
 }

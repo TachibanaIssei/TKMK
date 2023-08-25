@@ -525,9 +525,7 @@
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="SpringCamera.h" />
     <ClInclude Include="SkyCube.h" />
-    <ClInclude Include="Noncopyable.h">
-      <Filter>util</Filter>
-    </ClInclude>
+    <ClInclude Include="util\Noncopyable.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

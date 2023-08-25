@@ -419,7 +419,6 @@
     <ClInclude Include="math\Matrix.h" />
     <ClInclude Include="math\Vector.h" />
     <ClInclude Include="ModelRender.h" />
-    <ClInclude Include="Noncopyable.h" />
     <ClInclude Include="online\SyncOnlineTwoPlayerMatchEngine.h" />
     <ClInclude Include="physics\BoxCollider.h" />
     <ClInclude Include="physics\CapsuleCollider.h" />
@@ -450,6 +449,7 @@
     <ClInclude Include="tkFile\TkmFile.h" />
     <ClInclude Include="tkFile\TknFile.h" />
     <ClInclude Include="tkFile\TksFile.h" />
+    <ClInclude Include="util\Noncopyable.h" />
     <ClInclude Include="util\TResourceBank.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

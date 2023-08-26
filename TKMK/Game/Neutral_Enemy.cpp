@@ -16,8 +16,6 @@
 #include "ChaseEFK.h"
 #include "Effect.h"
 #include "Sounds.h"
-//#include <vector>
-//#include <algorithm>
 
 namespace {
 	const float RADIUS = 100.0f;
@@ -282,6 +280,12 @@ bool Neutral_Enemy::Start()
 void Neutral_Enemy::Update()
 {
 	if (isStart == false) {
+		return;
+	}
+
+	if (m_game->NowGameState() == Game::enGamestate_End)
+	{
+		DeleteGO(this);
 		return;
 	}
 

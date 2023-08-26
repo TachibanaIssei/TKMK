@@ -104,8 +104,6 @@ void KnightPlayer::Update()
 	if (UltimaitSkillTime() == true) {
 		return;
 	}
-	
-	//一度死んだらデスステートのままにする
 
 	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
@@ -113,6 +111,11 @@ void KnightPlayer::Update()
 		//死ぬステートまたはダメージステートなら
 		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
 		{
+			m_modelRender.Update();
+		}
+		else
+		{
+			m_charState = enCharState_Idle;
 			m_modelRender.Update();
 		}
 		//抜け出す
@@ -234,46 +237,44 @@ void KnightPlayer::Update()
 			CoolTimeProcess();
 			GrayScaleUI();
 
-		}
-		//速度を0にする(動かないようにする)
-		else
-		{
-			m_moveSpeed = Vector3::Zero;
-		}
-
-
-
-		if (AvoidanceTimer != AvoidanceCoolTime)
-		{
-			//回避のスプライトの表示の処理
-			AvoidanceSprite();
-		}
-
-		//キャラクターコントローラーを使って座標を移動させる。
-		//ワープする時はキャラコンを移動させない
-		if (IsEnableMove() == true) {
-
-			m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-		}
-
-		//ジャンプ中ではないかつ落下中なら
-		if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
-		{
-			m_charState = enCharState_Fall;
-		}
-		//前方向
-		if (m_moveSpeed.LengthSq() != 0.0f) {
-			m_forwardNow = m_moveSpeed;
-			m_forwardNow.Normalize();
-			m_forwardNow.y = 0.0f;
-		}
-
-		// レベルをゲームに教える（下部スプライト更新用）
-		m_game->UnderSprite_Level(Lv);
-
-		m_modelRender.SetPosition(m_position);
+	}
+	//速度を0にする(動かないようにする)
+	else
+	{
+		m_moveSpeed = Vector3::Zero;
+		m_charState = enCharState_Idle;
 		m_modelRender.Update();
-	
+	}
+
+	if (AvoidanceTimer != AvoidanceCoolTime)
+	{
+		//回避のスプライトの表示の処理
+		AvoidanceSprite();
+	}
+
+	//キャラクターコントローラーを使って座標を移動させる。
+	//ワープする時はキャラコンを移動させない
+	if (IsEnableMove() == true) {
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	}
+
+	//ジャンプ中ではないかつ落下中なら
+	if (m_charState != enCharState_Jump && m_charCon.IsOnGround() == false)
+	{
+		m_charState = enCharState_Fall;
+	}
+	//前方向
+	if (m_moveSpeed.LengthSq() != 0.0f) {
+		m_forwardNow = m_moveSpeed;
+		m_forwardNow.Normalize();
+		m_forwardNow.y = 0.0f;
+	}
+
+	// レベルをゲームに教える（下部スプライト更新用）
+	m_game->UnderSprite_Level(Lv);
+
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.Update();
 }
 
 
@@ -407,7 +408,6 @@ void KnightPlayer::Attack()
 		//必殺技の溜めステートに移行する
 		m_charState = enCharState_Ult_liberation;
 
-		//地面に降りた時の音再生
 		SetAndPlaySoundSource(enSound_Knight_Charge_Power);
 
 		Vector3 m_SwordPos = Vector3::Zero;

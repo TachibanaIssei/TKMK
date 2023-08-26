@@ -116,6 +116,11 @@ void KnightAI::Update()
 		{
 			m_modelRender.Update();
 		}
+		else
+		{
+			m_charState = enCharState_Idle;
+			m_modelRender.Update();
+		}
 		return;
 	}
 	HPBar();
@@ -154,13 +159,6 @@ void KnightAI::Update()
 		//ステート
 		ManageState();
 	}
-	
-	//必殺技の溜めのときに動かないようにする
-	//if (m_charState == enCharState_Ult_liberation)
-	//{
-	//	m_modelRender.Update();
-	//	return;
-	//}
 		
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
@@ -199,10 +197,8 @@ void KnightAI::Update()
 		AvoidanceSprite();
 		//スキルクールタイムの処理
 		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
-		
 		// 次のアクションを抽選 
 		LotNextAction();
-
 		//追跡
 		ChaseAndEscape();
 
@@ -212,8 +208,7 @@ void KnightAI::Update()
 			//スキルを使うときのスピードを使う
 			Vector3 move = m_skillMove;
 			m_rot.SetRotationYFromDirectionXZ(move);
-			////スキルを使うときのスピードを使う
-			////AnimationMove(SkillSpeed, m_forward);
+			//スキルを使うときのスピードを使う
 			move.y = 0.0f;
 			move *= 200.0f;
 
@@ -222,15 +217,8 @@ void KnightAI::Update()
 
 		//攻撃
 		Attack();
-
-		
-
 		//反転
 		Rotation();
-		
-		
-
-		
 
 		if (m_charState == enCharState_LastAttack)
 		{
@@ -241,11 +229,13 @@ void KnightAI::Update()
 			m_position = m_charCon.Execute(LastAttackMove, g_gameTime->GetFrameDeltaTime());
 		}
 		
-		
 		//回避クールタイムの処理
 		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-
-
+	}
+	else
+	{
+		m_charState = enCharState_Idle;
+		m_modelRender.Update();
 	}
 
 	if (m_moveSpeed.LengthSq() != 0.0f) {

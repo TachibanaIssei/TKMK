@@ -403,7 +403,7 @@ void Game::End()
 	if (m_EndtoResultTimer >= 5.0f)
 	{
 		m_GameState = enGameState_Rezult;
-		fade->StartFadeIn(1.0f);
+		fade->StartFadeIn(1.0f, Fade::enFadeSprite_BlackSprite);
 	}
 }
 

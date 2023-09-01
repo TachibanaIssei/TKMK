@@ -66,7 +66,7 @@ namespace nsK2EngineLow {
 		/// シーンライトを取得
 		/// </summary>
 		/// <returns>シーンライト</returns>
-		const SceneLight& GetSceneLight()const
+		SceneLight& GetSceneLight()
 		{
 			return m_sceneLight;
 		}
@@ -87,7 +87,7 @@ namespace nsK2EngineLow {
 		/// シャドウマップのテクスチャを取得
 		/// </summary>
 		/// <returns>シャドウマップのテクスチャ</returns>
-		const Texture& GetShadowMapTexture()const
+		Texture& GetShadowMapTexture()
 		{
 			return m_shadow.GetShadowMapTexture();
 		}
@@ -96,7 +96,7 @@ namespace nsK2EngineLow {
 		/// ライトカメラを取得
 		/// </summary>
 		/// <returns>ライトカメラ</returns>
-		const Camera& GetLightCamera()const
+		Camera& GetLightCamera()
 		{
 			return m_shadow.GetLightCamera();
 		}

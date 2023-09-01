@@ -3,9 +3,9 @@
 
 namespace
 {
-	const int MAX_MODEL = 200;
+	const int MAX_MODEL = 60;
 	const int MAX_SPRITE = 100;
-	const int MAX_FONT = 100;
+	const int MAX_FONT = 30;
 }
 
 nsK2EngineLow::RenderingEngine::RenderingEngine()
@@ -90,6 +90,7 @@ void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc, bool dra
 
 void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc)
 {
+	K2_LOG("%d\n", m_fontList.size());
 	for (auto& fontObj : m_fontList)
 	{
 		fontObj->OnRenderFont(rc);

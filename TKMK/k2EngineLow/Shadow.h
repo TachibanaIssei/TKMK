@@ -6,12 +6,12 @@ namespace nsK2EngineLow {
 		void Init();
 		void Render(RenderContext& rc);
 
-		Texture& GetShadowMapTexture()
+		const Texture& GetShadowMapTexture()const
 		{
 			return m_shadowMap.GetRenderTargetTexture();
 		}
 
-		Camera& GetLightCamera()
+		const Camera& GetLightCamera()const
 		{
 			return m_lightCamera;
 		}

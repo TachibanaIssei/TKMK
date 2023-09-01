@@ -1,6 +1,25 @@
 #include "k2EngineLowPreCompile.h"
 #include "RenderingEngine.h"
 
+namespace
+{
+	const int MAX_MODEL = 200;
+	const int MAX_SPRITE = 100;
+	const int MAX_FONT = 100;
+}
+
+nsK2EngineLow::RenderingEngine::RenderingEngine()
+{
+	m_modelList.reserve(MAX_MODEL);
+	m_spriteList.reserve(MAX_SPRITE);
+	m_laterSpriteList.reserve(MAX_SPRITE);
+	m_fontList.reserve(MAX_FONT);
+}
+
+nsK2EngineLow::RenderingEngine::~RenderingEngine()
+{
+}
+
 void nsK2EngineLow::RenderingEngine::Init()
 {
 	InitRenderTargets();

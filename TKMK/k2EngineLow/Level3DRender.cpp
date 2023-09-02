@@ -3,6 +3,11 @@
 
 #include"level3D/TklFile.h"
 
+namespace
+{
+	const int CHAR_MAX_SIZE = 256;
+}
+
 nsK2EngineLow::Level3DRender::~Level3DRender()
 {
 }
@@ -53,7 +58,7 @@ void nsK2EngineLow::Level3DRender::Init(
 			//Hookが登録済みならばマップチップは作成不要
 				//false のままなら作成する。
 			bool isHooked = false;
-			//hookFuncになにも入っていない＝Sobjectには何もない。
+			//hookFuncになにも入っていない＝objectには何もない。
 			if (hookFunc != nullptr) {
 				isHooked = hookFunc(levelObjData);
 			}
@@ -90,7 +95,7 @@ void nsK2EngineLow::Level3DRender::MatrixTklToLevel()
 		invBindPoseMatirx.m[2][3] = 0.0f;
 		invBindPoseMatirx.m[3][3] = 1.0f;
 
-		wchar_t boneName[256];
+		wchar_t boneName[CHAR_MAX_SIZE];
 
 		/// <summary>
 		/// tklのオブジェクト名の型をワイド文字に変換。
@@ -99,7 +104,7 @@ void nsK2EngineLow::Level3DRender::MatrixTklToLevel()
 		/// 変換結果のwchar_t型文字列。
 		/// サイズ
 		/// </summary>
-		mbstowcs(boneName, tklObj.name.get(), 256);
+		mbstowcs(boneName, tklObj.name.get(), CHAR_MAX_SIZE);
 		BonePtr bone = std::make_unique<Bone>(
 			boneName,
 			bindPoseMatrix,
@@ -110,5 +115,5 @@ void nsK2EngineLow::Level3DRender::MatrixTklToLevel()
 		//ボーンを積む。
 		m_bonelist.push_back(std::move(bone));
 		//コピー終わり。
-		});
+	});
 }

@@ -2,7 +2,7 @@
 #include "Bloom.h"
 
 namespace nsK2EngineLow {
-	class PostEffect
+	class PostEffect : public Noncopyable
 	{
 	public:
 		void Init(RenderTarget& mainRenderTarget);
@@ -13,6 +13,5 @@ namespace nsK2EngineLow {
 
 	private:
 		Bloom		m_bloom;
-		
 	};
 }

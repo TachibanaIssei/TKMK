@@ -2,23 +2,10 @@
 #include "CameraCollisionSolver.h"
 
 namespace nsK2EngineLow {
-	/// <summary>
-	/// バネカメラ。
-	/// バネに引っ張られるようなカメラの挙動を実現するクラスです。
-	/// SetTarget関数とSetPosition関数を使用して、
-	/// カメラの目標となる注視点と視点を設定してください。
-	/// Update関数を実行することで、カメラが設定された目標座標に追従していきます。
-	/// </summary>
 	class SpringCamera
 	{
 	public:
-		/// <summary>
-		/// コンストラクタ。
-		/// </summary>
 		SpringCamera();
-		/// <summary>
-		/// デストラクタ。
-		/// </summary>
 		~SpringCamera();
 
 		/// <summary>
@@ -207,18 +194,18 @@ namespace nsK2EngineLow {
 			}
 		}
 	private:
-		Camera* m_camera = nullptr;						//カメラ。
-		Vector3		m_target = Vector3::Zero;				//目標となる注視点。
-		Vector3		m_position = Vector3::Zero;				//目標となる視点。
-		Vector3		m_targetMoveSpeed = Vector3::Zero;		//注視点の移動速度。
-		Vector3		m_positionMoveSpeed = Vector3::Zero;	//視点の移動速度。
-		float		m_maxMoveSpeed = 0.0f;					//最高移動速度。
-		float		m_targetDampingRate = 1.0f;				//減衰率。値が大きいほどカメラが遅れ付いてくる。
-		float		m_dampingRate = 1.0f;					//減衰率。
-		float		m_dampingRateVel = 0.0f;
-		bool		m_isEnableCollisionSolver = false;		//コリジョン処理が有効？
-		bool		m_isRefresh = true;						//リフレッシュが必要？
-		CameraCollisionSolver m_cameraCollisionSolver;
+		Camera*					m_camera = nullptr;						//カメラ。
+		Vector3					m_target = Vector3::Zero;				//目標となる注視点。
+		Vector3					m_position = Vector3::Zero;				//目標となる視点。
+		Vector3					m_targetMoveSpeed = Vector3::Zero;		//注視点の移動速度。
+		Vector3					m_positionMoveSpeed = Vector3::Zero;	//視点の移動速度。
+		float					m_maxMoveSpeed = 0.0f;					//最高移動速度。
+		float					m_targetDampingRate = 1.0f;				//減衰率。値が大きいほどカメラが遅れ付いてくる。
+		float					m_dampingRate = 1.0f;					//減衰率。
+		float					m_dampingRateVel = 0.0f;
+		bool					m_isEnableCollisionSolver = false;		//コリジョン処理が有効？
+		bool					m_isRefresh = true;						//リフレッシュが必要？
+		CameraCollisionSolver	m_cameraCollisionSolver;				//コリジョン解決
 	};
 }
 

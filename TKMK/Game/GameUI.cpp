@@ -552,7 +552,7 @@ void GameUI::RespawnCountDown()
 		case 0:
 			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
 			//画面を暗くしてゆく
-			fade->StartFadeIn(2.0f);
+			fade->StartFadeIn(2.0f, Fade::enFadeSprite_BlackSprite);
 			break;
 		case 1:
 			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);

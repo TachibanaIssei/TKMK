@@ -119,6 +119,7 @@ namespace nsK2EngineLow {
 	{
 
 	}
+
 	void SpringCamera::Init(Camera& camera,
 		float maxMoveSpeed,
 		bool isEnableCollisionSolver,

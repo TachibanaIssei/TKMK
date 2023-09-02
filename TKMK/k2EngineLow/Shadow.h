@@ -1,6 +1,6 @@
 #pragma once
 namespace nsK2EngineLow {
-	class Shadow
+	class Shadow : public Noncopyable
 	{
 	public:
 		void Init();
@@ -19,14 +19,12 @@ namespace nsK2EngineLow {
 	private:
 		void InitRenderTarget();
 		void InitLightCamera();
-
 		void UpdateLightCamera();
 
 	private:
 		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
 		RenderTarget m_shadowMap;
 		Camera m_lightCamera;
-
 		Vector3 m_lightCameraPosition = Vector3(0.0f,1200.0f,150.0f);
 	};
 }

@@ -32,22 +32,14 @@ namespace {
 	const Vector3 SpriteScale = Vector3::One;
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);//ディレクションライトのカラー
 	const Vector3 AMBIENT_COLOR = Vector3(0.6f, 0.6f, 0.6f);//環境光のカラー
-
-	//const Vector3 DARKNESS_DIRECTION = Vector3(0.4f, 0.4f, 0.4f);//必殺技発動時のディレクションライトのカラー
 	const float DARKNESS_DIRECTION = 0.4f;
 	const Vector3 DARKNESS_AMBIENT = Vector3(0.55f, 0.5f, 0.6f);//必殺技発動時の環境光のカラー
-
 	const float SKYCOLOR = 1.0f;
 	const float DARKNESS_SKY_COLOR = 0.2f;
 }
 
 Game::Game()
 {
-	//sound�ݒ�
-	//1-5 Title/Game��BGM
-	//6-10 �I��
-	//11-20 player�̃X�L���Ȃǂ̉�
-	//21-30 enemy�̉�
 }
 
 Game::~Game()
@@ -403,7 +395,7 @@ void Game::End()
 	if (m_EndtoResultTimer >= 5.0f)
 	{
 		m_GameState = enGameState_Rezult;
-		fade->StartFadeIn(1.0f);
+		fade->StartFadeIn(1.0f, Fade::enFadeSprite_BlackSprite);
 	}
 }
 
@@ -928,15 +920,6 @@ void Game::LightReset()
 
 void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
 {
-	//for (auto actor : m_Actors) {
-	//	//必殺技発動時のカメラのターゲットでないなら
-	//	if (actor != targetActor) {
-	//		//必殺技発動中なら描画しない
-	//		if(IsUltFlag==true) actor->SetDarwFlag(false);
-
-	//		else actor->SetDarwFlag(true);
-	//	}
-	//}
 	for (auto enemy : m_neutral_Enemys) {
 			//必殺技発動中なら
 			if (IsUltFlag == true) enemy->Deactivate();
@@ -966,14 +949,12 @@ void Game::Render(RenderContext& rc)
 	if (UltStopFlag == true) {
 		return;
 	}
-
 	if (player->CharGetRespawnTime() <= 0) {
 		if (RabbitFlag == true && m_GameState == enGameState_Battle)
 		{
 			m_RabbitSprite.Draw(rc);
 
 		}
-
 		if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
 
 			if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
@@ -983,6 +964,4 @@ void Game::Render(RenderContext& rc)
 			m_underSprite.Draw(rc);
 		}
 	}
-
-	
 }

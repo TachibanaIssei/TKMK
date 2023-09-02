@@ -3,14 +3,12 @@ namespace nsK2EngineLow {
 	/// <summary>
 	/// フォントレンダー
 	/// </summary>
-	class FontRender
+	class FontRender : public Noncopyable
 	{
 	public:
-		static const int MAX_TEXT_SIZE = 256;
-		~FontRender()
-		{
-
-		}
+		static const int MAX_TEXT_SIZE = 256;	//最大文字数
+		FontRender();
+		~FontRender();
 
 		/// <summary>
 		/// 表示する文字を設定する
@@ -101,6 +99,7 @@ namespace nsK2EngineLow {
 		{
 			m_pivot = pivot;
 		}
+
 		/// <summary>
 		/// ピボットを設定する。
 		/// x = 0.5, y = 0.5で画像の中心。
@@ -109,10 +108,11 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="x">X軸のピボット</param>
 		/// <param name="y">Y軸のピボット</param>
-		void SetPivot(float x, float y)
+		void SetPivot(const float x, const float y)
 		{
 			SetPivot({ x,y });
 		}
+
 		/// <summary>
 		/// ピボットを取得する
 		/// </summary>
@@ -137,7 +137,7 @@ namespace nsK2EngineLow {
 		/// <param name="g">緑</param>
 		/// <param name="b">青</param>
 		/// <param name="a">アルファ</param>
-		void SetColor(float r, float g, float b, float a)
+		void SetColor(const float r, const float g, const float b, const float a)
 		{
 			SetColor({ r,g,b,a });
 		}
@@ -156,7 +156,7 @@ namespace nsK2EngineLow {
 		/// <param name="isDrawShadow">影を描画する？</param>
 		/// <param name="shadowOffset">影を描画するときのピクセルのオフセット量</param>
 		/// <param name="shadowColor">影の色</param>
-		void SetShadowParam(bool isDrawShadow, float shadowOffset, const Vector4& shadowColor)
+		void SetShadowParam(const bool isDrawShadow, const float shadowOffset, const Vector4& shadowColor)
 		{
 			m_font.SetShadowParam(isDrawShadow, shadowOffset, shadowColor);
 		}

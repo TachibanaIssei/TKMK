@@ -199,10 +199,9 @@ void KnightBase::AtkCollisiton()
 	Vector3 collisionPosition = m_position;
 	//座標をプレイヤーの少し前に設定する。
 	//collisionPosition += forward * 50.0f;
-	//�{�b�N�X��̃R���W������쐬����B
-	collisionObject->CreateBox(collisionPosition, //��W�B
-		Quaternion::Identity, //��]�B
-		Vector3(85.0f, 15.0f, 30.0f) //�傫���B
+	collisionObject->CreateBox(collisionPosition,
+		Quaternion::Identity,
+		Vector3(85.0f, 15.0f, 30.0f) 
 	);
 	collisionObject->SetName("player_attack");
 	collisionObject->SetCreatorName(GetName());
@@ -210,7 +209,6 @@ void KnightBase::AtkCollisiton()
 	//「Sword」ボーンのワールド行列を取得する。
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
 
-	//matrix.MakeRotationZ(90.0f);
 	//「Sword」ボーンのワールド行列をコリジョンに適用する。
 	collisionObject->SetWorldMatrix(matrix);
 }
@@ -366,8 +364,6 @@ void KnightBase::Collition()
 void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
 	m_Status.Hp -= damege;
-	//無敵時間リセット
-	//invincibleTimer = 1.0f;
 
 	//もしスキルが使用中ならスキルの移動処理を無くす
 	if (SkillState == true)
@@ -396,23 +392,6 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		effectPosition += m_forwardNow * -10;
 		EffectKnightDeath->SetPosition(effectPosition);
 		EffectKnightDeath->Play();
-
-		//	もし必殺技溜めエフェクトが出ていたら消す
-
-
-		////攻撃UPおわり
-		//if (PowerUpTimer > 0.0f)
-		//{
-		//	PowerUpTimer = 0.0f;
-		//	AttackUPEnd();
-		//}
-		//// 念のためここでも消す
-		//if (PowerUpEfk != nullptr)
-		//{
-		//	PowerUpEfk->DeleteEffect();
-		//	DeleteGO(PowerUpEfk);
-		//	PowerUpEfk = nullptr;
-		//}
 
 		//地上にいない
 		IsGroundFlag = false;
@@ -448,8 +427,6 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		//無敵時間フラグ
-		//invincibleFlag = true;
 	}
 }
 
@@ -492,8 +469,6 @@ void KnightBase::SetRespawn()
 /// </summary>
 void KnightBase::Death()
 {
-	////死亡ステート
-	//m_charState = enCharState_Death;
 	//レベルを１下げる
 	levelDown(Lv,1);
 	//HPを最大にする

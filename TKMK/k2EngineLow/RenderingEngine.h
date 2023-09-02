@@ -482,7 +482,7 @@ namespace nsK2EngineLow {
 		/// スプライトを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void SpriteRendering(RenderContext& rc, bool drawTiming);
+		void SpriteRendering(RenderContext& rc, const bool drawTiming);
 		/// <summary>
 		/// フォントを描画する
 		/// </summary>

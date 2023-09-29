@@ -120,7 +120,7 @@ bool Game::Start()
 	fade = FindGO<Fade>("fade");
 	//フェードインしているのでフェードアウトする
 	//画面を明るくする
-	fade->StartFadeOut(1.0f);
+	fade->StartFadeOut(1.0f,Fade::enFadeSpriteType_Full,Fade::enFadeSpriteCategory_Tip);
 	
 
 	//スタジアムの生成
@@ -730,7 +730,7 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	
 	Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(1, CreateEnemyName());
 	neutral_Enemy->SetNeutral_EnemyGame(this);
-	neutral_Enemy->SetPlayerActor(player[0]->GetPlayerActor());
+	neutral_Enemy->SetPlayerActor(player[0]->GetPlayerActor(),player[1]->GetPlayerActor());
 	neutral_Enemy->SetPosition(pos);
 	neutral_Enemy->SetRotation(rot);
 	if (isRabiit == true)

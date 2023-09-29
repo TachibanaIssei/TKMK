@@ -106,14 +106,6 @@ public:
 	void CharPoint();
 
 	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="size"></param>
-	/// <param name="scale"></param>
-	/// <returns></returns>
-	Vector3 HPBerSend(Vector3 size, Vector3 scale);
-
-	/// <summary>
 	/// スキルのアイコンをグレースケールにする
 	/// </summary>
 	/// <param name="flag">trueの場合グレースケールにする</param>
@@ -171,21 +163,19 @@ private:
 	float					m_LvNumberColor = 1.0f;
 	bool					m_flashNumberFlag = false;
 	std::array<SpriteRender, enPlayerNumber_Num>	m_MaxLv;
-	std::array<SpriteRender,enPlayerNumber_Num>	m_Flame;		//制限時間と獲得ポイントやHPバーの画像を
+	std::array<SpriteRender, enPlayerNumber_Num>	m_Flame;		//制限時間と獲得ポイントやHPバーの画像を
 	SpriteRender            m_Point;							//ポイント
-	SpriteRender            m_ExperienceFlame;					//経験値のフレーム
-	SpriteRender            m_ExperienceBar_flont;				//経験値バーの表
-	SpriteRender            m_ExperienceBar_back;				//経験値バーの裏
+	std::array<SpriteRender,enPlayerNumber_Num>     m_ExperienceFlame;					//経験値のフレーム
+	std::array<SpriteRender, enPlayerNumber_Num>	m_experienceBarFlont;				//経験値バーの表
+	std::array<SpriteRender, enPlayerNumber_Num>	m_experienceBarBack;				//経験値バーの裏
 	SpriteRender			m_Crown;							//ポイントが一番多いキャラにつける王冠マーク
-	std::array<SpriteRender,4>	m_PointFlame;					//ポイントを表示するフレーム
-	std::array<SpriteRender, 4> m_CharIcon;                      //キャラのアイコン
+	std::array<SpriteRender,4>	m_pointFlame;					//ポイントを表示するフレーム
+	std::array<SpriteRender, 4> m_charIcon;                      //キャラのアイコン
 	SpriteRender			m_CountNumper;						//カウントダウン
 	SpriteRender			m_RespawnIn;						//Respawn inの画像
 	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
 	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
-
-	Vector3				m_EXPBerPos = /*Vector3(750.0f, -500.0f, 0.0f)*/Vector3::Zero;				   //EXPバーのポジション
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);
 	Vector3				m_FightScale = Vector3(1.0f, 1.0f, 0.0f);

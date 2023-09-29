@@ -511,14 +511,21 @@ void Neutral_Enemy::Collision()
 					//相手に経験値を渡す
 					
 					m_lastAttackActor->ExpProcess(60);
-					if (m_lastAttackActor == m_player)
+					for (int i = 0; i < m_maxPlayerCount; i++)
 					{
-						for (int  i = 0; i < 10; i++)
+						if (m_player[i] == nullptr)
 						{
+							continue;
+						}
+						if (m_lastAttackActor == m_player[i])
+						{
+							for (int i = 0; i < 10; i++)
+							{
 
-							ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-							ExpKnight->SetPosition(m_position);
-							ExpKnight->SetIsRabbitExp();
+								ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+								ExpKnight->SetPosition(m_position);
+								ExpKnight->SetIsRabbitExp();
+							}
 						}
 					}
 				}
@@ -546,16 +553,24 @@ void Neutral_Enemy::Collision()
 					{
 						m_lastAttackActor->ExpProcess(1);
 					}
-					if (m_lastAttackActor == m_player)
+
+					for (int i = 0; i < m_maxPlayerCount; i++)
 					{
-						SoundSource* se = NewGO<SoundSource>(0);
-						se->Init(enSound_Enemy_Death);
-						se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-						se->Play(false);
-						for (int i = 0; i < 3; i++)
+						if (m_player[i] == nullptr)
 						{
-							ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-							ExpKnight->SetPosition(m_position);
+							continue;
+						}
+						if (m_lastAttackActor == m_player[i])
+						{
+							SoundSource* se = NewGO<SoundSource>(0);
+							se->Init(enSound_Enemy_Death);
+							se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+							se->Play(false);
+							for (int i = 0; i < 3; i++)
+							{
+								ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+								ExpKnight->SetPosition(m_position);
+							}
 						}
 					}
 				}				
@@ -618,12 +633,19 @@ void Neutral_Enemy::Collision()
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 				DeathEfk();
-				if (m_lastAttackActor == m_player)
+
+				for (int i = 0; i < m_maxPlayerCount; i++)
 				{
-					ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-					ExpKnight->SetPosition(m_position);
+					if (m_player[i] == nullptr)
+					{
+						continue;
+					}
+					if (m_lastAttackActor == m_player[i])
+					{
+						ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
+						ExpKnight->SetPosition(m_position);
+					}
 				}
-				
 
 			}
 			else {

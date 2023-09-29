@@ -2,6 +2,7 @@
 
 class Game;
 class CharacterSelect;
+class Fade;
 
 class Tittle:public IGameObject
 {
@@ -21,7 +22,7 @@ private:
 	void Operation();
 	void CharacterOp();
 	void Ilust();
-	void Fade();
+	void FadeSprite();
 
 	/// <summary>
 	/// キャラ選択画面からタイトルに戻った時にタイトルのセレクト画面に戻す関数
@@ -92,6 +93,7 @@ private:
 	};
 
 private:
+	Fade* m_fade = nullptr;
 	Quaternion m_sRotation;
 
 	SpriteRender m_spriteRender;				//タイトル背景

@@ -2,8 +2,6 @@
 #include "Player.h"
 #include "Game.h"
 #include "GameUI.h"
-//#include "KnightPlayer.h"
-//#include "WizardPlayer.h"
 
 Player::Player()
 {
@@ -12,8 +10,6 @@ Player::Player()
 
 Player::~Player()
 {
-	//DeleteGO(m_knightPlayer);
-	//DeleteGO(m_wizardPlayer);
 }
 
 void Player::CreatePlayer()
@@ -93,25 +89,6 @@ void Player::SelectCharcter(int number)
 Vector3 Player::GetCharcterPosition()const
 {
 	return m_playerActor->GetPosition();
-	/*switch (m_selectCharctar)
-	{
-	case enKnight:
-		return m_knightPlayer->GetPosition();
-		break;
-
-	case enWizard:
-		return m_wizardPlayer->GetPosition();
-		break;
-
-	case enZombie:
-		break;
-
-	case enMonster:
-		break;
-
-	default:
-		break;
-	}*/
 }
 
 /// <summary>
@@ -288,16 +265,6 @@ int Player::CharGetEXPTableForLevel(int Level) const
 {
 	return m_playerActor->GetExpTableForLevel(Level);
 }
-
-/// <summary>
-/// プレイヤーの前のレベルの経験値テーブルを取得
-/// </summary>
-/// <returns></returns>
-//int Player::CharSetOldEXPTable() const
-//{
-//	return 1;
-//	//return m_playerActor->GetOldExpTable();
-//}
 
 //セーブしている経験値を取得
 int Player::CharGetSaveEXP() const

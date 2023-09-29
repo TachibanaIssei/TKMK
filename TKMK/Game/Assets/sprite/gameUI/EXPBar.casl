@@ -1,4 +1,4 @@
-7
+11
 8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,-210.0,-435.0,540,250,10,0.45,0.5,0.5,0.5,12,LevelBar.dds
 9,skil_Icon,45,../../Game/Assets/sprite/gameUI/skil_Icon.png,-223.07692307692298,153.84615384615392,121,121,10,0.1125,0.1125,0.5,0.5,13,skil_Icon.dds
 12,ULT_Icon_OUT,48,../../Game/Assets/sprite/gameUI/ULT_Icon_OUT.png,-460.0,-475.0000000000001,121,121,10,0.1125,0.1125,0.5,0.5,16,ULT_Icon_OUT.dds
@@ -6,3 +6,7 @@
 10,LevelBar2P,46,../../Game/Assets/sprite/gameUI/LevelBar2P.png,261.53846153846166,-434.6153846153845,540,250,10,0.45,0.5,0.5,0.5,14,LevelBar2P.dds
 12,ULT_Icon_OUT,48,../../Game/Assets/sprite/gameUI/ULT_Icon_OUT.png,460.0,-475.0000000000001,121,121,10,0.1125,0.1125,0.5,0.5,16,ULT_Icon_OUT.dds
 14,Skill_Icon_OUT,50,../../Game/Assets/sprite/gameUI/Skill_Icon_OUT.png,420.0,-360.0,121,121,10,0.1125,0.1125,0.5,0.5,18,Skill_Icon_OUT.dds
+13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,200.0,-500.0,300,60,10,0.5,0.5,0.5,0.5,17,ExperienceBar.dds
+13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,-200.0,-500.0,300,60,10,0.5,0.5,0.5,0.5,17,ExperienceBar.dds
+19,ExperienceBar_front,55,../../Game/Assets/sprite/gameUI/ExperienceBar_front.png,-350.0,-500.0,300,60,10,0.5,0.5,0.0,0.5,23,ExperienceBar_front.dds
+19,ExperienceBar_front,55,../../Game/Assets/sprite/gameUI/ExperienceBar_front.png,47.999999999999886,-500.0,300,60,10,0.5,0.5,0.0,0.5,23,ExperienceBar_front.dds

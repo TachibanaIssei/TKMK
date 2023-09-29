@@ -2,6 +2,7 @@
 #include "Tittle.h"
 #include "CharacterSelect.h"
 #include "Game.h"
+#include "Fade.h"
 
 namespace TitleConst
 {
@@ -34,7 +35,7 @@ bool Tittle::Start()
 void Tittle::Update()
 {
 	Scene();
-	Fade();
+	FadeSprite();
 
 	m_timer++;
 
@@ -390,6 +391,10 @@ void Tittle::Scene()
 			se->Init(enSound_TitleOK);
 			se->Play(false);
 			se->SetVolume(1.0f);
+
+			m_fade = FindGO<Fade>("fade");
+			m_fade->StartFadeIn(1.0f);
+
 			//game‰æ–Ê‚Ö‘JˆÚ
 			CharacterSelect* characterSelect = NewGO<CharacterSelect>(0, "game");
 			DeleteGO(this);
@@ -704,7 +709,7 @@ void Tittle::Ilust()
 		break;
 	}
 }
-void Tittle::Fade()
+void Tittle::FadeSprite()
 {
 	if (m_fadeSeem == true)
 	{

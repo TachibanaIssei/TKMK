@@ -257,8 +257,11 @@ public:
 	/// <summary>
 	/// プレイヤーのアクターを設定する
 	/// </summary>
-	void SetPlayerActor(Actor* actor) {
-		m_player = actor;
+	void SetPlayerActor(Actor* actor0 = nullptr, Actor* actor1 = nullptr, Actor* actor2 = nullptr, Actor* actor3 = nullptr) {
+		m_player[0] = actor0;
+		m_player[1] = actor1;
+		m_player[2] = actor2;
+		m_player[3] = actor3;
 	}
 
 	/// <summary>
@@ -321,6 +324,7 @@ public:
 
 
 private:
+	static const int m_maxPlayerCount = 4;					   //プレイヤーの最大人数
 	AnimationClip m_animationClips[enAnimationClip_Num];       //アニメーションクリップ
 	ModelRender   m_modelRender;                               //モデルレンダー
 	Vector3       m_position = Vector3::Zero;;                                 //座標
@@ -335,7 +339,7 @@ private:
 	SoundSource* m_se = nullptr;
 
 	Actor* m_targetActor = nullptr;
-	Actor* m_player = nullptr;
+	std::array<Actor*, m_maxPlayerCount> m_player = { nullptr,nullptr,nullptr,nullptr };
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 
 	Game* m_game = nullptr;                               

@@ -43,7 +43,6 @@ public:
 		enGameMode_MultiPlay,
 		enGameMode_Num
 	};
-	
 
 	EnEFK m_EnEffect = enEffect_Num;
 

@@ -215,7 +215,7 @@ void KnightPlayer::Update()
 				stickL.x = g_pad[m_playerNumber]->GetLStickXF();
 				stickL.y = g_pad[m_playerNumber]->GetLStickYF();
 			}
-			Move(m_position, m_charCon, m_Status, stickL, m_playerNumber);
+			Move(m_position, m_charCon, m_status, stickL, m_playerNumber);
 
 
 			//回避中なら
@@ -346,7 +346,7 @@ void KnightPlayer::Attack()
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[m_playerNumber]->IsTrigger(enButtonB)&&m_Status.Hp>0)
+	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[m_playerNumber]->IsTrigger(enButtonB)&&m_status.GetHp()>0)
 	{
 		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed);
@@ -800,7 +800,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
-		//m_status.Atk -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする

@@ -29,6 +29,7 @@
     <ClCompile Include="ChaseEFK.cpp" />
     <ClCompile Include="ExpforKnight.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="EnemyHpBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
@@ -60,5 +61,6 @@
     <ClInclude Include="ExpforKnight.h" />
     <ClInclude Include="Sounds.h" />
     <ClInclude Include="Pause.h" />
+    <ClInclude Include="EnemyHpBar.h" />
   </ItemGroup>
 </Project>

@@ -181,9 +181,9 @@ public:
 	/// 現在のヒットポイントを返す
 	/// </summary>
 	/// <returns>現在のHP</returns>
-	int& GetHitPoint() 
+	const int& GetHitPoint() 
 	{
-		return m_Status.Hp;
+		return m_status.GetHp();
 	}
 
 	Quaternion& GetRotation()
@@ -196,8 +196,8 @@ public:
 	/// 現在のマックスヒットポイントを返す
 	/// </summary>
 	/// <returns></returns>
-	int& SetMaxHp() {
-		return m_Status.MaxHp;
+	const int& GetMaxHp() {
+		return m_status.GetMaxHp();
 	}
 
 	/// <summary>
@@ -218,7 +218,7 @@ public:
 	/// <param name="status"></param>
 	void IsDead(Status& status)
 	{
-		if (status.Hp <= 0)
+		if (status.GetHp() <= 0)
 		{
 			m_charState = enCharState_Death;
 

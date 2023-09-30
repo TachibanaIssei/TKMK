@@ -140,11 +140,11 @@ int Player::GetCharcterMaxHp()const
 	switch (m_selectCharctar)
 	{
 	case enKnight:
-		return m_knightPlayer->SetMaxHp();
+		return m_knightPlayer->GetMaxHp();
 		break;
 
 	case enWizard:
-		return m_wizardPlayer->SetMaxHp();
+		return m_wizardPlayer->GetMaxHp();
 		break;
 
 	case enZombie:
@@ -212,24 +212,6 @@ Vector3 Player::GetCharcterForward()const
 
 	case enWizard:
 		return m_wizardPlayer->GetForward();
-		break;
-	}
-}
-
-/// <summary>
-/// キャラのスプライトフラグを返す
-/// </summary>
-/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
-bool Player::CharSetSpriteFlag()const
-{
-	switch (m_selectCharctar)
-	{
-	case enKnight:
-		return m_knightPlayer->GetSpriteFlag();
-		break;
-
-	case enWizard:
-		return m_wizardPlayer->GetSpriteFlag();
 		break;
 	}
 }

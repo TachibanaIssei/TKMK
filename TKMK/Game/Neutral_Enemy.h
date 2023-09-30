@@ -351,7 +351,7 @@ private:
 	Map* map = nullptr;
 
 	Level3DRender m_EnemyPoslevel;      //エネミーのポジションレベル
-	Status m_Status;                    //ステータス
+	Status m_status;                    //ステータス
 	SpriteRender		m_enemyMapSprite;
 
 	FontRender              m_Name;

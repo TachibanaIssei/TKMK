@@ -74,7 +74,7 @@ public:
 	//	//レベルを１下げる
 	//	levelDown(LvUpStatus, m_status, Lv, 1);
 	//	//HPを最大にする
-	//	m_status.Hp = m_status.MaxHp;
+	//	m_status.m_hp = m_status.m_maxHp;
 	//	//経験値をリセット
 	//	ExpReset(Lv, GetExp);
 	//	//一つ下のレベルの経験値テーブルにする

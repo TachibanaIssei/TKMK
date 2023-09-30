@@ -353,7 +353,7 @@ void CharacterSelect::Ready()
 	if (fade->GetCurrentAlpha(Fade::enFadeSpriteType_Full,Fade::enFadeSpriteCategory_Tip) >= 1.0f)
 	{
 		Game* game = NewGO<Game>(5, "game");
-		game->SetGameMode(game->enGameMode_MultiPlay);
+		game->SetGameMode(game->enGameMode_DuoPlay);
 		//キャラクターセレクトが
 		switch (m_characterSelect)
 		{

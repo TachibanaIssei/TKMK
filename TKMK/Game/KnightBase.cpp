@@ -10,8 +10,8 @@
 KnightBase::KnightBase()
 {
 	//ステータスを読み込む
-	m_Status.Init("Knight");
-	m_InitialStatus = m_Status;  //初期ステータスのセット
+	m_status.Init("Knight");
+	m_InitialStatus = m_status;  //初期ステータスのセット
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
@@ -365,7 +365,8 @@ void KnightBase::Collision()
 /// <param name="damege">敵の攻撃力</param>
 void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
-	m_Status.Hp -= damege;
+	int hp = m_status.GetHp() - damege;
+	m_status.SetHp(hp);
 	//無敵時間リセット
 	//invincibleTimer = 1.0f;
 
@@ -380,7 +381,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 	}
 
 	//自身のHPが0以下なら
-	if (m_Status.Hp <= 0) {
+	if (m_status.GetHp() <= 0) {
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_charState = enCharState_Death;
@@ -397,23 +398,6 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		EffectKnightDeath->SetPosition(effectPosition);
 		EffectKnightDeath->Play();
 
-		//	もし必殺技溜めエフェクトが出ていたら消す
-
-
-		////攻撃UPおわり
-		//if (PowerUpTimer > 0.0f)
-		//{
-		//	PowerUpTimer = 0.0f;
-		//	AttackUPEnd();
-		//}
-		//// 念のためここでも消す
-		//if (PowerUpEfk != nullptr)
-		//{
-		//	PowerUpEfk->DeleteEffect();
-		//	DeleteGO(PowerUpEfk);
-		//	PowerUpEfk = nullptr;
-		//}
-
 		//地上にいない
 		IsGroundFlag = false;
 
@@ -424,7 +408,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//プレイヤーとの距離によって音量調整
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 
-		m_Status.Hp = 0;
+		m_status.SetHp(0);
 		//攻撃された相手が中立の敵以外なら
 		if (CharGivePoints != nullptr)
 		{
@@ -492,12 +476,10 @@ void KnightBase::SetRespawn()
 /// </summary>
 void KnightBase::Death()
 {
-	////死亡ステート
-	//m_charState = enCharState_Death;
 	//レベルを１下げる
 	levelDown(Lv,1);
 	//HPを最大にする
-	m_Status.Hp = m_Status.MaxHp;
+	m_status.SetHp(m_status.GetMaxHp());
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//一つ下のレベルの経験値テーブルにする

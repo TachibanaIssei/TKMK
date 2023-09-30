@@ -34,8 +34,8 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	right.y = 0.0f;
 	forward.Normalize();
 	//移動の入力量とstatusのスピードを乗算。
-	right *= stickL.x * status.Speed;
-	forward *= stickL.y * status.Speed;
+	right *= stickL.x * status.GetSpeed();
+	forward *= stickL.y * status.GetSpeed();
 
 	//プレイヤーの前方向の情報を更新
 	//xかzの移動速度があったら
@@ -131,10 +131,15 @@ void Actor::LevelUp(int& Level)
 	return;
 	}
 
-	m_Status.MaxHp += LvUPStatus.LvHp;
-	m_Status.Hp += LvUPStatus.LvHp;
-	m_Status.Atk += LvUPStatus.LvAtk;
-	m_Status.Speed += LvUPStatus.LvSpeed;
+	int maxHp = m_status.GetMaxHp() + LvUPStatus.LvHp;
+	int hp = m_status.GetHp() + LvUPStatus.LvHp;
+	int attackPower = m_status.GetAttackPower() + LvUPStatus.LvAtk;
+	float speed = m_status.GetSpeed() + LvUPStatus.LvSpeed;
+
+	m_status.SetMaxHp(maxHp);
+	m_status.SetHp(hp);
+	m_status.SetAttackPower(attackPower);
+	m_status.SetSpeed(speed);
 	Level++;
 }
 
@@ -159,19 +164,19 @@ void Actor::levelDown(int& Level, int downLevel)
 			return;
 		}
 
-		m_Status.MaxHp-= LvUPStatus.LvHp;
+		int maxHp = m_status.GetMaxHp() - LvUPStatus.LvHp;
+		m_status.SetMaxHp(maxHp);
 		//もしHPがMaxHpを上回るなら
-		if (m_Status.Hp > m_Status.MaxHp)
+		if (m_status.GetHp() > m_status.GetMaxHp())
 		{
 			//HPとMaxHpを同じにする
-			m_Status.Hp = m_Status.MaxHp;
+			m_status.SetHp(m_status.GetMaxHp());
 		}
-
-		m_Status.Atk -= LvUPStatus.LvAtk;
-		m_Status.Speed -= LvUPStatus.LvSpeed;
-
+		int attackPower = m_status.GetAttackPower() - LvUPStatus.LvAtk;
+		int speed = m_status.GetSpeed() - LvUPStatus.LvSpeed;
+		m_status.SetAttackPower(attackPower);
+		m_status.SetSpeed(speed);
 		Level -= 1;
-	
 	}
 
 
@@ -183,16 +188,16 @@ void Actor::levelDown(int& Level, int downLevel)
 	//}
 	//
 
-	//m_status.MaxHp-= downLevel* LvUPStatus.LvHp;
+	//m_status.m_maxHp-= downLevel* LvUPStatus.LvHp;
 	////もしHPがMaxHpを上回るなら
-	//if (m_status.Hp > m_status.MaxHp)
+	//if (m_status.m_hp > m_status.m_maxHp)
 	//{
 	//	//HPとMaxHpを同じにする
-	//	m_status.Hp = m_status.MaxHp;
+	//	m_status.m_hp = m_status.m_maxHp;
 	//}
 
-	//m_status.Atk -= downLevel* LvUPStatus.LvAtk;
-	//m_status.Speed -= downLevel* LvUPStatus.LvSpeed;
+	//m_status.m_attackPower -= downLevel* LvUPStatus.LvAtk;
+	//m_status.m_speed -= downLevel* LvUPStatus.LvSpeed;
 }
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理

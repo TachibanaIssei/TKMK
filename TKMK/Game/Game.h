@@ -39,8 +39,10 @@ public:
 	};
 
 	enum EnGameMode {
-		enGameMode_SoloPlay = 0,
-		enGameMode_MultiPlay,
+		enGameMode_SoloPlay = 1,
+		enGameMode_DuoPlay,
+		enGameMode_TrioPlay,
+		enGameMode_QuartetPlay,
 		enGameMode_Num
 	};
 

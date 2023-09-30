@@ -198,10 +198,10 @@ bool Neutral_Enemy::Start()
 	//ステータスを読み込む
 	if (m_enemyKinds == enEnemyKinds_Rabbit)
 	{
-		m_Status.Init("Rabbit");
+		m_status.Init("Rabbit");
 	}
 	else {
-		m_Status.Init("Enemy");
+		m_status.Init("Enemy");
 	}
 	//巡回用のパスを読み込む
 	m_EnemyPoslevel.Init("Assets/level3D/RabbitPatrolPos2.tkl", [&](LevelObjectData& objData) {
@@ -361,9 +361,9 @@ void Neutral_Enemy::Move()
 	Vector3 diff = m_forward;
 	diff.Normalize();
 	//移動速度を設定する。
-	m_moveSpeed = diff * m_Status.Speed;
+	m_moveSpeed = diff * m_status.GetSpeed();
 	m_forward.Normalize();
-	Vector3 moveSpeed = m_forward * m_Status.Speed + m_hagikiPower;
+	Vector3 moveSpeed = m_forward * m_status.GetSpeed() + m_hagikiPower;
 	if (m_hagikiPower.Length() < 10.0f) {
 		m_hagikiPower *= 0.99f;
 	}
@@ -382,9 +382,10 @@ void Neutral_Enemy::HPreductionbytime()
 	
 	if (m_enemyKinds == enEnemyKinds_Rabbit)
 	{
-		if (m_Status.Hp > 1)
+		if (m_status.GetHp() > 1)
 		{
-			m_Status.Hp -= 1;
+			int hp = m_status.GetHp() - 1;
+			m_status.SetHp(hp);
 			HPreductionbyTimer = 0.0f;
 		}
 		
@@ -452,7 +453,7 @@ void Neutral_Enemy::Chase()
 	
 	diff.Normalize();
 	//移動速度を設定する。
-	m_moveSpeed = diff * m_Status.Speed;
+	m_moveSpeed = diff * m_status.GetSpeed();
 
 	m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
@@ -484,21 +485,21 @@ void Neutral_Enemy::Collision()
 			m_lastAttackActor = FindGO<Actor>(AIcollision->GetCreatorName());
 
 			//プレイヤーの攻撃力を取得
-			//何故かm_knightAIがnull
 			//HPを減らす
 
+			int hp = m_status.GetHp();
 			if (m_enemyKinds == enEnemyKinds_Rabbit)
 			{
-				m_Status.Hp -= 1;
+				hp -= 1;
 			}
 			else
 			{
-				m_Status.Hp -= m_lastAttackActor->GetAtk();
-				//m_status.Hp -= m_knightAI->SetKnightAIAtk();
+				hp -= m_lastAttackActor->GetAtk();
 			}
+			m_status.SetHp(hp);
 
 				//HPが0になったら
-			if (m_Status.Hp <= 0)
+			if (m_status.GetHp() <= 0)
 			{
 				DeathEfk();
 				
@@ -526,6 +527,7 @@ void Neutral_Enemy::Collision()
 								ExpKnight->SetPosition(m_position);
 								ExpKnight->SetIsRabbitExp();
 							}
+							break;
 						}
 					}
 				}
@@ -571,12 +573,13 @@ void Neutral_Enemy::Collision()
 								ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
 								ExpKnight->SetPosition(m_position);
 							}
+							break;
 						}
 					}
 				}				
 
 				//倒した時の報酬を倒した人に渡す
-				// 赤…攻撃力を50あげる 緑…体力を上げる　白…何もしない
+				// 緑…体力を上げる　白…何もしない
 				//緑の場合
 				if (m_enemyKinds == enEnemyKinds_Green)
 				{
@@ -588,20 +591,10 @@ void Neutral_Enemy::Collision()
 					se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 					se->Play(false);
 				}
-
-				////赤の場合
-				//else if (m_enemyKinds == enEnemyKinds_Red)
-				//{
-				//	m_lastAttackActor->AtkUp(AtkPass);
-				//}
-				//Deathflag = true;
-				//���S�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
 			else {
-				//��_���[�W�X�e�[�g�ɑJ�ڂ���B
 				m_Neutral_EnemyState = enNeutral_Enemy_ReceiveDamage;
-				//��ʉ��Đ�
 			}
 		}
 	}
@@ -617,16 +610,18 @@ void Neutral_Enemy::Collision()
 			m_lastAttackActor = FindGO<Actor>(collision->GetCreatorName());
 
 			//hpを減らす
+			int hp = m_status.GetHp();
 			if (m_enemyKinds == enEnemyKinds_Rabbit)
 			{
-				m_Status.Hp -= 1;
+				hp -= 1;
 			}
 			else
 			{
-				m_Status.Hp -= 100;
+				hp -= 100;
 			}
+			m_status.SetHp(hp);
 			
-			if (m_Status.Hp <= 0)
+			if (m_status.GetHp() <= 0)
 			{
 				//相手に経験値を渡す
 				m_lastAttackActor->ExpProcess(Exp/2);
@@ -644,6 +639,7 @@ void Neutral_Enemy::Collision()
 					{
 						ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
 						ExpKnight->SetPosition(m_position);
+						break;
 					}
 				}
 
@@ -655,11 +651,6 @@ void Neutral_Enemy::Collision()
 			}
 		}
 	}
-	////攻撃中、デス中は当たり判定の処理を行わない
-	//if (m_Neutral_EnemyState == enNeutral_Enemy_ReceiveDamage || m_Neutral_EnemyState == enNeutral_Enemy_Death)
-	//{
-	//	return;
-	//}
 	//魔法使いの攻撃用のコリジョンを取得する
 	const auto& Wizardcollisions = g_collisionObjectManager->FindCollisionObjects("Wizard_MagicBall");
 	//コリジョンの配列をfor文で回す
@@ -672,17 +663,14 @@ void Neutral_Enemy::Collision()
 			//magicBall = FindGO<MagicBall>("magicBall");
 			//魔法使いの攻撃力を取得
 			//HPを減らす
-			m_Status.Hp -= m_lastAttackActor->GetAtk();
+			int hp = m_status.GetHp() - m_lastAttackActor->GetAtk();
+			m_status.SetHp(hp);
 
 			//HPが0になったら
-			if (m_Status.Hp <= 0)
+			if (m_status.GetHp() <= 0)
 			{
-				//player = FindGO<Player>("player");
 				//相手に経験値を渡す
 				m_lastAttackActor->ExpProcess(Exp);
-				//魔法使いに経験値を渡す
-				//player->CharSetExpProcess(Exp);
-				//Deathflag = true;
 				//死亡ステートに遷移する。
 				m_Neutral_EnemyState = enNeutral_Enemy_Death;
 			}
@@ -857,7 +845,7 @@ void Neutral_Enemy::ProcessChaseStateTransition()
 			Escapediff.y = 0.0f;
 
 			Escapediff.Normalize();
-			m_moveSpeed = Escapediff * (m_Status.Speed * -1);
+			m_moveSpeed = Escapediff * (m_status.GetSpeed() * -1);
 			m_position = m_charaCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
 
 			m_modelRender.SetPosition(m_position);
@@ -918,7 +906,7 @@ void Neutral_Enemy::ProcessReceiveDamageStateTransition()
 		//Vector3 diff = player->GetCharcterPosition() - m_position;
 		//diff.Normalize();
 		//移動速度を設定する。
-		//m_moveSpeed = diff * m_status.Speed;
+		//m_moveSpeed = diff * m_status.m_speed;
 		m_targetActor = m_lastAttackActor;
 
 	}

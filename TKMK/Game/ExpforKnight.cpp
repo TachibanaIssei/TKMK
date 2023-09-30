@@ -4,6 +4,7 @@
 #include "GameUI.h"
 namespace {
 	const Vector2 EXPERIENCE_BAR_POS = Vector2(900.0f, -620.0f);	//経験値バーの座標
+	const float EXPEIENCE_SPRITE_W_H = 128.0f;
 }
 ExpforKnight::ExpforKnight()
 {
@@ -12,15 +13,13 @@ ExpforKnight::ExpforKnight()
 
 ExpforKnight::~ExpforKnight()
 {
-	gameUI = FindGO<GameUI>("m_gameUI");
-	gameUI->ChangeEXPUpFlag(true);
 }
 
 bool ExpforKnight::Start()
 {
 	//プレイヤーが経験値を獲得する画像
 
-	m_NormalExp.Init("Assets/sprite/Exp.DDS",128.0f, 128.0f, AlphaBlendMode_Add);
+	m_NormalExp.Init("Assets/sprite/Exp.DDS", EXPEIENCE_SPRITE_W_H, EXPEIENCE_SPRITE_W_H, AlphaBlendMode_Add);
 
 	//ワールド座標をスクリン座標に変換
 	Vector3 EFKWorldPOS = m_EnemyPos;
@@ -47,6 +46,12 @@ bool ExpforKnight::Start()
 	}
 	
 	return true;
+}
+
+void ExpforKnight::OnDestroy()
+{
+	gameUI = FindGO<GameUI>("m_gameUI");
+	gameUI->ChangeEXPUpFlag(true);
 }
 
 void ExpforKnight::Update()

@@ -1,11 +1,12 @@
 #pragma once
 #include "KnightBase.h"
 #include "Status.h"
-#include "WizardUlt.h"    //関数を.cppに移したら消すtodo
+
 class Game;
 class KnightPlayer;
 class Neutral_Enemy;
 class WizardUlt;
+class EnemyHpBar;
 
 class KnightAI:public KnightBase
 {
@@ -34,20 +35,12 @@ public:
 	/// 必殺技の当たり判定生成する
 	void MakeUltSkill();
 	void AvoidanceSprite();
-	void HPZero();
-	/// <summary>
-	/// ゲージを左寄せする処理
-	/// </summary>
-	/// <param name="size">画像の元の大きさ</param>
-	/// <param name="scale">現在のスケール倍率</param>
-	/// <returns>変換前と変換後の差</returns>
-	Vector3 HPBerSend(Vector3 size, Vector3 scale);
 
 	/// <summary>
 	/// HPゲージの描画フラグ
 	/// </summary>
 	/// <returns>描画できる範囲にあるときtrue</returns>
-	bool DrawHP();
+	bool DrawHP(const int playerNumber);
 	void SetGame(Game* game)
 	{
 		m_game = game;
@@ -67,8 +60,11 @@ public:
 	/// <summary>
 	/// プレイヤーのアクターを設定する
 	/// </summary>
-	void SetPlayerActor(Actor* actor) {
-		m_player = actor;
+	void SetPlayerActor(Actor* actor,EnPlayerNumber playerNumber) {
+		if (playerNumber != enPlayerNumber_AI && playerNumber != enPlayerNumber_Num)
+		{
+			m_player[playerNumber] = actor;
+		}
 	}
 
 	/// <summary>
@@ -113,8 +109,8 @@ private:
 
 	};
 
-	KnightPlayer* m_knightPlayer;		//剣士プレイヤーvoid Rotation();
-
+private:
+	KnightPlayer* m_knightPlayer;		//剣士プレイヤー
 	
 	Vector3                 TargePos = Vector3::Zero;
 	Vector3                 m_aiForward = Vector3::Zero;
@@ -122,11 +118,9 @@ private:
 	Vector3					m_forward=Vector3::Zero;
 	bool					m_isSearchEnemy = false;
 	bool                    m_SearchPlayer_OR_AI = false;
-	FontRender              m_Name;
-	FontRender				m_fontLv;
 	SphereCollider			m_sphereCollider;					//コライダー。
 	RigidBody				m_rigidBody;						//剛体。	
-	
+
 	//falseだったら追いかける、trueだったら逃げる
 	bool                    m_ChaseOrEscape = false;
 
@@ -154,19 +148,9 @@ private:
 	///////////////
 	bool SkillFlag = false;
 	bool m_swordEffectFlag = false;
-
-	
-
-	SpriteRender		m_HP_Bar;		//HPバー画像
-	SpriteRender		m_HP_Frame;		//HP枠画像
-	SpriteRender		m_HP_Back;		//HP背景画像
-	Vector2			m_HPBer_Pos = Vector2::Zero;		//HPバーのポジション
-	Vector2			m_HPWindow_Pos = Vector2::Zero;		//HP枠のポジション
-	Vector2			m_HPBack_Pos = Vector2::Zero;		//HP背景のポジション
-	Vector2			m_levelFontPos = Vector2::Zero;		//HPバーの横に表示するレベル
-	Actor* m_player = nullptr;
-	
-
+	std::array<Actor*, enPlayerNumber_Num> m_player = { nullptr,nullptr,nullptr,nullptr };
 	int ATKtiming = 0;
+
+	std::array<EnemyHpBar*, enPlayerNumber_Num>	m_enemyHpBar = { nullptr,nullptr,nullptr,nullptr };		//敵の上部に描画されるHPバー
 };
 

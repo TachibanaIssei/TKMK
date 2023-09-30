@@ -96,7 +96,7 @@ void WizardPlayer::Update()
 		Vector3 stickL;
 		stickL.x = g_pad[m_playerNumber]->GetLStickXF();
 		stickL.y = g_pad[m_playerNumber]->GetLStickYF();
-		Move(m_position, m_charCon, m_Status, stickL,m_playerNumber);
+		Move(m_position, m_charCon, m_status, stickL,m_playerNumber);
 
 		//回避中なら
 		if (AvoidanceFlag == true) {
@@ -206,14 +206,15 @@ void WizardPlayer::Attack()
 	if (pushFlag == false && SkillEndFlag == false && g_pad[0]->IsTrigger(enButtonB))
 	{
 		//HPを減らしてHPが0になるならワープさせない
-		if (m_Status.Hp <= 10)
+		if (m_status.GetHp() <= 10)
 		{
 			return;
 		}
 		else
 		{
 			//HPを10減らす
-			m_Status.Hp -= 10;
+			int hp = m_status.GetHp() - 10;
+			m_status.SetHp(hp);
 		}
 		m_wizardState = enWizardState_Skill;
 		SkillState = true;

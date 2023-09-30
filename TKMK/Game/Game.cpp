@@ -154,7 +154,7 @@ bool Game::Start()
 		InitSoloPlay();
 	}
 	//複数人プレイだったら
-	else if (m_gameMode == enGameMode_MultiPlay)
+	else if (m_gameMode == enGameMode_DuoPlay)
 	{
 		InitMultiPlay();
 	}
@@ -266,7 +266,7 @@ void Game::Battle()
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 			//カメラのステートをポーズステートに変更
 			m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
-			if (m_gameMode == enGameMode_MultiPlay)
+			if (m_gameMode == enGameMode_DuoPlay)
 			{
 				m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
 			}
@@ -577,7 +577,7 @@ void Game::InitSoloPlay()
 				m_Actors.push_back(m_KnightAI);
 				m_KnightAI->SetPosition(objData.position);
 				m_KnightAI->SetCharaconPosition(objData.position);
-				m_KnightAI->SetPlayerActor(player[0]->GetPlayerActor());
+				m_KnightAI->SetPlayerActor(player[0]->GetPlayerActor(),Actor::enPlayerNumber_1P);
 				int Number = 0;
 				m_KnightAI->SetRespawnNumber(Number);
 				m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
@@ -591,7 +591,7 @@ void Game::InitSoloPlay()
 				m_Actors.push_back(m_KnightAI1);
 				m_KnightAI1->SetPosition(objData.position);
 				m_KnightAI1->SetCharaconPosition(objData.position);
-				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor());
+				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor(),Actor::enPlayerNumber_1P);
 				int Number = 1;
 				m_KnightAI1->SetRespawnNumber(Number);
 				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
@@ -605,7 +605,7 @@ void Game::InitSoloPlay()
 				m_Actors.push_back(m_KnightAI2);
 				m_KnightAI2->SetPosition(objData.position);
 				m_KnightAI2->SetCharaconPosition(objData.position);
-				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor());
+				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
 				int Number = 3;
 				m_KnightAI2->SetRespawnNumber(Number);
 				m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
@@ -674,7 +674,8 @@ void Game::InitMultiPlay()
 				m_Actors.push_back(m_KnightAI1);
 				m_KnightAI1->SetPosition(objData.position);
 				m_KnightAI1->SetCharaconPosition(objData.position);
-				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor());
+				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+				m_KnightAI1->SetPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
 				int Number = 1;
 				m_KnightAI1->SetRespawnNumber(Number);
 				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
@@ -688,7 +689,8 @@ void Game::InitMultiPlay()
 				m_Actors.push_back(m_KnightAI2);
 				m_KnightAI2->SetPosition(objData.position);
 				m_KnightAI2->SetCharaconPosition(objData.position);
-				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor());
+				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+				m_KnightAI2->SetPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
 				int Number = 3;
 				m_KnightAI2->SetRespawnNumber(Number);
 				m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);

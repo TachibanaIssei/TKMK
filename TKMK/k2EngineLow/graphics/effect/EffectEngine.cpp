@@ -20,7 +20,7 @@ namespace nsK2EngineLow {
 		auto d3dDevice = g_graphicsEngine->GetD3DDevice();
 		auto commandQueue = g_graphicsEngine->GetCommandQueue();
 
-		for (int i = 0; i < MAX_VIEWPORT; i++) {
+		for (int i = 0; i < 2; i++) {
 			// レンダラーを作成。
 			m_renderer[i] = ::EffekseerRendererDX12::Create(
 				d3dDevice,
@@ -32,17 +32,14 @@ namespace nsK2EngineLow {
 				false,
 				8000
 			);
-			for (int j = 0;j < BACK_BUFFER_COUNT; j++) {
-				//メモリプールの作成。
-				m_memoryPool[i][j] = EffekseerRenderer::CreateSingleFrameMemoryPool(m_renderer[i]->GetGraphicsDevice());
-				// コマンドリストの作成
-				m_commandList[i][j] = EffekseerRenderer::CreateCommandList(m_renderer[i]->GetGraphicsDevice(), m_memoryPool[i][j]);
-				
-			}
-			// エフェクトマネージャーの作成。
-			m_manager[i] = ::Effekseer::Manager::Create(8000);
-			m_manager[i]->SetCurveLoader(Effekseer::MakeRefPtr<Effekseer::CurveLoader>());
+			//メモリプールの作成。
+			m_memoryPool[i] = EffekseerRenderer::CreateSingleFrameMemoryPool(m_renderer[i]->GetGraphicsDevice());
+			// コマンドリストの作成
+			m_commandList[i] = EffekseerRenderer::CreateCommandList(m_renderer[i]->GetGraphicsDevice(), m_memoryPool[i]);
 		}
+		// エフェクトマネージャーの作成。
+		m_manager = ::Effekseer::Manager::Create(8000);
+		m_manager->SetCurveLoader(Effekseer::MakeRefPtr<Effekseer::CurveLoader>());
 	}
 	Effekseer::EffectRef EffectEngine::LoadEffect(const int number)
 	{
@@ -65,14 +62,12 @@ namespace nsK2EngineLow {
 	}
 	int EffectEngine::Play(Effekseer::EffectRef effect)
 	{
-		auto handle = m_manager[0]->Play(effect, 0, 0, 0);
-		m_manager[1]->Play(effect, 0, 0, 0);
+		auto handle = m_manager->Play(effect, 0, 0, 0);
 		return handle;
 	}
 	void EffectEngine::Stop(int effectHandle)
 	{
-		m_manager[0]->StopEffect(effectHandle);
-		m_manager[1]->StopEffect(effectHandle);
+		m_manager->StopEffect(effectHandle);
 	}
 
 
@@ -81,10 +76,10 @@ namespace nsK2EngineLow {
 		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
 		// Begin a command list
 		// コマンドリストを開始する。
-		EffekseerRendererDX12::BeginCommandList(m_commandList[cameraNumber][backBufferNo], g_graphicsEngine->GetCommandList());
-		m_renderer[backBufferNo]->SetCommandList(m_commandList[cameraNumber][backBufferNo]);
+		EffekseerRendererDX12::BeginCommandList(m_commandList[backBufferNo], g_graphicsEngine->GetCommandList());
+		m_renderer[backBufferNo]->SetCommandList(m_commandList[backBufferNo]);
 
-		m_manager[cameraNumber]->Update();
+		m_manager->Update();
 
 		//レンダラーにカメラ行列を設定。
 		m_renderer[backBufferNo]->SetCameraMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetViewMatrix());
@@ -97,18 +92,18 @@ namespace nsK2EngineLow {
 	void EffectEngine::BeginFrame(int cameraNumber)
 	{
 		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
-		m_memoryPool[cameraNumber][backBufferNo]->NewFrame();
+		m_memoryPool[backBufferNo]->NewFrame();
 		// 描画モジュールの設定。
-		m_manager[cameraNumber]->SetSpriteRenderer(m_renderer[backBufferNo]->CreateSpriteRenderer());
-		m_manager[cameraNumber]->SetRibbonRenderer(m_renderer[backBufferNo]->CreateRibbonRenderer());
-		m_manager[cameraNumber]->SetRingRenderer(m_renderer[backBufferNo]->CreateRingRenderer());
-		m_manager[cameraNumber]->SetTrackRenderer(m_renderer[backBufferNo]->CreateTrackRenderer());
-		m_manager[cameraNumber]->SetModelRenderer(m_renderer[backBufferNo]->CreateModelRenderer());
+		m_manager->SetSpriteRenderer(m_renderer[backBufferNo]->CreateSpriteRenderer());
+		m_manager->SetRibbonRenderer(m_renderer[backBufferNo]->CreateRibbonRenderer());
+		m_manager->SetRingRenderer(m_renderer[backBufferNo]->CreateRingRenderer());
+		m_manager->SetTrackRenderer(m_renderer[backBufferNo]->CreateTrackRenderer());
+		m_manager->SetModelRenderer(m_renderer[backBufferNo]->CreateModelRenderer());
 
 		// ローダーの設定。
-		m_manager[cameraNumber]->SetTextureLoader(m_renderer[backBufferNo]->CreateTextureLoader());
-		m_manager[cameraNumber]->SetModelLoader(m_renderer[backBufferNo]->CreateModelLoader());
-		m_manager[cameraNumber]->SetMaterialLoader(m_renderer[backBufferNo]->CreateMaterialLoader());
+		m_manager->SetTextureLoader(m_renderer[backBufferNo]->CreateTextureLoader());
+		m_manager->SetModelLoader(m_renderer[backBufferNo]->CreateModelLoader());
+		m_manager->SetMaterialLoader(m_renderer[backBufferNo]->CreateMaterialLoader());
 	}
 	void EffectEngine::BeginDraw()
 	{
@@ -130,7 +125,7 @@ namespace nsK2EngineLow {
 		m_renderer[backBufferNo]->SetCommandList(nullptr);
 
 		// Begin to rendering effects
-		EffekseerRendererDX12::EndCommandList(m_commandList[0][backBufferNo]);
+		EffekseerRendererDX12::EndCommandList(m_commandList[backBufferNo]);
 	}
 	void EffectEngine::Draw(int cameraNumber)
 	{
@@ -144,7 +139,7 @@ namespace nsK2EngineLow {
 
 		// Render effects
 		// エフェクトの描画を行う。
-		m_manager[0]->Draw();
+		m_manager->Draw();
 
 		
 		// EffekseerRendererDX12::EndCommandList(m_commandList[cameraNumber][backBufferNo]);
@@ -156,8 +151,7 @@ namespace nsK2EngineLow {
 		auto it = m_effectMap.find(number);
 		if (it == m_effectMap.end()) {
 			//新規。
-			effect = Effekseer::Effect::Create(m_manager[0], filePath);
-			Effekseer::Effect::Create(m_manager[1], filePath);
+			effect = Effekseer::Effect::Create(m_manager, filePath);
 			m_effectMap.insert({ number, effect });
 		}
 	}

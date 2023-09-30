@@ -101,6 +101,9 @@ void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 			rc.SetViewport(m_viewPorts[i]);
 			//モデル描画
 			ModelRendering(rc);
+			//敵のHPバーなどの画像と文字を描画
+			SpriteViewportRendering(rc, i);
+			FontViewportRendering(rc, i);
 		}
 	}
 	//画面分割をしない
@@ -142,9 +145,25 @@ void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc, bool dra
 	}
 }
 
+void nsK2EngineLow::RenderingEngine::SpriteViewportRendering(RenderContext& rc, const int viewportNo)
+{
+	for (auto& spriteObj : m_spriteDrawViewportList[viewportNo])
+	{
+		spriteObj->OnRenderSprite(rc);
+	}
+}
+
 void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc)
 {
 	for (auto& fontObj : m_fontList)
+	{
+		fontObj->OnRenderFont(rc);
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::FontViewportRendering(RenderContext& rc, int viewportNo)
+{
+	for (auto& fontObj : m_fontDrawViewportList[viewportNo])
 	{
 		fontObj->OnRenderFont(rc);
 	}
@@ -194,11 +213,17 @@ void nsK2EngineLow::RenderingEngine::ClearVectorList()
 	m_spriteList.clear();
 	m_laterSpriteList.clear();
 	m_fontList.clear();
+
+	for (int i = 0; i < MAX_VIEWPORT; i++)
+	{
+		m_spriteDrawViewportList[i].clear();
+		m_fontDrawViewportList[i].clear();
+	}
 }
 
 void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
-	SetEyePos(g_camera3D[enCameraDrawing_Left]->GetPosition());
+	SetEyePos(g_camera3D[enCameraDrawing_Left]->GetPosition(), g_camera3D[enCameraDrawing_Right]->GetPosition());
 
 	m_shadow.Render(rc);
 

@@ -1,7 +1,14 @@
 #include "k2EngineLowPreCompile.h"
 #include "FontRender.h"
 
-void nsK2EngineLow::FontRender::Draw(RenderContext& rc)
+void nsK2EngineLow::FontRender::Draw(RenderContext& rc, const int viewportNo)
 {
-	g_renderingEngine->AddFontList(this);
+	if (viewportNo == -1)
+	{
+		g_renderingEngine->AddFontList(this);
+	}
+	else
+	{
+		g_renderingEngine->AddFontDrawViewportList(this, viewportNo);
+	}
 }

@@ -10,9 +10,9 @@ namespace nsK2EngineLow {
 	class EffectEngine : public Noncopyable {
 		static EffectEngine* m_instance;	//唯一のインスタンス。
 		EffekseerRenderer::RendererRef m_renderer[2];	//レンダラー。
-		Effekseer::RefPtr<EffekseerRenderer::SingleFrameMemoryPool> m_memoryPool[2][2];	//メモリプール。
-		Effekseer::RefPtr<EffekseerRenderer::CommandList> m_commandList[2][2];			//コマンドリスト。
-		Effekseer::ManagerRef m_manager[2];
+		Effekseer::RefPtr<EffekseerRenderer::SingleFrameMemoryPool> m_memoryPool[2];	//メモリプール。
+		Effekseer::RefPtr<EffekseerRenderer::CommandList> m_commandList[2];			//コマンドリスト。
+		Effekseer::ManagerRef m_manager;
 		std::map< int, Effekseer::EffectRef > m_effectMap;
 	public:
 		/// <summary>
@@ -48,7 +48,7 @@ namespace nsK2EngineLow {
 		/// <returns></returns>
 		bool IsPlay(int handle) const
 		{
-			return m_manager[0]->GetShown(handle);
+			return m_manager->GetShown(handle);
 		}
 		/// <summary>
 		/// エフェクトのワールド行列を更新。
@@ -83,8 +83,7 @@ namespace nsK2EngineLow {
 			baseMat.Value[3][1] = mBase.m[3][1];
 			baseMat.Value[3][2] = mBase.m[3][2];
 
-			m_manager[0]->SetBaseMatrix(handle, baseMat);
-			m_manager[1]->SetBaseMatrix(handle, baseMat);
+			m_manager->SetBaseMatrix(handle, baseMat);
 		}
 		/// <summary>
 		/// エフェクトを再生。

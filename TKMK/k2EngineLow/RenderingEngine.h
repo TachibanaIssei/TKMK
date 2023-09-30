@@ -53,6 +53,17 @@ namespace nsK2EngineLow {
 				m_spriteList.push_back(spriteRender);
 			}
 		}
+
+		/// <summary>
+		/// 画面分割中のビューポートに描画するスプライトをリストに追加
+		/// </summary>
+		/// <param name="spriteRender"></param>
+		/// <param name="viewportNo"></param>
+		void AddSpriteDrawViewportList(SpriteRender* spriteRender, const int viewportNo)
+		{
+			m_spriteDrawViewportList[viewportNo].push_back(spriteRender);
+		}
+
 		/// <summary>
 		/// フォントレンダークラスをリストに追加する
 		/// </summary>
@@ -60,6 +71,15 @@ namespace nsK2EngineLow {
 		void AddFontList(FontRender* fontRender)
 		{
 			m_fontList.push_back(fontRender);
+		}
+		/// <summary>
+		/// 画面分割中のビューポートに描画するフォントレンダークラスをリストに追加する
+		/// </summary>
+		/// <param name="spriteRender"></param>
+		/// <param name="viewportNo"></param>
+		void AddFontDrawViewportList(FontRender* fontRender, const int viewportNo)
+		{
+			m_fontDrawViewportList[viewportNo].push_back(fontRender);
 		}
 
 		/// <summary>
@@ -183,10 +203,10 @@ namespace nsK2EngineLow {
 		/// カメラの位置を設定する
 		/// </summary>
 		/// <param name="eyePos"></param>
-		void SetEyePos(Vector3 eyePos)
+		void SetEyePos(Vector3 eyePosLeft,Vector3 eyePosRight)
 		{
-			m_sceneLight[enCameraDrawing_Left].SetEyePos(eyePos);
-			m_sceneLight[enCameraDrawing_Right].SetEyePos(eyePos);
+			m_sceneLight[enCameraDrawing_Left].SetEyePos(eyePosLeft);
+			m_sceneLight[enCameraDrawing_Right].SetEyePos(eyePosRight);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -557,10 +577,22 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダーコンテキスト</param>
 		void SpriteRendering(RenderContext& rc, bool drawTiming);
 		/// <summary>
+		/// スプライトを画面分割中のビューポートに描画
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="viewportNo"></param>
+		void SpriteViewportRendering(RenderContext& rc, int viewportNo);
+		/// <summary>
 		/// フォントを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void FontRendering(RenderContext& rc);
+		/// <summary>
+		/// フォントを画面分割中のビューポートに描画
+		/// </summary>
+		/// <param name="rc"></param>
+		/// <param name="viewportNo"></param>
+		void FontViewportRendering(RenderContext& rc, int viewportNo);
 		/// <summary>
 		/// エフェクト描画を実行する
 		/// </summary>
@@ -575,7 +607,9 @@ namespace nsK2EngineLow {
 		std::vector<ModelRender*>	m_modelList;				//モデルクラスのリスト
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
 		std::vector<SpriteRender*>	m_laterSpriteList;			//描画順が遅いスプライトクラスのリスト
+		std::vector<SpriteRender*>	m_spriteDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するスプライトのリスト
 		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
+		std::vector<FontRender*>	m_fontDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するフォントクラスのリスト
 
 		SceneLight					m_sceneLight[MAX_VIEWPORT];				//シーンライト
 
@@ -590,6 +624,5 @@ namespace nsK2EngineLow {
 		D3D12_VIEWPORT m_soloViewPort;					//1画面用のビューポート
 		D3D12_VIEWPORT m_viewPorts[MAX_VIEWPORT];	//画面分割用のビューポート
 		bool m_isSplitScreen = false;					//画面分割をする？trueならする
-
 	};
 }

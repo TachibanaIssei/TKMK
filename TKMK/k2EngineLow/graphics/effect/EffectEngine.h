@@ -105,12 +105,13 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="deltaTime">1フレームの経過時間。</param>
 		void Update(float deltaTime, int cameraNumber);
-		void BeginDraw();
+		void BeginDraw(int cameraNumber);
 		void EndDraw();
+		void Flush();
 		/// <summary>
 		/// 描画。
 		/// </summary>
-		void Draw(int cameraNumber);
+		void Draw();
 		/// <summary>
 		/// エフェクトを読み込んで登録する。
 		/// </summary>

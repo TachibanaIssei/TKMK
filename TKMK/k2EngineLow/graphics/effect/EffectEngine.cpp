@@ -105,9 +105,15 @@ namespace nsK2EngineLow {
 		m_manager->SetModelLoader(m_renderer[backBufferNo]->CreateModelLoader());
 		m_manager->SetMaterialLoader(m_renderer[backBufferNo]->CreateMaterialLoader());
 	}
-	void EffectEngine::BeginDraw()
+	void EffectEngine::BeginDraw(int cameraNumber)
 	{
 		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
+		// Begin to rendering effects
+		// エフェクトの描画開始処理を行う。
+		// m_renderer[cameraNumber][backBufferNo]->BeginRendering();
+		m_renderer[backBufferNo]->SetCameraMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetViewMatrix());
+		//レンダラーにプロジェクション行列を設定。
+		m_renderer[backBufferNo]->SetProjectionMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetProjectionMatrix());
 		// Begin to rendering effects
 		// エフェクトの描画開始処理を行う。
 		m_renderer[backBufferNo]->BeginRendering();
@@ -120,6 +126,10 @@ namespace nsK2EngineLow {
 		// エフェクトの描画終了処理を行う。
 		m_renderer[backBufferNo]->EndRendering();
 
+	}
+	void EffectEngine::Flush()
+	{
+		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
 		// Finish a command list
 		// コマンドリストを終了する。
 		m_renderer[backBufferNo]->SetCommandList(nullptr);
@@ -127,21 +137,15 @@ namespace nsK2EngineLow {
 		// Begin to rendering effects
 		EffekseerRendererDX12::EndCommandList(m_commandList[backBufferNo]);
 	}
-	void EffectEngine::Draw(int cameraNumber)
+	void EffectEngine::Draw()
 	{
 		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
-		// Begin to rendering effects
-		// エフェクトの描画開始処理を行う。
-		// m_renderer[cameraNumber][backBufferNo]->BeginRendering();
-		m_renderer[backBufferNo]->SetCameraMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetViewMatrix());
-		//レンダラーにプロジェクション行列を設定。
-		m_renderer[backBufferNo]->SetProjectionMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetProjectionMatrix());
 
 		// Render effects
 		// エフェクトの描画を行う。
 		m_manager->Draw();
 
-		
+
 		// EffekseerRendererDX12::EndCommandList(m_commandList[cameraNumber][backBufferNo]);
 	}
 

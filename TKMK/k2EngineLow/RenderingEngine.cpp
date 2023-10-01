@@ -66,16 +66,16 @@ void nsK2EngineLow::RenderingEngine::InitViewPorts()
 	m_soloViewPort.MaxDepth = 1.0f;				//深度値の最大値
 
 	//左の画面
-	m_viewPorts[enCameraDrawing_Left].Width		= FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
-	m_viewPorts[enCameraDrawing_Left].Height	= FRAME_BUFFER_H;			//画面の縦サイズ
-	m_viewPorts[enCameraDrawing_Left].TopLeftX	= 0;						//画面左上のx座標
-	m_viewPorts[enCameraDrawing_Left].TopLeftY	= 0;						//画面左上のy座標
-	m_viewPorts[enCameraDrawing_Left].MinDepth	= 0.0f;						//深度値の最小値
-	m_viewPorts[enCameraDrawing_Left].MaxDepth	= 1.0f;						//深度値の最大値
+	m_viewPorts[enCameraDrawing_Left].Width = FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
+	m_viewPorts[enCameraDrawing_Left].Height = FRAME_BUFFER_H;			//画面の縦サイズ
+	m_viewPorts[enCameraDrawing_Left].TopLeftX = 0;						//画面左上のx座標
+	m_viewPorts[enCameraDrawing_Left].TopLeftY = 0;						//画面左上のy座標
+	m_viewPorts[enCameraDrawing_Left].MinDepth = 0.0f;						//深度値の最小値
+	m_viewPorts[enCameraDrawing_Left].MaxDepth = 1.0f;						//深度値の最大値
 
 	//右の画面
-	m_viewPorts[enCameraDrawing_Right].Width	= FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
-	m_viewPorts[enCameraDrawing_Right].Height	= FRAME_BUFFER_H;			//画面の縦サイズ
+	m_viewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
+	m_viewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;			//画面の縦サイズ
 	m_viewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF;	//画面左上のx座標
 	m_viewPorts[enCameraDrawing_Right].TopLeftY = 0;						//画面左上のy座標
 	m_viewPorts[enCameraDrawing_Right].MinDepth = 0.0f;						//深度値の最小値
@@ -122,10 +122,10 @@ void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
 	}
 }
 
-void nsK2EngineLow::RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera,int number)
+void nsK2EngineLow::RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera, int number)
 {
 	for (auto& modelObj : m_modelList) {
-		modelObj->OnRenderShadowModel(rc,camera,number);
+		modelObj->OnRenderShadowModel(rc, camera, number);
 	}
 }
 
@@ -174,18 +174,21 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 	if (GetSplitScreenFlag()) {
 		g_camera2D->SetWidth(FRAME_BUFFER_WIDTH_HALF);
 		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Left);
-		EffectEngine::GetInstance()->BeginDraw();
 		//左画面
 		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Left);
 			rc.SetViewport(m_viewPorts[enCameraDrawing_Left]);
-			EffectEngine::GetInstance()->Draw(enCameraDrawing_Left);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
 		}
 		//右画面
 		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Right);
 			rc.SetViewport(m_viewPorts[enCameraDrawing_Right]);
-			EffectEngine::GetInstance()->Draw(enCameraDrawing_Right);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
 		}
-		EffectEngine::GetInstance()->EndDraw();
+		EffectEngine::GetInstance()->Flush();
 		//1画面のスプライトのアスペクト比に合わせる。
 		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
 		//ビューポートを画面全体用に切り替える
@@ -202,9 +205,12 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 		//1画面オンリーのエフェクト更新
 		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Solo);
 		//1画面オンリーのエフェクト描画
-		EffectEngine::GetInstance()->Draw(enCameraDrawing_Solo);
+		EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Solo);
+		EffectEngine::GetInstance()->Draw();
+		EffectEngine::GetInstance()->EndDraw();
+		EffectEngine::GetInstance()->Flush();
 	}
-	
+
 }
 
 void nsK2EngineLow::RenderingEngine::ClearVectorList()
@@ -236,7 +242,7 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 
 	//書き込み終了待ち
 	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
-	
+
 	m_postEffect.Render(rc, m_mainRenderTarget);
 
 	ExcuteEffectRender(rc);

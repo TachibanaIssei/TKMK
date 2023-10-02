@@ -269,6 +269,6 @@ private:
 	bool FightScale = false;
 	bool FightshotStopFlag = false;
 
-	bool m_isMultiPlay = false;	//2人プレイかどうか（tureだったら2人プレイ）
+	RenderingEngine::EnGameMode m_gameMode = RenderingEngine::enGameMode_SoloPlay;	//プレイモード
 };
 

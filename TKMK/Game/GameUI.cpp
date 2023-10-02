@@ -141,10 +141,10 @@ bool GameUI::Start()
 	m_player1P = FindGO<Player>("player");
 	fade = FindGO<Fade>("fade");
 	
-	m_isMultiPlay = g_renderingEngine->GetSplitScreenFlag();
+	m_gameMode = g_renderingEngine->GetGameMode();
 
 	//マルチプレイなら
-	if (m_isMultiPlay)
+	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 	{
 		m_player2P = FindGO<Player>("player2");
 	}
@@ -267,7 +267,7 @@ void GameUI::InitAssets()
 
 	//右下のフレーム
 	{
-		if (m_isMultiPlay)
+		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 		{
 			m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
 			m_Flame[enPlayerNumber_2P].Init("Assets/sprite/gameUI/LevelBar2P.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
@@ -476,7 +476,7 @@ void GameUI::InitAssets()
 			m_HpFont[i].SetRotation(0.0f);
 			m_HpFont[i].SetShadowParam(true, 2.0f, g_vec4Black);
 
-			if (m_isMultiPlay)
+			if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 			{
 				//HPゲージ裏の画像を読み込む
 				m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
@@ -507,7 +507,7 @@ void GameUI::InitAssets()
 		White_BackHp[enPlayerNumber_1P] = m_player1P->GetCharacterHp();
 		WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
 		BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
-		if (m_isMultiPlay)
+		if (m_gameMode)
 		{
 			White_BackHp[enPlayerNumber_2P] = m_player2P->GetCharacterHp();
 			WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
@@ -596,7 +596,7 @@ void GameUI::SkillCoolTimeFont()
 	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 	m_skillFont[enPlayerNumber_1P].SetText(Skill);
 
-	if (m_isMultiPlay) 
+	if (m_gameMode) 
 	{
 		SkillCoolTime = m_player2P->CharGetSkillCoolTimer();
 		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
@@ -627,7 +627,7 @@ void GameUI::Update()
 	{
 		RespawnCountDown(enPlayerNumber_1P);
 	}
-	if (m_isMultiPlay && m_player2P->CharGetRespawnTime() > 0.0f)
+	if (m_gameMode && m_player2P->CharGetRespawnTime() > 0.0f)
 	{
 		RespawnCountDown(enPlayerNumber_2P);
 	}
@@ -677,7 +677,7 @@ void GameUI::Update()
 	m_LvNumber_back[enPlayerNumber_2P].Update();
 
 	ExpState(m_player1P);
-	if (m_isMultiPlay)
+	if (m_gameMode)
 	{
 		ExpState(m_player2P);
 	}
@@ -812,7 +812,7 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 		case 0:
 			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
 			//画面を暗くしてゆく
-			if (m_isMultiPlay)
+			if (m_gameMode)
 			{
 				if (playerNumber == enPlayerNumber_1P) {
 					fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Left);
@@ -891,7 +891,7 @@ void GameUI::HPBar()
 	}
 	m_HpBar_White[enPlayerNumber_1P].Update();
 
-	if (!m_isMultiPlay)
+	if (!m_gameMode)
 	{
 		return;
 	}
@@ -1365,7 +1365,7 @@ void GameUI::Render(RenderContext& rc)
 	}
 
 	//リスポーンするまでの時間
-#ifdef m_isMultiPlay
+#ifdef m_gameMode
 	//マルチプレイ時
 	if (m_player1P->CharGetRespawnTime() > 0 || m_player2P->CharGetRespawnTime() > 0)
 #else
@@ -1392,7 +1392,7 @@ void GameUI::Render(RenderContext& rc)
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
 		//レベルや経験値のフレーム
-		if (m_isMultiPlay)
+		if (m_gameMode)
 		{
 			for (int i = 0; i < enPlayerNumber_Num; i++)
 			{
@@ -1409,7 +1409,7 @@ void GameUI::Render(RenderContext& rc)
 		{
 			m_skillFont[enPlayerNumber_1P].Draw(rc);
 		}
-		if (m_isMultiPlay)
+		if (m_gameMode)
 		{
 			if (m_player2P->CharGetSkillCoolTimer() != playerCoolTime[enPlayerNumber_2P])
 			{
@@ -1421,7 +1421,7 @@ void GameUI::Render(RenderContext& rc)
 		m_TimeAndPointRender.Draw(rc);
 		m_timeLeft.Draw(rc);
 
-		if (m_isMultiPlay)
+		if (m_gameMode)
 		{
 			m_experienceBarBack[enPlayerNumber_2P].Draw(rc);
 			if (m_mathExp[enPlayerNumber_2P] != 0) {
@@ -1475,7 +1475,7 @@ void GameUI::Render(RenderContext& rc)
 		int enemyNum = 0;
 		for (auto actor:m_Actors) 
 		{
-			if (m_isMultiPlay && num > 1)
+			if (m_gameMode && num > 1)
 			{
 				break;
 			}

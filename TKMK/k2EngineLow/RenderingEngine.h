@@ -15,6 +15,13 @@ namespace nsK2EngineLow {
 	class RenderingEngine
 	{
 	public:
+		enum EnGameMode {
+			enGameMode_SoloPlay = 1,
+			enGameMode_DuoPlay,
+			enGameMode_TrioPlay,
+			enGameMode_QuartetPlay,
+			enGameMode_Num
+		};
 		/// <summary>
 		/// 現在のカメラ描画
 		/// </summary>
@@ -525,26 +532,25 @@ namespace nsK2EngineLow {
 	////////////////////////////////////////////////////////////////////////////////
 
 		/// <summary>
-		/// 画面分割をするフラグを設定
+		/// ゲームモードをレンダリングエンジンに設定する
 		/// </summary>
-		/// <param name="flag">trueなら分割する</param>
-		void SetSplitScreenFlag(bool flag)
+		void SetGameModeToRenderingEngine(const EnGameMode gameMode)
 		{
-			m_isSplitScreen = flag;
+			m_gameMode = gameMode;
 		}
 		/// <summary>
-		/// 画面分割をするかのフラグを取得
+		/// ゲームモードを取得
 		/// </summary>
 		/// <returns></returns>
-		bool GetSplitScreenFlag()
+		const EnGameMode GetGameMode() const 
 		{
-			return m_isSplitScreen;
+			return m_gameMode;
 		}
 		/// <summary>
 		/// どちらのカメラを描画中か
 		/// </summary>
 		/// <returns></returns>
-		EnCameraDrawing GetCameraDrawing()
+		const EnCameraDrawing GetCameraDrawing() const 
 		{
 			return m_cameraDrawing;
 		}
@@ -623,6 +629,6 @@ namespace nsK2EngineLow {
 
 		D3D12_VIEWPORT m_soloViewPort;					//1画面用のビューポート
 		D3D12_VIEWPORT m_viewPorts[MAX_VIEWPORT];	//画面分割用のビューポート
-		bool m_isSplitScreen = false;					//画面分割をする？trueならする
+		EnGameMode m_gameMode = enGameMode_SoloPlay;
 	};
 }

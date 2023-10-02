@@ -96,6 +96,7 @@ public:
 	/// </summary>
 	/// <param name="gamescene">変更したいステートの名前</param>
 	void SetCameraState(CameraState gamescene) {
+		if (this == nullptr) return;
 		m_cameraState = gamescene;
 
 	}

@@ -391,7 +391,7 @@ bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFla
 		if (m_respwanTimer <= 0.0f)
 		{
 			if (fadeFlag == true) {
-				if (g_renderingEngine->GetSplitScreenFlag())
+				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 				{
 					if (m_enPlayerNumber == enPlayerNumber_1P)
 					{

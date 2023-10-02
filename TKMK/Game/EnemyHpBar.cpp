@@ -66,14 +66,16 @@ void EnemyHpBar::CalcHpBarPosition(const int cameraNo, Status* status, const Vec
 	scale.x = float(status->GetHp()) / float(status->GetMaxHp());
 	m_HP_Bar.SetScale(scale);
 
-	Vector3 BerPosition = characterPosition;
-	BerPosition.y += 75.0f;
+	Vector2 levelFontPos = Vector2::Zero;
+	Vector3 berPosition = characterPosition;
+	berPosition.y += 75.0f;
 	//À•W‚ð•ÏŠ·‚·‚é
-	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPosition(m_HPBer_Pos, BerPosition);
-	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPosition(m_HPWindow_Pos, BerPosition);
-	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPosition(m_HPBack_Pos, BerPosition);
+	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPosition(levelFontPos, berPosition);
+	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_HPBer_Pos, berPosition);
+	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_HPWindow_Pos, berPosition);
+	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_HPBack_Pos, berPosition);
 
-	m_levelFontPos = m_HPBer_Pos;
+	m_levelFontPos = levelFontPos;
 	m_levelFontPos.x += LEVEL_FONT_ADD_POS_X;
 	m_levelFontPos.y += LEVEL_FONT_ADD_POS_Y;
 

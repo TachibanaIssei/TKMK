@@ -149,14 +149,14 @@ bool Game::Start()
 	});
 
 	//ソロプレイだったら
-	if (m_gameMode == enGameMode_SoloPlay)
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
 	{
 		InitSoloPlay();
 	}
 	//複数人プレイだったら
-	else if (m_gameMode == enGameMode_DuoPlay)
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 	{
-		InitMultiPlay();
+		InitDuoPlay();
 	}
 
 	//ゲームの状態をゲームステートにする
@@ -266,7 +266,7 @@ void Game::Battle()
 			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 			//カメラのステートをポーズステートに変更
 			m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
-			if (m_gameMode == enGameMode_DuoPlay)
+			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 			{
 				m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
 			}
@@ -351,7 +351,7 @@ void Game::GoResult()
 {
 	if (fade->GetCurrentAlpha() >= 1.0f)
 	Result* result = NewGO<Result>(0, "Result");
-	g_renderingEngine->SetSplitScreenFlag(false);
+	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
 	//DeleteGO(this);
 }
 
@@ -369,14 +369,14 @@ void Game::Between()
 		//UIのステートをゲームステートに戻す
 		m_gameUI->SetGameUIState(m_gameUI->m_GameState);
 		//カメラのステートをゲームステートに戻す
-		if (g_renderingEngine->GetSplitScreenFlag())
+		if (g_renderingEngine->GetGameMode() != RenderingEngine::enGameMode_SoloPlay)
 		{
-			for (int i = 0; i < enGameMode_Num; i++) {
+			for (int i = 0; i < RenderingEngine::enGameMode_Num - 1; i++) {
 				m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enGameState);
 			}
 		}
 		else {
-			m_gamecamera[enGameMode_SoloPlay]->SetCameraState(m_gamecamera[enGameMode_SoloPlay]->enGameState);
+			m_gamecamera[RenderingEngine::enGameMode_SoloPlay - 1]->SetCameraState(m_gamecamera[RenderingEngine::enGameMode_SoloPlay - 1]->enGameState);
 		}
 		//生成されている中立の敵のステートをゲームステートに戻す
 		for (auto seutral_Enemy : m_neutral_Enemys)
@@ -556,7 +556,7 @@ void Game::GetActorPoints(int charPoints[])
 void Game::InitSoloPlay()
 {
 	//画面分割をしない
-	g_renderingEngine->SetSplitScreenFlag(false);
+	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
 
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
@@ -638,10 +638,10 @@ void Game::InitSoloPlay()
 	m_RabbitSprite.Update();
 }
 
-void Game::InitMultiPlay()
+void Game::InitDuoPlay()
 {
 	//画面分割をする
-	g_renderingEngine->SetSplitScreenFlag(true);
+	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_DuoPlay);
 
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
@@ -732,7 +732,35 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	
 	Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(1, CreateEnemyName());
 	neutral_Enemy->SetNeutral_EnemyGame(this);
-	neutral_Enemy->SetPlayerActor(player[0]->GetPlayerActor(),player[1]->GetPlayerActor());
+
+	//ゲームモードによって渡すプレイヤーの情報を変更する
+	//1人プレイのとき
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+	{
+		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor());
+	}
+	//2人プレイのとき
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+	{
+		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(), 
+			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor());
+	}
+	//3人プレイのとき
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+	{
+		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(), 
+			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor(),
+			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor());
+	}
+	//4人プレイのとき
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+	{
+		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
+			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor(),
+			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor(),
+			player[Actor::EnPlayerNumber::enPlayerNumber_4P]->GetPlayerActor());
+	}
+
 	neutral_Enemy->SetPosition(pos);
 	neutral_Enemy->SetRotation(rot);
 	if (isRabiit == true)
@@ -907,7 +935,7 @@ void Game::PauseTime()
 		//Push_OK();
 		Tittle* m_tittle = NewGO<Tittle>(0, "m_tittle");
 
-		g_renderingEngine->SetSplitScreenFlag(false);
+		g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
 
 		DeleteGO(this);
 	}

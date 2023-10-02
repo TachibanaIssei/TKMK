@@ -46,7 +46,7 @@ void nsK2EngineLow::RenderingEngine::InitCopyToFrameBufferSprite()
 
 void nsK2EngineLow::RenderingEngine::EffectBeginRender()
 {
-	if (GetSplitScreenFlag())
+	if (m_gameMode == enGameMode_DuoPlay)
 	{
 		EffectEngine::GetInstance()->BeginFrame(0);
 		EffectEngine::GetInstance()->BeginFrame(1);
@@ -85,7 +85,7 @@ void nsK2EngineLow::RenderingEngine::InitViewPorts()
 void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 {
 	//画面分割をする
-	if (m_isSplitScreen)
+	if (m_gameMode == enGameMode_DuoPlay)
 	{
 		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
@@ -171,7 +171,7 @@ void nsK2EngineLow::RenderingEngine::FontViewportRendering(RenderContext& rc, in
 
 void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 {
-	if (GetSplitScreenFlag()) {
+	if (m_gameMode == enGameMode_DuoPlay) {
 		g_camera2D->SetWidth(FRAME_BUFFER_WIDTH_HALF);
 		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Left);
 		//左画面

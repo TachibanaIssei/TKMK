@@ -52,14 +52,14 @@ bool KnightAI::Start() {
 
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 
-	if (m_game->GetGameMode() == Game::enGameMode_SoloPlay)
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
 	{
 		m_enemyHpBar[0] = NewGO<EnemyHpBar>(0, "enemyHpBar");
 		m_enemyHpBar[0]->Init();
 	}
 	else
 	{
-		for (int i = 0; i < m_game->GetGameMode(); i++)
+		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 		{
 			m_enemyHpBar[i] = NewGO<EnemyHpBar>(0, "enemyHpBar");
 			m_enemyHpBar[i]->Init(i);
@@ -92,9 +92,9 @@ void KnightAI::Update()
 	//アニメーションの再生
 	PlayAnimation();
 	
-	for (int i = 0; i < m_game->GetGameMode(); i++)
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 	{
-		m_enemyHpBar[i]->CalcHpBarPosition(0, &m_status, m_position, Lv);
+		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, Lv);
 		m_enemyHpBar[i]->SetDrawFlag(false);
 		//HPバーを描画する条件を満たしたら
 		if (DrawHP(i))

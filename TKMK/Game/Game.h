@@ -38,14 +38,6 @@ public:
 		enGameState_Num,
 	};
 
-	enum EnGameMode {
-		enGameMode_SoloPlay = 1,
-		enGameMode_DuoPlay,
-		enGameMode_TrioPlay,
-		enGameMode_QuartetPlay,
-		enGameMode_Num
-	};
-
 	EnEFK m_EnEffect = enEffect_Num;
 
 	EnSound m_Sound = enSound_Num;
@@ -379,27 +371,9 @@ public:
 
 	int GetNowRank(Actor* actor);
 
-	/// <summary>
-	/// ゲームモードを設定する
-	/// </summary>
-	/// <param name="gameMode"></param>
-	void SetGameMode(EnGameMode gameMode)
-	{
-		m_gameMode = gameMode;
-	}
-
-	/// <summary>
-	/// ゲームモードを取得する
-	/// </summary>
-	/// <returns>ゲームモード</returns>
-	EnGameMode GetGameMode()
-	{
-		return m_gameMode;
-	}
-
 private:
 	void InitSoloPlay();
-	void InitMultiPlay();
+	void InitDuoPlay();
 
 	/// <summary>
 	/// 中立の敵の名前を設定する
@@ -447,10 +421,9 @@ private:
 	}
 
 	
-
+private:
 	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
-	EnGameMode m_gameMode = enGameMode_Num;
 
 	Level3DRender m_level3DRender;
 	Level3DRender m_Enemylevel;

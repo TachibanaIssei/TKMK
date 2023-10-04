@@ -80,7 +80,7 @@ Game::~Game()
 			DeleteGO(player[i]);
 		}
 	}
-  
+
 	if (GameObjectManager::GetInstance()->IsActive()) {
 		TowerDown->Stop();
 	}
@@ -95,7 +95,7 @@ Game::~Game()
 		});
 	//DeleteGO(lamp);
 	DeleteGO(m_skyCube);
-	
+
 }
 
 bool Game::Start()
@@ -120,8 +120,8 @@ bool Game::Start()
 	fade = FindGO<Fade>("fade");
 	//フェードインしているのでフェードアウトする
 	//画面を明るくする
-	fade->StartFadeOut(1.0f,Fade::enFadeSpriteType_Full,Fade::enFadeSpriteCategory_Tip);
-	
+	fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
+
 
 	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
@@ -143,10 +143,10 @@ bool Game::Start()
 
 			return true;
 		}
-	
+
 		return false;
 
-	});
+		});
 
 	//ソロプレイだったら
 	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
@@ -175,7 +175,7 @@ void Game::Update()
 	//制限時間に達したら
 	if (GameEndFlag == true)
 	{
-		m_GameState=enGamestate_End;
+		m_GameState = enGamestate_End;
 		GameState();
 	}
 
@@ -247,7 +247,7 @@ void Game::Battle()
 	{
 		LightReset();
 	}
-	
+
 	//ポーズステートに変える
 	//スタートボタンを押したら
 	if (g_pad[0]->IsTrigger(enButtonStart)) {
@@ -256,29 +256,29 @@ void Game::Battle()
 		se->SetVolume(SoundEffectVolume);
 		se->Play(false);
 		//ゲームのステートをポーズにする
-			m_GameState = enGameState_Pause;
-			//生成されているキャラのステートをポーズステートに変更
-			for (auto character : m_Actors)
-			{
-				character->ChangeGameState(character->enPause);
-			}
-			//UIのステートをポーズステートに変更
-			m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
-			//カメラのステートをポーズステートに変更
-			m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
-			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
-			{
-				m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
-			}
-			//生成されている中立の敵のステートをポーズステートに変更
-			for (auto seutral_Enemy : m_neutral_Enemys)
-			{
-				seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
-			}
+		m_GameState = enGameState_Pause;
+		//生成されているキャラのステートをポーズステートに変更
+		for (auto character : m_Actors)
+		{
+			character->ChangeGameState(character->enPause);
+		}
+		//UIのステートをポーズステートに変更
+		m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
+		//カメラのステートをポーズステートに変更
+		m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+		{
+			m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
+		}
+		//生成されている中立の敵のステートをポーズステートに変更
+		for (auto seutral_Enemy : m_neutral_Enemys)
+		{
+			seutral_Enemy->SetNeutral_EnemyState(seutral_Enemy->enNeutral_Enemy_Pause);
+		}
 
-			pause = NewGO<Pause>(0, "pause");
+		pause = NewGO<Pause>(0, "pause");
 	}
-	
+
 	//誰かが必殺技を使ったら処理を止める
 	if (UltStopFlag == true)
 	{
@@ -310,9 +310,9 @@ void Game::Battle()
 		{
 			UltCanUseFlag = false;
 			UltCanUseTimer = 0.0f;
-		}	
+		}
 	}
-	
+
 }
 
 //ポーズ時の処理
@@ -350,7 +350,7 @@ void Game::End()
 void Game::GoResult()
 {
 	if (fade->GetCurrentAlpha() >= 1.0f)
-	Result* result = NewGO<Result>(0, "Result");
+		Result* result = NewGO<Result>(0, "Result");
 	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
 	//DeleteGO(this);
 }
@@ -359,7 +359,7 @@ void Game::GoResult()
 void Game::Between()
 {
 	m_BetweenTimer++;
-	if (m_BetweenTimer>=1)
+	if (m_BetweenTimer >= 1)
 	{
 		//生成されているキャラのステートをゲームステートに戻す
 		for (auto character : m_Actors)
@@ -411,8 +411,8 @@ void Game::Respawn()
 			//中立の敵のリスポーンする座標を決める
 			SetEnemyRespawnPos();
 			//中立の敵を生成
-			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber],false);
-			
+			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], false);
+
 		}
 	}
 }
@@ -431,8 +431,8 @@ void Game::RabbitRespawn()
 	RandamRespawnPosNumber = rand() % 19 + 1;	//中立の敵のリスポーンする座標を決める
 	SetEnemyRespawnPos();
 	//中立の敵を生成
-	CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber],true);
-	
+	CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], true);
+
 }
 
 /// <summary>
@@ -445,12 +445,12 @@ void Game::SetEnemyRespawnPos()
 	//ループする最大値を決める
 	int MaxSearchNumber = SearchRespawnPosNumber - 1;
 	//最大値が0だったら
-	if(SearchRespawnPosNumber==0)
+	if (SearchRespawnPosNumber == 0)
 	{
 		MaxSearchNumber = 19;
 	}
 
-	while (SearchRespawnPosNumber!= MaxSearchNumber)
+	while (SearchRespawnPosNumber != MaxSearchNumber)
 	{
 		if (EnemyRespawnFlag[SearchRespawnPosNumber] == false)
 		{
@@ -477,7 +477,7 @@ void Game::SetEnemyRespawnPos()
 				return;
 			}
 		}
-		
+
 		//番号が8でないなら
 		if (SearchRespawnPosNumber < 19)
 		{
@@ -487,11 +487,11 @@ void Game::SetEnemyRespawnPos()
 		{
 			SearchRespawnPosNumber = 0;
 		}
-		
-		
+
+
 	}
 	//ループでどの座標にも生成できなかったらランダムに決める
-	SearchRespawnPosNumber= rand() % 19 + 1;
+	SearchRespawnPosNumber = rand() % 19 + 1;
 	return;
 }
 
@@ -503,7 +503,7 @@ void Game::TowerEFK()
 	TowerDown->Play();
 	Vector3 EFKPOS = m_EFK_Pos;
 	TowerDown->SetPosition(EFKPOS);
-	Quaternion Efk_Rot= Quaternion::Identity;
+	Quaternion Efk_Rot = Quaternion::Identity;
 	Efk_Rot.AddRotationDegY(255.0f);
 	TowerDown->SetRotation(Efk_Rot);
 	TowerDown->Update();
@@ -538,8 +538,8 @@ void Game::GameState()
 	case enGameState_BetweenGameAndPause:
 		Between();
 		break;
-	/*default:
-		break;*/
+		/*default:
+			break;*/
 	}
 }
 
@@ -577,7 +577,7 @@ void Game::InitSoloPlay()
 				m_Actors.push_back(m_KnightAI);
 				m_KnightAI->SetPosition(objData.position);
 				m_KnightAI->SetCharaconPosition(objData.position);
-				m_KnightAI->SetPlayerActor(player[0]->GetPlayerActor(),Actor::enPlayerNumber_1P);
+				m_KnightAI->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
 				int Number = 0;
 				m_KnightAI->SetRespawnNumber(Number);
 				m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
@@ -591,7 +591,7 @@ void Game::InitSoloPlay()
 				m_Actors.push_back(m_KnightAI1);
 				m_KnightAI1->SetPosition(objData.position);
 				m_KnightAI1->SetCharaconPosition(objData.position);
-				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor(),Actor::enPlayerNumber_1P);
+				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
 				int Number = 1;
 				m_KnightAI1->SetRespawnNumber(Number);
 				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
@@ -725,11 +725,11 @@ void Game::InitDuoPlay()
 
 //中立の敵の生成処理
 void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
-	
+
 	enemyNumber++;
 
 	ENEMY_AMOUNT;
-	
+
 	Neutral_Enemy* neutral_Enemy = NewGO<Neutral_Enemy>(1, CreateEnemyName());
 	neutral_Enemy->SetNeutral_EnemyGame(this);
 
@@ -742,13 +742,13 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	//2人プレイのとき
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 	{
-		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(), 
+		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor());
 	}
 	//3人プレイのとき
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
 	{
-		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(), 
+		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor());
 	}
@@ -799,7 +799,7 @@ void Game::SetMusic()
 		g_soundEngine->ResistWaveFileBank(enSound_Pause_Screen, "Assets/sound/menu/game_stop/gameStop1.wav");
 		//ゲーム終了
 		g_soundEngine->ResistWaveFileBank(enSound_GameEnd, "Assets/sound/playerSE/CountEnd/GameEnd1.wav");
-	
+
 	}
 	//試合開始前
 	{
@@ -814,7 +814,7 @@ void Game::SetMusic()
 	}
 	//効果音
 	{
-	//剣士
+		//剣士
 		{
 			//スキルの音
 			g_soundEngine->ResistWaveFileBank(enSound_Sword_Skill, "Assets/sound/playerSE/kenSkill3.wav");
@@ -843,7 +843,7 @@ void Game::SetMusic()
 
 		}
 
-	//中立の敵
+		//中立の敵
 		{
 			//中立の敵の鳴き声
 			g_soundEngine->ResistWaveFileBank(enSound_Enemy_Death, "Assets/sound/enemySE/enemyKoe.wav");
@@ -856,9 +856,9 @@ void Game::SetMusic()
 			//ウサギが出現した時の音
 			g_soundEngine->ResistWaveFileBank(enSound_Rabbit_Spawn, "Assets/sound/enemySE/rabbit/Spawn/rabbitspawn1.wav");
 		}
-		
+
 	}
-	
+
 }
 
 void Game::SetEffects()
@@ -868,14 +868,14 @@ void Game::SetEffects()
 
 	//剣士のレベル変動する時のエフェクト
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
-	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelDown,u"Assets/effect/knight/LevelDown.efk");
+	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelDown, u"Assets/effect/knight/LevelDown.efk");
 	//剣士の死んだときのエフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death, u"Assets/effect/Knight/DeathTrue.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_LevelUp, u"Assets/effect/Knight/LevelUp.efk");
 
 	//剣士が死んで倒れた時のエフェクトを読み込む
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Death_Blue, u"Assets/effect/Knight/Knight_Death_Blue.efk");
-	
+
 	//剣士の必殺技エフェクトを読み込む。
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder, u"Assets/effect/Knight/Knight_Thunder.efk");
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_Knight_Thunder_Charge, u"Assets/effect/Knight/Knight_Ult_Thunder_charge.efk");
@@ -953,19 +953,19 @@ void Game::Push_OK()
 void Game::CountDown()
 {
 	//0秒以下なら
-	if (SecondsTimer <= 0) {
+	if (m_secondsTimer <= 0) {
 		//1分減らす
-		MinutesTimer--;
+		m_minutesTimer--;
 		//もし0分なら、秒も0にする
-		if (MinutesTimer < 0) {
-			SecondsTimer = 0.0f;
-			MinutesTimer = 0.0f;
+		if (m_minutesTimer < 0) {
+			m_secondsTimer = 0.0f;
+			m_minutesTimer = 0.0f;
 			GameEndFlag = true;
 		}
 		//60秒に戻す
-		else SecondsTimer = 60.0f;
+		else m_secondsTimer = 60.0f;
 	}
-	else SecondsTimer -= g_gameTime->GetFrameDeltaTime();
+	else m_secondsTimer -= g_gameTime->GetFrameDeltaTime();
 }
 
 void Game::UltTimeSkyDarkness()
@@ -1088,10 +1088,10 @@ void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
 	//	}
 	//}
 	for (auto enemy : m_neutral_Enemys) {
-			//必殺技発動中なら
-			if (IsUltFlag == true) enemy->Deactivate();
-			//必殺技終了なら
-			else enemy->Activate();
+		//必殺技発動中なら
+		if (IsUltFlag == true) enemy->Deactivate();
+		//必殺技終了なら
+		else enemy->Activate();
 	}
 }
 
@@ -1112,7 +1112,7 @@ int Game::GetNowRank(Actor* actor)
 }
 
 void Game::Render(RenderContext& rc)
-{	
+{
 	if (UltStopFlag == true) {
 		return;
 	}
@@ -1120,7 +1120,10 @@ void Game::Render(RenderContext& rc)
 	if (player[0]->CharGetRespawnTime() <= 0) {
 		if (RabbitFlag == true && m_GameState == enGameState_Battle)
 		{
-			m_RabbitSprite.Draw(rc);
+			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+			{
+				m_RabbitSprite.Draw(rc);
+			}
 
 		}
 
@@ -1129,10 +1132,12 @@ void Game::Render(RenderContext& rc)
 			if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
 				return;
 			}
-
-			m_underSprite.Draw(rc);
+			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+			{
+				m_underSprite.Draw(rc);
+			}
 		}
 	}
 
-	
+
 }

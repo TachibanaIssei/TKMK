@@ -178,7 +178,7 @@ private:
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);
-	Vector3				m_FightScale = Vector3(1.0f, 1.0f, 0.0f);
+	Vector3				m_fightScale = Vector3(1.0f, 1.0f, 0.0f);
 	bool				m_fightFlag = false;
 	float				m_GameCountScale = 20.0f;
 	float               m_Color = 1.0f;
@@ -219,13 +219,17 @@ private:
 		Vector3(-920.0f, -210.0f, 0.0f),
 	};															//王冠マーク
 
-	FontRender m_timeLeft;
+	FontRender m_minutes;
+	FontRender m_seconds;
+	FontRender m_coron;
 	float m_timerScale = 1.65f;
 	bool m_timerScaleFlag = false;
 	Vector4 m_limitColor = { 1.0f,1.0f,1.0f,1.0f };
 
 	const char* knightname = "knightplayer";
 	const char* knightname2 = "knightplayer2";
+	const char* knightname3 = "knightplayer3";
+	const char* knightname4 = "knightplayer4";
 	const char* wizardname = "wizardplayer";
 	const char* KnightAI_Red = "KnightAI";
 	const char* KnightAI_Green = "KnightAI1";
@@ -238,15 +242,6 @@ private:
 	int oldFinishCount = 0;
 
 	std::array<float, enPlayerNumber_Num> playerCoolTime = { 0, 0 };
-
-	//秒を計るタイマー
-	float SecondsTimer=0.0f;
-	//分を計るタイマー
-	float MinutesTimer=5.0f;
-	float m_timer = 300.0f;
-
-	bool GameEndFlag=false;
-
 	std::array<int, enPlayerNumber_Num>		m_playerLevel = { 1,1 };
 	std::array<int, enPlayerNumber_Num>		m_mathExp = { 0,0 };			//経験値を増やしたり減らしたりする時はこれ
 	std::array<int, enPlayerNumber_Num>		m_saveExp = { 0,0 };

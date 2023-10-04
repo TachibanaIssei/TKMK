@@ -19,8 +19,10 @@ namespace
 	const Vector2 EXPERIENCEGAUGE_PIVOT = Vector2(0.0f, 0.5f);				//経験値ゲージのピボット
 
 	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ステータスバーポジション
-	const Vector3 TIME_POS = Vector3(0.0f,470.0f, 0.0f);	//制限時間の座標
-	const Vector3 TIME_FONT_POS = Vector3(7.0f, 534.0f,0.0f);	//制限時間の座標
+	const Vector3 TIME_POS = Vector3(0.0f, 470.0f, 0.0f);	//制限時間の座標
+	const Vector3 MINUTES_FONT_POS = Vector3(-75.0f, 500.0f, 0.0f);	//制限時間の座標(分)
+	const Vector3 CORON_FONT_POS = MINUTES_FONT_POS + Vector3(70.0f, 10.0f, 0.0f);//制限時間の座標(:コロン)
+	const Vector3 SECONDS_FONT_POS = CORON_FONT_POS + Vector3(35.0f, -10.0f, 0.0f);//制限時間の座標(秒)
 
 	const float HP_BAR_BACK_WIDTH = 600.0f;
 	const float HP_BAR_BACK_HEIGHT = 120.0f;
@@ -79,9 +81,9 @@ namespace
 	const float FLAME_HEIGHT_SOLO = 500.0f;
 	const float FLAME_WIDTH_MULTI = 520.0f;
 	const float FLAME_HEIGHT_MULTI = 250.0f;
-	const Vector3 FLAME_POS_SOLO = Vector3(920.0f,-480.0f,0.0f);    //レベルや経験値のフレーム
-	const Vector3 FLAME_POS_1P = Vector3(-200.0f,-435.0f,0.0f);
-	const Vector3 FLAME_POS_2P = Vector3(255.0f,-435.0f,0.0f);
+	const Vector3 FLAME_POS_SOLO = Vector3(920.0f, -480.0f, 0.0f);    //レベルや経験値のフレーム
+	const Vector3 FLAME_POS_1P = Vector3(-200.0f, -435.0f, 0.0f);
+	const Vector3 FLAME_POS_2P = Vector3(255.0f, -435.0f, 0.0f);
 
 	const float LEVEL_SPRITE_WIDTH = 196.0f;
 	const float LEVEL_SPRITE_HEIGHT = 150.0f;
@@ -140,7 +142,7 @@ bool GameUI::Start()
 	m_game = FindGO<Game>("game");
 	m_player1P = FindGO<Player>("player");
 	fade = FindGO<Fade>("fade");
-	
+
 	m_gameMode = g_renderingEngine->GetGameMode();
 
 	//マルチプレイなら
@@ -148,8 +150,8 @@ bool GameUI::Start()
 	{
 		m_player2P = FindGO<Player>("player2");
 	}
-	
-	InitAssets();	
+
+	InitAssets();
 
 	m_GameUIState = m_GameStartState;
 
@@ -447,7 +449,7 @@ void GameUI::InitAssets()
 		m_ExpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
 		m_ExpFont.SetRotation(0.0f);
 		m_ExpFont.SetShadowParam(true, 2.0f, g_vec4Black);
-		
+
 		for (int i = 0; i < enPlayerNumber_Num; i++)
 		{
 			//スプライト更新
@@ -507,7 +509,7 @@ void GameUI::InitAssets()
 		White_BackHp[enPlayerNumber_1P] = m_player1P->GetCharacterHp();
 		WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
 		BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
-		if (m_gameMode)
+		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 		{
 			White_BackHp[enPlayerNumber_2P] = m_player2P->GetCharacterHp();
 			WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
@@ -571,20 +573,32 @@ void GameUI::InitAssets()
 		m_TimeAndPointRender.SetPosition(TIME_POS);
 		m_TimeAndPointRender.SetScale(0.35f, 0.3f, 1.0f);
 
-		//フォントの設定。
-		//m_GameTimePos = TIME_FONT_POS;
-
 		//フォントの大きさを設定。
-		m_timeLeft.SetScale(TIMERSCALE);
-		Vector2 pivotOffSet = { 80.0f, 0.0f };
+		m_minutes.SetScale(TIMERSCALE);
+		m_seconds.SetScale(TIMERSCALE);
+		m_coron.SetScale(TIMERSCALE);
+		Vector2 pivotOffSet = { 30.0f, -20.0f };
 		//オフセットの設定
-		m_timeLeft.SetPivotOffSet(pivotOffSet);
-		//
-		m_timeLeft.SetPosition(TIME_FONT_POS);
-		//フォントの色を設定。
-		m_timeLeft.SetColor(m_limitColor);
-		m_timeLeft.SetShadowParam(true, 2.0f, g_vec4Black);
+		m_minutes.SetPivotOffSet(pivotOffSet);
+		m_seconds.SetPivotOffSet(pivotOffSet);
+		m_coron.SetPivotOffSet(pivotOffSet);
 
+		//座標の設定
+		m_minutes.SetPosition(MINUTES_FONT_POS);
+		m_seconds.SetPosition(SECONDS_FONT_POS);
+		m_coron.SetPosition(CORON_FONT_POS);
+
+		//フォントの色を設定。
+		m_minutes.SetColor(m_limitColor);
+		m_seconds.SetColor(m_limitColor);
+		m_coron.SetColor(m_limitColor);
+
+		//輪郭線の設定
+		m_minutes.SetShadowParam(true, 2.0f, g_vec4Black);
+		m_seconds.SetShadowParam(true, 2.0f, g_vec4Black);
+		m_coron.SetShadowParam(true, 2.0f, g_vec4Black);
+
+		m_coron.SetText(L":");
 		m_TimeAndPointRender.Update();
 	}
 }
@@ -596,7 +610,7 @@ void GameUI::SkillCoolTimeFont()
 	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 	m_skillFont[enPlayerNumber_1P].SetText(Skill);
 
-	if (m_gameMode) 
+	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 	{
 		SkillCoolTime = m_player2P->CharGetSkillCoolTimer();
 		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
@@ -612,7 +626,7 @@ void GameUI::Update()
 	}
 
 	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameUIState== m_PauseState) {
+	if (m_GameUIState == m_PauseState) {
 		return;
 	}
 
@@ -621,33 +635,33 @@ void GameUI::Update()
 	{
 		CountDown();
 	}
-	
+
 	//プレイヤーがリスポーン待機中なら
 	if (m_player1P->CharGetRespawnTime() > 0.0f)
 	{
 		RespawnCountDown(enPlayerNumber_1P);
 	}
-	if (m_gameMode && m_player2P->CharGetRespawnTime() > 0.0f)
+	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay && m_player2P->CharGetRespawnTime() > 0.0f)
 	{
 		RespawnCountDown(enPlayerNumber_2P);
 	}
-	
+
 	//gameクラスのスタートのフラグが立っている間処理を行わない
 	if (m_GameUIState == m_GameStartState) {
 		return;
 	}
-	
+
 	//制限時間
 	Timer();
 	//左のフレーム
 	CharPoint();
 	//左のフレームのレベル
 	Level();
-	
+
 	SkillCoolTimeFont();
-	
+
 	//レベルの点滅
-	if (m_flashNumberFlag==false)
+	if (m_flashNumberFlag == false)
 	{
 		m_LvNumberColor -= 0.02f;
 
@@ -658,9 +672,9 @@ void GameUI::Update()
 		}
 
 		m_LvNumber_back[enPlayerNumber_1P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
-		m_LvNumber_back[enPlayerNumber_2P].SetMulColor(Vector4(1.0f,1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_2P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
-	else if(m_flashNumberFlag == true)
+	else if (m_flashNumberFlag == true)
 	{
 		m_LvNumberColor += 0.02f;
 
@@ -677,7 +691,7 @@ void GameUI::Update()
 	m_LvNumber_back[enPlayerNumber_2P].Update();
 
 	ExpState(m_player1P);
-	if (m_gameMode)
+	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 	{
 		ExpState(m_player2P);
 	}
@@ -692,9 +706,9 @@ void GameUI::CountDown()
 {
 	//カウントダウン
 	//int COUNTDOWNTIMER = m_game->CountDownMinutes();
-	int StartCountDown= m_game->CountDownMinutes();
+	int StartCountDown = m_game->CountDownMinutes();
 
-	if(m_game->CountDownMinutes() <= 0)
+	if (m_game->CountDownMinutes() <= 0)
 	{
 		m_CountNumper.Init("Assets/sprite/gameUI/fight!.DDS", 1920.0f, 1080.0f);
 		//m_gameCountScale = Vector3(5.0f, 5.0f, 0.0f);
@@ -740,15 +754,15 @@ void GameUI::CountDown()
 	}
 
 	//画像がFight!でないかつスケールが100以下なら
-	else if(m_fightFlag == false&&m_gameCountScale.x<100.0f)
+	else if (m_fightFlag == false && m_gameCountScale.x < 100.0f)
 	{
 		//徐々に文字を大きくする
 		m_gameCountScale += SmallScale;
 		//少しずつ透明にする
 		m_Color -= 0.02f;
-		
+
 		m_CountNumper.SetScale(m_gameCountScale);
-		
+
 		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
 	}
 
@@ -768,7 +782,7 @@ void GameUI::CountDown()
 				se->Play(false);
 			}
 		}
-		else if(FightshotStopFlag == false) {
+		else if (FightshotStopFlag == false) {
 			//徐々に文字を小さくする
 			m_gameCountScale -= FightSmallScale;
 
@@ -779,13 +793,13 @@ void GameUI::CountDown()
 		}
 
 	}
-		
-		m_CountNumper.SetScale(m_gameCountScale);
-		
-		m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
-	
 
-	
+	m_CountNumper.SetScale(m_gameCountScale);
+
+	m_CountNumper.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_Color));
+
+
+
 	m_CountNumper.Update();
 
 	oldtStartCount = StartCountDown;
@@ -812,12 +826,12 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 		case 0:
 			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
 			//画面を暗くしてゆく
-			if (m_gameMode)
+			if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 			{
 				if (playerNumber == enPlayerNumber_1P) {
 					fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Left);
 				}
-				else{
+				else {
 					fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Right);
 				}
 				break;
@@ -855,7 +869,7 @@ void GameUI::HPBar()
 	m_hpBar[enPlayerNumber_1P].SetScale(HpScale);
 
 	m_hpBar[enPlayerNumber_1P].Update();
-	
+
 	//レベルが下がった時の処理
 	if (BackUPLV[enPlayerNumber_1P] > m_player1P->GetCharacterLevel())
 	{
@@ -891,7 +905,7 @@ void GameUI::HPBar()
 	}
 	m_HpBar_White[enPlayerNumber_1P].Update();
 
-	if (!m_gameMode)
+	if (m_gameMode == RenderingEngine::enGameMode_SoloPlay)
 	{
 		return;
 	}
@@ -973,28 +987,30 @@ void GameUI::Level()
 void GameUI::Timer()
 {
 	//制限時間の表示
-	wchar_t wcsbuf[256];
-	swprintf_s(wcsbuf, 256, L"%d:%02d", int(m_game->GetMinutesTimer()), int(m_game->GetSecondsTimer()));
+	wchar_t minutesBuf[256];
+	wchar_t secondsBuf[256];
+	swprintf_s(minutesBuf, 256, L"%d", (int)m_game->GetMinutesTimer());
+	swprintf_s(secondsBuf, 256, L"%02d", (int)m_game->GetSecondsTimer());
 	//表示するテキストを設定。
-	
-	m_timeLeft.SetText(wcsbuf);
 
-	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10&& m_game->GetSecondsTimer() > 1 )
+	m_minutes.SetText(minutesBuf);
+	m_seconds.SetText(secondsBuf);
+
+	//ゲームタイマーが1秒より大きく、10秒より少ないとき
+	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() < 10 && m_game->GetSecondsTimer() > 1)
 	{
 		if (m_timerScaleFlag == false)
 		{
 			if (m_timerScale < 2.8f)
 			{
-				m_timerScale += 1.9f*g_gameTime->GetFrameDeltaTime();
-				//
-				
+				m_timerScale += 1.9f * g_gameTime->GetFrameDeltaTime();
 			}
 			else
 			{
 				m_timerScale = 2.8f;
 				m_timerScaleFlag = true;
 			}
-			
+
 			if (m_limitColor.y == m_limitColor.z > 0.0f) {
 				m_limitColor.y -= 0.1f * g_gameTime->GetFrameDeltaTime();
 				m_limitColor.z -= 0.1f * g_gameTime->GetFrameDeltaTime();
@@ -1004,10 +1020,10 @@ void GameUI::Timer()
 				m_limitColor.y = 0.0f;
 				m_limitColor.z = 0.0f;
 			}
-			
+
 
 		}
-		else if (m_timerScaleFlag == true)
+		else
 		{
 			if (m_timerScale > TIMERSCALE)
 			{
@@ -1030,18 +1046,22 @@ void GameUI::Timer()
 			}
 		}
 
-		if (m_game->GetSecondsTimer() > 1) {
-			m_timeLeft.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
-			m_timeLeft.SetScale(m_timerScale);
-		}
-		
-		
-		m_timeLeft.SetColor(m_limitColor);
+		m_minutes.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+		m_minutes.SetScale(m_timerScale);
+		m_minutes.SetColor(m_limitColor);
+		m_seconds.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+		m_seconds.SetScale(m_timerScale);
+		m_seconds.SetColor(m_limitColor);
+		m_coron.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+		m_coron.SetScale(m_timerScale);
+		m_coron.SetColor(m_limitColor);
 	}
 	else
 	{
-		
-		m_timeLeft.SetScale(TIMERSCALE);
+
+		m_minutes.SetScale(TIMERSCALE);
+		m_seconds.SetScale(TIMERSCALE);
+		m_coron.SetScale(TIMERSCALE);
 	}
 }
 
@@ -1088,8 +1108,8 @@ void GameUI::ExpState(const Player* player)
 
 	//経験値の表示
 	Vector3 EXPScale = Vector3::One;
-	
-		//HPバーの増えていく割合。
+
+	//HPバーの増えていく割合。
 	EXPScale.x = (float)m_mathExp[enPlayerNumber] / (float)m_expTable[enPlayerNumber];
 
 
@@ -1118,7 +1138,7 @@ void GameUI::ChackExp(const Player* player, const EnPlayerNumber playerNumber)
 
 		m_enExpProcessState[playerNumber] = enUpExpState;
 	}
-	
+
 }
 
 void GameUI::UpExp(const Player* player, const EnPlayerNumber playerNumber)
@@ -1172,7 +1192,7 @@ void GameUI::LevelUp(const Player* player, const EnPlayerNumber playerNumber)
 			//セーブした経験値が変わらない
 			player->CharResatSaveEXP(m_saveExp[playerNumber]);
 		}
-		
+
 		m_oldSaveExp[playerNumber] = player->CharGetSaveEXP();
 		m_enExpProcessState[playerNumber] = enUpExpState;
 	}
@@ -1217,8 +1237,8 @@ void GameUI::LevelDown(const Player* player, const EnPlayerNumber playerNumber)
 	m_playerLevel[playerNumber]--;
 	//レベルに応じた経験値テーブルにする
 	m_expTable[playerNumber] = player->CharGetEXPTableForLevel(m_playerLevel[playerNumber]);
-	
-	LevelSpriteChange(m_playerLevel[playerNumber],playerNumber);
+
+	LevelSpriteChange(m_playerLevel[playerNumber], playerNumber);
 
 	if (m_playerLevel[playerNumber] <= player->GetCharacterLevel()) {
 		m_expUpFlag[playerNumber] = false;
@@ -1246,7 +1266,7 @@ void GameUI::CharPoint()
 	m_Actors = m_game->GetActors();
 
 	int num = 0;
-	for (auto actor:m_Actors)
+	for (auto actor : m_Actors)
 	{
 		//死んでいるかリスポーン中なら
 		if (actor->NowCharState() == Actor::enCharState_Death || actor->GetRespawnFlag() == true)
@@ -1281,10 +1301,10 @@ void GameUI::CharPoint()
 		{
 			m_PointFont[num].SetScale(1.4f);
 			Vector3 FontPos;
-			FontPos= ADDPOINTPOS + PointPos[num];
+			FontPos = ADDPOINTPOS + PointPos[num];
 			m_PointFont[num].SetPosition(FontPos);
 
-			m_pointFlame[num].SetScale(1.7f,1.2f,0.0f);
+			m_pointFlame[num].SetScale(1.7f, 1.2f, 0.0f);
 			m_pointFlame[num].Update();
 			m_charIcon[num].Update();
 			MaxPoint = charPoint[num];
@@ -1303,7 +1323,7 @@ void GameUI::CharPoint()
 	}
 }
 
-void GameUI::LevelSpriteChange(const int lv,const EnPlayerNumber playerNumber)
+void GameUI::LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber)
 {
 	switch (lv)
 	{
@@ -1365,7 +1385,7 @@ void GameUI::Render(RenderContext& rc)
 	}
 
 	//リスポーンするまでの時間
-#ifdef m_gameMode
+#ifdef m_gameMode == RenderingEngine::enGameMode_DuoPlay
 	//マルチプレイ時
 	if (m_player1P->CharGetRespawnTime() > 0 || m_player2P->CharGetRespawnTime() > 0)
 #else
@@ -1375,7 +1395,9 @@ void GameUI::Render(RenderContext& rc)
 	{
 		//制限時間
 		m_TimeAndPointRender.Draw(rc);
-		m_timeLeft.Draw(rc);
+		m_minutes.Draw(rc);
+		m_seconds.Draw(rc);
+		m_coron.Draw(rc);
 
 		m_Respawn_Back.Draw(rc);
 		m_RespawnIn.Draw(rc);
@@ -1392,16 +1414,9 @@ void GameUI::Render(RenderContext& rc)
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
 		//レベルや経験値のフレーム
-		if (m_gameMode)
+		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 		{
-			for (int i = 0; i < enPlayerNumber_Num; i++)
-			{
-				m_Flame[i].Draw(rc);
-			}
-		}
-		else
-		{
-			m_Flame[enPlayerNumber_1P].Draw(rc);
+			m_Flame[i].Draw(rc);
 		}
 
 		//スキルのクールタイムとタイマーが違う時だけ表示
@@ -1409,7 +1424,7 @@ void GameUI::Render(RenderContext& rc)
 		{
 			m_skillFont[enPlayerNumber_1P].Draw(rc);
 		}
-		if (m_gameMode)
+		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 		{
 			if (m_player2P->CharGetSkillCoolTimer() != playerCoolTime[enPlayerNumber_2P])
 			{
@@ -1419,9 +1434,11 @@ void GameUI::Render(RenderContext& rc)
 
 		//制限時間
 		m_TimeAndPointRender.Draw(rc);
-		m_timeLeft.Draw(rc);
+		m_minutes.Draw(rc);
+		m_seconds.Draw(rc);
+		m_coron.Draw(rc);
 
-		if (m_gameMode)
+		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 		{
 			m_experienceBarBack[enPlayerNumber_2P].Draw(rc);
 			if (m_mathExp[enPlayerNumber_2P] != 0) {
@@ -1473,13 +1490,8 @@ void GameUI::Render(RenderContext& rc)
 		//左のフレームの色々を描画
 		int num = 0;
 		int enemyNum = 0;
-		for (auto actor:m_Actors) 
+		for (auto actor : m_Actors)
 		{
-			if (m_gameMode && num > 1)
-			{
-				break;
-			}
-
 			m_pointFlame[num].Draw(rc);
 			m_PointFont[num].Draw(rc);
 			m_charIcon[num].Draw(rc);
@@ -1490,7 +1502,7 @@ void GameUI::Render(RenderContext& rc)
 			}
 			num++;
 		}
-		
+
 		//finishの画像
 		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
 		{
@@ -1500,8 +1512,8 @@ void GameUI::Render(RenderContext& rc)
 	else
 	{
 		//カウントダウンの表示
-		if (m_game->NowGameState() == 0&& m_game->CountDownMinutes() <= 3) {
+		if (m_game->NowGameState() == 0 && m_game->CountDownMinutes() <= 3) {
 			m_CountNumper.Draw(rc);
 		}
-	}	
+	}
 }

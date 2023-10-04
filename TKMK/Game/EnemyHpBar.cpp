@@ -43,10 +43,10 @@ void EnemyHpBar::Render(RenderContext& rc)
 {
 	if (m_drawFlag)
 	{
-		m_HP_Back.Draw(rc,false,m_viewportNo);
+		m_HP_Back.Draw(rc, false, m_viewportNo);
 		m_HP_Bar.Draw(rc, false, m_viewportNo);
 		m_HP_Frame.Draw(rc, false, m_viewportNo);
-		m_fontLv.Draw(rc,m_viewportNo);	
+		m_fontLv.Draw(rc, m_viewportNo);
 	}
 }
 

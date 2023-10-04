@@ -29,11 +29,6 @@ bool Map::Start()
 	m_Map.Init("Assets/sprite/minimap.DDS", 350, 350);
 	//座標設定
 	m_Map.SetPosition(MAP_CENTER_POSITION);
-	////マップの外枠の読み込み
-	//m_MapFrame.Init("Assets/sprite/minimap_window.DDS", 300, 300);
-	////座標設定
-	//m_MapFrame.SetPosition(MAP_CENTER_POSITION);
-
 	//マップでプレイヤーの表示画像読み込み
 	m_MapPlayer.Init("Assets/sprite/minimap_player.DDS", 35, 35);
 	//座標設定
@@ -58,7 +53,6 @@ void Map::Update()
 	CameraMap();
 	EnemyMap();
 	m_Map.Update();
-	//m_MapFrame.Update();
 }
 
 /// <summary>
@@ -119,11 +113,8 @@ void Map::CameraMap()
 
 void Map::PlayerMap()
 {
-	//Vector3 playerPosition = m_knightPlayer->GetPosition();
 	Vector3 playerPosition = player->GetCharcterPosition();
-
 	//プレイヤーの回転を取得する
-	//Quaternion playerIconRot = m_knightPlayer->GetRotation();
 	Quaternion playerIconRot = player->GetCharcterRotation();
 	//プレイヤーの前方向
 	Vector3 playerIcon = Vector3::AxisZ;
@@ -131,7 +122,7 @@ void Map::PlayerMap()
 	playerIconRot.Apply(playerIcon);
 	//Ｙ座標にＺの値を入れる
 	playerIcon.y = playerIcon.z;
-	//Ｚを０にする
+	//Ｚを0にする
 	playerIcon.z = 0;
 	//真上から今計算したベクトルに換算する
 	playerIconRot.SetRotation(Vector3::AxisY, playerIcon);
@@ -174,14 +165,14 @@ void Map::Render(RenderContext& rc)
 		return;
 	}
 
-	m_Map.Draw(rc);
+	//m_Map.Draw(rc);
 	//m_MapFrame.Draw(rc);
 	
 
 	for (auto enemy : m_game->GetNeutral_Enemys())
 	{
-		enemy->EnemyMap(rc);
-		m_MapPlayer.Draw(rc);
-		m_PlayerCamera.Draw(rc);
+		//enemy->EnemyMap(rc);
+		//m_MapPlayer.Draw(rc);
+		//m_PlayerCamera.Draw(rc);
 	}
 }

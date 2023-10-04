@@ -104,15 +104,8 @@ private:
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
-	int dddd = 20;
 	int m_playerNumber = 0;	//プレイヤーの番号(ゲームパッドの番号などで使用)
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
-
-	//タワーの画像出すかどうか
-	bool TowerSpriteFlag = false;
-	//攻撃の画像を出すかどうか
-	bool AttackSpriteFlag = false;
-
 };
 

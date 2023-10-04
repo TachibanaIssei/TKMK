@@ -221,12 +221,12 @@ public:
 
 	float GetSecondsTimer() const
 	{
-		return SecondsTimer;
+		return m_secondsTimer;
 	}
 
 	float GetMinutesTimer() const
 	{
-		return MinutesTimer;
+		return m_minutesTimer;
 	}
 
 	void SetUltCanUseTimer(float timer)
@@ -492,9 +492,9 @@ private:
 	bool EnemyRespawnFlag[10];
 
 	//秒を計るタイマー
-	float SecondsTimer = 0.0f;
+	float m_secondsTimer = 12.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 3.0f;
+	float m_minutesTimer = 0.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;

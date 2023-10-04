@@ -492,9 +492,9 @@ private:
 	bool EnemyRespawnFlag[10];
 
 	//秒を計るタイマー
-	float m_secondsTimer = 12.0f;
+	float m_secondsTimer = 0.0f;
 	//分を計るタイマー5
-	float m_minutesTimer = 0.0f;
+	float m_minutesTimer = 3.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;

@@ -646,7 +646,7 @@ private:
 
 
 protected:
-	int									Lv;								//レベル
+	int									Lv = 1;								//レベル
 	int									AtkSpeed;						//攻撃速度
 	float								Cooltime=0;						//スキルのクールタイム
 	float								AvoidanceCoolTime=0;			//回避のクールタイム

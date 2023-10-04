@@ -33,6 +33,9 @@ public:
 	}
 
 private:
+	//敵キャラ上部のレベル画像を初期化
+	void InitLvSprite();
+
 	/// <summary>
 	/// ゲージを左寄せする処理
 	/// </summary>
@@ -41,16 +44,41 @@ private:
 	/// <returns>変換前と変換後の差</returns>
 	Vector3 LeftAlignHPBar(const Vector3& size, const Vector3& scale);
 
-private:
-	SpriteRender		m_HP_Bar;		//HPバー画像
-	SpriteRender		m_HP_Frame;		//HP枠画像
-	SpriteRender		m_HP_Back;		//HP背景画像
-	FontRender			m_fontLv;
-	Vector2				m_HPBer_Pos = Vector2::Zero;		//HPバーのポジション
-	Vector2				m_HPWindow_Pos = Vector2::Zero;		//HP枠のポジション
-	Vector2				m_HPBack_Pos = Vector2::Zero;		//HP背景のポジション
-	Vector2				m_levelFontPos = Vector2::Zero;		//HPバーの横に表示するレベル
+	/// <summary>
+	/// キャラクターのレベルを設定する
+	/// </summary>
+	/// <param name="level"></param>
+	void SetCharacterLevel(const int level);
 
+private:
+	/// <summary>
+	/// キャラクターのレベルをm_lvSpriteの要素指定に使用する
+	/// </summary>
+	enum EnCharacterLevel
+	{
+		enCharacterLevel_One = 0,
+		enCharacterLevel_Two,
+		enCharacterLevel_Three,
+		enCharacterLevel_Four,
+		enCharacterLevel_Five,
+		enCharacterLevel_Six,
+		enCharacterLevel_Seven,
+		enCharacterLevel_Eight,
+		enCharacterLevel_Nine,
+		enCharacterLevel_Ten,
+	};
+
+private:
+	const static int m_maxLevel = 10;
+	std::array<SpriteRender, m_maxLevel> m_lvSprite;
+	SpriteRender		m_hpBar;		//HPバー画像
+	SpriteRender		m_hpFrame;		//HP枠画像
+	SpriteRender		m_hpBack;		//HP背景画像
+	Vector2				m_hpBerPosition = Vector2::Zero;		//HPバーのポジション
+	Vector2				m_hpFlamePosition = Vector2::Zero;		//HP枠のポジション
+	Vector2				m_hpBackPosition = Vector2::Zero;		//HP背景のポジション
+	Vector2				m_levelSpritePosition = Vector2::Zero;
+	EnCharacterLevel	m_level = enCharacterLevel_One;
 	int					m_viewportNo = 0;					//ビューポートの番号
 	bool				m_drawFlag = false;
 };

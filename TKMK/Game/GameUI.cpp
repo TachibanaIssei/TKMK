@@ -1058,7 +1058,6 @@ void GameUI::Timer()
 	}
 	else
 	{
-
 		m_minutes.SetScale(TIMERSCALE);
 		m_seconds.SetScale(TIMERSCALE);
 		m_coron.SetScale(TIMERSCALE);

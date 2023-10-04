@@ -27,7 +27,6 @@ public:
 	bool UltimaitSkillTime();
 	void Render(RenderContext& rc);
 	void AtkCollisiton();
-	void HPBar();
 	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	inline Vector3 GetPosition() { return m_position; }
 	void Move();

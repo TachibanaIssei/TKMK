@@ -1118,52 +1118,6 @@ void KnightAI::MakeUltSkill()
 	}
 }
 
-//void KnightAI::HPBar()
-//{
-//	if (m_status.GetHp() < 0)
-//	{
-//		m_status.SetHp(0);
-//	}
-//
-//	Vector3 scale = Vector3::One;
-//	scale.x = float(m_status.GetHp()) / float(m_status.GetMaxHp());
-//	m_HP_Bar.SetScale(scale);
-//
-//	Vector3 BerPosition = m_position;
-//	BerPosition.y += 75.0f;
-//	//座標を変換する
-//	g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_HPBer_Pos, BerPosition);
-//	g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_HPWindow_Pos, BerPosition);
-//	g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_HPBack_Pos, BerPosition);
-//
-//	m_levelFontPos = m_HPBer_Pos;
-//	m_levelFontPos.x += LEVEL_FONT_ADD_POS_X;
-//	m_levelFontPos.y += LEVEL_FONT_ADD_POS_Y;
-//
-//	//HPバー画像を左寄せに表示する
-//	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
-//	m_HPBer_Pos.x -= BerSizeSubtraction.x;
-//	std::size_t len = std::strlen(GetName());
-//	std::size_t converted = 0;
-//	wchar_t* wcstr = new wchar_t[len + 1];
-//	mbstowcs_s(&converted, wcstr, len + 1, GetName(), _TRUNCATE);
-//
-//	//HPバーの横に表示するレベル
-//	wchar_t level[255];
-//	swprintf_s(level, 255, L"Lv%d",Lv);
-//	m_fontLv.SetText(level);
-//	m_fontLv.SetPosition(m_levelFontPos.x, m_levelFontPos.y,0.0f);
-//
-//	//HPバーの座標
-//	m_HP_Bar.SetPosition(Vector3(m_HPBer_Pos.x, m_HPBer_Pos.y, 0.0f));
-//	m_HP_Frame.SetPosition(Vector3(m_HPWindow_Pos.x, m_HPWindow_Pos.y, 0.0f));
-//	m_HP_Back.SetPosition(Vector3(m_HPBack_Pos.x, m_HPBack_Pos.y, 0.0f));
-//
-//	m_HP_Bar.Update();
-//	m_HP_Frame.Update();
-//	m_HP_Back.Update();
-//}
-
 bool KnightAI::DrawHP(const int playerNumber)
 {
 	Vector3 toCameraTarget = g_camera3D[playerNumber]->GetTarget() - g_camera3D[playerNumber]->GetPosition();

@@ -9,6 +9,7 @@ class KnightUlt;
 class GameUI;
 class GameCamera;
 class WizardUlt;
+class EnemyHpBar;
 
 class KnightPlayer:public KnightBase
 {
@@ -76,6 +77,11 @@ private:
 
 	void IsLevelEffect(int oldlevel, int nowlevel);
 
+	/// <summary>
+	/// キャラクターの頭上のHPバー処理
+	/// </summary>
+	void CharacterUpperHpBar();
+
 private:
 	Game* m_game=nullptr;
 	//GameCamera* gameCamera = nullptr;
@@ -107,5 +113,7 @@ private:
 	int m_playerNumber = 0;	//プレイヤーの番号(ゲームパッドの番号などで使用)
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
+
+	std::array<EnemyHpBar*, enPlayerNumber_Num - 1>	m_enemyHpBar = { nullptr,nullptr,nullptr};		//敵の上部に描画されるHPバー
 };
 

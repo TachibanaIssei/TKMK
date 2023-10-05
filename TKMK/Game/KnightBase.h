@@ -5,7 +5,7 @@ class Game;
 class GameUI;
 class Player;
 
-class KnightBase:public Actor
+class KnightBase :public Actor
 {
 public:
 	KnightBase();
@@ -13,16 +13,15 @@ public:
 
 	enum EnKnightKinds
 	{
+		enKnightKinds_Blue,
 		enKnightKinds_Red,
 		enKnightKinds_Green,
-		enKnightKinds_Blue,
 		enKnightKinds_Yellow,
 		enKnightKinds_Num
 	};
-	EnKnightKinds KnightKinds = enKnightKinds_Num;
 	void SetKnightColor(EnKnightKinds color)
 	{
-		KnightKinds = color;
+		m_knightKind = color;
 	}
 	/// <summary>
 	/// モデルのInit、キャラコンの初期化
@@ -38,7 +37,7 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	virtual void Attack()=0;
+	virtual void Attack() = 0;
 
 	/// <summary>
 	/// 自身の当たり判定
@@ -50,7 +49,7 @@ public:
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
 	/// <param name="playerGivePoints">ポイントを与えるキャラ</param>
-	void Dameged(int damege,Actor* CharGivePoints);
+	void Dameged(int damege, Actor* CharGivePoints);
 
 	/// <summary>
 	/// 自身が倒されたときの処理
@@ -68,7 +67,7 @@ public:
 	/// </summary>
 	void UltimateSkill();
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/// <summary>
 	/// リスポーンする座標のセット
 	/// </summary>
@@ -109,7 +108,7 @@ public:
 	/// </summary>
 	/// <param name="clipName"></param>
 	/// <param name="eventName"></param>
-	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)=0;
+	virtual void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName) = 0;
 
 	/// <summary>
 	/// 必殺技を打っている間の処理
@@ -163,7 +162,7 @@ public:
 			m_charState != enCharState_Skill &&
 			m_charState != enCharState_Avoidance &&
 			m_charState != enCharState_Damege &&
-			m_charState != enCharState_Ult_liberation&&
+			m_charState != enCharState_Ult_liberation &&
 			m_charState != enCharState_Death;
 	}
 
@@ -173,7 +172,7 @@ public:
 	/// 現在のレベルを返す
 	/// </summary>
 	/// <returns>現在のレベル</returns>
-	int& SetLevel(){
+	int& SetLevel() {
 		return Lv;
 	}
 
@@ -181,7 +180,7 @@ public:
 	/// 現在のヒットポイントを返す
 	/// </summary>
 	/// <returns>現在のHP</returns>
-	const int& GetHitPoint() 
+	const int& GetHitPoint()
 	{
 		return m_status.GetHp();
 	}
@@ -266,7 +265,7 @@ public:
 			}
 		}
 	}
-	
+
 	// 追尾エフェクトの削除
 	void ChaseEffectDelete() {
 		if (GetHoimi != nullptr) {
@@ -294,13 +293,29 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// プレイヤーのアクターを設定する
+	/// </summary>
+	void SetKnightPlayerActor(Actor* actor, EnPlayerNumber playerNumber) {
+		if (playerNumber != enPlayerNumber_AI && playerNumber != enPlayerNumber_Num)
+		{
+			m_player[playerNumber] = actor;
+		}
+	}
+
 	void CreatMagicCircle();
 
-	virtual void IsLevelEffect(int oldlevel,int nowlevel) = 0;
+	virtual void IsLevelEffect(int oldlevel, int nowlevel) = 0;
 
 	virtual void SetAndPlaySoundSource(EnSound soundNumber) = 0;
 
 protected:
+	/// <summary>
+	/// HPゲージの描画フラグ
+	/// </summary>
+	/// <returns>描画できる範囲にあるときtrue</returns>
+	bool DrawHP(const int playerNumber);
+
 	/// <summary>
 	///無敵時間用
 	/// </summary>
@@ -338,7 +353,7 @@ protected:
 	//必殺技の終了
 	void UltEnd();
 
-	
+
 	enum EnAnimationClip {
 		enAnimationClip_Idle,
 		enAnimationClip_Walk,
@@ -357,20 +372,16 @@ protected:
 		enAnimationClip_Num,
 	};
 
-	
+protected:
 	GameUI* m_gameUI = nullptr;
 	Player* player = nullptr;
-
-	//初期ステータス 最大HP、HP、攻撃力、スピード
-	
-
 
 	Vector3 firstposition;                                //最初の座標
 	Vector3 OldPosition = Vector3::Zero;                  //前のフレームの座標
 	float m_position_YUp = 33.0f;                         //モデルの軸が腰にあるのでY座標を50.0f上げる
-	Vector3 collisionRot= Vector3::Zero;                  //必殺技
+	Vector3 collisionRot = Vector3::Zero;                  //必殺技
 	CollisionObject* collisionObject;                     //コリジョン
-	Vector3 UltCollisionPos= Vector3::Zero;               //必殺技の当たり判定の座標
+	Vector3 UltCollisionPos = Vector3::Zero;               //必殺技の当たり判定の座標
 	Vector3 m_Skill_MoveSpeed = Vector3::Zero;
 
 	CharacterController m_charCon;                        //キャラクターコントロール
@@ -383,7 +394,7 @@ protected:
 	Actor* m_lastAttackActor = nullptr;		// 最後に自分を攻撃したやつ
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
 
-	
+	EnKnightKinds m_knightKind = enKnightKinds_Num;
 
 	enum AtkTimingState
 	{
@@ -413,20 +424,20 @@ protected:
 	//「」ボーンのID
 	int m_swordBoneId = -1;
 	//攻撃アニメーションイベント再生時の剣士の座標を取得する
-	int AtkEndPosId= -1;
-	
+	int AtkEndPosId = -1;
+
 	//前フレームのレベル
 	int oldLv = 1;
 
 	//獲得した経験値仮
-	int exp=1;
+	int exp = 1;
 	//Newtral_Enemyの攻撃力
 	int Enemy_atk = 10;
 	//必殺技使用のフラグ
 	bool UltCollisionSetFlag = false;
 	//必殺技を打ったらしばらく止めるタイマー
 	float UltStopTimer = 1.0f;
-	
+
 
 	//攻撃時の剣のコリジョンを表示するかのフラグ
 	bool AtkCollistionFlag = false;
@@ -442,7 +453,7 @@ protected:
 	float AvoidanceSpeed = 170.0f;
 	//落下音のフラグ
 	bool FallSoundFlag = false;
-	
+
 	//ラストアタックのアニメーションで切った後に動けないようにする
 	//tureの時は動けなくなる
 	bool CantMove = false;
@@ -451,5 +462,7 @@ protected:
 	ChaseEFK* EffectKnightSkill = nullptr;
 	ChaseEFK* EffectKnightSkillGround = nullptr;
 	ChaseEFK* FootSmoke = nullptr;
+
+	std::array<Actor*, enPlayerNumber_Num> m_player;		//プレイヤーのインスタンスを共有
 };
 

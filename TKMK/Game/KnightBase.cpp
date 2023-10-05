@@ -70,7 +70,7 @@ void KnightBase::SetModel()
 	//m_modelRender.Init("Assets/modelData/character/Knight/model_Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	
 	//剣士モデルを読み込み
-	switch (KnightKinds)
+	switch (m_knightKind)
 	{
 	case enKnightKinds_Red:
 		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -175,6 +175,34 @@ void KnightBase::Rotation()
 		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
 		//絵描きさんに回転を教える。
 		m_modelRender.SetRotation(m_rot);
+	}
+}
+
+bool KnightBase::DrawHP(const int playerNumber)
+{
+	Vector3 toCameraTarget = g_camera3D[playerNumber]->GetTarget() - g_camera3D[playerNumber]->GetPosition();
+	Vector3 toMush = m_position - g_camera3D[playerNumber]->GetPosition();
+	toCameraTarget.y = 0.0f;
+	toMush.y = 0.0f;
+	toCameraTarget.Normalize();
+	toMush.Normalize();
+
+	float cos = Dot(toCameraTarget, toMush);
+	float angle = acos(cos);
+
+	//カメラの後ろにあるなら描画しない
+	Vector3 diff = m_player[playerNumber]->GetPosition() - m_position;
+
+	//プレイヤーに向かう距離を計算する
+	float playerdistance = diff.Length();
+
+	if (fabsf(angle) < Math::DegToRad(45.0f) && playerdistance < 800.0f && m_player[playerNumber]->GetPosition().y <= 10.0f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 

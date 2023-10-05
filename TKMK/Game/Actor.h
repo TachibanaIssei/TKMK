@@ -712,7 +712,6 @@ protected:
 	float MaxVolume = 2.0f;
 	const float MinVolume = 0.0f;
 	Game* m_game = nullptr;
-	Player* m_player = nullptr;
 	Actor* m_targetActor = nullptr;
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
 	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）

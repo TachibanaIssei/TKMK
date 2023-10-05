@@ -375,6 +375,8 @@ private:
 	void InitSoloPlay();
 	void InitDuoPlay();
 
+	void SetKnightPlayerActor();
+
 	/// <summary>
 	/// 中立の敵の名前を設定する
 	/// </summary>
@@ -452,14 +454,12 @@ private:
 	GameCamera* m_gamecamera[MAX_VIEWPORT] = { nullptr,nullptr };
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
-	KnightAI* m_KnightAI = nullptr;
-	KnightAI* m_KnightAI1 = nullptr;
-	KnightAI* m_KnightAI2 = nullptr;
+	std::array<KnightAI*,3> m_KnightAI = { nullptr,nullptr,nullptr};
 	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
 	SoundSource* m_bgm = nullptr;	
 	WizardPlayer* wizardPlayer = nullptr;
-	Player* player[2] = { nullptr,nullptr };
+	std::array<Player*,4> player = {nullptr,nullptr,nullptr,nullptr };
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
 	Fade* fade = nullptr;

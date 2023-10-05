@@ -35,11 +35,6 @@ public:
 	void MakeUltSkill();
 	void AvoidanceSprite();
 
-	/// <summary>
-	/// HPゲージの描画フラグ
-	/// </summary>
-	/// <returns>描画できる範囲にあるときtrue</returns>
-	bool DrawHP(const int playerNumber);
 	void SetGame(Game* game)
 	{
 		m_game = game;
@@ -56,15 +51,6 @@ public:
 	const bool CanSkill();
 
 	const bool CanUlt();
-	/// <summary>
-	/// プレイヤーのアクターを設定する
-	/// </summary>
-	void SetPlayerActor(Actor* actor,EnPlayerNumber playerNumber) {
-		if (playerNumber != enPlayerNumber_AI && playerNumber != enPlayerNumber_Num)
-		{
-			m_player[playerNumber] = actor;
-		}
-	}
 
 	/// <summary>
 	/// ラストアタックの移動計算
@@ -147,7 +133,6 @@ private:
 	///////////////
 	bool SkillFlag = false;
 	bool m_swordEffectFlag = false;
-	std::array<Actor*, enPlayerNumber_Num> m_player = { nullptr,nullptr,nullptr,nullptr };
 	int ATKtiming = 0;
 
 	std::array<EnemyHpBar*, enPlayerNumber_Num>	m_enemyHpBar = { nullptr,nullptr,nullptr,nullptr };		//敵の上部に描画されるHPバー

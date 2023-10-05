@@ -40,7 +40,7 @@ namespace
 
 	const Vector3 HP_FONT_POS = Vector3(-650.0f, -445.0f, 0.0f);
 	const Vector3 HP_FONT_POS_LEFT = Vector3(-780.0f, -455.0f, 0.0f);
-	const Vector3 HP_FONT_POS_RIGHT = Vector3(760.0f, -455.0f, 0.0f);
+	const Vector3 HP_FONT_POS_RIGHT = Vector3(610.0f, -455.0f, 0.0f);
 
 	const Vector3 SKILL_COOLTIME_FONT_POS = Vector3(479.0f, -220.0f, 0.0f);
 	const Vector3 SKILL_COOLTIME_FONT_POS_1P = Vector3(-425.0f, -320.0f, 0.0f);

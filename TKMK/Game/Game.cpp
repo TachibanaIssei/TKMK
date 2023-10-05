@@ -158,6 +158,7 @@ bool Game::Start()
 	{
 		InitDuoPlay();
 	}
+	SetKnightPlayerActor();
 
 	//ゲームの状態をゲームステートにする
 	m_GameState = enGameState_Start;
@@ -314,26 +315,6 @@ void Game::Battle()
 	}
 
 }
-
-//ポーズ時の処理
-//void Game::Pause()
-//{
-//	if (HowToPlaySpriteFlag == false)
-//	{
-//		//ポーズ時の移動処理
-//		PauseMove();
-//	}
-//	
-//	//前のフレームのメニュー番号と今のフレームのメニュー番号が違うなら
-//	if (MenuNumber_old != MenuNumber) {
-//		//メニューのステートを選ぶ
-//		SelectMenu();
-//	}
-//	//ステートの管理
-//	MenuState();
-//
-//	MenuNumber_old = MenuNumber;
-//}
 
 //タイムアップになったあとの処理
 void Game::End()
@@ -572,43 +553,40 @@ void Game::InitSoloPlay()
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
-				m_KnightAI = NewGO<KnightAI>(0, "KnightAI");
-				m_KnightAI->SetGame(this);
-				m_Actors.push_back(m_KnightAI);
-				m_KnightAI->SetPosition(objData.position);
-				m_KnightAI->SetCharaconPosition(objData.position);
-				m_KnightAI->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+				m_KnightAI[0] = NewGO<KnightAI>(0, "KnightAI");
+				m_KnightAI[0]->SetGame(this);
+				m_Actors.push_back(m_KnightAI[0]);
+				m_KnightAI[0]->SetPosition(objData.position);
+				m_KnightAI[0]->SetCharaconPosition(objData.position);
 				int Number = 0;
-				m_KnightAI->SetRespawnNumber(Number);
-				m_KnightAI->SetKnightColor(KnightBase::enKnightKinds_Red);
+				m_KnightAI[0]->SetRespawnNumber(Number);
+				m_KnightAI[0]->SetKnightColor(KnightBase::enKnightKinds_Red);
 
 				return true;
 			}
 			//右上の座標
 			if (objData.number == 1) {
-				m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-				m_KnightAI1->SetGame(this);
-				m_Actors.push_back(m_KnightAI1);
-				m_KnightAI1->SetPosition(objData.position);
-				m_KnightAI1->SetCharaconPosition(objData.position);
-				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+				m_KnightAI[1] = NewGO<KnightAI>(0, "KnightAI1");
+				m_KnightAI[1]->SetGame(this);
+				m_Actors.push_back(m_KnightAI[0]);
+				m_KnightAI[1]->SetPosition(objData.position);
+				m_KnightAI[1]->SetCharaconPosition(objData.position);
 				int Number = 1;
-				m_KnightAI1->SetRespawnNumber(Number);
-				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+				m_KnightAI[1]->SetRespawnNumber(Number);
+				m_KnightAI[1]->SetKnightColor(KnightBase::enKnightKinds_Green);
 
 				return true;
 			}
 			//左下の座標
 			if (objData.number == 3) {
-				m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
-				m_KnightAI2->SetGame(this);
-				m_Actors.push_back(m_KnightAI2);
-				m_KnightAI2->SetPosition(objData.position);
-				m_KnightAI2->SetCharaconPosition(objData.position);
-				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+				m_KnightAI[2] = NewGO<KnightAI>(0, "KnightAI2");
+				m_KnightAI[2]->SetGame(this);
+				m_Actors.push_back(m_KnightAI[0]);
+				m_KnightAI[2]->SetPosition(objData.position);
+				m_KnightAI[2]->SetCharaconPosition(objData.position);
 				int Number = 3;
-				m_KnightAI2->SetRespawnNumber(Number);
-				m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+				m_KnightAI[2]->SetRespawnNumber(Number);
+				m_KnightAI[2]->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 
 				return true;
 			}
@@ -669,31 +647,27 @@ void Game::InitDuoPlay()
 			}
 			//右上の座標
 			if (objData.number == 1) {
-				m_KnightAI1 = NewGO<KnightAI>(0, "KnightAI1");
-				m_KnightAI1->SetGame(this);
-				m_Actors.push_back(m_KnightAI1);
-				m_KnightAI1->SetPosition(objData.position);
-				m_KnightAI1->SetCharaconPosition(objData.position);
-				m_KnightAI1->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
-				m_KnightAI1->SetPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+				m_KnightAI[0] = NewGO<KnightAI>(0, "KnightAI1");
+				m_KnightAI[0]->SetGame(this);
+				m_Actors.push_back(m_KnightAI[0]);
+				m_KnightAI[0]->SetPosition(objData.position);
+				m_KnightAI[0]->SetCharaconPosition(objData.position);
 				int Number = 1;
-				m_KnightAI1->SetRespawnNumber(Number);
-				m_KnightAI1->SetKnightColor(KnightBase::enKnightKinds_Green);
+				m_KnightAI[0]->SetRespawnNumber(Number);
+				m_KnightAI[0]->SetKnightColor(KnightBase::enKnightKinds_Green);
 
 				return true;
 			}
 			//左下の座標
 			if (objData.number == 3) {
-				m_KnightAI2 = NewGO<KnightAI>(0, "KnightAI2");
-				m_KnightAI2->SetGame(this);
-				m_Actors.push_back(m_KnightAI2);
-				m_KnightAI2->SetPosition(objData.position);
-				m_KnightAI2->SetCharaconPosition(objData.position);
-				m_KnightAI2->SetPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
-				m_KnightAI2->SetPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+				m_KnightAI[1] = NewGO<KnightAI>(0, "KnightAI2");
+				m_KnightAI[1]->SetGame(this);
+				m_Actors.push_back(m_KnightAI[1]);
+				m_KnightAI[1]->SetPosition(objData.position);
+				m_KnightAI[1]->SetCharaconPosition(objData.position);
 				int Number = 3;
-				m_KnightAI2->SetRespawnNumber(Number);
-				m_KnightAI2->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+				m_KnightAI[1]->SetRespawnNumber(Number);
+				m_KnightAI[1]->SetKnightColor(KnightBase::enKnightKinds_Yellow);
 
 				return true;
 			}
@@ -721,6 +695,71 @@ void Game::InitDuoPlay()
 	m_RabbitSprite.SetPosition(RABBIT_POS);
 	m_RabbitSprite.SetScale(RabbitSpriteScale);
 	m_RabbitSprite.Update();
+}
+
+void Game::SetKnightPlayerActor()
+{
+	for (int i = 0; i < m_KnightAI.size(); i++)
+	{
+		if (m_KnightAI[i] == nullptr)
+		{
+			continue;
+		}
+
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+		{
+			m_KnightAI[i]->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+		{
+			m_KnightAI[i]->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+			m_KnightAI[i]->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+		{
+			m_KnightAI[i]->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+			m_KnightAI[i]->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+			m_KnightAI[i]->SetKnightPlayerActor(player[2]->GetPlayerActor(), Actor::enPlayerNumber_3P);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			m_KnightAI[i]->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+			m_KnightAI[i]->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+			m_KnightAI[i]->SetKnightPlayerActor(player[2]->GetPlayerActor(), Actor::enPlayerNumber_3P);
+			m_KnightAI[i]->SetKnightPlayerActor(player[3]->GetPlayerActor(), Actor::enPlayerNumber_4P);
+		}
+	}
+
+	for (int i = 0; i < player.size(); i++)
+	{
+		if (player[i] == nullptr)
+		{
+			continue;
+		}
+
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+		{
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+		{
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+		{
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[2]->GetPlayerActor(), Actor::enPlayerNumber_3P);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[2]->GetPlayerActor(), Actor::enPlayerNumber_3P);
+			player[i]->GetKnightPlayer()->SetKnightPlayerActor(player[3]->GetPlayerActor(), Actor::enPlayerNumber_4P);
+		}
+	}
 }
 
 //中立の敵の生成処理

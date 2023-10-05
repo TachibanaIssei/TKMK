@@ -1118,34 +1118,6 @@ void KnightAI::MakeUltSkill()
 	}
 }
 
-bool KnightAI::DrawHP(const int playerNumber)
-{
-	Vector3 toCameraTarget = g_camera3D[playerNumber]->GetTarget() - g_camera3D[playerNumber]->GetPosition();
-	Vector3 toMush = m_position - g_camera3D[playerNumber]->GetPosition();
-	toCameraTarget.y = 0.0f;
-	toMush.y = 0.0f;
-	toCameraTarget.Normalize();
-	toMush.Normalize();
-
-	float cos = Dot(toCameraTarget, toMush);
-	float angle = acos(cos);
-
-	//カメラの後ろにあるなら描画しない
-	Vector3 diff = m_player[playerNumber]->GetPosition() - m_position;
-
-	//プレイヤーに向かう距離を計算する
-	float playerdistance = diff.Length();
-
-	if (fabsf(angle) < Math::DegToRad(45.0f) && playerdistance < 800.0f && m_player[playerNumber]->GetPosition().y <= 10.0f)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
 void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	//一段目のアタックのアニメーションが始まったら

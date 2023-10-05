@@ -7,14 +7,13 @@ namespace
 {
 	const float HP_WINDOW_WIDTH = 1152.0f;
 	const float HP_WINDOW_HEIGHT = 648.0f;
-	const float HP_FLAME_WIDTH = 320.0f;
-	const float HP_FLAME_HEIGHT = 100.0f;
 	const float HP_BER_WIDTH = 178.0f;
 	const float HP_BER_HEIGHT = 22.0f;
 	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
-	const float LEVEL_SPRITE_WIDTH = 450.0f;
-	const float LEVEL_SPRITE_HEIGHT = 160.0f;
-	const Vector3 LEVEL_SPRITE_SCALE = Vector3(0.25f, 0.25f, 1.0f);
+	const float LEVEL_SPRITE_WIDTH = 320.0f;
+	const float LEVEL_SPRITE_HEIGHT = 100.0f;
+	const Vector3 LEVEL_SPRITE_SCALE = Vector3(0.6f, 0.6f, 1.0f);
+	const Vector2 LEVEL_SPRITE_PIVOT = Vector2(0.5f, 0.25f);		//HPバーと座標を合わせるためにピボットをHPバーと合わせる
 }
 
 EnemyHpBar::~EnemyHpBar()
@@ -26,21 +25,14 @@ bool EnemyHpBar::Start()
 	InitLvSprite();
 	m_hpBar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
 	m_hpBack.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
-	m_hpFrame.Init("Assets/sprite/gameUI/HPBar_flame01.DDS", HP_FLAME_WIDTH, HP_FLAME_HEIGHT);
-	m_hpFrame.SetPivot(Vector2(0.5f, 0.25));
-	m_hpFrame.SetScale(0.7f, 0.7f, 1.0f);
 	return true;
 }
 
 void EnemyHpBar::Update()
 {
 	m_hpBar.Update();
-	m_hpFrame.Update();
 	m_hpBack.Update();
-	for (int i = 0; i < m_maxLevel; i++)
-	{
-		m_lvSprite[i].Update();
-	}
+	m_lvSprite[m_level].Update();
 }
 
 void EnemyHpBar::Render(RenderContext& rc)
@@ -49,8 +41,7 @@ void EnemyHpBar::Render(RenderContext& rc)
 	{
 		m_hpBack.Draw(rc, false, m_viewportNo);
 		m_hpBar.Draw(rc, false, m_viewportNo);
-		m_hpFrame.Draw(rc, false, m_viewportNo);
-		//m_lvSprite[m_level].Draw(rc, false, m_viewportNo);
+		m_lvSprite[m_level].Draw(rc, false, m_viewportNo);
 	}
 }
 
@@ -75,12 +66,9 @@ void EnemyHpBar::CalcHpBarPosition(const int cameraNo, Status* status, const Vec
 	Vector2 levelFontPos = Vector2::Zero;
 	Vector3 berPosition = characterPosition;
 	berPosition.y += 75.0f;
-	Vector3 levelPosition = berPosition;
-	levelPosition.y += 15.0f;
 	//座標を変換する
-	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_levelSpritePosition, levelPosition);
+	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_levelSpritePosition, berPosition);
 	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_hpBerPosition, berPosition);
-	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_hpFlamePosition, berPosition);
 	g_camera3D[cameraNo]->CalcScreenPositionFromWorldPositionMultiPlay(m_hpBackPosition, berPosition);
 
 	//HPバー画像を左寄せに表示する
@@ -90,34 +78,31 @@ void EnemyHpBar::CalcHpBarPosition(const int cameraNo, Status* status, const Vec
 	//HPバーの座標
 	m_lvSprite[m_level].SetPosition(Vector3(m_levelSpritePosition.x, m_levelSpritePosition.y, 0.0f));
 	m_hpBar.SetPosition(Vector3(m_hpBerPosition.x, m_hpBerPosition.y, 0.0f));
-	m_hpFrame.SetPosition(Vector3(m_hpFlamePosition.x, m_hpFlamePosition.y, 0.0f));
 	m_hpBack.SetPosition(Vector3(m_hpBackPosition.x, m_hpBackPosition.y, 0.0f));
 
 	m_hpBar.Update();
-	m_hpFrame.Update();
 	m_hpBack.Update();
-	for (int i = 0; i < m_maxLevel; i++)
-	{
-		m_lvSprite[i].Update();
-	}
+	m_lvSprite[m_level].Update();
+
 }
 
 void EnemyHpBar::InitLvSprite()
 {
-	m_lvSprite[enCharacterLevel_One].Init("Assets/sprite/gameUI/HPBarUp_Level01.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Two].Init("Assets/sprite/gameUI/HPBarUp_Level02.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Three].Init("Assets/sprite/gameUI/HPBarUp_Level03.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Four].Init("Assets/sprite/gameUI/HPBarUp_Level04.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Five].Init("Assets/sprite/gameUI/HPBarUp_Level05.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Six].Init("Assets/sprite/gameUI/HPBarUp_Level06.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Seven].Init("Assets/sprite/gameUI/HPBarUp_Level07.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Eight].Init("Assets/sprite/gameUI/HPBarUp_Level08.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Nine].Init("Assets/sprite/gameUI/HPBarUp_Level09.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-	m_lvSprite[enCharacterLevel_Ten].Init("Assets/sprite/gameUI/HPBarUp_Level10.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_One].Init("Assets/sprite/gameUI/HPBar_flame01.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Two].Init("Assets/sprite/gameUI/HPBar_flame02.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Three].Init("Assets/sprite/gameUI/HPBar_flame03.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Four].Init("Assets/sprite/gameUI/HPBar_flame04.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Five].Init("Assets/sprite/gameUI/HPBar_flame05.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Six].Init("Assets/sprite/gameUI/HPBar_flame06.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Seven].Init("Assets/sprite/gameUI/HPBar_flame07.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Eight].Init("Assets/sprite/gameUI/HPBar_flame08.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Nine].Init("Assets/sprite/gameUI/HPBar_flame09.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+	m_lvSprite[enCharacterLevel_Ten].Init("Assets/sprite/gameUI/HPBar_flame10.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
 
 	for (int i = 0; i < m_maxLevel; i++)
 	{
 		m_lvSprite[i].SetScale(LEVEL_SPRITE_SCALE);
+		m_lvSprite[i].SetPivot(LEVEL_SPRITE_PIVOT);
 	}
 }
 

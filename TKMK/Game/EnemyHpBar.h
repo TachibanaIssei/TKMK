@@ -72,10 +72,8 @@ private:
 	const static int m_maxLevel = 10;
 	std::array<SpriteRender, m_maxLevel> m_lvSprite;
 	SpriteRender		m_hpBar;		//HPバー画像
-	SpriteRender		m_hpFrame;		//HP枠画像
 	SpriteRender		m_hpBack;		//HP背景画像
 	Vector2				m_hpBerPosition = Vector2::Zero;		//HPバーのポジション
-	Vector2				m_hpFlamePosition = Vector2::Zero;		//HP枠のポジション
 	Vector2				m_hpBackPosition = Vector2::Zero;		//HP背景のポジション
 	Vector2				m_levelSpritePosition = Vector2::Zero;
 	EnCharacterLevel	m_level = enCharacterLevel_One;

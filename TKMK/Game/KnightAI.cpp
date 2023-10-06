@@ -78,6 +78,8 @@ void KnightAI::Update()
 	// 追尾エフェクトのリセット
 	EffectNullptr();
 	
+	CharacterUpperHpBar();
+
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
@@ -87,24 +89,8 @@ void KnightAI::Update()
 		//当たり判定
 		Collision();
 	}
-	//当たり判定
-	//Collision();
 	//アニメーションの再生
 	PlayAnimation();
-	
-	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
-	{
-		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, Lv);
-		m_enemyHpBar[i]->SetDrawFlag(false);
-		//HPバーを描画する条件を満たしたら
-		if (DrawHP(i))
-		{
-			if (m_game->GetStopFlag() == false && m_game->NowGameState() != enPause)
-			{
-				m_enemyHpBar[i]->SetDrawFlag(true);
-			}
-		}
-	}
 
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {
@@ -119,9 +105,15 @@ void KnightAI::Update()
 	//自分の以外の必殺中は止まります
 	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
 	{
-		//ステートは死亡と被ダメの時アニメーションは再生する
+		//ステートが死亡と被ダメの時
 		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
 		{
+			m_modelRender.Update();
+		}
+		//それ以外のときは待機状態
+		else
+		{
+			m_charState = enCharState_Idle;
 			m_modelRender.Update();
 		}
 		return;
@@ -131,7 +123,6 @@ void KnightAI::Update()
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade,false) == true)
 	{
-		//m_charState = enCharState_Death;
 		//アニメーションの再生
 		PlayAnimation();
 		//ステート
@@ -212,8 +203,6 @@ void KnightAI::Update()
 			//スキルを使うときのスピードを使う
 			Vector3 move = m_skillMove;
 			m_rot.SetRotationYFromDirectionXZ(move);
-			////スキルを使うときのスピードを使う
-			////AnimationMove(SkillSpeed, m_forward);
 			move.y = 0.0f;
 			move *= 200.0f;
 
@@ -235,11 +224,13 @@ void KnightAI::Update()
 			m_position = m_charCon.Execute(LastAttackMove, g_gameTime->GetFrameDeltaTime());
 		}
 		
-		
 		//回避クールタイムの処理
 		CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
-
-
+	}
+	else
+	{
+		m_charState = enCharState_Idle;
+		m_modelRender.Update();
 	}
 
 	if (m_moveSpeed.LengthSq() != 0.0f) {
@@ -1394,9 +1385,6 @@ void  KnightAI::IsLevelEffect(int oldlevel, int nowlevel)
 		SoundSource* se = NewGO<SoundSource>(0);
 
 		SetAndPlaySoundSource(enSound_Level_UP);
-		/*se->Init(enSound_Level_UP);
-		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);*/
 	}
 	else if (nowlevel < oldlevel)
 	{
@@ -1408,9 +1396,23 @@ void  KnightAI::IsLevelEffect(int oldlevel, int nowlevel)
 		SoundSource* se = NewGO<SoundSource>(0);
 
 		SetAndPlaySoundSource(enSound_Level_Down);
-		/*se->Init(enSound_Level_Down);
-		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);*/
+	}
+}
+
+void KnightAI::CharacterUpperHpBar()
+{
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, Lv);
+		m_enemyHpBar[i]->SetDrawFlag(false);
+		//HPバーを描画する条件を満たしたら
+		if (DrawHP(i))
+		{
+			if (m_game->GetStopFlag() == false && m_game->NowGameState() != enPause)
+			{
+				m_enemyHpBar[i]->SetDrawFlag(true);
+			}
+		}
 	}
 }
 

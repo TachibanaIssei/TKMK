@@ -16,8 +16,6 @@
 #include "ChaseEFK.h"
 #include "Effect.h"
 #include "Sounds.h"
-//#include <vector>
-//#include <algorithm>
 
 namespace {
 	const float RADIUS = 100.0f;
@@ -285,6 +283,12 @@ void Neutral_Enemy::Update()
 		return;
 	}
 
+	//インゲームが終了したら
+	if (m_game->NowGameState() == Game::enGamestate_End)
+	{
+		DeleteGO(this);
+		return;
+	}
 	//当たり判定。
 	Collision();
 	//アニメーションの再生。

@@ -88,6 +88,8 @@ private:
 
 	void IsLevelEffect(int oldlevel, int nowlevel);
 
+	void CharacterUpperHpBar();
+
 	enum Action {
 		AttackAI,
 		AttackEnemy,

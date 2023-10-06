@@ -110,6 +110,8 @@ void KnightPlayer::Update()
 {
 	//アニメーションの再生
 	PlayAnimation();
+	//頭上のHPバーの処理
+	CharacterUpperHpBar();
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定
@@ -135,6 +137,11 @@ void KnightPlayer::Update()
 		{
 			m_modelRender.Update();
 		}
+		else
+		{
+			m_charState = enCharState_Idle;
+			m_modelRender.Update();
+		}
 		//抜け出す
 		return;
 	}
@@ -153,7 +160,6 @@ void KnightPlayer::Update()
 	//やられたらリスポーンするまで実行する
 	if (DeathToRespawnTimer(m_DeathToRespwanFlag, m_fade, true) == true)
 	{
-		//m_charState = enCharState_Idle;
 		//アニメーションの再生
 		PlayAnimation();
 		m_modelRender.Update();
@@ -251,14 +257,13 @@ void KnightPlayer::Update()
 
 		CoolTimeProcess();
 		GrayScaleUI();
-
-		CharacterUpperHpBar();
-
 	}
 	//速度を0にする(動かないようにする)
 	else
 	{
 		m_moveSpeed = Vector3::Zero;
+		m_charState = enCharState_Idle;
+		m_modelRender.Update();
 	}
 
 
@@ -826,8 +831,6 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//移動処理をしないようにする
 		pushFlag = false;
 		AvoidanceFlag = false;
-		//m_AtkTmingState = Num_State;
-
 	}
 }
 

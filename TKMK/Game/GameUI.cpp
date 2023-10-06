@@ -106,15 +106,20 @@ namespace
 
 	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//レベルアップまでに必要な経験値の量
 
-	const Vector3 RESPWANCOUNT_POS = Vector3(0.0f, 0.0f, 0.0f);		//リスポーンした後のカウント
+	const Vector3 SMALLSCALE = Vector3(0.1f, 0.1f, 0.0f);
 
-	const Vector3 SmallScale = Vector3(0.1f, 0.1f, 0.0f);
+	const Vector3 FIGHT_SMALL_SCALE = Vector3(0.5f, 0.5f, 0.0f);
 
-	const Vector3 FightSmallScale = Vector3(0.5f, 0.5f, 0.0f);
-
-	const Vector3 RespawnInPos = Vector3(0.0f, 300.0f, 0.0f);		//Respawn inの座標
-
-	const Vector3 RespawnCountPos = Vector3(0.0f, -200.0f, 0.0f);		//の座標
+	const Vector3 RESPAWN_COUNT_POS = Vector3(0.0f, -200.0f, 0.0f);		//リスポーンした後のカウント
+	const Vector3 RESPAWN_COUNT_DUOPLAY_LEFT_POS = Vector3(-480.0f, 0.0f, 0.0f);
+	const Vector3 RESPAWN_COUNT_DUOPLAY_RIGHT_POS = Vector3(480.0f, 0.0f, 0.0f);
+	const Vector3 RESPAWN_IN_POS = Vector3(0.0f, 300.0f, 0.0f);		//Respawn inの座標
+	const Vector3 RESPAWN_IN_DUOPLAY_LEFT_POS = Vector3(-480.0f, 300.0f, 0.0f);
+	const Vector3 RESPAWN_IN_DUOPLAY_RIGHT_POS = Vector3(480.0f, 300.0f, 0.0f);
+	const Vector3 RESPAWN_IN_DUOPLAY_SCALE = Vector3(0.5f, 0.5f, 1.0f);
+	const Vector3 RESPAWN_DUOPLAY_SCALE = Vector3(0.5f, 1.0f, 1.0f);
+	const Vector3 RESPAWN_DUOPLAY_LEFT_POS = Vector3(-480.0f, 0.0f, 0.0f);
+	const Vector3 RESPAWN_DUOPLAY_RIGHT_POS = Vector3(480.0f, 0.0f, 0.0f);
 
 	const Vector3 ADDPOINTPOS = Vector3(20.0f, 11.0f, 0.0f);
 
@@ -235,24 +240,53 @@ void GameUI::InitAssets()
 
 	//リスポーン関連
 	{
-		//Respawn inの画像
-		m_RespawnIn.Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
-		m_RespawnIn.SetPosition(RespawnInPos);
-		m_RespawnIn.SetScale(Vector3::One);
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+		{
+			for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+			{
+				m_respawnBack[i].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920.0f, 1080.0f);
+				m_respawnBack[i].SetScale(RESPAWN_DUOPLAY_SCALE);
+				m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
+				m_respawnIn[i].SetScale(RESPAWN_IN_DUOPLAY_SCALE);
+				m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+			}
+				m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
+				m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
 
-		//リスポーンの背景の画像
-		m_Respawn_Back.Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
-		m_Respawn_Back.SetPosition(Vector3::Zero);
-		m_Respawn_Back.SetScale(Vector3::One);
+				m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_DUOPLAY_LEFT_POS);
+				m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
 
-		//リスポーンのカウントダウンの画像
-		m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
-		m_RespawnCountNumber.SetPosition(RespawnCountPos);
-		m_RespawnCountNumber.SetScale(Vector3::One);
+				//リスポーンのカウントダウンの画像
+				m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
+				m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+				
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+		{
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+		}
+		else
+		{
+			//Respawn inの画像
+			m_respawnIn[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
+			m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_POS);
 
-		m_RespawnIn.Update();
-		m_Respawn_Back.Update();
-		m_RespawnCountNumber.Update();
+			//リスポーンの背景の画像
+			m_respawnBack[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
+
+			//リスポーンのカウントダウンの画像
+			m_respawnCountNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+			m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_POS);
+		}
+
+		for (int i = 0; i < enPlayerNumber_Num; i++)
+		{
+			m_respawnIn[i].Update();
+			m_respawnBack[i].Update();
+			m_respawnCountNumber[i].Update();
+		}
 	}
 
 	//スタートまでのカウントダウン
@@ -757,7 +791,7 @@ void GameUI::CountDown()
 	else if (m_fightFlag == false && m_gameCountScale.x < 100.0f)
 	{
 		//徐々に文字を大きくする
-		m_gameCountScale += SmallScale;
+		m_gameCountScale += SMALLSCALE;
 		//少しずつ透明にする
 		m_Color -= 0.02f;
 
@@ -784,7 +818,7 @@ void GameUI::CountDown()
 		}
 		else if (FightshotStopFlag == false) {
 			//徐々に文字を小さくする
-			m_gameCountScale -= FightSmallScale;
+			m_gameCountScale -= FIGHT_SMALL_SCALE;
 
 			if (m_gameCountScale.x < 0.6f)
 			{
@@ -824,7 +858,7 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 		switch (respornCountDown)
 		{
 		case 0:
-			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
 			//画面を暗くしてゆく
 			if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 			{
@@ -839,10 +873,10 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 			fade->StartFadeIn(2.0f);
 			break;
 		case 1:
-			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);
 			break;
 		case 2:
-			m_RespawnCountNumber.Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
 			break;
 		default:
 			break;
@@ -851,7 +885,7 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 
 	oldRespawnCount[playerNumber] = respornCountDown;
 
-	m_RespawnCountNumber.Update();
+	m_respawnCountNumber[playerNumber].Update();
 }
 
 //プレイヤーのHPの表示の処理
@@ -1369,6 +1403,73 @@ void GameUI::LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber)
 	}
 }
 
+void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
+{
+	//リスポーンするまでの時間
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+	{
+		if (m_player1P->CharGetRespawnTime() > 0 || m_player2P->CharGetRespawnTime() > 0)
+		{
+			//制限時間
+			m_TimeAndPointRender.Draw(rc);
+			m_minutes.Draw(rc);
+			m_seconds.Draw(rc);
+			m_coron.Draw(rc);
+
+			if(m_player1P->CharGetRespawnTime() > 0)
+			{
+				m_respawnBack[enPlayerNumber_1P].Draw(rc);
+				m_respawnIn[enPlayerNumber_1P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+			}
+			if (m_player2P->CharGetRespawnTime() > 0)
+			{
+				m_respawnBack[enPlayerNumber_2P].Draw(rc);
+				m_respawnIn[enPlayerNumber_2P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_2P].Draw(rc);
+			}
+
+			//試合終了まで残り10秒なら
+			if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
+			{
+				m_FinishCountNumber.Draw(rc);
+			}
+			return;
+		}
+	}
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+	{
+
+	}
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+	{
+
+	}
+	else
+	{
+		if (m_player1P->CharGetRespawnTime() > 0)
+		{
+			//制限時間
+			m_TimeAndPointRender.Draw(rc);
+			m_minutes.Draw(rc);
+			m_seconds.Draw(rc);
+			m_coron.Draw(rc);
+
+			m_respawnBack[enPlayerNumber_1P].Draw(rc);
+
+			m_respawnIn[enPlayerNumber_1P].Draw(rc);
+			m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+
+			//試合終了まで残り10秒なら
+			if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
+			{
+				m_FinishCountNumber.Draw(rc);
+			}
+			return;
+		}
+	}
+}
+
 void GameUI::Render(RenderContext& rc)
 {
 	//finishの画像
@@ -1383,32 +1484,7 @@ void GameUI::Render(RenderContext& rc)
 		return;
 	}
 
-	//リスポーンするまでの時間
-#ifdef m_gameMode == RenderingEngine::enGameMode_DuoPlay
-	//マルチプレイ時
-	if (m_player1P->CharGetRespawnTime() > 0 || m_player2P->CharGetRespawnTime() > 0)
-#else
-	//ソロプレイ時
-	if (m_player1P->CharGetRespawnTime() > 0)
-#endif
-	{
-		//制限時間
-		m_TimeAndPointRender.Draw(rc);
-		m_minutes.Draw(rc);
-		m_seconds.Draw(rc);
-		m_coron.Draw(rc);
-
-		m_Respawn_Back.Draw(rc);
-		m_RespawnIn.Draw(rc);
-		m_RespawnCountNumber.Draw(rc);
-
-		//試合終了まで残り10秒なら
-		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
-		{
-			m_FinishCountNumber.Draw(rc);
-		}
-		return;
-	}
+	RenderDeathPlayerSprite(rc);
 
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {

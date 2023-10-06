@@ -16,9 +16,11 @@ public:
 
 	enum EnPlayerNumber
 	{
-		enPlayerNumber_1P = 0,
-		enPlayerNumber_2P = 1,
-		enPlayerNumber_Num = 2
+		enPlayerNumber_1P,
+		enPlayerNumber_2P,
+		enPlayerNumber_3P,
+		enPlayerNumber_4P,
+		enPlayerNumber_Num,
 	};
 
 	enum GameUIState
@@ -127,11 +129,15 @@ private:
 	void InitAssets();
 	void SkillCoolTimeFont();
 
+	/// <summary>
+	/// プレイヤー死亡時のDraw呼び出し
+	/// </summary>
+	void RenderDeathPlayerSprite(RenderContext& rc);
+
 private:
 	FontRender m_ExpFont;
 
 	std::array<FontRender,enPlayerNumber_Num> m_skillFont;
-
 	std::array<FontRender,enPlayerNumber_Num> m_HpFont;
 
 	std::array < FontRender, 4> m_PointFont;
@@ -172,9 +178,9 @@ private:
 	std::array<SpriteRender,4>	m_pointFlame;					//ポイントを表示するフレーム
 	std::array<SpriteRender, 4> m_charIcon;                      //キャラのアイコン
 	SpriteRender			m_CountNumper;						//カウントダウン
-	SpriteRender			m_RespawnIn;						//Respawn inの画像
-	SpriteRender			m_Respawn_Back;						//リスポーン時の背景
-	SpriteRender			m_RespawnCountNumber;				//リスポーン時のカウントダウン
+	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnIn;						//Respawn inの画像
+	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnBack;						//リスポーン時の背景
+	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);

@@ -568,7 +568,7 @@ void Game::InitSoloPlay()
 			if (objData.number == 1) {
 				m_KnightAI[1] = NewGO<KnightAI>(0, "KnightAI1");
 				m_KnightAI[1]->SetGame(this);
-				m_Actors.push_back(m_KnightAI[0]);
+				m_Actors.push_back(m_KnightAI[1]);
 				m_KnightAI[1]->SetPosition(objData.position);
 				m_KnightAI[1]->SetCharaconPosition(objData.position);
 				int Number = 1;
@@ -581,7 +581,7 @@ void Game::InitSoloPlay()
 			if (objData.number == 3) {
 				m_KnightAI[2] = NewGO<KnightAI>(0, "KnightAI2");
 				m_KnightAI[2]->SetGame(this);
-				m_Actors.push_back(m_KnightAI[0]);
+				m_Actors.push_back(m_KnightAI[2]);
 				m_KnightAI[2]->SetPosition(objData.position);
 				m_KnightAI[2]->SetCharaconPosition(objData.position);
 				int Number = 3;

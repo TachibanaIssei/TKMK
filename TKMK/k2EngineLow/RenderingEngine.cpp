@@ -28,6 +28,43 @@ void nsK2EngineLow::RenderingEngine::InitRenderTargets()
 		DXGI_FORMAT_R32G32B32A32_FLOAT,
 		DXGI_FORMAT_D32_FLOAT
 	);
+
+	float clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+
+	m_2DRenderTarget.Create(
+		UI_SPACE_WIDTH,
+		UI_SPACE_HEIGHT,
+		1,
+		1,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_FORMAT_UNKNOWN,
+		clearColor
+	);
+
+	//m_2DSpriteの初期化
+	SpriteInitData spriteInitData;
+	//テクスチャは2Dレンダ―ターゲット
+	spriteInitData.m_textures[0] = &m_2DRenderTarget.GetRenderTargetTexture();
+	// 解像度はmainRenderTargetの幅と高さ
+	spriteInitData.m_width = m_mainRenderTarget.GetWidth();
+	spriteInitData.m_height = m_mainRenderTarget.GetHeight();
+	spriteInitData.m_fxFilePath = "Assets/shader/sprite.fx";
+	spriteInitData.m_vsEntryPointFunc = "VSMain";
+	spriteInitData.m_psEntryPoinFunc = "PSMain";
+	spriteInitData.m_alphaBlendMode = AlphaBlendMode_None;
+	//レンダリングターゲットのフォーマット
+	spriteInitData.m_colorBufferFormat[0] = m_mainRenderTarget.GetColorBufferFormat();
+	m_2DSprite.Init(spriteInitData);
+
+	//m_mainSpriteの初期化
+	//テクスチャはメインレンダ―ターゲット
+	spriteInitData.m_textures[0] = &m_mainRenderTarget.GetRenderTargetTexture();
+	//解像度は2Dレンダ―ターゲットの幅と高さ
+	spriteInitData.m_width = m_2DRenderTarget.GetWidth();
+	spriteInitData.m_height = m_2DRenderTarget.GetHeight();
+	//レンダリングターゲットのフォーマット
+	spriteInitData.m_colorBufferFormat[0] = m_2DRenderTarget.GetColorBufferFormat();
+	m_mainSprite.Init(spriteInitData);
 }
 
 void nsK2EngineLow::RenderingEngine::InitCopyToFrameBufferSprite()
@@ -213,6 +250,38 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 
 }
 
+void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)
+{
+	BeginGPUEvent("Render2D");
+
+	rc.WaitUntilToPossibleSetRenderTarget(m_2DRenderTarget);
+	rc.SetRenderTargetAndViewport(m_2DRenderTarget);
+	rc.ClearRenderTargetView(m_2DRenderTarget);
+
+	//メインレンダーターゲットのカラーバッファを描画する
+	m_mainSprite.Draw(rc);
+
+	//画像の描画
+	SpriteRendering(rc);
+	//文字の描画
+	FontRendering(rc);
+	//文字の上に画像を描画
+	SpriteRendering(rc, true);
+
+	rc.WaitUntilFinishDrawingToRenderTarget(m_2DRenderTarget);
+
+	//レンダリングターゲットをメインレンダリングターゲットへ変更する
+	rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
+	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
+
+	//メインレンダーターゲットに2D描画後のスプライトを描画する
+	m_2DSprite.Draw(rc);
+
+	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+
+	EndGPUEvent();
+}
+
 void nsK2EngineLow::RenderingEngine::ClearVectorList()
 {
 	m_modelList.clear();
@@ -247,18 +316,13 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 
 	ExcuteEffectRender(rc);
 
+	Render2D(rc);
+
 	rc.SetRenderTarget(
 		g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
 		g_graphicsEngine->GetCurrentFrameBuffuerDSV()
 	);
 	m_copyToFrameBufferSprite.Draw(rc);
-
-	//画像の描画
-	SpriteRendering(rc);
-	//文字の描画
-	FontRendering(rc);
-	//文字の上に画像を描画
-	SpriteRendering(rc, true);
 
 	ClearVectorList();
 }

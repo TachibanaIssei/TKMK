@@ -605,6 +605,11 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void ExcuteEffectRender(RenderContext& rc);
 		/// <summary>
+		/// 2D描画を行う
+		/// </summary>
+		/// <param name="rc"></param>
+		void Render2D(RenderContext& rc);
+		/// <summary>
 		/// vectorコンテナのリストを消去する
 		/// </summary>
 		void ClearVectorList();
@@ -620,6 +625,9 @@ namespace nsK2EngineLow {
 		SceneLight					m_sceneLight[MAX_VIEWPORT];				//シーンライト
 
 		RenderTarget				m_mainRenderTarget;			//メインレンダーターゲット
+		RenderTarget				m_2DRenderTarget;			//2Dレンダーターゲット
+		Sprite						m_2DSprite;
+		Sprite						m_mainSprite;
 		Sprite						m_copyToFrameBufferSprite;	//テクスチャを貼り付けるためのスプライトを初期化
 
 		Shadow						m_shadow;					//シャドウマップ

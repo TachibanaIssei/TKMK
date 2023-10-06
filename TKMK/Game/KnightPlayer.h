@@ -84,10 +84,8 @@ private:
 
 private:
 	Game* m_game=nullptr;
-	//GameCamera* gameCamera = nullptr;
 	GameUI* m_gameUI = nullptr;
 	
-	//CollisionObject* collisionObject;                     //コリジョン
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
@@ -96,14 +94,11 @@ private:
 	Vector2 Avoidance_BarPos = Vector2::Zero;
 
 	float UltimateSkillTimer = 0;
-  
-	//bool AtkCollistionFlag = false;
 
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
-	SpriteRender m_AtkUpIcon_Render;
 
 	//スキルを使った時の移動速度
 	float SkillSpeed = 200.0f;

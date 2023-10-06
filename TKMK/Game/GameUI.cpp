@@ -131,6 +131,12 @@ namespace
 
 	const float TIMERSCALE = 1.65f;
 
+	const std::array<Vector3, 4> POINT_FLAME_POS = {
+		TIME_POS + Vector3(-700,0.0f,0.0f) ,
+		TIME_POS + Vector3(-370,0.0f,0.0f),
+		TIME_POS + Vector3(370,0.0f,0.0f),
+		TIME_POS + Vector3(700,0.0f,0.0f),
+	};															//ポイントのフレーム
 }
 GameUI::GameUI()
 {
@@ -146,7 +152,7 @@ bool GameUI::Start()
 {
 	m_game = FindGO<Game>("game");
 	m_player1P = FindGO<Player>("player");
-	fade = FindGO<Fade>("fade");
+	m_fade = FindGO<Fade>("fade");
 
 	m_gameMode = g_renderingEngine->GetGameMode();
 
@@ -230,7 +236,7 @@ void GameUI::InitAssets()
 				m_pointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
 			}
 
-			m_pointFlame[num].SetPosition(PointFlamePos[num]);
+			m_pointFlame[num].SetPosition(POINT_FLAME_POS[num]);
 			m_pointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
 			m_pointFlame[num].Update();
 
@@ -250,16 +256,16 @@ void GameUI::InitAssets()
 				m_respawnIn[i].SetScale(RESPAWN_IN_DUOPLAY_SCALE);
 				m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
 			}
-				m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
-				m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
+			m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
+			m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
 
-				m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_DUOPLAY_LEFT_POS);
-				m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
+			m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_DUOPLAY_LEFT_POS);
+			m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
 
-				//リスポーンのカウントダウンの画像
-				m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
-				m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
-				
+			//リスポーンのカウントダウンの画像
+			m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
+			m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+
 		}
 		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
 		{
@@ -863,14 +869,14 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 			if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 			{
 				if (playerNumber == enPlayerNumber_1P) {
-					fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Left);
+					m_fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Left);
 				}
 				else {
-					fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Right);
+					m_fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Right);
 				}
 				break;
 			}
-			fade->StartFadeIn(2.0f);
+			m_fade->StartFadeIn(2.0f);
 			break;
 		case 1:
 			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);
@@ -894,7 +900,7 @@ void GameUI::HPBar()
 	int HP = m_player1P->GetCharacterHp();
 	int MaxHP = m_player1P->GetCharcterMaxHp();
 	wchar_t hp[255];
-	swprintf_s(hp, 255, L"%d/%d", HP, MaxHP);
+	swprintf_s(hp, 255, L"%3d/%3d", HP, MaxHP);
 	m_HpFont[enPlayerNumber_1P].SetText(hp);
 
 	Vector3 HpScale = Vector3::One;
@@ -947,7 +953,7 @@ void GameUI::HPBar()
 	//マルチプレイ時
 	HP = m_player2P->GetCharacterHp();
 	MaxHP = m_player2P->GetCharcterMaxHp();
-	swprintf_s(hp, 255, L"%d/%d", HP, MaxHP);
+	swprintf_s(hp, 255, L"%3d/%3d", HP, MaxHP);
 	m_HpFont[enPlayerNumber_2P].SetText(hp);
 
 	HpScale = Vector3::One;
@@ -1329,29 +1335,6 @@ void GameUI::CharPoint()
 		swprintf_s(P, 255, L"%dp", POINT);
 		m_PointFont[num].SetText(P);
 
-		//一番ポイントが多いキャラのフレーム
-		if (MaxPoint <= charPoint[num])
-		{
-			m_PointFont[num].SetScale(1.4f);
-			Vector3 FontPos;
-			FontPos = ADDPOINTPOS + PointPos[num];
-			m_PointFont[num].SetPosition(FontPos);
-
-			m_pointFlame[num].SetScale(1.7f, 1.2f, 0.0f);
-			m_pointFlame[num].Update();
-			m_charIcon[num].Update();
-			MaxPoint = charPoint[num];
-		}
-		else
-		{
-			m_PointFont[num].SetScale(1.1f);
-			m_PointFont[num].SetPosition(PointPos[num]);
-			m_pointFlame[num].SetScale(1.0f, 1.0f, 0.0f);
-			m_pointFlame[num].Update();
-			m_charIcon[num].Update();
-		}
-
-
 		num++;
 	}
 }
@@ -1416,7 +1399,7 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			m_seconds.Draw(rc);
 			m_coron.Draw(rc);
 
-			if(m_player1P->CharGetRespawnTime() > 0)
+			if (m_player1P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_1P].Draw(rc);
 				m_respawnIn[enPlayerNumber_1P].Draw(rc);
@@ -1508,10 +1491,20 @@ void GameUI::Render(RenderContext& rc)
 		}
 
 		//制限時間
-		m_TimeAndPointRender.Draw(rc);
-		m_minutes.Draw(rc);
-		m_seconds.Draw(rc);
-		m_coron.Draw(rc);
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+		{
+			m_TimeAndPointRender.Draw(rc);
+			m_minutes.Draw(rc);
+			m_seconds.Draw(rc);
+			m_coron.Draw(rc);
+		}
+		else
+		{
+			m_TimeAndPointRender.DrawFront(rc);
+			m_minutes.Draw(rc, true);
+			m_seconds.Draw(rc, true);
+			m_coron.Draw(rc, true);
+		}
 
 		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 		{

@@ -28,9 +28,6 @@ namespace {
 	const Vector3 AVOIDANCE_BAR_POS = Vector3(98.0f, -397.0f, 0.0f);
 
 	const Vector3 AVOIDANCE_FLAME_POS = Vector3(0.0f, -410.0f, 0.0f);
-
-	const Vector3 ATKUPICON_POS = Vector3(-870.0f, -390.0f, 0.0f);
-	const Vector3 ATKUPICON_SCALE = Vector3(0.2f, 0.2f, 1.0f);
 }
 
 KnightPlayer::KnightPlayer()
@@ -88,11 +85,6 @@ bool KnightPlayer::Start() {
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 
-	m_AtkUpIcon_Render.Init("Assets/sprite/gameUI/attackUP.DDS", 512, 512);
-	m_AtkUpIcon_Render.SetPosition(ATKUPICON_POS);
-	m_AtkUpIcon_Render.SetScale(ATKUPICON_SCALE);
-	m_AtkUpIcon_Render.Update();
-
 	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 	{
 		//自分のカメラではHPバーを頭に映さない
@@ -108,43 +100,8 @@ bool KnightPlayer::Start() {
 
 void KnightPlayer::Update()
 {
-	//アニメーションの再生
-	PlayAnimation();
 	//頭上のHPバーの処理
 	CharacterUpperHpBar();
-	//無敵時間
-	if (Invincible() == false) {
-		//当たり判定
-		Collision();
-	}
-
-
-	// 追尾エフェクトのリセット
-	EffectNullptr();
-
-	//必殺技を打った時
-	if (UltimaitSkillTime() == true) {
-		return;
-	}
-
-	//一度死んだらデスステートのままにする
-
-	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
-	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
-	{
-		//死ぬステートまたはダメージステートなら
-		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
-		{
-			m_modelRender.Update();
-		}
-		else
-		{
-			m_charState = enCharState_Idle;
-			m_modelRender.Update();
-		}
-		//抜け出す
-		return;
-	}
 
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
@@ -173,6 +130,39 @@ void KnightPlayer::Update()
 		m_modelRender.Update();
 		//ステート
 		ManageState();
+		return;
+	}
+
+	//アニメーションの再生
+	PlayAnimation();
+	
+	//無敵時間
+	if (Invincible() == false) {
+		//当たり判定
+		Collision();
+	}
+	// 追尾エフェクトのリセット
+	EffectNullptr();
+
+	//必殺技を打った時
+	if (UltimaitSkillTime() == true) {
+		return;
+	}
+
+	//誰かが必殺技を使っているまたは必殺技を打ったアクターが自分でないなら
+	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
+	{
+		//死ぬステートまたはダメージステートなら
+		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
+		{
+			m_modelRender.Update();
+		}
+		else
+		{
+			m_charState = enCharState_Idle;
+			m_modelRender.Update();
+		}
+		//抜け出す
 		return;
 	}
 
@@ -910,24 +900,18 @@ void KnightPlayer::SetAndPlaySoundSource(EnSound soundNumber)
 
 void KnightPlayer::Render(RenderContext& rc)
 {
-
 	if (DarwFlag == true) {
 		m_modelRender.Draw(rc);
 	}
-
 
 	//スキルのクールタイムとタイマーが違う時だけ表示
 	/*if(SkillTimer!=Cooltime)
 	Skillfont.Draw(rc);*/
 
 	//回避のクールタイムとタイマーが違う時だけ表示
-	if (AvoidanceTimer != AvoidanceCoolTime)
+	/*if (AvoidanceTimer != AvoidanceCoolTime)
 	{
 		m_Avoidance_flameRender.Draw(rc);
 		m_Avoidance_barRender.Draw(rc);
-	}
-
-	if (m_atkUpSpriteFlag == true) {
-		m_AtkUpIcon_Render.Draw(rc);
-	}
+	}*/
 }

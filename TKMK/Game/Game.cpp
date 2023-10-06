@@ -61,12 +61,10 @@ Game::~Game()
 	{
 		DeleteGO(seutral_Enemy);
 	}
-	//m_neutral_Enemys.clear();
 	if (GameObjectManager::GetInstance()->IsActive()) {
 		// ゲームオブジェクトマネージャーが有効なら
 		for (auto aoctor : m_Actors)
 		{
-			//たまにエラーあり
 			aoctor->ChaseEffectDelete();
 			DeleteGO(aoctor);
 		}
@@ -93,7 +91,6 @@ Game::~Game()
 		DeleteGO(lamp_);
 		return true;
 		});
-	//DeleteGO(lamp);
 	DeleteGO(m_skyCube);
 
 }

@@ -159,7 +159,7 @@ namespace nsK2EngineLow {
 		/// 描画処理
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void Draw(RenderContext& rc, const int viewportNo = -1);
+		void Draw(RenderContext& rc, const bool drawTiming = false,const int viewportNo = -1);
 
 		void OnRenderFont(RenderContext& rc)
 		{

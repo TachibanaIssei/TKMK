@@ -166,7 +166,7 @@ void nsK2EngineLow::RenderingEngine::ShadowModelRendering(RenderContext& rc, Cam
 	}
 }
 
-void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc, bool drawTiming = false)
+void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc, const bool drawTiming)
 {
 	if (drawTiming) {
 		for (auto& spriteObj : m_laterSpriteList)
@@ -190,15 +190,33 @@ void nsK2EngineLow::RenderingEngine::SpriteViewportRendering(RenderContext& rc, 
 	}
 }
 
-void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc)
+void nsK2EngineLow::RenderingEngine::SpriteFrontRendering(RenderContext& rc)
 {
-	for (auto& fontObj : m_fontList)
+	for (auto& spriteObj : m_spriteFrontDrawList)
 	{
-		fontObj->OnRenderFont(rc);
+		spriteObj->OnRenderSprite(rc);
 	}
 }
 
-void nsK2EngineLow::RenderingEngine::FontViewportRendering(RenderContext& rc, int viewportNo)
+void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc, const bool drawTiming)
+{
+	if (drawTiming)
+	{
+		for (auto& fontObj : m_laterFontList)
+		{
+			fontObj->OnRenderFont(rc);
+		}
+	}
+	else
+	{
+		for (auto& fontObj : m_fontList)
+		{
+			fontObj->OnRenderFont(rc);
+		}
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::FontViewportRendering(RenderContext& rc, const int viewportNo)
 {
 	for (auto& fontObj : m_fontDrawViewportList[viewportNo])
 	{
@@ -267,6 +285,8 @@ void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)
 	FontRendering(rc);
 	//文字の上に画像を描画
 	SpriteRendering(rc, true);
+	SpriteFrontRendering(rc);
+	FontRendering(rc,true);
 
 	rc.WaitUntilFinishDrawingToRenderTarget(m_2DRenderTarget);
 
@@ -288,6 +308,8 @@ void nsK2EngineLow::RenderingEngine::ClearVectorList()
 	m_spriteList.clear();
 	m_laterSpriteList.clear();
 	m_fontList.clear();
+	m_laterFontList.clear();
+	m_spriteFrontDrawList.clear();
 
 	for (int i = 0; i < MAX_VIEWPORT; i++)
 	{

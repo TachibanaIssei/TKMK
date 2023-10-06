@@ -40,3 +40,8 @@ void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc, bool drawTiming, int v
 		g_renderingEngine->AddSpriteDrawViewportList(this, viewportNo);
 	}
 }
+
+void nsK2EngineLow::SpriteRender::DrawFront(RenderContext& rc)
+{
+	g_renderingEngine->AddFrontSpriteList(this);
+}

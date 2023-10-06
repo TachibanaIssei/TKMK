@@ -25,8 +25,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	Tittle* tittle = NewGO<Tittle>(0, "tittle");
 	//フェードクラス生成
-	Fade* fade = NewGO<Fade>(5, "fade");
-	//Game* m_game = NewGO<Game>(0,"m_game");
+	Fade* fade = NewGO<Fade>(6, "fade");
 
 	// ここからゲームループ。
 	while (DispatchWindowMessage() && g_gameLoop.m_isLoop == true)

@@ -730,7 +730,6 @@ protected:
 
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
-	bool m_atkUpSpriteFlag = false;
 
 	//自身を描画するかのフラグ trueのとき描画
 	bool DarwFlag = true;

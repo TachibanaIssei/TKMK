@@ -144,6 +144,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void Draw(RenderContext& rc, bool drawTiming = false, int viewportNo = -1);
+		void DrawFront(RenderContext& rc);
 
 		/// <summary>
 		/// RenderingEngineで描画するときに呼び出す

@@ -84,13 +84,35 @@ void KnightAI::Update()
 	if (m_GameState == enPause) {
 		return;
 	}
+
+	//やられたらリスポーンするまで実行する
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag, m_fade, false) == true)
+	{
+		//アニメーションの再生
+		PlayAnimation();
+		//ステート
+		ManageState();
+		m_modelRender.Update();
+		return;
+	}
+
+	if (m_charState == enCharState_Death) {
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
+		//ステート
+		ManageState();
+		return;
+	}
+
+	//アニメーションの再生
+	PlayAnimation();
+
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定
 		Collision();
 	}
-	//アニメーションの再生
-	PlayAnimation();
 
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {
@@ -118,29 +140,6 @@ void KnightAI::Update()
 		}
 		return;
 	}
-
-	
-	//やられたらリスポーンするまで実行する
-	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade,false) == true)
-	{
-		//アニメーションの再生
-		PlayAnimation();
-		//ステート
-		ManageState();
-		m_modelRender.Update();
-		return;
-	}
-
-	if (m_charState == enCharState_Death) {
-		//アニメーションの再生
-		PlayAnimation();
-		m_modelRender.Update();
-		//ステート
-		ManageState();
-		return;
-	}
-	//攻撃アップ中の処理
-	//AttackUP();
 
 	//重力
 	Move();

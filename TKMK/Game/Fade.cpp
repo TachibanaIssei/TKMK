@@ -64,7 +64,6 @@ void Fade::FadeUpdate()
 				if (m_blackSpriteCurrentAlpha[i] >= 1.0f)
 				{
 					m_blackSpriteCurrentAlpha[i] = 1.0f;
-					m_blackFadeState[i] = enFadeState_fadeIdle;
 				}
 				break;
 
@@ -94,7 +93,6 @@ void Fade::FadeUpdate()
 			if (m_tipSpriteCurrentAlpha >= 1.0f)
 			{
 				m_tipSpriteCurrentAlpha = 1.0f;
-				m_tipFadeState = enFadeState_fadeIdle;
 			}
 			break;
 

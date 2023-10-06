@@ -50,7 +50,7 @@ namespace nsK2EngineLow {
 		/// スプライトレンダークラスをリストに追加する
 		/// </summary>
 		/// <param name="spriteRender">スプライトレンダー</param>
-		void AddSpriteList(SpriteRender* spriteRender,bool drawTiming = false)
+		void AddSpriteList(SpriteRender* spriteRender,const bool drawTiming = false)
 		{
 			if (drawTiming)
 			{
@@ -59,6 +59,10 @@ namespace nsK2EngineLow {
 			else {
 				m_spriteList.push_back(spriteRender);
 			}
+		}
+		void AddFrontSpriteList(SpriteRender* spriteRender)
+		{
+			m_spriteFrontDrawList.push_back(spriteRender);
 		}
 
 		/// <summary>
@@ -75,9 +79,16 @@ namespace nsK2EngineLow {
 		/// フォントレンダークラスをリストに追加する
 		/// </summary>
 		/// <param name="fontRender">フォントレンダー</param>
-		void AddFontList(FontRender* fontRender)
+		void AddFontList(FontRender* fontRender,const bool drawTiming = false)
 		{
-			m_fontList.push_back(fontRender);
+			if (drawTiming)
+			{
+				m_laterFontList.push_back(fontRender);
+			}
+			else
+			{
+				m_fontList.push_back(fontRender);
+			}
 		}
 		/// <summary>
 		/// 画面分割中のビューポートに描画するフォントレンダークラスをリストに追加する
@@ -581,24 +592,25 @@ namespace nsK2EngineLow {
 		/// スプライトを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void SpriteRendering(RenderContext& rc, bool drawTiming);
+		void SpriteRendering(RenderContext& rc, const bool drawTiming = false);
 		/// <summary>
 		/// スプライトを画面分割中のビューポートに描画
 		/// </summary>
 		/// <param name="rc"></param>
 		/// <param name="viewportNo"></param>
-		void SpriteViewportRendering(RenderContext& rc, int viewportNo);
+		void SpriteViewportRendering(RenderContext& rc, const int viewportNo);
+		void SpriteFrontRendering(RenderContext& rc);
 		/// <summary>
 		/// フォントを描画する
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void FontRendering(RenderContext& rc);
+		void FontRendering(RenderContext& rc, const bool drawTiming = false);
 		/// <summary>
 		/// フォントを画面分割中のビューポートに描画
 		/// </summary>
 		/// <param name="rc"></param>
 		/// <param name="viewportNo"></param>
-		void FontViewportRendering(RenderContext& rc, int viewportNo);
+		void FontViewportRendering(RenderContext& rc, const int viewportNo);
 		/// <summary>
 		/// エフェクト描画を実行する
 		/// </summary>
@@ -619,7 +631,9 @@ namespace nsK2EngineLow {
 		std::vector<SpriteRender*>	m_spriteList;				//スプライトクラスのリスト
 		std::vector<SpriteRender*>	m_laterSpriteList;			//描画順が遅いスプライトクラスのリスト
 		std::vector<SpriteRender*>	m_spriteDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するスプライトのリスト
+		std::vector<SpriteRender*>	m_spriteFrontDrawList;		//全てにおいて前面に描画される
 		std::vector<FontRender*>	m_fontList;					//フォントクラスのリスト
+		std::vector<FontRender*>	m_laterFontList;			//laterSpriteの上から文字を描画
 		std::vector<FontRender*>	m_fontDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するフォントクラスのリスト
 
 		SceneLight					m_sceneLight[MAX_VIEWPORT];				//シーンライト

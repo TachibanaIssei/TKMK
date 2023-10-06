@@ -147,7 +147,7 @@ private:
 	Player* m_player2P = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
-	Fade* fade = nullptr;
+	Fade* m_fade = nullptr;
 	ExpforKnight* expforKnight = nullptr;
 
 	std::vector<Actor*> m_Actors;
@@ -203,13 +203,6 @@ private:
 		Vector3(-940.0f, -100.0f, 0.0f),
 		Vector3(-940.0f, -210.0f, 0.0f),
 	};															//レベル
-
-	std::array<Vector3, 4> PointFlamePos = {
-		Vector3(-850.0f, 120.0f, 0.0f),
-		Vector3(-850.0f, 10.0f, 0.0f),
-		Vector3(-850.0f, -100.0f, 0.0f),
-		Vector3(-850.0f, -210.0f, 0.0f),
-	};															//ポイントのフレーム
 
 	std::array<Vector3, 4> CharIconPos = {
 		Vector3(-905.0f, 120.0f, 0.0f),

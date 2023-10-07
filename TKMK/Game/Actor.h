@@ -456,8 +456,8 @@ public:
 	/// </summary>
 	void ForwardSet()
 	{
-		Vector3 center = Vector3::One;
-		Vector3 biff = center - m_position;
+		Vector3 m_center = Vector3::One;
+		Vector3 biff = m_center - m_position;
 		biff.y = 0.0f;
 		biff *= -1.0f;
 		m_Forward = biff;
@@ -720,7 +720,6 @@ protected:
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 	std::vector<Actor*> DamegeUltActor;             //必殺技で攻撃対象のアクター
 
-	/*ChaseEFK* PowerUpEfk = nullptr;*/
 	ChaseEFK* GetHoimi = nullptr;
 	ChaseEFK* LevelUp_efk = nullptr;
 	ChaseEFK* LevelDown_efk = nullptr;

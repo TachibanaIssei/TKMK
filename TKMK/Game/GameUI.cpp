@@ -20,6 +20,7 @@ namespace
 
 	const Vector3 STATUS_BAR_POS = Vector3(-450.0f, -500.0f, 0.0f);	//ステータスバーポジション
 	const Vector3 TIME_POS = Vector3(0.0f, 470.0f, 0.0f);	//制限時間の座標
+	const Vector3 TIME_SCALE = Vector3(0.35f, 0.3f, 1.0f);
 	const Vector3 MINUTES_FONT_POS = Vector3(-75.0f, 500.0f, 0.0f);	//制限時間の座標(分)
 	const Vector3 CORON_FONT_POS = MINUTES_FONT_POS + Vector3(70.0f, 10.0f, 0.0f);//制限時間の座標(:コロン)
 	const Vector3 SECONDS_FONT_POS = CORON_FONT_POS + Vector3(35.0f, -10.0f, 0.0f);//制限時間の座標(秒)
@@ -121,8 +122,6 @@ namespace
 	const Vector3 RESPAWN_DUOPLAY_LEFT_POS = Vector3(-480.0f, 0.0f, 0.0f);
 	const Vector3 RESPAWN_DUOPLAY_RIGHT_POS = Vector3(480.0f, 0.0f, 0.0f);
 
-	const Vector3 ADDPOINTPOS = Vector3(20.0f, 11.0f, 0.0f);
-
 	const float WHITEHP_WAIT = 0.2f;
 
 	const float CHAR_ICON_SIZE = 74.0f;
@@ -131,12 +130,47 @@ namespace
 
 	const float TIMERSCALE = 1.65f;
 
+	const float LEVEL_FONT_SCALE = 0.6f;
+
+	const float NAME_SPRITE_WIDTH = 203.0f;
+	const float NAME_SPRITE_HEIGHT = 64.0f;
+	const Vector3 NAME_SPRITE_SCALE = Vector3(0.55f, 0.55f, 1.0f);
+
 	const std::array<Vector3, 4> POINT_FLAME_POS = {
 		TIME_POS + Vector3(-700,0.0f,0.0f) ,
 		TIME_POS + Vector3(-370,0.0f,0.0f),
 		TIME_POS + Vector3(370,0.0f,0.0f),
 		TIME_POS + Vector3(700,0.0f,0.0f),
 	};															//ポイントのフレーム
+
+	const std::array<Vector3, 4> POINT_POS = {
+		POINT_FLAME_POS[0] + Vector3(-10.0f, 46.0f, 0.0f),
+		POINT_FLAME_POS[1] + Vector3(-10.0f, 46.0f, 0.0f),
+		POINT_FLAME_POS[2] + Vector3(-10.0f, 46.0f, 0.0f),
+		POINT_FLAME_POS[3] + Vector3(-10.0f, 46.0f, 0.0f),
+	};															//ポイント
+
+	const std::array<Vector3, 4> CHARACTOR_ICON_POS = {
+		POINT_FLAME_POS[0] + Vector3(-60.0f, 10.0f, 0.0f),
+		POINT_FLAME_POS[1] + Vector3(-60.0f, 10.0f, 0.0f),
+		POINT_FLAME_POS[2] + Vector3(-60.0f, 10.0f, 0.0f),
+		POINT_FLAME_POS[3] + Vector3(-60.0f, 10.0f, 0.0f),
+	};															//アイコン
+
+	const std::array<Vector3, 4> LEVEL_POS = {
+		CHARACTOR_ICON_POS[0] + Vector3(-43.0f, -10.0f, 0.0f),
+		CHARACTOR_ICON_POS[1] + Vector3(-43.0f, -10.0f, 0.0f),
+		CHARACTOR_ICON_POS[2] + Vector3(-43.0f, -10.0f, 0.0f),
+		CHARACTOR_ICON_POS[3] + Vector3(-43.0f, -10.0f, 0.0f)
+	};															//レベル
+
+	const std::array<Vector3, 4> NAME_POS =
+	{
+		CHARACTOR_ICON_POS[0] + Vector3(0.0f, 0.0f, 0.0f),
+		CHARACTOR_ICON_POS[1] + Vector3(0.0f, 0.0f, 0.0f),
+		CHARACTOR_ICON_POS[2] + Vector3(0.0f, 0.0f, 0.0f),
+		CHARACTOR_ICON_POS[3] + Vector3(0.0f, 0.0f, 0.0f),
+	};
 }
 GameUI::GameUI()
 {
@@ -176,15 +210,18 @@ void GameUI::InitAssets()
 		//キャラのポイントを表示
 		m_Actors = m_game->GetActors();
 		int num = 0;
-		int enemyNum = 0;
 		for (auto actor : m_Actors)
 		{
 			//ポイントを表示
-			m_PointFont[num].SetPosition(PointPos[num]);
-			m_PointFont[num].SetScale(1.1f);
-			m_PointFont[num].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-			m_PointFont[num].SetRotation(0.0f);
+			m_PointFont[num].SetPosition(POINT_POS[num]);
+			m_PointFont[num].SetColor(g_vec4White);
 			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
+
+			//レベル
+			m_LevelFont[num].SetPosition(LEVEL_POS[num]);
+			m_LevelFont[num].SetScale(LEVEL_FONT_SCALE);
+			m_LevelFont[num].SetColor(g_vec4White);
+			m_LevelFont[num].SetShadowParam(true, 1.0f, g_vec4Black);
 
 			//プレイヤーが剣士なら
 			if (actor->IsMatchName(knightname))
@@ -192,20 +229,8 @@ void GameUI::InitAssets()
 				//アイコンを剣士にする(ブルー)
 				//ブルー
 				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_charIcon[num].SetPosition(CharIconPos[num]);
-				m_charIcon[num].Update();
-				//フレームをプレイヤー用にする
-				m_pointFlame[num].Init("Assets/sprite/gameUI/pointFlame_player.DDS", 300.0f, 100.0f);
-			}
-			else
-			{
-				//レベル
-				m_LevelFont[enemyNum].SetPosition(LevelPos[enemyNum]);
-				m_LevelFont[enemyNum].SetScale(0.6f);
-				m_LevelFont[enemyNum].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-				m_LevelFont[enemyNum].SetRotation(0.0f);
-				m_LevelFont[enemyNum].SetShadowParam(true, 2.0f, g_vec4Black);
-				enemyNum++;
+				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
+				m_playerCpuName[num].Init("Assets/sprite/gameUI/P1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
 			}
 
 			//赤の剣士なら
@@ -213,28 +238,76 @@ void GameUI::InitAssets()
 			{
 				//レッド
 				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_charIcon[num].SetPosition(CharIconPos[num]);
-				m_charIcon[num].Update();
-				m_pointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
-			}
+				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
 
-			if (actor->IsMatchName(KnightAI_Green))
-			{
-				//グリーン
-				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_charIcon[num].SetPosition(CharIconPos[num]);
-				m_charIcon[num].Update();
-				m_pointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+				if (g_renderingEngine->GetGameMode() != RenderingEngine::enGameMode_SoloPlay)
+				{
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/P2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+				}
+				else
+				{
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+				}
 			}
 
 			if (actor->IsMatchName(KnightAI_Yellow))
 			{
 				//イエロー
 				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_charIcon[num].SetPosition(CharIconPos[num]);
-				m_charIcon[num].Update();
-				m_pointFlame[num].Init("Assets/sprite/gameUI/pointFlame.DDS", 300.0f, 100.0f);
+				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
+
+				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
+					g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+				{
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/P3.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+				}
+				else
+				{
+					if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+					{
+						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+					}
+					else
+					{
+						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+					}
+				}
 			}
+
+			if (actor->IsMatchName(KnightAI_Green))
+			{
+				//グリーン
+				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
+
+				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+				{
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/P4.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+				}
+				else
+				{
+					if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+					{
+						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+					}
+					else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+					{
+						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+					}
+					else
+					{
+						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU3.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+					}
+				}
+				
+			}
+
+			m_charIcon[num].SetPosition(CHARACTOR_ICON_POS[num]);
+			m_charIcon[num].Update();
+
+			m_playerCpuName[num].SetPosition(NAME_POS[num]);
+			m_playerCpuName[num].SetScale(NAME_SPRITE_SCALE);
+			m_playerCpuName[num].Update();
 
 			m_pointFlame[num].SetPosition(POINT_FLAME_POS[num]);
 			m_pointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
@@ -611,7 +684,7 @@ void GameUI::InitAssets()
 	{
 		m_TimeAndPointRender.Init("Assets/sprite/gameUI/timer.DDS", 1100.0f, 400.0f);
 		m_TimeAndPointRender.SetPosition(TIME_POS);
-		m_TimeAndPointRender.SetScale(0.35f, 0.3f, 1.0f);
+		m_TimeAndPointRender.SetScale(TIME_SCALE);
 
 		//フォントの大きさを設定。
 		m_minutes.SetScale(TIMERSCALE);
@@ -1004,21 +1077,12 @@ void GameUI::HPBar()
 void GameUI::Level()
 {
 	int num = 0;
-	int enemyNum = 0;
 	for (auto actor : m_Actors)
 	{
-		//プレイヤーなら
-		if (actor->IsMatchName(knightname))
-		{
-			num++;
-			continue;
-		}
-		//AIなら
 		int Lv = actor->GetLevel();
 		wchar_t AILv[255];
-		swprintf_s(AILv, 255, L"Lv%d", Lv);
-		m_LevelFont[enemyNum].SetText(AILv);
-		enemyNum++;
+		swprintf_s(AILv, 255, L"Lv%2d", Lv);
+		m_LevelFont[num].SetText(AILv);
 		num++;
 	}
 }
@@ -1321,7 +1385,8 @@ void GameUI::CharPoint()
 		if (m_game->GetMinutesTimer() < 1)
 		{
 			wchar_t P[255];
-			swprintf_s(P, 255, L"?p");
+			wchar_t text[] = L"?p";
+			swprintf_s(P, 255, L"%3s",text);
 			m_PointFont[num].SetText(P);
 			num++;
 			continue;
@@ -1332,7 +1397,7 @@ void GameUI::CharPoint()
 		//ポイントの表示
 		int POINT = charPoint[num];
 		wchar_t P[255];
-		swprintf_s(P, 255, L"%dp", POINT);
+		swprintf_s(P, 255, L"%2dp", POINT);
 		m_PointFont[num].SetText(P);
 
 		num++;
@@ -1556,19 +1621,13 @@ void GameUI::Render(RenderContext& rc)
 
 		//ポイントを描画
 		//左のフレームの色々を描画
-		int num = 0;
-		int enemyNum = 0;
-		for (auto actor : m_Actors)
+		for (int i = 0; i < enPlayerNumber_Num; i++)
 		{
-			m_pointFlame[num].Draw(rc);
-			m_PointFont[num].Draw(rc);
-			m_charIcon[num].Draw(rc);
-			if (num >= 1)
-			{
-				m_LevelFont[enemyNum].Draw(rc);
-				enemyNum++;
-			}
-			num++;
+			m_pointFlame[i].DrawFront(rc);
+			m_PointFont[i].Draw(rc, true);
+			m_charIcon[i].DrawFront(rc);
+			m_playerCpuName[i].DrawFront(rc);
+			m_LevelFont[i].Draw(rc, true);
 		}
 
 		//finishの画像

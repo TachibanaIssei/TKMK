@@ -102,6 +102,8 @@ void KnightPlayer::Update()
 {
 	//頭上のHPバーの処理
 	CharacterUpperHpBar();
+	// 追尾エフェクトのリセット
+	EffectNullptr();
 
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
@@ -141,8 +143,6 @@ void KnightPlayer::Update()
 		//当たり判定
 		Collision();
 	}
-	// 追尾エフェクトのリセット
-	EffectNullptr();
 
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {

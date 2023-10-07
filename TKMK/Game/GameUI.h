@@ -141,7 +141,8 @@ private:
 	std::array<FontRender,enPlayerNumber_Num> m_HpFont;
 
 	std::array < FontRender, 4> m_PointFont;
-	std::array < FontRender, 3> m_LevelFont;
+	std::array < FontRender, 4> m_LevelFont;
+	std::array <SpriteRender, 4> m_playerCpuName;	//プレイヤーとCPUの名前画像
 
 	Player* m_player1P = nullptr;
 	Player* m_player2P = nullptr;
@@ -190,26 +191,6 @@ private:
 	float               m_Color = 1.0f;
 
 	Vector3				m_finishCountScale = Vector3::One;
-
-	std::array<Vector3,4> PointPos = {
-		Vector3(-860.0f, 170.0f, 0.0f),
-		Vector3(-860.0f, 60.0f, 0.0f), 
-		Vector3(-860.0f, -50.0f, 0.0f), 
-		Vector3(-860.0f, -160.0f, 0.0f), 
-	};															//ポイント
-
-	std::array<Vector3, 3> LevelPos = {
-		Vector3(-940.0f, 10.0f, 0.0f),
-		Vector3(-940.0f, -100.0f, 0.0f),
-		Vector3(-940.0f, -210.0f, 0.0f),
-	};															//レベル
-
-	std::array<Vector3, 4> CharIconPos = {
-		Vector3(-905.0f, 120.0f, 0.0f),
-		Vector3(-905.0f, 35.0f, 0.0f),
-		Vector3(-905.0f, -75.0f, 0.0f),
-		Vector3(-905.0f, -185.0f, 0.0f),
-	};															//アイコン
 	
 	std::array<Vector3, 4> CrownPos = {
 		Vector3(-920.0f, 120.0f, 0.0f),

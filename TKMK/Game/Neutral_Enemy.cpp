@@ -528,8 +528,7 @@ void Neutral_Enemy::Collision()
 							{
 
 								ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-								ExpKnight->SetPosition(m_position);
-								ExpKnight->SetIsRabbitExp();
+								ExpKnight->Init(m_position, m_lastAttackActor, true);
 							}
 							break;
 						}
@@ -575,7 +574,7 @@ void Neutral_Enemy::Collision()
 							for (int i = 0; i < 3; i++)
 							{
 								ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-								ExpKnight->SetPosition(m_position);
+								ExpKnight->Init(m_position,m_lastAttackActor,false);
 							}
 							break;
 						}
@@ -642,7 +641,7 @@ void Neutral_Enemy::Collision()
 					if (m_lastAttackActor == m_player[i])
 					{
 						ExpforKnight* ExpKnight = NewGO<ExpforKnight>(0, "ExpKnight");
-						ExpKnight->SetPosition(m_position);
+						ExpKnight->Init(m_position,m_lastAttackActor,false);
 						break;
 					}
 				}

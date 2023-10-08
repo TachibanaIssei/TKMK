@@ -1,6 +1,7 @@
 #pragma once
 class Neutral_Enemy;
 class Actor;
+class Game;
 
 class ExpforKnight : public IGameObject
 {
@@ -34,6 +35,8 @@ private:
 	Vector2 SetExperienceBarPosition();
 
 private:
+	Actor* m_playerActor = nullptr;
+	Game* m_game = nullptr;
 	SpriteRender m_NormalExp;
 	Vector3 m_enemyPos = Vector3::Zero;
 	Vector2 m_experienceBarPosition = Vector2::Zero;
@@ -45,7 +48,6 @@ private:
 	Vector2 m_movePos2 = Vector2::Zero;
 	Vector2 m_movePos3 = Vector2::Zero;
 
-	const char* m_playerActorName;
 	int m_playerActorNumber = 0;
 	int m_random = 0;
 	float m_timer = 0.0f;

@@ -29,6 +29,8 @@ ExpforKnight::~ExpforKnight()
 
 bool ExpforKnight::Start()
 {
+	m_game = FindGO<Game>("game");
+
 	//プレイヤーが経験値を獲得する画像
 	m_NormalExp.Init("Assets/sprite/Exp.DDS", EXPEIENCE_SPRITE_W_H, EXPEIENCE_SPRITE_W_H, AlphaBlendMode_Add);
 
@@ -42,19 +44,19 @@ bool ExpforKnight::Start()
 	}
 	else
 	{
-		if (strcmp(m_playerActorName, "knightplayer") == 0)
+		if (m_playerActor->IsMatchName("knightplayer"))
 		{
 			g_camera3D[0]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
-		else if (strcmp(m_playerActorName, "knightplayer2") == 0)
+		else if (m_playerActor->IsMatchName("knightplayer2"))
 		{
 			g_camera3D[1]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
-		else if (strcmp(m_playerActorName, "knightplayer3") == 0)
+		else if (m_playerActor->IsMatchName("knightplayer3"))
 		{
 			g_camera3D[2]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
-		else if (strcmp(m_playerActorName, "knightplayer4") == 0)
+		else if (m_playerActor->IsMatchName("knightplayer4"))
 		{
 			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
@@ -128,19 +130,19 @@ void ExpforKnight::Bezier()
 
 void ExpforKnight::SetPlayerNumber()
 {
-	if (strcmp(m_playerActorName, "knightplayer") == 0)
+	if (m_playerActor->IsMatchName("knightplayer"))
 	{
 		m_playerActorNumber = 0;
 	}
-	else if (strcmp(m_playerActorName, "knightplayer2") == 0)
+	else if (m_playerActor->IsMatchName("knightplayer2"))
 	{
 		m_playerActorNumber = 1;
 	}
-	else if (strcmp(m_playerActorName, "knightplayer3") == 0)
+	else if (m_playerActor->IsMatchName("knightplayer3"))
 	{
 		m_playerActorNumber = 2;
 	}
-	else if (strcmp(m_playerActorName, "knightplayer4") == 0)
+	else if (m_playerActor->IsMatchName("knightplayer4"))
 	{
 		m_playerActorNumber = 3;
 	}
@@ -156,30 +158,30 @@ Vector2 ExpforKnight::SetExperienceBarPosition()
 	}
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 	{
-		if (strcmp(m_playerActorName, "knightplayer") == 0)
+		if (m_playerActor->IsMatchName("knightplayer"))
 		{
 			position = EXPERIENCE_BAR_DUO_LEFT_POS;
 		}
-		else if (strcmp(m_playerActorName,"knightplayer2") == 0)
+		else if (m_playerActor->IsMatchName("knightplayer2"))
 		{
 			position = EXPERIENCE_BAR_DUO_RIGHT_POS;
 		}
 	}
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay || g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
 	{
-		if (strcmp(m_playerActorName, "knightplayer") == 0)
+		if (m_playerActor->IsMatchName("knightplayer"))
 		{
 			position = EXPERIENCE_BAR_LEFT_UP_POS;
 		}
-		else if (strcmp(m_playerActorName, "knightplayer2") == 0)
+		else if (m_playerActor->IsMatchName("knightplayer2"))
 		{
 			position = EXPERIENCE_BAR_RIGHT_UP_POS;
 		}
-		else if (strcmp(m_playerActorName, "knightplayer3") == 0)
+		else if (m_playerActor->IsMatchName("knightplayer3"))
 		{
 			position = EXPERIENCE_BAR_LEFT_DOWN_POS;
 		}
-		else if (strcmp(m_playerActorName, "knightplayer4") == 0)
+		else if (m_playerActor->IsMatchName("knightplayer4"))
 		{
 			position = EXPERIENCE_BAR_RIGHT_DOWN_POS;
 		}
@@ -189,6 +191,10 @@ Vector2 ExpforKnight::SetExperienceBarPosition()
 }
 void ExpforKnight::Render(RenderContext& rc)
 {
+	if (m_game->GetStopFlag())
+	{
+		return;
+	}
 	m_NormalExp.Draw(rc, false, m_playerActorNumber);
 }
 
@@ -196,5 +202,5 @@ void ExpforKnight::Init(Vector3& pos, Actor* playerActor, const bool rabbitFlag)
 {
 	SetPosition(pos);
 	SetIsRabbitFlag(rabbitFlag);
-	m_playerActorName = playerActor->GetName();
+	m_playerActor = playerActor;
 }

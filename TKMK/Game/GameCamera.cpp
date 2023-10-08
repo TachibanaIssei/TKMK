@@ -57,6 +57,7 @@ bool GameCamera::Start()
 
 	//スプリングカメラ初期化時に使用するカメラの番号
 	int cameraNumber = 0;
+	float targetToPos = CAMERA_POS_X;
 
 	//1画面のときか左の画面を映すカメラのとき
 	if (m_splitCameraLR == enSplitCamera_Solo || m_splitCameraLR == enSplitCamera_Left) {
@@ -72,6 +73,7 @@ bool GameCamera::Start()
 		player_name = player->GetName();
 		cameraNumber = 1;
 		m_playerNumber = enPlayerNumber_2P;
+		targetToPos *= -1;
 	}
 
 	m_actors = game->GetActors();
@@ -102,7 +104,7 @@ bool GameCamera::Start()
 	);
 
 	//最初にキャラの背中を映すようにする
-	CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
+	CameraTarget(TARGETPOS_YUP, targetToPos, CAMERA_POS_Y, player_actor,true);
 	m_springCamera.Refresh();
 
 	return true;
@@ -118,14 +120,7 @@ void GameCamera::Update()
 	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
 	if (player_actor->GetRespawnFlag()==true)
 	{
-		if (player_name == "player2")
-		{
-			printf("hoge");
-		}
-
 		m_springCamera.Refresh();
-		//カメラの更新。
-		//m_springCamera.Update();
 		//前フレーム
 		PlayerRespawnFlag = true;
 
@@ -287,13 +282,14 @@ void GameCamera::UltRotCamera()
 		//揺れる力に掛ける値を決める
 		setShakeMulPower(ultactor->GetLevel());
 	}
-	//AI以外ならこの先の処理はしない
-	if (ultactor->GetName() != player_actor->GetName())
+	//必殺技打ったキャラが自分じゃないとき
+	if (!ultactor->IsMatchName(player_actor->GetName()))
 	{
 		//誰もいなかったら視点を戻す
 		if (ultactor->GetNoTargetActor() == true)
+		{
 			GameCameraUltEnd();
-		//
+		}
 		if (ultactor->GetChaseCameraFlag() == true) {
 			return;
 		}
@@ -391,8 +387,6 @@ void GameCamera::UltRotCamera()
 
 void GameCamera::ChaseCamera()
 {
-	
-
 	wizardUlt = FindGO<WizardUlt>("wizardUlt");
 
 	if (wizardUlt != nullptr)

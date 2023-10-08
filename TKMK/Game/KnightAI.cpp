@@ -233,7 +233,6 @@ void KnightAI::Update()
 	}
 
 	if (m_moveSpeed.LengthSq() != 0.0f) {
-		m_forwardNow = m_moveSpeed;
 		m_forwardNow.Normalize();
 		m_forwardNow.y = 0.0f;
 	}

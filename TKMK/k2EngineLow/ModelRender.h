@@ -225,10 +225,10 @@ namespace nsK2EngineLow {
 		Vector3						m_scale				= Vector3::One;			//大きさ
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
 
-		Model						m_model[2];									//Modelクラス
+		Model						m_model[MAX_VIEWPORT];						//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
 
-		Model						m_shadowModel[2];								//シャドウマップ描画用
+		Model						m_shadowModel[MAX_VIEWPORT];				//シャドウマップ描画用
 	};
 
 }

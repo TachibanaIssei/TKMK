@@ -55,10 +55,20 @@ bool KnightPlayer::Start() {
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 
-	if (IGameObject::m_name == "knightplayer2")
+	if (IsMatchName("knightplayer2"))
 	{
 		respawnNumber = 0;
 		m_enPlayerNumber = enPlayerNumber_2P;
+	}
+	else if (IsMatchName("knightplayer3"))
+	{
+		respawnNumber = 3;
+		m_enPlayerNumber = enPlayerNumber_3P;
+	}
+	else if (IsMatchName("knightplayer4"))
+	{
+		respawnNumber = 1;
+		m_enPlayerNumber = enPlayerNumber_4P;
 	}
 	else {
 		respawnNumber = 2;        //リスポーンする座標の番号

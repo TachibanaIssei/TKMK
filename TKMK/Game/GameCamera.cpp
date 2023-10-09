@@ -59,21 +59,43 @@ bool GameCamera::Start()
 	int cameraNumber = 0;
 	float targetToPos = CAMERA_POS_X;
 
-	//1画面のときか左の画面を映すカメラのとき
-	if (m_splitCameraLR == enSplitCamera_Solo || m_splitCameraLR == enSplitCamera_Left) {
+	//プレイヤー1を映すカメラ
+	if (m_splitCameraDraw == enSplitCamera_Solo || m_splitCameraDraw == enSplitCamera_Left || m_splitCameraDraw == enSplitCamera_LeftUp)
+	{
 		//プレイヤーのインスタンスを探す
 		player = FindGO<Player>("player");
 		player_name = player->GetName();
 		m_playerNumber = enPlayerNumber_1P;
 	}
-	//右の画面を映すカメラのとき
-	else {
-		//プレイヤーのインスタンスを探す
+	//プレイヤー2を映すカメラ
+	else if(m_splitCameraDraw == enSplitCamera_Right || m_splitCameraDraw == enSplitCamera_RightUp)
+	{
 		player = FindGO<Player>("player2");
 		player_name = player->GetName();
 		cameraNumber = 1;
 		m_playerNumber = enPlayerNumber_2P;
 		targetToPos *= -1;
+	}
+	//プレイヤー3を映すカメラ
+	else if (m_splitCameraDraw == enSplitCamera_LeftDown)
+	{
+		player = FindGO<Player>("player3");
+		player_name = player->GetName();
+		cameraNumber = 2;
+		m_playerNumber = enPlayerNumber_3P;
+	}
+	//プレイヤー4を映すカメラ
+	else
+	{
+		player = FindGO<Player>("player3");
+		player_name = player->GetName();
+		cameraNumber = 3;
+		m_playerNumber = enPlayerNumber_3P;
+		/*player = FindGO<Player>("player4");
+		player_name = player->GetName();
+		cameraNumber = 3;
+		m_playerNumber = enPlayerNumber_4P;
+		targetToPos *= -1;*/
 	}
 
 	m_actors = game->GetActors();
@@ -128,7 +150,7 @@ void GameCamera::Update()
 	}
 
 	//リスポーンしたらカメラを戻す
-	if (player_actor->GetRespawnFlag()==false && PlayerRespawnFlag==true) {
+	if (player_actor->GetRespawnFlag() == false && PlayerRespawnFlag==true) {
 		CameraTarget(TARGETPOS_YUP ,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 
 		m_springCamera.Refresh();

@@ -5,7 +5,8 @@
 #include "Shadow.h"
 
 namespace nsK2EngineLow {
-	static const int MAX_VIEWPORT = 2;
+	static const int MAX_VIEWPORT = 4;
+	static const int DUO_VIEWPORT = 2;
 
 	class ModelRender;
 	class SpriteRender;
@@ -27,10 +28,13 @@ namespace nsK2EngineLow {
 		/// </summary>
 		enum EnCameraDrawing
 		{
-			enCameraDrawing_Solo = 0,	//1画面だけのとき
-			enCameraDrawing_Left = 0,	//左画面
-			enCameraDrawing_Right = 1,	//右画面
-			enCameraDrawing_Num
+			enCameraDrawing_Solo = 0,		//1画面だけのとき
+			enCameraDrawing_Left = 0,		//左画面
+			enCameraDrawing_Right = 1,		//右画面
+			enCameraDrawing_LeftUp = 0,		//左上
+			enCameraDrawing_RightUp = 1,	//右上
+			enCameraDrawing_LeftDown = 2,	//左下
+			enCameraDrawing_RightDown = 3	//右下
 		};
 
 		void Init();
@@ -164,6 +168,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetDirectionLight(lightNo, direction, color);
 			m_sceneLight[enCameraDrawing_Right].SetDirectionLight(lightNo, direction, color);
+			m_sceneLight[enCameraDrawing_RightDown].SetDirectionLight(lightNo, direction, color);
+			m_sceneLight[enCameraDrawing_LeftDown].SetDirectionLight(lightNo, direction, color);
 		}
 		/// <summary>
 		/// ディレクションライトの光の方向を設定する
@@ -173,6 +179,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetDirLightDirection(direction);
 			m_sceneLight[enCameraDrawing_Right].SetDirLightDirection(direction);
+			m_sceneLight[enCameraDrawing_RightDown].SetDirLightDirection(direction);
+			m_sceneLight[enCameraDrawing_LeftDown].SetDirLightDirection(direction);
 		}
 		/// <summary>
 		/// ディレクションライトの光の色を設定する
@@ -182,6 +190,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetDirLightColor(color);
 			m_sceneLight[enCameraDrawing_Right].SetDirLightColor(color);
+			m_sceneLight[enCameraDrawing_RightDown].SetDirLightColor(color);
+			m_sceneLight[enCameraDrawing_LeftDown].SetDirLightColor(color);
 		}
 
 		/// <summary>
@@ -212,6 +222,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetAmbient(ambient);
 			m_sceneLight[enCameraDrawing_Right].SetAmbient(ambient);
+			m_sceneLight[enCameraDrawing_RightDown].SetAmbient(ambient);
+			m_sceneLight[enCameraDrawing_LeftDown].SetAmbient(ambient);
 		}
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -221,10 +233,13 @@ namespace nsK2EngineLow {
 		/// カメラの位置を設定する
 		/// </summary>
 		/// <param name="eyePos"></param>
-		void SetEyePos(Vector3 eyePosLeft,Vector3 eyePosRight)
+		void SetEyePos(Vector3 eyePosLeft,Vector3 eyePosRight,Vector3 eyePosLeftDown,Vector3 eyePosRightDown)
 		{
 			m_sceneLight[enCameraDrawing_Left].SetEyePos(eyePosLeft);
 			m_sceneLight[enCameraDrawing_Right].SetEyePos(eyePosRight);
+			m_sceneLight[enCameraDrawing_LeftDown].SetEyePos(eyePosLeftDown);
+			m_sceneLight[enCameraDrawing_RightDown].SetEyePos(eyePosRightDown);
+
 		}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +255,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetPointLight(pos, color, range);
 			m_sceneLight[enCameraDrawing_Right].SetPointLight(pos, color, range);
+			m_sceneLight[enCameraDrawing_LeftDown].SetPointLight(pos, color, range);
+			m_sceneLight[enCameraDrawing_RightDown].SetPointLight(pos, color, range);
 		}
 		/// <summary>
 		/// ポイントライトの座標を設定する
@@ -249,6 +266,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetPointLightPosition(pos);
 			m_sceneLight[enCameraDrawing_Right].SetPointLightPosition(pos);
+			m_sceneLight[enCameraDrawing_LeftDown].SetPointLightPosition(pos);
+			m_sceneLight[enCameraDrawing_RightDown].SetPointLightPosition(pos);
 		}
 		/// <summary>
 		/// ポイントライトの色を設定する
@@ -258,6 +277,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetPointLightColor(color);
 			m_sceneLight[enCameraDrawing_Right].SetPointLightColor(color);
+			m_sceneLight[enCameraDrawing_RightDown].SetPointLightColor(color);
+			m_sceneLight[enCameraDrawing_LeftDown].SetPointLightColor(color);
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
@@ -267,6 +288,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetPointLightAttn(attn);
 			m_sceneLight[enCameraDrawing_Right].SetPointLightAttn(attn);
+			m_sceneLight[enCameraDrawing_LeftDown].SetPointLightAttn(attn);
+			m_sceneLight[enCameraDrawing_RightDown].SetPointLightAttn(attn);
 		}
 		/// <summary>
 		/// ポイントライトを使用する
@@ -275,6 +298,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].UsePointLight();
 			m_sceneLight[enCameraDrawing_Right].UsePointLight();
+			m_sceneLight[enCameraDrawing_RightDown].UsePointLight();
+			m_sceneLight[enCameraDrawing_LeftDown].UsePointLight();
 		}
 		/// <summary>
 		/// ポイントライトを使用しない
@@ -283,6 +308,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].UnUsePointLight();
 			m_sceneLight[enCameraDrawing_Right].UnUsePointLight();
+			m_sceneLight[enCameraDrawing_RightDown].UnUsePointLight();
+			m_sceneLight[enCameraDrawing_LeftDown].UnUsePointLight();
 		}
 
 		/// <summary>
@@ -333,6 +360,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetSpotLight(pos, color, attn, direction, angle);
 			m_sceneLight[enCameraDrawing_Right].SetSpotLight(pos, color, attn, direction, angle);
+			m_sceneLight[enCameraDrawing_LeftDown].SetSpotLight(pos, color, attn, direction, angle);
+			m_sceneLight[enCameraDrawing_RightDown].SetSpotLight(pos, color, attn, direction, angle);
 		}
 		/// <summary>
 		/// スポットライトの位置を設定する
@@ -342,6 +371,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetSpotLightPosition(pos);
 			m_sceneLight[enCameraDrawing_Right].SetSpotLightPosition(pos);
+			m_sceneLight[enCameraDrawing_LeftDown].SetSpotLightPosition(pos);
+			m_sceneLight[enCameraDrawing_RightDown].SetSpotLightPosition(pos);
 		}
 		/// <summary>
 		/// スポットライトのライト色の設定
@@ -351,6 +382,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetSpotLightColor(color);
 			m_sceneLight[enCameraDrawing_Right].SetSpotLightColor(color);
+			m_sceneLight[enCameraDrawing_RightDown].SetSpotLightColor(color);
+			m_sceneLight[enCameraDrawing_LeftDown].SetSpotLightColor(color);
 		}
 		/// <summary>
 		/// 影響範囲と累乗するパラメータを設定
@@ -360,6 +393,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetSpotLightAttn(attn);
 			m_sceneLight[enCameraDrawing_Right].SetSpotLightAttn(attn);
+			m_sceneLight[enCameraDrawing_LeftDown].SetSpotLightAttn(attn);
+			m_sceneLight[enCameraDrawing_RightDown].SetSpotLightAttn(attn);
 		}
 		/// <summary>
 		/// スポットライトのライトの方向を設定
@@ -369,6 +404,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetSpotLightDirection(direction);
 			m_sceneLight[enCameraDrawing_Right].SetSpotLightDirection(direction);
+			m_sceneLight[enCameraDrawing_RightDown].SetSpotLightDirection(direction);
+			m_sceneLight[enCameraDrawing_LeftDown].SetSpotLightDirection(direction);
 		}
 		/// <summary>
 		/// スポットライトのライトの角度を設定
@@ -378,6 +415,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetSpotLightAngle(angle);
 			m_sceneLight[enCameraDrawing_Right].SetSpotLightAngle(angle);
+			m_sceneLight[enCameraDrawing_LeftDown].SetSpotLightAngle(angle);
+			m_sceneLight[enCameraDrawing_RightDown].SetSpotLightAngle(angle);
 		}
 		/// <summary>
 		/// スポットライトを使用する
@@ -386,6 +425,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].UseSpotLight();
 			m_sceneLight[enCameraDrawing_Right].UseSpotLight();
+			m_sceneLight[enCameraDrawing_RightDown].UseSpotLight();
+			m_sceneLight[enCameraDrawing_LeftDown].UseSpotLight();
 		}
 		/// <summary>
 		/// スポットライトを使用しない
@@ -394,6 +435,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].UnUseSpotLight();
 			m_sceneLight[enCameraDrawing_Right].UnUseSpotLight();
+			m_sceneLight[enCameraDrawing_LeftDown].UnUseSpotLight();
+			m_sceneLight[enCameraDrawing_RightDown].UnUseSpotLight();
 		}
 
 		/// <summary>
@@ -469,6 +512,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetHemiLightGroundColor(groundColor);
 			m_sceneLight[enCameraDrawing_Right].SetHemiLightGroundColor(groundColor);
+			m_sceneLight[enCameraDrawing_RightDown].SetHemiLightGroundColor(groundColor);
+			m_sceneLight[enCameraDrawing_LeftDown].SetHemiLightGroundColor(groundColor);
 		}
 		/// <summary>
 		/// 半球ライトの天球色を設定
@@ -478,6 +523,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetHemiLightSkyColor(skyColor);
 			m_sceneLight[enCameraDrawing_Right].SetHemiLightSkyColor(skyColor);
+			m_sceneLight[enCameraDrawing_RightDown].SetHemiLightSkyColor(skyColor);
+			m_sceneLight[enCameraDrawing_LeftDown].SetHemiLightSkyColor(skyColor);
 		}
 		/// <summary>
 		/// 半球ライトの地面の法線
@@ -487,6 +534,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].SetHemiLightGroundNormal(normal);
 			m_sceneLight[enCameraDrawing_Right].SetHemiLightGroundNormal(normal);
+			m_sceneLight[enCameraDrawing_RightDown].SetHemiLightGroundNormal(normal);
+			m_sceneLight[enCameraDrawing_LeftDown].SetHemiLightGroundNormal(normal);
 		}
 		/// <summary>
 		/// 半球ライトを使用する
@@ -495,6 +544,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].UseHemiLight();
 			m_sceneLight[enCameraDrawing_Right].UseHemiLight();
+			m_sceneLight[enCameraDrawing_RightDown].UseHemiLight();
+			m_sceneLight[enCameraDrawing_LeftDown].UseHemiLight();
 		}
 		/// <summary>
 		/// 半球ライトを使用しない
@@ -503,6 +554,8 @@ namespace nsK2EngineLow {
 		{
 			m_sceneLight[enCameraDrawing_Left].UnUseHemiLight();
 			m_sceneLight[enCameraDrawing_Right].UnUseHemiLight();
+			m_sceneLight[enCameraDrawing_RightDown].UnUseHemiLight();
+			m_sceneLight[enCameraDrawing_LeftDown].UnUseHemiLight();
 		}
 
 		/// <summary>
@@ -650,7 +703,8 @@ namespace nsK2EngineLow {
 		EnCameraDrawing m_cameraDrawing = enCameraDrawing_Left;
 
 		D3D12_VIEWPORT m_soloViewPort;					//1画面用のビューポート
-		D3D12_VIEWPORT m_viewPorts[MAX_VIEWPORT];	//画面分割用のビューポート
+		D3D12_VIEWPORT m_duoViewPorts[DUO_VIEWPORT];	//2画面分割用のビューポート
+		D3D12_VIEWPORT m_quarteViewPorts[MAX_VIEWPORT];	//4画面分割用のビューポート
 		EnGameMode m_gameMode = enGameMode_SoloPlay;
 	};
 }

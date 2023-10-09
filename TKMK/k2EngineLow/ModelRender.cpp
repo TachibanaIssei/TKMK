@@ -23,16 +23,16 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 		//スキンがある用の頂点シェーダーを設定する。
 		m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 	}
-	
+
 	//モデルクラスの初期化
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < MAX_VIEWPORT; i++)
 	{
 		//ディレクションライトの情報を作成
 		MakeDirectionData(i);
 		m_model[i].Init(m_modelInitData);
 	}
 
-	for(int i=0;i<2;i++){
+	for (int i = 0; i < MAX_VIEWPORT; i++) {
 		//シャドウマップ描画用のモデルの初期化
 		if (shadow)
 		{
@@ -41,9 +41,7 @@ void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* an
 
 			m_shadowModel[i].Init(m_modelInitData);
 		}
-
 	}
-
 }
 
 void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
@@ -51,7 +49,7 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
 	m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < MAX_VIEWPORT; i++)
 	{
 		m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture(i);
 		//ライトカメラのビュープロジェクション行列を設定する
@@ -64,7 +62,7 @@ void nsK2EngineLow::ModelRender::InitBackGround(const char* tkmFilepath)
 void nsK2EngineLow::ModelRender::InitSkyCube(ModelInitData& initData)
 {
 	initData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < MAX_VIEWPORT; i++)
 	{
 		m_model[i].Init(initData);
 		m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
@@ -74,7 +72,7 @@ void nsK2EngineLow::ModelRender::InitSkyCube(ModelInitData& initData)
 
 void nsK2EngineLow::ModelRender::Update()
 {
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < MAX_VIEWPORT; i++)
 	{
 		//ワールド行列の更新(座標、回転、大きさ)
 		m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);

@@ -126,8 +126,41 @@ public:
 	}
 
 private:
+	/// <summary>
+	/// 画像と文字の初期化
+	/// </summary>
 	void InitAssets();
+
+	/// <summary>
+	//スキルのクールタイムを表示する文字を設定
+	/// </summary>
 	void SkillCoolTimeFont();
+	
+	/// <summary>
+	/// ポイント関連のUIの初期化
+	/// </summary>
+	void InitPointUI();
+
+	/// <summary>
+	/// リスポーン関連のUIの初期化
+	/// </summary>
+	void InitRespawnUI();
+
+	/// <summary>
+	/// 右下のUI
+	/// レベルや経験値バーのUI
+	/// </summary>
+	void InitExpelienceUI();
+
+	/// <summary>
+	/// HP関連のUIの初期化
+	/// </summary>
+	void InitHpUI();
+
+	/// <summary>
+	/// タイマー関連のUIの初期化
+	/// </summary>
+	void InitTimerUI();
 
 	/// <summary>
 	/// プレイヤー死亡時のDraw呼び出し
@@ -146,6 +179,8 @@ private:
 
 	Player* m_player1P = nullptr;
 	Player* m_player2P = nullptr;
+	Player* m_player3P = nullptr;
+	Player* m_player4P = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
 	Fade* m_fade = nullptr;

@@ -341,7 +341,7 @@ namespace nsK2EngineLow {
 		UINT m_frameBufferWidth = 0;				//フレームバッファの幅。
 		UINT m_frameBufferHeight = 0;				//フレームバッファの高さ。
 		Camera m_camera2D;							//2Dカメラ。
-		Camera m_camera3D[2];			//3Dカメラ。
+		Camera m_camera3D[4];			//3Dカメラ。
 		raytracing::Engine m_raytracingEngine;		//レイトレエンジン。
 		NullTextureMaps m_nullTextureMaps;			//ヌルテクスチャマップ。
 		FontEngine m_fontEngine;					//フォントエンジン。
@@ -352,7 +352,7 @@ namespace nsK2EngineLow {
 	};
 	extern GraphicsEngine* g_graphicsEngine;	//グラフィックスエンジン
 	extern Camera* g_camera2D;					//2Dカメラ。
-	extern Camera* g_camera3D[2];					//3Dカメラ。
+	extern Camera* g_camera3D[4];					//3Dカメラ。
 
 	/// <summary>
 	/// D3D12オブジェクトを解放。

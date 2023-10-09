@@ -30,7 +30,7 @@ namespace nsK2EngineLow {
 		void UpdateLightCamera();
 
 	private:
-		static const int m_maxViewPort = 2;
+		static const int m_maxViewPort = 4;
 		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
 		RenderTarget m_shadowMap[m_maxViewPort];
 		Camera m_lightCamera[m_maxViewPort];

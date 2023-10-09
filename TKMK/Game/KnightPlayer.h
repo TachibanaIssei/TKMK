@@ -48,16 +48,9 @@ public:
 	/// 最大2人プレイの予定のため0か1になるようにしている
 	/// </summary>
 	/// <param name="number"></param>
-	void SetPlayerNumber(int number)
+	void SetPlayerNumber(const int number)
 	{
-		if (number == 1)
-		{
-			m_playerNumber = number;
-		}
-		else
-		{
-			m_playerNumber = 0;
-		}
+		m_playerNumber = number;
 	}
 	/// <summary>
 	/// プレイヤーの番号を取得する

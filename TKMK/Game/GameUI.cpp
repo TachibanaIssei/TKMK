@@ -191,9 +191,19 @@ bool GameUI::Start()
 	m_gameMode = g_renderingEngine->GetGameMode();
 
 	//マルチプレイなら
-	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	if (m_gameMode != RenderingEngine::enGameMode_SoloPlay)
 	{
 		m_player2P = FindGO<Player>("player2");
+		//3人以上でプレイの場合
+		if (m_gameMode != RenderingEngine::enGameMode_DuoPlay)
+		{
+			m_player3P = FindGO<Player>("player3");
+			//4人でプレイの場合
+			if (m_gameMode != RenderingEngine::enGameMode_TrioPlay)
+			{
+				m_player4P = FindGO<Player>("player4");
+			}
+		}
 	}
 
 	InitAssets();
@@ -203,170 +213,124 @@ bool GameUI::Start()
 	return true;
 }
 
-void GameUI::InitAssets()
+void GameUI::InitPointUI()
 {
 	//ポイント関連
+	//キャラのポイントを表示
+	m_Actors = m_game->GetActors();
+	int num = 0;
+	for (auto actor : m_Actors)
 	{
-		//キャラのポイントを表示
-		m_Actors = m_game->GetActors();
-		int num = 0;
-		for (auto actor : m_Actors)
+		//ポイントを表示
+		m_PointFont[num].SetPosition(POINT_POS[num]);
+		m_PointFont[num].SetColor(g_vec4White);
+		m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
+
+		//レベル
+		m_LevelFont[num].SetPosition(LEVEL_POS[num]);
+		m_LevelFont[num].SetScale(LEVEL_FONT_SCALE);
+		m_LevelFont[num].SetColor(g_vec4White);
+		m_LevelFont[num].SetShadowParam(true, 1.0f, g_vec4Black);
+
+		//プレイヤーが剣士なら
+		if (actor->IsMatchName(knightname))
 		{
-			//ポイントを表示
-			m_PointFont[num].SetPosition(POINT_POS[num]);
-			m_PointFont[num].SetColor(g_vec4White);
-			m_PointFont[num].SetShadowParam(true, 2.0f, g_vec4Black);
+			//アイコンを剣士にする(ブルー)
+			//ブルー
+			m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+			m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
+			m_playerCpuName[num].Init("Assets/sprite/gameUI/P1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+		}
 
-			//レベル
-			m_LevelFont[num].SetPosition(LEVEL_POS[num]);
-			m_LevelFont[num].SetScale(LEVEL_FONT_SCALE);
-			m_LevelFont[num].SetColor(g_vec4White);
-			m_LevelFont[num].SetShadowParam(true, 1.0f, g_vec4Black);
+		//赤の剣士なら
+		if (actor->IsMatchName(KnightAI_Red) || actor->IsMatchName(knightname2))
+		{
+			//レッド
+			m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+			m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
 
-			//プレイヤーが剣士なら
-			if (actor->IsMatchName(knightname))
+			if (g_renderingEngine->GetGameMode() != RenderingEngine::enGameMode_SoloPlay)
 			{
-				//アイコンを剣士にする(ブルー)
-				//ブルー
-				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Blue.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
-				m_playerCpuName[num].Init("Assets/sprite/gameUI/P1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+				m_playerCpuName[num].Init("Assets/sprite/gameUI/P2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
 			}
-
-			//赤の剣士なら
-			if (actor->IsMatchName(KnightAI_Red) || actor->IsMatchName(knightname2))
+			else
 			{
-				//レッド
-				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Red.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
+				m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+			}
+		}
 
-				if (g_renderingEngine->GetGameMode() != RenderingEngine::enGameMode_SoloPlay)
-				{
-					m_playerCpuName[num].Init("Assets/sprite/gameUI/P2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
-				}
-				else
+		if (actor->IsMatchName(KnightAI_Yellow) || actor->IsMatchName(knightname3))
+		{
+			//イエロー
+			m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+			m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
+
+			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
+				g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+			{
+				m_playerCpuName[num].Init("Assets/sprite/gameUI/P3.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+			}
+			else
+			{
+				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 				{
 					m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
 				}
-			}
-
-			if (actor->IsMatchName(KnightAI_Yellow))
-			{
-				//イエロー
-				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Yellow.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
-
-				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
-					g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+				else
 				{
-					m_playerCpuName[num].Init("Assets/sprite/gameUI/P3.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+				}
+			}
+		}
+
+		if (actor->IsMatchName(KnightAI_Green) || actor->IsMatchName(knightname4))
+		{
+			//グリーン
+			m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
+			m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
+
+			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+			{
+				m_playerCpuName[num].Init("Assets/sprite/gameUI/P4.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+			}
+			else
+			{
+				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+				{
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
+				}
+				else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+				{
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
 				}
 				else
 				{
-					if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
-					{
-						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
-					}
-					else
-					{
-						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
-					}
+					m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU3.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
 				}
 			}
 
-			if (actor->IsMatchName(KnightAI_Green))
-			{
-				//グリーン
-				m_charIcon[num].Init("Assets/sprite/gameUI/Knight_Green.DDS", CHAR_ICON_SIZE, CHAR_ICON_SIZE);
-				m_pointFlame[num].Init("Assets/sprite/gameUI/NewPointFlame.DDS", 300.0f, 100.0f);
-
-				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
-				{
-					m_playerCpuName[num].Init("Assets/sprite/gameUI/P4.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
-				}
-				else
-				{
-					if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
-					{
-						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU2.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
-					}
-					else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
-					{
-						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU1.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
-					}
-					else
-					{
-						m_playerCpuName[num].Init("Assets/sprite/gameUI/CPU3.DDS", NAME_SPRITE_WIDTH, NAME_SPRITE_HEIGHT);
-					}
-				}
-				
-			}
-
-			m_charIcon[num].SetPosition(CHARACTOR_ICON_POS[num]);
-			m_charIcon[num].Update();
-
-			m_playerCpuName[num].SetPosition(NAME_POS[num]);
-			m_playerCpuName[num].SetScale(NAME_SPRITE_SCALE);
-			m_playerCpuName[num].Update();
-
-			m_pointFlame[num].SetPosition(POINT_FLAME_POS[num]);
-			m_pointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
-			m_pointFlame[num].Update();
-
-			num++;
 		}
+
+		m_charIcon[num].SetPosition(CHARACTOR_ICON_POS[num]);
+		m_charIcon[num].Update();
+
+		m_playerCpuName[num].SetPosition(NAME_POS[num]);
+		m_playerCpuName[num].SetScale(NAME_SPRITE_SCALE);
+		m_playerCpuName[num].Update();
+
+		m_pointFlame[num].SetPosition(POINT_FLAME_POS[num]);
+		m_pointFlame[num].SetScale(1.0f, 1.0f, 1.0f);
+		m_pointFlame[num].Update();
+
+		num++;
 	}
+}
 
-	//リスポーン関連
-	{
-		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
-		{
-			for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
-			{
-				m_respawnBack[i].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920.0f, 1080.0f);
-				m_respawnBack[i].SetScale(RESPAWN_DUOPLAY_SCALE);
-				m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
-				m_respawnIn[i].SetScale(RESPAWN_IN_DUOPLAY_SCALE);
-				m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
-			}
-			m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
-			m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
+void GameUI::InitAssets()
+{
+	InitPointUI();
+	InitRespawnUI();
 
-			m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_DUOPLAY_LEFT_POS);
-			m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
-
-			//リスポーンのカウントダウンの画像
-			m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
-			m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
-
-		}
-		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
-		{
-		}
-		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
-		{
-		}
-		else
-		{
-			//Respawn inの画像
-			m_respawnIn[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
-			m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_POS);
-
-			//リスポーンの背景の画像
-			m_respawnBack[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
-
-			//リスポーンのカウントダウンの画像
-			m_respawnCountNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
-			m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_POS);
-		}
-
-		for (int i = 0; i < enPlayerNumber_Num; i++)
-		{
-			m_respawnIn[i].Update();
-			m_respawnBack[i].Update();
-			m_respawnCountNumber[i].Update();
-		}
-	}
 
 	//スタートまでのカウントダウン
 	m_CountNumper.Init("Assets/sprite/gameUI/count3.DDS", 1920.0f, 1080.0f);
@@ -380,340 +344,9 @@ void GameUI::InitAssets()
 	m_FinishCountNumber.SetScale(m_finishCountScale);
 	m_FinishCountNumber.Update();
 
-	//右下のフレーム
-	{
-		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
-		{
-			m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
-			m_Flame[enPlayerNumber_2P].Init("Assets/sprite/gameUI/LevelBar2P.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
-			m_Flame[enPlayerNumber_1P].SetPosition(FLAME_POS_1P);
-			m_Flame[enPlayerNumber_2P].SetPosition(FLAME_POS_2P);
-
-			//必殺技のアイコン
-			m_UltRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
-			m_UltRenderIN[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
-			m_UltRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_UltRenderIN[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
-			m_UltRenderIN[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
-			//必殺のアイコンフレーム
-			m_UltRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
-			m_UltRenderOUT[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
-			m_UltRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_UltRenderOUT[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
-			m_UltRenderOUT[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
-			//スキルのアイコン
-			m_SkillRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
-			m_SkillRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_SkillRenderIN[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
-			//スキルのアイコンフレーム
-			m_SkillRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
-			m_SkillRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-			m_SkillRenderOUT[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
-
-			//スキルのクールタイムを表示するフォントの設定
-			m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS_1P);
-			m_skillFont[enPlayerNumber_1P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
-			m_skillFont[enPlayerNumber_1P].SetColor(g_vec4Red);
-			m_skillFont[enPlayerNumber_1P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
-			playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
-
-			m_skillFont[enPlayerNumber_2P].SetPosition(SKILL_COOLTIME_FONT_POS_2P);
-			m_skillFont[enPlayerNumber_2P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
-			m_skillFont[enPlayerNumber_2P].SetColor(g_vec4Red);
-			m_skillFont[enPlayerNumber_2P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
-			playerCoolTime[enPlayerNumber_2P] = m_player2P->CharGetSkillCoolTimer();
-
-			//Lvの画像を読み込む
-			m_Lv[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-			m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_1P);
-			m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE);
-			m_Lv[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Lv.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-			m_Lv[enPlayerNumber_2P].SetPosition(LEVEL_SPRITE_POS_2P);
-			m_Lv[enPlayerNumber_2P].SetScale(LEVEL_SPRITE_SCALE);
-
-			//Lv1の画像を読み込む
-			m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv1.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
-			m_LvNumber[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Lv1.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
-
-			//Lv1の裏の画像の読み込み
-			m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv1_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
-			m_LvNumber_back[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Lv1_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
-
-			//10の画像を読み込む
-			m_MaxLv[enPlayerNumber_1P].Init("Assets/sprite/gameUI/maxLv.DDS", LEVEL_MAX_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_1P);
-			m_MaxLv[enPlayerNumber_1P].SetScale(MAX_LEVEL_SCALE);
-			m_MaxLv[enPlayerNumber_2P].Init("Assets/sprite/gameUI/maxLv.DDS", LEVEL_MAX_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_MaxLv[enPlayerNumber_2P].SetPosition(MAX_LEVEL_POS_2P);
-			m_MaxLv[enPlayerNumber_2P].SetScale(MAX_LEVEL_SCALE);
-
-			//経験値テーブルと初期経験値
-			m_expTable[enPlayerNumber_2P] = m_player2P->CharSetEXPTable();
-			m_mathExp[enPlayerNumber_2P] = m_player1P->CharGetEXP();
-
-			//経験値のフレーム
-			m_ExperienceFlame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ExperienceBar.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
-			m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
-			m_ExperienceFlame[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-			m_ExperienceFlame[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ExperienceBar.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
-			m_ExperienceFlame[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
-			m_ExperienceFlame[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
-
-			//経験値バーの裏
-			m_experienceBarBack[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
-			m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
-			m_experienceBarBack[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-			m_experienceBarBack[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
-			m_experienceBarBack[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
-			m_experienceBarBack[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
-
-			//経験値バー
-			m_experienceBarFlont[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
-			m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS_DUO_1P);
-			m_experienceBarFlont[enPlayerNumber_1P].SetPivot(EXPERIENCEGAUGE_PIVOT);
-			m_experienceBarFlont[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-			m_experienceBarFlont[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
-			m_experienceBarFlont[enPlayerNumber_2P].SetPosition(EXPERIENCE_BAR_POS_DUO_2P);
-			m_experienceBarFlont[enPlayerNumber_2P].SetPivot(EXPERIENCEGAUGE_PIVOT);
-			m_experienceBarFlont[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
-		}
-		else
-		{
-			//レベルや経験値のフレーム
-			m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_SOLO, FLAME_HEIGHT_SOLO);
-			m_Flame[enPlayerNumber_1P].SetPosition(FLAME_POS_SOLO);
-
-			//必殺技のアイコン
-			m_UltRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
-			m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_POS_SOLO);
-			m_UltRenderIN[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_SOLO);
-			//必殺のアイコンフレーム
-			m_UltRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
-			m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_POS_SOLO);
-			m_UltRenderOUT[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_SOLO);
-			//スキルのアイコン
-			m_SkillRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
-			m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_POS_SOLO);
-			m_SkillRenderIN[enPlayerNumber_1P].SetScale(SKILL_SCALE_SOLO);
-			//スキルのアイコンフレーム
-			m_SkillRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
-			m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_POS_SOLO);
-			m_SkillRenderOUT[enPlayerNumber_1P].SetScale(SKILL_SCALE_SOLO);
-
-			//スキルのクールタイムを表示するフォントの設定
-			m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS);
-			m_skillFont[enPlayerNumber_1P].SetScale(SKILL_COOLTIME_FONT_SCALE);
-			m_skillFont[enPlayerNumber_1P].SetColor(g_vec4Red);
-			m_skillFont[enPlayerNumber_1P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
-			playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
-
-			//Lvの画像を読み込む
-			m_Lv[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-			m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_SOLO);
-			m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE);
-
-			//Lv1の画像を読み込む
-			m_LvNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv1.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_SOLO);
-			m_LvNumber[enPlayerNumber_1P].SetScale(LEVEL_NUMBER_SCALE_SOLO);
-
-			//Lv1の裏の画像の読み込み
-			m_LvNumber_back[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Lv1_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_SOLO);
-			m_LvNumber_back[enPlayerNumber_1P].SetScale(LEVEL_NUMBER_SCALE_SOLO);
-
-			//10の画像を読み込む
-			m_MaxLv[enPlayerNumber_1P].Init("Assets/sprite/gameUI/maxLv.DDS", LEVEL_MAX_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-			m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_SOLO);
-			m_MaxLv[enPlayerNumber_1P].SetScale(MAX_LEVEL_SCALE);
-
-			//経験値のフレーム
-			m_ExperienceFlame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ExperienceBar.DDS", 600.0f, 120.0f);
-			m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS);
-			m_ExperienceFlame[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-
-			//経験値バーの裏
-			m_experienceBarBack[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", 600.0f, 120.0f);
-			m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS);
-			m_experienceBarBack[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-
-			//経験値バー
-			m_experienceBarFlont[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
-			m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS);
-			m_experienceBarFlont[enPlayerNumber_1P].SetPivot(EXPERIENCEGAUGE_PIVOT);
-			m_experienceBarFlont[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-		}
-
-		//経験値テーブルと初期経験値
-		m_expTable[enPlayerNumber_1P] = m_player1P->CharSetEXPTable();
-		m_mathExp[enPlayerNumber_1P] = m_player1P->CharGetEXP();
-
-		//レベルアップまでに必要な経験値の量
-		m_ExpFont.SetPosition(UPTOLEVEL_POS);
-		m_ExpFont.SetScale(1.0f);
-		m_ExpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-		m_ExpFont.SetRotation(0.0f);
-		m_ExpFont.SetShadowParam(true, 2.0f, g_vec4Black);
-
-		for (int i = 0; i < enPlayerNumber_Num; i++)
-		{
-			//スプライト更新
-			m_Lv[i].Update();
-			m_Flame[i].Update();
-			m_SkillRenderIN[i].Update();
-			m_SkillRenderOUT[i].Update();
-			m_UltRenderIN[i].Update();
-			m_UltRenderOUT[i].Update();
-			m_LvNumber[i].Update();
-			m_LvNumber_back[i].Update();
-			m_MaxLv[i].Update();
-			m_ExperienceFlame[i].Update();
-			m_experienceBarBack[i].Update();
-			m_experienceBarFlont[i].Update();
-		}
-	}
-
-	//HP関連
-	{
-
-		for (int i = 0; i < enPlayerNumber_Num; i++)
-		{
-			//HPのフォント
-			m_HpFont[i].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-			m_HpFont[i].SetRotation(0.0f);
-			m_HpFont[i].SetShadowParam(true, 2.0f, g_vec4Black);
-
-			if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
-			{
-				//HPゲージ裏の画像を読み込む
-				m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
-				//HPゲージの画像を読み込む
-				m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
-				//HPバーの白い部分
-				m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
-				//HPゲージのフレームの画像を読み込む
-				m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
-			}
-			else
-			{
-				//HPゲージ裏の画像を読み込む
-				m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_BACK_WIDTH, HP_BAR_BACK_HEIGHT);
-				//HPゲージの画像を読み込む
-				m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_FOWARD_WIDTH, HP_BAR_FOWARD_HEIGHT);
-				//HPバーの白い部分
-				m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_FOWARD_WIDTH, HP_BAR_FOWARD_HEIGHT);
-				//HPゲージのフレームの画像を読み込む
-				m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_BACK_WIDTH, HP_BAR_BACK_HEIGHT);
-			}
-
-			m_hpBar[i].SetPivot(HPGAUGE_PIVOT_LEFT);
-			m_HpBar_White[i].SetPivot(HPGAUGE_PIVOT_LEFT);
-		}
-
-		//プレイヤーのHPを取得　白い部分用
-		White_BackHp[enPlayerNumber_1P] = m_player1P->GetCharacterHp();
-		WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
-		BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
-		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
-		{
-			White_BackHp[enPlayerNumber_2P] = m_player2P->GetCharacterHp();
-			WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
-			BackUPLV[enPlayerNumber_2P] = m_player2P->GetCharacterLevel();
-
-			//1P用画像
-			m_hpBar[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
-			m_HpBar_White[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
-
-			m_hpBarBack[enPlayerNumber_1P].SetPosition(HP_BAR_POS_LEFT);
-			m_hpBarBack[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
-			m_hpBar[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS_LEFT);
-			m_HpBar_White[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS_LEFT);
-			m_HPFrame[enPlayerNumber_1P].SetPosition(HP_BAR_POS_LEFT);
-			m_HPFrame[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
-
-			//2P用画像
-			m_hpBar[enPlayerNumber_2P].SetPivot(HPGAUGE_PIVOT_RIGHT);
-			m_HpBar_White[enPlayerNumber_2P].SetPivot(HPGAUGE_PIVOT_RIGHT);
-
-			m_hpBarBack[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
-			m_hpBarBack[enPlayerNumber_2P].SetScale(1.0f, 0.7f, 1.0f);
-			m_hpBar[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
-			m_HPFrame[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
-			m_HPFrame[enPlayerNumber_2P].SetScale(1.0f, 0.7f, 1.0f);
-			m_HpBar_White[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
-
-			//HPフォント
-			m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_POS_LEFT);
-			m_HpFont[enPlayerNumber_1P].SetScale(0.7f);
-			m_HpFont[enPlayerNumber_2P].SetPosition(HP_FONT_POS_RIGHT);
-			m_HpFont[enPlayerNumber_2P].SetScale(0.7f);
-		}
-		else
-		{
-			//1P用画像
-			m_hpBarBack[enPlayerNumber_1P].SetPosition(HP_BAR_POS);
-			m_hpBarBack[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
-			m_hpBar[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS);
-			m_HPFrame[enPlayerNumber_1P].SetPosition(HP_BAR_POS);
-			m_HPFrame[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
-			m_HpBar_White[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS);
-
-			//HPフォント
-			m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_POS);
-			m_HpFont[enPlayerNumber_1P].SetScale(1.0f);
-		}
-
-		for (int i = 0; i < enPlayerNumber_Num; i++)
-		{
-			m_hpBar[i].Update();
-			m_hpBarBack[i].Update();
-			m_HPFrame[i].Update();
-			m_HpBar_White[i].Update();
-		}
-	}
-
-	//制限時間と獲得ポイント
-	{
-		m_TimeAndPointRender.Init("Assets/sprite/gameUI/timer.DDS", 1100.0f, 400.0f);
-		m_TimeAndPointRender.SetPosition(TIME_POS);
-		m_TimeAndPointRender.SetScale(TIME_SCALE);
-
-		//フォントの大きさを設定。
-		m_minutes.SetScale(TIMERSCALE);
-		m_seconds.SetScale(TIMERSCALE);
-		m_coron.SetScale(TIMERSCALE);
-		Vector2 pivotOffSet = { 30.0f, -20.0f };
-		//オフセットの設定
-		m_minutes.SetPivotOffSet(pivotOffSet);
-		m_seconds.SetPivotOffSet(pivotOffSet);
-		m_coron.SetPivotOffSet(pivotOffSet);
-
-		//座標の設定
-		m_minutes.SetPosition(MINUTES_FONT_POS);
-		m_seconds.SetPosition(SECONDS_FONT_POS);
-		m_coron.SetPosition(CORON_FONT_POS);
-
-		//フォントの色を設定。
-		m_minutes.SetColor(m_limitColor);
-		m_seconds.SetColor(m_limitColor);
-		m_coron.SetColor(m_limitColor);
-
-		//輪郭線の設定
-		m_minutes.SetShadowParam(true, 2.0f, g_vec4Black);
-		m_seconds.SetShadowParam(true, 2.0f, g_vec4Black);
-		m_coron.SetShadowParam(true, 2.0f, g_vec4Black);
-
-		m_coron.SetText(L":");
-		m_TimeAndPointRender.Update();
-	}
+	InitExpelienceUI();
+	InitHpUI();
+	InitTimerUI();
 }
 
 void GameUI::SkillCoolTimeFont()
@@ -723,12 +356,627 @@ void GameUI::SkillCoolTimeFont()
 	swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 	m_skillFont[enPlayerNumber_1P].SetText(Skill);
 
-	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	if (m_gameMode != RenderingEngine::enGameMode_SoloPlay)
 	{
 		SkillCoolTime = m_player2P->CharGetSkillCoolTimer();
 		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 		m_skillFont[enPlayerNumber_2P].SetText(Skill);
+
+		if (m_gameMode != RenderingEngine::enGameMode_DuoPlay)
+		{
+			SkillCoolTime = m_player3P->CharGetSkillCoolTimer();
+			swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+			m_skillFont[enPlayerNumber_3P].SetText(Skill);
+
+			if (m_gameMode != RenderingEngine::enGameMode_TrioPlay)
+			{
+				SkillCoolTime = m_player4P->CharGetSkillCoolTimer();
+				swprintf_s(Skill, 255, L"%d", SkillCoolTime);
+				m_skillFont[enPlayerNumber_4P].SetText(Skill);
+			}
+		}
 	}
+}
+
+void GameUI::InitRespawnUI()
+{
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+	{
+		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+		{
+			m_respawnBack[i].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920.0f, 1080.0f);
+			m_respawnBack[i].SetScale(RESPAWN_DUOPLAY_SCALE);
+			m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
+			m_respawnIn[i].SetScale(RESPAWN_IN_DUOPLAY_SCALE);
+			m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+		}
+		m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
+		m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
+
+		m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_DUOPLAY_LEFT_POS);
+		m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
+
+		//リスポーンのカウントダウンの画像
+		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
+		m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+
+	}
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+	{
+		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+		{
+			m_respawnBack[i].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920.0f, 1080.0f);
+			m_respawnBack[i].SetScale(RESPAWN_DUOPLAY_SCALE);
+			m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
+			m_respawnIn[i].SetScale(RESPAWN_IN_DUOPLAY_SCALE);
+			m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+		}
+		m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
+		m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
+
+		m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_DUOPLAY_LEFT_POS);
+		m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
+
+		//リスポーンのカウントダウンの画像
+		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
+		m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+	}
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+	{
+
+	}
+	else
+	{
+		//Respawn inの画像
+		m_respawnIn[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
+		m_respawnIn[enPlayerNumber_1P].SetPosition(RESPAWN_IN_POS);
+
+		//リスポーンの背景の画像
+		m_respawnBack[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
+
+		//リスポーンのカウントダウンの画像
+		m_respawnCountNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_POS);
+	}
+
+	for (int i = 0; i < enPlayerNumber_Num; i++)
+	{
+		m_respawnIn[i].Update();
+		m_respawnBack[i].Update();
+		m_respawnCountNumber[i].Update();
+	}
+}
+
+void GameUI::InitExpelienceUI()
+{
+	for (int i = 0; i < enPlayerNumber_Num; i++)
+	{
+		m_Lv[i].Init("Assets/sprite/gameUI/Lv.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
+		m_LvNumber[i].Init("Assets/sprite/gameUI/Lv1.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv1_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_MaxLv[i].Init("Assets/sprite/gameUI/maxLv.DDS", LEVEL_MAX_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+		m_ExperienceFlame[i].Init("Assets/sprite/gameUI/ExperienceBar.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
+		m_experienceBarBack[i].Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
+		m_experienceBarFlont[i].Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH, EXPBAR_HEIGHT);
+	}
+
+	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	{
+		m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
+		m_Flame[enPlayerNumber_2P].Init("Assets/sprite/gameUI/LevelBar2P.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
+		m_Flame[enPlayerNumber_1P].SetPosition(FLAME_POS_1P);
+		m_Flame[enPlayerNumber_2P].SetPosition(FLAME_POS_2P);
+
+		//必殺技のアイコン
+		m_UltRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
+		m_UltRenderIN[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
+		m_UltRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderIN[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
+		m_UltRenderIN[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
+		//必殺のアイコンフレーム
+		m_UltRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
+		m_UltRenderOUT[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
+		m_UltRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderOUT[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
+		m_UltRenderOUT[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
+		//スキルのアイコン
+		m_SkillRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
+		m_SkillRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderIN[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
+		//スキルのアイコンフレーム
+		m_SkillRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
+		m_SkillRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderOUT[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
+
+		//スキルのクールタイムを表示するフォントの設定
+		m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS_1P);
+		m_skillFont[enPlayerNumber_1P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
+		m_skillFont[enPlayerNumber_1P].SetColor(g_vec4Red);
+		m_skillFont[enPlayerNumber_1P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+		playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
+
+		m_skillFont[enPlayerNumber_2P].SetPosition(SKILL_COOLTIME_FONT_POS_2P);
+		m_skillFont[enPlayerNumber_2P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
+		m_skillFont[enPlayerNumber_2P].SetColor(g_vec4Red);
+		m_skillFont[enPlayerNumber_2P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+		playerCoolTime[enPlayerNumber_2P] = m_player2P->CharGetSkillCoolTimer();
+
+		//Lvの画像を読み込む
+		m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_1P);
+		m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE);
+		m_Lv[enPlayerNumber_2P].SetPosition(LEVEL_SPRITE_POS_2P);
+		m_Lv[enPlayerNumber_2P].SetScale(LEVEL_SPRITE_SCALE);
+
+		//Lv1の画像を読み込む
+		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
+		m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+
+		//Lv1の裏の画像の読み込み
+		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
+		m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+
+		//10の画像を読み込む
+		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_1P);
+		m_MaxLv[enPlayerNumber_1P].SetScale(MAX_LEVEL_SCALE);
+		m_MaxLv[enPlayerNumber_2P].SetPosition(MAX_LEVEL_POS_2P);
+		m_MaxLv[enPlayerNumber_2P].SetScale(MAX_LEVEL_SCALE);
+
+		//経験値テーブルと初期経験値
+		m_expTable[enPlayerNumber_2P] = m_player2P->CharSetEXPTable();
+		m_mathExp[enPlayerNumber_2P] = m_player2P->CharGetEXP();
+
+		//経験値のフレーム
+		m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
+		m_ExperienceFlame[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_ExperienceFlame[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
+		m_ExperienceFlame[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バーの裏
+		m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
+		m_experienceBarBack[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_experienceBarBack[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
+		m_experienceBarBack[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バー
+		m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS_DUO_1P);
+		m_experienceBarFlont[enPlayerNumber_1P].SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_experienceBarFlont[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_experienceBarFlont[enPlayerNumber_2P].SetPosition(EXPERIENCE_BAR_POS_DUO_2P);
+		m_experienceBarFlont[enPlayerNumber_2P].SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_experienceBarFlont[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+	}
+	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+	{
+		m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
+		m_Flame[enPlayerNumber_2P].Init("Assets/sprite/gameUI/LevelBar2P.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
+		m_Flame[enPlayerNumber_1P].SetPosition(FLAME_POS_1P);
+		m_Flame[enPlayerNumber_2P].SetPosition(FLAME_POS_2P);
+
+		//必殺技のアイコン
+		m_UltRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
+		m_UltRenderIN[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
+		m_UltRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderIN[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
+		m_UltRenderIN[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
+		//必殺のアイコンフレーム
+		m_UltRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
+		m_UltRenderOUT[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
+		m_UltRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderOUT[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
+		m_UltRenderOUT[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
+		//スキルのアイコン
+		m_SkillRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
+		m_SkillRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderIN[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
+		//スキルのアイコンフレーム
+		m_SkillRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
+		m_SkillRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderOUT[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
+
+		//スキルのクールタイムを表示するフォントの設定
+		m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS_1P);
+		m_skillFont[enPlayerNumber_1P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
+		m_skillFont[enPlayerNumber_1P].SetColor(g_vec4Red);
+		m_skillFont[enPlayerNumber_1P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+		playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
+
+		m_skillFont[enPlayerNumber_2P].SetPosition(SKILL_COOLTIME_FONT_POS_2P);
+		m_skillFont[enPlayerNumber_2P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
+		m_skillFont[enPlayerNumber_2P].SetColor(g_vec4Red);
+		m_skillFont[enPlayerNumber_2P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+		playerCoolTime[enPlayerNumber_2P] = m_player2P->CharGetSkillCoolTimer();
+
+		//Lvの画像を読み込む
+		m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_1P);
+		m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE);
+		m_Lv[enPlayerNumber_2P].SetPosition(LEVEL_SPRITE_POS_2P);
+		m_Lv[enPlayerNumber_2P].SetScale(LEVEL_SPRITE_SCALE);
+
+		//Lv1の画像を読み込む
+		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
+		m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+
+		//Lv1の裏の画像の読み込み
+		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
+		m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+
+		//10の画像を読み込む
+		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_1P);
+		m_MaxLv[enPlayerNumber_1P].SetScale(MAX_LEVEL_SCALE);
+		m_MaxLv[enPlayerNumber_2P].SetPosition(MAX_LEVEL_POS_2P);
+		m_MaxLv[enPlayerNumber_2P].SetScale(MAX_LEVEL_SCALE);
+
+		//経験値テーブルと初期経験値
+		m_expTable[enPlayerNumber_2P] = m_player2P->CharSetEXPTable();
+		m_mathExp[enPlayerNumber_2P] = m_player2P->CharGetEXP();
+
+		//経験値のフレーム
+		m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
+		m_ExperienceFlame[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_ExperienceFlame[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
+		m_ExperienceFlame[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バーの裏
+		m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
+		m_experienceBarBack[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_experienceBarBack[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
+		m_experienceBarBack[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バー
+		m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS_DUO_1P);
+		m_experienceBarFlont[enPlayerNumber_1P].SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_experienceBarFlont[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_experienceBarFlont[enPlayerNumber_2P].SetPosition(EXPERIENCE_BAR_POS_DUO_2P);
+		m_experienceBarFlont[enPlayerNumber_2P].SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_experienceBarFlont[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+	}
+	else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
+	{
+		m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
+		m_Flame[enPlayerNumber_2P].Init("Assets/sprite/gameUI/LevelBar2P.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
+		m_Flame[enPlayerNumber_1P].SetPosition(FLAME_POS_1P);
+		m_Flame[enPlayerNumber_2P].SetPosition(FLAME_POS_2P);
+
+		//必殺技のアイコン
+		m_UltRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
+		m_UltRenderIN[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
+		m_UltRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderIN[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
+		m_UltRenderIN[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
+		//必殺のアイコンフレーム
+		m_UltRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
+		m_UltRenderOUT[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
+		m_UltRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_UltRenderOUT[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
+		m_UltRenderOUT[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
+		//スキルのアイコン
+		m_SkillRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
+		m_SkillRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderIN[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
+		//スキルのアイコンフレーム
+		m_SkillRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
+		m_SkillRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
+		m_SkillRenderOUT[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
+
+		//スキルのクールタイムを表示するフォントの設定
+		m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS_1P);
+		m_skillFont[enPlayerNumber_1P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
+		m_skillFont[enPlayerNumber_1P].SetColor(g_vec4Red);
+		m_skillFont[enPlayerNumber_1P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+		playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
+
+		m_skillFont[enPlayerNumber_2P].SetPosition(SKILL_COOLTIME_FONT_POS_2P);
+		m_skillFont[enPlayerNumber_2P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
+		m_skillFont[enPlayerNumber_2P].SetColor(g_vec4Red);
+		m_skillFont[enPlayerNumber_2P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+		playerCoolTime[enPlayerNumber_2P] = m_player2P->CharGetSkillCoolTimer();
+
+		//Lvの画像を読み込む
+		m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_1P);
+		m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE);
+		m_Lv[enPlayerNumber_2P].SetPosition(LEVEL_SPRITE_POS_2P);
+		m_Lv[enPlayerNumber_2P].SetScale(LEVEL_SPRITE_SCALE);
+
+		//Lv1の画像を読み込む
+		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
+		m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+
+		//Lv1の裏の画像の読み込み
+		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
+		m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+
+		//10の画像を読み込む
+		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_1P);
+		m_MaxLv[enPlayerNumber_1P].SetScale(MAX_LEVEL_SCALE);
+		m_MaxLv[enPlayerNumber_2P].SetPosition(MAX_LEVEL_POS_2P);
+		m_MaxLv[enPlayerNumber_2P].SetScale(MAX_LEVEL_SCALE);
+
+		//経験値テーブルと初期経験値
+		m_expTable[enPlayerNumber_2P] = m_player2P->CharSetEXPTable();
+		m_mathExp[enPlayerNumber_2P] = m_player2P->CharGetEXP();
+
+		//経験値のフレーム
+		m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
+		m_ExperienceFlame[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_ExperienceFlame[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
+		m_ExperienceFlame[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バーの裏
+		m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
+		m_experienceBarBack[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_experienceBarBack[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
+		m_experienceBarBack[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バー
+		m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS_DUO_1P);
+		m_experienceBarFlont[enPlayerNumber_1P].SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_experienceBarFlont[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+		m_experienceBarFlont[enPlayerNumber_2P].SetPosition(EXPERIENCE_BAR_POS_DUO_2P);
+		m_experienceBarFlont[enPlayerNumber_2P].SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_experienceBarFlont[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+	}
+	else
+	{
+		//レベルや経験値のフレーム
+		m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_SOLO, FLAME_HEIGHT_SOLO);
+		m_Flame[enPlayerNumber_1P].SetPosition(FLAME_POS_SOLO);
+
+		//必殺技のアイコン
+		m_UltRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
+		m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_POS_SOLO);
+		m_UltRenderIN[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_SOLO);
+		//必殺のアイコンフレーム
+		m_UltRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
+		m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_POS_SOLO);
+		m_UltRenderOUT[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_SOLO);
+		//スキルのアイコン
+		m_SkillRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
+		m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_POS_SOLO);
+		m_SkillRenderIN[enPlayerNumber_1P].SetScale(SKILL_SCALE_SOLO);
+		//スキルのアイコンフレーム
+		m_SkillRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_SOLO, SKILL_AND_ULT_ICON_RESOLUTION_SOLO);
+		m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_POS_SOLO);
+		m_SkillRenderOUT[enPlayerNumber_1P].SetScale(SKILL_SCALE_SOLO);
+
+		//スキルのクールタイムを表示するフォントの設定
+		m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS);
+		m_skillFont[enPlayerNumber_1P].SetScale(SKILL_COOLTIME_FONT_SCALE);
+		m_skillFont[enPlayerNumber_1P].SetColor(g_vec4Red);
+		m_skillFont[enPlayerNumber_1P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+		playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
+
+		//Lvの画像を読み込む
+		m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_SOLO);
+		m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE);
+
+		//Lv1の画像を読み込む
+		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_SOLO);
+		m_LvNumber[enPlayerNumber_1P].SetScale(LEVEL_NUMBER_SCALE_SOLO);
+
+		//Lv1の裏の画像の読み込み
+		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_SOLO);
+		m_LvNumber_back[enPlayerNumber_1P].SetScale(LEVEL_NUMBER_SCALE_SOLO);
+
+		//10の画像を読み込む
+		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_SOLO);
+		m_MaxLv[enPlayerNumber_1P].SetScale(MAX_LEVEL_SCALE);
+
+		//経験値のフレーム
+		m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS);
+		m_ExperienceFlame[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バーの裏
+		m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS);
+		m_experienceBarBack[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+
+		//経験値バー
+		m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS);
+		m_experienceBarFlont[enPlayerNumber_1P].SetPivot(EXPERIENCEGAUGE_PIVOT);
+		m_experienceBarFlont[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
+	}
+
+	//経験値テーブルと初期経験値
+	m_expTable[enPlayerNumber_1P] = m_player1P->CharSetEXPTable();
+	m_mathExp[enPlayerNumber_1P] = m_player1P->CharGetEXP();
+
+	//レベルアップまでに必要な経験値の量
+	m_ExpFont.SetPosition(UPTOLEVEL_POS);
+	m_ExpFont.SetScale(1.0f);
+	m_ExpFont.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_ExpFont.SetRotation(0.0f);
+	m_ExpFont.SetShadowParam(true, 2.0f, g_vec4Black);
+
+	for (int i = 0; i < enPlayerNumber_Num; i++)
+	{
+		//スプライト更新
+		m_Lv[i].Update();
+		m_Flame[i].Update();
+		m_SkillRenderIN[i].Update();
+		m_SkillRenderOUT[i].Update();
+		m_UltRenderIN[i].Update();
+		m_UltRenderOUT[i].Update();
+		m_LvNumber[i].Update();
+		m_LvNumber_back[i].Update();
+		m_MaxLv[i].Update();
+		m_ExperienceFlame[i].Update();
+		m_experienceBarBack[i].Update();
+		m_experienceBarFlont[i].Update();
+	}
+}
+
+void GameUI::InitHpUI()
+{
+	for (int i = 0; i < enPlayerNumber_Num; i++)
+	{
+		//HPのフォント
+		m_HpFont[i].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+		m_HpFont[i].SetRotation(0.0f);
+		m_HpFont[i].SetShadowParam(true, 2.0f, g_vec4Black);
+
+		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+		{
+			//HPゲージ裏の画像を読み込む
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+			//HPゲージの画像を読み込む
+			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			//HPバーの白い部分
+			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			//HPゲージのフレームの画像を読み込む
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+		}
+		else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+		{
+			//HPゲージ裏の画像を読み込む
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+			//HPゲージの画像を読み込む
+			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			//HPバーの白い部分
+			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			//HPゲージのフレームの画像を読み込む
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+		}
+		else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			//HPゲージ裏の画像を読み込む
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+			//HPゲージの画像を読み込む
+			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			//HPバーの白い部分
+			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			//HPゲージのフレームの画像を読み込む
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+		}
+		else
+		{
+			//HPゲージ裏の画像を読み込む
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_BACK_WIDTH, HP_BAR_BACK_HEIGHT);
+			//HPゲージの画像を読み込む
+			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_FOWARD_WIDTH, HP_BAR_FOWARD_HEIGHT);
+			//HPバーの白い部分
+			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_FOWARD_WIDTH, HP_BAR_FOWARD_HEIGHT);
+			//HPゲージのフレームの画像を読み込む
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_BACK_WIDTH, HP_BAR_BACK_HEIGHT);
+		}
+
+		m_hpBar[i].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_HpBar_White[i].SetPivot(HPGAUGE_PIVOT_LEFT);
+	}
+
+	//プレイヤーのHPを取得　白い部分用
+	White_BackHp[enPlayerNumber_1P] = m_player1P->GetCharacterHp();
+	WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
+	BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
+	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	{
+		White_BackHp[enPlayerNumber_2P] = m_player2P->GetCharacterHp();
+		WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
+		BackUPLV[enPlayerNumber_2P] = m_player2P->GetCharacterLevel();
+
+		//1P用画像
+		m_hpBar[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_HpBar_White[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
+
+		m_hpBarBack[enPlayerNumber_1P].SetPosition(HP_BAR_POS_LEFT);
+		m_hpBarBack[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
+		m_hpBar[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS_LEFT);
+		m_HpBar_White[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS_LEFT);
+		m_HPFrame[enPlayerNumber_1P].SetPosition(HP_BAR_POS_LEFT);
+		m_HPFrame[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
+
+		//2P用画像
+		m_hpBar[enPlayerNumber_2P].SetPivot(HPGAUGE_PIVOT_RIGHT);
+		m_HpBar_White[enPlayerNumber_2P].SetPivot(HPGAUGE_PIVOT_RIGHT);
+
+		m_hpBarBack[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
+		m_hpBarBack[enPlayerNumber_2P].SetScale(1.0f, 0.7f, 1.0f);
+		m_hpBar[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
+		m_HPFrame[enPlayerNumber_2P].SetPosition(HP_BAR_POS_RIGHT);
+		m_HPFrame[enPlayerNumber_2P].SetScale(1.0f, 0.7f, 1.0f);
+		m_HpBar_White[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_POS_RIGHT);
+
+		//HPフォント
+		m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_POS_LEFT);
+		m_HpFont[enPlayerNumber_1P].SetScale(0.7f);
+		m_HpFont[enPlayerNumber_2P].SetPosition(HP_FONT_POS_RIGHT);
+		m_HpFont[enPlayerNumber_2P].SetScale(0.7f);
+	}
+	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+	{
+
+	}
+	else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
+	{
+
+	}
+	else
+	{
+		//1P用画像
+		m_hpBarBack[enPlayerNumber_1P].SetPosition(HP_BAR_POS);
+		m_hpBarBack[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
+		m_hpBar[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS);
+		m_HPFrame[enPlayerNumber_1P].SetPosition(HP_BAR_POS);
+		m_HPFrame[enPlayerNumber_1P].SetScale(1.0f, 0.7f, 1.0f);
+		m_HpBar_White[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_POS);
+
+		//HPフォント
+		m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_POS);
+		m_HpFont[enPlayerNumber_1P].SetScale(1.0f);
+	}
+
+	for (int i = 0; i < enPlayerNumber_Num; i++)
+	{
+		m_hpBar[i].Update();
+		m_hpBarBack[i].Update();
+		m_HPFrame[i].Update();
+		m_HpBar_White[i].Update();
+	}
+}
+
+void GameUI::InitTimerUI()
+{
+	m_TimeAndPointRender.Init("Assets/sprite/gameUI/timer.DDS", 1100.0f, 400.0f);
+	m_TimeAndPointRender.SetPosition(TIME_POS);
+	m_TimeAndPointRender.SetScale(TIME_SCALE);
+
+	//フォントの大きさを設定。
+	m_minutes.SetScale(TIMERSCALE);
+	m_seconds.SetScale(TIMERSCALE);
+	m_coron.SetScale(TIMERSCALE);
+	Vector2 pivotOffSet = { 30.0f, -20.0f };
+	//オフセットの設定
+	m_minutes.SetPivotOffSet(pivotOffSet);
+	m_seconds.SetPivotOffSet(pivotOffSet);
+	m_coron.SetPivotOffSet(pivotOffSet);
+
+	//座標の設定
+	m_minutes.SetPosition(MINUTES_FONT_POS);
+	m_seconds.SetPosition(SECONDS_FONT_POS);
+	m_coron.SetPosition(CORON_FONT_POS);
+
+	//フォントの色を設定。
+	m_minutes.SetColor(m_limitColor);
+	m_seconds.SetColor(m_limitColor);
+	m_coron.SetColor(m_limitColor);
+
+	//輪郭線の設定
+	m_minutes.SetShadowParam(true, 2.0f, g_vec4Black);
+	m_seconds.SetShadowParam(true, 2.0f, g_vec4Black);
+	m_coron.SetShadowParam(true, 2.0f, g_vec4Black);
+
+	m_coron.SetText(L":");
+	m_TimeAndPointRender.Update();
 }
 
 void GameUI::Update()
@@ -754,9 +1002,17 @@ void GameUI::Update()
 	{
 		RespawnCountDown(enPlayerNumber_1P);
 	}
-	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay && m_player2P->CharGetRespawnTime() > 0.0f)
+	if (m_gameMode >= RenderingEngine::enGameMode_DuoPlay && m_player2P->CharGetRespawnTime() > 0.0f)
 	{
 		RespawnCountDown(enPlayerNumber_2P);
+	}
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay && m_player3P->CharGetRespawnTime() > 0.0f)
+	{
+		RespawnCountDown(enPlayerNumber_3P);
+	}
+	if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay && m_player4P->CharGetRespawnTime() > 0.0f)
+	{
+		RespawnCountDown(enPlayerNumber_4P);
 	}
 
 	//gameクラスのスタートのフラグが立っている間処理を行わない
@@ -786,6 +1042,8 @@ void GameUI::Update()
 
 		m_LvNumber_back[enPlayerNumber_1P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 		m_LvNumber_back[enPlayerNumber_2P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_3P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_4P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
 	else if (m_flashNumberFlag == true)
 	{
@@ -799,14 +1057,26 @@ void GameUI::Update()
 
 		m_LvNumber_back[enPlayerNumber_1P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 		m_LvNumber_back[enPlayerNumber_2P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_3P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_4P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
 	m_LvNumber_back[enPlayerNumber_1P].Update();
 	m_LvNumber_back[enPlayerNumber_2P].Update();
+	m_LvNumber_back[enPlayerNumber_3P].Update();
+	m_LvNumber_back[enPlayerNumber_4P].Update();
 
 	ExpState(m_player1P);
-	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	if (m_gameMode >= RenderingEngine::enGameMode_DuoPlay)
 	{
 		ExpState(m_player2P);
+	}
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		ExpState(m_player3P);
+	}
+	if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
+	{
+		ExpState(m_player4P);
 	}
 
 	HPBar();
@@ -927,9 +1197,16 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 		//カウントダウン
 		respornCountDown = (int)m_player1P->CharGetRespawnTime();
 	}
-	else {
-		//カウントダウン
+	else if (playerNumber == enPlayerNumber_2P) {
 		respornCountDown = (int)m_player2P->CharGetRespawnTime();
+	}
+	else if (playerNumber == enPlayerNumber_3P)
+	{
+		respornCountDown = (int)m_player3P->CharGetRespawnTime();
+	}
+	else
+	{
+		respornCountDown = (int)m_player4P->CharGetRespawnTime();
 	}
 
 	if (oldRespawnCount[playerNumber] != respornCountDown)
@@ -949,6 +1226,25 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 				}
 				break;
 			}
+			if (m_gameMode == RenderingEngine::enGameMode_TrioPlay || m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
+			{
+				if (playerNumber == enPlayerNumber_1P) {
+					m_fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Left);
+				}
+				else if (playerNumber == enPlayerNumber_2P)
+				{
+					m_fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Right);
+				}
+				else if (playerNumber == enPlayerNumber_3P)
+				{
+					m_fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Right);
+				}
+				else {
+					m_fade->StartFadeIn(2.0f, Fade::enFadeSpriteType_Right);
+				}
+				break;
+			}
+			//ソロプレイ時
 			m_fade->StartFadeIn(2.0f);
 			break;
 		case 1:
@@ -1386,7 +1682,7 @@ void GameUI::CharPoint()
 		{
 			wchar_t P[255];
 			wchar_t text[] = L"?p";
-			swprintf_s(P, 255, L"%3s",text);
+			swprintf_s(P, 255, L"%3s", text);
 			m_PointFont[num].SetText(P);
 			num++;
 			continue;
@@ -1520,127 +1816,127 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 
 void GameUI::Render(RenderContext& rc)
 {
-	//finishの画像
-	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
-	{
-		m_FinishCountNumber.Draw(rc);
-		return;
-	}
+	////finishの画像
+	//if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
+	//{
+	//	m_FinishCountNumber.Draw(rc);
+	//	return;
+	//}
 
-	if (m_game->GetStopFlag() == true)
-	{
-		return;
-	}
+	//if (m_game->GetStopFlag() == true)
+	//{
+	//	return;
+	//}
 
-	RenderDeathPlayerSprite(rc);
+	//RenderDeathPlayerSprite(rc);
 
-	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
-		//レベルや経験値のフレーム
-		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
-		{
-			m_Flame[i].Draw(rc);
-		}
+	////gameクラスのポーズのフラグが立っている間処理を行わない
+	//if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
+	//	//レベルや経験値のフレーム
+	//	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	//	{
+	//		m_Flame[i].Draw(rc);
+	//	}
 
-		//スキルのクールタイムとタイマーが違う時だけ表示
-		if (m_player1P->CharGetSkillCoolTimer() != playerCoolTime[enPlayerNumber_1P])
-		{
-			m_skillFont[enPlayerNumber_1P].Draw(rc);
-		}
-		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
-		{
-			if (m_player2P->CharGetSkillCoolTimer() != playerCoolTime[enPlayerNumber_2P])
-			{
-				m_skillFont[enPlayerNumber_2P].Draw(rc);
-			}
-		}
+	//	//スキルのクールタイムとタイマーが違う時だけ表示
+	//	if (m_player1P->CharGetSkillCoolTimer() != playerCoolTime[enPlayerNumber_1P])
+	//	{
+	//		m_skillFont[enPlayerNumber_1P].Draw(rc);
+	//	}
+	//	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	//	{
+	//		if (m_player2P->CharGetSkillCoolTimer() != playerCoolTime[enPlayerNumber_2P])
+	//		{
+	//			m_skillFont[enPlayerNumber_2P].Draw(rc);
+	//		}
+	//	}
 
-		//制限時間
-		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
-		{
-			m_TimeAndPointRender.Draw(rc);
-			m_minutes.Draw(rc);
-			m_seconds.Draw(rc);
-			m_coron.Draw(rc);
-		}
-		else
-		{
-			m_TimeAndPointRender.DrawFront(rc);
-			m_minutes.Draw(rc, true);
-			m_seconds.Draw(rc, true);
-			m_coron.Draw(rc, true);
-		}
+	//	//制限時間
+	//	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+	//	{
+	//		m_TimeAndPointRender.Draw(rc);
+	//		m_minutes.Draw(rc);
+	//		m_seconds.Draw(rc);
+	//		m_coron.Draw(rc);
+	//	}
+	//	else
+	//	{
+	//		m_TimeAndPointRender.DrawFront(rc);
+	//		m_minutes.Draw(rc, true);
+	//		m_seconds.Draw(rc, true);
+	//		m_coron.Draw(rc, true);
+	//	}
 
-		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
-		{
-			m_experienceBarBack[enPlayerNumber_2P].Draw(rc);
-			if (m_mathExp[enPlayerNumber_2P] != 0) {
-				m_experienceBarFlont[enPlayerNumber_2P].Draw(rc);
-			}
-			m_ExperienceFlame[enPlayerNumber_2P].Draw(rc);
+	//	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	//	{
+	//		m_experienceBarBack[enPlayerNumber_2P].Draw(rc);
+	//		if (m_mathExp[enPlayerNumber_2P] != 0) {
+	//			m_experienceBarFlont[enPlayerNumber_2P].Draw(rc);
+	//		}
+	//		m_ExperienceFlame[enPlayerNumber_2P].Draw(rc);
 
-			m_hpBarBack[enPlayerNumber_2P].Draw(rc);
-			m_HpBar_White[enPlayerNumber_2P].Draw(rc);
-			m_hpBar[enPlayerNumber_2P].Draw(rc);
-			m_HPFrame[enPlayerNumber_2P].Draw(rc);
+	//		m_hpBarBack[enPlayerNumber_2P].Draw(rc);
+	//		m_HpBar_White[enPlayerNumber_2P].Draw(rc);
+	//		m_hpBar[enPlayerNumber_2P].Draw(rc);
+	//		m_HPFrame[enPlayerNumber_2P].Draw(rc);
 
-			m_SkillRenderIN[enPlayerNumber_2P].Draw(rc);
-			m_SkillRenderOUT[enPlayerNumber_2P].Draw(rc);
+	//		m_SkillRenderIN[enPlayerNumber_2P].Draw(rc);
+	//		m_SkillRenderOUT[enPlayerNumber_2P].Draw(rc);
 
-			m_UltRenderIN[enPlayerNumber_2P].Draw(rc);
-			m_UltRenderOUT[enPlayerNumber_2P].Draw(rc);
+	//		m_UltRenderIN[enPlayerNumber_2P].Draw(rc);
+	//		m_UltRenderOUT[enPlayerNumber_2P].Draw(rc);
 
-			m_HpFont[enPlayerNumber_2P].Draw(rc);
-			m_Lv[enPlayerNumber_2P].Draw(rc);
-			m_LvNumber_back[enPlayerNumber_2P].Draw(rc);
-			m_LvNumber[enPlayerNumber_2P].Draw(rc);
-			m_MaxLv[enPlayerNumber_2P].Draw(rc);
-		}
+	//		m_HpFont[enPlayerNumber_2P].Draw(rc);
+	//		m_Lv[enPlayerNumber_2P].Draw(rc);
+	//		m_LvNumber_back[enPlayerNumber_2P].Draw(rc);
+	//		m_LvNumber[enPlayerNumber_2P].Draw(rc);
+	//		m_MaxLv[enPlayerNumber_2P].Draw(rc);
+	//	}
 
-		m_experienceBarBack[enPlayerNumber_1P].Draw(rc);
-		if (m_mathExp[enPlayerNumber_1P] != 0) {
-			m_experienceBarFlont[enPlayerNumber_1P].Draw(rc);
-		}
-		m_ExperienceFlame[enPlayerNumber_1P].Draw(rc);
-		m_hpBarBack[enPlayerNumber_1P].Draw(rc);
-		m_HpBar_White[enPlayerNumber_1P].Draw(rc);
-		m_hpBar[enPlayerNumber_1P].Draw(rc);
-		m_HPFrame[enPlayerNumber_1P].Draw(rc);
+	//	m_experienceBarBack[enPlayerNumber_1P].Draw(rc);
+	//	if (m_mathExp[enPlayerNumber_1P] != 0) {
+	//		m_experienceBarFlont[enPlayerNumber_1P].Draw(rc);
+	//	}
+	//	m_ExperienceFlame[enPlayerNumber_1P].Draw(rc);
+	//	m_hpBarBack[enPlayerNumber_1P].Draw(rc);
+	//	m_HpBar_White[enPlayerNumber_1P].Draw(rc);
+	//	m_hpBar[enPlayerNumber_1P].Draw(rc);
+	//	m_HPFrame[enPlayerNumber_1P].Draw(rc);
 
-		m_SkillRenderIN[enPlayerNumber_1P].Draw(rc);
-		m_SkillRenderOUT[enPlayerNumber_1P].Draw(rc);
+	//	m_SkillRenderIN[enPlayerNumber_1P].Draw(rc);
+	//	m_SkillRenderOUT[enPlayerNumber_1P].Draw(rc);
 
-		m_UltRenderIN[enPlayerNumber_1P].Draw(rc);
-		m_UltRenderOUT[enPlayerNumber_1P].Draw(rc);
+	//	m_UltRenderIN[enPlayerNumber_1P].Draw(rc);
+	//	m_UltRenderOUT[enPlayerNumber_1P].Draw(rc);
 
-		m_HpFont[enPlayerNumber_1P].Draw(rc);
-		m_Lv[enPlayerNumber_1P].Draw(rc);
-		m_LvNumber_back[enPlayerNumber_1P].Draw(rc);
-		m_LvNumber[enPlayerNumber_1P].Draw(rc);
-		m_MaxLv[enPlayerNumber_1P].Draw(rc);
+	//	m_HpFont[enPlayerNumber_1P].Draw(rc);
+	//	m_Lv[enPlayerNumber_1P].Draw(rc);
+	//	m_LvNumber_back[enPlayerNumber_1P].Draw(rc);
+	//	m_LvNumber[enPlayerNumber_1P].Draw(rc);
+	//	m_MaxLv[enPlayerNumber_1P].Draw(rc);
 
-		//ポイントを描画
-		//左のフレームの色々を描画
-		for (int i = 0; i < enPlayerNumber_Num; i++)
-		{
-			m_pointFlame[i].DrawFront(rc);
-			m_PointFont[i].Draw(rc, true);
-			m_charIcon[i].DrawFront(rc);
-			m_playerCpuName[i].DrawFront(rc);
-			m_LevelFont[i].Draw(rc, true);
-		}
+	//	//ポイントを描画
+	//	//左のフレームの色々を描画
+	//	for (int i = 0; i < enPlayerNumber_Num; i++)
+	//	{
+	//		m_pointFlame[i].DrawFront(rc);
+	//		m_PointFont[i].Draw(rc, true);
+	//		m_charIcon[i].DrawFront(rc);
+	//		m_playerCpuName[i].DrawFront(rc);
+	//		m_LevelFont[i].Draw(rc, true);
+	//	}
 
-		//finishの画像
-		if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
-		{
-			m_FinishCountNumber.Draw(rc);
-		}
-	}
-	else
-	{
-		//カウントダウンの表示
-		if (m_game->NowGameState() == 0 && m_game->CountDownMinutes() <= 3) {
-			m_CountNumper.Draw(rc);
-		}
-	}
+	//	//finishの画像
+	//	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
+	//	{
+	//		m_FinishCountNumber.Draw(rc);
+	//	}
+	//}
+	//else
+	//{
+	//	//カウントダウンの表示
+	//	if (m_game->NowGameState() == 0 && m_game->CountDownMinutes() <= 3) {
+	//		m_CountNumper.Draw(rc);
+	//	}
+	//}
 }

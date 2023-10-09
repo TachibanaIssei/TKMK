@@ -99,7 +99,7 @@ bool Pause::Start()
 
 void Pause::Update()
 {
-	if (HowToPlaySpriteFlag == false)
+	if (m_howToPlaySpriteFlag == false)
 	{
 		//ポーズ時の移動処理
 		PauseMove();
@@ -240,17 +240,17 @@ void Pause::Menu_HowToPlay()
 {
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
-		if (!HowToPlaySpriteFlag) {
+		if (!m_howToPlaySpriteFlag) {
 			Push_OK();
 			//フラグ反転
-			HowToPlaySpriteFlag = true;
+			m_howToPlaySpriteFlag = true;
 		}
 	}
 	else if (g_pad[0]->IsTrigger(enButtonB))
 	{
-		if (HowToPlaySpriteFlag) {
+		if (m_howToPlaySpriteFlag) {
 			Push_OK();
-			HowToPlaySpriteFlag = false;
+			m_howToPlaySpriteFlag = false;
 		}
 	}
 }
@@ -328,7 +328,7 @@ void Pause::Menu_QuitGame()
 
 void Pause::Push_OK()
 {
-	if (!HowToPlaySpriteFlag) {
+	if (!m_howToPlaySpriteFlag) {
 		SoundSource* se = NewGO<SoundSource>(0);
 		se->Init(enSound_Pause_Screen);
 		se->SetVolume(game->GetSoundEffectVolume());
@@ -380,7 +380,7 @@ void Pause::Render(RenderContext& rc)
 	m_Menu_SE_Bar.Draw(rc);
 	m_Menu_Flame_SE.Draw(rc);
 
-	if (HowToPlaySpriteFlag == true)
+	if (m_howToPlaySpriteFlag == true)
 	{
 		m_operationPic.Draw(rc);
 	}

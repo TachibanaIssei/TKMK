@@ -10,8 +10,8 @@
 KnightBase::KnightBase()
 {
 	//ステータスを読み込む
-	m_Status.Init("Knight");
-	m_InitialStatus = m_Status;  //初期ステータスのセット
+	m_status.Init("Knight");
+	m_InitialStatus = m_status;  //初期ステータスのセット
 	Lv=1;                    //レベル
 	AtkSpeed=20;              //攻撃速度
 
@@ -70,7 +70,7 @@ void KnightBase::SetModel()
 	//m_modelRender.Init("Assets/modelData/character/Knight/model_Knight.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	
 	//剣士モデルを読み込み
-	switch (KnightKinds)
+	switch (m_knightKind)
 	{
 	case enKnightKinds_Red:
 		m_modelRender.Init("Assets/modelData/character/Knight/Knight_Red2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
@@ -126,7 +126,7 @@ void KnightBase::ExpProcess(int Exp)
 		//レベルアップ
 		LevelUp(Lv);
 		//レベルに合わせてレベルの画像を変更する
-		m_gameUI->LevelFontChange(Lv);
+		m_gameUI->LevelSpriteChange(Lv);
 		switch (Lv)
 		{
 		case 2:
@@ -178,6 +178,34 @@ void KnightBase::Rotation()
 	}
 }
 
+bool KnightBase::DrawHP(const int playerNumber)
+{
+	Vector3 toCameraTarget = g_camera3D[playerNumber]->GetTarget() - g_camera3D[playerNumber]->GetPosition();
+	Vector3 toMush = m_position - g_camera3D[playerNumber]->GetPosition();
+	toCameraTarget.y = 0.0f;
+	toMush.y = 0.0f;
+	toCameraTarget.Normalize();
+	toMush.Normalize();
+
+	float cos = Dot(toCameraTarget, toMush);
+	float angle = acos(cos);
+
+	//カメラの後ろにあるなら描画しない
+	Vector3 diff = m_player[playerNumber]->GetPosition() - m_position;
+
+	//プレイヤーに向かう距離を計算する
+	float playerdistance = diff.Length();
+
+	if (fabsf(angle) < Math::DegToRad(45.0f) && playerdistance < 800.0f && m_player[playerNumber]->GetPosition().y <= 10.0f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool KnightBase::Invincible()
 {
 	if (invincibleTimer > 0)
@@ -199,9 +227,10 @@ void KnightBase::AtkCollisiton()
 	Vector3 collisionPosition = m_position;
 	//座標をプレイヤーの少し前に設定する。
 	//collisionPosition += forward * 50.0f;
-	collisionObject->CreateBox(collisionPosition,
-		Quaternion::Identity,
-		Vector3(85.0f, 15.0f, 30.0f) 
+	//�{�b�N�X��̃R���W������쐬����B
+	collisionObject->CreateBox(collisionPosition, //��W�B
+		Quaternion::Identity, //��]�B
+		Vector3(85.0f, 15.0f, 30.0f) //�傫���B
 	);
 	collisionObject->SetName("player_attack");
 	collisionObject->SetCreatorName(GetName());
@@ -209,6 +238,7 @@ void KnightBase::AtkCollisiton()
 	//「Sword」ボーンのワールド行列を取得する。
 	Matrix matrix = m_modelRender.GetBone(m_swordBoneId)->GetWorldMatrix();
 
+	//matrix.MakeRotationZ(90.0f);
 	//「Sword」ボーンのワールド行列をコリジョンに適用する。
 	collisionObject->SetWorldMatrix(matrix);
 }
@@ -224,7 +254,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 	
 }
 
-void KnightBase::Collition()
+void KnightBase::Collision()
 {
 	if (invincibleTimer > 0)
 	{
@@ -305,9 +335,9 @@ void KnightBase::Collition()
 			return;
 		}
 	}
-	//敵の攻撃用のコリジョンを取得する
+	//必殺技のコリジョンを取得する
 	const auto& Ultcollisions = g_collisionObjectManager->FindCollisionObjects("player_UltimateSkill");
-	//子リジョンの配列をfor文で回す
+	//コリジョンの配列をfor文で回す
 	for (auto collision : Ultcollisions)
 	{
 		if (collision->IsHit(m_charCon))
@@ -363,7 +393,10 @@ void KnightBase::Collition()
 /// <param name="damege">敵の攻撃力</param>
 void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 {
-	m_Status.Hp -= damege;
+	int hp = m_status.GetHp() - damege;
+	m_status.SetHp(hp);
+	//無敵時間リセット
+	//invincibleTimer = 1.0f;
 
 	//もしスキルが使用中ならスキルの移動処理を無くす
 	if (SkillState == true)
@@ -376,7 +409,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 	}
 
 	//自身のHPが0以下なら
-	if (m_Status.Hp <= 0) {
+	if (m_status.GetHp() <= 0) {
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_charState = enCharState_Death;
@@ -403,7 +436,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//プレイヤーとの距離によって音量調整
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 
-		m_Status.Hp = 0;
+		m_status.SetHp(0);
 		//攻撃された相手が中立の敵以外なら
 		if (CharGivePoints != nullptr)
 		{
@@ -427,6 +460,8 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		se->Play(false);
 		//プレイヤーとの距離によって音量調整
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
+		//無敵時間フラグ
+		//invincibleFlag = true;
 	}
 }
 
@@ -472,7 +507,7 @@ void KnightBase::Death()
 	//レベルを１下げる
 	levelDown(Lv,1);
 	//HPを最大にする
-	m_Status.Hp = m_Status.MaxHp;
+	m_status.SetHp(m_status.GetMaxHp());
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//一つ下のレベルの経験値テーブルにする
@@ -570,7 +605,7 @@ void KnightBase::PlayAnimation()
 	case enCharState_UltimateSkill:
 		//ここ調整必要！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 		m_modelRender.SetAnimationSpeed(0.8f);
-		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1);
+		m_modelRender.PlayAnimation(enAnimationClip_UltimateSkill,0.1f);
 		break;
 	//回避
 	case enCharState_Avoidance:

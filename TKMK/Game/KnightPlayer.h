@@ -9,6 +9,7 @@ class KnightUlt;
 class GameUI;
 class GameCamera;
 class WizardUlt;
+class EnemyHpBar;
 
 class KnightPlayer:public KnightBase
 {
@@ -42,6 +43,31 @@ public:
 
 	void SetAndPlaySoundSource(EnSound soundNumber);
 
+	/// <summary>
+	/// プレイヤーの番号を設定する。
+	/// 最大2人プレイの予定のため0か1になるようにしている
+	/// </summary>
+	/// <param name="number"></param>
+	void SetPlayerNumber(int number)
+	{
+		if (number == 1)
+		{
+			m_playerNumber = number;
+		}
+		else
+		{
+			m_playerNumber = 0;
+		}
+	}
+	/// <summary>
+	/// プレイヤーの番号を取得する
+	/// </summary>
+	/// <returns>プレイヤーの番号</returns>
+	int GetPlayerNumber()
+	{
+		return m_playerNumber;
+	}
+
 private:
 	void CoolTimeProcess();
 	/// <summary>
@@ -51,12 +77,15 @@ private:
 
 	void IsLevelEffect(int oldlevel, int nowlevel);
 
+	/// <summary>
+	/// キャラクターの頭上のHPバー処理
+	/// </summary>
+	void CharacterUpperHpBar();
+
 private:
 	Game* m_game=nullptr;
-	//GameCamera* gameCamera = nullptr;
 	GameUI* m_gameUI = nullptr;
 	
-	//CollisionObject* collisionObject;                     //コリジョン
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
 	Vector3 UltPos = Vector3::Zero;
@@ -65,28 +94,21 @@ private:
 	Vector2 Avoidance_BarPos = Vector2::Zero;
 
 	float UltimateSkillTimer = 0;
-  
-	//bool AtkCollistionFlag = false;
 
 	bool UltimateSkillFlag = false;
 	FontRender Skillfont;
 	SpriteRender m_Avoidance_flameRender;
 	SpriteRender m_Avoidance_barRender;
-	SpriteRender m_AtkUpIcon_Render;
 
 	//スキルを使った時の移動速度
 	float SkillSpeed = 200.0f;
 	//回避を使った時の移動速度
 	float AvoidanceSpeed = 170.0f;
 
-	int dddd = 20;
+	int m_playerNumber = 0;	//プレイヤーの番号(ゲームパッドの番号などで使用)
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 
-	//タワーの画像出すかどうか
-	bool TowerSpriteFlag = false;
-	//攻撃の画像を出すかどうか
-	bool AttackSpriteFlag = false;
-
+	std::array<EnemyHpBar*, enPlayerNumber_Num - 1>	m_enemyHpBar = { nullptr,nullptr,nullptr};		//敵の上部に描画されるHPバー
 };
 

@@ -37,7 +37,6 @@ public:
 		enGameState_BetweenGameAndPause,
 		enGameState_Num,
 	};
-	
 
 	EnEFK m_EnEffect = enEffect_Num;
 
@@ -217,17 +216,17 @@ public:
 	/// <returns></returns>
 	int CountDownMinutes() const
 	{
-		return m_StartToGameTimer;
+		return (int)m_StartToGameTimer;
 	}
 
 	float GetSecondsTimer() const
 	{
-		return SecondsTimer;
+		return m_secondsTimer;
 	}
 
 	float GetMinutesTimer() const
 	{
-		return MinutesTimer;
+		return m_minutesTimer;
 	}
 
 	void SetUltCanUseTimer(float timer)
@@ -373,6 +372,11 @@ public:
 	int GetNowRank(Actor* actor);
 
 private:
+	void InitSoloPlay();
+	void InitDuoPlay();
+
+	void SetKnightPlayerActor();
+
 	/// <summary>
 	/// 中立の敵の名前を設定する
 	/// </summary>
@@ -419,7 +423,7 @@ private:
 	}
 
 	
-
+private:
 	//ゲームのステート
 	EnGameState m_GameState = enGameState_Start;
 
@@ -447,17 +451,15 @@ private:
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
-	GameCamera* m_gamecamera = nullptr;
+	GameCamera* m_gamecamera[MAX_VIEWPORT] = { nullptr,nullptr };
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
-	KnightAI* m_KnightAI = nullptr;
-	KnightAI* m_KnightAI1 = nullptr;
-	KnightAI* m_KnightAI2 = nullptr;
+	std::array<KnightAI*,3> m_KnightAI = { nullptr,nullptr,nullptr};
 	Neutral_Enemy* neutral_Enemy = nullptr;
 	Map* m_Map = nullptr;
 	SoundSource* m_bgm = nullptr;	
 	WizardPlayer* wizardPlayer = nullptr;
-	Player* player = nullptr;
+	std::array<Player*,4> player = {nullptr,nullptr,nullptr,nullptr };
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
 	Fade* fade = nullptr;
@@ -490,9 +492,9 @@ private:
 	bool EnemyRespawnFlag[10];
 
 	//秒を計るタイマー
-	float SecondsTimer = 0.0f;
+	float m_secondsTimer = 0.0f;
 	//分を計るタイマー5
-	float MinutesTimer = 3.0f;
+	float m_minutesTimer = 3.0f;
 
 	//制限時間に達したかの判定
 	bool GameEndFlag = false;

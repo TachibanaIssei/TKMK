@@ -1,137 +1,350 @@
 #include "k2EngineLowPreCompile.h"
 #include "RenderingEngine.h"
 
-namespace nsK2EngineLow {
-	namespace
+namespace {
+	const UINT FRAME_BUFFER_WIDTH_HALF = FRAME_BUFFER_W / 2;	//画面分割用のビューポートで使用する横幅
+}
+
+void nsK2EngineLow::RenderingEngine::Init()
+{
+	InitViewPorts();
+	InitRenderTargets();
+	m_shadow.Init();
+	m_postEffect.Init(m_mainRenderTarget);
+	InitCopyToFrameBufferSprite();
+
+	m_sceneLight[enCameraDrawing_Left].Init();
+	m_sceneLight[enCameraDrawing_Right].Init();
+}
+
+void nsK2EngineLow::RenderingEngine::InitRenderTargets()
+{
+	//メインレンダリングターゲット
+	m_mainRenderTarget.Create(
+		FRAME_BUFFER_W,
+		FRAME_BUFFER_H,
+		1,
+		1,
+		DXGI_FORMAT_R32G32B32A32_FLOAT,
+		DXGI_FORMAT_D32_FLOAT
+	);
+
+	float clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+
+	m_2DRenderTarget.Create(
+		UI_SPACE_WIDTH,
+		UI_SPACE_HEIGHT,
+		1,
+		1,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_FORMAT_UNKNOWN,
+		clearColor
+	);
+
+	//m_2DSpriteの初期化
+	SpriteInitData spriteInitData;
+	//テクスチャは2Dレンダ―ターゲット
+	spriteInitData.m_textures[0] = &m_2DRenderTarget.GetRenderTargetTexture();
+	// 解像度はmainRenderTargetの幅と高さ
+	spriteInitData.m_width = m_mainRenderTarget.GetWidth();
+	spriteInitData.m_height = m_mainRenderTarget.GetHeight();
+	spriteInitData.m_fxFilePath = "Assets/shader/sprite.fx";
+	spriteInitData.m_vsEntryPointFunc = "VSMain";
+	spriteInitData.m_psEntryPoinFunc = "PSMain";
+	spriteInitData.m_alphaBlendMode = AlphaBlendMode_None;
+	//レンダリングターゲットのフォーマット
+	spriteInitData.m_colorBufferFormat[0] = m_mainRenderTarget.GetColorBufferFormat();
+	m_2DSprite.Init(spriteInitData);
+
+	//m_mainSpriteの初期化
+	//テクスチャはメインレンダ―ターゲット
+	spriteInitData.m_textures[0] = &m_mainRenderTarget.GetRenderTargetTexture();
+	//解像度は2Dレンダ―ターゲットの幅と高さ
+	spriteInitData.m_width = m_2DRenderTarget.GetWidth();
+	spriteInitData.m_height = m_2DRenderTarget.GetHeight();
+	//レンダリングターゲットのフォーマット
+	spriteInitData.m_colorBufferFormat[0] = m_2DRenderTarget.GetColorBufferFormat();
+	m_mainSprite.Init(spriteInitData);
+}
+
+void nsK2EngineLow::RenderingEngine::InitCopyToFrameBufferSprite()
+{
+	SpriteInitData spriteInitData;
+
+	//メインレンダリングターゲットのテクスチャ
+	spriteInitData.m_textures[0] = &m_mainRenderTarget.GetRenderTargetTexture();
+	spriteInitData.m_width = m_mainRenderTarget.GetWidth();
+	spriteInitData.m_height = m_mainRenderTarget.GetHeight();
+
+	spriteInitData.m_fxFilePath = "Assets/shader/sprite.fx";
+
+	m_copyToFrameBufferSprite.Init(spriteInitData);
+}
+
+void nsK2EngineLow::RenderingEngine::EffectBeginRender()
+{
+	if (m_gameMode == enGameMode_DuoPlay)
 	{
-		const int MAX_MODEL = 60;
-		const int MAX_SPRITE = 100;
-		const int MAX_FONT = 30;
+		EffectEngine::GetInstance()->BeginFrame(0);
+		EffectEngine::GetInstance()->BeginFrame(1);
 	}
-
-	RenderingEngine::RenderingEngine()
-	{
-		m_modelList.reserve(MAX_MODEL);
-		m_spriteList.reserve(MAX_SPRITE);
-		m_laterSpriteList.reserve(MAX_SPRITE);
-		m_fontList.reserve(MAX_FONT);
+	else {
+		EffectEngine::GetInstance()->BeginFrame(0);
 	}
+}
 
-	RenderingEngine::~RenderingEngine()
+void nsK2EngineLow::RenderingEngine::InitViewPorts()
+{
+	m_soloViewPort.Width = FRAME_BUFFER_W;		//画面の横サイズ
+	m_soloViewPort.Height = FRAME_BUFFER_H;		//画面の縦サイズ
+	m_soloViewPort.TopLeftX = 0;				//画面左上のx座標
+	m_soloViewPort.TopLeftY = 0;				//画面左上のy座標
+	m_soloViewPort.MinDepth = 0.0f;				//深度値の最小値
+	m_soloViewPort.MaxDepth = 1.0f;				//深度値の最大値
+
+	//左の画面
+	m_viewPorts[enCameraDrawing_Left].Width = FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
+	m_viewPorts[enCameraDrawing_Left].Height = FRAME_BUFFER_H;			//画面の縦サイズ
+	m_viewPorts[enCameraDrawing_Left].TopLeftX = 0;						//画面左上のx座標
+	m_viewPorts[enCameraDrawing_Left].TopLeftY = 0;						//画面左上のy座標
+	m_viewPorts[enCameraDrawing_Left].MinDepth = 0.0f;						//深度値の最小値
+	m_viewPorts[enCameraDrawing_Left].MaxDepth = 1.0f;						//深度値の最大値
+
+	//右の画面
+	m_viewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
+	m_viewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;			//画面の縦サイズ
+	m_viewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF;	//画面左上のx座標
+	m_viewPorts[enCameraDrawing_Right].TopLeftY = 0;						//画面左上のy座標
+	m_viewPorts[enCameraDrawing_Right].MinDepth = 0.0f;						//深度値の最小値
+	m_viewPorts[enCameraDrawing_Right].MaxDepth = 1.0f;						//深度値の最大値
+}
+
+void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
+{
+	//画面分割をする
+	if (m_gameMode == enGameMode_DuoPlay)
 	{
-	}
-
-	void RenderingEngine::Init()
-	{
-		InitRenderTargets();
-		m_shadow.Init();
-		m_postEffect.Init(m_mainRenderTarget);
-		InitCopyToFrameBufferSprite();
-
-		m_sceneLight.Init();
-	}
-
-	void RenderingEngine::InitRenderTargets()
-	{
-		//���C�������_�����O�^�[�Q�b�g
-		m_mainRenderTarget.Create(
-			FRAME_BUFFER_W,
-			FRAME_BUFFER_H,
-			1,
-			1,
-			DXGI_FORMAT_R32G32B32A32_FLOAT,
-			DXGI_FORMAT_D32_FLOAT
-		);
-	}
-
-	void RenderingEngine::InitCopyToFrameBufferSprite()
-	{
-		SpriteInitData spriteInitData;
-
-		//�e�N�X�`����mainRenderTarget�̃J���[�o�b�t�@
-		spriteInitData.m_textures[0] = &m_mainRenderTarget.GetRenderTargetTexture();
-		spriteInitData.m_width = m_mainRenderTarget.GetWidth();
-		spriteInitData.m_height = m_mainRenderTarget.GetHeight();
-
-		spriteInitData.m_fxFilePath = "Assets/shader/sprite.fx";
-
-		//�X�v���C�g��������
-		m_copyToFrameBufferSprite.Init(spriteInitData);
-	}
-
-	void RenderingEngine::ModelRendering(RenderContext& rc)
-	{
-		for (auto& modelObj : m_modelList) {
-			modelObj->OnRenderModel(rc);
-		}
-	}
-
-	void RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera)
-	{
-		for (auto& modelObj : m_modelList) {
-			modelObj->OnRenderShadowModel(rc, camera);
-		}
-	}
-
-	void RenderingEngine::SpriteRendering(RenderContext& rc, const bool drawTiming = false)
-	{
-		if (drawTiming) {
-			for (auto& spriteObj : m_laterSpriteList)
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			if (i == enCameraDrawing_Left)
 			{
-				spriteObj->OnRenderSprite(rc);
+				m_cameraDrawing = enCameraDrawing_Left;
 			}
-		}
-		else {
-			for (auto& spriteObj : m_spriteList)
+			else if (i == enCameraDrawing_Right)
 			{
-				spriteObj->OnRenderSprite(rc);
+				m_cameraDrawing = enCameraDrawing_Right;
 			}
+
+			rc.SetViewport(m_viewPorts[i]);
+			//モデル描画
+			ModelRendering(rc);
+			//敵のHPバーなどの画像と文字を描画
+			SpriteViewportRendering(rc, i);
+			FontViewportRendering(rc, i);
 		}
 	}
+	//画面分割をしない
+	else
+	{
+		rc.SetViewport(m_soloViewPort);
+		m_cameraDrawing = enCameraDrawing_Solo;
+		ModelRendering(rc);
+	}
+}
 
-	void RenderingEngine::FontRendering(RenderContext& rc)
+void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
+{
+	for (auto& modelObj : m_modelList) {
+		modelObj->OnRenderModel(rc);
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera, int number)
+{
+	for (auto& modelObj : m_modelList) {
+		modelObj->OnRenderShadowModel(rc, camera, number);
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::SpriteRendering(RenderContext& rc, const bool drawTiming)
+{
+	if (drawTiming) {
+		for (auto& spriteObj : m_laterSpriteList)
+		{
+			spriteObj->OnRenderSprite(rc);
+		}
+	}
+	else {
+		for (auto& spriteObj : m_spriteList)
+		{
+			spriteObj->OnRenderSprite(rc);
+		}
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::SpriteViewportRendering(RenderContext& rc, const int viewportNo)
+{
+	for (auto& spriteObj : m_spriteDrawViewportList[viewportNo])
+	{
+		spriteObj->OnRenderSprite(rc);
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::SpriteFrontRendering(RenderContext& rc)
+{
+	for (auto& spriteObj : m_spriteFrontDrawList)
+	{
+		spriteObj->OnRenderSprite(rc);
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::FontRendering(RenderContext& rc, const bool drawTiming)
+{
+	if (drawTiming)
+	{
+		for (auto& fontObj : m_laterFontList)
+		{
+			fontObj->OnRenderFont(rc);
+		}
+	}
+	else
 	{
 		for (auto& fontObj : m_fontList)
 		{
 			fontObj->OnRenderFont(rc);
 		}
 	}
+}
 
-	void RenderingEngine::Execute(RenderContext& rc)
+void nsK2EngineLow::RenderingEngine::FontViewportRendering(RenderContext& rc, const int viewportNo)
+{
+	for (auto& fontObj : m_fontDrawViewportList[viewportNo])
 	{
-		SetEyePos(g_camera3D->GetPosition());
-
-		m_shadow.Render(rc);
-
-		//���C�������_�����O�^�[�Q�b�g�ɕύX
-		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
-		rc.SetRenderTargetAndViewport(m_mainRenderTarget);
-		rc.ClearRenderTargetView(m_mainRenderTarget);
-
-		//���f����`��
-		ModelRendering(rc);
-
-		//�����_�����O�^�[�Q�b�g�ւ̏������ݏI���҂�
-		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
-
-		m_postEffect.Render(rc, m_mainRenderTarget);
-
-		rc.SetRenderTarget(
-			g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
-			g_graphicsEngine->GetCurrentFrameBuffuerDSV()
-		);
-		m_copyToFrameBufferSprite.Draw(rc);
-
-		//�X�v���C�g��`��
-		SpriteRendering(rc);
-		//������`��
-		FontRendering(rc);
-		//�X�v���C�g�𕶎��̏�ɕ`�悷��
-		SpriteRendering(rc, true);
-
-		m_modelList.clear();
-		m_spriteList.clear();
-		m_laterSpriteList.clear();
-		m_fontList.clear();
+		fontObj->OnRenderFont(rc);
 	}
+}
+
+void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
+{
+	if (m_gameMode == enGameMode_DuoPlay) {
+		g_camera2D->SetWidth(FRAME_BUFFER_WIDTH_HALF);
+		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Left);
+		//左画面
+		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Left);
+			rc.SetViewport(m_viewPorts[enCameraDrawing_Left]);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
+		}
+		//右画面
+		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Right);
+			rc.SetViewport(m_viewPorts[enCameraDrawing_Right]);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
+		}
+		EffectEngine::GetInstance()->Flush();
+		//1画面のスプライトのアスペクト比に合わせる。
+		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
+		//ビューポートを画面全体用に切り替える
+		rc.SetViewportAndScissor(m_soloViewPort);
+
+	}
+	//1画面
+	else {
+		//1画面のスプライトのアスペクト比に合わせる。
+		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
+
+		rc.SetViewport(m_soloViewPort);
+
+		//1画面オンリーのエフェクト更新
+		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Solo);
+		//1画面オンリーのエフェクト描画
+		EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Solo);
+		EffectEngine::GetInstance()->Draw();
+		EffectEngine::GetInstance()->EndDraw();
+		EffectEngine::GetInstance()->Flush();
+	}
+
+}
+
+void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)
+{
+	BeginGPUEvent("Render2D");
+
+	rc.WaitUntilToPossibleSetRenderTarget(m_2DRenderTarget);
+	rc.SetRenderTargetAndViewport(m_2DRenderTarget);
+	rc.ClearRenderTargetView(m_2DRenderTarget);
+
+	//メインレンダーターゲットのカラーバッファを描画する
+	m_mainSprite.Draw(rc);
+
+	//画像の描画
+	SpriteRendering(rc);
+	//文字の描画
+	FontRendering(rc);
+	//文字の上に画像を描画
+	SpriteRendering(rc, true);
+	SpriteFrontRendering(rc);
+	FontRendering(rc,true);
+
+	rc.WaitUntilFinishDrawingToRenderTarget(m_2DRenderTarget);
+
+	//レンダリングターゲットをメインレンダリングターゲットへ変更する
+	rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
+	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
+
+	//メインレンダーターゲットに2D描画後のスプライトを描画する
+	m_2DSprite.Draw(rc);
+
+	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+
+	EndGPUEvent();
+}
+
+void nsK2EngineLow::RenderingEngine::ClearVectorList()
+{
+	m_modelList.clear();
+	m_spriteList.clear();
+	m_laterSpriteList.clear();
+	m_fontList.clear();
+	m_laterFontList.clear();
+	m_spriteFrontDrawList.clear();
+
+	for (int i = 0; i < MAX_VIEWPORT; i++)
+	{
+		m_spriteDrawViewportList[i].clear();
+		m_fontDrawViewportList[i].clear();
+	}
+}
+
+void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
+{
+	SetEyePos(g_camera3D[enCameraDrawing_Left]->GetPosition(), g_camera3D[enCameraDrawing_Right]->GetPosition());
+
+	m_shadow.Render(rc);
+
+	//レンダリングターゲットを変更
+	rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
+	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
+	rc.ClearRenderTargetView(m_mainRenderTarget);
+
+	DrawModelInViewPorts(rc);
+
+	//書き込み終了待ち
+	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+
+	m_postEffect.Render(rc, m_mainRenderTarget);
+
+	ExcuteEffectRender(rc);
+
+	Render2D(rc);
+
+	rc.SetRenderTarget(
+		g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
+		g_graphicsEngine->GetCurrentFrameBuffuerDSV()
+	);
+	m_copyToFrameBufferSprite.Draw(rc);
+
+	ClearVectorList();
 }

@@ -48,15 +48,15 @@ void Status::LoadCSV(const std::string& name) {
 		statusData.name = buf;
 		//HP‚ğ“Ç‚İ‚ŞB
 		getline(i_stream, buf, ',');
-		statusData.MaxHp = stoi(buf);
+		statusData.m_maxHp = stoi(buf);
 		//Attack‚ğ“Ç‚İ‚ŞB
 		getline(i_stream, buf, ',');
-		statusData.Atk = stoi(buf);
+		statusData.m_attackPower = stoi(buf);
 		//Speed‚ğ“Ç‚İ‚ŞB
 		getline(i_stream, buf, ',');
-		statusData.Speed = stoi(buf);
+		statusData.m_speed = stof(buf);
 
-		statusData.Hp = statusData.MaxHp;
+		statusData.m_hp = statusData.m_maxHp;
 
 		StatusDataMAP[statusData.name] = statusData;
 

@@ -2,6 +2,10 @@
 
 #include "EffectEngine.h"
 
+namespace {
+	const int BACK_BUFFER_COUNT = 2;	//バックバッファの数
+}
+
 namespace nsK2EngineLow {
 	EffectEngine* EffectEngine::m_instance = nullptr;	//唯一のインスタンス。
 
@@ -15,6 +19,7 @@ namespace nsK2EngineLow {
 		auto format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		auto d3dDevice = g_graphicsEngine->GetD3DDevice();
 		auto commandQueue = g_graphicsEngine->GetCommandQueue();
+
 		for (int i = 0; i < 2; i++) {
 			// レンダラーを作成。
 			m_renderer[i] = ::EffekseerRendererDX12::Create(
@@ -34,8 +39,6 @@ namespace nsK2EngineLow {
 		}
 		// エフェクトマネージャーの作成。
 		m_manager = ::Effekseer::Manager::Create(8000);
-
-		
 		m_manager->SetCurveLoader(Effekseer::MakeRefPtr<Effekseer::CurveLoader>());
 	}
 	Effekseer::EffectRef EffectEngine::LoadEffect(const int number)
@@ -59,7 +62,8 @@ namespace nsK2EngineLow {
 	}
 	int EffectEngine::Play(Effekseer::EffectRef effect)
 	{
-		return m_manager->Play(effect, 0, 0, 0);
+		auto handle = m_manager->Play(effect, 0, 0, 0);
+		return handle;
 	}
 	void EffectEngine::Stop(int effectHandle)
 	{
@@ -67,7 +71,7 @@ namespace nsK2EngineLow {
 	}
 
 
-	void EffectEngine::Update(float deltaTime)
+	void EffectEngine::Update(float deltaTime, int cameraNumber)
 	{
 		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
 		// Begin a command list
@@ -78,14 +82,14 @@ namespace nsK2EngineLow {
 		m_manager->Update();
 
 		//レンダラーにカメラ行列を設定。
-		m_renderer[backBufferNo]->SetCameraMatrix(*(const Effekseer::Matrix44*)&g_camera3D->GetViewMatrix());
+		m_renderer[backBufferNo]->SetCameraMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetViewMatrix());
 		//レンダラーにプロジェクション行列を設定。
-		m_renderer[backBufferNo]->SetProjectionMatrix(*(const Effekseer::Matrix44*)&g_camera3D->GetProjectionMatrix());
+		m_renderer[backBufferNo]->SetProjectionMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetProjectionMatrix());
 
 		m_renderer[backBufferNo]->SetTime(deltaTime);
 	}
 
-	void EffectEngine::BeginFrame()
+	void EffectEngine::BeginFrame(int cameraNumber)
 	{
 		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
 		m_memoryPool[backBufferNo]->NewFrame();
@@ -101,25 +105,48 @@ namespace nsK2EngineLow {
 		m_manager->SetModelLoader(m_renderer[backBufferNo]->CreateModelLoader());
 		m_manager->SetMaterialLoader(m_renderer[backBufferNo]->CreateMaterialLoader());
 	}
-	void EffectEngine::Draw()
+	void EffectEngine::BeginDraw(int cameraNumber)
 	{
 		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
 		// Begin to rendering effects
 		// エフェクトの描画開始処理を行う。
+		// m_renderer[cameraNumber][backBufferNo]->BeginRendering();
+		m_renderer[backBufferNo]->SetCameraMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetViewMatrix());
+		//レンダラーにプロジェクション行列を設定。
+		m_renderer[backBufferNo]->SetProjectionMatrix(*(const Effekseer::Matrix44*)&g_camera3D[cameraNumber]->GetProjectionMatrix());
+		// Begin to rendering effects
+		// エフェクトの描画開始処理を行う。
 		m_renderer[backBufferNo]->BeginRendering();
+
+	}
+	void EffectEngine::EndDraw()
+	{
+		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
+		// Finish to rendering effects
+		// エフェクトの描画終了処理を行う。
+		m_renderer[backBufferNo]->EndRendering();
+
+	}
+	void EffectEngine::Flush()
+	{
+		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
+		// Finish a command list
+		// コマンドリストを終了する。
+		m_renderer[backBufferNo]->SetCommandList(nullptr);
+
+		// Begin to rendering effects
+		EffekseerRendererDX12::EndCommandList(m_commandList[backBufferNo]);
+	}
+	void EffectEngine::Draw()
+	{
+		int backBufferNo = g_graphicsEngine->GetBackBufferIndex();
 
 		// Render effects
 		// エフェクトの描画を行う。
 		m_manager->Draw();
 
-		// Finish to rendering effects
-		// エフェクトの描画終了処理を行う。
-		m_renderer[backBufferNo]->EndRendering();
 
-		// Finish a command list
-		// コマンドリストを終了する。
-		m_renderer[backBufferNo]->SetCommandList(nullptr);
-		EffekseerRendererDX12::EndCommandList(m_commandList[backBufferNo]);
+		// EffekseerRendererDX12::EndCommandList(m_commandList[cameraNumber][backBufferNo]);
 	}
 
 	void EffectEngine::ResistEffect(const int number, const char16_t* filePath)

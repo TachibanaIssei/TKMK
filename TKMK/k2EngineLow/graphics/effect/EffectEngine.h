@@ -104,7 +104,10 @@ namespace nsK2EngineLow {
 		/// 更新
 		/// </summary>
 		/// <param name="deltaTime">1フレームの経過時間。</param>
-		void Update(float deltaTime);
+		void Update(float deltaTime, int cameraNumber);
+		void BeginDraw(int cameraNumber);
+		void EndDraw();
+		void Flush();
 		/// <summary>
 		/// 描画。
 		/// </summary>
@@ -118,7 +121,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// フレームの開始時に呼び出す必要がある処理。
 		/// </summary>
-		void BeginFrame();
+		void BeginFrame(int cameraNumber);
 	private:
 		EffectEngine();
 		~EffectEngine();

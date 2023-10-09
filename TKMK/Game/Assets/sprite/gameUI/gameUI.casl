@@ -1,4 +1,4 @@
-40
+41
 5,timer,41,../../Game/Assets/sprite/gameUI/timer.png,0.0,478.0,372,120,10,0.3384615384615383,0.3020104895104895,0.5,0.5,9,timer.dds
 13,HPBar_HP_back,49,../../Game/Assets/sprite/gameUI/HPBar_HP_back.png,-660.0,-477.0,600,120,10,1.0,1.0,0.5,0.5,17,HPBar_HP_back.dds
 8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,857.0,-429.0,1103,500,10,0.9193589743589745,1.0,0.5,0.5,12,LevelBar.dds
@@ -39,3 +39,4 @@
 12,ULT_Icon_OUT,48,../../Game/Assets/sprite/gameUI/ULT_Icon_OUT.png,613.4615384615386,407.6923076923077,262,262,10,0.24349376114081991,0.24349376114081991,0.5,0.5,16,ULT_Icon_OUT.dds
 11,ULT_Icon_IN,47,../../Game/Assets/sprite/gameUI/ULT_Icon_IN.png,621.1538461538462,392.30769230769226,338,338,10,0.31301247771836005,0.31301247771836005,0.5,0.5,15,ULT_Icon_IN.dds
 14,Ult_Thunder_IN,50,../../Game/Assets/sprite/gameUI/Ult_Thunder_IN.png,15.384615384615472,371.15384615384613,401,401,10,0.3718360071301247,0.3718360071301247,0.5,0.5,18,Ult_Thunder_IN.dds
+10,LevelBar2P,46,../../Game/Assets/sprite/gameUI/LevelBar2P.png,-298.076923076923,-298.076923076923,1200,500,10,1.0,1.0,0.5,0.5,14,LevelBar2P.dds

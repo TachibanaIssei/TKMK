@@ -8,7 +8,15 @@ namespace nsK2EngineLow {
 	void Camera::Update()
 	{
 		//アスペクト比を計算する。
-		m_aspect = (float)g_graphicsEngine->GetFrameBufferWidth() / (float)g_graphicsEngine->GetFrameBufferHeight();
+		//画面分割してるとき
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay) {
+			m_aspect = (float)g_graphicsEngine->GetFrameBufferWidth() / 2 / (float)g_graphicsEngine->GetFrameBufferHeight();
+		}
+		//画面分割してないとき
+		else {
+			m_aspect = (float)g_graphicsEngine->GetFrameBufferWidth() / (float)g_graphicsEngine->GetFrameBufferHeight();
+		}
+
 		if (m_isNeedUpdateProjectionMatrix) {
 			if (m_updateProjMatrixFunc == enUpdateProjMatrixFunc_Perspective) {
 				//透視変換行列を計算。
@@ -54,6 +62,31 @@ namespace nsK2EngineLow {
 	{
 		float half_w = (float)g_graphicsEngine->GetFrameBufferWidth() * 0.5f;
 		float half_h = (float)g_graphicsEngine->GetFrameBufferHeight() * 0.5f;
+
+		Vector4 _screenPos;
+		_screenPos.Set(worldPos.x, worldPos.y, worldPos.z, 1.0f);
+		m_viewProjectionMatrix.Apply(_screenPos);
+		screenPos.x = (_screenPos.x / _screenPos.w) * half_w;
+		screenPos.y = (_screenPos.y / _screenPos.w) * half_h;
+	}
+	void Camera::CalcScreenPositionFromWorldPositionMultiPlay(Vector2& screenPos, const Vector3& worldPos) const
+	{
+		float half_w = (float)g_graphicsEngine->GetFrameBufferWidth() * 0.5f;
+		float half_h = (float)g_graphicsEngine->GetFrameBufferHeight() * 0.5f;
+
+		//2人プレイのときは横幅を更に半分にする
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+		{
+			half_w *= 0.5f;
+		}
+		//3人と4人のプレイのときは縦幅と横幅を更に半分にする
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
+			g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			half_w *= 0.5f;
+			half_h *= 0.5f;
+		}
+
 		Vector4 _screenPos;
 		_screenPos.Set(worldPos.x, worldPos.y, worldPos.z, 1.0f);
 		m_viewProjectionMatrix.Apply(_screenPos);

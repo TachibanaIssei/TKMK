@@ -84,12 +84,6 @@ public:
 	Vector3 CharSetForward()const;
 
 	/// <summary>
-	/// キャラのスプライトフラグを返す
-	/// </summary>
-	/// <returns>選択されたキャラのスプライトフラグを返す関数</returns>
-	bool CharSetSpriteFlag()const;
-
-	/// <summary>
 	/// プレイヤーのポイントを返す
 	/// </summary>
 	/// <returns>プレイヤーの現在のポイント</returns>

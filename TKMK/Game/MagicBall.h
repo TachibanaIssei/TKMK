@@ -59,16 +59,16 @@ public:
 	/// <param name="status">魔法使いの攻撃力</param>
 	void GetWizardAttack(Status status)
 	{
-		m_Status.Atk = status.Atk;
+		m_status.SetAttackPower(status.GetAttackPower());
 	}
 
 	/// <summary>
 	/// 魔法使いの攻撃力を返す
 	/// </summary>
 	/// <returns>魔法使いの攻撃力</returns>
-	int SetWizardAttack()const
+	const int GetWizardAttack()const
 	{
-		return m_Status.Atk;
+		return m_status.GetAttackPower();
 	}
 
 	/// <summary>
@@ -97,7 +97,7 @@ public:
 	}
 
 private:
-	Status m_Status;
+	Status m_status;
 
 	Vector3 m_position = Vector3::Zero;
 	Quaternion m_rotation;

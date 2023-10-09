@@ -38,6 +38,16 @@ public:
 		enCharState_Num,
 	};
 
+	enum EnPlayerNumber
+	{
+		enPlayerNumber_1P,
+		enPlayerNumber_2P,
+		enPlayerNumber_3P,
+		enPlayerNumber_4P,
+		enPlayerNumber_Num,
+		enPlayerNumber_AI
+	};
+
 	// 必殺技の終了
 	void UltSkillEnd() {
 		m_charState = enCharState_Idle;
@@ -52,7 +62,7 @@ protected:
 	//void AttackUP();
 
 	/*void AttackUPEnd() {
-		m_Status.Atk -= PowerUp;
+		m_status.m_attackPower -= PowerUp;
 
 		if (PowerUpEfk != nullptr)
 		{
@@ -118,7 +128,8 @@ public:
 	/// <param name="charcon">キャラコン</param>
 	/// <param name="status">キャラのステータス</param>
 	/// <param name="stickL">移動の入力量</param>
-	void Move(Vector3& position,CharacterController& charcon, Status& status,Vector3 stickL);
+	/// <param name="number">プレイヤーの番号</param>
+	void Move(Vector3& position,CharacterController& charcon, Status& status,Vector3 stickL,int number);
 
 	/// <summary>
 	/// 移動処理したくないアニメーションのステートを書く
@@ -156,10 +167,11 @@ public:
 	/// <param name="SkillCooltimer">クールタイム</param>
 	/// <param name="skillstate">スキルや回避が終わったかの判定</param>
 	/// <param name="timer">クールタイムを計算する変数</param>
-	void COOlTIME(float Cooltime, bool& skillEndFlag, float& timer);
+	void CoolTime(float Cooltime, bool& skillEndFlag, float& timer);
 	
 	/// <summary>
 	/// 現在のレベルを返す
+	/// </summary>
 	/// <returns></returns>
 	inline int& GetLevel() { return Lv; }
 
@@ -280,16 +292,7 @@ public:
 		return m_forwardNow;
 	}
 
-	/// <summary>
-	/// m_spriteFlagを返す
-	/// </summary>
-	/// <returns>判定</returns>
-	const bool GetSpriteFlag() const
-	{
-		return m_spriteFlag;
-	}
-
-	Quaternion& GetRot()
+	Quaternion& GetRotation()
 	{
 		return m_rot;
 	}
@@ -298,7 +301,7 @@ public:
 	/// </summary>
 	int GetAtk() const
 	{
-		return m_Status.Atk;
+		return m_status.GetAttackPower();
 	}
 
 	/// <summary>
@@ -306,7 +309,7 @@ public:
 	/// </summary>
 	int GetHP() const
 	{
-		return m_Status.Hp;
+		return m_status.GetHp();
 	}
 
 	/// <summary>
@@ -315,7 +318,9 @@ public:
 	/// <param name="HpUp">HPの回復量</param>
 	void HpUp(int HpUp)
 	{
-		m_Status.Hp += HpUp;
+		int hp = m_status.GetHp();
+		hp += HpUp;
+		m_status.SetHp(hp);
 		// エフェクトがあるなら消す
 		if (GetHoimi != nullptr) {
 			GetHoimi->DeleteEffect();
@@ -324,9 +329,9 @@ public:
 		GetHoimi = NewGO<ChaseEFK>(3);
 		GetHoimi->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
-		if (m_Status.Hp > m_Status.MaxHp)
+		if (m_status.GetHp() > m_status.GetMaxHp())
 		{
-			m_Status.Hp = m_Status.MaxHp;
+			m_status.SetHp(GetMaxHp());
 		}
 	}
 
@@ -336,13 +341,13 @@ public:
 	/// /// <param name="HpReset">MaxHpの値を入れる</param>	
 	void HpReset(int HpReset)
 	{
-		m_Status.Hp = HpReset;
+		m_status.SetHp(HpReset);
 	}
 
 	//MaxHpを渡す
-	int GetMaxHp()const { return m_Status.MaxHp; };
+	int GetMaxHp()const { return m_status.GetMaxHp(); };
 	//今のHpを渡す
-	int GetHp()const { return m_Status.Hp; };
+	int GetHp()const { return m_status.GetHp(); };
 
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
@@ -372,7 +377,7 @@ public:
 	/// </summary>
 	Status& GetStatus()
 	{
-		return m_Status;
+		return m_status;
 	}
 
 	/// <summary>
@@ -451,8 +456,8 @@ public:
 	/// </summary>
 	void ForwardSet()
 	{
-		Vector3 center = Vector3::One;
-		Vector3 biff = center - m_position;
+		Vector3 m_center = Vector3::One;
+		Vector3 biff = m_center - m_position;
 		biff.y = 0.0f;
 		biff *= -1.0f;
 		m_Forward = biff;
@@ -604,7 +609,9 @@ public:
 			DamegeUltActor.end(),   // アクターのリストの最後
 			targetActor                     // 消したいアクター
 		);
-		DamegeUltActor.erase(it);
+		if (*it != nullptr) {
+			DamegeUltActor.erase(it);
+		}
 	}
 
 	void  DamegeUltActorClear() {
@@ -639,7 +646,7 @@ private:
 
 
 protected:
-	int									Lv;								//レベル
+	int									Lv = 1;								//レベル
 	int									AtkSpeed;						//攻撃速度
 	float								Cooltime=0;						//スキルのクールタイム
 	float								AvoidanceCoolTime=0;			//回避のクールタイム
@@ -657,7 +664,8 @@ protected:
 	float								AvoidanceTimer = 0;				//回避のクールタイムを計算するタイマー
 	float								invincibleTimer = 0;			//無敵時間を計算するタイマー
 
-	//Status m_Status;           //ステータス
+	EnPlayerNumber m_enPlayerNumber = enPlayerNumber_AI;
+	//Status m_status;           //ステータス
 	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
 	Quaternion m_respawnRotation[4];
 	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
@@ -669,7 +677,7 @@ protected:
 	ModelRender m_modelRender;                            //モデルレンダー
 	Quaternion m_rot = Quaternion::Identity;              //回転
 	bool m_spriteFlag = true;
-	Status m_Status;                                      //ステータス
+	Status m_status;                                      //ステータス
 	Status m_InitialStatus;                                //初期ステータス
 	//レベルアップ時に増加するステータス
 	LvUpStatus LvUPStatus = { 30,5,5 };
@@ -704,7 +712,6 @@ protected:
 	float MaxVolume = 2.0f;
 	const float MinVolume = 0.0f;
 	Game* m_game = nullptr;
-	Player* m_player = nullptr;
 	Actor* m_targetActor = nullptr;
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
 	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）
@@ -713,7 +720,6 @@ protected:
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 	std::vector<Actor*> DamegeUltActor;             //必殺技で攻撃対象のアクター
 
-	/*ChaseEFK* PowerUpEfk = nullptr;*/
 	ChaseEFK* GetHoimi = nullptr;
 	ChaseEFK* LevelUp_efk = nullptr;
 	ChaseEFK* LevelDown_efk = nullptr;
@@ -723,7 +729,6 @@ protected:
 
 	float PowerUpTimer = 0.0f;
 	int PowerUp = 0;
-	bool m_atkUpSpriteFlag = false;
 
 	//自身を描画するかのフラグ trueのとき描画
 	bool DarwFlag = true;

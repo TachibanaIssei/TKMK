@@ -1,15 +1,21 @@
 #include "k2EngineLowPreCompile.h"
 #include "FontRender.h"
 
-nsK2EngineLow::FontRender::FontRender()
+void nsK2EngineLow::FontRender::Draw(RenderContext& rc, const bool drawTiming, const int viewportNo)
 {
-}
-
-nsK2EngineLow::FontRender::~FontRender()
-{
-}
-
-void nsK2EngineLow::FontRender::Draw(RenderContext& rc)
-{
-	g_renderingEngine->AddFontList(this);
+	if (viewportNo == -1)
+	{
+		if (drawTiming)
+		{
+			g_renderingEngine->AddFontList(this, drawTiming);
+		}
+		else
+		{
+			g_renderingEngine->AddFontList(this);
+		}
+	}
+	else
+	{
+		g_renderingEngine->AddFontDrawViewportList(this, viewportNo);
+	}
 }

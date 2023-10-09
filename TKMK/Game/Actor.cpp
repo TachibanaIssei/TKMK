@@ -10,17 +10,11 @@ Actor::Actor()
 
 Actor::~Actor()
 {
-	K2_LOG("Actor::~Actor\n");
-	/*if (PowerUpEfk != nullptr) {
-		PowerUpEfk->DeleteEffect();
-		DeleteGO(PowerUpEfk);
-	}*/
 }
 void Actor::OnDestroy() 
 {
-	K2_LOG("Actor::OnDestroy\n");
 }
-void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL)
+void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,Vector3 stickL, int number)
 {
 	//特定のアニメーションが再生中なら
 	if (IsEnableMove() == false)
@@ -33,15 +27,15 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	m_moveSpeed.z = 0.0f;
 
 	//カメラの前方向と右方向のベクトルを持ってくる。
-	Vector3 forward = g_camera3D->GetForward();
-	Vector3 right = g_camera3D->GetRight();
+	Vector3 forward = g_camera3D[number]->GetForward();
+	Vector3 right = g_camera3D[number]->GetRight();
 	//y方向には移動させない。
 	forward.y = 0.0f;
 	right.y = 0.0f;
 	forward.Normalize();
 	//移動の入力量とstatusのスピードを乗算。
-	right *= stickL.x * status.Speed;
-	forward *= stickL.y * status.Speed;
+	right *= stickL.x * status.GetSpeed();
+	forward *= stickL.y * status.GetSpeed();
 
 	//プレイヤーの前方向の情報を更新
 	//xかzの移動速度があったら
@@ -137,10 +131,15 @@ void Actor::LevelUp(int& Level)
 	return;
 	}
 
-	m_Status.MaxHp += LvUPStatus.LvHp;
-	m_Status.Hp += LvUPStatus.LvHp;
-	m_Status.Atk += LvUPStatus.LvAtk;
-	m_Status.Speed += LvUPStatus.LvSpeed;
+	int maxHp = m_status.GetMaxHp() + LvUPStatus.LvHp;
+	int hp = m_status.GetHp() + LvUPStatus.LvHp;
+	int attackPower = m_status.GetAttackPower() + LvUPStatus.LvAtk;
+	float speed = m_status.GetSpeed() + LvUPStatus.LvSpeed;
+
+	m_status.SetMaxHp(maxHp);
+	m_status.SetHp(hp);
+	m_status.SetAttackPower(attackPower);
+	m_status.SetSpeed(speed);
 	Level++;
 }
 
@@ -165,19 +164,19 @@ void Actor::levelDown(int& Level, int downLevel)
 			return;
 		}
 
-		m_Status.MaxHp-= LvUPStatus.LvHp;
+		int maxHp = m_status.GetMaxHp() - LvUPStatus.LvHp;
+		m_status.SetMaxHp(maxHp);
 		//もしHPがMaxHpを上回るなら
-		if (m_Status.Hp > m_Status.MaxHp)
+		if (m_status.GetHp() > m_status.GetMaxHp())
 		{
 			//HPとMaxHpを同じにする
-			m_Status.Hp = m_Status.MaxHp;
+			m_status.SetHp(m_status.GetMaxHp());
 		}
-
-		m_Status.Atk -= LvUPStatus.LvAtk;
-		m_Status.Speed -= LvUPStatus.LvSpeed;
-
+		int attackPower = m_status.GetAttackPower() - LvUPStatus.LvAtk;
+		int speed = m_status.GetSpeed() - LvUPStatus.LvSpeed;
+		m_status.SetAttackPower(attackPower);
+		m_status.SetSpeed(speed);
 		Level -= 1;
-	
 	}
 
 
@@ -189,16 +188,16 @@ void Actor::levelDown(int& Level, int downLevel)
 	//}
 	//
 
-	//m_Status.MaxHp-= downLevel* LvUPStatus.LvHp;
+	//m_status.m_maxHp-= downLevel* LvUPStatus.LvHp;
 	////もしHPがMaxHpを上回るなら
-	//if (m_Status.Hp > m_Status.MaxHp)
+	//if (m_status.m_hp > m_status.m_maxHp)
 	//{
 	//	//HPとMaxHpを同じにする
-	//	m_Status.Hp = m_Status.MaxHp;
+	//	m_status.m_hp = m_status.m_maxHp;
 	//}
 
-	//m_Status.Atk -= downLevel* LvUPStatus.LvAtk;
-	//m_Status.Speed -= downLevel* LvUPStatus.LvSpeed;
+	//m_status.m_attackPower -= downLevel* LvUPStatus.LvAtk;
+	//m_status.m_speed -= downLevel* LvUPStatus.LvSpeed;
 }
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
@@ -321,7 +320,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 /// <param name="SkillCooltimer">クールタイム</param>
 /// <param name="skillstate">スキルや回避が終わったかの判定</param>
 /// <param name="timer">クールタイムを計算する変数</param>
-void Actor::COOlTIME(float Cooltime, bool& skillEndFlag,float& timer)
+void Actor::CoolTime(float Cooltime, bool& skillEndFlag,float& timer)
 {
 
 	//スキルのアニメーション再生が終わったら
@@ -357,7 +356,7 @@ void Actor::RespawnMove()
 /// <returns>音量</returns>
 float Actor::SoundSet(Player* player, float Max, float Min)
 {
-	Vector3 diff = player->GetCharPosition() - m_position;
+	Vector3 diff = player->GetCharcterPosition() - m_position;
 
 	float Len = diff.Length();
 
@@ -392,9 +391,22 @@ bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFla
 		if (m_respwanTimer <= 0.0f)
 		{
 			if (fadeFlag == true) {
-				//フェードアウト
-			//画面を明るくする
-				fade->StartFadeOut(1.0f);
+				if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
+				{
+					if (m_enPlayerNumber == enPlayerNumber_1P)
+					{
+						fade->StartFadeOut(1.0f,Fade::enFadeSpriteType_Left);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_2P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Right);
+					}
+				}
+				else {
+					//フェードアウト
+					//画面を明るくする
+					fade->StartFadeOut(1.0f);
+				}
 			}
 			//
 			DeathToRespwanFlag = false;

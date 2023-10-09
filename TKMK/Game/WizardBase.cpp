@@ -7,7 +7,7 @@
 WizardBase::WizardBase()
 {
 	//ステータスを読み込む
-	m_Status.Init("Wizard");
+	m_status.Init("Wizard");
 	Lv = 1;                    //レベル
 	AtkSpeed = 10;              //攻撃速度
 
@@ -94,7 +94,7 @@ void WizardBase::ExpProcess(int Exp)
 		//レベルアップ
 		LevelUp(Lv);
 		//レベルに合わせてレベルの画像を変更する
-		gameUI->LevelFontChange(Lv);
+		gameUI->LevelSpriteChange(Lv);
 		switch (Lv)
 		{
 		case 2:
@@ -210,13 +210,14 @@ void WizardBase::Collision()
 /// <param name="damege">敵の攻撃力</param>
 void WizardBase::Dameged(int damege, Actor* CharGivePoints)
 {
-	m_Status.Hp -= damege;
+	int hp = m_status.GetHp() - damege;
+	m_status.SetHp(hp);
 	//自身のHPが0以下なら
-	if (m_Status.Hp <= 0) {
+	if (m_status.GetHp() <= 0) {
 		//倒されたときの処理に遷移
 		//死亡ステート
 		m_wizardState = enWizardState_Death;
-		m_Status.Hp = 0;
+		m_status.SetHp(0);
 		//攻撃された相手が中立の敵以外なら
 		if (CharGivePoints != nullptr)
 		{
@@ -243,7 +244,7 @@ void WizardBase::Death()
 	//レベルを１下げる
 	levelDown(Lv, 1);
 	//HPを最大にする
-	m_Status.Hp = m_Status.MaxHp;
+	m_status.SetHp(m_status.GetMaxHp());
 	//経験値をリセット
 	ExpReset(Lv, GetExp);
 	//一つ下のレベルの経験値テーブルにする
@@ -251,7 +252,7 @@ void WizardBase::Death()
 
 
 	//レベルに合わせてレベルの画像を変更する
-	gameUI->LevelFontChange(Lv);
+	gameUI->LevelSpriteChange(Lv);
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)

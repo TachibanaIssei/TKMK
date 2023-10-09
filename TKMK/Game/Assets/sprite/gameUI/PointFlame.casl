@@ -1,0 +1,3 @@
+2
+5,timer,41,../../Game/Assets/sprite/gameUI/timer.png,0.0,470.0,385,120,10,0.35,0.3,0.5,0.5,9,timer.dds
+13,NewPointFlame,49,../../Game/Assets/sprite/gameUI/NewPointFlame.png,-399.9999999999999,428.8461538461538,300,100,10,1.0,1.0,0.5,0.5,17,NewPointFlame.dds

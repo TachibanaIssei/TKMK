@@ -9,6 +9,7 @@
 #include "WizardUlt.h"
 #include "ChaseEFK.h"
 #include "Sounds.h"
+#include "EnemyHpBar.h"
 
 //todo
 //HP0になってもしなない問題死ぬときにほかのステートに移れないようにする
@@ -23,18 +24,15 @@
 
 
 namespace {
-	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f,1.0f);
+	const Vector2 AVOIDANCE_BAR_POVOT = Vector2(1.0f, 1.0f);
 	const Vector3 AVOIDANCE_BAR_POS = Vector3(98.0f, -397.0f, 0.0f);
 
 	const Vector3 AVOIDANCE_FLAME_POS = Vector3(0.0f, -410.0f, 0.0f);
-
-	const Vector3 ATKUPICON_POS = Vector3(-870.0f, -390.0f, 0.0f);
-	const Vector3 ATKUPICON_SCALE = Vector3(0.2f, 0.2f, 1.0f);
 }
 
 KnightPlayer::KnightPlayer()
 {
-	
+
 }
 
 KnightPlayer::~KnightPlayer()
@@ -46,7 +44,7 @@ bool KnightPlayer::Start() {
 	m_gameUI = FindGO<GameUI>("m_gameUI");
 	m_game = FindGO<Game>("game");
 	m_fade = FindGO<Fade>("fade");
-	
+
 
 	SetModel();
 
@@ -56,7 +54,16 @@ bool KnightPlayer::Start() {
 		});
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	respawnNumber = 2;        //リスポーンする座標の番号0
+
+	if (IGameObject::m_name == "knightplayer2")
+	{
+		respawnNumber = 0;
+		m_enPlayerNumber = enPlayerNumber_2P;
+	}
+	else {
+		respawnNumber = 2;        //リスポーンする座標の番号
+		m_enPlayerNumber = enPlayerNumber_1P;
+	}
 
 	//リスポーンする座標のセット
 	//キャラコン
@@ -78,28 +85,65 @@ bool KnightPlayer::Start() {
 	m_Avoidance_barRender.SetPivot(AVOIDANCE_BAR_POVOT);
 	m_Avoidance_barRender.SetPosition(AVOIDANCE_BAR_POS);
 
-	m_AtkUpIcon_Render.Init("Assets/sprite/gameUI/attackUP.DDS", 512, 512);
-	m_AtkUpIcon_Render.SetPosition(ATKUPICON_POS);
-	m_AtkUpIcon_Render.SetScale(ATKUPICON_SCALE);
-	m_AtkUpIcon_Render.Update();
-
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		//自分のカメラではHPバーを頭に映さない
+		if (i == m_knightKind)
+		{
+			continue;
+		}
+		m_enemyHpBar[i] = NewGO<EnemyHpBar>(0, "enemyHpBar");
+		m_enemyHpBar[i]->Init(i);
+	}
 	return true;
 }
 
 void KnightPlayer::Update()
 {
+	//頭上のHPバーの処理
+	CharacterUpperHpBar();
+	// 追尾エフェクトのリセット
+	EffectNullptr();
+
+	//gameクラスのポーズのフラグが立っている間処理を行わない
+	if (m_GameState == enPause) {
+		return;
+	}
+
+	//ゲームUIがnullなら
+	if (m_gameUI == nullptr)
+	{
+		m_gameUI = FindGO<GameUI>("m_gameUI");
+	}
+
+	//やられたらリスポーンするまで実行する
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag, m_fade, true) == true)
+	{
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
+
+		return;
+	}
+
+	if (m_charState == enCharState_Death) {
+		//アニメーションの再生
+		PlayAnimation();
+		m_modelRender.Update();
+		//ステート
+		ManageState();
+		return;
+	}
+
 	//アニメーションの再生
 	PlayAnimation();
+	
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定
-		Collition();
+		Collision();
 	}
-	
 
-	// 追尾エフェクトのリセット
-	EffectNullptr();
-	
 	//必殺技を打った時
 	if (UltimaitSkillTime() == true) {
 		return;
@@ -122,121 +166,87 @@ void KnightPlayer::Update()
 		return;
 	}
 
-	//gameクラスのポーズのフラグが立っている間処理を行わない
-	if (m_GameState == enPause) {
-		return;
-	}
-	
-	//ゲームUIがnullなら
-	if (m_gameUI == nullptr)
-	{
-		m_gameUI = FindGO<GameUI>("m_gameUI");
-	}
-
-	//やられたらリスポーンするまで実行する
-	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade,true) == true)
-	{
-		//m_charState = enCharState_Idle;
-		//アニメーションの再生
-		PlayAnimation();
-		m_modelRender.Update();
-		
-		return;
-	}
-
-	if (m_charState == enCharState_Death) {
-		//アニメーションの再生
-		PlayAnimation();
-		m_modelRender.Update();
-		//ステート
-		ManageState();
-		return;
-	}
-	
 	//ゲームのステートがスタート,エンド、リザルトでないなら
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
 		//今のフレームと前のフレームのレベルが違っていたら
 		if (oldLv != Lv) {
-			//レベルに合わせてGameUIのレベルの画像を変更する
-			m_gameUI->ChangePlayerLevel(Lv);
 			//エフェクトを出す
 			IsLevelEffect(oldLv, Lv);
 		}
-			//前フレームのレベルを取得
-			oldLv = Lv;
-			//前フレームの座標を取得
-			OldPosition = m_position;
+		//前フレームのレベルを取得
+		oldLv = Lv;
+		//前フレームの座標を取得
+		OldPosition = m_position;
 
-			//リスポーンしたときしか使えない
-			//飛び降りる処理
-			//地上にいないならジャンプしかしないようにする
-			if (GetIsGroundFlag() == false) {
-				//地上にいるなら
-				if (IsActorGroundChack() == true) {
-					IsGroundFlag = true;
-					//地面に降りた時の音再生
-					SetAndPlaySoundSource(enSound_Metal_Falling);
-					if (m_position.y < 15.0f)
-					{
-						TowerJumpEFK();
-					}
-				}
-				else {
-					//ジャンプ
-					if (pushFlag == false && m_charCon.IsOnGround() && g_pad[0]->IsTrigger(enButtonA))
-					{
-						pushFlag = true;
-						m_charState = enCharState_Jump;
-					}
-
+		//リスポーンしたときしか使えない
+		//飛び降りる処理
+		//地上にいないならジャンプしかしないようにする
+		if (GetIsGroundFlag() == false) {
+			//地上にいるなら
+			if (IsActorGroundChack() == true) {
+				IsGroundFlag = true;
+				//地面に降りた時の音再生
+				SetAndPlaySoundSource(enSound_Metal_Falling);
+				if (m_position.y < 15.0f)
+				{
+					TowerJumpEFK();
 				}
 			}
-			else
-			{
-				//攻撃処理
-				Attack();
-				//回避処理
-				Avoidance();
-				
+			else {
+				//ジャンプ
+				if (pushFlag == false && m_charCon.IsOnGround() && g_pad[m_playerNumber]->IsTrigger(enButtonA))
+				{
+					pushFlag = true;
+					m_charState = enCharState_Jump;
+				}
+
 			}
+		}
+		else
+		{
+			//攻撃処理
+			Attack();
+			//回避処理
+			Avoidance();
 
-			//攻撃上昇中
-			//AttackUP();
+		}
 
-			//移動処理
-			Vector3 stickL = Vector3::Zero;
-			if (CantMove == false)
-			{
-				stickL.x = g_pad[0]->GetLStickXF();
-				stickL.y = g_pad[0]->GetLStickYF();
-			}
-			Move(m_position, m_charCon, m_Status, stickL);
+		//攻撃上昇中
+		//AttackUP();
+
+		//移動処理
+		Vector3 stickL = Vector3::Zero;
+		if (CantMove == false)
+		{
+			stickL.x = g_pad[m_playerNumber]->GetLStickXF();
+			stickL.y = g_pad[m_playerNumber]->GetLStickYF();
+		}
+		Move(m_position, m_charCon, m_status, stickL, m_playerNumber);
 
 
-			//回避中なら
-			if (AvoidanceFlag == true) {
-				m_charState = enCharState_Avoidance;
-				//移動処理を行う(直線移動のみ)。
-				MoveStraight();
-			}
+		//回避中なら
+		if (AvoidanceFlag == true) {
+			m_charState = enCharState_Avoidance;
+			//移動処理を行う(直線移動のみ)。
+			MoveStraight();
+		}
 
-			//スキル使用中なら
-			if (SkillState == true) {
-				//スキルステート
-				//m_charState = enCharState_Skill;
-				//移動処理を行う(直線移動のみ)。
-				MoveStraight();
-			}
-			//ステート
-			ManageState();
-			
-			//回転処理
-			Rotation();
+		//スキル使用中なら
+		if (SkillState == true) {
+			//スキルステート
+			//m_charState = enCharState_Skill;
+			//移動処理を行う(直線移動のみ)。
+			MoveStraight();
+		}
+		//ステート
+		ManageState();
 
-			CoolTimeProcess();
-			GrayScaleUI();
+		//回転処理
+		Rotation();
 
+		CoolTimeProcess();
+		GrayScaleUI();
 	}
 	//速度を0にする(動かないようにする)
 	else
@@ -245,6 +255,8 @@ void KnightPlayer::Update()
 		m_charState = enCharState_Idle;
 		m_modelRender.Update();
 	}
+
+
 
 	if (AvoidanceTimer != AvoidanceCoolTime)
 	{
@@ -255,6 +267,7 @@ void KnightPlayer::Update()
 	//キャラクターコントローラーを使って座標を移動させる。
 	//ワープする時はキャラコンを移動させない
 	if (IsEnableMove() == true) {
+
 		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
 
@@ -265,7 +278,7 @@ void KnightPlayer::Update()
 	}
 	//前方向
 	if (m_moveSpeed.LengthSq() != 0.0f) {
-		m_forwardNow = m_moveSpeed;
+		//m_forwardNow = m_moveSpeed;
 		m_forwardNow.Normalize();
 		m_forwardNow.y = 0.0f;
 	}
@@ -275,6 +288,7 @@ void KnightPlayer::Update()
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
+
 }
 
 
@@ -288,10 +302,10 @@ void KnightPlayer::Attack()
 	}
 
 	//一段目のアタックをしていないなら
-	if (pushFlag==false&&AtkState == false)
+	if (pushFlag == false && AtkState == false)
 	{
 		//Aボタン押されたら攻撃する
-		if (g_pad[0]->IsTrigger(enButtonA))
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonA))
 		{
 			m_charState = enCharState_Attack;
 			m_game->UnderSprite_Attack();
@@ -303,7 +317,7 @@ void KnightPlayer::Attack()
 	//一段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == FirstAtk_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA)&& m_AtkTmingState!= SecondAtk_State)
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonA) && m_AtkTmingState != SecondAtk_State)
 		{
 			//ステートを二段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = SecondAtk_State;
@@ -321,7 +335,7 @@ void KnightPlayer::Attack()
 	//二段目のアタックのアニメーションがスタートしたなら
 	if (m_AtkTmingState == SecondAtkStart_State)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA)&&m_AtkTmingState != LastAtk_State)
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonA) && m_AtkTmingState != LastAtk_State)
 		{
 			//ステートを三段目のアタックのアニメーションスタートステートにする
 			m_AtkTmingState = LastAtk_State;
@@ -340,7 +354,7 @@ void KnightPlayer::Attack()
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag==false && SkillState == false && g_pad[0]->IsTrigger(enButtonB)&&m_Status.Hp>0)
+	if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[m_playerNumber]->IsTrigger(enButtonB) && m_status.GetHp() > 0)
 	{
 		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed);
@@ -383,7 +397,7 @@ void KnightPlayer::Attack()
 			FootSmoke->AutoRot(true);
 
 		}
-		
+
 		SkillEndFlag = true;
 		m_charState = enCharState_Skill;
 		pushFlag = true;
@@ -392,7 +406,7 @@ void KnightPlayer::Attack()
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	if (pushFlag == false && Lv >= 4 && g_pad[m_playerNumber]->IsTrigger(enButtonX))
 	{
 		//画面を暗くする
 		UltimateDarknessFlag = true;
@@ -404,10 +418,11 @@ void KnightPlayer::Attack()
 		//魔法陣生成
 		CreatMagicCircle();
 		pushFlag = true;
-		
+
 		//必殺技の溜めステートに移行する
 		m_charState = enCharState_Ult_liberation;
 
+		//地面に降りた時の音再生
 		SetAndPlaySoundSource(enSound_Knight_Charge_Power);
 
 		Vector3 m_SwordPos = Vector3::Zero;
@@ -417,13 +432,13 @@ void KnightPlayer::Attack()
 		Ult_Swordeffect->Init(enEffect_Knight_Ult_Aura);
 		Ult_Swordeffect->SetScale({ 20.0f,40.0f,20.0f });
 		Ult_Swordeffect->SetPosition(m_position);
-			//エフェクトを再生
+		//エフェクトを再生
 		Ult_Swordeffect->Play();
 	}
 	//攻撃かスキルを使用しているなら
 	//コリジョン作成
 	if (AtkCollistionFlag == true) AtkCollisiton();
-	
+
 }
 
 //必殺技を打っている間の処理
@@ -439,10 +454,10 @@ bool KnightPlayer::UltimaitSkillTime()
 		{
 			m_UltshootTimer += g_gameTime->GetFrameDeltaTime();
 		}
-		
+
 		//全ての雷が落ちてから
 		//雷を落とすアクターのリストの中身がなくなったら
-		if (DamegeUltActor.empty()==true)
+		if (DamegeUltActor.empty() == true)
 		{
 			//for (auto actor : m_game->GetActors())
 			//{
@@ -466,7 +481,7 @@ bool KnightPlayer::UltimaitSkillTime()
 			//中身を全て消去する
 			DamegeUltActor.clear();
 		}
-		
+
 
 		return true;
 	}
@@ -479,6 +494,8 @@ bool KnightPlayer::UltimaitSkillTime()
 /// </summary>
 void KnightPlayer::Avoidance()
 {
+
+
 	//ステートがデスのとき
 	if (m_charState == enCharState_Death)
 	{
@@ -487,7 +504,7 @@ void KnightPlayer::Avoidance()
 	//RBボタンが押されたら。
 	//回避
 	if (pushFlag == false && AvoidanceEndFlag == false && AvoidanceFlag == false) {
-		if (g_pad[0]->IsTrigger(enButtonRB1) || g_pad[0]->IsTrigger(enButtonLB1)) {
+		if (g_pad[m_playerNumber]->IsTrigger(enButtonRB1) || g_pad[m_playerNumber]->IsTrigger(enButtonLB1)) {
 			//回避ステート
 			AnimationMove(AvoidanceSpeed);
 			pushFlag = true;
@@ -505,61 +522,90 @@ void KnightPlayer::MakeUltSkill()
 	//必殺技の雷の生成
 	for (auto actor : DamegeUltActor)
 	{
-			//必殺技の雷の生成
-			WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
-			//生成したのがプレイヤーなのでtrue
-			wizardUlt->SetThisCreatCharcter(true);
-			//自分のオブジェクトの名前をセット
-			wizardUlt->SetCreatorName(GetName());
-			//攻撃するアクターのオブジェクト名をセット
-			wizardUlt->SetActor(actor->GetName());
-			//攻撃力を決める
-			wizardUlt->SetAboutUlt(Lv);
-			//攻撃するアクターの座標取得
-			Vector3 UltPos = actor->GetPosition();
-			UltPos.y += 100.0f;
-			wizardUlt->SetPosition(UltPos);
-			wizardUlt->SetGame(m_game);
+		//必殺技の雷の生成
+		WizardUlt* wizardUlt = NewGO<WizardUlt>(0, "wizardUlt");
+		//生成したのがプレイヤーなのでtrue
+		wizardUlt->SetThisCreatCharcter(true);
+		//自分のオブジェクトの名前をセット
+		wizardUlt->SetCreatorName(GetName());
+		//攻撃するアクターのオブジェクト名をセット
+		wizardUlt->SetActor(actor->GetName());
+		//攻撃力を決める
+		wizardUlt->SetAboutUlt(Lv);
+		//攻撃するアクターの座標取得
+		Vector3 UltPos = actor->GetPosition();
+		UltPos.y += 100.0f;
+		wizardUlt->SetPosition(UltPos);
+		wizardUlt->SetGame(m_game);
 
-			//効果音再生
-			SetAndPlaySoundSource(enSound_Sword_Ult);
+		//効果音再生
+		SetAndPlaySoundSource(enSound_Sword_Ult);
 
-			//雷を落とすキャラがリストの最後なら
-			if (actor == DamegeUltActor.back())
-			{
-				//最後であることを知らせる
-				wizardUlt->ChangeUltEndFlag(true);
+		//雷を落とすキャラがリストの最後なら
+		if (actor == DamegeUltActor.back())
+		{
+			//最後であることを知らせる
+			wizardUlt->ChangeUltEndFlag(true);
 
-				//DamegeUltActor.clear();
-
-				m_UltshootTimer = 0.0f;
-				//一人ずつ必殺技を打つのでぬける
-				return;
-			}
+			//DamegeUltActor.clear();
 
 			m_UltshootTimer = 0.0f;
 			//一人ずつ必殺技を打つのでぬける
 			return;
+		}
+
+		m_UltshootTimer = 0.0f;
+		//一人ずつ必殺技を打つのでぬける
+		return;
+
 	}
+
+	//KnightUlt* knightUlt = NewGO<KnightUlt>(0,"knightUlt");
+	////製作者の名前を入れる
+	//knightUlt->SetCreatorName(GetName());
+	//// 制作者を教える
+	//knightUlt->SetActor(this);
+	//knightUlt->SetUltColorNumb(respawnNumber);
+	////キャラのレベルを入れる
+	//knightUlt->GetCharLevel(Lv);
+	////座標の設定
+	//Vector3 UltPos = m_position;
+	//UltPos.y += 60.0f;
+	//knightUlt->SetPosition(UltPos);
+	//knightUlt->SetRotation(m_rot);
+	//knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
+	//knightUlt->SetGame(m_game);
+
 }
 
 void KnightPlayer::CoolTimeProcess()
 {
 	//スキルクールタイムの処理
-	COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+	CoolTime(Cooltime, SkillEndFlag, SkillTimer);
 
 	//回避クールタイムの処理
-	COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+	CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 
 }
 
 void KnightPlayer::GrayScaleUI()
 {
-	if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true);
-	else				m_gameUI->SetSkillIconGrayScale(false);
+	if (IsMatchName("knightplayer"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_1P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_1P);
 
-	if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true);
-	else				m_gameUI->SetULTIconGrayScale(false);
+		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_1P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_1P);
+	}
+	else if (IsMatchName("knightplayer2"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_2P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_2P);
+
+		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_2P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_2P);
+	}
 }
 
 /// <summary>
@@ -577,6 +623,11 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		AtkCollistionFlag = true;
 		//剣１段目音
 		SetAndPlaySoundSource(enSound_ComboONE);
+
+		/*SoundSource* se = NewGO<SoundSource>(0);
+		se->Init(enSound_ComboONE);
+		se->Play(false);
+		se->SetVolume(m_game->GetSoundEffectVolume());*/
 	}
 
 	//二段目のアタックのアニメーションが始まったら
@@ -602,6 +653,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	if (wcscmp(eventName, L"Move_True") == 0)
 	{
 		CantMove = true;
+
 	}
 
 	//スキルのアニメーションが始まったら
@@ -613,7 +665,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//スキル音を発生
 		SetAndPlaySoundSource(enSound_Sword_Skill);
 	}
-	
+
 	//必殺技のアニメーションが始まったら
 	if (wcscmp(eventName, L"timeStop") == 0)
 	{
@@ -624,6 +676,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//必殺技 剣を空に掲げたら
 	if (wcscmp(eventName, L"UltimateAttack_Charge") == 0)
 	{
+
 		//雷チャージエフェクト生成
 		EffectEmitter* ThunderCharge = NewGO<EffectEmitter>(0);
 		ThunderCharge->Init(EnEFK::enEffect_Knight_Thunder_Charge);
@@ -664,7 +717,17 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		if (DamegeUltActor.empty() == true) {
 
 			m_NoTargetActor = true;
-		}		
+		}
+
+
+		//エネルギースラッシュ用
+		//必殺技の当たり判定のクラスを作成
+		//MakeUltSkill();
+		//レベルを下げる
+		//UltimateSkill();
+		//エフェクトを移動
+		//m_swordEffectFlag = false;
+
 	}
 
 	//ジャンプのアニメーションが始まったら
@@ -696,6 +759,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//二段目のアタックのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SecondAttack_End") == 0)
 	{
+
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 		//ボタンが押されていなかったら
@@ -784,6 +848,28 @@ void  KnightPlayer::IsLevelEffect(int oldlevel, int nowlevel)
 	}
 }
 
+void KnightPlayer::CharacterUpperHpBar()
+{
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		if (m_enemyHpBar[i] == nullptr)
+		{
+			continue;
+		}
+
+		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, Lv);
+		m_enemyHpBar[i]->SetDrawFlag(false);
+		//HPバーを描画する条件を満たしたら
+		if (DrawHP(i))
+		{
+			if (m_game->GetStopFlag() == false && m_game->NowGameState() != enPause)
+			{
+				m_enemyHpBar[i]->SetDrawFlag(true);
+			}
+		}
+	}
+}
+
 void KnightPlayer::AvoidanceSprite()
 {
 	Vector3 AvoidanceScale = Vector3::One;
@@ -814,24 +900,18 @@ void KnightPlayer::SetAndPlaySoundSource(EnSound soundNumber)
 
 void KnightPlayer::Render(RenderContext& rc)
 {
-
 	if (DarwFlag == true) {
 		m_modelRender.Draw(rc);
 	}
-	
 
 	//スキルのクールタイムとタイマーが違う時だけ表示
 	/*if(SkillTimer!=Cooltime)
 	Skillfont.Draw(rc);*/
 
 	//回避のクールタイムとタイマーが違う時だけ表示
-	if (AvoidanceTimer != AvoidanceCoolTime)
+	/*if (AvoidanceTimer != AvoidanceCoolTime)
 	{
 		m_Avoidance_flameRender.Draw(rc);
 		m_Avoidance_barRender.Draw(rc);
-	}
-	
-	if (m_atkUpSpriteFlag == true) {
-		m_AtkUpIcon_Render.Draw(rc);
-	}
+	}*/
 }

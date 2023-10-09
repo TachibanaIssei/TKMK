@@ -7,18 +7,11 @@
 #include "WizardUlt.h"
 #include "KnightUlt.h"
 #include "Player.h"
+#include "EnemyHpBar.h"
 
 namespace
 {
-	const float HP_WINDOW_WIDTH = 1152.0f;
-	const float HP_WINDOW_HEIGHT = 648.0f;
-	const float HP_BER_WIDTH = 178.0f;
-	const float HP_BER_HEIGHT = 22.0f;
-	const Vector3 HP_BER_SIZE = Vector3(HP_BER_WIDTH, HP_BER_HEIGHT, 0.0f);
 	const float RADIUS = 100.0f;
-	const float LEVEL_FONT_ADD_POS_X = -30.0f;
-	const float LEVEL_FONT_ADD_POS_Y = 50.0f;
-
 }
 KnightAI::KnightAI()
 {
@@ -33,7 +26,7 @@ KnightAI::~KnightAI()
 
 bool KnightAI::Start() {
 
-	m_Status.Init("Knight");
+	m_status.Init("Knight");
 
 	SetModel();
 
@@ -59,21 +52,23 @@ bool KnightAI::Start() {
 
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+	{
+		m_enemyHpBar[0] = NewGO<EnemyHpBar>(0, "enemyHpBar");
+		m_enemyHpBar[0]->Init();
+	}
+	else
+	{
+		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+		{
+			m_enemyHpBar[i] = NewGO<EnemyHpBar>(0, "enemyHpBar");
+			m_enemyHpBar[i]->Init(i);
+		}
+	}
+
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
 	m_position = m_charCon.Execute(m_moveSpeed, 0.1f / 60.0f);
-
-	m_HP_Bar.Init("Assets/sprite/zako_HP_bar.DDS", HP_BER_WIDTH, HP_BER_HEIGHT);
-	//m_HPBar.SetPivot(PIVOT);
-
-	m_HP_Back.Init("Assets/sprite/zako_HP_background.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
-
-	m_HP_Frame.Init("Assets/sprite/HP_flame_mushroom.DDS", HP_WINDOW_WIDTH, HP_WINDOW_HEIGHT);
-
-	//HPバーの横に表示するレベル
-	m_fontLv.SetColor(g_vec4White);
-	m_fontLv.SetShadowParam(true, 0.2f, g_vec4Black);
-	m_fontLv.SetScale(0.5f);
 
 	return true;
 }
@@ -83,53 +78,16 @@ void KnightAI::Update()
 	// 追尾エフェクトのリセット
 	EffectNullptr();
 	
+	CharacterUpperHpBar();
+
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameState == enPause) {
 		return;
 	}
-	//無敵時間
-	if (Invincible() == false) {
-		//当たり判定
-		Collition();
-	}
-	//当たり判定
-	//Collition();
-	//アニメーションの再生
-	PlayAnimation();
-	
-	//必殺技を打った時
-	if (UltimaitSkillTime() == true) {
-		return;
-	}
 
-	if (m_Status.Hp <= 0)
-	{
-		m_charState == enCharState_Death;
-	}
-	
-
-	//自分の以外の必殺中は止まります
-	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
-	{
-		//ステートは死亡と被ダメの時アニメーションは再生する
-		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
-		{
-			m_modelRender.Update();
-		}
-		else
-		{
-			m_charState = enCharState_Idle;
-			m_modelRender.Update();
-		}
-		return;
-	}
-	HPBar();
-
-	
 	//やられたらリスポーンするまで実行する
-	if (DeathToRespawnTimer(m_DeathToRespwanFlag,m_fade,false) == true)
+	if (DeathToRespawnTimer(m_DeathToRespwanFlag, m_fade, false) == true)
 	{
-		//m_charState = enCharState_Death;
 		//アニメーションの再生
 		PlayAnimation();
 		//ステート
@@ -146,8 +104,42 @@ void KnightAI::Update()
 		ManageState();
 		return;
 	}
-	//攻撃アップ中の処理
-	//AttackUP();
+
+	//アニメーションの再生
+	PlayAnimation();
+
+	//無敵時間
+	if (Invincible() == false) {
+		//当たり判定
+		Collision();
+	}
+
+	//必殺技を打った時
+	if (UltimaitSkillTime() == true) {
+		return;
+	}
+
+	if (m_status.GetHp() <= 0)
+	{
+		m_charState = enCharState_Death;
+	}
+
+	//自分の以外の必殺中は止まります
+	if (m_game->GetStopFlag() == true && m_game->GetUltActor() != this)
+	{
+		//ステートが死亡と被ダメの時
+		if (m_charState == enCharState_Death || m_charState == enCharState_Damege)
+		{
+			m_modelRender.Update();
+		}
+		//それ以外のときは待機状態
+		else
+		{
+			m_charState = enCharState_Idle;
+			m_modelRender.Update();
+		}
+		return;
+	}
 
 	//重力
 	Move();
@@ -196,9 +188,11 @@ void KnightAI::Update()
 		//回避
 		AvoidanceSprite();
 		//スキルクールタイムの処理
-		COOlTIME(Cooltime, SkillEndFlag, SkillTimer);
+		CoolTime(Cooltime, SkillEndFlag, SkillTimer);
+		
 		// 次のアクションを抽選 
 		LotNextAction();
+
 		//追跡
 		ChaseAndEscape();
 
@@ -208,7 +202,6 @@ void KnightAI::Update()
 			//スキルを使うときのスピードを使う
 			Vector3 move = m_skillMove;
 			m_rot.SetRotationYFromDirectionXZ(move);
-			//スキルを使うときのスピードを使う
 			move.y = 0.0f;
 			move *= 200.0f;
 
@@ -217,9 +210,10 @@ void KnightAI::Update()
 
 		//攻撃
 		Attack();
+
 		//反転
 		Rotation();
-
+		
 		if (m_charState == enCharState_LastAttack)
 		{
 			Vector3 LastAttackMove = m_LastAttackMove;
@@ -230,7 +224,7 @@ void KnightAI::Update()
 		}
 		
 		//回避クールタイムの処理
-		COOlTIME(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+		CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
 	}
 	else
 	{
@@ -239,7 +233,6 @@ void KnightAI::Update()
 	}
 
 	if (m_moveSpeed.LengthSq() != 0.0f) {
-		m_forwardNow = m_moveSpeed;
 		m_forwardNow.Normalize();
 		m_forwardNow.y = 0.0f;
 	}
@@ -371,7 +364,7 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 		eval += 3000;
 	}
 	//自分のHPが少ない時は逃げる
-	if (m_Status.Hp <= 80)
+	if (m_status.GetHp() <= 80)
 	{
 		eval += 5000;
 		chaseOrEscape = true;
@@ -418,7 +411,7 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	//自分を攻撃した相手が近い ＆ 相手とのHP差が大きかったら 逃げる
 	if (actor == m_lastAttackActor)
 	{
-		if (Distance <= 400.0f && (actor->GetHP()- m_Status.Hp) >= 20) {
+		if (Distance <= 400.0f && (actor->GetHP()- m_status.GetHp()) >= 20) {
 			eval += 2000;
 			chaseOrEscape = true;
 		}
@@ -509,12 +502,12 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 		eval += 400;
 	}
 	// ピンチの時は緑の敵を優先
-	if (m_Status.MaxHp - m_Status.Hp >= 60 && ColorEnemy == Neutral_Enemy::EnEnemyKinds::enEnemyKinds_Green)
+	if (m_status.GetMaxHp() - m_status.GetHp() >= 60 && ColorEnemy == Neutral_Enemy::EnEnemyKinds::enEnemyKinds_Green)
 	{
 		eval += 600;
 	}
 	//HPがほぼMAXの時は赤の敵を優先敵に狙う
-	if (m_Status.MaxHp - m_Status.Hp <= 30 && ColorEnemy == Neutral_Enemy::EnEnemyKinds::enEnemyKinds_Red)
+	if (m_status.GetMaxHp() - m_status.GetHp() <= 30 && ColorEnemy == Neutral_Enemy::EnEnemyKinds::enEnemyKinds_Red)
 	{
 		eval += 600;
 	}
@@ -607,8 +600,8 @@ void KnightAI::LotNextAction()
 	CalculatAIAttackEvaluationValue();
 
 	//評価値無限小
-	int noweval_Target = -99999999;
-	int noweval_Escape = -99999999;
+	int noweval_Target = INT_MIN;
+	int noweval_Escape = INT_MIN;
 	//今のターゲットエネミー
 	Neutral_Enemy* m_nowEnemyTarget = nullptr;
 	Actor* m_nowActorTarget = nullptr;
@@ -751,16 +744,11 @@ void KnightAI::ChaseAndEscape()
 		if (sita <= 60.0f) {
 			// [自分] [Escape] [Target] みたいな配置
 			// とにかく逃げる
-			//diffEscape *= -1.0f;
-			//diffEscape.Normalize();
-
-			////移動速度を設定する。
-			//m_moveSpeed = diffEscape * m_Status.Speed;
 
 			diffTarget.Normalize();
 
 			//移動速度を設定する。
-			m_moveSpeed = diffTarget * m_Status.Speed;
+			m_moveSpeed = diffTarget * m_status.GetSpeed();
 
 			//逃げタイマー開始
 			m_EscapeTimer = 5.0f;
@@ -773,22 +761,22 @@ void KnightAI::ChaseAndEscape()
 			diffTarget.Normalize();
 
 			//移動速度を設定する。
-			m_moveSpeed = diffTarget * m_Status.Speed;
+			m_moveSpeed = diffTarget * m_status.GetSpeed();
 		}
 	}
 	else if (m_position.y < 1.0f){
 		diffTarget.Normalize();
 
 		//移動速度を設定する。
-		m_moveSpeed = diffTarget * m_Status.Speed;
+		m_moveSpeed = diffTarget * m_status.GetSpeed();
 	}
 
 	//リスポーン中なら特殊な計算
 	if (m_position.y >= 0.0f)
 	{
 		diffTarget.Normalize();
-		m_moveSpeed.x = diffTarget.x * (m_Status.Speed * 1.5f);
-		m_moveSpeed.z = diffTarget.z * (m_Status.Speed * 1.5f);
+		m_moveSpeed.x = diffTarget.x * (m_status.GetSpeed() * 1.5f);
+		m_moveSpeed.z = diffTarget.z * (m_status.GetSpeed() * 1.5f);
 	}
 
 	// 移動する（衝突解決）
@@ -836,6 +824,7 @@ const bool KnightAI::CanSkill()
 	
 	return false;
 }
+
 const bool KnightAI::CanUlt()
 {
 	Vector3 diff = TargePos - m_position;
@@ -969,7 +958,7 @@ void KnightAI::Attack()
 			return;
 		}
 		//必殺技を発動する処理
-		if (m_targetActor != nullptr && Lv >= 6 && /*(m_Status.MaxHp - m_Status.Hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
+		if (m_targetActor != nullptr && Lv >= 6 && /*(m_status.m_maxHp - m_status.m_hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
@@ -1061,8 +1050,6 @@ void KnightAI::AtkCollisiton()
 	//コリジョンオブジェクトを作成する。
 	auto collisionObject = NewGO<CollisionObject>(0);
 	Vector3 collisionPosition = m_position;
-	//座標をプレイヤーの少し前に設定する。
-	//collisionPosition += forward * 50.0f;
 	//ボックス状のコリジョンを作成する。
 	collisionObject->CreateBox(collisionPosition, //座標。
 		Quaternion::Identity, //回転。
@@ -1104,14 +1091,6 @@ void KnightAI::MakeUltSkill()
 
 		//効果音再生
 		SetAndPlaySoundSource(enSound_Sword_Ult);
-		/*SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(enSound_Sword_Ult);
-		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);*/
-		//se->SetVolume(1.0f);
-
-		//必殺技を打たれたのでフラグを立てる
-		//actor->ChangeDamegeUltFlag(true);
 
 		//雷を落とすキャラがリストの最後なら
 		if (actor == DamegeUltActor.back())
@@ -1119,129 +1098,12 @@ void KnightAI::MakeUltSkill()
 			//最後であることを知らせる
 			wizardUlt->ChangeUltEndFlag(true);
 
-			//DamegeUltActor.clear();
-
 			m_UltshootTimer = 0.0f;
 			//一人ずつ必殺技を打つのでぬける
 			return;
 		}
 
 		m_UltshootTimer = 0.0f;
-		//一人ずつ必殺技を打つのでぬける
-		//return;
-
-	}
-
-	
-
-	//KnightUlt* knightUlt = NewGO<KnightUlt>(0, "knightUlt");
-	////製作者の名前を入れる
-	//knightUlt->SetCreatorName(GetName());
-	//// 制作者を教える
-	//knightUlt->SetActor(this);
-	//knightUlt->SetUltColorNumb(respawnNumber);
-	////キャラのレベルを入れる
-	//knightUlt->GetCharLevel(Lv);
-	////座標の設定
-	//Vector3 UltPos = m_position;
-	//UltPos.y += 60.0f;
-	//knightUlt->SetPosition(UltPos);
-	//knightUlt->SetRotation(m_rot);
-	//knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
-	//knightUlt->SetGame(m_game);
-
-}
-
-void KnightAI::HPBar()
-{
-	if (m_Status.Hp < 0)
-	{
-		m_Status.Hp = 0;
-	}
-
-	Vector3 scale = Vector3::One;
-	scale.x = float(m_Status.Hp) / float(m_Status.MaxHp);
-	m_HP_Bar.SetScale(scale);
-
-	Vector3 BerPosition = m_position;
-	BerPosition.y += 75.0f;
-	//座標を変換する
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBer_Pos, BerPosition);
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPWindow_Pos, BerPosition);
-	g_camera3D->CalcScreenPositionFromWorldPosition(m_HPBack_Pos, BerPosition);
-
-	m_levelFontPos = m_HPBer_Pos;
-	m_levelFontPos.x += LEVEL_FONT_ADD_POS_X;
-	m_levelFontPos.y += LEVEL_FONT_ADD_POS_Y;
-
-	//HPバー画像を左寄せに表示する
-	Vector3 BerSizeSubtraction = HPBerSend(HP_BER_SIZE, scale);	//画像の元の大きさ
-	m_HPBer_Pos.x -= BerSizeSubtraction.x;
-	wchar_t wcsbuf[256];
-	std::size_t len = std::strlen(GetName());
-	std::size_t converted = 0;
-	wchar_t* wcstr = new wchar_t[len + 1];
-	mbstowcs_s(&converted, wcstr, len + 1, GetName(), _TRUNCATE);
-	m_Name.SetText(wcstr);
-	m_Name.SetPosition(Vector3(m_HPBer_Pos.x, m_HPBer_Pos.y, 0.0f));
-	//フォントの大きさを設定。
-	m_Name.SetScale(0.5f);
-	//フォントの色を設定。
-	m_Name.SetColor({ 1.0f,0.0f,0.0f,1.0f });
-
-	//HPバーの横に表示するレベル
-	wchar_t level[255];
-	swprintf_s(level, 255, L"Lv%d",Lv);
-	m_fontLv.SetText(level);
-	m_fontLv.SetPosition(m_levelFontPos.x, m_levelFontPos.y,0.0f);
-
-	//HPバーの座標
-	m_HP_Bar.SetPosition(Vector3(m_HPBer_Pos.x, m_HPBer_Pos.y, 0.0f));
-	m_HP_Frame.SetPosition(Vector3(m_HPWindow_Pos.x, m_HPWindow_Pos.y, 0.0f));
-	m_HP_Back.SetPosition(Vector3(m_HPBack_Pos.x, m_HPBack_Pos.y, 0.0f));
-
-	m_HP_Bar.Update();
-	m_HP_Frame.Update();
-	m_HP_Back.Update();
-}
-Vector3 KnightAI::HPBerSend(Vector3 size, Vector3 scale)
-{
-	Vector3 hpBerSize = size;								//画像の元の大きさ
-	Vector3 changeBerSize = Vector3::Zero;					//画像をスケール変換したあとの大きさ
-	Vector3 BerSizeSubtraction = Vector3::Zero;				//画像の元と変換後の差
-
-	changeBerSize.x = hpBerSize.x * scale.x;
-	BerSizeSubtraction.x = hpBerSize.x - changeBerSize.x;
-	BerSizeSubtraction.x /= 2.0f;
-
-	return BerSizeSubtraction;
-}
-
-bool KnightAI::DrawHP()
-{
-	Vector3 toCameraTarget = g_camera3D->GetTarget() - g_camera3D->GetPosition();
-	Vector3 toMush = m_position - g_camera3D->GetPosition();
-	toCameraTarget.y = 0.0f;
-	toMush.y = 0.0f;
-	toCameraTarget.Normalize();
-	toMush.Normalize();
-
-	float cos = Dot(toCameraTarget, toMush);
-	float angle = acos(cos);
-
-	//カメラの後ろにあるなら描画しない
-	Vector3 diff = m_player->GetPosition() - m_position;
-
-	//プレイヤーに向かう距離を計算する
-	float playerdistance = diff.Length();
-
-	if (fabsf(angle) < Math::DegToRad(45.0f) && playerdistance < 800.0f && m_player->GetPosition().y <= 10.0f)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
 	}
 }
 
@@ -1298,7 +1160,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//スキルのアニメーションが始まったら
 	if (wcscmp(eventName, L"SkillAttack_Start") == 0)
 	{
-		//m_Status.Atk += 20;
+		//m_status.m_attackPower += 20;
 		//m_AtkTmingState = LastAtk_State;
 		//剣のコリジョンを生成
 		AtkCollistionFlag = true;
@@ -1441,7 +1303,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 	//スキルのアニメーションで剣を振り終わったら
 	if (wcscmp(eventName, L"SkillAttack_End") == 0)
 	{
-		//m_Status.Atk -= 20;
+		//m_status.m_attackPower -= 20;
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする
@@ -1521,9 +1383,6 @@ void  KnightAI::IsLevelEffect(int oldlevel, int nowlevel)
 		SoundSource* se = NewGO<SoundSource>(0);
 
 		SetAndPlaySoundSource(enSound_Level_UP);
-		/*se->Init(enSound_Level_UP);
-		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);*/
 	}
 	else if (nowlevel < oldlevel)
 	{
@@ -1535,9 +1394,23 @@ void  KnightAI::IsLevelEffect(int oldlevel, int nowlevel)
 		SoundSource* se = NewGO<SoundSource>(0);
 
 		SetAndPlaySoundSource(enSound_Level_Down);
-		/*se->Init(enSound_Level_Down);
-		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
-		se->Play(false);*/
+	}
+}
+
+void KnightAI::CharacterUpperHpBar()
+{
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, Lv);
+		m_enemyHpBar[i]->SetDrawFlag(false);
+		//HPバーを描画する条件を満たしたら
+		if (DrawHP(i))
+		{
+			if (m_game->GetStopFlag() == false && m_game->NowGameState() != enPause)
+			{
+				m_enemyHpBar[i]->SetDrawFlag(true);
+			}
+		}
 	}
 }
 
@@ -1553,21 +1426,6 @@ void KnightAI::Render(RenderContext& rc)
 {
 	if (DarwFlag == true) {
 		m_modelRender.Draw(rc);
-	}
-
-	//スプライトフラグがtureなら
-	if (m_player->GetSpriteFlag())
-	{
-		if (DrawHP())
-		{
-			if (m_game->GetStopFlag() == false && m_game->NowGameState() != enPause)
-			{
-				m_HP_Back.Draw(rc);
-				m_HP_Bar.Draw(rc);
-				m_HP_Frame.Draw(rc);
-				m_fontLv.Draw(rc);
-			}			
-		}
 	}
 }
 

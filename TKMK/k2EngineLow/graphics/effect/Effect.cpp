@@ -19,7 +19,6 @@ namespace nsK2EngineLow {
 	void Effect::Init(const int number)
 	{
 		m_effect = EffectEngine::GetInstance()->LoadEffect(number);
-
 	}
 	void Effect::Play()
 	{

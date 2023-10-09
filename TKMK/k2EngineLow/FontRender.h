@@ -3,12 +3,14 @@ namespace nsK2EngineLow {
 	/// <summary>
 	/// フォントレンダー
 	/// </summary>
-	class FontRender : public Noncopyable
+	class FontRender
 	{
 	public:
-		static const int MAX_TEXT_SIZE = 256;	//最大文字数
-		FontRender();
-		~FontRender();
+		static const int MAX_TEXT_SIZE = 256;
+		~FontRender()
+		{
+
+		}
 
 		/// <summary>
 		/// 表示する文字を設定する
@@ -89,37 +91,29 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
-		/// ピボットを設定する。
-		/// x = 0.5, y = 0.5で画像の中心。
-		/// x = 0.0, y = 0.0で画像の左下。
-		/// x = 1.0, y = 1.0で画像の右上。
+		/// ピボットの中心から値分ずらす。
 		/// </summary>
-		/// <param name="pivot">ピボット</param>
-		void SetPivot(const Vector2& pivot)
+		/// <param name="pivot">オフセット</param>
+		void SetPivotOffSet(const Vector2& offset)
 		{
-			m_pivot = pivot;
+			m_pivotOffSet = offset;
 		}
-
 		/// <summary>
-		/// ピボットを設定する。
-		/// x = 0.5, y = 0.5で画像の中心。
-		/// x = 0.0, y = 0.0で画像の左下。
-		/// x = 1.0, y = 1.0で画像の右上。
+		/// ピボットの中心から値分ずらす。
 		/// </summary>
-		/// <param name="x">X軸のピボット</param>
-		/// <param name="y">Y軸のピボット</param>
-		void SetPivot(const float x, const float y)
+		/// <param name="x">X軸のオフセット</param>
+		/// <param name="y">Y軸のオフセット</param>
+		void SetPivotOffSet(float x, float y)
 		{
-			SetPivot({ x,y });
+			SetPivotOffSet({ x,y });
 		}
-
 		/// <summary>
 		/// ピボットを取得する
 		/// </summary>
 		/// <returns>ピボット</returns>
 		const Vector2& GetPivot() const
 		{
-			return m_pivot;
+			return m_pivotOffSet;
 		}
 
 		/// <summary>
@@ -137,7 +131,7 @@ namespace nsK2EngineLow {
 		/// <param name="g">緑</param>
 		/// <param name="b">青</param>
 		/// <param name="a">アルファ</param>
-		void SetColor(const float r, const float g, const float b, const float a)
+		void SetColor(float r, float g, float b, float a)
 		{
 			SetColor({ r,g,b,a });
 		}
@@ -156,7 +150,7 @@ namespace nsK2EngineLow {
 		/// <param name="isDrawShadow">影を描画する？</param>
 		/// <param name="shadowOffset">影を描画するときのピクセルのオフセット量</param>
 		/// <param name="shadowColor">影の色</param>
-		void SetShadowParam(const bool isDrawShadow, const float shadowOffset, const Vector4& shadowColor)
+		void SetShadowParam(bool isDrawShadow, float shadowOffset, const Vector4& shadowColor)
 		{
 			m_font.SetShadowParam(isDrawShadow, shadowOffset, shadowColor);
 		}
@@ -165,12 +159,12 @@ namespace nsK2EngineLow {
 		/// 描画処理
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void Draw(RenderContext& rc);
+		void Draw(RenderContext& rc, const bool drawTiming = false,const int viewportNo = -1);
 
 		void OnRenderFont(RenderContext& rc)
 		{
 			m_font.Begin(rc);
-			m_font.Draw(m_text, Vector2(m_position.x, m_position.y), m_color, m_rotation, m_scale, m_pivot);
+			m_font.Draw(m_text, Vector2(m_position.x, m_position.y), m_color, m_rotation, m_scale, m_pivotOffSet);
 			m_font.End(rc);
 		}
 
@@ -179,8 +173,8 @@ namespace nsK2EngineLow {
 		float		m_scale = 1.0f;						//大きさ
 		Vector4		m_color = g_vec4White;				//文字の色。デフォルトは白
 		float		m_rotation = 0.0f;					//回転
-		Vector2		m_pivot = Sprite::DEFAULT_PIVOT;	//ピボット
-		wchar_t		m_text[MAX_TEXT_SIZE];				//文字
+		Vector2		m_pivotOffSet = Sprite::DEFAULT_PIVOT;	//オフセット(ピボット中心)
+		wchar_t		m_text[MAX_TEXT_SIZE]{};				//文字
 		Font		m_font;								//フォント
 	};
 }

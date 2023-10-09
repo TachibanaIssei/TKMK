@@ -54,16 +54,34 @@ bool GameCamera::Start()
 {
 	//ゲームのインスタンスを探す
 	game = FindGO<Game>("game");
-	//プレイヤーのインスタンスを探す
-	player = FindGO<Player>("player");
-	player_name = player->GetName();
+
+	//スプリングカメラ初期化時に使用するカメラの番号
+	int cameraNumber = 0;
+	float targetToPos = CAMERA_POS_X;
+
+	//1画面のときか左の画面を映すカメラのとき
+	if (m_splitCameraLR == enSplitCamera_Solo || m_splitCameraLR == enSplitCamera_Left) {
+		//プレイヤーのインスタンスを探す
+		player = FindGO<Player>("player");
+		player_name = player->GetName();
+		m_playerNumber = enPlayerNumber_1P;
+	}
+	//右の画面を映すカメラのとき
+	else {
+		//プレイヤーのインスタンスを探す
+		player = FindGO<Player>("player2");
+		player_name = player->GetName();
+		cameraNumber = 1;
+		m_playerNumber = enPlayerNumber_2P;
+		targetToPos *= -1;
+	}
 
 	m_actors = game->GetActors();
-	for (auto player : m_actors)
+	for (auto actor : m_actors)
 	{
-		if (player->IsMatchName(player_name) == true)
+		if (actor->IsMatchName(player_name) == true)
 		{
-			player_actor = player;
+			player_actor = actor;
 		}
 	}
 
@@ -74,22 +92,19 @@ bool GameCamera::Start()
 	m_toCameraPos.Set(0.0f, 50.0f, -160.0f);
 	//カメラをプレイヤーの後ろにするときに使う
 	m_position = m_toCameraPos;
-	g_camera3D->SetNear(1.0f);
-	g_camera3D->SetFar(10000.0f);
 	m_cameraCollisionSolver.Init(1.0f);
 	m_cameraState = enGameState;
 
 	//ばねカメラの初期化。
 	m_springCamera.Init(
-		*g_camera3D,		//ばねカメラの処理を行うカメラを指定する。
-		1000.0f,			//カメラの移動速度の最大値。
-		false,				//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
-		1.0f				//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
+		*g_camera3D[cameraNumber],		//ばねカメラの処理を行うカメラを指定する。
+		1000.0f,						//カメラの移動速度の最大値。
+		false,							//カメラと地形とのあたり判定を取るかどうかのフラグ。trueだとあたり判定を行う。
+		1.0f							//カメラに設定される球体コリジョンの半径。第３引数がtrueの時に有効になる。
 	);
 
-	
 	//最初にキャラの背中を映すようにする
-	CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
+	CameraTarget(TARGETPOS_YUP, targetToPos, CAMERA_POS_Y, player_actor,true);
 	m_springCamera.Refresh();
 
 	return true;
@@ -102,15 +117,10 @@ void GameCamera::Update()
 		return;
 	}
 
-
-
-
 	//プレイヤーがやられてリスポーンするまでカウントダウンの処理をしているなら
 	if (player_actor->GetRespawnFlag()==true)
 	{
 		m_springCamera.Refresh();
-		//カメラの更新。
-		//m_springCamera.Update();
 		//前フレーム
 		PlayerRespawnFlag = true;
 
@@ -118,7 +128,7 @@ void GameCamera::Update()
 	}
 
 	//リスポーンしたらカメラを戻す
-	if (player_actor->GetRespawnFlag()==false&& PlayerRespawnFlag==true) {
+	if (player_actor->GetRespawnFlag()==false && PlayerRespawnFlag==true) {
 		CameraTarget(TARGETPOS_YUP ,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 
 		m_springCamera.Refresh();
@@ -145,9 +155,6 @@ void GameCamera::Update()
 		
 	}
 
-	
-		
-
 	//カメラステート管理
 	StateControl();
 }
@@ -156,13 +163,13 @@ void GameCamera::StateControl()
 {
 	switch (m_enCameraState)
 	{
-	case m_enNomarlCameraState:
+	case enNormalCameraState:
 		NomarlCamera();
 		break;
-	case m_enUltRotCameraState:
+	case enUltRotCameraState:
 		UltRotCamera();
 		break;
-	case m_enChaseCameraState:
+	case enChaseCameraState:
 		ChaseCamera();
 		break;
 	default:
@@ -188,7 +195,7 @@ void GameCamera::NomarlCamera()
 				//必殺技フラグをたてる
 				KnightUltFlag = true;
 				//カメラステートを回転ステートに移る
-				m_enCameraState = m_enUltRotCameraState;
+				m_enCameraState = enUltRotCameraState;
 
 				ultactor = actor;
 
@@ -204,7 +211,7 @@ void GameCamera::NomarlCamera()
 	//	//{
 	//	//	KnightUltFlag = true;
 	//	//	//カメラステートを回転ステートに移る
-	//	//	m_enCameraState = m_enUltRotCameraState;
+	//	//	m_enCameraState = enUltRotCameraState;
 	//	//	ultactor = actor;
 
 	//	//	return;
@@ -230,7 +237,7 @@ void GameCamera::NomarlCamera()
 
 	//Yボタンが押されたら
 	//カメラの視点を最初の状態に戻す
-	if (g_pad[0]->IsTrigger(enButtonRB3))
+	if (g_pad[m_playerNumber]->IsTrigger(enButtonRB3))
 	{
 		CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 	}
@@ -264,7 +271,7 @@ void GameCamera::NomarlCamera()
 //雷に打たれていないキャラを探す
 void GameCamera::UltRotCamera()
 {
-	//AIの場合はこの処理だけする
+	//プレイヤーの場合はこの処理だけする
 	//一回だけの処理
 	if (SetCameraCharFrontFlag == false) {
 		//プレイヤーを下からの見上げるようにする
@@ -275,13 +282,14 @@ void GameCamera::UltRotCamera()
 		//揺れる力に掛ける値を決める
 		setShakeMulPower(ultactor->GetLevel());
 	}
-	//プレイヤー以外ならこの先の処理はしない
-	if (ultactor->GetName() != player_actor->GetName())
+	//必殺技打ったキャラが自分じゃないとき
+	if (!ultactor->IsMatchName(player_actor->GetName()))
 	{
 		//誰もいなかったら視点を戻す
 		if (ultactor->GetNoTargetActor() == true)
+		{
 			GameCameraUltEnd();
-		//
+		}
 		if (ultactor->GetChaseCameraFlag() == true) {
 			return;
 		}
@@ -291,7 +299,7 @@ void GameCamera::UltRotCamera()
 			SetCameraCharFrontFlag = false;
 			m_springCamera.Refresh();
 			CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
-			m_enCameraState = m_enNomarlCameraState;
+			m_enCameraState = enNormalCameraState;
 			return;
 		}
 		
@@ -314,7 +322,7 @@ void GameCamera::UltRotCamera()
 
 				wizardUlt = FindGO<WizardUlt>("wizardUlt");
 				//見るキャラがきまったら抜け出す
-				m_enCameraState = m_enChaseCameraState;
+				m_enCameraState = enChaseCameraState;
 				//揺れる力を初期化する
 				shakePower = SETSHAKEPOWERFORAI;
 				return;
@@ -363,7 +371,7 @@ void GameCamera::UltRotCamera()
 	//if (knightUlt != nullptr)
 	//{
 	//	m_springCamera.Refresh();
-	//	m_enCameraState = m_enChaseCameraState;
+	//	m_enCameraState = enChaseCameraState;
 	//}
 	//else if (sita < 175.0f) {
 	//	KnightUltCamera(ultactor,false);
@@ -371,7 +379,7 @@ void GameCamera::UltRotCamera()
 	//else
 	//{
 	//	m_springCamera.Refresh();
-	//	m_enCameraState = m_enChaseCameraState;
+	//	m_enCameraState = enChaseCameraState;
 	//}
 
 
@@ -379,8 +387,6 @@ void GameCamera::UltRotCamera()
 
 void GameCamera::ChaseCamera()
 {
-	
-
 	wizardUlt = FindGO<WizardUlt>("wizardUlt");
 
 	if (wizardUlt != nullptr)
@@ -414,15 +420,15 @@ void GameCamera::ChaseCamera()
 void GameCamera::FollowThePlayer()
 {
 	//注視点の計算
-	TargetPos = player->GetCharPosition();
+	TargetPos = player->GetCharcterPosition();
 
 	TargetPos.y += TARGETPOS_YUP;
 
 	Vector3 toCameraPosOld = m_toCameraPos;
 
 	//パッドの入力を使ってカメラを回す。
-	float x = g_pad[0]->GetRStickXF();
-	float y = g_pad[0]->GetRStickYF();
+	float x = g_pad[m_playerNumber]->GetRStickXF();
+	float y = g_pad[m_playerNumber]->GetRStickYF();
 
 	//Y軸周りの回転
 	Quaternion qRot;
@@ -692,7 +698,7 @@ void GameCamera::GameCameraUltEnd() {
 	//ultactor->UltSkillEnd();
 
 	//全キャラのカメラで見たかのフラグをfalseにする
-	/*for (auto actor : game->GetActors())
+	/*for (auto actor : m_game->GetActors())
 	{
 		actor->ChangeCameraSawCharFlag(false);
 	}*/
@@ -704,7 +710,7 @@ void GameCamera::GameCameraUltEnd() {
 	//gameにターゲットのみを映すようにするよう伝える
 	game->ToggleObjectActive(false, victim_actor);
 
-	m_enCameraState = m_enNomarlCameraState;
+	m_enCameraState = enNormalCameraState;
 
 }
 

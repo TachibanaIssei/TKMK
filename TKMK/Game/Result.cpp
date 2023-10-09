@@ -19,7 +19,7 @@ namespace ResultSpriteConst
 	const Vector3 GAME_FINISH_POS = Vector3(425.0f, -450.0f, 0.0f);				//"ゲームを終了"の位置
 
 	const Vector3 RESULT_LOGO_POS = Vector3(0.0f, 400.0f, 0.0f);				//リザルトのロゴの座標
-	
+
 	const Vector3 POINTS_ALIGN = { 280.0f,-135.0f,0.0f };						//ポイントの"p"を揃える
 	const Vector3 No1POINTS_ALIGN = { 280.0f,-148.0f,0.0f };					//一番上のポイントの"p"を揃える
 	const Vector3 POINTS_SCALE = { 1.0f,1.0f,1.0f };							//"p"の画像の拡大率
@@ -30,12 +30,12 @@ namespace ResultSpriteConst
 
 	const Vector3 PLAYER_NAME_ALIGN = { 20.0f,0.0f,0.0f };						//プレイヤー名をCPUに揃えるために加算する値
 	const Vector3 LOSER_PLAYER_NAME_ALIGN = { 0.0f,-3.0f,0.0f };				//プレイヤー名をCPUに揃えるために加算する値
-	
-	const Vector3 NO1_PLAYER_NAME_SCALE = { 1.2f,1.2f,1.0f };					//一位の名前の拡大率
-	const Vector3 LOSER_PLAYER_NAME_SCALE = { 0.85f,0.85f,1.0f };				//それ以外の名前の拡大率
 
-	const float NAME_WIDTH = 278.0f;											//プレイヤーとCPUの名前の幅
-	const float NAME_HEIGHT = 118.0f;											//プレイヤーとCPUの名前の高さ
+	const Vector3 NO1_PLAYER_NAME_SCALE = { 1.5f,1.5f,1.0f };					//一位の名前の拡大率
+	const Vector3 LOSER_PLAYER_NAME_SCALE = { 1.3f,1.3f,1.0f };					//それ以外の名前の拡大率
+
+	const float NAME_WIDTH = 203.0f;											//プレイヤーとCPUの名前の幅
+	const float NAME_HEIGHT = 64.0f;											//プレイヤーとCPUの名前の高さ
 
 	const Vector3 KNIGHT_FACE_ADD_POS = { -210.0f,0.0f,0.0f };					//剣士の顔の位置を調整するために加算する座標
 	const Vector3 NO1_KNIGHT_FACE_ADD_POS = { -210.0f,3.0f,0.0f };				//剣士の顔の位置を調整するために加算する座標
@@ -43,7 +43,7 @@ namespace ResultSpriteConst
 	const float KNIGHT_FACE_WIDTH = 88.0f;										//剣士の顔の幅
 	const float KNIGHT_FACE_HEIGHT = 122.0f;									//剣士の顔の高さ
 
-	const float POINTS_UNIT_WIDTH  = 54.0f;										//ポイントの単位の幅
+	const float POINTS_UNIT_WIDTH = 54.0f;										//ポイントの単位の幅
 	const float POINTS_UNIT_HEIGHT = 69.0f;										//ポイントの単位の高さ
 
 	const Vector3 NO1_NAME_PLATE_ADD_POS = { 57.0f,-120.0f,0.0f };				//一位の名前の背景の画像に足す座標
@@ -70,6 +70,13 @@ namespace ResultSpriteConst
 	const float KNIGHT_ROT = 150.0f;						//剣士の回転
 	const Vector3 BACK_MODEL_POS = { 0.0f,0.0f,0.0f };		//背景の座標
 
+	const std::array<Vector3, 4> KNIGHTS_POS = {
+		KNIGHT_POS,
+		KNIGHT_POS + Vector3(-80.0f,0.0f,60.0f),
+		KNIGHT_POS + Vector3(-5.0f,0.0f,60.0f),
+		KNIGHT_POS + Vector3(40.0f,0.0f,60.0f),
+	};
+
 	const Vector3 FIREWORKS_EFFECT_POS = { -80.0f,0.0f,200.0f };
 
 	const Vector3 SKYCUBE_POS = { 0.0f,-900.0f,-900.0f };					//スカイキューブの座標
@@ -94,10 +101,19 @@ Result::~Result()
 
 bool Result::Start()
 {
-	fade = FindGO<Fade>("fade");
-	fade->StartFadeOut(1.0f);
+	//音の読み込み
+	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM1, "Assets/sound/resultBGM/Result1.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM2, "Assets/sound/resultBGM/Result2.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM3, "Assets/sound/resultBGM/Result3.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultDramRoll, "Assets/sound/resultBGM/dram_roll.wav");
+	g_soundEngine->ResistWaveFileBank(enSound_ResultDramJaan, "Assets/sound/resultBGM/dram_jaan.wav");
 
+	fade = FindGO<Fade>("fade");
 	Game* game = FindGO<Game>("game");
+	m_gameMode = g_renderingEngine->GetGameMode();
+	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
+
+	fade->StartFadeOut(1.0f);
 
 	game->GetActorPoints(charPoints.data());
 
@@ -105,13 +121,13 @@ bool Result::Start()
 	//ポイントを代入
 	for (i = 0; i < 4; i++)
 	{
-		m_playerScore[i] = { charPoints[i],i+1};
+		m_playerScore[i] = { charPoints[i],i + 1 };
 	}
 
 	//順位付け
-	for (j = 0; j < PLAYER; j++)
+	for (j = 0; j < m_maxPlayer; j++)
 	{
-		for (k = 0; k < PLAYER; k++)
+		for (k = 0; k < m_maxPlayer; k++)
 		{
 			if (m_playerScore[j].Point < m_playerScore[k].Point)
 			{
@@ -120,9 +136,9 @@ bool Result::Start()
 		}
 	}
 
-	for (l = 0; l < PLAYER; l++)
+	for (l = 0; l < m_maxPlayer; l++)
 	{
-		for (m = 0; m < PLAYER; m++)
+		for (m = 0; m < m_maxPlayer; m++)
 		{
 			if (m_playerScore[l].Point == m_playerScore[m].Point)
 			{
@@ -130,13 +146,13 @@ bool Result::Start()
 				{
 					m_playerScore[m].Rank += 1;
 				}
-				
+
 			}
 		}
 	}
 
 	DeleteGO(game);
-	
+
 	//エフェクトの読み込み
 	EffectEngine::GetInstance()->ResistEffect(EnEFK::enEffect_FireWorks, u"Assets/effect/Neutral_Enemy/fireworks.efk");
 
@@ -153,31 +169,9 @@ bool Result::Start()
 	InitModel();
 	InitSkyCube();
 
-	//音の読み込み
-	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM1, "Assets/sound/resultBGM/Result1.wav");
-	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM2, "Assets/sound/resultBGM/Result2.wav");
-	g_soundEngine->ResistWaveFileBank(enSound_ResultBGM3, "Assets/sound/resultBGM/Result3.wav");
-	g_soundEngine->ResistWaveFileBank(enSound_ResultDramRoll, "Assets/sound/resultBGM/dram_roll.wav");
-	g_soundEngine->ResistWaveFileBank(enSound_ResultDramJaan, "Assets/sound/resultBGM/dram_jaan.wav");
-
 	m_bgm = NewGO<SoundSource>(0);
 
-	switch (m_playerScore[0].Rank)
-	{
-	case 1:
-		m_bgm->Init(enSound_ResultBGM1);
-		m_stayCharaState = enCharacterState_Win;
-		m_fireWorksPlayFlag = true;
-		break;
-	case 4:
-		m_bgm->Init(enSound_ResultBGM3);
-		m_stayCharaState = enCharacterState_4th;
-		break;
-	default:
-		m_bgm->Init(enSound_ResultBGM2);
-		m_stayCharaState = enCharacterState_Lose;
-		break;
-	}
+	SetCharacterState();
 
 	SoundSource* dramJaan = NewGO<SoundSource>(0);
 	dramJaan->Init(enSound_ResultDramRoll);
@@ -190,14 +184,18 @@ bool Result::Start()
 void Result::Update()
 {
 	PlayAnimation();
-	m_knightModel.Update();
 	m_camera.Update();
+
+	for (int i = 0; i < m_maxPlayer; i++)
+	{
+		m_knightModel[i].Update();
+	}
 
 	//最初の処理
 	if (m_change == enChange_first)
 	{
 		Rank();
-		if (fade->GetCurrentAlpha()<=0.0f)
+		if (fade->GetCurrentAlpha() <= 0.0f)
 		{
 			m_change = enChange_4th;
 		}
@@ -212,6 +210,80 @@ void Result::Update()
 
 	//線形補間中の処理
 	MoveLerp();
+}
+
+void Result::InitNameSprite()
+{
+	m_playerName.Init("Assets/sprite/gameUI/P1.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+
+	if (m_gameMode == RenderingEngine::enGameMode_SoloPlay)
+	{
+		m_cpuName1.Init("Assets/sprite/gameUI/CPU1.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName2.Init("Assets/sprite/gameUI/CPU2.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName3.Init("Assets/sprite/gameUI/CPU3.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+	}
+	else if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	{
+		m_cpuName1.Init("Assets/sprite/gameUI/P2.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName2.Init("Assets/sprite/gameUI/CPU1.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName3.Init("Assets/sprite/gameUI/CPU2.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+	}
+	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+	{
+		m_cpuName1.Init("Assets/sprite/gameUI/P2.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName2.Init("Assets/sprite/gameUI/P3.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName3.Init("Assets/sprite/gameUI/CPU1.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+	}
+	else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
+	{
+		m_cpuName1.Init("Assets/sprite/gameUI/P2.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName2.Init("Assets/sprite/gameUI/P3.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+		m_cpuName3.Init("Assets/sprite/gameUI/P4.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
+	}
+
+	//"Player"
+	m_playerName.SetPosition(m_spriteLerpStartPos[m_playerScore[0].Rank - 1]);
+	m_playerName.SetScale(ResultSpriteConst::LOSER_PLAYER_NAME_SCALE);
+	m_playerName.Update();
+	//"CPU1"
+	m_cpuName1.SetPosition(m_spriteLerpStartPos[m_playerScore[1].Rank - 1]);
+	m_cpuName1.SetScale(ResultSpriteConst::LOSER_PLAYER_NAME_SCALE);
+	m_cpuName1.Update();
+	//"CPU2"
+	m_cpuName2.SetPosition(m_spriteLerpStartPos[m_playerScore[2].Rank - 1]);
+	m_cpuName2.SetScale(ResultSpriteConst::LOSER_PLAYER_NAME_SCALE);
+	m_cpuName2.Update();
+	//"CPU3"
+	m_cpuName3.SetPosition(m_spriteLerpStartPos[m_playerScore[3].Rank - 1]);
+	m_cpuName3.SetScale(ResultSpriteConst::LOSER_PLAYER_NAME_SCALE);
+	m_cpuName3.Update();
+
+	for (int i = 0; i < m_maxPlayer; i++)
+	{
+		if (m_playerScore[i].Rank == 1)
+		{
+			switch (m_playerScore[i].NameNum)
+			{
+			case(1):
+				m_playerName.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
+				m_playerName.Update();
+				break;
+			case(2):
+				m_cpuName1.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
+				m_cpuName1.Update();
+				break;
+			case(3):
+				m_cpuName2.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
+				m_cpuName2.Update();
+				break;
+			case(4):
+				m_cpuName3.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
+				m_cpuName3.Update();
+				break;
+			}
+		}
+
+	}
 }
 
 void Result::InitSprite()
@@ -250,8 +322,8 @@ void Result::InitSprite()
 	m_gameoverST.SetScale(g_vec3One);
 	m_gameoverST.SetMulColor(m_alphaColorUnSelect);
 	m_gameoverST.Update();
-	
-	for (int i = 0; i < PLAYER; i++)
+
+	for (int i = 0; i < m_maxPlayer; i++)
 	{
 		//剣士の顔の初期化
 		switch (i)
@@ -262,24 +334,23 @@ void Result::InitSprite()
 
 			m_gameRank[i].Init("Assets/sprite/Result/Number_1st.DDS", ResultSpriteConst::GAMERANK_WIDTH, ResultSpriteConst::GAMERANK_HEIGHT);
 			m_gameRank[i].SetPosition(m_spriteLerpStartPos[i]);
-			//m_gameRank[i].SetScale(ResultSpriteConst::GAMERANK_1ST_SCALE);
 			break;
 		case(1):
-			m_knightFace[i].Init("Assets/sprite/Result/KnightYellowFace.DDS", ResultSpriteConst::KNIGHT_FACE_WIDTH, ResultSpriteConst::KNIGHT_FACE_HEIGHT);
+			m_knightFace[i].Init("Assets/sprite/Result/KnightRedFace.DDS", ResultSpriteConst::KNIGHT_FACE_WIDTH, ResultSpriteConst::KNIGHT_FACE_HEIGHT);
 			m_knightFace[i].SetPosition(m_spriteLerpStartPos[i]);
 
 			m_gameRank[i].Init("Assets/sprite/Result/Number_2nd.DDS", ResultSpriteConst::GAMERANK_WIDTH, ResultSpriteConst::GAMERANK_HEIGHT);
 			m_gameRank[i].SetPosition(m_spriteLerpStartPos[i]);
 			break;
 		case(2):
-			m_knightFace[i].Init("Assets/sprite/Result/KnightGreenFace.DDS", ResultSpriteConst::KNIGHT_FACE_WIDTH, ResultSpriteConst::KNIGHT_FACE_HEIGHT);
+			m_knightFace[i].Init("Assets/sprite/Result/KnightYellowFace.DDS", ResultSpriteConst::KNIGHT_FACE_WIDTH, ResultSpriteConst::KNIGHT_FACE_HEIGHT);
 			m_knightFace[i].SetPosition(m_spriteLerpStartPos[i]);
 
 			m_gameRank[i].Init("Assets/sprite/Result/Number_3rd.DDS", ResultSpriteConst::GAMERANK_WIDTH, ResultSpriteConst::GAMERANK_HEIGHT);
 			m_gameRank[i].SetPosition(m_spriteLerpStartPos[i]);
 			break;
 		case(3):
-			m_knightFace[i].Init("Assets/sprite/Result/KnightRedFace.DDS", ResultSpriteConst::KNIGHT_FACE_WIDTH, ResultSpriteConst::KNIGHT_FACE_HEIGHT);
+			m_knightFace[i].Init("Assets/sprite/Result/KnightGreenFace.DDS", ResultSpriteConst::KNIGHT_FACE_WIDTH, ResultSpriteConst::KNIGHT_FACE_HEIGHT);
 			m_knightFace[i].SetPosition(m_spriteLerpStartPos[i]);
 
 			m_gameRank[i].Init("Assets/sprite/Result/Number_4th.DDS", ResultSpriteConst::GAMERANK_WIDTH, ResultSpriteConst::GAMERANK_HEIGHT);
@@ -314,51 +385,7 @@ void Result::InitSprite()
 		m_pointsUnit[i].Update();
 	}
 
-	//Playerの名前
-	//"Player"
-	m_playerName.Init("Assets/sprite/Result/Player.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
-	m_playerName.SetPosition(m_spriteLerpStartPos[m_playerScore[0].Rank - 1]);
-	m_playerName.SetScale(ResultSpriteConst::LOSER_PLAYER_NAME_SCALE);
-	m_playerName.Update();
-	//"CPU1"
-	m_cpuName1.Init("Assets/sprite/Result/CPU1.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
-	m_cpuName1.SetPosition(m_spriteLerpStartPos[m_playerScore[1].Rank - 1]);
-	m_cpuName1.Update();
-	//"CPU2"
-	m_cpuName2.Init("Assets/sprite/Result/CPU2.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
-	m_cpuName2.SetPosition(m_spriteLerpStartPos[m_playerScore[2].Rank - 1]);
-	m_cpuName2.Update();
-	//"CPU3"
-	m_cpuName3.Init("Assets/sprite/Result/CPU3.DDS", ResultSpriteConst::NAME_WIDTH, ResultSpriteConst::NAME_HEIGHT);
-	m_cpuName3.SetPosition(m_spriteLerpStartPos[m_playerScore[3].Rank - 1]);
-	m_cpuName3.Update();
-
-	for (int i = 0; i < PLAYER; i++)
-	{
-		if (m_playerScore[i].Rank == 1)
-		{
-			switch (m_playerScore[i].NameNum)
-			{
-			case(1):
-				m_playerName.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
-				m_playerName.Update();
-				break;
-			case(2):
-				m_cpuName1.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
-				m_cpuName1.Update();
-				break;
-			case(3):
-				m_cpuName2.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
-				m_cpuName2.Update();
-				break;
-			case(4):
-				m_cpuName3.SetScale(ResultSpriteConst::NO1_PLAYER_NAME_SCALE);
-				m_cpuName3.Update();
-				break;
-			}
-		}
-
-	}
+	InitNameSprite();
 
 	//選択のカーソル
 	m_choiceCursor.Init("Assets/sprite/Select/pointer_black.DDS", 220.0f, 220.0f);
@@ -389,21 +416,43 @@ void Result::InitModel()
 	m_backWall.Init("Assets/modelData/background/stadium05_Wall.tkm");
 	m_backWall.SetPosition(ResultSpriteConst::BACK_MODEL_POS);
 
+	m_knightModel[0].Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_knightModel[1].Init("Assets/modelData/character/Knight/Knight_Red2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_knightModel[2].Init("Assets/modelData/character/Knight/Knight_Yellow2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_knightModel[3].Init("Assets/modelData/character/Knight/Knight_Green2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	//剣士
-	m_knightModel.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
-	m_knightModel.SetPosition(ResultSpriteConst::KNIGHT_POS);
-
-	//正面を向く
 	Quaternion rot;
 	rot.SetRotationDegY(ResultSpriteConst::KNIGHT_ROT);
-	m_knightModel.SetRotation(rot);
-	m_knightModel.SetScale(1.3f,1.3f,1.3f);
+	for (int i = 0; i < m_maxPlayer; i++)
+	{
+		//正面を向く
+		m_knightModel[i].SetRotation(rot);
+		m_knightModel[i].SetScale(1.3f, 1.3f, 1.3f);
 
-	m_charaState = enCharacterState_Idle;
+		if (m_playerScore[i].Rank == 1)
+		{
+			m_knightModel[i].SetPosition(ResultSpriteConst::KNIGHTS_POS[0]);
+		}
+		else if (m_playerScore[i].Rank == 2)
+		{
+			m_knightModel[i].SetPosition(ResultSpriteConst::KNIGHTS_POS[1]);
+		}
+		else if (m_playerScore[i].Rank == 3)
+		{
+			m_knightModel[i].SetPosition(ResultSpriteConst::KNIGHTS_POS[2]);
+		}
+		else
+		{
+			m_knightModel[i].SetPosition(ResultSpriteConst::KNIGHTS_POS[3]);
+		}
+	}
 
 	m_backGround.Update();
 	m_backWall.Update();
-	m_knightModel.Update();
+	for (int i = 0; i < m_maxPlayer; i++)
+	{
+		m_knightModel[i].Update();
+	}
 }
 
 void Result::InitSkyCube()
@@ -434,6 +483,74 @@ void Result::SetCamera()
 	m_camera.Update();
 }
 
+void Result::SetCharacterState()
+{
+	bool winBGMFlag = false;
+	for (int i = 0; i < m_gameMode; i++)
+	{
+		if (m_playerScore[i].Rank == 1)
+		{
+			m_bgm->Init(enSound_ResultBGM1);
+			m_stayCharaState[i] = enCharacterState_Win;
+			m_fireWorksPlayFlag = true;
+			winBGMFlag = true;
+		}
+		else if (m_playerScore[i].Rank == 4)
+		{
+			m_bgm->Init(enSound_ResultBGM3);
+			m_stayCharaState[i] = enCharacterState_4th;
+		}
+		else
+		{
+			m_bgm->Init(enSound_ResultBGM2);
+			m_stayCharaState[i] = enCharacterState_Lose;
+		}
+	}
+
+	int playerCount = 3;
+	if (m_gameMode != RenderingEngine::enGameMode_SoloPlay)
+	{
+		if (winBGMFlag)
+		{
+			m_bgm->Init(enSound_ResultBGM1);
+		}
+		else
+		{
+			m_bgm->Init(enSound_ResultBGM3);
+		}
+
+		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+		{
+			playerCount = 2;
+		}
+		else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+		{
+			playerCount = 3;
+		}
+		else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			playerCount = 4;
+		}
+	}
+
+	//CPUのステートを設定
+	for (int i = playerCount; i < m_maxPlayer; i++)
+	{
+		if (m_playerScore[i].Rank == 1)
+		{
+			m_stayCharaState[i] = enCharacterState_Win;
+		}
+		else if (m_playerScore[i].Rank == 4)
+		{
+			m_stayCharaState[i] = enCharacterState_4th;
+		}
+		else
+		{
+			m_stayCharaState[i] = enCharacterState_Lose;
+		}
+	}
+}
+
 void Result::Rank()
 {
 	wchar_t Rank1[256];
@@ -441,7 +558,7 @@ void Result::Rank()
 	wchar_t Rank3[256];
 	wchar_t Rank4[256];
 
-	for (int i = 0; i < PLAYER; i++)
+	for (int i = 0; i < m_maxPlayer; i++)
 	{
 		switch (m_playerScore[i].Rank)
 		{
@@ -449,33 +566,33 @@ void Result::Rank()
 			swprintf(Rank1, L"%2d", m_playerScore[i].Point);
 			m_playerRank1.SetText(Rank1);
 			m_playerRank1.SetPosition(m_lerpStartPos[i]);
-			m_playerRank1.SetColor(g_vec4Black);
+			m_playerRank1.SetColor(g_vec4White);
 			m_playerRank1.SetScale(ResultSpriteConst::NO1_WORD_SCALE);
-			m_playerRank1.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
+			m_playerRank1.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4Black);
 			break;
 		case 2:
 			swprintf(Rank2, L"%2d", m_playerScore[i].Point);
 			m_playerRank2.SetText(Rank2);
 			m_playerRank2.SetPosition(m_lerpStartPos[i]);
-			m_playerRank2.SetColor(g_vec4Black);
+			m_playerRank2.SetColor(g_vec4White);
 			m_playerRank2.SetScale(ResultSpriteConst::LOSER_WORD_SCALE);
-			m_playerRank2.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
+			m_playerRank2.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4Black);
 			break;
 		case 3:
 			swprintf(Rank3, L"%2d", m_playerScore[i].Point);
 			m_playerRank3.SetText(Rank3);
 			m_playerRank3.SetPosition(m_lerpStartPos[i]);
-			m_playerRank3.SetColor(g_vec4Black);
+			m_playerRank3.SetColor(g_vec4White);
 			m_playerRank3.SetScale(ResultSpriteConst::LOSER_WORD_SCALE);
-			m_playerRank3.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
+			m_playerRank3.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4Black);
 			break;
 		case 4:
 			swprintf(Rank4, L"%2d", m_playerScore[i].Point);
 			m_playerRank4.SetText(Rank4);
 			m_playerRank4.SetPosition(m_lerpStartPos[i]);
-			m_playerRank4.SetColor(g_vec4Black);
+			m_playerRank4.SetColor(g_vec4White);
 			m_playerRank4.SetScale(ResultSpriteConst::LOSER_WORD_SCALE);
-			m_playerRank4.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4White);
+			m_playerRank4.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4Black);
 			break;
 		}
 	}
@@ -591,7 +708,7 @@ void Result::MovePointFont()
 void Result::MoveName()
 {
 	//現在のステートが何位の移動を行うものか判定
-	for (int i = 0; i < PLAYER; i++)
+	for (int i = 0; i < m_maxPlayer; i++)
 	{
 		if (m_playerScore[i].Rank - 1 == m_change)
 		{
@@ -601,20 +718,19 @@ void Result::MoveName()
 		}
 	}
 
-	m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_spriteLerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);	
+	m_spriteLerpMoving[m_nowMoveRank].Lerp(m_complement, m_spriteLerpStartPos[m_nowMoveRank], m_spriteLerpMoveEnd[m_nowMoveRank]);
 
 	switch (m_nowMoveCharacter)
 	{
 	case(1):
+		m_playerName.SetPosition(m_spriteLerpMoving[m_nowMoveRank] + ResultSpriteConst::LOSER_PLAYER_NAME_ALIGN);
 		if (m_playerScore[0].Rank != 1)
 		{
-			m_playerName.SetPosition(m_spriteLerpMoving[m_nowMoveRank] + ResultSpriteConst::LOSER_PLAYER_NAME_ALIGN);
 			m_knightFace[0].SetPosition(m_spriteLerpMoving[m_nowMoveRank] + ResultSpriteConst::KNIGHT_FACE_ADD_POS);
 			m_knightFace[0].SetScale(ResultSpriteConst::LOSER_KNIGHT_FACE_SCALE);
 		}
 		else
 		{
-			m_playerName.SetPosition(m_spriteLerpMoving[m_nowMoveRank] + ResultSpriteConst::PLAYER_NAME_ALIGN);
 			m_knightFace[0].SetPosition(m_spriteLerpMoving[m_nowMoveRank] + ResultSpriteConst::NO1_KNIGHT_FACE_ADD_POS);
 		}
 		break;
@@ -666,20 +782,23 @@ void Result::MoveName()
 
 void Result::PlayAnimation()
 {
-	switch (m_charaState)
+	for (int i = 0; i < m_maxPlayer; i++)
 	{
-	case(enCharacterState_Idle):
-		m_knightModel.PlayAnimation(enAnimationClip_Idle, 0.1f);
-		break;
-	case(enCharacterState_Win):
-		m_knightModel.PlayAnimation(enAnimationClip_Win, 0.5f);
-		break;
-	case(enCharacterState_Lose):
-		m_knightModel.PlayAnimation(enAnimationClip_Lose, 0.5f);
-		break;
-	case(enCharacterState_4th):
-		m_knightModel.PlayAnimation(enAnimationClip_4th, 0.5f);
-		break;
+		switch (m_charaState[i])
+		{
+		case(enCharacterState_Idle):
+			m_knightModel[i].PlayAnimation(enAnimationClip_Idle, 0.1f);
+			break;
+		case(enCharacterState_Win):
+			m_knightModel[i].PlayAnimation(enAnimationClip_Win, 0.5f);
+			break;
+		case(enCharacterState_Lose):
+			m_knightModel[i].PlayAnimation(enAnimationClip_Lose, 0.5f);
+			break;
+		case(enCharacterState_4th):
+			m_knightModel[i].PlayAnimation(enAnimationClip_4th, 0.5f);
+			break;
+		}
 	}
 }
 
@@ -751,15 +870,15 @@ void Result::Render(RenderContext& rc)
 {
 	m_backGround.Draw(rc);
 	m_backWall.Draw(rc);
-	m_knightModel.Draw(rc);
 
 	//m_spriteRender.Draw(rc);	//背景
 	m_resultLogo.Draw(rc);		//リザルトロゴ
 
 	//名前の背景画像
 	//ポイントの単位
-	for (int i = 0; i < PLAYER; i++)
+	for (int i = 0; i < m_maxPlayer; i++)
 	{
+		m_knightModel[i].Draw(rc);
 		m_namePlate[i].Draw(rc);
 		m_pointsUnit[i].Draw(rc);
 	}

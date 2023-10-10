@@ -57,20 +57,24 @@ bool KnightPlayer::Start() {
 
 	if (IsMatchName("knightplayer2"))
 	{
+		m_gameCamera = FindGO<GameCamera>("gamecamera2P");
 		respawnNumber = 0;
 		m_enPlayerNumber = enPlayerNumber_2P;
 	}
 	else if (IsMatchName("knightplayer3"))
 	{
+		m_gameCamera = FindGO<GameCamera>("gamecamera3P");
 		respawnNumber = 3;
 		m_enPlayerNumber = enPlayerNumber_3P;
 	}
 	else if (IsMatchName("knightplayer4"))
 	{
+		m_gameCamera = FindGO<GameCamera>("gamecamera4P");
 		respawnNumber = 1;
 		m_enPlayerNumber = enPlayerNumber_4P;
 	}
 	else {
+		m_gameCamera = FindGO<GameCamera>("gamecamera");
 		respawnNumber = 2;        //リスポーンする座標の番号
 		m_enPlayerNumber = enPlayerNumber_1P;
 	}
@@ -79,13 +83,15 @@ bool KnightPlayer::Start() {
 	//キャラコン
 	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
 	//剣士
-	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
-	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+	m_position = m_respawnPos[respawnNumber];
+	m_rot = m_respawnRotation[respawnNumber];
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_rot);
+
+	m_modelRender.Update();
 
 	//リスポーン時に向いている方向の前方向を取得
 	ForwardSet();
-
-	m_modelRender.Update();
 
 	//回避のフレームの設定
 	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
@@ -288,7 +294,6 @@ void KnightPlayer::Update()
 	}
 	//前方向
 	if (m_moveSpeed.LengthSq() != 0.0f) {
-		//m_forwardNow = m_moveSpeed;
 		m_forwardNow.Normalize();
 		m_forwardNow.y = 0.0f;
 	}
@@ -791,8 +796,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 		//カメラを揺らすフラグを立てる
-		GameCamera* gameCamera = FindGO<GameCamera>("gamecamera");
-		gameCamera->ChangeCameraShakeFlag(true);
+		m_gameCamera->ChangeCameraShakeFlag(true);
 		EffectEmitter* EffectKnight_TowerJump;
 		EffectKnight_TowerJump = NewGO <EffectEmitter>(0);
 		EffectKnight_TowerJump->Init(EnEFK::enEffect_Knight_TowerJump);

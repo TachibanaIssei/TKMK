@@ -38,17 +38,18 @@ bool KnightAI::Start() {
 
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	//m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
-	////リスポーンする座標のセット
-	////キャラコン
-	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	//剣士
-	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+	//リスポーンする座標のセット
+	//キャラコン
+	m_position = m_respawnPos[respawnNumber];
+	m_rot = m_respawnRotation[respawnNumber];
+	m_charCon.SetPosition(m_position);
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_rot);
+
+	m_modelRender.Update();
 
 	//リスポーン時に向いている方向の前方向を取得
 	ForwardSet();
-
-	m_modelRender.Update();
 
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 

@@ -402,6 +402,26 @@ bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFla
 						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Right);
 					}
 				}
+				else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
+					g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+				{
+					if (m_enPlayerNumber == enPlayerNumber_1P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftUp);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_2P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightUp);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_3P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftDown);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_4P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightDown);
+					}
+				}
 				else {
 					//フェードアウト
 					//画面を明るくする

@@ -15,8 +15,8 @@ public:
 	{
 		enKnightKinds_Blue,
 		enKnightKinds_Red,
-		enKnightKinds_Green,
 		enKnightKinds_Yellow,
+		enKnightKinds_Green,
 		enKnightKinds_Num
 	};
 	void SetKnightColor(EnKnightKinds color)

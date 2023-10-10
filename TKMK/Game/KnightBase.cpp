@@ -173,7 +173,7 @@ void KnightBase::Rotation()
 	{
 		//キャラクターの方向を変える。
 		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
-		//絵描きさんに回転を教える。
+		//回転を教える。
 		m_modelRender.SetRotation(m_rot);
 	}
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include "KnightBase.h"
-
 #include "Status.h"
 
 class Game;
@@ -10,6 +9,7 @@ class GameUI;
 class GameCamera;
 class WizardUlt;
 class EnemyHpBar;
+class GameCamera;
 
 class KnightPlayer:public KnightBase
 {
@@ -78,6 +78,7 @@ private:
 private:
 	Game* m_game=nullptr;
 	GameUI* m_gameUI = nullptr;
+	GameCamera* m_gameCamera = nullptr;
 	
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;

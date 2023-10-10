@@ -2,15 +2,14 @@
 #include "GameCamera.h"
 
 #include "Game.h"
+#include "Actor.h"
 #include "KnightBase.h"
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "KnightUlt.h"
 #include "WizardUlt.h"
-#include "Actor.h"
-//todo
-//死んだあとにAIが必殺技を使うとカメラがプレイヤーの前に行ってしまう
+#include "KnightAI.h"
 
 namespace
 {
@@ -74,7 +73,6 @@ bool GameCamera::Start()
 		player_name = player->GetName();
 		cameraNumber = 1;
 		m_playerNumber = enPlayerNumber_2P;
-		targetToPos *= -1;
 	}
 	//プレイヤー3を映すカメラ
 	else if (m_splitCameraDraw == enSplitCamera_LeftDown)
@@ -87,15 +85,19 @@ bool GameCamera::Start()
 	//プレイヤー4を映すカメラ
 	else
 	{
-		player = FindGO<Player>("player3");
-		player_name = player->GetName();
-		cameraNumber = 3;
-		m_playerNumber = enPlayerNumber_3P;
-		/*player = FindGO<Player>("player4");
-		player_name = player->GetName();
-		cameraNumber = 3;
-		m_playerNumber = enPlayerNumber_4P;
-		targetToPos *= -1;*/
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+		{
+			player_name = "KnightAI1";
+			cameraNumber = 3;
+			m_playerNumber = enPlayerNumber_4P;
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			player = FindGO<Player>("player4");
+			player_name = player->GetName();
+			cameraNumber = 3;
+			m_playerNumber = enPlayerNumber_4P;
+		}
 	}
 
 	m_actors = game->GetActors();
@@ -126,7 +128,7 @@ bool GameCamera::Start()
 	);
 
 	//最初にキャラの背中を映すようにする
-	CameraTarget(TARGETPOS_YUP, targetToPos, CAMERA_POS_Y, player_actor,true);
+	CameraTarget(TARGETPOS_YUP, -CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 	m_springCamera.Refresh();
 
 	return true;
@@ -203,7 +205,6 @@ void GameCamera::NomarlCamera()
 {
 		for (auto actor : m_actors) {
 			//AIが打った後に終わるまではこの処理をしないようにする
-			// 画面が切り替わりまくる
 			//もしアクターが必殺技を打ったら
 			if (actor->GetmUseUltimaitSkillFlag() == true)
 			{
@@ -442,7 +443,7 @@ void GameCamera::ChaseCamera()
 void GameCamera::FollowThePlayer()
 {
 	//注視点の計算
-	TargetPos = player->GetCharcterPosition();
+	TargetPos = player_actor->GetPosition();
 
 	TargetPos.y += TARGETPOS_YUP;
 

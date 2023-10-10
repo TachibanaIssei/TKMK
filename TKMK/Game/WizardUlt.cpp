@@ -36,10 +36,21 @@ bool WizardUlt::Start()
 
 	gameCamera = FindGO<GameCamera>("gamecamera");
 	gameCamera2 = FindGO<GameCamera>("gamecamera2P");
+	gameCamera3 = FindGO<GameCamera>("gamecamera3P");
+	gameCamera4 = FindGO<GameCamera>("gamecamera4P");
 	
 	//当たったキャラがプレイヤーなら
-	if (m_targetActor->IsMatchName(m_playerName) == true) {
+	if (m_targetActor->IsMatchName(m_playerName)) {
 		gameCamera->SetPlayerShakeFlag(true);
+	}
+	else if (m_targetActor->IsMatchName(m_playerName2)) {
+		gameCamera2->SetPlayerShakeFlag(true);
+	}
+	else if (m_targetActor->IsMatchName(m_playerName3)) {
+		gameCamera3->SetPlayerShakeFlag(true);
+	}
+	else if (m_targetActor->IsMatchName(m_playerName4)) {
+		gameCamera4->SetPlayerShakeFlag(true);
 	}
 
 	return true;
@@ -58,11 +69,20 @@ void WizardUlt::Update()
 			//カメラがもう一度雷に打たれていないキャラを探すようにする
 			gameCamera->ChangeMoveCameraState(GameCamera::enUltRotCameraState);
 			gameCamera->ChangeTunderCameraFlag(false);
-
-			//画面分割していたら
-			if (gameCamera2 != nullptr) {
+			if (gameCamera2 != nullptr) 
+			{
 				gameCamera2->ChangeMoveCameraState(GameCamera::enUltRotCameraState);
 				gameCamera2->ChangeTunderCameraFlag(false);
+			}
+			if (gameCamera3 != nullptr)
+			{
+				gameCamera3->ChangeMoveCameraState(GameCamera::enUltRotCameraState);
+				gameCamera3->ChangeTunderCameraFlag(false);
+			}
+			if (gameCamera4 != nullptr)
+			{
+				gameCamera4->ChangeMoveCameraState(GameCamera::enUltRotCameraState);
+				gameCamera4->ChangeTunderCameraFlag(false);
 			}
 		}
 
@@ -73,8 +93,17 @@ void WizardUlt::Update()
 			m_CreatMeActor->DamegeUltActorClear();
 			gameCamera->GameCameraUltEnd();
 
-			if (gameCamera2 != nullptr) {
+			if (gameCamera2 != nullptr) 
+			{
 				gameCamera2->GameCameraUltEnd();
+			}
+			if (gameCamera3 != nullptr) 
+			{
+				gameCamera3->GameCameraUltEnd();
+			}
+			if (gameCamera4 != nullptr) 
+			{
+				gameCamera4->GameCameraUltEnd();
 			}
 		}
 
@@ -87,11 +116,6 @@ void WizardUlt::Update()
 		m_cameraShakeFlag = false;
 	}
 
-	if (Thunder->IsPlay() == false)
-	{
-		
-	}
-	
 	//一秒ごとに雷を落とす
 	if (m_timer > 0.3f&& FallTunderFlag==false)
 	{

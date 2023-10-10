@@ -1,7 +1,5 @@
 #pragma once
 
-//class KnightPlayer;
-//class WizardPlayer;
 class Player;
 class Game;
 class Actor;
@@ -64,14 +62,15 @@ public:
 		m_expUpFlag[enPlayerNumber_2P] = flag;
 	}
 
+	void Render(RenderContext& rc);
+
 	/// <summary>
 	/// プレイヤーのレベルに合わせてレベルの画像を変更する
 	/// </summary>
 	/// <param name="lv">プレイヤーの現在のレベル</param>
 	void LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber = enPlayerNumber_1P);
 
-	void Render(RenderContext& rc);
-
+	/// <summary>
 	/// HPバーの表示
     /// </summary>
 	void HPBar();
@@ -132,7 +131,7 @@ private:
 	void InitAssets();
 
 	/// <summary>
-	//スキルのクールタイムを表示する文字を設定
+	//	スキルのクールタイムを表示する文字を設定
 	/// </summary>
 	void SkillCoolTimeFont();
 	
@@ -147,8 +146,7 @@ private:
 	void InitRespawnUI();
 
 	/// <summary>
-	/// 右下のUI
-	/// レベルや経験値バーのUI
+	/// 右下のUI.レベルや経験値バーのUI
 	/// </summary>
 	void InitExpelienceUI();
 
@@ -167,6 +165,36 @@ private:
 	/// </summary>
 	void RenderDeathPlayerSprite(RenderContext& rc);
 
+	/// <summary>
+	/// クールタイムのフォントのDraw呼び出し
+	/// </summary>
+	void RenderCoolTimeFont(RenderContext& rc);
+
+	/// <summary>
+	/// 制限時間関連のDraw呼び出し
+	/// </summary>
+	void RenderTimeLimit(RenderContext& rc);
+
+	/// <summary>
+	/// ポイント関連のDraw呼び出し
+	/// </summary>
+	void RenderPoint(RenderContext& rc);
+	
+	/// <summary>
+	/// 経験値関連のDraw呼び出し
+	/// </summary>
+	void RenderExpelience(RenderContext& rc);
+
+	/// <summary>
+	/// HP関連のDraw呼び出し
+	/// </summary>
+	void RenderHp(RenderContext& rc);
+
+	/// <summary>
+	/// スキルと必殺技のアイコンのDraw呼び出し
+	/// </summary>
+	/// <param name="rc"></param>
+	void RenderIcon(RenderContext& rc);
 private:
 	FontRender m_ExpFont;
 

@@ -453,7 +453,7 @@ private:
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
-	GameCamera* m_gamecamera[MAX_VIEWPORT] = { nullptr,nullptr,nullptr,nullptr };
+	std::array<GameCamera*, MAX_VIEWPORT> m_gameCamera = { nullptr,nullptr,nullptr,nullptr };
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	std::array<KnightAI*,3> m_KnightAI = { nullptr,nullptr,nullptr};

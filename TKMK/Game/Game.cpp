@@ -70,8 +70,8 @@ Game::~Game()
 		}
 	}
 
-	for (int i = 0; i < 2; i++) {
-		DeleteGO(m_gamecamera[i]);
+	for (int i = 0; i < m_gameCamera.size(); i++) {
+		DeleteGO(m_gameCamera[i]);
 
 		if (player[i] != nullptr)
 		{
@@ -270,10 +270,17 @@ void Game::Battle()
 		//UIのステートをポーズステートに変更
 		m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 		//カメラのステートをポーズステートに変更
-		m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
+		m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
 		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 		{
-			m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
+			g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightUp]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightUp]->enPauseState);
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_LeftDown]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_LeftDown]->enPauseState);
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightDown]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightDown]->enPauseState);
 		}
 		//生成されている中立の敵のステートをポーズステートに変更
 		for (auto seutral_Enemy : m_neutral_Enemys)
@@ -357,11 +364,11 @@ void Game::Between()
 		if (g_renderingEngine->GetGameMode() != RenderingEngine::enGameMode_SoloPlay)
 		{
 			for (int i = 0; i < RenderingEngine::enGameMode_Num - 1; i++) {
-				m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enGameState);
+				m_gameCamera[i]->SetCameraState(m_gameCamera[i]->enGameState);
 			}
 		}
 		else {
-			m_gamecamera[RenderingEngine::enGameMode_SoloPlay - 1]->SetCameraState(m_gamecamera[RenderingEngine::enGameMode_SoloPlay - 1]->enGameState);
+			m_gameCamera[RenderingEngine::enGameMode_SoloPlay - 1]->SetCameraState(m_gameCamera[RenderingEngine::enGameMode_SoloPlay - 1]->enGameState);
 		}
 		//生成されている中立の敵のステートをゲームステートに戻す
 		for (auto seutral_Enemy : m_neutral_Enemys)
@@ -550,8 +557,8 @@ void Game::InitSoloPlay()
 	m_Actors.push_back(player[0]->GetPlayerActor());
 
 	//カメラの生成
-	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
-	m_gamecamera[0]->SetSplitCameraDraw(m_gamecamera[0]->enSplitCamera_Left);
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_Left);
 
 	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
@@ -630,8 +637,8 @@ void Game::InitDuoPlay()
 	player[1] = NewGO<Player>(0, "player2");
 
 	//カメラの生成
-	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
-	m_gamecamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
 
 	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 	{
@@ -640,8 +647,8 @@ void Game::InitDuoPlay()
 		m_Actors.push_back(player[i]->GetPlayerActor());
 	}
 
-	m_gamecamera[0]->SetSplitCameraDraw(m_gamecamera[0]->enSplitCamera_Left);
-	m_gamecamera[1]->SetSplitCameraDraw(m_gamecamera[1]->enSplitCamera_Right);
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_Left);
+	m_gameCamera[1]->SetSplitCameraDraw(m_gameCamera[1]->enSplitCamera_Right);
 
 	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
@@ -713,10 +720,10 @@ void Game::InitTrioPlay()
 	player[2] = NewGO<Player>(0, "player3");
 
 	//カメラの生成
-	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
-	m_gamecamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
-	m_gamecamera[2] = NewGO<GameCamera>(1, "gamecamera3P");
-	m_gamecamera[3] = NewGO<GameCamera>(1, "gamecamera4P");
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
+	m_gameCamera[2] = NewGO<GameCamera>(1, "gamecamera3P");
+	m_gameCamera[3] = NewGO<GameCamera>(1, "gamecamera4P");
 
 	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 	{
@@ -725,10 +732,10 @@ void Game::InitTrioPlay()
 		m_Actors.push_back(player[i]->GetPlayerActor());
 	}
 
-	m_gamecamera[0]->SetSplitCameraDraw(m_gamecamera[0]->enSplitCamera_LeftUp);
-	m_gamecamera[1]->SetSplitCameraDraw(m_gamecamera[1]->enSplitCamera_RightUp);
-	m_gamecamera[2]->SetSplitCameraDraw(m_gamecamera[2]->enSplitCamera_LeftDown);
-	m_gamecamera[3]->SetSplitCameraDraw(m_gamecamera[3]->enSplitCamera_RightDown);
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_LeftUp);
+	m_gameCamera[1]->SetSplitCameraDraw(m_gameCamera[1]->enSplitCamera_RightUp);
+	m_gameCamera[2]->SetSplitCameraDraw(m_gameCamera[2]->enSplitCamera_LeftDown);
+	m_gameCamera[3]->SetSplitCameraDraw(m_gameCamera[3]->enSplitCamera_RightDown);
 
 
 	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
@@ -790,10 +797,10 @@ void Game::InitQuartePlay()
 	player[3] = NewGO<Player>(0, "player4");
 
 	//カメラの生成
-	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
-	m_gamecamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
-	m_gamecamera[2] = NewGO<GameCamera>(1, "gamecamera3P");
-	m_gamecamera[3] = NewGO<GameCamera>(1, "gamecamera4P");
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
+	m_gameCamera[2] = NewGO<GameCamera>(1, "gamecamera3P");
+	m_gameCamera[3] = NewGO<GameCamera>(1, "gamecamera4P");
 
 	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 	{
@@ -802,10 +809,10 @@ void Game::InitQuartePlay()
 		m_Actors.push_back(player[i]->GetPlayerActor());
 	}
 
-	m_gamecamera[0]->SetSplitCameraDraw(m_gamecamera[0]->enSplitCamera_LeftUp);
-	m_gamecamera[1]->SetSplitCameraDraw(m_gamecamera[1]->enSplitCamera_RightUp);
-	m_gamecamera[2]->SetSplitCameraDraw(m_gamecamera[2]->enSplitCamera_LeftDown);
-	m_gamecamera[3]->SetSplitCameraDraw(m_gamecamera[3]->enSplitCamera_RightDown);
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_LeftUp);
+	m_gameCamera[1]->SetSplitCameraDraw(m_gameCamera[1]->enSplitCamera_RightUp);
+	m_gameCamera[2]->SetSplitCameraDraw(m_gameCamera[2]->enSplitCamera_LeftDown);
+	m_gameCamera[3]->SetSplitCameraDraw(m_gameCamera[3]->enSplitCamera_RightDown);
 
 
 	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {

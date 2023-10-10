@@ -27,8 +27,8 @@ namespace {
 	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
 	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
 	const Vector3 TOWER_X_POS = Vector3(20.0f, -410.0f, 0.0f);
-	const Vector3 RABBIT_POS = Vector3(650.0f, 400.0f, 0.0f);
-	const Vector3 RabbitSpriteScale = Vector3(0.75f, 0.75f, 0.0f);
+	const Vector3 RABBIT_POS = Vector3(700.0f, 350.0f, 0.0f);
+	const Vector3 RabbitSpriteScale = Vector3(0.5f, 0.5f, 0.0f);
 	const Vector3 SpriteScale = Vector3::One;
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);//ディレクションライトのカラー
 	const Vector3 AMBIENT_COLOR = Vector3(0.6f, 0.6f, 0.6f);//環境光のカラー

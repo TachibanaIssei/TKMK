@@ -621,6 +621,22 @@ void KnightPlayer::GrayScaleUI()
 		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_2P);
 		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_2P);
 	}
+	else if (IsMatchName("knightplayer3"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_3P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_3P);
+
+		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_3P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_3P);
+	}
+	else if (IsMatchName("knightplayer4"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_4P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_4P);
+
+		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_4P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_4P);
+	}
 }
 
 /// <summary>

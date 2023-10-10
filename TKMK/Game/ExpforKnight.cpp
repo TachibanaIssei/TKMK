@@ -195,7 +195,14 @@ void ExpforKnight::Render(RenderContext& rc)
 	{
 		return;
 	}
-	m_NormalExp.Draw(rc, false, m_playerActorNumber);
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+	{
+		m_NormalExp.Draw(rc);
+	}
+	else
+	{
+		m_NormalExp.Draw(rc, false, m_playerActorNumber);
+	}
 }
 
 void ExpforKnight::Init(Vector3& pos, Actor* playerActor, const bool rabbitFlag)

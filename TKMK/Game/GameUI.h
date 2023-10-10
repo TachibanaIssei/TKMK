@@ -42,6 +42,7 @@ public:
 
 	bool Start();
 	void Update();
+	void Render(RenderContext& rc);
 
 	void ExpState(const Player* player);
 	void ChackExp(const Player* player, const EnPlayerNumber playerNumber);
@@ -61,8 +62,6 @@ public:
 		m_expUpFlag[enPlayerNumber_1P] = flag;
 		m_expUpFlag[enPlayerNumber_2P] = flag;
 	}
-
-	void Render(RenderContext& rc);
 
 	/// <summary>
 	/// プレイヤーのレベルに合わせてレベルの画像を変更する

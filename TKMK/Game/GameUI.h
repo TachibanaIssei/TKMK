@@ -38,7 +38,7 @@ public:
 		enLevelUpState,
 		enLevelDownState
 	};
-	std::array<EnExpProssesState, enPlayerNumber_Num> m_enExpProcessState = { enChackExpState,enChackExpState };
+	std::array<EnExpProssesState, enPlayerNumber_Num> m_enExpProcessState = { enChackExpState,enChackExpState,enChackExpState,enChackExpState };
 
 	bool Start();
 	void Update();
@@ -61,6 +61,8 @@ public:
 	{
 		m_expUpFlag[enPlayerNumber_1P] = flag;
 		m_expUpFlag[enPlayerNumber_2P] = flag;
+		m_expUpFlag[enPlayerNumber_3P] = flag;
+		m_expUpFlag[enPlayerNumber_4P] = flag;
 	}
 
 	/// <summary>
@@ -283,25 +285,25 @@ private:
 
 	int oldFinishCount = 0;
 
-	std::array<float, enPlayerNumber_Num> playerCoolTime = { 0, 0 };
-	std::array<int, enPlayerNumber_Num>		m_playerLevel = { 1,1 };
-	std::array<int, enPlayerNumber_Num>		m_mathExp = { 0,0 };			//経験値を増やしたり減らしたりする時はこれ
-	std::array<int, enPlayerNumber_Num>		m_saveExp = { 0,0 };
-	std::array<int, enPlayerNumber_Num>		m_expTable = { 0,0 };
-	std::array<bool, enPlayerNumber_Num>	m_expUpFlag = { false,false };
+	std::array<float, enPlayerNumber_Num> playerCoolTime = { 0, 0, 0, 0 };
+	std::array<int, enPlayerNumber_Num>		m_playerLevel = { 1, 1, 1, 1};
+	std::array<int, enPlayerNumber_Num>		m_mathExp = { 0,0,0,0 };			//経験値を増やしたり減らしたりする時はこれ
+	std::array<int, enPlayerNumber_Num>		m_saveExp = { 0,0,0,0 };
+	std::array<int, enPlayerNumber_Num>		m_expTable = { 0,0,0,0 };
+	std::array<bool, enPlayerNumber_Num>	m_expUpFlag = { false,false,false,false };
 	
 
-	std::array<int, enPlayerNumber_Num>		m_oldSaveExp = { 0,0 };
+	std::array<int, enPlayerNumber_Num>		m_oldSaveExp = { 0,0,0,0 };
 
 	//キャラのポイント
 	int charPoint[4];
 
 	int MaxPoint = 1;
 
-	std::array<int, enPlayerNumber_Num> White_BackHp = { 0,0 };
-	std::array<float, enPlayerNumber_Num> WhiteHp_Timer = { 0.0f,0.0f };
+	std::array<int, enPlayerNumber_Num> White_BackHp = { 0,0,0,0 };
+	std::array<float, enPlayerNumber_Num> WhiteHp_Timer = { 0.0f,0.0f,0.0f,0.0f };
 
-	std::array<int, enPlayerNumber_Num> BackUPLV = { 0,0 };
+	std::array<int, enPlayerNumber_Num> BackUPLV = { 0,0,0,0 };
 
 	bool FightScale = false;
 	bool FightshotStopFlag = false;

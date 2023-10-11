@@ -41,15 +41,30 @@ namespace
 	const float HP_BAR_BACK_HEIGHT = 120.0f;
 	const float HP_BAR_FOWARD_WIDTH = 580.0f;
 	const float HP_BAR_FOWARD_HEIGHT = 80.0f;
-	const float HP_BAR_SPLITSCREEN_WIDTH = 380.0f;
-	const float HP_BAR_SPLITSCREEN_HEIGHT = 80.0f;
+	const float HP_BAR_WIDTH_DUO = 380.0f;
+	const float HP_BAR_HEIGHT_DUO = 80.0f;
+	const float HP_BAR_BACK_WIDTH_QUARTET = 600.0f;
+	const float HP_BAR_BACK_HEIGHT_QUARTET = 120.0f;
+	const float HP_BAR_FRONT_WIDTH_QUARTET = 205.0f;
+	const float HP_BAR_FRONT_HEIGHT_QUARTET = 90.0f;
 
 	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_POS_RIGHT = Vector3(775.0f, -480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_POS_LEFT = Vector3(-775.0f, -480.0f, 0.0f);	//HPバーポジション
+	const Vector3 HP_BAR_POS_QUARTET_LEFT_UP = Vector3(-855.0f,30.0f,0.0f);
+	const Vector3 HP_BAR_POS_QUARTET_RIGHT_UP = Vector3(105.0f, 30.0f, 0.0f);
+	const Vector3 HP_BAR_POS_QUARTET_LEFT_DOWN = Vector3(-855.0f, -520.0f, 0.0f);
+	const Vector3 HP_BAR_POS_QUARTET_RIGHT_DOWN = Vector3(105.0f, -520.0f, 0.0f);
+
 	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
 	const Vector3 HP_BAR_FLONT_POS_LEFT = Vector3(-965.0f, -480.0f, 0.0f);	//HPバーの表のポジション
 	const Vector3 HP_BAR_FLONT_POS_RIGHT = Vector3(965.0f, -480.0f, 0.0f);	//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_LEFT_UP = Vector3(-960.0, 30.0f, 0.0f);			//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_RIGHT_UP = Vector3(0.0, 30.0f, 0.0f);;		//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_LEFT_DOWN = Vector3(-960.0, -520.0f, 0.0f);;		//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_RIGHT_DOWN = Vector3(0.0f, -520.0f, 0.0f);;	//HPバーの表のポジション
+	const Vector3 HP_BAR_QUARTET_SCALE = Vector3(1.0f, 0.38f, 1.0f);
+	const Vector3 HP_BAR_BACK_QUARTET_SCALE = Vector3(0.35, 0.35f, 1.0f);
 
 	const Vector3 HP_FONT_POS = Vector3(-650.0f, -445.0f, 0.0f);
 	const Vector3 HP_FONT_POS_LEFT = Vector3(-780.0f, -455.0f, 0.0f);
@@ -146,7 +161,7 @@ namespace
 	const Vector3 EXPERIENCE_FLAME_POS_QUARTET_3P = FLAME_QUARTET_POS_3P + ADD_EXPERIENCE_FLAME_POS;
 	const Vector3 EXPERIENCE_FLAME_POS_QUARTET_4P = FLAME_QUARTET_POS_4P + ADD_EXPERIENCE_FLAME_POS;
 	const Vector3 EXPERIENCE_SCALE = Vector3(0.5f, 0.5f, 1.0f);
-	const Vector3 EXPERIENCE_SCALE_QUARTET = Vector3(0.25f, 0.28f, 1.0f);
+	const Vector3 EXPERIENCE_SCALE_QUARTET = Vector3(0.25f, 0.25f, 1.0f);
 
 	const float EXPBAR_WIDTH = 300.0f;
 	const float EXPBAR_HEIGHT = 70.0f;
@@ -155,11 +170,12 @@ namespace
 	const Vector3 EXPERIENCE_BAR_POS = Vector3(600.0f, -500.0f, 0.0f);	//経験値バーの座標
 	const Vector3 EXPERIENCE_BAR_POS_DUO_1P = Vector3(-350.0f, -500.0f, 0.0f);	//経験値バーの座標
 	const Vector3 EXPERIENCE_BAR_POS_DUO_2P = Vector3(48.0f, -500.0f, 0.0f);	//経験値バーの座標
-	const Vector3 ADD_EXPERIENCE_BAR_POS = Vector3(-70.5f, -40.0f, 0.0f);
+	const Vector3 ADD_EXPERIENCE_BAR_POS = Vector3(-75.0f, -40.0f, 0.0f);
 	const Vector3 EXPERIENCE_BAR_POS_QUARTET_1P = FLAME_QUARTET_POS_1P + ADD_EXPERIENCE_BAR_POS;
 	const Vector3 EXPERIENCE_BAR_POS_QUARTET_2P = FLAME_QUARTET_POS_2P + ADD_EXPERIENCE_BAR_POS;
 	const Vector3 EXPERIENCE_BAR_POS_QUARTET_3P = FLAME_QUARTET_POS_3P + ADD_EXPERIENCE_BAR_POS;
 	const Vector3 EXPERIENCE_BAR_POS_QUARTET_4P = FLAME_QUARTET_POS_4P + ADD_EXPERIENCE_BAR_POS;
+	const Vector3 EXPERIENCE_BAR_SCALE_QUARTET = Vector3(1.0f, 0.2f, 1.0f);
 	const Vector3 EXPBAR_SIZE = Vector3(EXPBAR_WIDTH, EXPBAR_HEIGHT, 0.0f);	//経験値バーのサイズ
 
 	const Vector3 UPTOLEVEL_POS = Vector3(820.0f, -480.0f, 0.0f);		//レベルアップまでに必要な経験値の量
@@ -579,7 +595,7 @@ void GameUI::InitExpelienceUI()
 
 		if (m_gameMode == RenderingEngine::enGameMode_TrioPlay || m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 		{
-			m_experienceBarFlont[i].Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_WIDTH * EXPERIENCE_SCALE_QUARTET.x, EXPBAR_HEIGHT);
+			m_experienceBarFlont[i].Init("Assets/sprite/gameUI/ExperienceBar_front.DDS", EXPBAR_FLAME_WIDTH * EXPERIENCE_SCALE_QUARTET.x, EXPBAR_FLAME_HEIGHT);
 		}
 		else
 		{
@@ -682,7 +698,7 @@ void GameUI::InitExpelienceUI()
 			m_LvNumber_back[i].SetScale(LEVEL_NUMBER_SCALE_QUARTET);
 			m_ExperienceFlame[i].SetScale(EXPERIENCE_SCALE_QUARTET);
 			m_experienceBarBack[i].SetScale(EXPERIENCE_SCALE_QUARTET);
-			m_experienceBarFlont[i].SetScale(EXPERIENCE_SCALE_QUARTET);
+			m_experienceBarFlont[i].SetScale(EXPERIENCE_BAR_SCALE_QUARTET);
 		}
 		m_Flame[enPlayerNumber_1P].SetPosition(FLAME_QUARTET_POS_1P);
 		m_Flame[enPlayerNumber_2P].SetPosition(FLAME_QUARTET_POS_2P);
@@ -934,42 +950,30 @@ void GameUI::InitHpUI()
 	for (int i = 0; i < enPlayerNumber_Num; i++)
 	{
 		//HPのフォント
-		m_HpFont[i].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-		m_HpFont[i].SetRotation(0.0f);
+		m_HpFont[i].SetColor(g_vec4White);
 		m_HpFont[i].SetShadowParam(true, 2.0f, g_vec4Black);
 
 		if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 		{
 			//HPゲージ裏の画像を読み込む
-			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_WIDTH_DUO, HP_BAR_BACK_HEIGHT);
 			//HPゲージの画像を読み込む
-			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_WIDTH_DUO, HP_BAR_HEIGHT_DUO);
 			//HPバーの白い部分
-			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_WIDTH_DUO, HP_BAR_HEIGHT_DUO);
 			//HPゲージのフレームの画像を読み込む
-			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_WIDTH_DUO, HP_BAR_BACK_HEIGHT);
 		}
-		else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+		else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay || m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 		{
 			//HPゲージ裏の画像を読み込む
-			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_BACK_WIDTH_QUARTET, HP_BAR_BACK_HEIGHT_QUARTET);
 			//HPゲージの画像を読み込む
-			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_FRONT_WIDTH_QUARTET, HP_BAR_FRONT_HEIGHT_QUARTET);
 			//HPバーの白い部分
-			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
+			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_FRONT_WIDTH_QUARTET, HP_BAR_FRONT_HEIGHT_QUARTET);
 			//HPゲージのフレームの画像を読み込む
-			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
-		}
-		else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
-		{
-			//HPゲージ裏の画像を読み込む
-			m_hpBarBack[i].Init("Assets/sprite/gameUI/HPBar_HP_back.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
-			//HPゲージの画像を読み込む
-			m_hpBar[i].Init("Assets/sprite/gameUI/HPBar_HP.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
-			//HPバーの白い部分
-			m_HpBar_White[i].Init("Assets/sprite/gameUI/HPBar_backwhite.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_SPLITSCREEN_HEIGHT);
-			//HPゲージのフレームの画像を読み込む
-			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_SPLITSCREEN_WIDTH, HP_BAR_BACK_HEIGHT);
+			m_HPFrame[i].Init("Assets/sprite/gameUI/HPBar_flame.DDS", HP_BAR_BACK_WIDTH_QUARTET, HP_BAR_BACK_HEIGHT_QUARTET);
 		}
 		else
 		{
@@ -991,12 +995,27 @@ void GameUI::InitHpUI()
 	White_BackHp[enPlayerNumber_1P] = m_player1P->GetCharacterHp();
 	WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
 	BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
-	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	if (m_player2P != nullptr)
 	{
 		White_BackHp[enPlayerNumber_2P] = m_player2P->GetCharacterHp();
 		WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
 		BackUPLV[enPlayerNumber_2P] = m_player2P->GetCharacterLevel();
+	}
+	if (m_player3P != nullptr)
+	{
+		White_BackHp[enPlayerNumber_3P] = m_player3P->GetCharacterHp();
+		WhiteHp_Timer[enPlayerNumber_3P] = WHITEHP_WAIT;
+		BackUPLV[enPlayerNumber_3P] = m_player3P->GetCharacterLevel();
+	}
+	if (m_player4P != nullptr)
+	{
+		White_BackHp[enPlayerNumber_4P] = m_player4P->GetCharacterHp();
+		WhiteHp_Timer[enPlayerNumber_4P] = WHITEHP_WAIT;
+		BackUPLV[enPlayerNumber_4P] = m_player4P->GetCharacterLevel();
+	}
 
+	if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
+	{
 		//1P用画像
 		m_hpBar[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
 		m_HpBar_White[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
@@ -1027,7 +1046,52 @@ void GameUI::InitHpUI()
 	}
 	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
 	{
+		//1P用画像
+		m_hpBar[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_HpBar_White[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_hpBar[enPlayerNumber_1P].SetScale(HP_BAR_QUARTET_SCALE);
+		m_HpBar_White[enPlayerNumber_1P].SetScale(HP_BAR_QUARTET_SCALE);
 
+		m_hpBarBack[enPlayerNumber_1P].SetPosition(HP_BAR_POS_QUARTET_LEFT_UP);
+		m_hpBarBack[enPlayerNumber_1P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+		m_hpBar[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_QUARTET_LEFT_UP);
+		m_HpBar_White[enPlayerNumber_1P].SetPosition(HP_BAR_FLONT_QUARTET_LEFT_UP);
+		m_HPFrame[enPlayerNumber_1P].SetPosition(HP_BAR_POS_QUARTET_LEFT_UP);
+		m_HPFrame[enPlayerNumber_1P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+
+		//2P用画像
+		m_hpBar[enPlayerNumber_2P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_HpBar_White[enPlayerNumber_2P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_hpBar[enPlayerNumber_2P].SetScale(HP_BAR_QUARTET_SCALE);
+		m_HpBar_White[enPlayerNumber_2P].SetScale(HP_BAR_QUARTET_SCALE);
+
+		m_HPFrame[enPlayerNumber_2P].SetPosition(HP_BAR_POS_QUARTET_RIGHT_UP);
+		m_hpBarBack[enPlayerNumber_2P].SetPosition(HP_BAR_POS_QUARTET_RIGHT_UP);
+		m_hpBarBack[enPlayerNumber_2P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+		m_hpBar[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_QUARTET_RIGHT_UP);
+		m_HpBar_White[enPlayerNumber_2P].SetPosition(HP_BAR_FLONT_QUARTET_RIGHT_UP);
+		m_HPFrame[enPlayerNumber_2P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+
+		//3P用画像
+		m_hpBar[enPlayerNumber_3P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_HpBar_White[enPlayerNumber_3P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_hpBar[enPlayerNumber_2P].SetScale(HP_BAR_QUARTET_SCALE);
+		m_HpBar_White[enPlayerNumber_2P].SetScale(HP_BAR_QUARTET_SCALE);
+
+		m_HPFrame[enPlayerNumber_3P].SetPosition(HP_BAR_POS_QUARTET_LEFT_DOWN);
+		m_hpBarBack[enPlayerNumber_3P].SetPosition(HP_BAR_POS_QUARTET_LEFT_DOWN);
+		m_hpBarBack[enPlayerNumber_3P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+		m_hpBar[enPlayerNumber_3P].SetPosition(HP_BAR_FLONT_QUARTET_LEFT_DOWN);
+		m_HpBar_White[enPlayerNumber_3P].SetPosition(HP_BAR_FLONT_QUARTET_LEFT_DOWN);
+		m_HPFrame[enPlayerNumber_3P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+
+		//HPフォント
+		m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_POS_LEFT);
+		m_HpFont[enPlayerNumber_1P].SetScale(0.7f);
+		m_HpFont[enPlayerNumber_2P].SetPosition(HP_FONT_POS_LEFT);
+		m_HpFont[enPlayerNumber_2P].SetScale(0.7f);
+		m_HpFont[enPlayerNumber_3P].SetPosition(HP_FONT_POS_LEFT);
+		m_HpFont[enPlayerNumber_3P].SetScale(0.7f);
 	}
 	else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 	{
@@ -1387,6 +1451,11 @@ void GameUI::HPBar()
 	m_HpFont[enPlayerNumber_1P].SetText(hp);
 
 	Vector3 HpScale = Vector3::One;
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		HpScale = HP_BAR_QUARTET_SCALE;
+	}
+
 	//HPバーの減っていく割合。
 	HpScale.x = (float)m_player1P->GetCharacterHp() / (float)m_player1P->GetCharcterMaxHp();
 	m_hpBar[enPlayerNumber_1P].SetScale(HpScale);
@@ -1440,6 +1509,10 @@ void GameUI::HPBar()
 	m_HpFont[enPlayerNumber_2P].SetText(hp);
 
 	HpScale = Vector3::One;
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		HpScale = HP_BAR_QUARTET_SCALE;
+	}
 	//HPバーの減っていく割合。
 	HpScale.x = (float)m_player2P->GetCharacterHp() / (float)m_player2P->GetCharcterMaxHp();
 	m_hpBar[enPlayerNumber_2P].SetScale(HpScale);
@@ -1632,7 +1705,7 @@ void GameUI::ExpState(const Player* player)
 
 	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
 	{
-		EXPScale.y = EXPERIENCE_SCALE_QUARTET.y;
+		EXPScale.y = EXPERIENCE_BAR_SCALE_QUARTET.y;
 	}
 
 	//HPバーの増えていく割合。
@@ -2137,7 +2210,7 @@ void GameUI::Render(RenderContext& rc)
 		RenderTimeLimit(rc);
 
 		RenderExpelience(rc);
-		//RenderHp(rc);
+		RenderHp(rc);
 		RenderIcon(rc);
 
 		RenderPoint(rc);

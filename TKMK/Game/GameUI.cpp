@@ -45,7 +45,7 @@ namespace
 	const float HP_BAR_HEIGHT_DUO = 80.0f;
 	const float HP_BAR_BACK_WIDTH_QUARTET = 600.0f;
 	const float HP_BAR_BACK_HEIGHT_QUARTET = 120.0f;
-	const float HP_BAR_FRONT_WIDTH_QUARTET = 205.0f;
+	const float HP_BAR_FRONT_WIDTH_QUARTET = 203.0f;
 	const float HP_BAR_FRONT_HEIGHT_QUARTET = 90.0f;
 
 	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
@@ -59,16 +59,21 @@ namespace
 	const Vector3 HP_BAR_FLONT_POS = Vector3(-960.0f, -480.0f, 0.0f);	//HPバーの表のポジション
 	const Vector3 HP_BAR_FLONT_POS_LEFT = Vector3(-965.0f, -480.0f, 0.0f);	//HPバーの表のポジション
 	const Vector3 HP_BAR_FLONT_POS_RIGHT = Vector3(965.0f, -480.0f, 0.0f);	//HPバーの表のポジション
-	const Vector3 HP_BAR_FLONT_QUARTET_LEFT_UP = Vector3(-960.0, 30.0f, 0.0f);			//HPバーの表のポジション
-	const Vector3 HP_BAR_FLONT_QUARTET_RIGHT_UP = Vector3(0.0, 30.0f, 0.0f);;		//HPバーの表のポジション
-	const Vector3 HP_BAR_FLONT_QUARTET_LEFT_DOWN = Vector3(-960.0, -520.0f, 0.0f);;		//HPバーの表のポジション
-	const Vector3 HP_BAR_FLONT_QUARTET_RIGHT_DOWN = Vector3(0.0f, -520.0f, 0.0f);;	//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_LEFT_UP = Vector3(-956.0, 30.0f, 0.0f);			//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_RIGHT_UP = Vector3(4.0, 30.0f, 0.0f);		//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_LEFT_DOWN = Vector3(-956.0, -520.0f, 0.0f);		//HPバーの表のポジション
+	const Vector3 HP_BAR_FLONT_QUARTET_RIGHT_DOWN = Vector3(4.0f, -520.0f, 0.0f);	//HPバーの表のポジション
 	const Vector3 HP_BAR_QUARTET_SCALE = Vector3(1.0f, 0.38f, 1.0f);
 	const Vector3 HP_BAR_BACK_QUARTET_SCALE = Vector3(0.35, 0.35f, 1.0f);
 
 	const Vector3 HP_FONT_POS = Vector3(-650.0f, -445.0f, 0.0f);
 	const Vector3 HP_FONT_POS_LEFT = Vector3(-780.0f, -455.0f, 0.0f);
 	const Vector3 HP_FONT_POS_RIGHT = Vector3(610.0f, -455.0f, 0.0f);
+	const Vector3 ADD_HP_FONT_POS = Vector3(10.0f,13.0f,0.0f);
+	const Vector3 HP_FONT_QUARTET_POS_1P = HP_BAR_POS_QUARTET_LEFT_UP + ADD_HP_FONT_POS;
+	const Vector3 HP_FONT_QUARTET_POS_2P = HP_BAR_POS_QUARTET_RIGHT_UP + ADD_HP_FONT_POS;
+	const Vector3 HP_FONT_QUARTET_POS_3P = HP_BAR_POS_QUARTET_LEFT_DOWN + ADD_HP_FONT_POS;
+	const Vector3 HP_FONT_QUARTET_POS_4P = HP_BAR_POS_QUARTET_RIGHT_DOWN + ADD_HP_FONT_POS;
 
 	//スキルアイコンの座標や拡大率など
 	const float SKILL_AND_ULT_ICON_RESOLUTION_SOLO = 162.0f;
@@ -1075,8 +1080,8 @@ void GameUI::InitHpUI()
 		//3P用画像
 		m_hpBar[enPlayerNumber_3P].SetPivot(HPGAUGE_PIVOT_LEFT);
 		m_HpBar_White[enPlayerNumber_3P].SetPivot(HPGAUGE_PIVOT_LEFT);
-		m_hpBar[enPlayerNumber_2P].SetScale(HP_BAR_QUARTET_SCALE);
-		m_HpBar_White[enPlayerNumber_2P].SetScale(HP_BAR_QUARTET_SCALE);
+		m_hpBar[enPlayerNumber_3P].SetScale(HP_BAR_QUARTET_SCALE);
+		m_HpBar_White[enPlayerNumber_3P].SetScale(HP_BAR_QUARTET_SCALE);
 
 		m_HPFrame[enPlayerNumber_3P].SetPosition(HP_BAR_POS_QUARTET_LEFT_DOWN);
 		m_hpBarBack[enPlayerNumber_3P].SetPosition(HP_BAR_POS_QUARTET_LEFT_DOWN);
@@ -1086,12 +1091,15 @@ void GameUI::InitHpUI()
 		m_HPFrame[enPlayerNumber_3P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
 
 		//HPフォント
-		m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_POS_LEFT);
-		m_HpFont[enPlayerNumber_1P].SetScale(0.7f);
-		m_HpFont[enPlayerNumber_2P].SetPosition(HP_FONT_POS_LEFT);
-		m_HpFont[enPlayerNumber_2P].SetScale(0.7f);
-		m_HpFont[enPlayerNumber_3P].SetPosition(HP_FONT_POS_LEFT);
-		m_HpFont[enPlayerNumber_3P].SetScale(0.7f);
+		m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_QUARTET_POS_1P);
+		m_HpFont[enPlayerNumber_1P].SetScale(0.35f);
+		m_HpFont[enPlayerNumber_1P].SetShadowParam(true, 0.7f, g_vec4Black);
+		m_HpFont[enPlayerNumber_2P].SetPosition(HP_FONT_QUARTET_POS_2P);
+		m_HpFont[enPlayerNumber_2P].SetScale(0.35f);
+		m_HpFont[enPlayerNumber_2P].SetShadowParam(true, 0.7f, g_vec4Black);
+		m_HpFont[enPlayerNumber_3P].SetPosition(HP_FONT_QUARTET_POS_3P);
+		m_HpFont[enPlayerNumber_3P].SetScale(0.35f);
+		m_HpFont[enPlayerNumber_3P].SetShadowParam(true, 0.7f, g_vec4Black);
 	}
 	else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 	{
@@ -1243,20 +1251,22 @@ void GameUI::Update()
 	m_LvNumber_back[enPlayerNumber_4P].Update();
 
 	ExpState(m_player1P);
+	HPBar(m_player1P);
 	if (m_gameMode >= RenderingEngine::enGameMode_DuoPlay)
 	{
 		ExpState(m_player2P);
+		HPBar(m_player2P);
 	}
 	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
 	{
 		ExpState(m_player3P);
+		HPBar(m_player3P);
 	}
 	if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 	{
 		ExpState(m_player4P);
+		HPBar(m_player4P);
 	}
-
-	HPBar();
 }
 
 
@@ -1442,13 +1452,27 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 }
 
 //プレイヤーのHPの表示の処理
-void GameUI::HPBar()
+void GameUI::HPBar(const Player* player)
 {
-	int HP = m_player1P->GetCharacterHp();
-	int MaxHP = m_player1P->GetCharcterMaxHp();
+	EnPlayerNumber playerNumber = enPlayerNumber_1P;
+	if (player == m_player2P)
+	{
+		playerNumber = enPlayerNumber_2P;
+	}
+	else if (player == m_player3P)
+	{
+		playerNumber = enPlayerNumber_3P;
+	}
+	else if (player == m_player4P)
+	{
+		playerNumber = enPlayerNumber_4P;
+	}
+
+	int HP = player->GetCharacterHp();
+	int MaxHP = player->GetCharcterMaxHp();
 	wchar_t hp[255];
 	swprintf_s(hp, 255, L"%3d/%3d", HP, MaxHP);
-	m_HpFont[enPlayerNumber_1P].SetText(hp);
+	m_HpFont[playerNumber].SetText(hp);
 
 	Vector3 HpScale = Vector3::One;
 	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
@@ -1457,103 +1481,45 @@ void GameUI::HPBar()
 	}
 
 	//HPバーの減っていく割合。
-	HpScale.x = (float)m_player1P->GetCharacterHp() / (float)m_player1P->GetCharcterMaxHp();
-	m_hpBar[enPlayerNumber_1P].SetScale(HpScale);
+	HpScale.x = (float)player->GetCharacterHp() / (float)player->GetCharcterMaxHp();
+	m_hpBar[playerNumber].SetScale(HpScale);
 
-	m_hpBar[enPlayerNumber_1P].Update();
+	m_hpBar[playerNumber].Update();
 
 	//レベルが下がった時の処理
-	if (BackUPLV[enPlayerNumber_1P] > m_player1P->GetCharacterLevel())
+	if (BackUPLV[playerNumber] > player->GetCharacterLevel())
 	{
-		White_BackHp[enPlayerNumber_1P] = HP;
+		White_BackHp[playerNumber] = HP;
 	}
-	BackUPLV[enPlayerNumber_1P] = m_player1P->GetCharacterLevel();
+	BackUPLV[playerNumber] = player->GetCharacterLevel();
 
 	//Hp削られたら白い部分も減らす
-	if (HP < White_BackHp[enPlayerNumber_1P])
+	if (HP < White_BackHp[playerNumber])
 	{
-		if (WhiteHp_Timer[enPlayerNumber_1P] > 0.0f)
+		if (WhiteHp_Timer[playerNumber] > 0.0f)
 		{
-			WhiteHp_Timer[enPlayerNumber_1P] -= g_gameTime->GetFrameDeltaTime();
+			WhiteHp_Timer[playerNumber] -= g_gameTime->GetFrameDeltaTime();
 		}
 		else
 		{
-			White_BackHp[enPlayerNumber_1P] -= 2;
+			White_BackHp[playerNumber] -= 2;
 
 			//HPバーの減っていく割合。
-			HpScale.x = (float)White_BackHp[enPlayerNumber_1P] / (float)MaxHP;
-			m_HpBar_White[enPlayerNumber_1P].SetScale(HpScale);
+			HpScale.x = (float)White_BackHp[playerNumber] / (float)MaxHP;
+			m_HpBar_White[playerNumber].SetScale(HpScale);
 
-			if (White_BackHp[enPlayerNumber_1P] <= HP)
+			if (White_BackHp[playerNumber] <= HP)
 			{
-				White_BackHp[enPlayerNumber_1P] = HP;
-				WhiteHp_Timer[enPlayerNumber_1P] = WHITEHP_WAIT;
+				White_BackHp[playerNumber] = HP;
+				WhiteHp_Timer[playerNumber] = WHITEHP_WAIT;
 			}
 		}
 	}
-	else if (HP > White_BackHp[enPlayerNumber_1P])
+	else if (HP > White_BackHp[playerNumber])
 	{
-		White_BackHp[enPlayerNumber_1P] = HP;
+		White_BackHp[playerNumber] = HP;
 	}
-	m_HpBar_White[enPlayerNumber_1P].Update();
-
-	if (m_gameMode == RenderingEngine::enGameMode_SoloPlay)
-	{
-		return;
-	}
-
-	//マルチプレイ時
-	HP = m_player2P->GetCharacterHp();
-	MaxHP = m_player2P->GetCharcterMaxHp();
-	swprintf_s(hp, 255, L"%3d/%3d", HP, MaxHP);
-	m_HpFont[enPlayerNumber_2P].SetText(hp);
-
-	HpScale = Vector3::One;
-	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
-	{
-		HpScale = HP_BAR_QUARTET_SCALE;
-	}
-	//HPバーの減っていく割合。
-	HpScale.x = (float)m_player2P->GetCharacterHp() / (float)m_player2P->GetCharcterMaxHp();
-	m_hpBar[enPlayerNumber_2P].SetScale(HpScale);
-
-	m_hpBar[enPlayerNumber_2P].Update();
-
-	//レベルが下がった時の処理
-	if (BackUPLV[enPlayerNumber_2P] > m_player2P->GetCharacterLevel())
-	{
-		White_BackHp[enPlayerNumber_2P] = HP;
-	}
-	BackUPLV[enPlayerNumber_2P] = m_player2P->GetCharacterLevel();
-
-	//Hp削られたら白い部分も減らす
-	if (HP < White_BackHp[enPlayerNumber_2P])
-	{
-		if (WhiteHp_Timer[enPlayerNumber_2P] > 0.0f)
-		{
-			WhiteHp_Timer[enPlayerNumber_2P] -= g_gameTime->GetFrameDeltaTime();
-		}
-		else
-		{
-			White_BackHp[enPlayerNumber_2P] -= 2;
-
-			//HPバーの減っていく割合。
-			HpScale.x = (float)White_BackHp[enPlayerNumber_2P] / (float)MaxHP;
-			m_HpBar_White[enPlayerNumber_2P].SetScale(HpScale);
-
-			if (White_BackHp[enPlayerNumber_2P] <= HP)
-			{
-				White_BackHp[enPlayerNumber_2P] = HP;
-				WhiteHp_Timer[enPlayerNumber_2P] = WHITEHP_WAIT;
-			}
-		}
-	}
-	else if (HP > White_BackHp[enPlayerNumber_2P])
-	{
-		White_BackHp[enPlayerNumber_2P] = HP;
-	}
-	m_HpBar_White[enPlayerNumber_2P].Update();
-
+	m_HpBar_White[playerNumber].Update();
 }
 
 //AIのレベルの表示

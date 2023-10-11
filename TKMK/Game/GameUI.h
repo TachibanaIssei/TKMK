@@ -74,7 +74,7 @@ public:
 	/// <summary>
 	/// HPバーの表示
     /// </summary>
-	void HPBar();
+	void HPBar(const Player* player);
 
 	/// <summary>
 	/// AIのレベルの表示

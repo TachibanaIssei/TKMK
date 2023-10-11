@@ -147,7 +147,7 @@ void KnightAI::Update()
 	//カントダウン中だったら
 	if (m_game->NowGameState() == 0)
 	{
-		m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 
 		//ステート
 		ManageState();
@@ -206,7 +206,7 @@ void KnightAI::Update()
 			move.y = 0.0f;
 			move *= 200.0f;
 
-			m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
+			m_position = m_charCon.Execute(move, 1.0f / 60.0f);
 		}
 
 		//攻撃
@@ -221,7 +221,7 @@ void KnightAI::Update()
 			m_rot.SetRotationYFromDirectionXZ(m_LastAttackMove);
 			LastAttackMove.y = 0.0f;
 			LastAttackMove *= 100.0f;
-			m_position = m_charCon.Execute(LastAttackMove, g_gameTime->GetFrameDeltaTime());
+			m_position = m_charCon.Execute(LastAttackMove, 1.0f / 60.0f);
 		}
 		
 		//回避クールタイムの処理
@@ -781,7 +781,7 @@ void KnightAI::ChaseAndEscape()
 	}
 
 	// 移動する（衝突解決）
-	m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 	
 }
 

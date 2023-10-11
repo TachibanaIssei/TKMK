@@ -33,6 +33,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	forward.y = 0.0f;
 	right.y = 0.0f;
 	forward.Normalize();
+	right.Normalize();
 	//移動の入力量とstatusのスピードを乗算。
 	right *= stickL.x * status.GetSpeed();
 	forward *= stickL.y * status.GetSpeed();

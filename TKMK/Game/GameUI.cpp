@@ -97,8 +97,8 @@ namespace
 
 	//スキルクールタイムの文字の座標や拡大率など
 	const Vector3 SKILL_COOLTIME_FONT_POS = Vector3(479.0f, -220.0f, 0.0f);
-	const Vector3 SKILL_COOLTIME_FONT_POS_1P = Vector3(-425.0f, -320.0f, 0.0f);
-	const Vector3 SKILL_COOLTIME_FONT_POS_2P = Vector3(375.0f, -320.0f, 0.0f);
+	const Vector3 SKILL_COOLTIME_FONT_POS_1P = Vector3(-445.0f, -295.0f, 0.0f);
+	const Vector3 SKILL_COOLTIME_FONT_POS_2P = Vector3(355.0f, -295.0f, 0.0f);
 	const Vector3 ADD_SKILL_COOLTIME_FONT = Vector3(-18.0f, 26.0f, 0.0f);
 	const Vector3 SKILL_COOLTIME_FONT_POS_QUARTET_1P = SKILL_QUARTET_POS_1P + ADD_SKILL_COOLTIME_FONT;
 	const Vector3 SKILL_COOLTIME_FONT_POS_QUARTET_2P = SKILL_QUARTET_POS_2P + ADD_SKILL_COOLTIME_FONT;
@@ -1817,7 +1817,7 @@ void GameUI::ExpState(const Player* player)
 		EXPScale.y = EXPERIENCE_BAR_SCALE_QUARTET.y;
 	}
 
-	//HPバーの増えていく割合。
+	//バーの増えていく割合。
 	EXPScale.x = (float)m_mathExp[enPlayerNumber] / (float)m_expTable[enPlayerNumber];
 
 
@@ -2012,7 +2012,7 @@ void GameUI::CpuExpState(KnightAI* knight)
 		EXPScale.y = EXPERIENCE_BAR_SCALE_QUARTET.y;
 	}
 
-	//HPバーの増えていく割合。
+	//バーの増えていく割合。
 	EXPScale.x = (float)m_mathExp[enPlayerNumber] / (float)m_expTable[enPlayerNumber];
 
 
@@ -2488,7 +2488,7 @@ void GameUI::Render(RenderContext& rc)
 	//finishの画像
 	if (m_game->GetMinutesTimer() < 1 && m_game->GetSecondsTimer() <= 0)
 	{
-		m_FinishCountNumber.Draw(rc);
+		m_FinishCountNumber.DrawFront(rc);
 		return;
 	}
 

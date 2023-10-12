@@ -79,8 +79,11 @@ Game::~Game()
 		}
 	}
 
-	if (GameObjectManager::GetInstance()->IsActive()) {
-		TowerDown->Stop();
+	for (int i = 0; i < TowerDown.size(); i++)
+	{
+		if (GameObjectManager::GetInstance()->IsActive()) {
+			TowerDown[i]->Stop();
+		}
 	}
 
 	DeleteGO(m_gameUI);
@@ -489,16 +492,26 @@ void Game::SetEnemyRespawnPos()
 
 void Game::TowerEFK()
 {
-	TowerDown = NewGO <EffectEmitter>(0);
-	TowerDown->Init(EnEFK::enEffect_TowerDown);
-	TowerDown->SetScale(Vector3::One * 30.0f);
-	TowerDown->Play();
-	Vector3 EFKPOS = m_EFK_Pos;
-	TowerDown->SetPosition(EFKPOS);
-	Quaternion Efk_Rot = Quaternion::Identity;
-	Efk_Rot.AddRotationDegY(255.0f);
-	TowerDown->SetRotation(Efk_Rot);
-	TowerDown->Update();
+	for (int i = 0; i < TowerDown.size(); i++)
+	{
+		TowerDown[i] = NewGO <EffectEmitter>(0);
+		TowerDown[i]->Init(EnEFK::enEffect_TowerDown);
+		TowerDown[i]->SetScale(Vector3::One * 30.0f);
+		TowerDown[i]->Play();
+		Vector3 EFKPOS = m_EFK_Pos[i];
+		TowerDown[i]->SetPosition(EFKPOS);
+		TowerDown[i]->Update();
+	}
+
+	Quaternion Efk_Rot[4];
+	Efk_Rot[0].SetRotationDegY(130.0f);
+	TowerDown[0]->SetRotation(Efk_Rot[0]);
+	Efk_Rot[1].SetRotationDegY(35.0f);
+	TowerDown[1]->SetRotation(Efk_Rot[1]);
+	Efk_Rot[2].SetRotationDegY(-55.0f);
+	TowerDown[2]->SetRotation(Efk_Rot[2]);
+	Efk_Rot[3].SetRotationDegY(-150.0f);
+	TowerDown[3]->SetRotation(Efk_Rot[3]);
 }
 
 
@@ -557,7 +570,7 @@ void Game::InitSoloPlay()
 	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
 	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_Left);
 
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
@@ -600,7 +613,19 @@ void Game::InitSoloPlay()
 			}
 			if (objData.number == 4)
 			{
-				m_EFK_Pos = objData.position;
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
 			}
 			return true;
 		}
@@ -644,7 +669,7 @@ void Game::InitDuoPlay()
 	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_Left);
 	m_gameCamera[1]->SetSplitCameraDraw(m_gameCamera[1]->enSplitCamera_Right);
 
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
@@ -679,7 +704,19 @@ void Game::InitDuoPlay()
 			}
 			if (objData.number == 4)
 			{
-				m_EFK_Pos = objData.position;
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
 			}
 			return true;
 		}
@@ -729,7 +766,7 @@ void Game::InitTrioPlay()
 	m_gameCamera[3]->SetSplitCameraDraw(m_gameCamera[3]->enSplitCamera_RightDown);
 
 
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
@@ -753,7 +790,19 @@ void Game::InitTrioPlay()
 			//塔の上のエフェクト
 			if (objData.number == 4)
 			{
-				m_EFK_Pos = objData.position;
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
 			}
 			return true;
 		}
@@ -803,7 +852,7 @@ void Game::InitQuartePlay()
 	m_gameCamera[3]->SetSplitCameraDraw(m_gameCamera[3]->enSplitCamera_RightDown);
 
 
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
@@ -814,7 +863,19 @@ void Game::InitQuartePlay()
 			//塔の上のエフェクト
 			if (objData.number == 4)
 			{
-				m_EFK_Pos = objData.position;
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
 			}
 			return true;
 		}

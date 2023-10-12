@@ -473,7 +473,7 @@ private:
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
-	Vector3 m_EFK_Pos = Vector3::Zero;
+	std::array<Vector3, 4> m_EFK_Pos = { Vector3::Zero,Vector3::Zero,Vector3::Zero,Vector3::Zero, };
 
 	float m_fluctuateSkyColor;
 	float m_darknessSkyColor;
@@ -541,7 +541,7 @@ private:
 	bool UltCanUseFlag = false;
 	float UltCanUseTimer = 0.0f;
 
-	EffectEmitter* TowerDown = nullptr;
+	std::array<EffectEmitter*, 4> TowerDown = { nullptr,nullptr,nullptr,nullptr };
 
 };
 

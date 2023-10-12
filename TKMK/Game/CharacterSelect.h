@@ -50,6 +50,7 @@ private:
 	};
 
 	void InitSprite();
+	void InitFont();
 
 	/// <summary>
 	/// インゲームへの処理
@@ -112,6 +113,8 @@ private:
 	/// <returns>重なっていたらtrue</returns>
 	bool CheckUnderBarOverlap();
 
+	void SetPlayerCountText();
+
 	/// <summary>
 	/// アイコン画像の縦横の最大と最小の座標を計算する
 	/// </summary>
@@ -156,14 +159,17 @@ private:
 	SpriteRender m_ultExplanation;			//必殺技の説明文
 	SpriteRender m_guideButton;
 
-	ModelRender m_knight;					//剣士のモデル
-	ModelRender m_platform;					//モデルを乗せる台
+	FontRender m_countFont;					//1から4の数字
+
+	std::array<ModelRender,4> m_knight;					//剣士のモデル
+	std::array<ModelRender, 4> m_platform;					//モデルを乗せる台
 	ModelRender m_stage;
 	ModelRender m_wall;
 
 	Quaternion m_knightRot;					//剣士の回転
 
 	EnCharacterSelect m_characterSelect;	//キャラクターセレクト
+	RenderingEngine::EnGameMode m_gameMode;
 
 	Vector3 m_moveSpeed = Vector3::Zero;
 	Vector3 m_pointerPosition	= Vector3(0.0f,90.0f,0.0f);
@@ -174,6 +180,8 @@ private:
 	bool m_underBarDrawFlag = false;		//下のバーの表示フラグ
 
 	bool m_readyFlag = false;				//インゲーム開始フラグ
+
+	int m_playerCount = 4;
 
 	float time;
 	float m_bgmVolume = 0.4f;				//BGMのボリューム

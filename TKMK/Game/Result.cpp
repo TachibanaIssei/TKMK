@@ -10,7 +10,7 @@
 
 namespace ResultSpriteConst
 {
-	const float COMPLEMENT = 0.022f;											//補完を進める値
+	const float COMPLEMENT = 0.03f;											//補完を進める値
 
 	const Vector3 GOTITLE_ADD_CURSOR_POS = Vector3(-330.0f, 0.0f, 0.0f);		//"タイトルに戻る"の画像の横に出す剣の画像に加算する値
 	const Vector3 GAME_FINISH_ADD_CURSOR_POS = Vector3(-280.0f, 0.0f, 0.0f);	//"ゲーム終了"の画像の横に出す剣の画像に加算する値

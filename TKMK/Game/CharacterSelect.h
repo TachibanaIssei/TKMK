@@ -181,7 +181,7 @@ private:
 
 	bool m_readyFlag = false;				//インゲーム開始フラグ
 
-	int m_playerCount = 4;
+	int m_playerCount = 1;
 
 	float time;
 	float m_bgmVolume = 0.4f;				//BGMのボリューム

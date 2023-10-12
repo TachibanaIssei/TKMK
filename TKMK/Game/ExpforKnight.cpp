@@ -11,10 +11,10 @@ namespace {
 	const Vector2 EXPERIENCE_BAR_DUO_LEFT_POS = Vector2(300.0f, -620.0f);	//左
 	const Vector2 EXPERIENCE_BAR_DUO_RIGHT_POS = Vector2(-300.0f, -620.0f);	//右
 	//3～4人用
-	const Vector2 EXPERIENCE_BAR_LEFT_UP_POS = Vector2(-115.5f, 70.0f);	//左上
-	const Vector2 EXPERIENCE_BAR_LEFT_DOWN_POS = Vector2(-115.5f, -470.0f);	//左下
-	const Vector2 EXPERIENCE_BAR_RIGHT_UP_POS = Vector2(844.0f, 70.0f);	//右上
-	const Vector2 EXPERIENCE_BAR_RIGHT_DOWN_POS = Vector2(844.0f, -470.0f);	//右下
+	const Vector2 EXPERIENCE_BAR_LEFT_UP_POS = Vector2(300.0f, -270.0f);	//左上
+	const Vector2 EXPERIENCE_BAR_LEFT_DOWN_POS = Vector2(300.0f, -270.0f);	//左下
+	const Vector2 EXPERIENCE_BAR_RIGHT_UP_POS = Vector2(300.0f, -270.0f);	//右上
+	const Vector2 EXPERIENCE_BAR_RIGHT_DOWN_POS = Vector2(300.0f, -270.0f);	//右下
 
 	const float EXPEIENCE_SPRITE_W_H = 128.0f;	//経験値オーブ画像の解像度
 }

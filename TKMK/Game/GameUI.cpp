@@ -8,6 +8,7 @@
 #include "Fade.h"
 #include "ExpforKnight.h"
 #include "Sounds.h"
+#include "KnightAI.h"
 
 namespace
 {
@@ -51,7 +52,7 @@ namespace
 	const Vector3 HP_BAR_POS = Vector3(-670.0f, -480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_POS_RIGHT = Vector3(775.0f, -480.0f, 0.0f);	//HPバーポジション
 	const Vector3 HP_BAR_POS_LEFT = Vector3(-775.0f, -480.0f, 0.0f);	//HPバーポジション
-	const Vector3 HP_BAR_POS_QUARTET_LEFT_UP = Vector3(-855.0f,30.0f,0.0f);
+	const Vector3 HP_BAR_POS_QUARTET_LEFT_UP = Vector3(-855.0f, 30.0f, 0.0f);
 	const Vector3 HP_BAR_POS_QUARTET_RIGHT_UP = Vector3(105.0f, 30.0f, 0.0f);
 	const Vector3 HP_BAR_POS_QUARTET_LEFT_DOWN = Vector3(-855.0f, -520.0f, 0.0f);
 	const Vector3 HP_BAR_POS_QUARTET_RIGHT_DOWN = Vector3(105.0f, -520.0f, 0.0f);
@@ -69,7 +70,7 @@ namespace
 	const Vector3 HP_FONT_POS = Vector3(-650.0f, -445.0f, 0.0f);
 	const Vector3 HP_FONT_POS_LEFT = Vector3(-780.0f, -455.0f, 0.0f);
 	const Vector3 HP_FONT_POS_RIGHT = Vector3(610.0f, -455.0f, 0.0f);
-	const Vector3 ADD_HP_FONT_POS = Vector3(10.0f,13.0f,0.0f);
+	const Vector3 ADD_HP_FONT_POS = Vector3(10.0f, 13.0f, 0.0f);
 	const Vector3 HP_FONT_QUARTET_POS_1P = HP_BAR_POS_QUARTET_LEFT_UP + ADD_HP_FONT_POS;
 	const Vector3 HP_FONT_QUARTET_POS_2P = HP_BAR_POS_QUARTET_RIGHT_UP + ADD_HP_FONT_POS;
 	const Vector3 HP_FONT_QUARTET_POS_3P = HP_BAR_POS_QUARTET_LEFT_DOWN + ADD_HP_FONT_POS;
@@ -299,6 +300,10 @@ bool GameUI::Start()
 			if (m_gameMode != RenderingEngine::enGameMode_TrioPlay)
 			{
 				m_player4P = FindGO<Player>("player4");
+			}
+			else
+			{
+				m_knightAI = FindGO<KnightAI>("KnightAI1");
 			}
 		}
 	}
@@ -686,9 +691,9 @@ void GameUI::InitExpelienceUI()
 		m_experienceBarFlont[enPlayerNumber_2P].SetPosition(EXPERIENCE_BAR_POS_DUO_2P);
 	}
 
-	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay || m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 	{
-		for (int i = 0; i < enPlayerNumber_4P; i++)
+		for (int i = 0; i < enPlayerNumber_Num; i++)
 		{
 			m_Flame[i].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH, FLAME_HEIGHT);
 			m_Flame[i].SetScale(FLAME_SCALE_QUARTET);
@@ -708,165 +713,107 @@ void GameUI::InitExpelienceUI()
 		m_Flame[enPlayerNumber_1P].SetPosition(FLAME_QUARTET_POS_1P);
 		m_Flame[enPlayerNumber_2P].SetPosition(FLAME_QUARTET_POS_2P);
 		m_Flame[enPlayerNumber_3P].SetPosition(FLAME_QUARTET_POS_3P);
+		m_Flame[enPlayerNumber_4P].SetPosition(FLAME_QUARTET_POS_4P);
 
 		//必殺技のアイコン
 		m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_QUARTET_POS_1P);
 		m_UltRenderIN[enPlayerNumber_2P].SetPosition(ULT_QUARTET_POS_2P);
 		m_UltRenderIN[enPlayerNumber_3P].SetPosition(ULT_QUARTET_POS_3P);
+		m_UltRenderIN[enPlayerNumber_4P].SetPosition(ULT_QUARTET_POS_4P);
 
 		//必殺のアイコンフレーム
 		m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_QUARTET_POS_1P);
 		m_UltRenderOUT[enPlayerNumber_2P].SetPosition(ULT_QUARTET_POS_2P);
 		m_UltRenderOUT[enPlayerNumber_3P].SetPosition(ULT_QUARTET_POS_3P);
+		m_UltRenderOUT[enPlayerNumber_4P].SetPosition(ULT_QUARTET_POS_4P);
 
 		//スキルのアイコン
 		m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_QUARTET_POS_1P);
 		m_SkillRenderIN[enPlayerNumber_2P].SetPosition(SKILL_QUARTET_POS_2P);
 		m_SkillRenderIN[enPlayerNumber_3P].SetPosition(SKILL_QUARTET_POS_3P);
+		m_SkillRenderIN[enPlayerNumber_4P].SetPosition(SKILL_QUARTET_POS_4P);
 		//スキルのアイコンフレーム
 		m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_QUARTET_POS_1P);
 		m_SkillRenderOUT[enPlayerNumber_2P].SetPosition(SKILL_QUARTET_POS_2P);
 		m_SkillRenderOUT[enPlayerNumber_3P].SetPosition(SKILL_QUARTET_POS_3P);
+		m_SkillRenderOUT[enPlayerNumber_4P].SetPosition(SKILL_QUARTET_POS_4P);
 
 		//スキルのクールタイムを表示するフォントの設定
 		m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS_QUARTET_1P);
 		m_skillFont[enPlayerNumber_2P].SetPosition(SKILL_COOLTIME_FONT_POS_QUARTET_2P);
 		m_skillFont[enPlayerNumber_3P].SetPosition(SKILL_COOLTIME_FONT_POS_QUARTET_3P);
+		m_skillFont[enPlayerNumber_4P].SetPosition(SKILL_COOLTIME_FONT_POS_QUARTET_4P);
 
 		playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
 		playerCoolTime[enPlayerNumber_2P] = m_player2P->CharGetSkillCoolTimer();
 		playerCoolTime[enPlayerNumber_3P] = m_player3P->CharGetSkillCoolTimer();
+		if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+		{
+			playerCoolTime[enPlayerNumber_4P] = m_knightAI->GetSkillTimer();
+		}
+		else
+		{
+			playerCoolTime[enPlayerNumber_4P] = m_player4P->CharGetSkillCoolTimer();
+		}
 
 		//Lvの画像を読み込む
 		m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_QUARTET_POS_1P);
 		m_Lv[enPlayerNumber_2P].SetPosition(LEVEL_SPRITE_QUARTET_POS_2P);
 		m_Lv[enPlayerNumber_3P].SetPosition(LEVEL_SPRITE_QUARTET_POS_3P);
+		m_Lv[enPlayerNumber_4P].SetPosition(LEVEL_SPRITE_QUARTET_POS_4P);
 
 		//Lv1の画像を読み込む
 		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_QUARTET_POS_1P);
 		m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_QUARTET_POS_2P);
 		m_LvNumber[enPlayerNumber_3P].SetPosition(LEVEL_NUMBER_QUARTET_POS_3P);
+		m_LvNumber[enPlayerNumber_4P].SetPosition(LEVEL_NUMBER_QUARTET_POS_4P);
 
 		//Lv1の裏の画像の読み込み
 		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_QUARTET_POS_1P);
 		m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_QUARTET_POS_2P);
 		m_LvNumber_back[enPlayerNumber_3P].SetPosition(LEVEL_NUMBER_QUARTET_POS_3P);
+		m_LvNumber_back[enPlayerNumber_4P].SetPosition(LEVEL_NUMBER_QUARTET_POS_4P);
 
 		//10の画像を読み込む
 		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_QUARTET_POS_1P);
 		m_MaxLv[enPlayerNumber_2P].SetPosition(MAX_LEVEL_QUARTET_POS_2P);
 		m_MaxLv[enPlayerNumber_3P].SetPosition(MAX_LEVEL_QUARTET_POS_3P);
+		m_MaxLv[enPlayerNumber_4P].SetPosition(MAX_LEVEL_QUARTET_POS_4P);
 
 		//経験値テーブルと初期経験値
 		m_expTable[enPlayerNumber_2P] = m_player2P->CharSetEXPTable();
 		m_mathExp[enPlayerNumber_2P] = m_player2P->CharGetEXP();
 		m_expTable[enPlayerNumber_3P] = m_player3P->CharSetEXPTable();
 		m_mathExp[enPlayerNumber_3P] = m_player3P->CharGetEXP();
+		if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+		{
+			m_expTable[enPlayerNumber_4P] = m_knightAI->GetExpTable();
+			m_mathExp[enPlayerNumber_4P] = m_knightAI->GetExperience();
+		}
+		else
+		{
+			m_expTable[enPlayerNumber_4P] = m_player4P->CharSetEXPTable();
+			m_mathExp[enPlayerNumber_4P] = m_player4P->CharGetEXP();
+		}
+		
 
 		//経験値のフレーム
 		m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_1P);
 		m_ExperienceFlame[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_2P);
 		m_ExperienceFlame[enPlayerNumber_3P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_3P);
+		m_ExperienceFlame[enPlayerNumber_4P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_4P);
 
 		//経験値バーの裏
 		m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_1P);
 		m_experienceBarBack[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_2P);
 		m_experienceBarBack[enPlayerNumber_3P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_3P);
+		m_experienceBarBack[enPlayerNumber_4P].SetPosition(EXPERIENCE_FLAME_POS_QUARTET_4P);
 
 		//経験値バー
 		m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS_QUARTET_1P);
 		m_experienceBarFlont[enPlayerNumber_2P].SetPosition(EXPERIENCE_BAR_POS_QUARTET_2P);
 		m_experienceBarFlont[enPlayerNumber_3P].SetPosition(EXPERIENCE_BAR_POS_QUARTET_3P);
-	}
-
-	else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
-	{
-		//m_Flame[enPlayerNumber_1P].Init("Assets/sprite/gameUI/LevelBar.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
-		//m_Flame[enPlayerNumber_2P].Init("Assets/sprite/gameUI/LevelBar2P.DDS", FLAME_WIDTH_MULTI, FLAME_HEIGHT_MULTI);
-		//m_Flame[enPlayerNumber_1P].SetPosition(FLAME_POS_1P);
-		//m_Flame[enPlayerNumber_2P].SetPosition(FLAME_POS_2P);
-
-		////必殺技のアイコン
-		//m_UltRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_UltRenderIN[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
-		//m_UltRenderIN[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
-		//m_UltRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Ult_Thunder_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_UltRenderIN[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
-		//m_UltRenderIN[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
-		////必殺のアイコンフレーム
-		//m_UltRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_UltRenderOUT[enPlayerNumber_1P].SetPosition(ULT_POS_1P);
-		//m_UltRenderOUT[enPlayerNumber_1P].SetScale(ULT_ICON_SCALE_MULTI);
-		//m_UltRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/ULT_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_UltRenderOUT[enPlayerNumber_2P].SetPosition(ULT_POS_2P);
-		//m_UltRenderOUT[enPlayerNumber_2P].SetScale(ULT_ICON_SCALE_MULTI);
-		////スキルのアイコン
-		//m_SkillRenderIN[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_SkillRenderIN[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
-		//m_SkillRenderIN[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_IN.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_SkillRenderIN[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
-		////スキルのアイコンフレーム
-		//m_SkillRenderOUT[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_SkillRenderOUT[enPlayerNumber_1P].SetPosition(SKILL_POS_1P);
-		//m_SkillRenderOUT[enPlayerNumber_2P].Init("Assets/sprite/gameUI/Skill_Icon_OUT.DDS", SKILL_AND_ULT_ICON_RESOLUTION_MULTI, SKILL_AND_ULT_ICON_RESOLUTION_MULTI);
-		//m_SkillRenderOUT[enPlayerNumber_2P].SetPosition(SKILL_POS_2P);
-
-		////スキルのクールタイムを表示するフォントの設定
-		//m_skillFont[enPlayerNumber_1P].SetPosition(SKILL_COOLTIME_FONT_POS_1P);
-		//m_skillFont[enPlayerNumber_1P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
-		//m_skillFont[enPlayerNumber_1P].SetColor(g_vec4Red);
-		//m_skillFont[enPlayerNumber_1P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
-		//playerCoolTime[enPlayerNumber_1P] = m_player1P->CharGetSkillCoolTimer();
-
-		//m_skillFont[enPlayerNumber_2P].SetPosition(SKILL_COOLTIME_FONT_POS_2P);
-		//m_skillFont[enPlayerNumber_2P].SetScale(SKILL_COOLTIME_FONT_SCALE_MULTI);
-		//m_skillFont[enPlayerNumber_2P].SetColor(g_vec4Red);
-		//m_skillFont[enPlayerNumber_2P].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
-		//playerCoolTime[enPlayerNumber_2P] = m_player2P->CharGetSkillCoolTimer();
-
-		////Lvの画像を読み込む
-		//m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_1P);
-		//m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE);
-		//m_Lv[enPlayerNumber_2P].SetPosition(LEVEL_SPRITE_POS_2P);
-		//m_Lv[enPlayerNumber_2P].SetScale(LEVEL_SPRITE_SCALE);
-
-		////Lv1の画像を読み込む
-		//m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
-		//m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
-
-		////Lv1の裏の画像の読み込み
-		//m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
-		//m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
-
-		////10の画像を読み込む
-		//m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_1P);
-		//m_MaxLv[enPlayerNumber_1P].SetScale(MAX_LEVEL_SCALE);
-		//m_MaxLv[enPlayerNumber_2P].SetPosition(MAX_LEVEL_POS_2P);
-		//m_MaxLv[enPlayerNumber_2P].SetScale(MAX_LEVEL_SCALE);
-
-		////経験値テーブルと初期経験値
-		//m_expTable[enPlayerNumber_2P] = m_player2P->CharSetEXPTable();
-		//m_mathExp[enPlayerNumber_2P] = m_player2P->CharGetEXP();
-
-		////経験値のフレーム
-		//m_ExperienceFlame[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
-		//m_ExperienceFlame[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-		//m_ExperienceFlame[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
-		//m_ExperienceFlame[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
-
-		////経験値バーの裏
-		//m_experienceBarBack[enPlayerNumber_1P].SetPosition(EXPERIENCE_FLAME_POS_DUO_1P);
-		//m_experienceBarBack[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-		//m_experienceBarBack[enPlayerNumber_2P].SetPosition(EXPERIENCE_FLAME_POS_DUO_2P);
-		//m_experienceBarBack[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
-
-		////経験値バー
-		//m_experienceBarFlont[enPlayerNumber_1P].SetPosition(EXPERIENCE_BAR_POS_DUO_1P);
-		//m_experienceBarFlont[enPlayerNumber_1P].SetPivot(EXPERIENCEGAUGE_PIVOT);
-		//m_experienceBarFlont[enPlayerNumber_1P].SetScale(EXPERIENCE_SCALE);
-		//m_experienceBarFlont[enPlayerNumber_2P].SetPosition(EXPERIENCE_BAR_POS_DUO_2P);
-		//m_experienceBarFlont[enPlayerNumber_2P].SetPivot(EXPERIENCEGAUGE_PIVOT);
-		//m_experienceBarFlont[enPlayerNumber_2P].SetScale(EXPERIENCE_SCALE);
+		m_experienceBarFlont[enPlayerNumber_4P].SetPosition(EXPERIENCE_BAR_POS_QUARTET_4P);
 	}
 	else
 	{
@@ -1049,7 +996,7 @@ void GameUI::InitHpUI()
 		m_HpFont[enPlayerNumber_2P].SetPosition(HP_FONT_POS_RIGHT);
 		m_HpFont[enPlayerNumber_2P].SetScale(0.7f);
 	}
-	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+	else if (m_gameMode == RenderingEngine::enGameMode_TrioPlay || m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 	{
 		//1P用画像
 		m_hpBar[enPlayerNumber_1P].SetPivot(HPGAUGE_PIVOT_LEFT);
@@ -1090,6 +1037,19 @@ void GameUI::InitHpUI()
 		m_HpBar_White[enPlayerNumber_3P].SetPosition(HP_BAR_FLONT_QUARTET_LEFT_DOWN);
 		m_HPFrame[enPlayerNumber_3P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
 
+		//4P用画像
+		m_hpBar[enPlayerNumber_4P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_HpBar_White[enPlayerNumber_4P].SetPivot(HPGAUGE_PIVOT_LEFT);
+		m_hpBar[enPlayerNumber_4P].SetScale(HP_BAR_QUARTET_SCALE);
+		m_HpBar_White[enPlayerNumber_4P].SetScale(HP_BAR_QUARTET_SCALE);
+
+		m_HPFrame[enPlayerNumber_4P].SetPosition(HP_BAR_POS_QUARTET_RIGHT_DOWN);
+		m_hpBarBack[enPlayerNumber_4P].SetPosition(HP_BAR_POS_QUARTET_RIGHT_DOWN);
+		m_hpBarBack[enPlayerNumber_4P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+		m_hpBar[enPlayerNumber_4P].SetPosition(HP_BAR_FLONT_QUARTET_RIGHT_DOWN);
+		m_HpBar_White[enPlayerNumber_4P].SetPosition(HP_BAR_FLONT_QUARTET_RIGHT_DOWN);
+		m_HPFrame[enPlayerNumber_4P].SetScale(HP_BAR_BACK_QUARTET_SCALE);
+
 		//HPフォント
 		m_HpFont[enPlayerNumber_1P].SetPosition(HP_FONT_QUARTET_POS_1P);
 		m_HpFont[enPlayerNumber_1P].SetScale(0.35f);
@@ -1100,10 +1060,9 @@ void GameUI::InitHpUI()
 		m_HpFont[enPlayerNumber_3P].SetPosition(HP_FONT_QUARTET_POS_3P);
 		m_HpFont[enPlayerNumber_3P].SetScale(0.35f);
 		m_HpFont[enPlayerNumber_3P].SetShadowParam(true, 0.7f, g_vec4Black);
-	}
-	else if (m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
-	{
-
+		m_HpFont[enPlayerNumber_4P].SetPosition(HP_FONT_QUARTET_POS_4P);
+		m_HpFont[enPlayerNumber_4P].SetScale(0.35f);
+		m_HpFont[enPlayerNumber_4P].SetShadowParam(true, 0.7f, g_vec4Black);
 	}
 	else
 	{
@@ -1266,6 +1225,11 @@ void GameUI::Update()
 	{
 		ExpState(m_player4P);
 		HPBar(m_player4P);
+	}
+	if (m_gameMode == RenderingEngine::enGameMode_TrioPlay)
+	{
+		CpuExpState(m_knightAI);
+		CpuHpBar(m_knightAI);
 	}
 }
 
@@ -1522,6 +1486,64 @@ void GameUI::HPBar(const Player* player)
 	m_HpBar_White[playerNumber].Update();
 }
 
+void GameUI::CpuHpBar(KnightAI* character)
+{
+	EnPlayerNumber playerNumber = enPlayerNumber_4P;
+
+	int HP = character->GetHitPoint();
+	int MaxHP = character->GetMaxHp();
+	wchar_t hp[255];
+	swprintf_s(hp, 255, L"%3d/%3d", HP, MaxHP);
+	m_HpFont[playerNumber].SetText(hp);
+
+	Vector3 HpScale = Vector3::One;
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		HpScale = HP_BAR_QUARTET_SCALE;
+	}
+
+	//HPバーの減っていく割合。
+	HpScale.x = (float)character->GetHitPoint() / (float)character->GetMaxHp();
+	m_hpBar[playerNumber].SetScale(HpScale);
+
+	m_hpBar[playerNumber].Update();
+
+	//レベルが下がった時の処理
+	if (BackUPLV[playerNumber] > character->GetLevel())
+	{
+		White_BackHp[playerNumber] = HP;
+	}
+	BackUPLV[playerNumber] = character->GetLevel();
+
+	//Hp削られたら白い部分も減らす
+	if (HP < White_BackHp[playerNumber])
+	{
+		if (WhiteHp_Timer[playerNumber] > 0.0f)
+		{
+			WhiteHp_Timer[playerNumber] -= g_gameTime->GetFrameDeltaTime();
+		}
+		else
+		{
+			White_BackHp[playerNumber] -= 2;
+
+			//HPバーの減っていく割合。
+			HpScale.x = (float)White_BackHp[playerNumber] / (float)MaxHP;
+			m_HpBar_White[playerNumber].SetScale(HpScale);
+
+			if (White_BackHp[playerNumber] <= HP)
+			{
+				White_BackHp[playerNumber] = HP;
+				WhiteHp_Timer[playerNumber] = WHITEHP_WAIT;
+			}
+		}
+	}
+	else if (HP > White_BackHp[playerNumber])
+	{
+		White_BackHp[playerNumber] = HP;
+	}
+	m_HpBar_White[playerNumber].Update();
+}
+
 //AIのレベルの表示
 void GameUI::Level()
 {
@@ -1649,7 +1671,7 @@ void GameUI::ExpState(const Player* player)
 		ChackExp(player, enPlayerNumber);
 		break;
 	case GameUI::enUpExpState:
-		UpExp(player, enPlayerNumber);
+		UpExp(enPlayerNumber);
 		break;
 	case GameUI::enDownExpState:
 		DownExp(enPlayerNumber);
@@ -1706,7 +1728,7 @@ void GameUI::ChackExp(const Player* player, const EnPlayerNumber playerNumber)
 
 }
 
-void GameUI::UpExp(const Player* player, const EnPlayerNumber playerNumber)
+void GameUI::UpExp(const EnPlayerNumber playerNumber)
 {
 	if (m_mathExp[playerNumber] >= m_expTable[playerNumber])
 	{
@@ -1824,6 +1846,171 @@ void GameUI::LevelDown(const Player* player, const EnPlayerNumber playerNumber)
 	}
 }
 
+void GameUI::CpuExpState(KnightAI* knight)
+{
+	EnPlayerNumber enPlayerNumber = enPlayerNumber_4P;
+	
+	//レベルが下がったら
+	if (m_playerLevel[enPlayerNumber] > knight->GetLevel()) {
+		m_expUpFlag[enPlayerNumber] = true;
+		m_enExpProcessState[enPlayerNumber] = enLevelDownState;
+	}
+
+	if (m_expUpFlag[enPlayerNumber] == false) {
+		return;
+	}
+
+	switch (m_enExpProcessState[enPlayerNumber])
+	{
+	case GameUI::enChackExpState:
+		CpuChackExp(knight, enPlayerNumber);
+		break;
+	case GameUI::enUpExpState:
+		UpExp(enPlayerNumber);
+		break;
+	case GameUI::enDownExpState:
+		DownExp(enPlayerNumber);
+		break;
+	case GameUI::enLevelUpState:
+		CpuLevelUp(knight, enPlayerNumber);
+		break;
+	case GameUI::enLevelDownState:
+		CpuLevelDown(knight, enPlayerNumber);
+		break;
+	default:
+		break;
+	}
+
+	m_oldSaveExp[enPlayerNumber] = m_saveExp[enPlayerNumber];
+
+	//経験値の表示
+	Vector3 EXPScale = Vector3::One;
+
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		EXPScale.y = EXPERIENCE_BAR_SCALE_QUARTET.y;
+	}
+
+	//HPバーの増えていく割合。
+	EXPScale.x = (float)m_mathExp[enPlayerNumber] / (float)m_expTable[enPlayerNumber];
+
+
+	m_experienceBarFlont[enPlayerNumber].SetScale(EXPScale);
+	m_experienceBarFlont[enPlayerNumber].Update();
+
+	//レベルアップまでに必要な経験値の量
+	int UpToLevel = m_mathExp[enPlayerNumber];
+	wchar_t UTL[255];
+	swprintf_s(UTL, 255, L"%d", UpToLevel);
+	m_ExpFont.SetText(UTL);
+}
+
+void GameUI::CpuChackExp(KnightAI* knight, const EnPlayerNumber playerNumber)
+{
+	//レベルが下がったら
+	if (m_playerLevel[playerNumber] > knight->GetLevel()) {
+		m_enExpProcessState[playerNumber] = enLevelDownState;
+		return;
+	}
+
+	//セーブした経験値が前フレームのセーブした経験値と違うなら
+	if (knight->GetSaveEXP() != m_oldSaveExp[playerNumber]) {
+		m_saveExp[playerNumber] = knight->GetSaveEXP();
+
+		m_enExpProcessState[playerNumber] = enUpExpState;
+	}
+}
+
+void GameUI::CpuLevelUp(KnightAI* knight, const EnPlayerNumber playerNumber)
+{
+	m_saveExp[playerNumber] -= m_expTable[playerNumber];
+
+	m_mathExp[playerNumber] = 0;
+
+	//レベルアップの処理
+	if (m_playerLevel[playerNumber] < knight->GetLevel()) {
+		m_playerLevel[playerNumber]++;
+	}
+	//レベルに応じた経験値テーブルにする
+	m_expTable[playerNumber] = knight->GetExpTableForLevel(m_playerLevel[playerNumber]);
+
+	//レベル画像変更
+	LevelSpriteChange(m_playerLevel[playerNumber], playerNumber);
+
+	if (m_playerLevel[playerNumber] == 10) {
+		m_saveExp[playerNumber] = 10;
+		knight->SetSaveEXP(m_saveExp[playerNumber]);
+		m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+		m_mathExp[playerNumber] = m_saveExp[playerNumber];
+		m_enExpProcessState[playerNumber] = enChackExpState;
+		m_expUpFlag[playerNumber] = false;
+		return;
+	}
+
+	//まだセーブした経験値が残っているなら
+	if (m_saveExp[playerNumber] > 0) {
+		//セーブした経験値をリセット
+		//m_saveExpとプレイヤーのセーブした経験値を同じにする
+		if (knight->GetSaveEXP() > 0) {
+			//セーブした経験値が変わらない
+			knight->SetSaveEXP(m_saveExp[playerNumber]);
+		}
+
+		m_oldSaveExp[playerNumber] = knight->GetSaveEXP();
+		m_enExpProcessState[playerNumber] = enUpExpState;
+	}
+	//もうレベルアップの処理が終わりなら
+	else if (m_saveExp[playerNumber] <= 0) {
+
+		m_expUpFlag[playerNumber] = false;
+
+		//レベルアップの処理の間に中立の敵を倒していたなら
+		if (knight->GetExperience() > 0) {
+			knight->SetSaveEXP(knight->GetExperience());
+			m_saveExp[playerNumber] = knight->GetSaveEXP();
+			m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+			//経験値の処理にいく
+			m_enExpProcessState[playerNumber] = enUpExpState;
+		}
+		else
+		{
+			//セーブした経験値をリセット
+			knight->SetSaveEXP(0);
+			m_saveExp[playerNumber] = knight->GetSaveEXP();
+			m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+
+			m_enExpProcessState[playerNumber] = enChackExpState;
+		}
+	}
+}
+
+void GameUI::CpuLevelDown(KnightAI* knight, const EnPlayerNumber playerNumber)
+{
+	m_playerLevel[playerNumber]--;
+	//レベルに応じた経験値テーブルにする
+	m_expTable[playerNumber] = knight->GetExpTableForLevel(m_playerLevel[playerNumber]);
+
+	LevelSpriteChange(m_playerLevel[playerNumber], playerNumber);
+
+	if (m_playerLevel[playerNumber] <= knight->GetLevel()) {
+		m_expUpFlag[playerNumber] = false;
+		//レベルダウンの処理を終わる
+		m_enExpProcessState[playerNumber] = enChackExpState;
+		m_saveExp[playerNumber] = 0;
+		m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+		m_mathExp[playerNumber] = 0;
+		//セーブした経験値をリセット
+		knight->SetSaveEXP(0);
+		return;
+	}
+	else
+	{
+		m_mathExp[playerNumber] = m_expTable[playerNumber];
+
+		m_enExpProcessState[playerNumber] = enDownExpState;
+	}
+}
+
 //キャラのポイントと。ポイントが一番多いキャラに王冠マークをつける表示の処理
 void GameUI::CharPoint()
 {
@@ -1865,6 +2052,8 @@ void GameUI::CharPoint()
 		num++;
 	}
 }
+
+
 
 void GameUI::LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber)
 {
@@ -2060,6 +2249,13 @@ void GameUI::RenderCoolTimeFont(RenderContext& rc)
 					m_skillFont[enPlayerNumber_4P].Draw(rc);
 				}
 			}
+			else
+			{
+				if (m_knightAI->GetSkillTimer() != playerCoolTime[enPlayerNumber_4P])
+				{
+					m_skillFont[enPlayerNumber_4P].Draw(rc);
+				}
+			}
 		}
 	}
 }
@@ -2109,7 +2305,12 @@ void GameUI::RenderPoint(RenderContext& rc)
 
 void GameUI::RenderExpelience(RenderContext& rc)
 {
-	for (int i = 0; i < m_gameMode; i++)
+	int loopCount = static_cast<int>(m_gameMode);
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		loopCount = enPlayerNumber_Num;
+	}
+	for (int i = 0; i < loopCount; i++)
 	{
 		m_experienceBarBack[i].Draw(rc);
 		if (m_mathExp[i] != 0) {
@@ -2126,7 +2327,12 @@ void GameUI::RenderExpelience(RenderContext& rc)
 
 void GameUI::RenderHp(RenderContext& rc)
 {
-	for (int i = 0; i < m_gameMode; i++)
+	int loopCount = static_cast<int>(m_gameMode);
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		loopCount = enPlayerNumber_Num;
+	}
+	for (int i = 0; i < loopCount; i++)
 	{
 		m_hpBarBack[i].Draw(rc);
 		m_HpBar_White[i].Draw(rc);
@@ -2138,7 +2344,12 @@ void GameUI::RenderHp(RenderContext& rc)
 
 void GameUI::RenderIcon(RenderContext& rc)
 {
-	for (int i = 0; i < m_gameMode; i++)
+	int loopCount = static_cast<int>(m_gameMode);
+	if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+	{
+		loopCount = enPlayerNumber_Num;
+	}
+	for (int i = 0; i < loopCount; i++)
 	{
 		m_SkillRenderIN[i].Draw(rc);
 		m_SkillRenderOUT[i].Draw(rc);
@@ -2166,8 +2377,13 @@ void GameUI::Render(RenderContext& rc)
 
 	//gameクラスのポーズのフラグが立っている間処理を行わない
 	if (m_GameUIState != m_PauseState && m_GameUIState != m_GameStartState) {
+		int loopCount = static_cast<int>(m_gameMode);
+		if (m_gameMode >= RenderingEngine::enGameMode_TrioPlay)
+		{
+			loopCount = enPlayerNumber_Num;
+		}
 		//レベルや経験値のフレーム
-		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+		for (int i = 0; i < loopCount; i++)
 		{
 			m_Flame[i].Draw(rc);
 		}

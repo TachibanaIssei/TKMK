@@ -5,6 +5,7 @@ class Game;
 class Actor;
 class Fade;
 class ExpforKnight;
+class KnightAI;
 
 class GameUI:public IGameObject
 {
@@ -46,11 +47,15 @@ public:
 
 	void ExpState(const Player* player);
 	void ChackExp(const Player* player, const EnPlayerNumber playerNumber);
-	void UpExp(const Player* player, const EnPlayerNumber playerNumber);
+	void UpExp(const EnPlayerNumber playerNumber);
 	void DownExp(const EnPlayerNumber playerNumber);
 	void LevelUp(const Player* player, const EnPlayerNumber playerNumber);
 	void LevelDown(const Player* player, const EnPlayerNumber playerNumber);
 
+	void CpuExpState(KnightAI* knight);
+	void CpuChackExp(KnightAI* knight, const EnPlayerNumber playerNumber);
+	void CpuLevelUp(KnightAI* knight, const EnPlayerNumber playerNumber);
+	void CpuLevelDown(KnightAI* knight, const EnPlayerNumber playerNumber);
 
 	void SetSGame(Game* Cgame)
 	{
@@ -68,13 +73,13 @@ public:
 	/// <summary>
 	/// プレイヤーのレベルに合わせてレベルの画像を変更する
 	/// </summary>
-	/// <param name="lv">プレイヤーの現在のレベル</param>
 	void LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber = enPlayerNumber_1P);
 
 	/// <summary>
 	/// HPバーの表示
     /// </summary>
 	void HPBar(const Player* player);
+	void CpuHpBar(KnightAI* character);
 
 	/// <summary>
 	/// AIのレベルの表示
@@ -210,6 +215,7 @@ private:
 	Player* m_player2P = nullptr;
 	Player* m_player3P = nullptr;
 	Player* m_player4P = nullptr;
+	KnightAI* m_knightAI = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
 	Fade* m_fade = nullptr;

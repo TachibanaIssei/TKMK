@@ -936,7 +936,8 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 		neutral_Enemy->SetPlayerActor(
 			player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor(),
-			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor());
+			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor(),
+			static_cast<Actor*>(m_KnightAI[0]));
 	}
 	//4人プレイのとき
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)

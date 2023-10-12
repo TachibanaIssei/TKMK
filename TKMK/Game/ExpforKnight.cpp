@@ -60,6 +60,14 @@ bool ExpforKnight::Start()
 		{
 			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
+		else if (m_playerActor->IsMatchName("knightplayer4"))
+		{
+			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
+		}
+		else if (m_playerActor->IsMatchName("KnightAI1"))
+		{
+			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
+		}
 	}
 	m_center.x = (m_effectScreenPosition.x - m_experienceBarPosition.x) / 2.0f;
 	m_center.y = (m_effectScreenPosition.y - m_experienceBarPosition.y) / 2.0f;
@@ -146,6 +154,10 @@ void ExpforKnight::SetPlayerNumber()
 	{
 		m_playerActorNumber = 3;
 	}
+	else if (m_playerActor->IsMatchName("KnightAI1"))
+	{
+		m_playerActorNumber = 3;
+	}
 }
 
 Vector2 ExpforKnight::SetExperienceBarPosition()
@@ -182,6 +194,10 @@ Vector2 ExpforKnight::SetExperienceBarPosition()
 			position = EXPERIENCE_BAR_LEFT_DOWN_POS;
 		}
 		else if (m_playerActor->IsMatchName("knightplayer4"))
+		{
+			position = EXPERIENCE_BAR_RIGHT_DOWN_POS;
+		}
+		else if (m_playerActor->IsMatchName("KnightAI1"))
 		{
 			position = EXPERIENCE_BAR_RIGHT_DOWN_POS;
 		}

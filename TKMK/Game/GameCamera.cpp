@@ -321,7 +321,7 @@ void GameCamera::UltRotCamera()
 			KnightUltFlag = false;
 			SetCameraCharFrontFlag = false;
 			m_springCamera.Refresh();
-			CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
+			CameraTarget(TARGETPOS_YUP,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 			m_enCameraState = enNormalCameraState;
 			return;
 		}
@@ -501,7 +501,7 @@ void GameCamera::CameraTarget(float targrtYUp, float X, float Y,Actor*actor,bool
 	//プレイヤーの前方向を取得
 	Vector3 toCameraPosXZ = actor->GetForward();
 	//移動していないなら抜け出す
-	if (toCameraPosXZ.x == 0.0f && toCameraPosXZ.y == 0.0f)
+	if (toCameraPosXZ.x == 0.0f && toCameraPosXZ.z == 0.0f)
 	{
 		return;
 	}

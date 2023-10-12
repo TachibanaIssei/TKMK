@@ -103,6 +103,6 @@ private:
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 
-	std::array<EnemyHpBar*, enPlayerNumber_Num - 1>	m_enemyHpBar = { nullptr,nullptr,nullptr};		//敵の上部に描画されるHPバー
+	std::array<EnemyHpBar*, enPlayerNumber_Num>	m_enemyHpBar = { nullptr,nullptr,nullptr,nullptr};		//敵の上部に描画されるHPバー
 };
 

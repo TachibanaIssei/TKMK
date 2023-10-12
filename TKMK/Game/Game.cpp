@@ -547,9 +547,6 @@ void Game::GetActorPoints(int charPoints[])
 
 void Game::InitSoloPlay()
 {
-	//画面分割をしない
-	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
-
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
 	player[0]->SelectCharcter(m_selectCharacterNumber);
@@ -629,9 +626,6 @@ void Game::InitSoloPlay()
 
 void Game::InitDuoPlay()
 {
-	//画面分割をする
-	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_DuoPlay);
-
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
 	player[1] = NewGO<Player>(0, "player2");
@@ -711,9 +705,6 @@ void Game::InitDuoPlay()
 
 void Game::InitTrioPlay()
 {
-	//画面分割をする
-	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_TrioPlay);
-
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
 	player[1] = NewGO<Player>(0, "player2");
@@ -787,9 +778,6 @@ void Game::InitTrioPlay()
 
 void Game::InitQuartePlay()
 {
-	//画面分割をする
-	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_TrioPlay);
-
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
 	player[1] = NewGO<Player>(0, "player2");

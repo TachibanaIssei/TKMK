@@ -120,9 +120,9 @@ namespace nsK2EngineLow {
 
 	}
 	void SpringCamera::Init(Camera& camera,
-		float maxMoveSpeed,
-		bool isEnableCollisionSolver,
-		float sphereCollisionRadius)
+		const float maxMoveSpeed,
+		const bool isEnableCollisionSolver,
+		const float sphereCollisionRadius)
 	{
 		m_camera = &camera;
 		SetTarget(m_camera->GetTarget());

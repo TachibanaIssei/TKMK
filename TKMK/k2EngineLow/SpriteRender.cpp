@@ -23,7 +23,7 @@ void nsK2EngineLow::SpriteRender::Init(const char* filePath, const float w, cons
 	m_isInit = true;
 }
 
-void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc, bool drawTiming, int viewportNo)
+void nsK2EngineLow::SpriteRender::Draw(RenderContext& rc, const bool drawTiming, const int viewportNo)
 {
 	if (viewportNo == -1)
 	{

@@ -380,7 +380,7 @@ namespace nsK2EngineLow {
 		/// <param name="groundColor">地面色</param>
 		/// <param name="skyColor">天球色</param>
 		/// <param name="groundNormal">地面の法線</param>
-		void SetHemiLight(Vector3 groundColor, Vector3 skyColor, Vector3 groundNormal)
+		void SetHemiLight(const Vector3 groundColor, const Vector3 skyColor, const Vector3 groundNormal)
 		{
 			SetHemiLightGroundColor(groundColor);
 			SetHemiLightSkyColor(skyColor);
@@ -391,7 +391,7 @@ namespace nsK2EngineLow {
 		/// 半球ライトの地面色を設定
 		/// </summary>
 		/// <param name="groundColor">地面色</param>
-		void SetHemiLightGroundColor(Vector3 groundColor)
+		void SetHemiLightGroundColor(const Vector3 groundColor)
 		{
 			m_light.hemisphereLight.groundColor = groundColor;
 		}
@@ -399,7 +399,7 @@ namespace nsK2EngineLow {
 		/// 半球ライトの天球色を設定
 		/// </summary>
 		/// <param name="skyColor">天球色</param>
-		void SetHemiLightSkyColor(Vector3 skyColor)
+		void SetHemiLightSkyColor(const Vector3 skyColor)
 		{
 			m_light.hemisphereLight.skyColor = skyColor;
 		}
@@ -407,7 +407,7 @@ namespace nsK2EngineLow {
 		/// 半球ライトの地面の法線
 		/// </summary>
 		/// <param name="normal">地面の法線</param>
-		void SetHemiLightGroundNormal(Vector3 normal)
+		void SetHemiLightGroundNormal(const Vector3 normal)
 		{
 			m_light.hemisphereLight.groundNormal = normal;
 		}

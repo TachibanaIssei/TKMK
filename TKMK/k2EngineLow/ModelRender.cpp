@@ -1,7 +1,7 @@
 #include "k2EngineLowPreCompile.h"
 #include "ModelRender.h"
 
-void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, int numAnimationClips, EnModelUpAxis enModelUpAxis, bool shadow)
+void nsK2EngineLow::ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, const int numAnimationClips, const EnModelUpAxis enModelUpAxis, const bool shadow)
 {
 	//tkmファイルパスを設定
 	m_modelInitData.m_tkmFilePath = tkmFilepath;
@@ -96,7 +96,7 @@ void nsK2EngineLow::ModelRender::Update()
 	m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
 }
 
-void nsK2EngineLow::ModelRender::MakeDirectionData(int lightNumber)
+void nsK2EngineLow::ModelRender::MakeDirectionData(const int lightNumber)
 {
 	m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight(lightNumber);
 	m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight(lightNumber));

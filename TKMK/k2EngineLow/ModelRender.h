@@ -1,7 +1,7 @@
 #pragma once
 
 namespace nsK2EngineLow {
-	class ModelRender
+	class ModelRender : public Noncopyable
 	{
 	//メンバ関数
 	public:
@@ -15,9 +15,9 @@ namespace nsK2EngineLow {
 		void Init(
 			const char* tkmFilepath,
 			AnimationClip* animationClips = nullptr,
-			int numAnimationClips = 0,
-			EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
-			bool shadow = true
+			const int numAnimationClips = 0,
+			const EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
+			const bool shadow = true
 		);
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace nsK2EngineLow {
 		/// <param name="x">X軸</param>
 		/// <param name="y">Y軸</param>
 		/// <param name="z">Z軸</param>
-		void SetPosition(float x, float y, float z)
+		void SetPosition(const float x, const float y, const float z)
 		{
 			SetPosition({ x, y, z });
 		};
@@ -100,7 +100,7 @@ namespace nsK2EngineLow {
 		/// <param name="x">X軸</param>
 		/// <param name="y">Y軸</param>
 		/// <param name="z">Z軸</param>
-		void SetScale(float x, float y, float z)
+		void SetScale(const float x, const float y, const float z)
 		{
 			SetScale({ x,y,z });
 		};
@@ -128,7 +128,7 @@ namespace nsK2EngineLow {
 			m_model[g_renderingEngine->GetCameraDrawing()].Draw(rc,1,g_renderingEngine->GetCameraDrawing());
 		}
 
-		void OnRenderShadowModel(RenderContext& rc,Camera& camera,int number)
+		void OnRenderShadowModel(RenderContext& rc,Camera& camera, const int number)
 		{
 			m_shadowModel[number].Draw(rc, camera);
 		}
@@ -148,7 +148,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="boneNo">ボーン番号</param>
 		/// <returns>ボーン</returns>
-		Bone* GetBone(int boneNo) const
+		Bone* GetBone(const int boneNo) const
 		{
 			return m_skeleton.GetBone(boneNo);
 		}
@@ -167,7 +167,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="animNo">アニメーションクリップの番号。</param>
 		/// <param name="interpolateTime">補完時間(単位：秒。)</param>
-		void PlayAnimation(int animNo, float interpolateTime = 0.0f)
+		void PlayAnimation(const int animNo, const float interpolateTime = 0.0f)
 		{
 			m_animation.Play(animNo, interpolateTime);
 		}
@@ -175,7 +175,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// アニメーションの再生中？
 		/// </summary>
-		bool IsPlayingAnimation() const
+		const bool IsPlayingAnimation() const
 		{
 			return m_animation.IsPlaying();
 		}
@@ -211,7 +211,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの情報を作成
 		/// </summary>
-		void MakeDirectionData(int lightNumber);
+		void MakeDirectionData(const int lightNumber);
 
 	//メンバ変数
 	private:

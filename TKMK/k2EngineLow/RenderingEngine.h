@@ -120,7 +120,7 @@ namespace nsK2EngineLow {
 		/// シーンライトを取得
 		/// </summary>
 		/// <returns>シーンライト</returns>
-		const SceneLight& GetSceneLight(const int lightNumber)
+		SceneLight& GetSceneLight(const int lightNumber)
 		{
 			return m_sceneLight[lightNumber];
 		}

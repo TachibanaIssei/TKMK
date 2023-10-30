@@ -1,6 +1,6 @@
 #pragma once
 namespace nsK2EngineLow {
-	class Shadow
+	class Shadow : public Noncopyable
 	{
 	public:
 		void Init();
@@ -10,7 +10,7 @@ namespace nsK2EngineLow {
 		/// シャドウマップテクスチャを取得する
 		/// </summary>
 		/// <param name="number">取得したいシャドウマップの番号</param>
-		Texture& GetShadowMapTexture(int number)
+		Texture& GetShadowMapTexture(const int number)
 		{
 			return m_shadowMap[number].GetRenderTargetTexture();
 		}
@@ -18,7 +18,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ライトカメラを取得する
 		/// </summary>
-		Camera& GetLightCamera(int number)
+		Camera& GetLightCamera(const int number)
 		{
 			return m_lightCamera[number];
 		}

@@ -138,7 +138,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="boneName">ボーンの名前</param>
 		/// <returns>ボーン番号。見つからなかった場合は-1が返る</returns>
-		int FindBoneID(const wchar_t* boneName)const
+		const int FindBoneID(const wchar_t* boneName)const
 		{
 			return m_skeleton.FindBoneID(boneName);
 		}
@@ -157,7 +157,7 @@ namespace nsK2EngineLow {
 		/// アニメーションイベントを追加する
 		/// </summary>
 		/// <param name="eventListener"></param>
-		void AddAnimationEvent(AnimationEventListener eventListener)
+		void AddAnimationEvent(const AnimationEventListener eventListener)
 		{
 			m_animation.AddAnimationEventListener(eventListener);
 		}
@@ -204,8 +204,8 @@ namespace nsK2EngineLow {
 		/// <param name="enModelUpAxis">モデルの上向き。</param>
 		void InitAnimation(
 			AnimationClip* animationClips,
-			int numAnimationClips,
-			EnModelUpAxis enModelUpAxis
+			const int numAnimationClips,
+			const EnModelUpAxis enModelUpAxis
 		);
 
 		/// <summary>

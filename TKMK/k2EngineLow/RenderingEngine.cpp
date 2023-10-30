@@ -415,7 +415,7 @@ void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)
 	EndGPUEvent();
 }
 
-void nsK2EngineLow::RenderingEngine::ClearVectorList()
+void nsK2EngineLow::RenderingEngine::ClearRenderList()
 {
 	m_modelList.clear();
 	m_spriteList.clear();
@@ -438,6 +438,7 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 		g_camera3D[enCameraDrawing_LeftDown]->GetPosition(),
 		g_camera3D[enCameraDrawing_RightDown]->GetPosition());
 
+	//影を描画する
 	m_shadow.Render(rc);
 
 	//レンダリングターゲットを変更
@@ -445,22 +446,28 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
 	rc.ClearRenderTargetView(m_mainRenderTarget);
 
+	//ビューポートにモデルを描画する
 	DrawModelInViewPorts(rc);
 
 	//書き込み終了待ち
 	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
 
+	//ポストエフェクト
 	m_postEffect.Render(rc, m_mainRenderTarget);
 
+	//エフェクトの描画
 	ExcuteEffectRender(rc);
 
+	//画像と文字の描画
 	Render2D(rc);
 
 	rc.SetRenderTarget(
 		g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
 		g_graphicsEngine->GetCurrentFrameBuffuerDSV()
 	);
+
+	//メインレンダーターゲットをコピーする
 	m_copyToFrameBufferSprite.Draw(rc);
 
-	ClearVectorList();
+	ClearRenderList();
 }

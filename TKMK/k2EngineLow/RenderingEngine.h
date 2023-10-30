@@ -233,7 +233,7 @@ namespace nsK2EngineLow {
 			/// カメラの位置を設定する
 			/// </summary>
 			/// <param name="eyePos"></param>
-		void SetEyePos(const Vector3 eyePosLeft, const Vector3 eyePosRight, const Vector3 eyePosLeftDown, const Vector3 eyePosRightDown)
+		void SetEyePos(const Vector3& eyePosLeft, const Vector3& eyePosRight, const Vector3& eyePosLeftDown, const Vector3& eyePosRightDown)
 		{
 			m_sceneLight[enCameraDrawing_Left].SetEyePos(eyePosLeft);
 			m_sceneLight[enCameraDrawing_Right].SetEyePos(eyePosRight);
@@ -675,9 +675,9 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void Render2D(RenderContext& rc);
 		/// <summary>
-		/// vectorコンテナのリストを消去する
+		/// 描画リストをclearする
 		/// </summary>
-		void ClearVectorList();
+		void ClearRenderList();
 
 	private:
 		std::vector<ModelRender*>	m_modelList;							//モデルクラスのリスト

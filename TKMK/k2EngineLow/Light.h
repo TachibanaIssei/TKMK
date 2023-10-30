@@ -154,7 +154,7 @@ namespace nsK2EngineLow {
 		/// ƒJƒƒ‰‚ÌˆÊ’u‚ğİ’è‚·‚é
 		/// </summary>
 		/// <param name="eyePos"></param>
-		void SetEyePos(Vector3 eyePos)
+		void SetEyePos(const Vector3& eyePos)
 		{
 			m_light.cameraEyePos = eyePos;
 		}

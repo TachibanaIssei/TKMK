@@ -3,14 +3,11 @@ namespace nsK2EngineLow {
 	/// <summary>
 	/// フォントレンダー
 	/// </summary>
-	class FontRender
+	class FontRender : public Noncopyable
 	{
 	public:
 		static const int MAX_TEXT_SIZE = 256;
-		~FontRender()
-		{
-
-		}
+		~FontRender() {};
 
 		/// <summary>
 		/// 表示する文字を設定する
@@ -43,7 +40,7 @@ namespace nsK2EngineLow {
 		/// <param name="x">X軸</param>
 		/// <param name="y">Y軸</param>
 		/// <param name="z">Z軸</param>
-		void SetPosition(float x, float y, float z = 0.0f)
+		void SetPosition(const float x, const float y, const float z = 0.0f)
 		{
 			SetPosition({ x,y,z });
 		}
@@ -103,7 +100,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="x">X軸のオフセット</param>
 		/// <param name="y">Y軸のオフセット</param>
-		void SetPivotOffSet(float x, float y)
+		void SetPivotOffSet(const float x, const float y)
 		{
 			SetPivotOffSet({ x,y });
 		}
@@ -131,7 +128,7 @@ namespace nsK2EngineLow {
 		/// <param name="g">緑</param>
 		/// <param name="b">青</param>
 		/// <param name="a">アルファ</param>
-		void SetColor(float r, float g, float b, float a)
+		void SetColor(const float r, const  float g, const  float b, const float a)
 		{
 			SetColor({ r,g,b,a });
 		}
@@ -150,7 +147,7 @@ namespace nsK2EngineLow {
 		/// <param name="isDrawShadow">影を描画する？</param>
 		/// <param name="shadowOffset">影を描画するときのピクセルのオフセット量</param>
 		/// <param name="shadowColor">影の色</param>
-		void SetShadowParam(bool isDrawShadow, float shadowOffset, const Vector4& shadowColor)
+		void SetShadowParam(const bool isDrawShadow, const float shadowOffset, const Vector4& shadowColor)
 		{
 			m_font.SetShadowParam(isDrawShadow, shadowOffset, shadowColor);
 		}
@@ -169,12 +166,12 @@ namespace nsK2EngineLow {
 		}
 
 	private:
-		Vector3		m_position = Vector3::Zero;			//座標
-		float		m_scale = 1.0f;						//大きさ
-		Vector4		m_color = g_vec4White;				//文字の色。デフォルトは白
-		float		m_rotation = 0.0f;					//回転
+		Vector3		m_position = Vector3::Zero;				//座標
+		float		m_scale = 1.0f;							//大きさ
+		Vector4		m_color = g_vec4White;					//文字の色。デフォルトは白
+		float		m_rotation = 0.0f;						//回転
 		Vector2		m_pivotOffSet = Sprite::DEFAULT_PIVOT;	//オフセット(ピボット中心)
 		wchar_t		m_text[MAX_TEXT_SIZE]{};				//文字
-		Font		m_font;								//フォント
+		Font		m_font;									//フォント
 	};
 }

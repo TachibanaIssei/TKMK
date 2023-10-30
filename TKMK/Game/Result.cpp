@@ -129,7 +129,7 @@ bool Result::Start()
 	{
 		for (k = 0; k < m_maxPlayer; k++)
 		{
-			if (m_playerScore[j].Point < m_playerScore[k].Point)
+			if (m_playerScore[j].m_point < m_playerScore[k].m_point)
 			{
 				m_playerScore[j].Rank += 1;
 			}
@@ -140,7 +140,7 @@ bool Result::Start()
 	{
 		for (m = 0; m < m_maxPlayer; m++)
 		{
-			if (m_playerScore[l].Point == m_playerScore[m].Point)
+			if (m_playerScore[l].m_point == m_playerScore[m].m_point)
 			{
 				if (m_playerScore[l].NameNum < m_playerScore[m].NameNum)
 				{
@@ -563,7 +563,7 @@ void Result::Rank()
 		switch (m_playerScore[i].Rank)
 		{
 		case 1:
-			swprintf(Rank1, L"%2d", m_playerScore[i].Point);
+			swprintf(Rank1, L"%2d", m_playerScore[i].m_point);
 			m_playerRank1.SetText(Rank1);
 			m_playerRank1.SetPosition(m_lerpStartPos[i]);
 			m_playerRank1.SetColor(g_vec4White);
@@ -571,7 +571,7 @@ void Result::Rank()
 			m_playerRank1.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4Black);
 			break;
 		case 2:
-			swprintf(Rank2, L"%2d", m_playerScore[i].Point);
+			swprintf(Rank2, L"%2d", m_playerScore[i].m_point);
 			m_playerRank2.SetText(Rank2);
 			m_playerRank2.SetPosition(m_lerpStartPos[i]);
 			m_playerRank2.SetColor(g_vec4White);
@@ -579,7 +579,7 @@ void Result::Rank()
 			m_playerRank2.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4Black);
 			break;
 		case 3:
-			swprintf(Rank3, L"%2d", m_playerScore[i].Point);
+			swprintf(Rank3, L"%2d", m_playerScore[i].m_point);
 			m_playerRank3.SetText(Rank3);
 			m_playerRank3.SetPosition(m_lerpStartPos[i]);
 			m_playerRank3.SetColor(g_vec4White);
@@ -587,7 +587,7 @@ void Result::Rank()
 			m_playerRank3.SetShadowParam(true, ResultSpriteConst::POINT_FONT_SHADOW_OFFSET, g_vec4Black);
 			break;
 		case 4:
-			swprintf(Rank4, L"%2d", m_playerScore[i].Point);
+			swprintf(Rank4, L"%2d", m_playerScore[i].m_point);
 			m_playerRank4.SetText(Rank4);
 			m_playerRank4.SetPosition(m_lerpStartPos[i]);
 			m_playerRank4.SetColor(g_vec4White);

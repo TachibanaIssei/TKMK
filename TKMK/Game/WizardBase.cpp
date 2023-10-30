@@ -8,18 +8,18 @@ WizardBase::WizardBase()
 {
 	//ステータスを読み込む
 	m_status.Init("Wizard");
-	Lv = 1;                    //レベル
-	AtkSpeed = 10;              //攻撃速度
+	m_lv = 1;                    //レベル
+	m_attackSpeed = 10;              //攻撃速度
 
-	Cooltime = 15;            //スキルのクールタイム
-	SkillTimer = Cooltime;
+	m_skillCoolTime = 15;            //スキルのクールタイム
+	m_skillTimer = m_skillCoolTime;
 
-	AvoidanceCoolTime = 2;     ///回避のクールタイム
-	AvoidanceTimer = AvoidanceCoolTime;
+	m_avoidanceCoolTime = 2;     ///回避のクールタイム
+	m_avoidanceTimer = m_avoidanceCoolTime;
 
-	Point = 0;                 //敵を倒して手に入れたポイント
-	GetExp = 0;                //中立の敵を倒したときの経験値
-	ExpTable = 5;              //経験値テーブル
+	m_point = 0;                 //敵を倒して手に入れたポイント
+	m_getExp = 0;                //中立の敵を倒したときの経験値
+	m_expTable = 5;              //経験値テーブル
 
 	//スフィアコライダーを初期化。
 	m_sphereCollider.Create(1.0f);
@@ -80,46 +80,46 @@ void WizardBase::SetModel()
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
 /// </summary>
-/// <param name="GetExp">中立の敵の経験値</param>
+/// <param name="m_getExp">中立の敵の経験値</param>
 void WizardBase::ExpProcess(int Exp)
 {
 	//もしレベルが10(Max)なら
-	if (Lv == 10)return;
+	if (m_lv == 10)return;
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
-	GetExp += Exp;
+	m_getExp += Exp;
 	//手に入れた経験値より経験値テーブルのほうが大きかったら
-	if (GetExp < ExpTable) return;      //抜け出す
+	if (m_getExp < m_expTable) return;      //抜け出す
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
-		LevelUp(Lv);
+		LevelUp(m_lv);
 		//レベルに合わせてレベルの画像を変更する
-		gameUI->LevelSpriteChange(Lv);
-		switch (Lv)
+		gameUI->LevelSpriteChange(m_lv);
+		switch (m_lv)
 		{
 		case 2:
-			ExpTable = 10;
+			m_expTable = 10;
 			break;
 		case 3:
-			ExpTable = 20;
+			m_expTable = 20;
 			break;
 		case 4:
-			ExpTable = 30;
+			m_expTable = 30;
 			break;
 		case 5:
-			ExpTable = 40;
+			m_expTable = 40;
 			break;
 		case 6:
-			ExpTable = 50;
+			m_expTable = 50;
 			break;
 		case 7:
-			ExpTable = 60;
+			m_expTable = 60;
 			break;
 		case 8:
-			ExpTable = 70;
+			m_expTable = 70;
 			break;
 		case 9:
-			ExpTable = 80;
+			m_expTable = 80;
 			break;
 		default:
 			break;
@@ -222,7 +222,7 @@ void WizardBase::Dameged(int damege, Actor* CharGivePoints)
 		if (CharGivePoints != nullptr)
 		{
 			//倒された相手のポイントを増やす
-			CharGivePoints->PointProcess(Lv);
+			CharGivePoints->PointProcess(m_lv);
 		}
 
 	}
@@ -230,7 +230,7 @@ void WizardBase::Dameged(int damege, Actor* CharGivePoints)
 		//ダメージステート
 		m_wizardState = enWizardState_Damege;
 		//無敵時間フラグ
-		//invincibleFlag = true;
+		//m_invincibleFlag = true;
 	}
 }
 
@@ -242,17 +242,17 @@ void WizardBase::Death()
 	////死亡ステート
 	//m_charState = enKnightState_Death;
 	//レベルを１下げる
-	levelDown(Lv, 1);
+	levelDown(m_lv, 1);
 	//HPを最大にする
 	m_status.SetHp(m_status.GetMaxHp());
 	//経験値をリセット
-	ExpReset(Lv, GetExp);
+	ExpReset(m_lv, m_getExp);
 	//一つ下のレベルの経験値テーブルにする
-	ExpTableChamge(Lv, ExpTable);
+	ExpTableChamge(m_lv, m_expTable);
 
 
 	//レベルに合わせてレベルの画像を変更する
-	gameUI->LevelSpriteChange(Lv);
+	gameUI->LevelSpriteChange(m_lv);
 }
 
 //衝突したときに呼ばれる関数オブジェクト(壁用)
@@ -458,10 +458,10 @@ void WizardBase::SetRespawn()
 	GetRespawnPos();
 	//リスポーンする座標のセット
 	//キャラコン
-	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
+	m_charCon.SetPosition(m_respawnPos[m_respawnNumber]);
 	//魔法使い
-	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
-	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+	m_modelRender.SetPosition(m_respawnPos[m_respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[m_respawnNumber]);
 }
 
 /// <summary>
@@ -566,7 +566,7 @@ void WizardBase::OnProcessCommonStateTransition()
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (Lv < 4) {
+		if (m_lv < 4) {
 			m_wizardState = enWizardState_Walk;
 		}
 		else
@@ -682,7 +682,7 @@ void WizardBase::OnProcessDamegeStateTransition()
 		//待機ステート
 		m_wizardState = enWizardState_Idle;
 		//無敵時間ステート
-		//invincibleFlag = false;
+		//m_invincibleFlag = false;
 		OnProcessCommonStateTransition();
 	}
 }

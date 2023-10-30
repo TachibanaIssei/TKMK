@@ -72,16 +72,16 @@ public:
 	//	////死亡ステート
 	//	//m_charState = enKnightState_Death;
 	//	//レベルを１下げる
-	//	levelDown(LvUpStatus, m_status, Lv, 1);
+	//	levelDown(LvUpStatus, m_status, m_lv, 1);
 	//	//HPを最大にする
 	//	m_status.m_hp = m_status.m_maxHp;
 	//	//経験値をリセット
-	//	ExpReset(Lv, GetExp);
+	//	ExpReset(m_lv, m_getExp);
 	//	//一つ下のレベルの経験値テーブルにする
-	//	ExpTableChamge(Lv, ExpTable);
+	//	ExpTableChamge(m_lv, m_expTable);
 
 	//	//レベルに合わせてレベルの画像を変更する
-	//	m_gameUI->LevelSpriteChange(Lv);
+	//	m_gameUI->LevelSpriteChange(m_lv);
 	//}
 
 	//void AvoidanceSprite();

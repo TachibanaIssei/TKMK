@@ -36,7 +36,7 @@ public:
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
 	/// </summary>
-	/// <param name="GetExp">中立の敵の経験値</param>
+	/// <param name="m_getExp">中立の敵の経験値</param>
 	void ExpProcess(int Exp);
 
 	/// <summary>
@@ -144,7 +144,7 @@ public:
 	/// </summary>
 	/// <returns>現在のレベル</returns>
 	int& SetLevel() {
-		return Lv;
+		return m_lv;
 	}
 
 	/// <summary>
@@ -213,7 +213,7 @@ public:
 	/// </summary>
 	void SetRespawnNumber(int number)
 	{
-		respawnNumber = number;
+		m_respawnNumber = number;
 	}
 
 	// 追尾エフェクトの削除
@@ -296,9 +296,9 @@ protected:
 	Actor* m_Neutral_enemy = nullptr;       //中立の敵用のダメージを受けたときに使うインスタンス。nullptrのままにする
 
 	//スキルのクールタイムを計算するタイマー
-	float SkillTimer = 0;
+	float m_skillTimer = 0;
 	//回避のクールタイムを計算するタイマー
-	float AvoidanceTimer = 0;
+	float m_avoidanceTimer = 0;
 
 	//ボタンが押されたかの判定
 	bool pushFlag = false;

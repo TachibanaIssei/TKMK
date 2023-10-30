@@ -24,13 +24,13 @@ WizardPlayer::WizardPlayer()
 		});
 	//リスポーンする座標2番の取得
 	GetRespawnPos();
-	respawnNumber = 2;        //リスポーンする座標の番号
+	m_respawnNumber = 2;        //リスポーンする座標の番号
 	
 	//リスポーンする座標のセット
 	//キャラコン
-	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
-	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+	m_charCon.SetPosition(m_respawnPos[m_respawnNumber]);
+	m_modelRender.SetPosition(m_respawnPos[m_respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[m_respawnNumber]);
 	
 	//リスポーン時に向いている方向の前方向を取得
 	ForwardSet();
@@ -76,15 +76,15 @@ void WizardPlayer::Update()
 	if (game->NowGameState() < 3 && game->NowGameState() != 0)
 	{
 		//今のフレームと前のフレームのレベルが違っていたら
-		if (oldLv != Lv) {
+		if (oldLv != m_lv) {
 			//レベルに合わせてGameUIのレベルの画像を変更する
-			gameUI->LevelSpriteChange(Lv);
+			gameUI->LevelSpriteChange(m_lv);
 		}
 
-		oldLv = Lv;
+		oldLv = m_lv;
 
 		//関数にする
-		int SkillCoolTime = (int)SkillTimer;
+		int SkillCoolTime = (int)m_skillTimer;
 		wchar_t Skill[255];
 		swprintf_s(Skill, 255, L"%d", SkillCoolTime);
 		Skillfont.SetText(Skill);
@@ -106,18 +106,18 @@ void WizardPlayer::Update()
 		}
 
 		//スキルクールタイムの処理
-		CoolTime(Cooltime, SkillEndFlag, SkillTimer);
+		CoolTime(m_skillCoolTime, SkillEndFlag, m_skillTimer);
 
 		//回避クールタイムの処理
-		CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+		CoolTime(m_avoidanceCoolTime, AvoidanceEndFlag, m_avoidanceTimer);
 
 		//レベルアップする
 		//if (g_pad[0]->IsTrigger(/*enButtonLB1*/enButtonA))
 		//{
-		//	if (Lv != 10)
+		//	if (m_lv != 10)
 		//		ExpProcess(exp);
-		//	//m_status.GetExp += 5;
-		//	//m_gameUI->LevelSpriteChange(Lv);
+		//	//m_status.m_getExp += 5;
+		//	//m_gameUI->LevelSpriteChange(m_lv);
 		//}
 
 		//リスポーンしたときしか使えない
@@ -158,7 +158,7 @@ void WizardPlayer::Update()
 	PlayAnimation();
 
 	//クールタイムが終わっていないなら
-	if (AvoidanceTimer != AvoidanceCoolTime)
+	if (m_avoidanceTimer != m_avoidanceCoolTime)
 	{
 		//回避のスプライトの表示の処理
 		AvoidanceSprite();
@@ -217,13 +217,13 @@ void WizardPlayer::Attack()
 			m_status.SetHp(hp);
 		}
 		m_wizardState = enWizardState_Skill;
-		SkillState = true;
+		m_isSkillReady = true;
 		pushFlag = true;
 	}
 
 	//必殺技の発動
 	//レベル４以上でＸボタンを押したら
-	if (pushFlag == false && Lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
+	if (pushFlag == false && m_lv >= 4 && g_pad[0]->IsTrigger(enButtonX))
 	{
 		pushFlag = true;
 		
@@ -326,7 +326,7 @@ void WizardPlayer::AvoidanceSprite()
 {
 	Vector3 AvoidanceScale = Vector3::One;
 	//HPバーの減っていく割合。
-	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
+	AvoidanceScale.x = (float)m_avoidanceTimer / (float)m_avoidanceCoolTime;
 	m_Avoidance_barRender.SetScale(AvoidanceScale);
 
 	m_Avoidance_flameRender.Update();
@@ -337,10 +337,10 @@ void WizardPlayer::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
 	//スキルのクールタイムとタイマーが違う時だけ表示
-	if (SkillTimer != Cooltime)
+	if (m_skillTimer != m_skillCoolTime)
 		Skillfont.Draw(rc);
 	//回避のクールタイムとタイマーが違う時だけ表示
-	if (AvoidanceTimer != AvoidanceCoolTime)
+	if (m_avoidanceTimer != m_avoidanceCoolTime)
 	{
 		m_Avoidance_flameRender.Draw(rc);
 		m_Avoidance_barRender.Draw(rc);

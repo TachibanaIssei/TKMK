@@ -36,7 +36,7 @@ public:
 	
 	//各プレイヤーのスコアを保存するためのもの
 	struct Score {
-		int Point = 0;		//獲得ポイント
+		int m_point = 0;		//獲得ポイント
 		int NameNum = 1;	
 		int Rank = 1;		//順位
 	};

@@ -122,7 +122,7 @@ namespace
 	const Vector3 ULT_ICON_SCALE_DUO = Vector3(0.11f, 0.11f, 1.0f);
 	const Vector3 ULT_ICON_SCALE_QUARTET = Vector3(0.05f, 0.05f, 1.0f);
 
-	const Vector3 LEVEL_SPRITE_POS_SOLO = Vector3(640.0f, -310.0f, 0.0f);       //Lv
+	const Vector3 LEVEL_SPRITE_POS_SOLO = Vector3(640.0f, -310.0f, 0.0f);       //m_lv
 	const Vector3 LEVEL_SPRITE_POS_1P = Vector3(-300.0f, -360.0f, 0.0f);
 	const Vector3 LEVEL_SPRITE_POS_2P = Vector3(70.0f, -360.0f, 0.0f);
 	const Vector3 ADD_LEVEL_SPRITE_QUARTET = Vector3(-60.0f, 40.0f, 0.0f);
@@ -1637,9 +1637,9 @@ void GameUI::Level()
 	int num = 0;
 	for (auto actor : m_Actors)
 	{
-		int Lv = actor->GetLevel();
+		int m_lv = actor->GetLevel();
 		wchar_t AILv[255];
-		swprintf_s(AILv, 255, L"Lv%2d", Lv);
+		swprintf_s(AILv, 255, L"Lv%2d", m_lv);
 		m_LevelFont[num].SetText(AILv);
 		num++;
 	}

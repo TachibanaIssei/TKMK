@@ -71,7 +71,7 @@ namespace nsK2EngineLow {
 		/// –¾‚é‚³‚ğİ’èB
 		/// </summary>
 		/// <param name="lum"></param>
-		void SetLuminance(float lum)
+		void SetLuminance(const float lum)
 		{
 			m_luminance = lum;
 		}

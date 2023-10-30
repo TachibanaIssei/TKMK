@@ -1,10 +1,9 @@
 #pragma once
 namespace nsK2EngineLow {
-	class Bloom
+	class Bloom : public Noncopyable
 	{
 	public:
 		void Init(RenderTarget& mainRenderTarget);
-
 		void OnRender(RenderContext& rc, RenderTarget& mainRenderTarget);
 
 	private:
@@ -30,10 +29,8 @@ namespace nsK2EngineLow {
 
 	private:
 		RenderTarget				m_luminnceRenderTarget;
-
 		Sprite						m_luminanceSprite;
 		Sprite						m_finalSprite;
-
 		GaussianBlur				m_gaussianBlur[4];
 	};
 }

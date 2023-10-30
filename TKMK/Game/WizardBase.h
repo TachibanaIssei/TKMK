@@ -196,7 +196,7 @@ public:
 	/// <returns></returns>
 	Quaternion& GetRotation()
 	{
-		return m_rot;
+		return m_rotation;
 	}
 
 	/// <summary>

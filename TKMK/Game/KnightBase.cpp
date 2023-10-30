@@ -97,8 +97,8 @@ void KnightBase::SetModel()
 	m_modelRender.SetPosition(m_position);
 	//m_modelRender.SetScale(Vector3(0.1f, 0.1f, 0.1f));
 
-	m_rot.SetRotationY(0.0f);
-	m_modelRender.SetRotation(m_rot);
+	m_rotation.SetRotationY(0.0f);
+	m_modelRender.SetRotation(m_rotation);
 
 	m_charCon.Init(
 		15.0f,
@@ -172,9 +172,9 @@ void KnightBase::Rotation()
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		//キャラクターの方向を変える。
-		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
+		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
 		//回転を教える。
-		m_modelRender.SetRotation(m_rot);
+		m_modelRender.SetRotation(m_rotation);
 	}
 }
 
@@ -290,21 +290,21 @@ void KnightBase::Collision()
 			if (m_lastAttackActor->NowCharState() == Actor::enCharState_Attack)
 			{
 				//逆向きにする
-				Quaternion Damegerot=m_rot;
+				Quaternion Damegerot=m_rotation;
 				Damegerot.AddRotationDegZ(180.0f);
 				EffectKnight_Attack->SetRotation(Damegerot);
 			}
 			else if (m_lastAttackActor->NowCharState() == Actor::enCharState_SecondAttack)
 			{
 				//逆向きにする
-				Quaternion Damegerot = m_rot;
+				Quaternion Damegerot = m_rotation;
 				Damegerot.AddRotationDegZ(270.0f);
 				EffectKnight_Attack->SetRotation(Damegerot);
 			}
 			else
 			{
 				//縦向きにする
-				Quaternion Damegerot = m_rot;
+				Quaternion Damegerot = m_rotation;
 				Damegerot.AddRotationDegZ(180.0f);
 				EffectKnight_Attack->SetRotation(Damegerot);
 			}
@@ -524,7 +524,7 @@ void KnightBase::AnimationMove(float Speed)
 
 	//移動速度を計算。
 	m_Skill_MoveSpeed = Vector3::AxisZ;
-	m_rot.Apply(m_Skill_MoveSpeed);
+	m_rotation.Apply(m_Skill_MoveSpeed);
 	//移動速度を決める
 	m_Skill_MoveSpeed *= Speed;
 }

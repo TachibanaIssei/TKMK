@@ -67,8 +67,8 @@ void WizardBase::SetModel()
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.SetScale(Vector3(0.7f, 0.7f, 0.7f));
 
-	m_rot.SetRotationY(0.0f);
-	m_modelRender.SetRotation(m_rot);
+	m_rotation.SetRotationY(0.0f);
+	m_modelRender.SetRotation(m_rotation);
 
 	m_charCon.Init(
 		10.0f,
@@ -136,9 +136,9 @@ void WizardBase::Rotation()
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		//キャラクターの方向を変える。
-		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
+		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
 		//絵描きさんに回転を教える。
-		m_modelRender.SetRotation(m_rot);
+		m_modelRender.SetRotation(m_rotation);
 	}
 }
 

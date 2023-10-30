@@ -378,7 +378,6 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 		EffectEngine::GetInstance()->EndDraw();
 		EffectEngine::GetInstance()->Flush();
 	}
-
 }
 
 void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)

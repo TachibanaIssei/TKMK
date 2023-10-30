@@ -41,10 +41,10 @@ bool KnightAI::Start() {
 	//リスポーンする座標のセット
 	//キャラコン
 	m_position = m_respawnPos[m_respawnNumber];
-	m_rot = m_respawnRotation[m_respawnNumber];
+	m_rotation = m_respawnRotation[m_respawnNumber];
 	m_charCon.SetPosition(m_position);
 	m_modelRender.SetPosition(m_position);
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 
 	m_modelRender.Update();
 
@@ -202,7 +202,7 @@ void KnightAI::Update()
 			m_charState = enCharState_Skill;
 			//スキルを使うときのスピードを使う
 			Vector3 move = m_skillMove;
-			m_rot.SetRotationYFromDirectionXZ(move);
+			m_rotation.SetRotationYFromDirectionXZ(move);
 			move.y = 0.0f;
 			move *= 200.0f;
 
@@ -218,7 +218,7 @@ void KnightAI::Update()
 		if (m_charState == enCharState_LastAttack)
 		{
 			Vector3 LastAttackMove = m_LastAttackMove;
-			m_rot.SetRotationYFromDirectionXZ(m_LastAttackMove);
+			m_rotation.SetRotationYFromDirectionXZ(m_LastAttackMove);
 			LastAttackMove.y = 0.0f;
 			LastAttackMove *= 100.0f;
 			m_position = m_charCon.Execute(LastAttackMove, 1.0f / 60.0f);
@@ -239,7 +239,7 @@ void KnightAI::Update()
 	}
 
 	m_modelRender.SetPosition(m_position);
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 	m_modelRender.Update();
 }
 
@@ -907,7 +907,7 @@ void KnightAI::Attack()
 				EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
 				EffectKnightSkillGround_->Play();
 				Vector3 effectPosition = m_position;
-				//Quaternion EffRot = m_rot;
+				//Quaternion EffRot = m_rotation;
 				//EffRot.AddRotationDegY(360.0f);
 				Quaternion EffRot = Quaternion::Identity;
 				EffRot.SetRotationYFromDirectionXZ(m_skillMove);
@@ -937,7 +937,7 @@ void KnightAI::Attack()
 		if (AtkState == false)
 		{
 			Vector3 diff = TargePos - m_position;
-			m_rot.SetRotationYFromDirectionXZ(diff);
+			m_rotation.SetRotationYFromDirectionXZ(diff);
 			m_charState = enCharState_Attack;
 			m_AtkTmingState = SecondAtk_State;
 

@@ -187,7 +187,7 @@ public:
 
 	Quaternion& GetRotation()
 	{
-		return m_rot;
+		return m_rotation;
 	}
 
 

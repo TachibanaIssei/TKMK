@@ -84,9 +84,9 @@ bool KnightPlayer::Start() {
 	m_charCon.SetPosition(m_respawnPos[m_respawnNumber]);
 	//剣士
 	m_position = m_respawnPos[m_respawnNumber];
-	m_rot = m_respawnRotation[m_respawnNumber];
+	m_rotation = m_respawnRotation[m_respawnNumber];
 	m_modelRender.SetPosition(m_position);
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 
 	m_modelRender.Update();
 
@@ -397,7 +397,7 @@ void KnightPlayer::Attack()
 			EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
 			EffectKnightSkillGround_->Play();
 			Vector3 effectPosition = m_position;
-			Quaternion EffRot = m_rot;
+			Quaternion EffRot = m_rotation;
 			EffRot.AddRotationDegY(360.0f);
 			EffectKnightSkillGround_->SetPosition(effectPosition);
 			EffectKnightSkillGround_->SetRotation(EffRot);
@@ -587,7 +587,7 @@ void KnightPlayer::MakeUltSkill()
 	//Vector3 UltPos = m_position;
 	//UltPos.y += 60.0f;
 	//knightUlt->SetPosition(UltPos);
-	//knightUlt->SetRotation(m_rot);
+	//knightUlt->SetRotation(m_rotation);
 	//knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
 	//knightUlt->SetGame(m_game);
 

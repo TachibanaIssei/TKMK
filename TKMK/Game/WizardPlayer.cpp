@@ -261,7 +261,7 @@ void WizardPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 	//ワープが始まったら
 	if (wcscmp(eventName, L"Warp_Start") == 0)
 	{
-		Skill(m_position, m_rot, m_charCon);
+		Skill(m_position, m_rotation, m_charCon);
 		m_modelRender.SetPosition(m_position);
 	}
 
@@ -293,7 +293,7 @@ void WizardPlayer::MakeMagicBall()
 	MagicBallPos.y += 25.0f;
 
 	magicBall->SetPosition(MagicBallPos);
-	magicBall->SetRotation(m_rot);
+	magicBall->SetRotation(m_rotation);
 	magicBall->SetEnMagician(MagicBall::enMagician_Player);
 }
 

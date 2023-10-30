@@ -664,18 +664,18 @@ protected:
 	bool								m_spriteFlag = true;
 
 	EnPlayerNumber	m_enPlayerNumber = enPlayerNumber_AI;
-	Vector3			m_respawnPos[4];					//リスポーンする座標の配列
+	Vector3			m_respawnPos[4];						//リスポーンする座標の配列
 	Quaternion		m_respawnRotation[4];
-	Vector3			m_moveSpeed = Vector3::Zero;		//移動量
+	Vector3			m_moveSpeed = Vector3::Zero;			//移動量
 
-	Vector3			m_Forward = Vector3::Zero;			          //プレイヤーの前方向
-	Vector3			m_forwardNow = Vector3::Zero;                 //現在の正面ベクトル
+	Vector3			m_Forward = Vector3::Zero;			    //プレイヤーの前方向
+	Vector3			m_forwardNow = Vector3::Zero;           //現在の正面ベクトル
 
-	Vector3			m_position = Vector3::Zero;                   //座標
-	ModelRender		m_modelRender;                            //モデルレンダー
-	Quaternion		m_rotation = Quaternion::Identity;              //回転
-	Status			m_status;                                      //ステータス
-	Status			m_InitialStatus;                                //初期ステータス
+	Vector3			m_position = Vector3::Zero;             //座標
+	ModelRender		m_modelRender;                          //モデルレンダー
+	Quaternion		m_rotation = Quaternion::Identity;      //回転
+	Status			m_status;                               //ステータス
+	Status			m_InitialStatus;                        //初期ステータス
 	
 	LvUpStatus LvUPStatus = { 30,5,5 };		//レベルアップ時に増加するステータス
 

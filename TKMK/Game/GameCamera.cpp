@@ -728,7 +728,7 @@ void GameCamera::GameCameraUltEnd() {
 
 	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
 	//プレイヤーのカメラをリセットする
-	CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
+	CameraTarget(TARGETPOS_YUP,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 
 	//gameにターゲットのみを映すようにするよう伝える
 	game->ToggleObjectActive(false, victim_actor);

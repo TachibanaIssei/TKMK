@@ -207,6 +207,8 @@ void KnightAI::Update()
 			move *= 200.0f;
 
 			m_position = m_charCon.Execute(move, 1.0f / 60.0f);
+			move.Normalize();
+			m_forwardNow = move;
 		}
 
 		//攻撃
@@ -222,6 +224,8 @@ void KnightAI::Update()
 			LastAttackMove.y = 0.0f;
 			LastAttackMove *= 100.0f;
 			m_position = m_charCon.Execute(LastAttackMove, 1.0f / 60.0f);
+			LastAttackMove.Normalize();
+			m_forwardNow = LastAttackMove;
 		}
 		
 		//回避クールタイムの処理
@@ -782,7 +786,8 @@ void KnightAI::ChaseAndEscape()
 
 	// 移動する（衝突解決）
 	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
-	
+	m_forwardNow = m_moveSpeed;
+	m_forwardNow.Normalize();
 }
 
 void KnightAI::Move()

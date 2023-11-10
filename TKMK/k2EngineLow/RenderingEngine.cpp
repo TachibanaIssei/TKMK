@@ -109,7 +109,7 @@ void nsK2EngineLow::RenderingEngine::InitViewPorts()
 	//2画面分割
 	{
 		//左の画面
-		m_duoViewPorts[enCameraDrawing_Left].Width = FRAME_BUFFER_WIDTH_HALF;		
+		m_duoViewPorts[enCameraDrawing_Left].Width = FRAME_BUFFER_WIDTH_HALF-2;		
 		m_duoViewPorts[enCameraDrawing_Left].Height = FRAME_BUFFER_H;				
 		m_duoViewPorts[enCameraDrawing_Left].TopLeftX = 0;							
 		m_duoViewPorts[enCameraDrawing_Left].TopLeftY = 0;							
@@ -117,7 +117,7 @@ void nsK2EngineLow::RenderingEngine::InitViewPorts()
 		m_duoViewPorts[enCameraDrawing_Left].MaxDepth = 1.0f;						
 
 		//右の画面
-		m_duoViewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF;		
+		m_duoViewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF+2;		
 		m_duoViewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;				
 		m_duoViewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF;	
 		m_duoViewPorts[enCameraDrawing_Right].TopLeftY = 0;							
@@ -128,32 +128,32 @@ void nsK2EngineLow::RenderingEngine::InitViewPorts()
 	//4画面分割
 	{
 		//左上
-		m_quarteViewPorts[enCameraDrawing_LeftUp].Width = FRAME_BUFFER_WIDTH_HALF;
-		m_quarteViewPorts[enCameraDrawing_LeftUp].Height = FRAME_BUFFER_HEIGHT_HALF;
+		m_quarteViewPorts[enCameraDrawing_LeftUp].Width = FRAME_BUFFER_WIDTH_HALF-2;
+		m_quarteViewPorts[enCameraDrawing_LeftUp].Height = FRAME_BUFFER_HEIGHT_HALF-2;
 		m_quarteViewPorts[enCameraDrawing_LeftUp].TopLeftX = 0;						
 		m_quarteViewPorts[enCameraDrawing_LeftUp].TopLeftY = 0;						
 		m_quarteViewPorts[enCameraDrawing_LeftUp].MinDepth = 0.0f;					
 		m_quarteViewPorts[enCameraDrawing_LeftUp].MaxDepth = 1.0f;					
 
 		//右上
-		m_quarteViewPorts[enCameraDrawing_RightUp].Width = FRAME_BUFFER_WIDTH_HALF;
-		m_quarteViewPorts[enCameraDrawing_RightUp].Height = FRAME_BUFFER_HEIGHT_HALF;
+		m_quarteViewPorts[enCameraDrawing_RightUp].Width = FRAME_BUFFER_WIDTH_HALF+2;
+		m_quarteViewPorts[enCameraDrawing_RightUp].Height = FRAME_BUFFER_HEIGHT_HALF-2;
 		m_quarteViewPorts[enCameraDrawing_RightUp].TopLeftX = FRAME_BUFFER_WIDTH_HALF;
 		m_quarteViewPorts[enCameraDrawing_RightUp].TopLeftY = 0;
 		m_quarteViewPorts[enCameraDrawing_RightUp].MinDepth = 0.0f;
 		m_quarteViewPorts[enCameraDrawing_RightUp].MaxDepth = 1.0f;
 
 		//左下
-		m_quarteViewPorts[enCameraDrawing_LeftDown].Width = FRAME_BUFFER_WIDTH_HALF;
-		m_quarteViewPorts[enCameraDrawing_LeftDown].Height = FRAME_BUFFER_HEIGHT_HALF;
+		m_quarteViewPorts[enCameraDrawing_LeftDown].Width = FRAME_BUFFER_WIDTH_HALF-2;
+		m_quarteViewPorts[enCameraDrawing_LeftDown].Height = FRAME_BUFFER_HEIGHT_HALF+2;
 		m_quarteViewPorts[enCameraDrawing_LeftDown].TopLeftX = 0;
 		m_quarteViewPorts[enCameraDrawing_LeftDown].TopLeftY = FRAME_BUFFER_HEIGHT_HALF;
 		m_quarteViewPorts[enCameraDrawing_LeftDown].MinDepth = 0.0f;
 		m_quarteViewPorts[enCameraDrawing_LeftDown].MaxDepth = 1.0f;
 
 		//右下
-		m_quarteViewPorts[enCameraDrawing_RightDown].Width = FRAME_BUFFER_WIDTH_HALF;
-		m_quarteViewPorts[enCameraDrawing_RightDown].Height = FRAME_BUFFER_HEIGHT_HALF;
+		m_quarteViewPorts[enCameraDrawing_RightDown].Width = FRAME_BUFFER_WIDTH_HALF+2;
+		m_quarteViewPorts[enCameraDrawing_RightDown].Height = FRAME_BUFFER_HEIGHT_HALF+2;
 		m_quarteViewPorts[enCameraDrawing_RightDown].TopLeftX = FRAME_BUFFER_WIDTH_HALF;
 		m_quarteViewPorts[enCameraDrawing_RightDown].TopLeftY = FRAME_BUFFER_HEIGHT_HALF;
 		m_quarteViewPorts[enCameraDrawing_RightDown].MinDepth = 0.0f;

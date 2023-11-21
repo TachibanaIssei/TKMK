@@ -22,11 +22,23 @@ void Player::CreatePlayer()
 	{
 	case enKnight:
 		//Œ•mƒvƒŒƒCƒ„[‚ğ¶¬
-		if (IGameObject::m_name == "player2")
+		if (IsMatchName("player2"))
 		{
 			m_knightPlayer = NewGO<KnightPlayer>(0, "knightplayer2");
 			m_knightPlayer->SetPlayerNumber(1);
 			m_knightPlayer->SetKnightColor(KnightBase::enKnightKinds_Red);
+		}
+		else if (IsMatchName("player3"))
+		{
+			m_knightPlayer = NewGO<KnightPlayer>(0, "knightplayer3");
+			m_knightPlayer->SetPlayerNumber(2);
+			m_knightPlayer->SetKnightColor(KnightBase::enKnightKinds_Yellow);
+		}
+		else if (IsMatchName("player4"))
+		{
+			m_knightPlayer = NewGO<KnightPlayer>(0, "knightplayer4");
+			m_knightPlayer->SetPlayerNumber(3);
+			m_knightPlayer->SetKnightColor(KnightBase::enKnightKinds_Green);
 		}
 		else {
 			m_knightPlayer = NewGO<KnightPlayer>(0, "knightplayer");
@@ -189,7 +201,6 @@ Quaternion Player::GetCharcterRotation()const
 		return Quaternion::Identity;
 
 		break;
-
 
 	default:
 		return Quaternion::Identity;

@@ -1,12 +1,11 @@
 #pragma once
 
-//class KnightPlayer;
-//class WizardPlayer;
 class Player;
 class Game;
 class Actor;
 class Fade;
 class ExpforKnight;
+class KnightAI;
 
 class GameUI:public IGameObject
 {
@@ -40,18 +39,23 @@ public:
 		enLevelUpState,
 		enLevelDownState
 	};
-	std::array<EnExpProssesState, enPlayerNumber_Num> m_enExpProcessState = { enChackExpState,enChackExpState };
+	std::array<EnExpProssesState, enPlayerNumber_Num> m_enExpProcessState = { enChackExpState,enChackExpState,enChackExpState,enChackExpState };
 
 	bool Start();
 	void Update();
+	void Render(RenderContext& rc);
 
 	void ExpState(const Player* player);
 	void ChackExp(const Player* player, const EnPlayerNumber playerNumber);
-	void UpExp(const Player* player, const EnPlayerNumber playerNumber);
+	void UpExp(const EnPlayerNumber playerNumber);
 	void DownExp(const EnPlayerNumber playerNumber);
 	void LevelUp(const Player* player, const EnPlayerNumber playerNumber);
 	void LevelDown(const Player* player, const EnPlayerNumber playerNumber);
 
+	void CpuExpState(KnightAI* knight);
+	void CpuChackExp(KnightAI* knight, const EnPlayerNumber playerNumber);
+	void CpuLevelUp(KnightAI* knight, const EnPlayerNumber playerNumber);
+	void CpuLevelDown(KnightAI* knight, const EnPlayerNumber playerNumber);
 
 	void SetSGame(Game* Cgame)
 	{
@@ -62,19 +66,20 @@ public:
 	{
 		m_expUpFlag[enPlayerNumber_1P] = flag;
 		m_expUpFlag[enPlayerNumber_2P] = flag;
+		m_expUpFlag[enPlayerNumber_3P] = flag;
+		m_expUpFlag[enPlayerNumber_4P] = flag;
 	}
 
 	/// <summary>
 	/// プレイヤーのレベルに合わせてレベルの画像を変更する
 	/// </summary>
-	/// <param name="lv">プレイヤーの現在のレベル</param>
 	void LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber = enPlayerNumber_1P);
 
-	void Render(RenderContext& rc);
-
+	/// <summary>
 	/// HPバーの表示
     /// </summary>
-	void HPBar();
+	void HPBar(const Player* player);
+	void CpuHpBar(KnightAI* character);
 
 	/// <summary>
 	/// AIのレベルの表示
@@ -126,14 +131,76 @@ public:
 	}
 
 private:
+	/// <summary>
+	/// 画像と文字の初期化
+	/// </summary>
 	void InitAssets();
+
+	/// <summary>
+	//	スキルのクールタイムを表示する文字を設定
+	/// </summary>
 	void SkillCoolTimeFont();
+	
+	/// <summary>
+	/// ポイント関連のUIの初期化
+	/// </summary>
+	void InitPointUI();
+
+	/// <summary>
+	/// リスポーン関連のUIの初期化
+	/// </summary>
+	void InitRespawnUI();
+
+	/// <summary>
+	/// 右下のUI.レベルや経験値バーのUI
+	/// </summary>
+	void InitExpelienceUI();
+
+	/// <summary>
+	/// HP関連のUIの初期化
+	/// </summary>
+	void InitHpUI();
+
+	/// <summary>
+	/// タイマー関連のUIの初期化
+	/// </summary>
+	void InitTimerUI();
 
 	/// <summary>
 	/// プレイヤー死亡時のDraw呼び出し
 	/// </summary>
 	void RenderDeathPlayerSprite(RenderContext& rc);
 
+	/// <summary>
+	/// クールタイムのフォントのDraw呼び出し
+	/// </summary>
+	void RenderCoolTimeFont(RenderContext& rc);
+
+	/// <summary>
+	/// 制限時間関連のDraw呼び出し
+	/// </summary>
+	void RenderTimeLimit(RenderContext& rc);
+
+	/// <summary>
+	/// ポイント関連のDraw呼び出し
+	/// </summary>
+	void RenderPoint(RenderContext& rc);
+	
+	/// <summary>
+	/// 経験値関連のDraw呼び出し
+	/// </summary>
+	void RenderExpelience(RenderContext& rc);
+
+	/// <summary>
+	/// HP関連のDraw呼び出し
+	/// </summary>
+	void RenderHp(RenderContext& rc);
+
+	/// <summary>
+	/// スキルと必殺技のアイコンのDraw呼び出し
+	/// </summary>
+	/// <param name="rc"></param>
+	void RenderIcon(RenderContext& rc);
 private:
 	FontRender m_ExpFont;
 
@@ -146,6 +213,9 @@ private:
 
 	Player* m_player1P = nullptr;
 	Player* m_player2P = nullptr;
+	Player* m_player3P = nullptr;
+	Player* m_player4P = nullptr;
+	KnightAI* m_knightAI = nullptr;
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
 	Fade* m_fade = nullptr;
@@ -221,25 +291,25 @@ private:
 
 	int oldFinishCount = 0;
 
-	std::array<float, enPlayerNumber_Num> playerCoolTime = { 0, 0 };
-	std::array<int, enPlayerNumber_Num>		m_playerLevel = { 1,1 };
-	std::array<int, enPlayerNumber_Num>		m_mathExp = { 0,0 };			//経験値を増やしたり減らしたりする時はこれ
-	std::array<int, enPlayerNumber_Num>		m_saveExp = { 0,0 };
-	std::array<int, enPlayerNumber_Num>		m_expTable = { 0,0 };
-	std::array<bool, enPlayerNumber_Num>	m_expUpFlag = { false,false };
+	std::array<float, enPlayerNumber_Num> playerCoolTime = { 0, 0, 0, 0 };
+	std::array<int, enPlayerNumber_Num>		m_playerLevel = { 1, 1, 1, 1};
+	std::array<int, enPlayerNumber_Num>		m_mathExp = { 0,0,0,0 };			//経験値を増やしたり減らしたりする時はこれ
+	std::array<int, enPlayerNumber_Num>		m_saveExp = { 0,0,0,0 };
+	std::array<int, enPlayerNumber_Num>		m_expTable = { 0,0,0,0 };
+	std::array<bool, enPlayerNumber_Num>	m_expUpFlag = { false,false,false,false };
 	
 
-	std::array<int, enPlayerNumber_Num>		m_oldSaveExp = { 0,0 };
+	std::array<int, enPlayerNumber_Num>		m_oldSaveExp = { 0,0,0,0 };
 
 	//キャラのポイント
 	int charPoint[4];
 
 	int MaxPoint = 1;
 
-	std::array<int, enPlayerNumber_Num> White_BackHp = { 0,0 };
-	std::array<float, enPlayerNumber_Num> WhiteHp_Timer = { 0.0f,0.0f };
+	std::array<int, enPlayerNumber_Num> White_BackHp = { 0,0,0,0 };
+	std::array<float, enPlayerNumber_Num> WhiteHp_Timer = { 0.0f,0.0f,0.0f,0.0f };
 
-	std::array<int, enPlayerNumber_Num> BackUPLV = { 0,0 };
+	std::array<int, enPlayerNumber_Num> BackUPLV = { 0,0,0,0 };
 
 	bool FightScale = false;
 	bool FightshotStopFlag = false;

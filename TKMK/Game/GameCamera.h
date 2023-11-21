@@ -26,11 +26,15 @@ public:
 	/// <summary>
 	/// 画面分割時に画面のどちらを移すカメラか
 	/// </summary>
-	enum EnSplitCameraLR
+	enum EnSplitCameraDraw
 	{
-		enSplitCamera_Left,
-		enSplitCamera_Right,
-		enSplitCamera_Solo
+		enSplitCamera_Left,			//左
+		enSplitCamera_Right,		//右
+		enSplitCamera_LeftUp,		//左上
+		enSplitCamera_RightUp,		//右上
+		enSplitCamera_LeftDown,		//左下
+		enSplitCamera_RightDown,	//右下
+		enSplitCamera_Solo			//全体
 	};
 
 	enum EnCameraState {
@@ -49,7 +53,9 @@ public:
 	enum PlayerNumber
 	{
 		enPlayerNumber_1P = 0,
-		enPlayerNumber_2P = 1
+		enPlayerNumber_2P,
+		enPlayerNumber_3P,
+		enPlayerNumber_4P
 	};
 
 	/// <summary>
@@ -106,21 +112,21 @@ public:
 	}
 
 	/// <summary>
-	/// 画面分割時に画面のどちらを移すカメラかを設定する
+	/// 画面分割時にどの画面を映すカメラかを設定する
 	/// </summary>
 	/// <param name="cameraLR"></param>
-	void SetSplitCameraLR(EnSplitCameraLR cameraLR)
+	void SetSplitCameraDraw(EnSplitCameraDraw cameraLR)
 	{
-		m_splitCameraLR = cameraLR;
+		m_splitCameraDraw = cameraLR;
 	}
 
 	/// <summary>
 	/// 画面分割時に画面のどちらを移すカメラかを取得する
 	/// </summary>
 	/// <returns></returns>
-	EnSplitCameraLR GetSplitCameraLR()
+	EnSplitCameraDraw GetSplitCameraLR()
 	{
-		return m_splitCameraLR;
+		return m_splitCameraDraw;
 	}
 
 	/// <summary>
@@ -164,7 +170,7 @@ public:
 
 private:
 	EnCameraState  m_enCameraState = enNormalCameraState;
-	EnSplitCameraLR m_splitCameraLR = enSplitCamera_Solo;
+	EnSplitCameraDraw m_splitCameraDraw = enSplitCamera_Solo;
 	CameraState m_cameraState = enGameState;
 	PlayerNumber m_playerNumber = enPlayerNumber_1P;
 

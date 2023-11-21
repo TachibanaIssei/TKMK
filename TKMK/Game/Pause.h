@@ -70,7 +70,7 @@ private:
 	SpriteRender m_operationPic;        //‘€ìà–¾
 
 	//‘€ìà–¾‰æ–Ê‚Ì‰æ‘œ‚ğo‚·‚©‚Ìƒtƒ‰ƒO
-	bool HowToPlaySpriteFlag = false;
+	bool m_howToPlaySpriteFlag = false;
 
 	bool QuitGameFlag = false;
 

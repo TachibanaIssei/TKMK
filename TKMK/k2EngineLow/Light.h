@@ -1,5 +1,7 @@
 #pragma once
 namespace nsK2EngineLow {
+	const int MAX_DIRECTIONAL_LIGHT = 4;	//ディレクションライトの最大数
+
 	/// <summary>
 	/// ディレクションライト構造体
 	/// </summary>
@@ -70,16 +72,10 @@ namespace nsK2EngineLow {
 		Matrix				mLVP;				//ライトビュープロジェクション行列
 	};
 
-	class SceneLight : public Noncopyable{
+	class SceneLight {
 	public:
-		/// <summary>
-		/// 初期化
-		/// </summary>
 		void Init();
-		/// <summary>
-		/// シーンライトを取得する
-		/// </summary>
-		const Light& GetSceneLight()const
+		Light& GetSceneLight()
 		{
 			return m_light;
 		}
@@ -88,7 +84,7 @@ namespace nsK2EngineLow {
 		/// ライトビュープロジェクション行列を設定する
 		/// </summary>
 		/// <param name="LVP">ライトビュープロジェクション行列</param>
-		void SetmLVP(const Matrix LVP)
+		void SetmLVP(Matrix LVP)
 		{
 			m_light.mLVP = LVP;
 		}
@@ -101,7 +97,7 @@ namespace nsK2EngineLow {
 		/// <param name="lightNo">ライト番号</param>
 		/// <param name="direction">ライト方向</param>
 		/// <param name="color">ライトの色</param>
-		void SetDirectionLight(const int lightNo, const Vector3 direction, const Vector3 color)
+		void SetDirectionLight(int lightNo, Vector3 direction, Vector3 color)
 		{
 			SetDirLightDirection(direction);
 			SetDirLightColor(color);
@@ -110,7 +106,7 @@ namespace nsK2EngineLow {
 		/// ディレクションライトの光の方向を設定する
 		/// </summary>
 		/// <param name="direction">方向</param>
-		void SetDirLightDirection(const Vector3 direction)
+		void SetDirLightDirection(const Vector3& direction)
 		{
 			m_light.directionalLight.direction = direction;
 		}
@@ -118,7 +114,7 @@ namespace nsK2EngineLow {
 		/// ディレクションライトの光の色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetDirLightColor(const Vector3 color)
+		void SetDirLightColor(const Vector3& color)
 		{
 			m_light.directionalLight.color = color;
 		}
@@ -146,7 +142,7 @@ namespace nsK2EngineLow {
 		/// 環境光を設定する
 		/// </summary>
 		/// <param name="ambient">環境光の強さ</param>
-		void SetAmbient(const Vector3 ambient)
+		void SetAmbient(const Vector3& ambient)
 		{
 			m_light.ambientLight = ambient;
 		}
@@ -158,7 +154,7 @@ namespace nsK2EngineLow {
 		/// カメラの位置を設定する
 		/// </summary>
 		/// <param name="eyePos"></param>
-		void SetEyePos(const Vector3 eyePos)
+		void SetEyePos(const Vector3& eyePos)
 		{
 			m_light.cameraEyePos = eyePos;
 		}
@@ -172,7 +168,7 @@ namespace nsK2EngineLow {
 		/// <param name="pos">ライトの位置</param>
 		/// <param name="color">ライトの色</param>
 		/// <param name="range">xにライトの影響範囲,yに影響範囲に累乗するパラメータ</param>
-		void SetPointLight(const Vector3 pos, const Vector3 color, const Vector3 attn)
+		void SetPointLight(const Vector3& pos, const Vector3& color, const Vector3& attn)
 		{
 			SetPointLightPosition(pos);
 			SetPointLightColor(color);
@@ -183,7 +179,7 @@ namespace nsK2EngineLow {
 		/// ポイントライトの座標を設定する
 		/// </summary>
 		/// <param name="pos"></param>
-		void SetPointLightPosition(const Vector3 pos)
+		void SetPointLightPosition(const Vector3& pos)
 		{
 			m_light.pointLight.position = pos;
 		}
@@ -191,7 +187,7 @@ namespace nsK2EngineLow {
 		/// ポイントライトの色を設定する
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetPointLightColor(const Vector3 color)
+		void SetPointLightColor(const Vector3& color)
 		{
 			m_light.pointLight.color = color;
 		}
@@ -199,7 +195,7 @@ namespace nsK2EngineLow {
 		/// 影響範囲と累乗するパラメータを設定
 		/// </summary>
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
-		void SetPointLightAttn(const Vector3 attn)
+		void SetPointLightAttn(const Vector3& attn)
 		{
 			m_light.pointLight.attn = attn;
 		}
@@ -262,20 +258,13 @@ namespace nsK2EngineLow {
 		/// <param name="range">Xに影響範囲,Yに累乗するパラメータ</param>
 		/// <param name="direction">方向</param>
 		/// <param name="angle">角度</param>
-		void SetSpotLight(const Vector3 pos, const Vector3 color, const Vector3 attn, const Vector3 direction, const Vector3 angle)
-		{
-			SetSpotLightPosition(pos);
-			SetSpotLightColor(color);
-			SetSpotLightAttn(attn);
-			SetSpotLightDirection(direction);
-			SetSpotLightAngle(angle);
-			UseSpotLight();
-		}
+		void SetSpotLight(const Vector3& pos, const Vector3& color, const Vector3& attn, const Vector3& direction, const Vector3& angle);
+
 		/// <summary>
 		/// スポットライトの位置を設定
 		/// </summary>
 		/// <param name="pos">座標</param>
-		void SetSpotLightPosition(const Vector3 pos)
+		void SetSpotLightPosition(const Vector3& pos)
 		{
 			m_light.spotLight.position = pos;
 		}
@@ -283,7 +272,7 @@ namespace nsK2EngineLow {
 		/// スポットライトのライト色の設定
 		/// </summary>
 		/// <param name="color">色</param>
-		void SetSpotLightColor(const Vector3 color)
+		void SetSpotLightColor(const Vector3& color)
 		{
 			m_light.spotLight.color = color;
 		}
@@ -291,7 +280,7 @@ namespace nsK2EngineLow {
 		/// 影響範囲と累乗するパラメータを設定
 		/// </summary>
 		/// <param name="attn">Xに影響範囲,Yに累乗するパラメータ</param>
-		void SetSpotLightAttn(const Vector3 attn)
+		void SetSpotLightAttn(const Vector3& attn)
 		{
 			m_light.spotLight.attn = attn;
 		}
@@ -299,7 +288,7 @@ namespace nsK2EngineLow {
 		/// スポットライトのライトの方向を設定
 		/// </summary>
 		/// <param name="direction">方向</param>
-		void SetSpotLightDirection(const Vector3 direction)
+		void SetSpotLightDirection(const Vector3& direction)
 		{
 			m_light.spotLight.direction = direction;
 		}
@@ -307,7 +296,7 @@ namespace nsK2EngineLow {
 		/// スポットライトのライトの角度を設定
 		/// </summary>
 		/// <param name="angle">角度</param>
-		void SetSpotLightAngle(const Vector3 angle)
+		void SetSpotLightAngle(const Vector3& angle)
 		{
 			m_light.spotLight.angle = angle;
 		}

@@ -3,6 +3,7 @@
 namespace nsK2EngineLow {
 	class ModelRender : public Noncopyable
 	{
+	//メンバ関数
 	public:
 		/// <summary>
 		/// 通常の初期化
@@ -23,7 +24,9 @@ namespace nsK2EngineLow {
 		/// 影を受けるモデルの初期化
 		/// </summary>
 		/// <param name="tkmFilepath"></param>
-		void InitBackGround(const char* tkmFilepath);
+		void InitBackGround(
+			const char* tkmFilepath
+		);
 
 		/// <summary>
 		/// スカイキューブを初期化する
@@ -37,7 +40,7 @@ namespace nsK2EngineLow {
 		/// <returns>モデル</returns>
 		Model& GetModel()
 		{
-			return m_model;
+			return m_model[0];
 		}
 
 		/// <summary>
@@ -122,12 +125,12 @@ namespace nsK2EngineLow {
 		/// <param name="rc"></param>
 		void OnRenderModel(RenderContext& rc)
 		{
-			m_model.Draw(rc);
+			m_model[g_renderingEngine->GetCameraDrawing()].Draw(rc,1,g_renderingEngine->GetCameraDrawing());
 		}
 
-		void OnRenderShadowModel(RenderContext& rc,Camera& camera)
+		void OnRenderShadowModel(RenderContext& rc,Camera& camera, const int number)
 		{
-			m_shadowModel.Draw(rc,camera);
+			m_shadowModel[number].Draw(rc, camera);
 		}
 
 		/// <summary>
@@ -145,7 +148,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="boneNo">ボーン番号</param>
 		/// <returns>ボーン</returns>
-		const Bone* GetBone(int boneNo) const
+		Bone* GetBone(const int boneNo) const
 		{
 			return m_skeleton.GetBone(boneNo);
 		}
@@ -172,7 +175,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// アニメーションの再生中？
 		/// </summary>
-		bool IsPlayingAnimation() const
+		const bool IsPlayingAnimation() const
 		{
 			return m_animation.IsPlaying();
 		}
@@ -208,7 +211,7 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// ディレクションライトの情報を作成
 		/// </summary>
-		void MakeDirectionData();
+		void MakeDirectionData(const int lightNumber);
 
 	//メンバ変数
 	private:
@@ -222,10 +225,10 @@ namespace nsK2EngineLow {
 		Vector3						m_scale				= Vector3::One;			//大きさ
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
 
-		Model						m_model;									//Modelクラス
+		Model						m_model[MAX_VIEWPORT];						//Modelクラス
 		ModelInitData				m_modelInitData;							//ModelInitDataクラス
 
-		Model						m_shadowModel;								//シャドウマップ描画用
+		Model						m_shadowModel[MAX_VIEWPORT];				//シャドウマップ描画用
 	};
 
 }

@@ -132,7 +132,17 @@ namespace nsK2EngineLow {
 		/// 行列を設定。
 		/// </summary>
 		/// <param name="rotation">行列。</param>
-		void SetWorldMatrix(const Matrix& matrix);
+		void SetWorldMatrix(const Matrix& matrix)
+		{
+			Vector3 position;
+			position.x = matrix.m[3][0];
+			position.y = matrix.m[3][1];
+			position.z = matrix.m[3][2];
+			SetPosition(position);
+			Quaternion rotation;
+			rotation.SetRotation(matrix);
+			SetRotation(rotation);
+		}
 
 		/// <summary>
 		/// 自動で削除するかどうかを設定する。
@@ -148,14 +158,32 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="collisionObject">衝突判定したいコリジョンオブジェクト。</param>
 		/// <returns>衝突したらtrue。</returns>
-		const bool IsHit(CollisionObject* collisionObject) const;
+		const bool IsHit(CollisionObject* collisionObject) const
+		{
+			bool isCollision = false;
+			PhysicsWorld::GetInstance()->ContactTest(&collisionObject->GetbtCollisionObject(), [&](const btCollisionObject& contactObject) {
+				if (m_physicsGhostObject.IsSelf(contactObject) == true) {
+					isCollision = true;
+				}
+				});
+			return isCollision;
+		}
 
 		/// <summary>
 		/// コリジョンオブジェクトとキャラコンの当たり判定。
 		/// </summary>
 		/// <param name="collisionObject">衝突判定したいキャラコン。</param>
 		/// <returns>衝突したらtrue。</returns>
-		const bool IsHit(CharacterController& characterController) const;
+		const bool IsHit(CharacterController& characterController) const
+		{
+			bool isCollision = false;
+			PhysicsWorld::GetInstance()->ContactTest(characterController, [&](const btCollisionObject& contactObject) {
+				if (m_physicsGhostObject.IsSelf(contactObject) == true) {
+					isCollision = true;
+				}
+				});
+			return isCollision;
+		}
 
 		/// <summary>
 		/// ゴーストオブジェクトを取得。
@@ -203,20 +231,12 @@ namespace nsK2EngineLow {
 		bool						m_isEnable = true;					//trueなら当たり判定有効
 	};
 
-
-	/// <summary>
-	/// コリジョンオブジェクトマネージャー
-	/// </summary>
-	class CollisionObjectManager : public Noncopyable
+	class CollisionObjectManager
 	{
 	public:
 		CollisionObjectManager();
 		~CollisionObjectManager();
 
-		/// <summary>
-		/// コリジョンオブジェクトを追加
-		/// </summary>
-		/// <param name="collisionObject"></param>
 		void AddCollisionObject(CollisionObject* collisionObject)
 		{
 			m_collisionObjectVector.push_back(collisionObject);
@@ -227,39 +247,124 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="name">名前。</param>
 		/// <returns>コリジョンオブジェクト。見つからなかった場合はnullptr。</returns>
-		const CollisionObject* FindCollisionObject(const char* name);
+		CollisionObject* FindCollisionObject(const char* name)
+		{
+			for (auto collisionObject : m_collisionObjectVector)
+			{
+				//名前一致！
+				if (strcmp(collisionObject->GetName(), name) == 0)
+				{
+					//当たり判定が有効なら。
+					if (collisionObject->IsEnable() == true)
+					{
+						return collisionObject;
+					}
+				}
+			}
+			return nullptr;
+		}
 
 		/// <summary>
 		/// 名前が前方一致するコリジョンオブジェクトを検索する。こちらは1つだけ。
 		/// </summary>
 		/// <param name="name">名前。</param>
 		/// <returns>コリジョンオブジェクト。見つからなかった場合はnullptr。</returns>
-		const CollisionObject* FindMatchForwardNameCollisionObject(const char* name) const;
+		const CollisionObject* FindMatchForwardNameCollisionObject(const char* name) const
+		{
+			for (auto collisionObject : m_collisionObjectVector)
+			{
+				auto len = strlen(name);
+				auto namelen = strlen(collisionObject->GetName());
+				if (len > namelen) {
+					//名前が長い。不一致。
+					continue;
+				}
+				if (strncmp(name, collisionObject->GetName(), len) == 0)
+				{
+					//当たり判定が有効なら。
+					if (collisionObject->IsEnable() == true)
+					{
+						return collisionObject;
+					}
+				}
+			}
+			return nullptr;
+		}
 
 		/// <summary>
 		/// 名前が完全一致するコリジョンオブジェクトを検索する。こちらは複数。
 		/// </summary>
 		/// <param name="name">名前。</param>
 		/// <returns>コリジョンオブジェクトの配列。</returns>
-		const std::vector<CollisionObject*>& FindCollisionObjects(const char* name);
+		const std::vector<CollisionObject*>& FindCollisionObjects(const char* name)
+		{
+			m_findMatchForwardNameCollisionObjectVector.clear();
+			for (auto collisionObject : m_collisionObjectVector)
+			{
+				//名前一致！
+				if (strcmp(collisionObject->GetName(), name) == 0)
+				{
+					//当たり判定が有効なら。
+					if (collisionObject->IsEnable() == true)
+					{
+						m_findMatchForwardNameCollisionObjectVector.push_back(collisionObject);
+					}
+				}
+			}
+			return m_findMatchForwardNameCollisionObjectVector;
+		}
 
 		/// <summary>
 		/// 名前が前方一致するコリジョンオブジェクトを検索する。こちらは複数。
 		/// </summary>
 		/// <param name="name">名前。</param>
 		/// <returns>コリジョンオブジェクトの配列。</returns>
-		const std::vector<CollisionObject*>& FindMatchForwardNameCollisionObjects(const char* name);
+		const std::vector<CollisionObject*>& FindMatchForwardNameCollisionObjects(const char* name)
+		{
+			m_findsCollisionObjectVector.clear();
+			for (auto collisionObject : m_collisionObjectVector)
+			{
+				auto len = strlen(name);
+				auto namelen = strlen(collisionObject->GetName());
+				if (len > namelen) {
+					//名前が長い。不一致。
+					continue;
+				}
+				if (strncmp(name, collisionObject->GetName(), len) == 0)
+				{
+					//当たり判定が有効なら。
+					if (collisionObject->IsEnable() == true)
+					{
+						m_findsCollisionObjectVector.push_back(collisionObject);
+					}
+				}
+			}
+			return m_findsCollisionObjectVector;
+		}
 
 		/// <summary>
 		/// 配列からコリジョンオブジェクトを削除。
 		/// </summary>
 		/// <param name="deleteCollisionObject">削除したいコリジョンオブジェクト。</param>
-		void RemoveCollisionObject(const CollisionObject* deleteCollisionObject);
+		void RemoveCollisionObject(CollisionObject* deleteCollisionObject)
+		{
+			for (auto it = m_collisionObjectVector.begin(); it != m_collisionObjectVector.end();) {
+				// 条件一致した要素を削除する
+				if (*it == deleteCollisionObject) {
+					// 削除された要素の次を指すイテレータが返される。
+					it = m_collisionObjectVector.erase(it);
+				}
+				// 要素削除をしない場合に、イテレータを進める
+				else {
+					++it;
+				}
+			}
+		}
 
 	private:
-		std::vector<CollisionObject*>		m_collisionObjectVector;						//コリジョンオブジェクトのコンテナ
-		std::vector<CollisionObject*>		m_findsCollisionObjectVector;					//名前が前方一致のコリジョンオブジェクトのコンテナ
-		std::vector<CollisionObject*>		m_findMatchForwardNameCollisionObjectVector;	//名前が完全一致のコリジョンオブジェクトのコンテナ
+		std::vector<CollisionObject*>		m_collisionObjectVector;
+		std::vector<CollisionObject*>		m_findsCollisionObjectVector;
+		std::vector<CollisionObject*>		m_findMatchForwardNameCollisionObjectVector;
 	};
 
 }

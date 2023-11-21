@@ -3,6 +3,7 @@
 
 namespace {
 	const UINT FRAME_BUFFER_WIDTH_HALF = FRAME_BUFFER_W / 2;	//画面分割用のビューポートで使用する横幅
+	const UINT FRAME_BUFFER_HEIGHT_HALF = FRAME_BUFFER_H / 2;	//画面分割用のビューポートで使用する縦幅
 }
 
 void nsK2EngineLow::RenderingEngine::Init()
@@ -85,46 +86,87 @@ void nsK2EngineLow::RenderingEngine::EffectBeginRender()
 {
 	if (m_gameMode == enGameMode_DuoPlay)
 	{
-		EffectEngine::GetInstance()->BeginFrame(0);
-		EffectEngine::GetInstance()->BeginFrame(1);
+		EffectEngine::GetInstance()->BeginFrame(enCameraDrawing_Left);
+		EffectEngine::GetInstance()->BeginFrame(enCameraDrawing_Right);
 	}
 	else {
-		EffectEngine::GetInstance()->BeginFrame(0);
+		EffectEngine::GetInstance()->BeginFrame(enCameraDrawing_Solo);
 	}
 }
 
 void nsK2EngineLow::RenderingEngine::InitViewPorts()
 {
-	m_soloViewPort.Width = FRAME_BUFFER_W;		//画面の横サイズ
-	m_soloViewPort.Height = FRAME_BUFFER_H;		//画面の縦サイズ
-	m_soloViewPort.TopLeftX = 0;				//画面左上のx座標
-	m_soloViewPort.TopLeftY = 0;				//画面左上のy座標
-	m_soloViewPort.MinDepth = 0.0f;				//深度値の最小値
-	m_soloViewPort.MaxDepth = 1.0f;				//深度値の最大値
+	//画面全体
+	{
+		m_soloViewPort.Width = FRAME_BUFFER_W;		//画面の横サイズ
+		m_soloViewPort.Height = FRAME_BUFFER_H;		//画面の縦サイズ
+		m_soloViewPort.TopLeftX = 0;				//画面左上のx座標
+		m_soloViewPort.TopLeftY = 0;				//画面左上のy座標
+		m_soloViewPort.MinDepth = 0.0f;				//深度値の最小値
+		m_soloViewPort.MaxDepth = 1.0f;				//深度値の最大値
+	}
 
-	//左の画面
-	m_viewPorts[enCameraDrawing_Left].Width = FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
-	m_viewPorts[enCameraDrawing_Left].Height = FRAME_BUFFER_H;			//画面の縦サイズ
-	m_viewPorts[enCameraDrawing_Left].TopLeftX = 0;						//画面左上のx座標
-	m_viewPorts[enCameraDrawing_Left].TopLeftY = 0;						//画面左上のy座標
-	m_viewPorts[enCameraDrawing_Left].MinDepth = 0.0f;						//深度値の最小値
-	m_viewPorts[enCameraDrawing_Left].MaxDepth = 1.0f;						//深度値の最大値
+	//2画面分割
+	{
+		//左の画面
+		m_duoViewPorts[enCameraDrawing_Left].Width = FRAME_BUFFER_WIDTH_HALF-2;		
+		m_duoViewPorts[enCameraDrawing_Left].Height = FRAME_BUFFER_H;				
+		m_duoViewPorts[enCameraDrawing_Left].TopLeftX = 0;							
+		m_duoViewPorts[enCameraDrawing_Left].TopLeftY = 0;							
+		m_duoViewPorts[enCameraDrawing_Left].MinDepth = 0.0f;						
+		m_duoViewPorts[enCameraDrawing_Left].MaxDepth = 1.0f;						
 
-	//右の画面
-	m_viewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF;	//画面の横サイズ
-	m_viewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;			//画面の縦サイズ
-	m_viewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF;	//画面左上のx座標
-	m_viewPorts[enCameraDrawing_Right].TopLeftY = 0;						//画面左上のy座標
-	m_viewPorts[enCameraDrawing_Right].MinDepth = 0.0f;						//深度値の最小値
-	m_viewPorts[enCameraDrawing_Right].MaxDepth = 1.0f;						//深度値の最大値
+		//右の画面
+		m_duoViewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF+2;		
+		m_duoViewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;				
+		m_duoViewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF;	
+		m_duoViewPorts[enCameraDrawing_Right].TopLeftY = 0;							
+		m_duoViewPorts[enCameraDrawing_Right].MinDepth = 0.0f;						
+		m_duoViewPorts[enCameraDrawing_Right].MaxDepth = 1.0f;						
+	}
+
+	//4画面分割
+	{
+		//左上
+		m_quarteViewPorts[enCameraDrawing_LeftUp].Width = FRAME_BUFFER_WIDTH_HALF-2;
+		m_quarteViewPorts[enCameraDrawing_LeftUp].Height = FRAME_BUFFER_HEIGHT_HALF-2;
+		m_quarteViewPorts[enCameraDrawing_LeftUp].TopLeftX = 0;						
+		m_quarteViewPorts[enCameraDrawing_LeftUp].TopLeftY = 0;						
+		m_quarteViewPorts[enCameraDrawing_LeftUp].MinDepth = 0.0f;					
+		m_quarteViewPorts[enCameraDrawing_LeftUp].MaxDepth = 1.0f;					
+
+		//右上
+		m_quarteViewPorts[enCameraDrawing_RightUp].Width = FRAME_BUFFER_WIDTH_HALF+2;
+		m_quarteViewPorts[enCameraDrawing_RightUp].Height = FRAME_BUFFER_HEIGHT_HALF-2;
+		m_quarteViewPorts[enCameraDrawing_RightUp].TopLeftX = FRAME_BUFFER_WIDTH_HALF;
+		m_quarteViewPorts[enCameraDrawing_RightUp].TopLeftY = 0;
+		m_quarteViewPorts[enCameraDrawing_RightUp].MinDepth = 0.0f;
+		m_quarteViewPorts[enCameraDrawing_RightUp].MaxDepth = 1.0f;
+
+		//左下
+		m_quarteViewPorts[enCameraDrawing_LeftDown].Width = FRAME_BUFFER_WIDTH_HALF-2;
+		m_quarteViewPorts[enCameraDrawing_LeftDown].Height = FRAME_BUFFER_HEIGHT_HALF+2;
+		m_quarteViewPorts[enCameraDrawing_LeftDown].TopLeftX = 0;
+		m_quarteViewPorts[enCameraDrawing_LeftDown].TopLeftY = FRAME_BUFFER_HEIGHT_HALF;
+		m_quarteViewPorts[enCameraDrawing_LeftDown].MinDepth = 0.0f;
+		m_quarteViewPorts[enCameraDrawing_LeftDown].MaxDepth = 1.0f;
+
+		//右下
+		m_quarteViewPorts[enCameraDrawing_RightDown].Width = FRAME_BUFFER_WIDTH_HALF+2;
+		m_quarteViewPorts[enCameraDrawing_RightDown].Height = FRAME_BUFFER_HEIGHT_HALF+2;
+		m_quarteViewPorts[enCameraDrawing_RightDown].TopLeftX = FRAME_BUFFER_WIDTH_HALF;
+		m_quarteViewPorts[enCameraDrawing_RightDown].TopLeftY = FRAME_BUFFER_HEIGHT_HALF;
+		m_quarteViewPorts[enCameraDrawing_RightDown].MinDepth = 0.0f;
+		m_quarteViewPorts[enCameraDrawing_RightDown].MaxDepth = 1.0f;
+	}
 }
 
 void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 {
-	//画面分割をする
+	//2画面分割に描画
 	if (m_gameMode == enGameMode_DuoPlay)
 	{
-		for (int i = 0; i < MAX_VIEWPORT; i++)
+		for (int i = 0; i < DUO_VIEWPORT; i++)
 		{
 			if (i == enCameraDrawing_Left)
 			{
@@ -135,7 +177,37 @@ void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 				m_cameraDrawing = enCameraDrawing_Right;
 			}
 
-			rc.SetViewport(m_viewPorts[i]);
+			rc.SetViewport(m_duoViewPorts[i]);
+			//モデル描画
+			ModelRendering(rc);
+			//敵のHPバーなどの画像と文字を描画
+			SpriteViewportRendering(rc, i);
+			FontViewportRendering(rc, i);
+		}
+	}
+	//4画面分割に描画
+	else if (m_gameMode == enGameMode_TrioPlay || m_gameMode == enGameMode_QuartetPlay)
+	{
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			if (i == enCameraDrawing_LeftUp)
+			{
+				m_cameraDrawing = enCameraDrawing_LeftUp;
+			}
+			else if (i == enCameraDrawing_RightUp)
+			{
+				m_cameraDrawing = enCameraDrawing_RightUp;
+			}
+			else if (i == enCameraDrawing_LeftDown)
+			{
+				m_cameraDrawing = enCameraDrawing_LeftDown;
+			}
+			else if (i == enCameraDrawing_RightDown)
+			{
+				m_cameraDrawing = enCameraDrawing_RightDown;
+			}
+
+			rc.SetViewport(m_quarteViewPorts[i]);
 			//モデル描画
 			ModelRendering(rc);
 			//敵のHPバーなどの画像と文字を描画
@@ -232,14 +304,14 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 		//左画面
 		{
 			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Left);
-			rc.SetViewport(m_viewPorts[enCameraDrawing_Left]);
+			rc.SetViewport(m_duoViewPorts[enCameraDrawing_Left]);
 			EffectEngine::GetInstance()->Draw();
 			EffectEngine::GetInstance()->EndDraw();
 		}
 		//右画面
 		{
 			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_Right);
-			rc.SetViewport(m_viewPorts[enCameraDrawing_Right]);
+			rc.SetViewport(m_duoViewPorts[enCameraDrawing_Right]);
 			EffectEngine::GetInstance()->Draw();
 			EffectEngine::GetInstance()->EndDraw();
 		}
@@ -248,8 +320,49 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
 		//ビューポートを画面全体用に切り替える
 		rc.SetViewportAndScissor(m_soloViewPort);
-
 	}
+
+	else if (m_gameMode == enGameMode_TrioPlay || m_gameMode == enGameMode_QuartetPlay)
+	{
+		g_camera2D->SetWidth(FRAME_BUFFER_WIDTH_HALF);
+		g_camera2D->SetHeight(FRAME_BUFFER_HEIGHT_HALF);
+		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_LeftUp);
+		//左上画面
+		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_LeftUp);
+			rc.SetViewport(m_quarteViewPorts[enCameraDrawing_LeftUp]);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
+		}
+		//右上画面
+		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_RightUp);
+			rc.SetViewport(m_quarteViewPorts[enCameraDrawing_RightUp]);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
+		}
+		//左下画面
+		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_LeftDown);
+			rc.SetViewport(m_quarteViewPorts[enCameraDrawing_LeftDown]);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
+		}
+		//右下画面
+		{
+			EffectEngine::GetInstance()->BeginDraw(enCameraDrawing_RightDown);
+			rc.SetViewport(m_quarteViewPorts[enCameraDrawing_RightDown]);
+			EffectEngine::GetInstance()->Draw();
+			EffectEngine::GetInstance()->EndDraw();
+		}
+		EffectEngine::GetInstance()->Flush();
+		//1画面のスプライトのアスペクト比に合わせる。
+		g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
+		g_camera2D->SetHeight(static_cast<float>(g_graphicsEngine->GetFrameBufferHeight()));
+		//ビューポートを画面全体用に切り替える
+		rc.SetViewportAndScissor(m_soloViewPort);
+	}
+
 	//1画面
 	else {
 		//1画面のスプライトのアスペクト比に合わせる。
@@ -265,7 +378,6 @@ void nsK2EngineLow::RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 		EffectEngine::GetInstance()->EndDraw();
 		EffectEngine::GetInstance()->Flush();
 	}
-
 }
 
 void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)
@@ -302,7 +414,7 @@ void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)
 	EndGPUEvent();
 }
 
-void nsK2EngineLow::RenderingEngine::ClearVectorList()
+void nsK2EngineLow::RenderingEngine::ClearRenderList()
 {
 	m_modelList.clear();
 	m_spriteList.clear();
@@ -320,8 +432,12 @@ void nsK2EngineLow::RenderingEngine::ClearVectorList()
 
 void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 {
-	SetEyePos(g_camera3D[enCameraDrawing_Left]->GetPosition(), g_camera3D[enCameraDrawing_Right]->GetPosition());
+	SetEyePos(g_camera3D[enCameraDrawing_Left]->GetPosition(), 
+		g_camera3D[enCameraDrawing_Right]->GetPosition(),
+		g_camera3D[enCameraDrawing_LeftDown]->GetPosition(),
+		g_camera3D[enCameraDrawing_RightDown]->GetPosition());
 
+	//影を描画する
 	m_shadow.Render(rc);
 
 	//レンダリングターゲットを変更
@@ -329,22 +445,28 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
 	rc.ClearRenderTargetView(m_mainRenderTarget);
 
+	//ビューポートにモデルを描画する
 	DrawModelInViewPorts(rc);
 
 	//書き込み終了待ち
 	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
 
+	//ポストエフェクト
 	m_postEffect.Render(rc, m_mainRenderTarget);
 
+	//エフェクトの描画
 	ExcuteEffectRender(rc);
 
+	//画像と文字の描画
 	Render2D(rc);
 
 	rc.SetRenderTarget(
 		g_graphicsEngine->GetCurrentFrameBuffuerRTV(),
 		g_graphicsEngine->GetCurrentFrameBuffuerDSV()
 	);
+
+	//メインレンダーターゲットをコピーする
 	m_copyToFrameBufferSprite.Draw(rc);
 
-	ClearVectorList();
+	ClearRenderList();
 }

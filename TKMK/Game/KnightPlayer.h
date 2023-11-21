@@ -1,6 +1,5 @@
 #pragma once
 #include "KnightBase.h"
-
 #include "Status.h"
 
 class Game;
@@ -10,6 +9,7 @@ class GameUI;
 class GameCamera;
 class WizardUlt;
 class EnemyHpBar;
+class GameCamera;
 
 class KnightPlayer:public KnightBase
 {
@@ -48,16 +48,9 @@ public:
 	/// 最大2人プレイの予定のため0か1になるようにしている
 	/// </summary>
 	/// <param name="number"></param>
-	void SetPlayerNumber(int number)
+	void SetPlayerNumber(const int number)
 	{
-		if (number == 1)
-		{
-			m_playerNumber = number;
-		}
-		else
-		{
-			m_playerNumber = 0;
-		}
+		m_playerNumber = number;
 	}
 	/// <summary>
 	/// プレイヤーの番号を取得する
@@ -85,6 +78,7 @@ private:
 private:
 	Game* m_game=nullptr;
 	GameUI* m_gameUI = nullptr;
+	GameCamera* m_gameCamera = nullptr;
 	
 	Vector3 AnimEndPos = Vector3::Zero;
 	Vector3 OldPos = Vector3::Zero;
@@ -109,6 +103,6 @@ private:
 
 	Neutral_Enemy* m_Neutral_Enemy = nullptr; //中立の敵
 
-	std::array<EnemyHpBar*, enPlayerNumber_Num - 1>	m_enemyHpBar = { nullptr,nullptr,nullptr};		//敵の上部に描画されるHPバー
+	std::array<EnemyHpBar*, enPlayerNumber_Num>	m_enemyHpBar = { nullptr,nullptr,nullptr,nullptr};		//敵の上部に描画されるHPバー
 };
 

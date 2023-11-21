@@ -2,15 +2,14 @@
 #include "GameCamera.h"
 
 #include "Game.h"
+#include "Actor.h"
 #include "KnightBase.h"
 #include "KnightPlayer.h"
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "KnightUlt.h"
 #include "WizardUlt.h"
-#include "Actor.h"
-//todo
-//死んだあとにAIが必殺技を使うとカメラがプレイヤーの前に行ってしまう
+#include "KnightAI.h"
 
 namespace
 {
@@ -59,21 +58,46 @@ bool GameCamera::Start()
 	int cameraNumber = 0;
 	float targetToPos = CAMERA_POS_X;
 
-	//1画面のときか左の画面を映すカメラのとき
-	if (m_splitCameraLR == enSplitCamera_Solo || m_splitCameraLR == enSplitCamera_Left) {
+	//プレイヤー1を映すカメラ
+	if (m_splitCameraDraw == enSplitCamera_Solo || m_splitCameraDraw == enSplitCamera_Left || m_splitCameraDraw == enSplitCamera_LeftUp)
+	{
 		//プレイヤーのインスタンスを探す
 		player = FindGO<Player>("player");
 		player_name = player->GetName();
 		m_playerNumber = enPlayerNumber_1P;
 	}
-	//右の画面を映すカメラのとき
-	else {
-		//プレイヤーのインスタンスを探す
+	//プレイヤー2を映すカメラ
+	else if(m_splitCameraDraw == enSplitCamera_Right || m_splitCameraDraw == enSplitCamera_RightUp)
+	{
 		player = FindGO<Player>("player2");
 		player_name = player->GetName();
 		cameraNumber = 1;
 		m_playerNumber = enPlayerNumber_2P;
-		targetToPos *= -1;
+	}
+	//プレイヤー3を映すカメラ
+	else if (m_splitCameraDraw == enSplitCamera_LeftDown)
+	{
+		player = FindGO<Player>("player3");
+		player_name = player->GetName();
+		cameraNumber = 2;
+		m_playerNumber = enPlayerNumber_3P;
+	}
+	//プレイヤー4を映すカメラ
+	else
+	{
+		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+		{
+			player_name = "KnightAI1";
+			cameraNumber = 3;
+			m_playerNumber = enPlayerNumber_4P;
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			player = FindGO<Player>("player4");
+			player_name = player->GetName();
+			cameraNumber = 3;
+			m_playerNumber = enPlayerNumber_4P;
+		}
 	}
 
 	m_actors = game->GetActors();
@@ -104,7 +128,7 @@ bool GameCamera::Start()
 	);
 
 	//最初にキャラの背中を映すようにする
-	CameraTarget(TARGETPOS_YUP, targetToPos, CAMERA_POS_Y, player_actor,true);
+	CameraTarget(TARGETPOS_YUP, -CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 	m_springCamera.Refresh();
 
 	return true;
@@ -128,7 +152,7 @@ void GameCamera::Update()
 	}
 
 	//リスポーンしたらカメラを戻す
-	if (player_actor->GetRespawnFlag()==false && PlayerRespawnFlag==true) {
+	if (player_actor->GetRespawnFlag() == false && PlayerRespawnFlag==true) {
 		CameraTarget(TARGETPOS_YUP ,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 
 		m_springCamera.Refresh();
@@ -181,7 +205,6 @@ void GameCamera::NomarlCamera()
 {
 		for (auto actor : m_actors) {
 			//AIが打った後に終わるまではこの処理をしないようにする
-			// 画面が切り替わりまくる
 			//もしアクターが必殺技を打ったら
 			if (actor->GetmUseUltimaitSkillFlag() == true)
 			{
@@ -298,7 +321,7 @@ void GameCamera::UltRotCamera()
 			KnightUltFlag = false;
 			SetCameraCharFrontFlag = false;
 			m_springCamera.Refresh();
-			CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
+			CameraTarget(TARGETPOS_YUP,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 			m_enCameraState = enNormalCameraState;
 			return;
 		}
@@ -420,7 +443,7 @@ void GameCamera::ChaseCamera()
 void GameCamera::FollowThePlayer()
 {
 	//注視点の計算
-	TargetPos = player->GetCharcterPosition();
+	TargetPos = player_actor->GetPosition();
 
 	TargetPos.y += TARGETPOS_YUP;
 
@@ -478,7 +501,7 @@ void GameCamera::CameraTarget(float targrtYUp, float X, float Y,Actor*actor,bool
 	//プレイヤーの前方向を取得
 	Vector3 toCameraPosXZ = actor->GetForward();
 	//移動していないなら抜け出す
-	if (toCameraPosXZ.x == 0.0f && toCameraPosXZ.y == 0.0f)
+	if (toCameraPosXZ.x == 0.0f && toCameraPosXZ.z == 0.0f)
 	{
 		return;
 	}
@@ -705,7 +728,7 @@ void GameCamera::GameCameraUltEnd() {
 
 	//CameraTarget(CAMERA_POS_X, CAMERA_POS_Y, ultactor);
 	//プレイヤーのカメラをリセットする
-	CameraTarget(TARGETPOS_YUP,CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
+	CameraTarget(TARGETPOS_YUP,-CAMERA_POS_X, CAMERA_POS_Y, player_actor,true);
 
 	//gameにターゲットのみを映すようにするよう伝える
 	game->ToggleObjectActive(false, victim_actor);

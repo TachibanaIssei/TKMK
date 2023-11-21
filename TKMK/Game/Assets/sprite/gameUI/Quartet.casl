@@ -1,0 +1,17 @@
+16
+8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,-115.5,-470.0,300,150,10,0.25,0.3,0.5,0.5,12,LevelBar.dds
+8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,844.0,-470.0,300,150,10,0.25,0.3,0.5,0.5,12,LevelBar.dds
+8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,-115.5,70.00000000000006,300,150,10,0.25,0.3,0.5,0.5,12,LevelBar.dds
+8,LevelBar,44,../../Game/Assets/sprite/gameUI/LevelBar.png,844.0,70.00000000000006,300,150,10,0.25,0.3,0.5,0.5,12,LevelBar.dds
+2,Lv,38,../../Game/Assets/sprite/gameUI/Lv.png,-175.0,115.0,39,30,10,0.2,0.2,0.5,0.5,6,Lv.dds
+4,Lv10,40,../../Game/Assets/sprite/gameUI/Lv10.png,-110.0,80.00000000000006,97,97,10,0.65,0.65,0.5,0.5,8,Lv10.dds
+5,maxLv,41,../../Game/Assets/sprite/gameUI/maxLv.png,-35.0,65.0,58,45,10,0.3,0.3,0.5,0.5,9,maxLv.dds
+14,Skill_Icon_OUT,50,../../Game/Assets/sprite/gameUI/Skill_Icon_OUT.png,-225.0,93.0,118,118,10,0.1098039215686274,0.1098039215686274,0.5,0.5,18,Skill_Icon_OUT.dds
+12,ULT_Icon_OUT,48,../../Game/Assets/sprite/gameUI/ULT_Icon_OUT.png,-246.15384615384608,42.307692307692434,108,108,10,0.1,0.1,0.5,0.5,16,ULT_Icon_OUT.dds
+13,ExperienceBar,49,../../Game/Assets/sprite/gameUI/ExperienceBar.png,-110.0,30.000000000000057,150,24,10,0.25,0.2,0.5,0.5,17,ExperienceBar.dds
+19,ExperienceBar_front,55,../../Game/Assets/sprite/gameUI/ExperienceBar_front.png,-186.0,30.000000000000057,150,24,10,0.25,0.2,0.0,0.5,23,ExperienceBar_front.dds
+11,HPBar_flame,47,../../Game/Assets/sprite/gameUI/HPBar_flame.png,105.0,30.000000000000057,210,42,10,0.35,0.35,0.5,0.5,15,HPBar_flame.dds
+11,HPBar_flame,47,../../Game/Assets/sprite/gameUI/HPBar_flame.png,105.0,-520.0,210,42,10,0.35,0.35,0.5,0.5,15,HPBar_flame.dds
+8,HPBar_HP,44,../../Game/Assets/sprite/gameUI/HPBar_HP.png,-959.8076923076925,30.000000000000057,210,34,9,0.363,0.38,0.0,0.5,12,HPBar_HP.dds
+11,HPBar_flame,47,../../Game/Assets/sprite/gameUI/HPBar_flame.png,-855.0,30.000000000000057,210,42,10,0.35,0.35,0.5,0.5,15,HPBar_flame.dds
+8,HPBar_HP,44,../../Game/Assets/sprite/gameUI/HPBar_HP.png,0.0,30.000000000000057,210,34,9,0.363,0.38,0.0,0.5,12,HPBar_HP.dds

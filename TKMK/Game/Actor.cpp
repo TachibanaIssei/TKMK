@@ -33,6 +33,7 @@ void Actor::Move(Vector3& position, CharacterController& charcon,Status& status,
 	forward.y = 0.0f;
 	right.y = 0.0f;
 	forward.Normalize();
+	right.Normalize();
 	//移動の入力量とstatusのスピードを乗算。
 	right *= stickL.x * status.GetSpeed();
 	forward *= stickL.y * status.GetSpeed();
@@ -202,23 +203,23 @@ void Actor::levelDown(int& Level, int downLevel)
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
 /// </summary>
-/// <param name="GetExp">中立の敵の経験値</param>
+/// <param name="m_getExp">中立の敵の経験値</param>
 void Actor::ExpProcess(int Exp)
 {
 	//ウサギを倒したときの処理がおかしくなる
 	//もしレベルが10(Max)なら
-	if (Lv == 10)return;
+	if (m_lv == 10)return;
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
-	GetExp += Exp;
+	m_getExp += Exp;
 	//経験値を保存する
-	m_SaveEXP += Exp;
+	m_saveEXP += Exp;
 	while (true)
 	{
 		//もしレベルが10(Max)なら
-		if (Lv == 10)return;
+		if (m_lv == 10)return;
 
 		//手に入れた経験値より経験値テーブルのほうが大きかったら
-		if (GetExp < ExpTable) {
+		if (m_getExp < m_expTable) {
 			break;      //抜け出す
 		}
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
@@ -227,43 +228,43 @@ void Actor::ExpProcess(int Exp)
 			while (true)
 			{
 				//もしレベルが10(Max)なら
-				if (Lv == 10)return;
+				if (m_lv == 10)return;
 
 				//手に入れた経験値より経験値テーブルのほうが大きかったら
-				if (GetExp >= ExpTable) {
+				if (m_getExp >= m_expTable) {
 					//レベルアップ
-					LevelUp(Lv);
+					LevelUp(m_lv);
 				}
 
 				//今の経験値テーブルを代入
-				m_oldExpTable = ExpTable;
+				m_oldExpTable = m_expTable;
 				//経験値テーブルを更新する
 				//経験値を0にリセットする
-				//GetExp = 0;
+				//m_getExp = 0;
 
-				GetExp -= ExpTable;
+				m_getExp -= m_expTable;
 
 				//テーブル変更
-				if (Lv >= 3) {
-				ExpTable = 10;
+				if (m_lv >= 3) {
+				m_expTable = 10;
 					
 				}
 				else
 				{
-					ExpTable = 5;
-					//GetExp -= ExpTable;
+					m_expTable = 5;
+					//m_getExp -= m_expTable;
 				}
 
 				
 
 				//経験値が0になったら抜け出す
-				if (GetExp == 0) {
-					GetExp = 0;
+				if (m_getExp == 0) {
+					m_getExp = 0;
 					return;
 				}
-				else if (GetExp < ExpTable)
+				else if (m_getExp < m_expTable)
 				{
-					//GetExp *= -1;
+					//m_getExp *= -1;
 					return;
 				}
 
@@ -281,19 +282,19 @@ void Actor::ExpProcess(int Exp)
 void Actor::LevelDownProcess(int downlevel)
 {
 	//レベルを１下げる
-	levelDown(Lv, downlevel);
+	levelDown(m_lv, downlevel);
 	//経験値をリセット
-	ExpReset(Lv, GetExp);
+	ExpReset(m_lv, m_getExp);
 	//一つ下のレベルの経験値テーブルにする
-	ExpTableChamge(Lv, ExpTable);
+	ExpTableChamge(m_lv, m_expTable);
 }
 
 /// <summary>
 /// リスポーンしたときのレベルによって経験値を変更する
 /// </summary>
-/// <param name="Lv">現在のレベル</param>
+/// <param name="m_lv">現在のレベル</param>
 /// <param name="getExp">経験値</param>
-void Actor::ExpReset(int& Lv, int& getExp)
+void Actor::ExpReset(int& m_lv, int& getExp)
 {
 	getExp = 0;
 }
@@ -301,11 +302,11 @@ void Actor::ExpReset(int& Lv, int& getExp)
 /// <summary>
 /// 経験値テーブルを変更する
 /// </summary>
-/// <param name="Lv">現在のレベル</param>
+/// <param name="m_lv">現在のレベル</param>
 /// <param name="expTable">経験値テーブル</param>
-void Actor::ExpTableChamge(int& Lv, int& expTable)
+void Actor::ExpTableChamge(int& m_lv, int& expTable)
 {
-	if (Lv >= 3) {
+	if (m_lv >= 3) {
 		expTable = 10;
 	}
 	else
@@ -320,7 +321,7 @@ void Actor::ExpTableChamge(int& Lv, int& expTable)
 /// <param name="SkillCooltimer">クールタイム</param>
 /// <param name="skillstate">スキルや回避が終わったかの判定</param>
 /// <param name="timer">クールタイムを計算する変数</param>
-void Actor::CoolTime(float Cooltime, bool& skillEndFlag,float& timer)
+void Actor::CoolTime(float m_skillCoolTime, bool& skillEndFlag,float& timer)
 {
 
 	//スキルのアニメーション再生が終わったら
@@ -330,7 +331,7 @@ void Actor::CoolTime(float Cooltime, bool& skillEndFlag,float& timer)
 		{
 			//スキル使用可能
 			skillEndFlag = false;
-			timer = Cooltime;
+			timer = m_skillCoolTime;
 		}
 		else timer -= g_gameTime->GetFrameDeltaTime();   //timerを進める
 
@@ -400,6 +401,26 @@ bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFla
 					else if (m_enPlayerNumber == enPlayerNumber_2P)
 					{
 						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Right);
+					}
+				}
+				else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
+					g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+				{
+					if (m_enPlayerNumber == enPlayerNumber_1P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftUp);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_2P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightUp);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_3P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftDown);
+					}
+					else if (m_enPlayerNumber == enPlayerNumber_4P)
+					{
+						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightDown);
 					}
 				}
 				else {

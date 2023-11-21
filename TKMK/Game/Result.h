@@ -3,9 +3,6 @@
 #include <array>
 #include "SpringCamera.h"
 
-#define PLAYER 4
-#define MOVE 4
-
 class Tittle;
 class Fade;
 
@@ -39,17 +36,19 @@ public:
 	
 	//各プレイヤーのスコアを保存するためのもの
 	struct Score {
-		int Point = 0;		//獲得ポイント
+		int m_point = 0;		//獲得ポイント
 		int NameNum = 1;	
 		int Rank = 1;		//順位
 	};
 
 private:
+	void InitNameSprite();
 	void InitSprite();
 	void InitModel();
 	void InitSkyCube();
 	void PlayEffect();
 	void SetCamera();
+	void SetCharacterState();
 	void Rank();
 	void MoveLerp();
 	void MovePointFont();
@@ -76,20 +75,20 @@ private:
 	};
 
 private:
-	SpringCamera m_camera;
+	const static int m_maxPlayer = 4;
 
+	SpringCamera m_camera;
 	SkyCube* m_skyCube;					//スカイキューブ
-	ModelRender m_knightModel;			//剣士のモデル
+	std::array<ModelRender, m_maxPlayer> m_knightModel;	//剣士のモデル
 	ModelRender m_backGround;			//地面
 	ModelRender m_backWall;				//壁
-
 	EffectEmitter* m_fireWorks;
-
+	RenderingEngine::EnGameMode	m_gameMode;
 	AnimationClip m_animationClips[enAnimationClip_Num];
-	EnCharacterState m_charaState = enCharacterState_Num;
-	EnCharacterState m_stayCharaState = enCharacterState_Num;
+	std::array<EnCharacterState, m_maxPlayer> m_charaState = { enCharacterState_Idle,enCharacterState_Idle,enCharacterState_Idle,enCharacterState_Idle };
+	std::array<EnCharacterState, m_maxPlayer> m_stayCharaState = { enCharacterState_Idle,enCharacterState_Idle,enCharacterState_Idle,enCharacterState_Idle };
 
-	std::array<int, PLAYER> charPoints = {0,0,0,0};		//プレイヤーのポイント
+	std::array<int, m_maxPlayer> charPoints = {0,0,0,0};		//プレイヤーのポイント
 
 	int titleScene = 1;			//タイトルのシーン番号
 	int m_nowMoveRank = 0;
@@ -106,7 +105,7 @@ private:
 
 	bool m_isInit = false;
 
-	std::array<Score, PLAYER> m_playerScore;
+	std::array<Score, m_maxPlayer> m_playerScore;
 
 	ModelRender m_No1Charctar;		//一位のキャラのモデル
 
@@ -141,7 +140,7 @@ private:
 	Fade* fade = nullptr;
 
 	//フォントの線形補間前の座標
-	std::array<Vector3, MOVE> m_lerpStartPos = {	//順位
+	std::array<Vector3, m_maxPlayer> m_lerpStartPos = {	//順位
 		Vector3(-2100.0f, 300.0f, 0.0f),		//１位
 		Vector3(-2100.0f, 145.0f, 0.0f),		//２位
 		Vector3(-2100.0f, 0.0f, 0.0f),		//３位
@@ -149,7 +148,7 @@ private:
 	};
 
 	//スプライトの線形補間前の座標
-	std::array<Vector3, MOVE> m_spriteLerpStartPos = {	//順位
+	std::array<Vector3, m_maxPlayer> m_spriteLerpStartPos = {	//順位
 		Vector3(-2100.0f, 180.0f, 0.0f),		//１位
 		Vector3(-2100.0f, 25.0f, 0.0f),			//２位
 		Vector3(-2100.0f, -117.0f, 0.0f),		//３位
@@ -157,7 +156,7 @@ private:
 	};
 
 	//フォントを線形補間でここまで動かす
-	std::array<Vector3,MOVE> m_lerpMoveEnd = {		//順位
+	std::array<Vector3, m_maxPlayer> m_lerpMoveEnd = {		//順位
 		Vector3(370.0f, 300.0f, 0.0f),		//１位
 		Vector3(370.0f, 145.0f, 0.0f),		//２位
 		Vector3(370.0f, 4.0f, 0.0f),		//３位
@@ -165,7 +164,7 @@ private:
 	};
 
 	//スプライトを線形補間でここまで動かす
-	std::array<Vector3, MOVE> m_spriteLerpMoveEnd = {		//順位
+	std::array<Vector3, m_maxPlayer> m_spriteLerpMoveEnd = {		//順位
 		Vector3(300.0f, 180.0f, 0.0f),		//１位
 		Vector3(300.0f, 25.0f, 0.0f),		//２位
 		Vector3(300.0f, -117.0f, 0.0f),		//３位
@@ -173,7 +172,7 @@ private:
 	};
 
 	//フォントを線形補間で動かすときの座標
-	std::array<Vector3, MOVE> m_lerpMoving = {		//順位
+	std::array<Vector3, m_maxPlayer> m_lerpMoving = {		//順位
 		Vector3(g_vec3Zero),		//１位
 		Vector3(g_vec3Zero),		//２位
 		Vector3(g_vec3Zero),		//３位
@@ -181,7 +180,7 @@ private:
 	};
 
 	//スプライトを線形補間で動かすときの座標
-	std::array<Vector3, MOVE> m_spriteLerpMoving = {		//順位
+	std::array<Vector3, m_maxPlayer> m_spriteLerpMoving = {		//順位
 		Vector3(g_vec3Zero),		//１位
 		Vector3(g_vec3Zero),		//２位
 		Vector3(g_vec3Zero),		//３位

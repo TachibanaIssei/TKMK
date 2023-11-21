@@ -15,6 +15,8 @@ namespace nsK2EngineLow {
 		// グローバルなアクセスポイントにnullptrを代入。
 		g_graphicsEngine = nullptr;
 		g_gameTime = nullptr;
+		g_renderingEngine = nullptr;
+		g_collisionObjectManager = nullptr;
 		
 		delete m_graphicsEngine;
 		
@@ -65,7 +67,7 @@ namespace nsK2EngineLow {
 		m_fpsLimitter.BeginFrame();
 		m_gameTime.BeginMeasurement();
 		m_graphicsEngine->BeginRender();
-		EffectEngine::GetInstance()->BeginFrame();
+		g_renderingEngine->EffectBeginRender();
 		for (auto& pad : m_pad) {
 			pad.BeginFrame();
 		}
@@ -98,7 +100,7 @@ namespace nsK2EngineLow {
 		g_soundEngine->Update();
 		GameObjectManager::GetInstance()->ExecuteUpdate();
 		// エフェクトエンジンの更新。
-		EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime());
+		//EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime());
 	}
 	/// <summary>
 	/// 描画処理を実行。

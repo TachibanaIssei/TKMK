@@ -200,7 +200,7 @@ public:
 	/// <param name="select">使うキャラナンバー</param>
 	void SetCharacterSelect(int select)
 	{
-		SelectCharNumber = select;
+		m_selectCharacterNumber = select;
 	}
 
 	void GetActorPoints(int charPoints[]);
@@ -374,6 +374,8 @@ public:
 private:
 	void InitSoloPlay();
 	void InitDuoPlay();
+	void InitTrioPlay();
+	void InitQuartePlay();
 
 	void SetKnightPlayerActor();
 
@@ -451,7 +453,7 @@ private:
 	BackGround* m_backGround = nullptr;
 	Result* m_rezult=nullptr;
 	Tittle* m_tittle = nullptr;
-	GameCamera* m_gamecamera[MAX_VIEWPORT] = { nullptr,nullptr };
+	std::array<GameCamera*, MAX_VIEWPORT> m_gameCamera = { nullptr,nullptr,nullptr,nullptr };
 	GameUI* m_gameUI = nullptr;
 	KnightPlayer* m_knightplayer = nullptr;
 	std::array<KnightAI*,3> m_KnightAI = { nullptr,nullptr,nullptr};
@@ -471,21 +473,19 @@ private:
 
 	Vector3 m_position = Vector3::Zero;
 	Vector3 m_moveSpeed = Vector3::Zero;
-	Vector3 m_EFK_Pos = Vector3::Zero;
+	std::array<Vector3, 4> m_EFK_Pos = { Vector3::Zero,Vector3::Zero,Vector3::Zero,Vector3::Zero, };
 
-	float m_FluctuateSkyColor;
-	float DarknessSkyColor;
+	float m_fluctuateSkyColor;
+	float m_darknessSkyColor;
 
-	float m_FluctuateDirectionColor = 0.0f;
-	Vector3 m_FluctuateAmbientColor = Vector3::Zero;
+	float m_fluctuateDirectionColor = 0.0f;
+	Vector3 m_fluctuateAmbientColor = Vector3::Zero;
 
 	Vector3 directionLightColor2;
 
-	bool HowToPlaySpriteFlag = false;
-
 	float m_spriteAlpha = 0.0f;
 
-	int enemyNumber = 0;
+	int m_enemyNumber = 0;
 
 	int SearchRespawnPosNumber = 0;
 	int RandamRespawnPosNumber;
@@ -531,7 +531,7 @@ private:
 	//１…魔法使い
 	//２…ゾンビ
 	//３…魔物
-	int SelectCharNumber = 1;
+	int m_selectCharacterNumber = 0;
 
 	int enemyNum = 0;
 	char* enemyName;
@@ -541,7 +541,7 @@ private:
 	bool UltCanUseFlag = false;
 	float UltCanUseTimer = 0.0f;
 
-	EffectEmitter* TowerDown = nullptr;
+	std::array<EffectEmitter*, 4> TowerDown = { nullptr,nullptr,nullptr,nullptr };
 
 };
 

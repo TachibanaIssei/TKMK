@@ -11,10 +11,10 @@ namespace {
 	const Vector2 EXPERIENCE_BAR_DUO_LEFT_POS = Vector2(300.0f, -620.0f);	//左
 	const Vector2 EXPERIENCE_BAR_DUO_RIGHT_POS = Vector2(-300.0f, -620.0f);	//右
 	//3～4人用
-	const Vector2 EXPERIENCE_BAR_LEFT_UP_POS = Vector2(-200.0f, 150.0f);	//左上
-	const Vector2 EXPERIENCE_BAR_LEFT_DOWN_POS = Vector2(-200.0f, -620.0f);	//左下
-	const Vector2 EXPERIENCE_BAR_RIGHT_UP_POS = Vector2(900.0f, 150.0f);	//右上
-	const Vector2 EXPERIENCE_BAR_RIGHT_DOWN_POS = Vector2(900.0f, -620.0f);	//右下
+	const Vector2 EXPERIENCE_BAR_LEFT_UP_POS = Vector2(300.0f, -270.0f);	//左上
+	const Vector2 EXPERIENCE_BAR_LEFT_DOWN_POS = Vector2(300.0f, -270.0f);	//左下
+	const Vector2 EXPERIENCE_BAR_RIGHT_UP_POS = Vector2(300.0f, -270.0f);	//右上
+	const Vector2 EXPERIENCE_BAR_RIGHT_DOWN_POS = Vector2(300.0f, -270.0f);	//右下
 
 	const float EXPEIENCE_SPRITE_W_H = 128.0f;	//経験値オーブ画像の解像度
 }
@@ -57,6 +57,14 @@ bool ExpforKnight::Start()
 			g_camera3D[2]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
 		else if (m_playerActor->IsMatchName("knightplayer4"))
+		{
+			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
+		}
+		else if (m_playerActor->IsMatchName("knightplayer4"))
+		{
+			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
+		}
+		else if (m_playerActor->IsMatchName("KnightAI1"))
 		{
 			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
@@ -146,6 +154,10 @@ void ExpforKnight::SetPlayerNumber()
 	{
 		m_playerActorNumber = 3;
 	}
+	else if (m_playerActor->IsMatchName("KnightAI1"))
+	{
+		m_playerActorNumber = 3;
+	}
 }
 
 Vector2 ExpforKnight::SetExperienceBarPosition()
@@ -185,6 +197,10 @@ Vector2 ExpforKnight::SetExperienceBarPosition()
 		{
 			position = EXPERIENCE_BAR_RIGHT_DOWN_POS;
 		}
+		else if (m_playerActor->IsMatchName("KnightAI1"))
+		{
+			position = EXPERIENCE_BAR_RIGHT_DOWN_POS;
+		}
 	}
 
 	return position;
@@ -195,7 +211,14 @@ void ExpforKnight::Render(RenderContext& rc)
 	{
 		return;
 	}
-	m_NormalExp.Draw(rc, false, m_playerActorNumber);
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+	{
+		m_NormalExp.Draw(rc);
+	}
+	else
+	{
+		m_NormalExp.Draw(rc, false, m_playerActorNumber);
+	}
 }
 
 void ExpforKnight::Init(Vector3& pos, Actor* playerActor, const bool rabbitFlag)

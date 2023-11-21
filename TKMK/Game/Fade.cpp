@@ -9,6 +9,12 @@ namespace
 	const Vector4 MUL_COLOR_VALUE = Vector4(1.0f, 1.0f, 1.0f, 0.0f);
 	const Vector3 BLACK_SPRITE_HALF_LEFT = Vector3(-480.0f, 0.0f, 0.0f);
 	const Vector3 BLACK_SPRITE_HALF_RIGHT = Vector3(480.0f, 0.0f, 0.0f);
+	const Vector3 BLACK_SPRITE_LEFT_UP = Vector3(-480.0f, 270.0f, 0.0f);
+	const Vector3 BLACK_SPRITE_LEFT_DOWN = Vector3(-480.0f, -270.0f, 0.0f);
+	const Vector3 BLACK_SPRITE_RIGHT_UP = Vector3(480.0f, 270.0f, 0.0f);
+	const Vector3 BLACK_SPRITE_RIGHT_DOWN = Vector3(480.0f, -270.0f, 0.0f);
+	const Vector3 BLACK_SPRITE_HALF_SCALE = Vector3(0.5f, 1.0f, 1.0f);
+	const Vector3 BLACK_SPRITE_QUARTER_SCALE = Vector3(0.5f, 0.5f, 1.0f);
 }
 
 Fade::Fade()
@@ -23,20 +29,30 @@ Fade::~Fade()
 
 bool Fade::Start()
 {
-	m_blackSprite[enFadeSpriteType_Full].Init("Assets/sprite/Fade/Fade_Black.DDS", BLACK_SPRITE_WIDTH, BLACK_SPRITE_HEIGHT);
-	m_blackSprite[enFadeSpriteType_Left].Init("Assets/sprite/Fade/Fade_Black.DDS", BLACK_SPRITE_WIDTH_HALF, BLACK_SPRITE_HEIGHT);
-	m_blackSprite[enFadeSpriteType_Right].Init("Assets/sprite/Fade/Fade_Black.DDS", BLACK_SPRITE_WIDTH_HALF, BLACK_SPRITE_HEIGHT);
+	for (int i = 0; i < m_blackSprite.size(); i++)
+	{
+		m_blackSprite[i].Init("Assets/sprite/Fade/Fade_Black.DDS", BLACK_SPRITE_WIDTH, BLACK_SPRITE_HEIGHT);
+		m_blackSprite[i].SetRotation(Quaternion::Identity);
+		m_blackSprite[i].SetMulColor(MUL_COLOR_VALUE);
+		m_blackSprite[i].SetScale(Vector3::One);
+	}
 	
-	m_blackSprite[enFadeSpriteType_Full].SetPosition(Vector3::Zero);
 	m_blackSprite[enFadeSpriteType_Left].SetPosition(BLACK_SPRITE_HALF_LEFT);
 	m_blackSprite[enFadeSpriteType_Right].SetPosition(BLACK_SPRITE_HALF_RIGHT);
+	m_blackSprite[enFadeSpriteType_LeftUp].SetPosition(BLACK_SPRITE_LEFT_UP);
+	m_blackSprite[enFadeSpriteType_LeftDown].SetPosition(BLACK_SPRITE_LEFT_DOWN);
+	m_blackSprite[enFadeSpriteType_RightUp].SetPosition(BLACK_SPRITE_RIGHT_UP);
+	m_blackSprite[enFadeSpriteType_RightDown].SetPosition(BLACK_SPRITE_RIGHT_DOWN);
+
+	m_blackSprite[enFadeSpriteType_Left].SetScale(BLACK_SPRITE_HALF_SCALE);
+	m_blackSprite[enFadeSpriteType_Right].SetScale(BLACK_SPRITE_HALF_SCALE);
+	m_blackSprite[enFadeSpriteType_LeftUp].SetScale(BLACK_SPRITE_QUARTER_SCALE);
+	m_blackSprite[enFadeSpriteType_LeftDown].SetScale(BLACK_SPRITE_QUARTER_SCALE);
+	m_blackSprite[enFadeSpriteType_RightUp].SetScale(BLACK_SPRITE_QUARTER_SCALE);
+	m_blackSprite[enFadeSpriteType_RightDown].SetScale(BLACK_SPRITE_QUARTER_SCALE);
 
 	for (int i = 0; i < m_blackSprite.size(); i++)
 	{
-		m_blackSprite[i].SetRotation(Quaternion::Identity);
-		m_blackSprite[i].SetScale(Vector3::One);
-		m_blackSprite[i].SetMulColor(MUL_COLOR_VALUE);
-
 		m_blackSprite[i].Update();
 	}
 

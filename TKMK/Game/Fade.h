@@ -18,8 +18,12 @@ public:
 	enum EnFadeSpriteType
 	{
 		enFadeSpriteType_Full = 0,	//全画面
-		enFadeSpriteType_Left = 1,	//左
-		enFadeSpriteType_Right = 2,	//右
+		enFadeSpriteType_Left,	//左
+		enFadeSpriteType_Right,	//右
+		enFadeSpriteType_LeftUp,	//左上
+		enFadeSpriteType_RightUp,	//右上
+		enFadeSpriteType_LeftDown,	//左下
+		enFadeSpriteType_RightDown,	//右下
 		enFadeSpriteType_Num
 	};
 
@@ -83,7 +87,15 @@ private:
 	EnFadeState m_tipFadeState = enFadeState_fadeIdle;
 	float m_tipSpriteCurrentAlpha = 0.0f;
 	float m_tipFadeSpeed = 1.0f;
-	std::array<EnFadeState, m_fadeSpriteCount> m_blackFadeState = { enFadeState_fadeIdle, enFadeState_fadeIdle, enFadeState_fadeIdle };
+	std::array<EnFadeState, m_fadeSpriteCount> m_blackFadeState = { 
+		enFadeState_fadeIdle, 
+		enFadeState_fadeIdle, 
+		enFadeState_fadeIdle, 
+		enFadeState_fadeIdle, 
+		enFadeState_fadeIdle, 
+		enFadeState_fadeIdle, 
+		enFadeState_fadeIdle 
+	};
 	std::array<SpriteRender, m_fadeSpriteCount> m_blackSprite;					//スプライト
 	std::array<float, m_fadeSpriteCount> m_blackSpriteCurrentAlpha = {};		//現在のα値。ここを変更すると画像が透明になる。
 	std::array<float, m_fadeSpriteCount> m_blackFadeSpeed = { 1.0f,1.0f,1.0f };	//フェードの速度

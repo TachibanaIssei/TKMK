@@ -2,10 +2,23 @@
 #include "CameraCollisionSolver.h"
 
 namespace nsK2EngineLow {
-	class SpringCamera
+	/// <summary>
+	/// バネカメラ。
+	/// バネに引っ張られるようなカメラの挙動を実現するクラスです。
+	/// SetTarget関数とSetPosition関数を使用して、
+	/// カメラの目標となる注視点と視点を設定してください。
+	/// Update関数を実行することで、カメラが設定された目標座標に追従していきます。
+	/// </summary>
+	class SpringCamera : public Noncopyable
 	{
 	public:
+		/// <summary>
+		/// コンストラクタ。
+		/// </summary>
 		SpringCamera();
+		/// <summary>
+		/// デストラクタ。
+		/// </summary>
 		~SpringCamera();
 
 		/// <summary>
@@ -17,9 +30,9 @@ namespace nsK2EngineLow {
 		/// <param name="sphereCollisionRadius">球体のコリジョンの半径。isEnableCollisionSoloverがtrueの時に有効になります。</param>
 		void Init(
 			Camera& camera,
-			float maxMoveSpeed,
-			bool isEnableCollisionSolver,
-			float sphereCollisionRadius
+			const float maxMoveSpeed,
+			const bool isEnableCollisionSolver,
+			const float sphereCollisionRadius
 		);
 		/// <summary>
 		/// 目標となる注視点を設定。
@@ -41,7 +54,7 @@ namespace nsK2EngineLow {
 		/// 遠平面を設定。
 		/// </summary>
 		/// <param name="_far">遠平面。</param>
-		void SetFar(float _far)
+		void SetFar(const float _far)
 		{
 			if (m_camera == nullptr) {
 				return;
@@ -52,7 +65,7 @@ namespace nsK2EngineLow {
 		/// 近平面。
 		/// </summary>
 		/// <param name="_near">近平面。</param>
-		void SetNear(float _near)
+		void SetNear(const float _near)
 		{
 			if (m_camera == nullptr) {
 				return;
@@ -130,7 +143,7 @@ namespace nsK2EngineLow {
 		/// 値が大きいほどカメラが遅れて付いてきます。
 		/// </summary>
 		/// <param name="dampingRate">バネの減衰率。</param>
-		void SetDampingRate(float dampingRate)
+		void SetDampingRate(const float dampingRate)
 		{
 			m_targetDampingRate = dampingRate;
 		}
@@ -146,7 +159,7 @@ namespace nsK2EngineLow {
 		/// 画角を設定。
 		/// </summary>
 		/// <param name="angle">画角。</param>
-		void SetViewAngle(float angle)
+		void SetViewAngle(const float angle)
 		{
 			if (m_camera == nullptr) {
 				return;
@@ -157,7 +170,7 @@ namespace nsK2EngineLow {
 		/// 画角を取得。
 		/// </summary>
 		/// <returns>画角。</returns>
-		float GetViewAngle() const
+		const float GetViewAngle() const
 		{
 			if (m_camera == nullptr) {
 				return 0.0f;
@@ -194,18 +207,18 @@ namespace nsK2EngineLow {
 			}
 		}
 	private:
-		Camera*					m_camera = nullptr;						//カメラ。
-		Vector3					m_target = Vector3::Zero;				//目標となる注視点。
-		Vector3					m_position = Vector3::Zero;				//目標となる視点。
-		Vector3					m_targetMoveSpeed = Vector3::Zero;		//注視点の移動速度。
-		Vector3					m_positionMoveSpeed = Vector3::Zero;	//視点の移動速度。
-		float					m_maxMoveSpeed = 0.0f;					//最高移動速度。
-		float					m_targetDampingRate = 1.0f;				//減衰率。値が大きいほどカメラが遅れ付いてくる。
-		float					m_dampingRate = 1.0f;					//減衰率。
-		float					m_dampingRateVel = 0.0f;
-		bool					m_isEnableCollisionSolver = false;		//コリジョン処理が有効？
-		bool					m_isRefresh = true;						//リフレッシュが必要？
-		CameraCollisionSolver	m_cameraCollisionSolver;				//コリジョン解決
+		Camera* m_camera = nullptr;							//カメラ。
+		Vector3		m_target = Vector3::Zero;				//目標となる注視点。
+		Vector3		m_position = Vector3::Zero;				//目標となる視点。
+		Vector3		m_targetMoveSpeed = Vector3::Zero;		//注視点の移動速度。
+		Vector3		m_positionMoveSpeed = Vector3::Zero;	//視点の移動速度。
+		float		m_maxMoveSpeed = 0.0f;					//最高移動速度。
+		float		m_targetDampingRate = 1.0f;				//減衰率。値が大きいほどカメラが遅れ付いてくる。
+		float		m_dampingRate = 1.0f;					//減衰率。
+		float		m_dampingRateVel = 0.0f;
+		bool		m_isEnableCollisionSolver = false;		//コリジョン処理が有効？
+		bool		m_isRefresh = true;						//リフレッシュが必要？
+		CameraCollisionSolver m_cameraCollisionSolver;
 	};
 }
 

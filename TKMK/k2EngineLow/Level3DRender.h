@@ -7,22 +7,22 @@
 
 namespace nsK2EngineLow {
 	/// <summary>
-	/// オブジェクトデータ
+	/// オブジェクト名
 	/// </summary>
 	struct LevelObjectData : public Noncopyable
 	{
-		Vector3			position;		//座標
-		Quaternion		rotation;		//回転
-		Vector3			scale;			//拡大率
-		const wchar_t*	name;			//名前
-		int				number = 0;		//オブジェクトに指定した番号
+		Vector3 position;		//座標
+		Quaternion rotation;	//回転
+		Vector3 scale;			//拡大率
+		const wchar_t* name;	//名前
+		int number = 0;
 
 		/// <summary>
 		/// 引数で渡したオブジェクト名のオブジェクトか調べる
 		/// </summary>
 		/// <param name="objName">調べる名前</param>
 		/// <returns>名前が同じ場合trueを返す</returns>
-		const bool EqualObjectName(const wchar_t* objName) const
+		const bool EqualObjectName(const wchar_t* objName)
 		{
 			return wcscmp(objName, name) == 0;
 		}
@@ -32,7 +32,7 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="n">調べる名前</param>
 		/// <returns>一致していたらtrueを返す</returns>
-		const bool ForwardMatchName(const wchar_t* n) const
+		const bool ForwardMatchName(const wchar_t* n)
 		{
 			auto len = wcslen(n);
 			auto namelen = wcslen(name);
@@ -44,9 +44,6 @@ namespace nsK2EngineLow {
 		}
 	};
 
-	/// <summary>
-	/// レベルレンダー
-	/// </summary>
 	class Level3DRender : public Noncopyable
 	{
 	public:
@@ -65,7 +62,7 @@ namespace nsK2EngineLow {
 
 	private:
 		using BonePtr = std::unique_ptr<Bone>;
-		std::vector<BonePtr>	m_bonelist;		//ボーンのリスト
-		TklFile					m_tklFile;		//TKLファイル
+		std::vector<BonePtr> m_bonelist;
+		TklFile m_tklFile;
 	};
 }

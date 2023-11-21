@@ -27,8 +27,8 @@ namespace {
 	const Vector3 Menu_SelectBar_BGMPos = Vector3(90.0f, -68.0f, 0.0f);
 	const Vector3 Menu_SelectBar_SEPos = Vector3(90.0f, -183.0f, 0.0f);
 	const Vector3 TOWER_X_POS = Vector3(20.0f, -410.0f, 0.0f);
-	const Vector3 RABBIT_POS = Vector3(650.0f, 400.0f, 0.0f);
-	const Vector3 RabbitSpriteScale = Vector3(0.75f, 0.75f, 0.0f);
+	const Vector3 RABBIT_POS = Vector3(700.0f, 350.0f, 0.0f);
+	const Vector3 RabbitSpriteScale = Vector3(0.5f, 0.5f, 0.0f);
 	const Vector3 SpriteScale = Vector3::One;
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);//ディレクションライトのカラー
 	const Vector3 AMBIENT_COLOR = Vector3(0.6f, 0.6f, 0.6f);//環境光のカラー
@@ -70,8 +70,8 @@ Game::~Game()
 		}
 	}
 
-	for (int i = 0; i < 2; i++) {
-		DeleteGO(m_gamecamera[i]);
+	for (int i = 0; i < m_gameCamera.size(); i++) {
+		DeleteGO(m_gameCamera[i]);
 
 		if (player[i] != nullptr)
 		{
@@ -79,8 +79,11 @@ Game::~Game()
 		}
 	}
 
-	if (GameObjectManager::GetInstance()->IsActive()) {
-		TowerDown->Stop();
+	for (int i = 0; i < TowerDown.size(); i++)
+	{
+		if (GameObjectManager::GetInstance()->IsActive()) {
+			TowerDown[i]->Stop();
+		}
 	}
 
 	DeleteGO(m_gameUI);
@@ -107,10 +110,9 @@ bool Game::Start()
 	g_renderingEngine->SetAmbient(AMBIENT_COLOR);
 	//暗いときの画面のカラー
 	//ディレクションライト
-	m_FluctuateDirectionColor = DIRECTION_RIGHT_COLOR.x;
+	m_fluctuateDirectionColor = DIRECTION_RIGHT_COLOR.x;
 	//環境光
-	m_FluctuateAmbientColor = AMBIENT_COLOR;
-
+	m_fluctuateAmbientColor = AMBIENT_COLOR;
 
 	InitSkyCube();
 
@@ -118,7 +120,6 @@ bool Game::Start()
 	//フェードインしているのでフェードアウトする
 	//画面を明るくする
 	fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
-
 
 	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
@@ -140,21 +141,30 @@ bool Game::Start()
 
 			return true;
 		}
-
 		return false;
+	});
 
-		});
-
-	//ソロプレイだったら
+	//ソロプレイ
 	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
 	{
 		InitSoloPlay();
 	}
-	//複数人プレイだったら
+	//2人プレイ
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 	{
 		InitDuoPlay();
 	}
+	//3人プレイ
+	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
+	{
+		InitTrioPlay();
+	}
+	//4人プレイ
+	else
+	{
+		InitQuartePlay();
+	}
+
 	SetKnightPlayerActor();
 
 	//ゲームの状態をゲームステートにする
@@ -263,10 +273,17 @@ void Game::Battle()
 		//UIのステートをポーズステートに変更
 		m_gameUI->SetGameUIState(m_gameUI->m_PauseState);
 		//カメラのステートをポーズステートに変更
-		m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
+		m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Left]->enPauseState);
 		if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 		{
-			m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gamecamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_Right]->enPauseState);
+		}
+		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
+			g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
+		{
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightUp]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightUp]->enPauseState);
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_LeftDown]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_LeftDown]->enPauseState);
+			m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightDown]->SetCameraState(m_gameCamera[g_renderingEngine->EnCameraDrawing::enCameraDrawing_RightDown]->enPauseState);
 		}
 		//生成されている中立の敵のステートをポーズステートに変更
 		for (auto seutral_Enemy : m_neutral_Enemys)
@@ -328,9 +345,9 @@ void Game::End()
 void Game::GoResult()
 {
 	if (fade->GetCurrentAlpha() >= 1.0f)
+	{
 		Result* result = NewGO<Result>(0, "Result");
-	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
-	//DeleteGO(this);
+	}
 }
 
 //ポーズステートからゲームステートに移るときの間の処理
@@ -350,11 +367,11 @@ void Game::Between()
 		if (g_renderingEngine->GetGameMode() != RenderingEngine::enGameMode_SoloPlay)
 		{
 			for (int i = 0; i < RenderingEngine::enGameMode_Num - 1; i++) {
-				m_gamecamera[i]->SetCameraState(m_gamecamera[i]->enGameState);
+				m_gameCamera[i]->SetCameraState(m_gameCamera[i]->enGameState);
 			}
 		}
 		else {
-			m_gamecamera[RenderingEngine::enGameMode_SoloPlay - 1]->SetCameraState(m_gamecamera[RenderingEngine::enGameMode_SoloPlay - 1]->enGameState);
+			m_gameCamera[RenderingEngine::enGameMode_SoloPlay - 1]->SetCameraState(m_gameCamera[RenderingEngine::enGameMode_SoloPlay - 1]->enGameState);
 		}
 		//生成されている中立の敵のステートをゲームステートに戻す
 		for (auto seutral_Enemy : m_neutral_Enemys)
@@ -475,16 +492,26 @@ void Game::SetEnemyRespawnPos()
 
 void Game::TowerEFK()
 {
-	TowerDown = NewGO <EffectEmitter>(0);
-	TowerDown->Init(EnEFK::enEffect_TowerDown);
-	TowerDown->SetScale(Vector3::One * 30.0f);
-	TowerDown->Play();
-	Vector3 EFKPOS = m_EFK_Pos;
-	TowerDown->SetPosition(EFKPOS);
-	Quaternion Efk_Rot = Quaternion::Identity;
-	Efk_Rot.AddRotationDegY(255.0f);
-	TowerDown->SetRotation(Efk_Rot);
-	TowerDown->Update();
+	for (int i = 0; i < TowerDown.size(); i++)
+	{
+		TowerDown[i] = NewGO <EffectEmitter>(0);
+		TowerDown[i]->Init(EnEFK::enEffect_TowerDown);
+		TowerDown[i]->SetScale(Vector3::One * 30.0f);
+		TowerDown[i]->Play();
+		Vector3 EFKPOS = m_EFK_Pos[i];
+		TowerDown[i]->SetPosition(EFKPOS);
+		TowerDown[i]->Update();
+	}
+
+	Quaternion Efk_Rot[4];
+	Efk_Rot[0].SetRotationDegY(130.0f);
+	TowerDown[0]->SetRotation(Efk_Rot[0]);
+	Efk_Rot[1].SetRotationDegY(35.0f);
+	TowerDown[1]->SetRotation(Efk_Rot[1]);
+	Efk_Rot[2].SetRotationDegY(-55.0f);
+	TowerDown[2]->SetRotation(Efk_Rot[2]);
+	Efk_Rot[3].SetRotationDegY(-150.0f);
+	TowerDown[3]->SetRotation(Efk_Rot[3]);
 }
 
 
@@ -533,20 +560,17 @@ void Game::GetActorPoints(int charPoints[])
 
 void Game::InitSoloPlay()
 {
-	//画面分割をしない
-	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
-
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
-	player[0]->SelectCharcter(SelectCharNumber);
+	player[0]->SelectCharcter(m_selectCharacterNumber);
 	player[0]->CreatePlayer();
 	m_Actors.push_back(player[0]->GetPlayerActor());
 
 	//カメラの生成
-	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
-	m_gamecamera[0]->SetSplitCameraLR(m_gamecamera[0]->enSplitCamera_Left);
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_Left);
 
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
@@ -589,7 +613,19 @@ void Game::InitSoloPlay()
 			}
 			if (objData.number == 4)
 			{
-				m_EFK_Pos = objData.position;
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
 			}
 			return true;
 		}
@@ -615,27 +651,25 @@ void Game::InitSoloPlay()
 
 void Game::InitDuoPlay()
 {
-	//画面分割をする
-	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_DuoPlay);
-
 	//プレイヤーの生成
 	player[0] = NewGO<Player>(0, "player");
-	player[0]->SelectCharcter(SelectCharNumber);
-	player[0]->CreatePlayer();
-	m_Actors.push_back(player[0]->GetPlayerActor());
-
 	player[1] = NewGO<Player>(0, "player2");
-	player[1]->SelectCharcter(SelectCharNumber);
-	player[1]->CreatePlayer();
-	m_Actors.push_back(player[1]->GetPlayerActor());
 
 	//カメラの生成
-	m_gamecamera[0] = NewGO<GameCamera>(1, "gamecamera");
-	m_gamecamera[0]->SetSplitCameraLR(m_gamecamera[0]->enSplitCamera_Left);
-	m_gamecamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
-	m_gamecamera[1]->SetSplitCameraLR(m_gamecamera[1]->enSplitCamera_Right);
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
 
-	m_AIPos.Init("Assets/level3D/AIPOS3.tkl", [&](LevelObjectData& objData) {
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		player[i]->SelectCharcter(m_selectCharacterNumber);
+		player[i]->CreatePlayer();
+		m_Actors.push_back(player[i]->GetPlayerActor());
+	}
+
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_Left);
+	m_gameCamera[1]->SetSplitCameraDraw(m_gameCamera[1]->enSplitCamera_Right);
+
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
 		if (objData.ForwardMatchName(L"CharPos") == true) {
 			//左上の座標
 			if (objData.number == 0) {
@@ -670,7 +704,19 @@ void Game::InitDuoPlay()
 			}
 			if (objData.number == 4)
 			{
-				m_EFK_Pos = objData.position;
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
 			}
 			return true;
 		}
@@ -682,6 +728,164 @@ void Game::InitDuoPlay()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
+
+	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
+	m_underSprite.SetPosition(TOWER_X_POS);
+	m_underSprite.SetScale(SpriteScale);
+	m_underSprite.Update();
+
+	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
+	m_RabbitSprite.SetPosition(RABBIT_POS);
+	m_RabbitSprite.SetScale(RabbitSpriteScale);
+	m_RabbitSprite.Update();
+}
+
+void Game::InitTrioPlay()
+{
+	//プレイヤーの生成
+	player[0] = NewGO<Player>(0, "player");
+	player[1] = NewGO<Player>(0, "player2");
+	player[2] = NewGO<Player>(0, "player3");
+
+	//カメラの生成
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
+	m_gameCamera[2] = NewGO<GameCamera>(1, "gamecamera3P");
+	m_gameCamera[3] = NewGO<GameCamera>(1, "gamecamera4P");
+
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		player[i]->SelectCharcter(m_selectCharacterNumber);
+		player[i]->CreatePlayer();
+		m_Actors.push_back(player[i]->GetPlayerActor());
+	}
+
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_LeftUp);
+	m_gameCamera[1]->SetSplitCameraDraw(m_gameCamera[1]->enSplitCamera_RightUp);
+	m_gameCamera[2]->SetSplitCameraDraw(m_gameCamera[2]->enSplitCamera_LeftDown);
+	m_gameCamera[3]->SetSplitCameraDraw(m_gameCamera[3]->enSplitCamera_RightDown);
+
+
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
+		if (objData.ForwardMatchName(L"CharPos") == true) {
+			//左上の座標
+			if (objData.number == 0) {
+
+				return true;
+			}
+			//右上の座標
+			if (objData.number == 1) {
+				m_KnightAI[0] = NewGO<KnightAI>(0, "KnightAI1");
+				m_KnightAI[0]->SetGame(this);
+				m_Actors.push_back(m_KnightAI[0]);
+				m_KnightAI[0]->SetPosition(objData.position);
+				m_KnightAI[0]->SetCharaconPosition(objData.position);
+				int Number = 1;
+				m_KnightAI[0]->SetRespawnNumber(Number);
+				m_KnightAI[0]->SetKnightColor(KnightBase::enKnightKinds_Green);
+
+				return true;
+			}
+
+			//塔の上のエフェクト
+			if (objData.number == 4)
+			{
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
+			}
+			return true;
+		}
+		return true;
+		});
+
+
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
+	m_gameUI->SetSGame(this);
+
+	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
+	m_underSprite.SetPosition(TOWER_X_POS);
+	m_underSprite.SetScale(SpriteScale);
+	m_underSprite.Update();
+
+	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
+	m_RabbitSprite.SetPosition(RABBIT_POS);
+	m_RabbitSprite.SetScale(RabbitSpriteScale);
+	m_RabbitSprite.Update();
+}
+
+void Game::InitQuartePlay()
+{
+	//プレイヤーの生成
+	player[0] = NewGO<Player>(0, "player");
+	player[1] = NewGO<Player>(0, "player2");
+	player[2] = NewGO<Player>(0, "player3");
+	player[3] = NewGO<Player>(0, "player4");
+
+	//カメラの生成
+	m_gameCamera[0] = NewGO<GameCamera>(1, "gamecamera");
+	m_gameCamera[1] = NewGO<GameCamera>(1, "gamecamera2P");
+	m_gameCamera[2] = NewGO<GameCamera>(1, "gamecamera3P");
+	m_gameCamera[3] = NewGO<GameCamera>(1, "gamecamera4P");
+
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		player[i]->SelectCharcter(m_selectCharacterNumber);
+		player[i]->CreatePlayer();
+		m_Actors.push_back(player[i]->GetPlayerActor());
+	}
+
+	m_gameCamera[0]->SetSplitCameraDraw(m_gameCamera[0]->enSplitCamera_LeftUp);
+	m_gameCamera[1]->SetSplitCameraDraw(m_gameCamera[1]->enSplitCamera_RightUp);
+	m_gameCamera[2]->SetSplitCameraDraw(m_gameCamera[2]->enSplitCamera_LeftDown);
+	m_gameCamera[3]->SetSplitCameraDraw(m_gameCamera[3]->enSplitCamera_RightDown);
+
+
+	m_AIPos.Init("Assets/level3D/AIPOS4.tkl", [&](LevelObjectData& objData) {
+		if (objData.ForwardMatchName(L"CharPos") == true) {
+			//左上の座標
+			if (objData.number == 0) {
+
+				return true;
+			}
+
+			//塔の上のエフェクト
+			if (objData.number == 4)
+			{
+				m_EFK_Pos[0] = objData.position;
+			}
+			if (objData.number == 5)
+			{
+				m_EFK_Pos[1] = objData.position;
+			}
+			if (objData.number == 6)
+			{
+				m_EFK_Pos[2] = objData.position;
+			}
+			if (objData.number == 7)
+			{
+				m_EFK_Pos[3] = objData.position;
+			}
+			return true;
+		}
+		return true;
+		});
+
+
+	//GameUIの生成
+	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
+	m_gameUI->SetSGame(this);
 
 	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
 	m_underSprite.SetPosition(TOWER_X_POS);
@@ -717,13 +921,6 @@ void Game::SetKnightPlayerActor()
 			m_KnightAI[i]->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
 			m_KnightAI[i]->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
 			m_KnightAI[i]->SetKnightPlayerActor(player[2]->GetPlayerActor(), Actor::enPlayerNumber_3P);
-		}
-		else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
-		{
-			m_KnightAI[i]->SetKnightPlayerActor(player[0]->GetPlayerActor(), Actor::enPlayerNumber_1P);
-			m_KnightAI[i]->SetKnightPlayerActor(player[1]->GetPlayerActor(), Actor::enPlayerNumber_2P);
-			m_KnightAI[i]->SetKnightPlayerActor(player[2]->GetPlayerActor(), Actor::enPlayerNumber_3P);
-			m_KnightAI[i]->SetKnightPlayerActor(player[3]->GetPlayerActor(), Actor::enPlayerNumber_4P);
 		}
 	}
 
@@ -762,7 +959,7 @@ void Game::SetKnightPlayerActor()
 //中立の敵の生成処理
 void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 
-	enemyNumber++;
+	m_enemyNumber++;
 
 	ENEMY_AMOUNT;
 
@@ -778,20 +975,24 @@ void Game::CreateEnemy(Vector3 pos, Quaternion rot, bool isRabiit) {
 	//2人プレイのとき
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 	{
-		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
+		neutral_Enemy->SetPlayerActor(
+			player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor());
 	}
 	//3人プレイのとき
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay)
 	{
-		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
+		neutral_Enemy->SetPlayerActor(
+			player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor(),
-			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor());
+			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor(),
+			static_cast<Actor*>(m_KnightAI[0]));
 	}
 	//4人プレイのとき
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
 	{
-		neutral_Enemy->SetPlayerActor(player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
+		neutral_Enemy->SetPlayerActor(
+			player[Actor::EnPlayerNumber::enPlayerNumber_1P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_2P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_3P]->GetPlayerActor(),
 			player[Actor::EnPlayerNumber::enPlayerNumber_4P]->GetPlayerActor());
@@ -818,8 +1019,8 @@ void Game::InitSkyCube()
 	m_skyCube = NewGO<SkyCube>(0, "skyCube");
 	m_skyCube->SetScale(600.0f);
 	m_skyCube->SetLuminance(SKYCOLOR);
-	m_FluctuateSkyColor = SKYCOLOR;
-	DarknessSkyColor = DARKNESS_SKY_COLOR;
+	m_fluctuateSkyColor = SKYCOLOR;
+	m_darknessSkyColor = DARKNESS_SKY_COLOR;
 }
 
 /// <summary>
@@ -1007,109 +1208,109 @@ void Game::CountDown()
 void Game::UltTimeSkyDarkness()
 {
 	//ディレクションライトを徐々に暗くする
-	if (DARKNESS_DIRECTION < m_FluctuateDirectionColor) {
-		m_FluctuateDirectionColor -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (DARKNESS_DIRECTION < m_fluctuateDirectionColor) {
+		m_fluctuateDirectionColor -= 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else
 	{
-		m_FluctuateDirectionColor = DARKNESS_DIRECTION;
+		m_fluctuateDirectionColor = DARKNESS_DIRECTION;
 	}
 
 	//環境光を徐々に暗くする
-	if (DARKNESS_AMBIENT.x < m_FluctuateAmbientColor.x) {
-		m_FluctuateAmbientColor.x -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (DARKNESS_AMBIENT.x < m_fluctuateAmbientColor.x) {
+		m_fluctuateAmbientColor.x -= 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateAmbientColor.x = DARKNESS_AMBIENT.x;
+		m_fluctuateAmbientColor.x = DARKNESS_AMBIENT.x;
 	}
 
-	if (DARKNESS_AMBIENT.y < m_FluctuateAmbientColor.y) {
-		m_FluctuateAmbientColor.y -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (DARKNESS_AMBIENT.y < m_fluctuateAmbientColor.y) {
+		m_fluctuateAmbientColor.y -= 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateAmbientColor.y = DARKNESS_AMBIENT.y;
+		m_fluctuateAmbientColor.y = DARKNESS_AMBIENT.y;
 	}
 
-	if (DARKNESS_AMBIENT.z < m_FluctuateAmbientColor.z) {
-		m_FluctuateAmbientColor.z -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (DARKNESS_AMBIENT.z < m_fluctuateAmbientColor.z) {
+		m_fluctuateAmbientColor.z -= 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateAmbientColor.z = DARKNESS_AMBIENT.z;
+		m_fluctuateAmbientColor.z = DARKNESS_AMBIENT.z;
 	}
 
 	//スカイキューブのカラーを暗くする
-	if (DARKNESS_SKY_COLOR < m_FluctuateSkyColor) {
-		m_FluctuateSkyColor -= 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (DARKNESS_SKY_COLOR < m_fluctuateSkyColor) {
+		m_fluctuateSkyColor -= 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateSkyColor = DARKNESS_SKY_COLOR;
+		m_fluctuateSkyColor = DARKNESS_SKY_COLOR;
 	}
 
 
-	m_skyCube->SetLuminance(m_FluctuateSkyColor);
+	m_skyCube->SetLuminance(m_fluctuateSkyColor);
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
 
 	directionLightDir.Normalize();
 	directionLightColor2 = Vector3::Zero;
-	directionLightColor2.x += m_FluctuateDirectionColor;
-	directionLightColor2.y += m_FluctuateDirectionColor;
-	directionLightColor2.z += m_FluctuateDirectionColor;
-	//Vector3 directionLightColor = Vector3::One* m_FluctuateDirectionColor;
+	directionLightColor2.x += m_fluctuateDirectionColor;
+	directionLightColor2.y += m_fluctuateDirectionColor;
+	directionLightColor2.z += m_fluctuateDirectionColor;
+	//Vector3 directionLightColor = Vector3::One* m_fluctuateDirectionColor;
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor2);
-	g_renderingEngine->SetAmbient(m_FluctuateAmbientColor);
+	g_renderingEngine->SetAmbient(m_fluctuateAmbientColor);
 }
 
 void Game::LightReset()
 {
 	//ディレクションライトを徐々に明るくする
-	if (DIRECTION_RIGHT_COLOR.x > m_FluctuateDirectionColor) {
-		m_FluctuateDirectionColor += 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (DIRECTION_RIGHT_COLOR.x > m_fluctuateDirectionColor) {
+		m_fluctuateDirectionColor += 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else
 	{
-		m_FluctuateDirectionColor = DIRECTION_RIGHT_COLOR.x;
+		m_fluctuateDirectionColor = DIRECTION_RIGHT_COLOR.x;
 	}
 
 	//環境光を徐々に明るくする
-	if (AMBIENT_COLOR.x > m_FluctuateAmbientColor.x) {
-		m_FluctuateAmbientColor.x += 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (AMBIENT_COLOR.x > m_fluctuateAmbientColor.x) {
+		m_fluctuateAmbientColor.x += 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateAmbientColor.x = AMBIENT_COLOR.x;
+		m_fluctuateAmbientColor.x = AMBIENT_COLOR.x;
 	}
 
-	if (AMBIENT_COLOR.y > m_FluctuateAmbientColor.y) {
-		m_FluctuateAmbientColor.y += 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (AMBIENT_COLOR.y > m_fluctuateAmbientColor.y) {
+		m_fluctuateAmbientColor.y += 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateAmbientColor.y = AMBIENT_COLOR.y;
+		m_fluctuateAmbientColor.y = AMBIENT_COLOR.y;
 	}
 
-	if (AMBIENT_COLOR.z > m_FluctuateAmbientColor.z) {
-		m_FluctuateAmbientColor.z += 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (AMBIENT_COLOR.z > m_fluctuateAmbientColor.z) {
+		m_fluctuateAmbientColor.z += 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateAmbientColor.z = AMBIENT_COLOR.z;
+		m_fluctuateAmbientColor.z = AMBIENT_COLOR.z;
 	}
 
 	//スカイキューブのカラーを明るくする
-	if (SKYCOLOR > m_FluctuateSkyColor) {
-		m_FluctuateSkyColor += 1.0f * g_gameTime->GetFrameDeltaTime();
+	if (SKYCOLOR > m_fluctuateSkyColor) {
+		m_fluctuateSkyColor += 1.0f * g_gameTime->GetFrameDeltaTime();
 	}
 	else {
-		m_FluctuateSkyColor = SKYCOLOR;
+		m_fluctuateSkyColor = SKYCOLOR;
 	}
 
-	m_skyCube->SetLuminance(m_FluctuateSkyColor);
+	m_skyCube->SetLuminance(m_fluctuateSkyColor);
 	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
 
 	directionLightDir.Normalize();
 	directionLightColor2 = Vector3::Zero;
-	directionLightColor2.x += m_FluctuateDirectionColor;
-	directionLightColor2.y += m_FluctuateDirectionColor;
-	directionLightColor2.z += m_FluctuateDirectionColor;
+	directionLightColor2.x += m_fluctuateDirectionColor;
+	directionLightColor2.y += m_fluctuateDirectionColor;
+	directionLightColor2.z += m_fluctuateDirectionColor;
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor2);
-	g_renderingEngine->SetAmbient(m_FluctuateAmbientColor);
+	g_renderingEngine->SetAmbient(m_fluctuateAmbientColor);
 }
 
 void Game::ToggleObjectActive(bool IsUltFlag, Actor* targetActor)
@@ -1153,27 +1354,21 @@ void Game::Render(RenderContext& rc)
 		return;
 	}
 
-	if (player[0]->CharGetRespawnTime() <= 0) {
-		if (RabbitFlag == true && m_GameState == enGameState_Battle)
-		{
-			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
+	{
+		if (player[0]->CharGetRespawnTime() <= 0) {
+			if (RabbitFlag == true && m_GameState == enGameState_Battle)
 			{
 				m_RabbitSprite.Draw(rc);
 			}
 
-		}
+			if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
 
-		if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
-
-			if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
-				return;
-			}
-			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_SoloPlay)
-			{
+				if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
+					return;
+				}
 				m_underSprite.Draw(rc);
 			}
 		}
 	}
-
-
 }

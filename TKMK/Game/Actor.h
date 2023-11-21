@@ -11,12 +11,12 @@ class Player;
 class Fade;
 class Game;
 
-class Actor:public IGameObject
+class Actor :public IGameObject
 {
 public:
 	Actor();
 	virtual ~Actor();
-	
+
 	//キャラの状態
 	enum EnCharState
 	{
@@ -104,7 +104,7 @@ public:
 		enPause,
 		enEnd
 	};
-	EnGameState m_GameState= enGame;
+	EnGameState m_GameState = enGame;
 
 	//AIかプレイヤーか
 	enum EnAIorPlayer
@@ -129,7 +129,7 @@ public:
 	/// <param name="status">キャラのステータス</param>
 	/// <param name="stickL">移動の入力量</param>
 	/// <param name="number">プレイヤーの番号</param>
-	void Move(Vector3& position,CharacterController& charcon, Status& status,Vector3 stickL,int number);
+	void Move(Vector3& position, CharacterController& charcon, Status& status, Vector3 stickL, int number);
 
 	/// <summary>
 	/// 移動処理したくないアニメーションのステートを書く
@@ -154,7 +154,7 @@ public:
 	/// </summary>
 	/// <param name="damege">敵の攻撃力</param>
 	/// <param name="playerGivePoints">ポイントを与えるキャラ</param>
-	virtual void Dameged(int damege,Actor* CharGivePoints) = 0;
+	virtual void Dameged(int damege, Actor* CharGivePoints) = 0;
 
 	/// <summary>
 	/// 必殺技を打つ処理
@@ -167,13 +167,13 @@ public:
 	/// <param name="SkillCooltimer">クールタイム</param>
 	/// <param name="skillstate">スキルや回避が終わったかの判定</param>
 	/// <param name="timer">クールタイムを計算する変数</param>
-	void CoolTime(float Cooltime, bool& skillEndFlag, float& timer);
-	
+	void CoolTime(float m_skillCoolTime, bool& skillEndFlag, float& timer);
+
 	/// <summary>
 	/// 現在のレベルを返す
 	/// </summary>
 	/// <returns></returns>
-	inline int& GetLevel() { return Lv; }
+	inline int& GetLevel() { return m_lv; }
 
 	/// <summary>
 	/// レベルアップの処理
@@ -189,21 +189,21 @@ public:
 	/// <param name="lus">レベルアップ時に増加するステータス</param>
 	/// <param name="nowStatus">現在のステータス</param>
 	/// <param name="Level">現在のレベル</param>
-	void levelDown(int& Level,int downLevel);
+	void levelDown(int& Level, int downLevel);
 
 	/// <summary>
-    /// リスポーンしたときのレベルによって経験値を変更する
-    /// </summary>
-    /// <param name="Lv">現在のレベル</param>
+	/// リスポーンしたときのレベルによって経験値を変更する
+	/// </summary>
+	/// <param name="m_lv">現在のレベル</param>
 	/// <param name="getExp">経験値</param>
-	void ExpReset(int& Lv, int& getExp);
+	void ExpReset(int& m_lv, int& getExp);
 
 	/// <summary>
-    /// 経験値テーブルを変更する
-    /// </summary>
-    /// <param name="Lv">現在のレベル</param>
-    /// <param name="expTable">経験値テーブル</param>
-	void ExpTableChamge(int& Lv,int& expTable);
+	/// 経験値テーブルを変更する
+	/// </summary>
+	/// <param name="m_lv">現在のレベル</param>
+	/// <param name="expTable">経験値テーブル</param>
+	void ExpTableChamge(int& m_lv, int& expTable);
 
 	void LevelDownProcess(int downlevel);
 
@@ -230,19 +230,19 @@ public:
 			int Rank = m_game->GetNowRank(this);
 			if (Rank == 2)
 			{
-				AddPoint = (int)( (float)AddPoint * 1.2f );
+				AddPoint = (int)((float)AddPoint * 1.2f);
 			}
 			else if (Rank == 3)
 			{
-				AddPoint = (int)( (float)AddPoint * 1.5f );
+				AddPoint = (int)((float)AddPoint * 1.5f);
 			}
 			else if (Rank == 4)
 			{
-				AddPoint = (int)( (float)AddPoint * 2.0f );
+				AddPoint = (int)((float)AddPoint * 2.0f);
 			}
 		}
 		//レベル分ポイントを増やす
-		Point += AddPoint;
+		m_point += AddPoint;
 	}
 
 	/// <summary>
@@ -255,7 +255,7 @@ public:
 	/// </summary>
 	/// <param name="pos">リスポーンする座標</param>
 	/// <param name="number">座標をセットする番号</param>
-	void SetRespawnPos(Vector3 pos,Quaternion rot, int number) {
+	void SetRespawnPos(Vector3 pos, Quaternion rot, int number) {
 		m_respawnPos[number] = pos;
 		m_respawnRotation[number] = rot;
 	};
@@ -294,7 +294,7 @@ public:
 
 	Quaternion& GetRotation()
 	{
-		return m_rot;
+		return m_rotation;
 	}
 	/// <summary>
 	/// 攻撃力を返す
@@ -325,7 +325,7 @@ public:
 		if (GetHoimi != nullptr) {
 			GetHoimi->DeleteEffect();
 		}
-		
+
 		GetHoimi = NewGO<ChaseEFK>(3);
 		GetHoimi->SetEffect(EnEFK::enEffect_Knight_GetHoimi, this, Vector3::One * 30.0f);
 		//回復したあとのHPが現在のレベルの最大ヒットポイントより大きかったら
@@ -352,7 +352,7 @@ public:
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
 	/// </summary>
-	/// <param name="GetExp">中立の敵の経験値</param>
+	/// <param name="m_getExp">中立の敵の経験値</param>
 	void ExpProcess(int Exp);
 
 	/// <summary>
@@ -367,9 +367,9 @@ public:
 	/// <summary>
 	/// 現在のポイント返す
 	/// </summary>
-	int GetPoint()const 
+	int GetPoint()const
 	{
-		return Point;
+		return m_point;
 	}
 
 	/// <summary>
@@ -394,7 +394,7 @@ public:
 	/// <returns></returns>
 	int GetExperience()const
 	{
-		return GetExp;
+		return m_getExp;
 	}
 
 	/// <summary>
@@ -403,17 +403,17 @@ public:
 	/// <returns></returns>
 	int GetExpTable()const
 	{
-		return ExpTable;
+		return m_expTable;
 	}
 
 	int GetSaveEXP() const
 	{
-		return m_SaveEXP;
+		return m_saveEXP;
 	}
 
 	void SetSaveEXP(int num)
 	{
-		m_SaveEXP = num;
+		m_saveEXP = num;
 	}
 
 
@@ -480,9 +480,9 @@ public:
 	bool GetRespawnFlag() const
 	{
 		return m_DeathToRespwanFlag;
-  }
+	}
 
-	virtual void SetRespawnNumber(int number)=0;
+	virtual void SetRespawnNumber(int number) = 0;
 
 	/// <summary>
 	/// アクターの情報を追加する
@@ -528,7 +528,7 @@ public:
 	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
 	/// <param name="DeathToRespwanFlag"></param>
-	bool DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade, bool fadeFlag);
+	bool DeathToRespawnTimer(bool& DeathToRespwanFlag, Fade* fade, bool fadeFlag);
 
 	/// <summary>
 	/// リスポーン待機時間を返す
@@ -565,7 +565,7 @@ public:
 	/// </summary>
 	float GetSkillTimer()
 	{
-		return SkillTimer;
+		return m_skillTimer;
 	}
 
 	/// <summary>
@@ -575,7 +575,7 @@ public:
 	{
 		return m_NoTargetActor;
 	}
-	
+
 	/// <summary>
 	/// 自身をカメラで見ているかのフラグを変える AI用
 	/// </summary>
@@ -642,45 +642,42 @@ public:
 	bool IsActorGroundChack();
 
 private:
-    Level3DRender m_respawnLevel;
+	Level3DRender m_respawnLevel;
 
 
 protected:
-	int									Lv = 1;								//レベル
-	int									AtkSpeed;						//攻撃速度
-	float								Cooltime=0;						//スキルのクールタイム
-	float								AvoidanceCoolTime=0;			//回避のクールタイム
-	bool								SkillState = false;				//スキルが使用可能かどうかの判定
-	int									Point=0;						//敵を倒して手に入れたポイント
-	int									GetExp=0;						//中立の敵を倒したときの経験値
-	int									ExpTable=0;						//経験値テーブル
+	int									m_lv = 1;						//レベル
+	int									m_attackSpeed = 0;				//攻撃速度
+	float								m_skillCoolTime = 0;			//スキルのクールタイム
+	float								m_avoidanceCoolTime = 0;		//回避のクールタイム
+	bool								m_isSkillReady = false;			//スキルが使用可能かどうかの判定
+	int									m_point = 0;					//敵を倒して手に入れたポイント
+	int									m_getExp = 0;					//中立の敵を倒したときの経験値
+	int									m_expTable = 0;					//経験値テーブル
 	int									m_oldExpTable = 0;				//前のレベルの経験値テーブル
-	int									respawnNumber;					//リスポーンする座標の番号
-	bool								isDeath = false;				//死んだかどうかの判定
-	bool								invincibleFlag = false;			//無敵時間フラグ
-	int									Ponit = 0;						//獲得したポイント
-	int									m_SaveEXP = 0;					//UIに表示するために経験値を保存する
-	float								SkillTimer = 0;					//スキルのクールタイムを計算するタイマー
-	float								AvoidanceTimer = 0;				//回避のクールタイムを計算するタイマー
-	float								invincibleTimer = 0;			//無敵時間を計算するタイマー
+	int									m_respawnNumber;				//リスポーンする座標の番号
+	bool								m_invincibleFlag = false;		//無敵時間フラグ
+	int									m_saveEXP = 0;					//UIに表示するために経験値を保存する
+	float								m_skillTimer = 0;				//スキルのクールタイムを計算するタイマー
+	float								m_avoidanceTimer = 0;			//回避のクールタイムを計算するタイマー
+	float								m_invincibleTimer = 0;			//無敵時間を計算するタイマー
+	bool								m_spriteFlag = true;
 
-	EnPlayerNumber m_enPlayerNumber = enPlayerNumber_AI;
-	//Status m_status;           //ステータス
-	Vector3 m_respawnPos[4];    //リスポーンする座標の配列
-	Quaternion m_respawnRotation[4];
-	Vector3 m_moveSpeed = Vector3::Zero;      //移動量
+	EnPlayerNumber	m_enPlayerNumber = enPlayerNumber_AI;
+	Vector3			m_respawnPos[4];						//リスポーンする座標の配列
+	Quaternion		m_respawnRotation[4];
+	Vector3			m_moveSpeed = Vector3::Zero;			//移動量
 
-	Vector3 m_Forward = Vector3::Zero;			          //プレイヤーの前方向
-	Vector3 m_forwardNow = Vector3::Zero;                 //現在の正面ベクトル
+	Vector3			m_Forward = Vector3::Zero;			    //プレイヤーの前方向
+	Vector3			m_forwardNow = Vector3::Zero;           //現在の正面ベクトル
 
-	Vector3 m_position = Vector3::Zero;                   //座標
-	ModelRender m_modelRender;                            //モデルレンダー
-	Quaternion m_rot = Quaternion::Identity;              //回転
-	bool m_spriteFlag = true;
-	Status m_status;                                      //ステータス
-	Status m_InitialStatus;                                //初期ステータス
-	//レベルアップ時に増加するステータス
-	LvUpStatus LvUPStatus = { 30,5,5 };
+	Vector3			m_position = Vector3::Zero;             //座標
+	ModelRender		m_modelRender;                          //モデルレンダー
+	Quaternion		m_rotation = Quaternion::Identity;      //回転
+	Status			m_status;                               //ステータス
+	Status			m_InitialStatus;                        //初期ステータス
+	
+	LvUpStatus LvUPStatus = { 30,5,5 };		//レベルアップ時に増加するステータス
 
 	//スポーン、リスポーンして塔から地上に降りたか
 	//空中にいるかの判定
@@ -690,10 +687,10 @@ protected:
 
 	//自分をターゲットしてるアクターのリスト
 	std::vector<Actor*> be_target;
-	
+
 	EnAIorPlayer m_AIorPlayer = enAI;
 
-	int Count=0;
+	int Count = 0;
 
 	//やられた後のリスポーンするまで時間を計る処理をするかのフラグ
 	//falseでしない、trueでする
@@ -716,7 +713,7 @@ protected:
 	Actor* m_escapeActor = nullptr;					// 今逃げているアクター
 	Actor* m_escapeActorBackup = nullptr;			// 今逃げているアクター（逃げタイマー用）
 	Fade* m_fade = nullptr;
-				
+
 	Neutral_Enemy* m_targetEnemy = nullptr;			// 今追いかけているエネミー     
 	std::vector<Actor*> DamegeUltActor;             //必殺技で攻撃対象のアクター
 

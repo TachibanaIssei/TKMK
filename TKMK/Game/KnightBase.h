@@ -15,8 +15,8 @@ public:
 	{
 		enKnightKinds_Blue,
 		enKnightKinds_Red,
-		enKnightKinds_Green,
 		enKnightKinds_Yellow,
+		enKnightKinds_Green,
 		enKnightKinds_Num
 	};
 	void SetKnightColor(EnKnightKinds color)
@@ -31,7 +31,7 @@ public:
 	/// <summary>
 	/// 中立の敵を倒したときの経験値の処理
 	/// </summary>
-	/// <param name="GetExp">中立の敵の経験値</param>
+	/// <param name="m_getExp">中立の敵の経験値</param>
 	void ExpProcess(int Exp);
 
 	/// <summary>
@@ -173,7 +173,7 @@ public:
 	/// </summary>
 	/// <returns>現在のレベル</returns>
 	int& SetLevel() {
-		return Lv;
+		return m_lv;
 	}
 
 	/// <summary>
@@ -187,7 +187,7 @@ public:
 
 	Quaternion& GetRotation()
 	{
-		return m_rot;
+		return m_rotation;
 	}
 
 
@@ -204,11 +204,11 @@ public:
 	/// </summary>
 	void SetRespawnNumber(int number)
 	{
-		respawnNumber = number;
+		m_respawnNumber = number;
 	}
 	int GetRespawnNumber() const
 	{
-		return respawnNumber;
+		return m_respawnNumber;
 	}
 
 	/// <summary>

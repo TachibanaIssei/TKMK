@@ -12,19 +12,19 @@ KnightBase::KnightBase()
 	//ステータスを読み込む
 	m_status.Init("Knight");
 	m_InitialStatus = m_status;  //初期ステータスのセット
-	Lv=1;                    //レベル
-	AtkSpeed=20;              //攻撃速度
+	m_lv=1;                    //レベル
+	m_attackSpeed=20;              //攻撃速度
 
-	Cooltime = 5.0f;            //スキルのクールタイム
-	SkillTimer = Cooltime;
+	m_skillCoolTime = 5.0f;            //スキルのクールタイム
+	m_skillTimer = m_skillCoolTime;
 
-	AvoidanceCoolTime = 2;     ///回避のクールタイム
-	AvoidanceTimer = AvoidanceCoolTime;
+	m_avoidanceCoolTime = 2;     ///回避のクールタイム
+	m_avoidanceTimer = m_avoidanceCoolTime;
 
-	Point=0;                 //敵を倒して手に入れたポイント
-	GetExp=0;                //中立の敵を倒したときの経験値
-	ExpTable=5;              //経験値テーブル
-	//respawnNumber = 0;        //リスポーンする座標の番号
+	m_point=0;                 //敵を倒して手に入れたポイント
+	m_getExp=0;                //中立の敵を倒したときの経験値
+	m_expTable=5;              //経験値テーブル
+	//m_respawnNumber = 0;        //リスポーンする座標の番号
 
 	IsGroundFlag = false;    //地上にいないのでfalse
 }
@@ -97,8 +97,8 @@ void KnightBase::SetModel()
 	m_modelRender.SetPosition(m_position);
 	//m_modelRender.SetScale(Vector3(0.1f, 0.1f, 0.1f));
 
-	m_rot.SetRotationY(0.0f);
-	m_modelRender.SetRotation(m_rot);
+	m_rotation.SetRotationY(0.0f);
+	m_modelRender.SetRotation(m_rotation);
 
 	m_charCon.Init(
 		15.0f,
@@ -112,46 +112,46 @@ void KnightBase::SetModel()
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理
 /// </summary>
-/// <param name="GetExp">中立の敵の経験値</param>
+/// <param name="m_getExp">中立の敵の経験値</param>
 void KnightBase::ExpProcess(int Exp)
 {
 	//もしレベルが10(Max)なら
-	if (Lv == 10)return;
+	if (m_lv == 10)return;
 	//自身の経験値に敵を倒したときに手に入れる経験値を足す
-	GetExp += Exp;
+	m_getExp += Exp;
 	//手に入れた経験値より経験値テーブルのほうが大きかったら
-	if (GetExp < ExpTable) return;      //抜け出す
+	if (m_getExp < m_expTable) return;      //抜け出す
 	else {
 		//経験値テーブルより手に入れた経験値のほうが大きかったら
 		//レベルアップ
-		LevelUp(Lv);
+		LevelUp(m_lv);
 		//レベルに合わせてレベルの画像を変更する
-		m_gameUI->LevelSpriteChange(Lv);
-		switch (Lv)
+		m_gameUI->LevelSpriteChange(m_lv);
+		switch (m_lv)
 		{
 		case 2:
-			ExpTable = 10;
+			m_expTable = 10;
 			break;
 		case 3:
-			ExpTable = 20;
+			m_expTable = 20;
 			break;
 		case 4:
-			ExpTable = 30;
+			m_expTable = 30;
 			break;
 		case 5:
-			ExpTable = 40;
+			m_expTable = 40;
 			break;
 		case 6:
-			ExpTable = 50;
+			m_expTable = 50;
 			break;
 		case 7:
-			ExpTable = 60;
+			m_expTable = 60;
 			break;
 		case 8:
-			ExpTable = 70;
+			m_expTable = 70;
 			break;
 		case 9:
-			ExpTable = 80;
+			m_expTable = 80;
 			break;
 		default:
 			break;
@@ -172,9 +172,9 @@ void KnightBase::Rotation()
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
 		//キャラクターの方向を変える。
-		m_rot.SetRotationYFromDirectionXZ(m_moveSpeed);
-		//絵描きさんに回転を教える。
-		m_modelRender.SetRotation(m_rot);
+		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
+		//回転を教える。
+		m_modelRender.SetRotation(m_rotation);
 	}
 }
 
@@ -208,12 +208,12 @@ bool KnightBase::DrawHP(const int playerNumber)
 
 bool KnightBase::Invincible()
 {
-	if (invincibleTimer > 0)
+	if (m_invincibleTimer > 0)
 	{
-		invincibleTimer -= g_gameTime->GetFrameDeltaTime();
+		m_invincibleTimer -= g_gameTime->GetFrameDeltaTime();
 		return true;
 	}
-	invincibleTimer = 0.0f;
+	m_invincibleTimer = 0.0f;
 	return false;
 }
 
@@ -256,7 +256,7 @@ void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
 
 void KnightBase::Collision()
 {
-	if (invincibleTimer > 0)
+	if (m_invincibleTimer > 0)
 	{
 		return;
 	}
@@ -290,21 +290,21 @@ void KnightBase::Collision()
 			if (m_lastAttackActor->NowCharState() == Actor::enCharState_Attack)
 			{
 				//逆向きにする
-				Quaternion Damegerot=m_rot;
+				Quaternion Damegerot=m_rotation;
 				Damegerot.AddRotationDegZ(180.0f);
 				EffectKnight_Attack->SetRotation(Damegerot);
 			}
 			else if (m_lastAttackActor->NowCharState() == Actor::enCharState_SecondAttack)
 			{
 				//逆向きにする
-				Quaternion Damegerot = m_rot;
+				Quaternion Damegerot = m_rotation;
 				Damegerot.AddRotationDegZ(270.0f);
 				EffectKnight_Attack->SetRotation(Damegerot);
 			}
 			else
 			{
 				//縦向きにする
-				Quaternion Damegerot = m_rot;
+				Quaternion Damegerot = m_rotation;
 				Damegerot.AddRotationDegZ(180.0f);
 				EffectKnight_Attack->SetRotation(Damegerot);
 			}
@@ -329,7 +329,7 @@ void KnightBase::Collision()
 			}
 
 			//無敵時間リセット
-			invincibleTimer = 1.0f;
+			m_invincibleTimer = 1.0f;
 			//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 			Dameged(m_lastAttackActor->GetAtk(), m_lastAttackActor);
 			return;
@@ -348,7 +348,7 @@ void KnightBase::Collision()
 			if (collision->IsHit(m_charCon) && m_lastAttackActor != this)
 			{
 				//無敵時間リセット
-				invincibleTimer = 1.0f;
+				m_invincibleTimer = 1.0f;
 				//ダメージを受ける、やられたら自分を倒した相手にポイントを与える
 				Dameged(300, m_lastAttackActor);
 				return;
@@ -379,7 +379,7 @@ void KnightBase::Collision()
 		if (collision->IsHit(m_charCon))
 		{
 			//無敵時間リセット
-			invincibleTimer = 1.0f;
+			m_invincibleTimer = 1.0f;
 			//hpを10減らす
 			Dameged(Enemy_atk, m_Neutral_enemy);
 			return;
@@ -396,16 +396,16 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 	int hp = m_status.GetHp() - damege;
 	m_status.SetHp(hp);
 	//無敵時間リセット
-	//invincibleTimer = 1.0f;
+	//m_invincibleTimer = 1.0f;
 
 	//もしスキルが使用中ならスキルの移動処理を無くす
-	if (SkillState == true)
+	if (m_isSkillReady == true)
 	{
 		AtkState = false;
 		SkillEndFlag = true;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
-		SkillState = false;
+		m_isSkillReady = false;
 	}
 
 	//自身のHPが0以下なら
@@ -441,7 +441,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		if (CharGivePoints != nullptr)
 		{
 			//倒された相手のポイントを増やす
-			CharGivePoints->PointProcess(Lv);
+			CharGivePoints->PointProcess(m_lv);
 		}
 	}
 	else {
@@ -461,7 +461,7 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 		//プレイヤーとの距離によって音量調整
 		se->SetVolume(SoundSet(player, m_game->GetSoundEffectVolume(), 0.0f));
 		//無敵時間フラグ
-		//invincibleFlag = true;
+		//m_invincibleFlag = true;
 	}
 }
 
@@ -470,14 +470,14 @@ void KnightBase::Dameged(int damege, Actor* CharGivePoints)
 /// </summary>
 void KnightBase::UltimateSkill()
 {
-	int DownLv = Lv - 1;
+	int DownLv = m_lv - 1;
 	
 	//レベルを1に下げる
-	levelDown(Lv, DownLv);
+	levelDown(m_lv, DownLv);
 	//経験値をリセット
-	ExpReset(Lv, GetExp);
+	ExpReset(m_lv, m_getExp);
 	//レベルの経験値テーブルにする
-	ExpTableChamge(Lv, ExpTable);
+	ExpTableChamge(m_lv, m_expTable);
 }
 
 /// <summary>
@@ -488,12 +488,12 @@ void KnightBase::SetRespawn()
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 	//リスポーンする座標のセット
-	m_position = m_respawnPos[respawnNumber];
+	m_position = m_respawnPos[m_respawnNumber];
 	//キャラコン
-	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
+	m_charCon.SetPosition(m_respawnPos[m_respawnNumber]);
 	//剣士
-	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
-	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+	m_modelRender.SetPosition(m_respawnPos[m_respawnNumber]);
+	m_modelRender.SetRotation(m_respawnRotation[m_respawnNumber]);
 
 	//リスポーン時に向いている方向の前方向を取得
 	ForwardSet();
@@ -505,13 +505,13 @@ void KnightBase::SetRespawn()
 void KnightBase::Death()
 {
 	//レベルを１下げる
-	levelDown(Lv,1);
+	levelDown(m_lv,1);
 	//HPを最大にする
 	m_status.SetHp(m_status.GetMaxHp());
 	//経験値をリセット
-	ExpReset(Lv, GetExp);
+	ExpReset(m_lv, m_getExp);
 	//一つ下のレベルの経験値テーブルにする
-	ExpTableChamge(Lv,ExpTable);
+	ExpTableChamge(m_lv,m_expTable);
 }
 
 /// <summary>
@@ -524,7 +524,7 @@ void KnightBase::AnimationMove(float Speed)
 
 	//移動速度を計算。
 	m_Skill_MoveSpeed = Vector3::AxisZ;
-	m_rot.Apply(m_Skill_MoveSpeed);
+	m_rotation.Apply(m_Skill_MoveSpeed);
 	//移動速度を決める
 	m_Skill_MoveSpeed *= Speed;
 }
@@ -685,7 +685,7 @@ void KnightBase::OnProcessCommonStateTransition()
 	//スティックの入力量があったら
 	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
 	{
-		if (Lv < 2) {
+		if (m_lv < 2) {
 			m_charState = enCharState_Walk;
 		}
 		else
@@ -839,7 +839,7 @@ void KnightBase::OnProcessSkillAtkStateTransition()
 		SkillEndFlag = true;
 		//ボタンプッシュフラグをfalseにする
 		pushFlag = false;
-		SkillState = false;
+		m_isSkillReady = false;
 		//待機ステート
 		m_charState = enCharState_Idle;
 		OnProcessCommonStateTransition();

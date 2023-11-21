@@ -5,7 +5,7 @@
 namespace nsK2EngineLow {
 	GraphicsEngine* g_graphicsEngine = nullptr;	//グラフィックスエンジン
 	Camera* g_camera2D = nullptr;				//2Dカメラ。
-	Camera* g_camera3D = nullptr;				//3Dカメラ。
+	Camera* g_camera3D[MAX_VIEWPORT] = { nullptr, nullptr, nullptr, nullptr };				//3Dカメラ。
 
 	GraphicsEngine::~GraphicsEngine()
 	{
@@ -139,12 +139,16 @@ namespace nsK2EngineLow {
 		m_camera2D.SetHeight(static_cast<float>(m_frameBufferHeight));
 		m_camera2D.SetPosition({ 0.0f, 0.0f, -1.0f });
 		m_camera2D.SetTarget({ 0.0f, 0.0f, 0.0f });
-
-		m_camera3D.SetPosition({ 0.0f, 50.0f, -200.0f });
-		m_camera3D.SetTarget({ 0.0f, 50.0f, 0.0f });
-
 		g_camera2D = &m_camera2D;
-		g_camera3D = &m_camera3D;
+
+		for (int i = 0; i < MAX_VIEWPORT; i++) {
+			m_camera3D[i].SetPosition({0.0f, 50.0f, -200.0f});
+			m_camera3D[i].SetTarget({0.0f, 50.0f, 0.0f});
+			m_camera3D[i].SetNear(1.0f);
+			m_camera3D[i].SetFar(10000.0f);
+			g_camera3D[i] = &m_camera3D[i];
+		}
+
 
 		//DirectXTK用のグラフィッsクメモリ管理クラスのインスタンスを作成する。
 		m_directXTKGfxMemroy = std::make_unique<DirectX::GraphicsMemory>(m_d3dDevice);
@@ -336,7 +340,10 @@ namespace nsK2EngineLow {
 
 		//カメラを更新する。
 		m_camera2D.Update();
-		m_camera3D.Update();
+		//カメラの数ぶん更新
+		for (int i = 0; i < MAX_VIEWPORT; i++) {
+			m_camera3D[i].Update();
+		}
 
 		//コマンドアロケータををリセット。
 		m_commandAllocator[m_frameIndex]->Reset();

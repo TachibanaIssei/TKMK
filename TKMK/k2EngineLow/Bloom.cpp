@@ -1,12 +1,13 @@
 #include "k2EngineLowPreCompile.h"
 #include "Bloom.h"
 
-namespace
+namespace BloomConst
 {
-	const int BLUR_POWER = 10;	//ブラーの強さ
+	const int BLUR_POWER = 10;
 }
 
-namespace nsK2EngineLow {
+namespace nsK2EngineLow
+{
 	void Bloom::Init(RenderTarget& mainRenderTarget)
 	{
 		InitRenderTarget(mainRenderTarget);
@@ -15,7 +16,7 @@ namespace nsK2EngineLow {
 		InitFinalSprite(mainRenderTarget);
 	}
 
-	void Bloom::InitRenderTarget(const RenderTarget& mainRenderTarget)
+	void Bloom::InitRenderTarget(RenderTarget& mainRenderTarget)
 	{
 		//輝度抽出用のレンダリングターゲット
 		m_luminnceRenderTarget.Create(
@@ -48,7 +49,7 @@ namespace nsK2EngineLow {
 		m_luminanceSprite.Init(luminanceSpriteInitData);
 	}
 
-	void Bloom::InitFinalSprite(const RenderTarget& mainRenderTarget)
+	void Bloom::InitFinalSprite(RenderTarget& mainRenderTarget)
 	{
 		SpriteInitData finalSpriteInitData;
 		finalSpriteInitData.m_textures[0] = &m_gaussianBlur[0].GetBokeTexture();
@@ -98,10 +99,10 @@ namespace nsK2EngineLow {
 		rc.WaitUntilFinishDrawingToRenderTarget(m_luminnceRenderTarget);
 
 		//ガウシアンブラーを実行する
-		m_gaussianBlur[0].ExecuteOnGPU(rc, BLUR_POWER);
-		m_gaussianBlur[1].ExecuteOnGPU(rc, BLUR_POWER);
-		m_gaussianBlur[2].ExecuteOnGPU(rc, BLUR_POWER);
-		m_gaussianBlur[3].ExecuteOnGPU(rc, BLUR_POWER);
+		m_gaussianBlur[0].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
+		m_gaussianBlur[1].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
+		m_gaussianBlur[2].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
+		m_gaussianBlur[3].ExecuteOnGPU(rc, BloomConst::BLUR_POWER);
 
 		//ボケ画像をメインレンダリングターゲットに加算合成
 		rc.WaitUntilToPossibleSetRenderTarget(mainRenderTarget);

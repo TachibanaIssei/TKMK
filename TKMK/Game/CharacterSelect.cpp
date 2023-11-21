@@ -4,7 +4,7 @@
 #include "Game.h"
 #include "Fade.h"
 
-namespace SelectConst{
+namespace SelectConst {
 	const float		MOVE_SPEED = 30.0f;
 
 	const Vector3	STATUS_POS = Vector3(400.0f, 250.0f, 0.0f);				//ステータスの座標
@@ -12,14 +12,14 @@ namespace SelectConst{
 	const Vector3	NORMAL_ATTACK_ICON_POS = Vector3(115.0f, -140.0f, 0.0f);//通常攻撃アイコンの座標
 	const Vector3	SKILL_ICON_POS = Vector3(445.0f, -130.0f, 0.0f);		//スキルアイコンの座標
 	const Vector3	ULT_ICON_POS = Vector3(770.0f, -130.0f, 0.0f);			//必殺技アイコンの座標
-	const float		ICON_WIDTH	= 310.0f;									//アイコン画像の横の解像度
+	const float		ICON_WIDTH = 310.0f;									//アイコン画像の横の解像度
 	const float		ICON_HEIGHT = 400.0f;									//アイコン画像の縦の解像度
 	const float		NORMAL_ATTACK_ICON_HEIGHT = 417.0f;
 
 	const Vector3	NAME_POS = Vector3(-600.0f, -400.0f, 0.0f);				//名前の座標
 	const Vector3	UNDERBAR_POS = Vector3(0.0f, -490.0f, 0.0f);			//画面下のバーの座標
-	const float		UNDER_BER_WIDTH		= 1920.0f;							//バーの幅
-	const float		UNDER_BER_HEIGHT	= 300.0f;							//バーの高さ
+	const float		UNDER_BER_WIDTH = 1920.0f;							//バーの幅
+	const float		UNDER_BER_HEIGHT = 300.0f;							//バーの高さ
 
 	const Vector3	START_POS = Vector3(0.0f, -460.0f, 0.0f);				//スタート画像の座標
 	const float		START_WIDTH = 471.0f;									//スタート画像の幅
@@ -45,23 +45,37 @@ namespace SelectConst{
 	const float		GUIDE_BUTTON_WIDTH = 594.0f;
 	const float		GUIDE_BUTTON_HEIGHT = 81.0f;
 
-	const Vector3	KNIGHT_POS = Vector3(-150.0f, 0.0f, 0.0f);				//剣士の座標
-	const Vector3	PLATFORM_POS = Vector3(-150.0f, -40.0f, 0.0f);			//土台の座標
+	const std::array<Vector3, 4>	KNIGHT_POS = {
+		Vector3(-150.0f, 0.0f, 0.0f),				//剣士の座標
+		Vector3(-350.0f, 0.0f, 150.0f),
+		Vector3(-170.0f, 0.0f, 150.0f),
+		Vector3(-20.0f, 0.0f, 150.0f)
+	};
+
+	const std::array<Vector3, 4>	PLATFORM_POS = {
+		Vector3(KNIGHT_POS[0].x, -40.0f, KNIGHT_POS[0].z),			//土台の座標
+		Vector3(KNIGHT_POS[1].x, -40.0f, KNIGHT_POS[1].z),
+		Vector3(KNIGHT_POS[2].x, -40.0f, KNIGHT_POS[2].z),
+		Vector3(KNIGHT_POS[3].x, -40.0f, KNIGHT_POS[3].z)
+	};
+
 	const Vector3	STAGE_POS = Vector3(0.0f, -50.0f, -90.0f);
 
 	const Vector3	CAMERA_TARGET_POS = Vector3(0.0f, 90.0f, -200.0f);		//カメラのターゲット
-	const Vector3	CAMERA_POSITION = Vector3( 0.0f, 90.0f, -248.0f );		//カメラの座標
+	const Vector3	CAMERA_POSITION = Vector3(0.0f, 90.0f, -248.0f);		//カメラの座標
 
-	const float		POINTER_SPEED		= 10.0f;							//ポインターのスピード
+	const float		POINTER_SPEED = 10.0f;							//ポインターのスピード
 
-	const float		MAX_SCREEN_WIDTH	= 960.0f;							//画面の横の最大値
-	const float		MIN_SCREEN_WIDTH	= -960.0f;							//画面の横の最小値
+	const float		MAX_SCREEN_WIDTH = 960.0f;							//画面の横の最大値
+	const float		MIN_SCREEN_WIDTH = -960.0f;							//画面の横の最小値
 
 	const float		MAX_SCREEN_HEIGHT = 540.0f;								//画面の縦の最大値
 	const float		MIN_SCREEN_HEIGHT = -540.0f;							//画面の縦の最小値
 
 	const float SE_OK_VOLUME = 0.3f;		//決定音の音量
 	const float SE_SHOUTING_VOLUME = 1.0f;	//掛け声の音量
+
+	const Vector3 PLAYER_COUNT_FONT = SelectConst::NAME_POS + Vector3(35.0f, 75.0f, 0.0f);
 }
 
 CharacterSelect::CharacterSelect()
@@ -91,7 +105,7 @@ bool CharacterSelect::Start()
 	g_camera3D[0]->Update();
 
 	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
-	Vector3 dir = Vector3(0.0f,-1.0f,0.5f);
+	Vector3 dir = Vector3(0.0f, -1.0f, 0.5f);
 	dir.Normalize();
 	Vector3 color = { 0.5f,0.5f,0.5f };
 	g_renderingEngine->SetDirectionLight(0, dir, color);
@@ -101,6 +115,7 @@ bool CharacterSelect::Start()
 
 	//画像の初期化
 	InitSprite();
+	InitFont();
 
 	g_soundEngine->ResistWaveFileBank(enSound_CharSelectBGM, "Assets/sound/characterSelectBGM/characterSelect1.wav");
 	g_soundEngine->ResistWaveFileBank(enSound_KnightShouting, "Assets/sound/characterSelectBGM/knight_shouting.wav");
@@ -132,6 +147,7 @@ void CharacterSelect::Update()
 
 	PointerMove();
 	CheckIconOverlap();
+	SetPlayerCountText();
 
 	//スタートボタンを押したときか				//STARTの範囲内でAボタンを押した時
 	if (g_pad[0]->IsTrigger(enButtonStart) || (m_underBarDrawFlag && g_pad[0]->IsTrigger(enButtonA)))
@@ -260,7 +276,7 @@ void CharacterSelect::InitSprite()
 	m_ultIcon.Update();
 
 	//名前
-	m_name.Init("Assets/sprite/Select/name.DDS", 550.0f, 200.0f);
+	m_name.Init("Assets/sprite/Select/name2.DDS", 550.0f, 200.0f);
 	m_name.SetPosition(SelectConst::NAME_POS);
 	m_name.SetScale(g_vec3One);
 	m_name.Update();
@@ -299,7 +315,7 @@ void CharacterSelect::InitSprite()
 	m_hpBerLv1.Init("Assets/sprite/Select/bar_Blue.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
 	m_hpBerLv1.SetPosition(SelectConst::HP_BER_POS);
 	m_hpBerLv1.SetPivot(SelectConst::BER_PIVOT);
-	m_hpBerLv1.SetScale(Vector3(0.3f,1.0f,1.0f));
+	m_hpBerLv1.SetScale(Vector3(0.3f, 1.0f, 1.0f));
 	m_hpBerLv1.Update();
 
 	m_hpBerLvmax.Init("Assets/sprite/Select/bar_white.DDS", SelectConst::BER_WIDTH, SelectConst::BER_HEIGHT);
@@ -347,13 +363,20 @@ void CharacterSelect::InitSprite()
 	m_guideButton.Update();
 }
 
+void CharacterSelect::InitFont()
+{
+	m_countFont.SetPosition(SelectConst::PLAYER_COUNT_FONT);
+	m_countFont.SetScale(2.0f);
+	m_countFont.SetShadowParam(true, 1.0f, g_vec4Black);
+}
+
 //ゲームに遷移する前にフェードアウトする
 void CharacterSelect::Ready()
 {
-	if (fade->GetCurrentAlpha(Fade::enFadeSpriteType_Full,Fade::enFadeSpriteCategory_Tip) >= 1.0f)
+	if (fade->GetCurrentAlpha(Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip) >= 1.0f)
 	{
+		g_renderingEngine->SetGameModeToRenderingEngine(m_gameMode);
 		Game* game = NewGO<Game>(5, "game");
-		g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_DuoPlay);
 		//キャラクターセレクトが
 		switch (m_characterSelect)
 		{
@@ -412,65 +435,79 @@ void CharacterSelect::SetModel()
 	m_animationClips[enAnimationClip_Fall].Load("Assets/animData/Knight/Knight_fall2.tka");
 	m_animationClips[enAnimationClip_Fall].SetLoopFlag(true);
 
-	//剣士モデルを読み込み
-	m_knight.Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
-	m_knight.SetPosition(SelectConst::KNIGHT_POS);
-	m_knight.SetScale(2.7f, 2.7f, 2.7f);
-	m_knight.Update();
+	m_knight[0].Init("Assets/modelData/character/Knight/Knight_Blue2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_knight[1].Init("Assets/modelData/character/Knight/Knight_Red2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_knight[2].Init("Assets/modelData/character/Knight/Knight_Yellow2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	m_knight[3].Init("Assets/modelData/character/Knight/Knight_Green2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
+	for (int i = 0; i < m_knight.size(); i++)
+	{
+		m_platform[i].InitBackGround("Assets/modelData/platform/platform.tkm");
 
-	//アニメーションイベント用の関数を設定する。
-	m_knight.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
-		OnAnimationEvent(clipName, eventName);
-		});
+		//アニメーションイベント用の関数を設定する。
+		m_knight[i].AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+			OnAnimationEvent(clipName, eventName);
+			});
+		m_knight[i].SetScale(2.7f, 2.7f, 2.7f);
+		m_platform[i].SetScale(2.2f, 2.0f, 2.2f);
 
-	//台の設定
-	m_platform.InitBackGround("Assets/modelData/platform/platform.tkm");
-	m_platform.SetPosition(SelectConst::PLATFORM_POS);
-	m_platform.SetScale(2.2f, 2.0f, 2.2f);
-	m_platform.Update();
+		m_knight[i].SetPosition(SelectConst::KNIGHT_POS[i]);
+		m_platform[i].SetPosition(SelectConst::PLATFORM_POS[i]);
+	}
+
+	for (int i = 0; i < m_knight.size(); i++)
+	{
+		m_knight[i].Update();
+		m_platform[i].Update();
+	}
 
 	m_stage.InitBackGround("Assets/modelData/background/stadium05_ground.tkm");
 	m_stage.SetPosition(SelectConst::STAGE_POS);
-	m_stage.SetScale(1.0f,1.2f,1.0f);
+	m_stage.SetScale(1.0f, 1.2f, 1.0f);
 	m_stage.Update();
 
 	m_wall.InitBackGround("Assets/modelData/background/stadium05_Wall.tkm");
 	m_wall.SetPosition(SelectConst::STAGE_POS);
-	m_wall.SetScale(1.0f,0.7f,1.0f);
+	m_wall.SetScale(1.0f, 0.7f, 1.0f);
 	m_wall.Update();
 }
 
 void CharacterSelect::ModelRotation()
 {
-	//剣士を回転させる
 	m_knightRot.AddRotationDegY(2.0f);
-	m_knight.SetRotation(m_knightRot);
+	for (int i = 0; i < m_knight.size(); i++)
+	{
+		//剣士を回転させる
+		m_knight[i].SetRotation(m_knightRot);
 
-	//土台を回転させる
-	m_platform.SetRotation(m_knightRot);
-	
-	m_knight.Update();
-	m_platform.Update();
+		//土台を回転させる
+		m_platform[i].SetRotation(m_knightRot);
+
+		m_knight[i].Update();
+		m_platform[i].Update();
+	}
 }
 
 void CharacterSelect::CheckIconOverlap()
 {
 	m_attackExplanationFlag = CheckNormalAttackIconOverlap();
-	m_skillExplanationFlag	= CheckSkillIconOverlap();
-	m_ultExplanationFlag	= CheckUltIconOverlap();
+	m_skillExplanationFlag = CheckSkillIconOverlap();
+	m_ultExplanationFlag = CheckUltIconOverlap();
 	m_underBarDrawFlag = CheckUnderBarOverlap();
 }
 
 void CharacterSelect::PlayAnimation()
 {
-	switch (m_charState)
+	for (int i = 0; i < m_playerCount; i++)
 	{
-	case(enCharacterState_Idel):
-		m_knight.PlayAnimation(enAnimationClip_Idle, 0.1f);
-		break;
-	case(enCharacterState_Start):
-		m_knight.PlayAnimation(enAnimationClip_UltimateSkill, 0.1f);
-		break;
+		switch (m_charState)
+		{
+		case(enCharacterState_Idel):
+			m_knight[i].PlayAnimation(enAnimationClip_Idle, 0.1f);
+			break;
+		case(enCharacterState_Start):
+			m_knight[i].PlayAnimation(enAnimationClip_UltimateSkill, 0.1f);
+			break;
+		}
 	}
 }
 
@@ -538,6 +575,26 @@ bool CharacterSelect::CheckUnderBarOverlap()
 	return false;
 }
 
+void CharacterSelect::SetPlayerCountText()
+{
+	if (g_pad[0]->IsTrigger(enButtonLeft))
+	{
+		m_playerCount--;
+		m_playerCount = max(1, m_playerCount);
+	}
+	if (g_pad[0]->IsTrigger(enButtonRight))
+	{
+		m_playerCount++;
+		m_playerCount = min(m_playerCount, 4);
+	}
+
+	wchar_t buf[255];
+	swprintf_s(buf, L"%d", m_playerCount);
+	m_countFont.SetText(buf);
+
+	m_gameMode = static_cast<RenderingEngine::EnGameMode>(m_playerCount);
+}
+
 Vector4 CharacterSelect::CalcIconPos(float posX, float posY, float W, float H)
 {
 	Vector4 pos = g_vec4Black;
@@ -558,7 +615,7 @@ void CharacterSelect::OnAnimationEvent(const wchar_t* clipName, const wchar_t* e
 	if (wcscmp(eventName, L"start_game") == 0)
 	{
 		//フェードアウトを始める
-		fade->StartFadeIn(1.0f,Fade::enFadeSpriteType_Full,Fade::enFadeSpriteCategory_Tip);
+		fade->StartFadeIn(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
 		m_readyFlag = true;
 	}
 }
@@ -566,8 +623,12 @@ void CharacterSelect::OnAnimationEvent(const wchar_t* clipName, const wchar_t* e
 void CharacterSelect::Render(RenderContext& rc)
 {
 	//剣士のモデル
-	m_knight.Draw(rc);
-	m_platform.Draw(rc);
+	for (int i = 0; i < m_playerCount; i++)
+	{
+		m_knight[i].Draw(rc);
+		m_platform[i].Draw(rc);
+	}
+
 	m_wall.Draw(rc);
 	m_stage.Draw(rc);
 
@@ -585,6 +646,7 @@ void CharacterSelect::Render(RenderContext& rc)
 	m_ultIcon.Draw(rc);
 
 	m_name.Draw(rc);
+	m_countFont.Draw(rc);
 
 	if (m_underBarDrawFlag)	m_underBarYellow.Draw(rc);
 	else m_underBar.Draw(rc);
@@ -602,7 +664,7 @@ void CharacterSelect::Render(RenderContext& rc)
 	{
 		m_pointerWhite.Draw(rc);
 	}
-	
+
 	m_pointerBlack.Draw(rc);
 }
 

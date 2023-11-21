@@ -102,7 +102,7 @@ public:
 	}
 	void SetRotation(Quaternion rotation)
 	{
-		m_rot = rotation;
+		m_rotation = rotation;
 	}
 
 	EnNEState GetEnemyState() {
@@ -330,7 +330,7 @@ private:
 	Vector3       m_position = Vector3::Zero;;                                 //座標
 	Vector3       m_moveSpeed;                                 //移動速度
 	Vector3       m_forward = Vector3::AxisZ;                  //正面のベクトル
-	Quaternion    m_rot;                                       //クォータニオン
+	Quaternion    m_rotation;                                       //クォータニオン
 	Vector3       m_scale = Vector3{0.2f,0.2f,0.2f};           //大きさ
 	CharacterController m_charaCon;                            //キャラコン
 	EnNEState m_Neutral_EnemyState = enNeutral_Enemy_Idle;     //中立の敵のステート。

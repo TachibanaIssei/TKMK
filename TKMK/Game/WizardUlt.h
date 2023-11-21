@@ -153,6 +153,9 @@ private:
 	Actor* m_CreatMeActor = nullptr;
 	Actor* m_GivePointActor = nullptr;
 	GameCamera* gameCamera = nullptr;
+	GameCamera* gameCamera2 = nullptr;
+	GameCamera* gameCamera3 = nullptr;
+	GameCamera* gameCamera4 = nullptr;
 
 	EffectEmitter* Thunder;
 
@@ -166,6 +169,9 @@ private:
 	const char* m_targrtName = nullptr;
 
 	const char* m_playerName = "knightplayer";
+	const char* m_playerName2 = "knightplayer2";
+	const char* m_playerName3 = "knightplayer3";
+	const char* m_playerName4 = "knightplayer4";
 
 	//雷を地上にいるキャラ全てに打ち終わったら
 	bool UltEndFlag = false;

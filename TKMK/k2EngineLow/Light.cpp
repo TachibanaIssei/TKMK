@@ -3,27 +3,35 @@
 
 namespace nsK2EngineLow
 {
-    namespace
-    {
-        const Vector3 DIRECTION_LIGHT_COLOR = { 0.5f,0.5f,0.5f };
-        const Vector3 DIRECTION_LIGHT_DIRECTION = { 1.0f,-1.0f,-1.0f };
-        const Vector3 AMBIENT_LIGHT_COLOR = { 0.3f,0.3f,0.3f };
-    }
+	void SceneLight::Init()
+	{
+		m_light.directionalLight.color.x = 0.5f;
+		m_light.directionalLight.color.y = 0.5f;
+		m_light.directionalLight.color.z = 0.5f;
 
-    void SceneLight::Init()
-    {
-        //ディレクションライトの色
-        SetDirLightColor(DIRECTION_LIGHT_COLOR);
+		m_light.directionalLight.direction.x = 1.0f;
+		m_light.directionalLight.direction.y = -1.0f;
+		m_light.directionalLight.direction.z = -1.0f;
+		m_light.directionalLight.direction.Normalize();
 
-        //ディレクションライトの方向
-        Vector3 direction = DIRECTION_LIGHT_DIRECTION;
-        direction.Normalize();
-        SetDirLightDirection(direction);
+		m_light.ambientLight.x = 0.3f;
+		m_light.ambientLight.y = 0.3f;
+		m_light.ambientLight.z = 0.3f;
 
-        //環境光の設定
-        SetAmbient(AMBIENT_LIGHT_COLOR);
+		m_light.hemisphereLight.groundColor = Vector3(0.17f, 0.15f, 0.1255f);
+		m_light.hemisphereLight.skyColor = Vector3(0.0116f, 0.0766f, 0.0766f);
+		m_light.hemisphereLight.groundNormal = Vector3(0.0f, 1.0f, 0.0f);
 
-        //視点座標を設定
-        SetEyePos(g_camera3D->GetPosition());
-    }
+		m_light.cameraEyePos = g_camera3D[0]->GetPosition();
+	}
+
+	void SceneLight::SetSpotLight(const Vector3& pos, const Vector3& color, const Vector3& attn, const Vector3& direction, const Vector3& angle)
+	{
+		SetSpotLightPosition(pos);
+		SetSpotLightColor(color);
+		SetSpotLightAttn(attn);
+		SetSpotLightDirection(direction);
+		SetSpotLightAngle(angle);
+		UseSpotLight();
+	}
 }

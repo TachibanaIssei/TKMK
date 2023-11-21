@@ -55,27 +55,43 @@ bool KnightPlayer::Start() {
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
 
-	if (IGameObject::m_name == "knightplayer2")
+	if (IsMatchName("knightplayer2"))
 	{
-		respawnNumber = 0;
+		m_gameCamera = FindGO<GameCamera>("gamecamera2P");
+		m_respawnNumber = 0;
 		m_enPlayerNumber = enPlayerNumber_2P;
 	}
+	else if (IsMatchName("knightplayer3"))
+	{
+		m_gameCamera = FindGO<GameCamera>("gamecamera3P");
+		m_respawnNumber = 3;
+		m_enPlayerNumber = enPlayerNumber_3P;
+	}
+	else if (IsMatchName("knightplayer4"))
+	{
+		m_gameCamera = FindGO<GameCamera>("gamecamera4P");
+		m_respawnNumber = 1;
+		m_enPlayerNumber = enPlayerNumber_4P;
+	}
 	else {
-		respawnNumber = 2;        //リスポーンする座標の番号
+		m_gameCamera = FindGO<GameCamera>("gamecamera");
+		m_respawnNumber = 2;        //リスポーンする座標の番号
 		m_enPlayerNumber = enPlayerNumber_1P;
 	}
 
 	//リスポーンする座標のセット
 	//キャラコン
-	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
+	m_charCon.SetPosition(m_respawnPos[m_respawnNumber]);
 	//剣士
-	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
-	m_modelRender.SetRotation(m_respawnRotation[respawnNumber]);
+	m_position = m_respawnPos[m_respawnNumber];
+	m_rotation = m_respawnRotation[m_respawnNumber];
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_rotation);
+
+	m_modelRender.Update();
 
 	//リスポーン時に向いている方向の前方向を取得
 	ForwardSet();
-
-	m_modelRender.Update();
 
 	//回避のフレームの設定
 	m_Avoidance_flameRender.Init("Assets/sprite/avoidance_flame.DDS", 300, 50);
@@ -170,12 +186,12 @@ void KnightPlayer::Update()
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
 		//今のフレームと前のフレームのレベルが違っていたら
-		if (oldLv != Lv) {
+		if (oldLv != m_lv) {
 			//エフェクトを出す
-			IsLevelEffect(oldLv, Lv);
+			IsLevelEffect(oldLv, m_lv);
 		}
 		//前フレームのレベルを取得
-		oldLv = Lv;
+		oldLv = m_lv;
 		//前フレームの座標を取得
 		OldPosition = m_position;
 
@@ -233,7 +249,7 @@ void KnightPlayer::Update()
 		}
 
 		//スキル使用中なら
-		if (SkillState == true) {
+		if (m_isSkillReady == true) {
 			//スキルステート
 			//m_charState = enCharState_Skill;
 			//移動処理を行う(直線移動のみ)。
@@ -258,7 +274,7 @@ void KnightPlayer::Update()
 
 
 
-	if (AvoidanceTimer != AvoidanceCoolTime)
+	if (m_avoidanceTimer != m_avoidanceCoolTime)
 	{
 		//回避のスプライトの表示の処理
 		AvoidanceSprite();
@@ -278,13 +294,12 @@ void KnightPlayer::Update()
 	}
 	//前方向
 	if (m_moveSpeed.LengthSq() != 0.0f) {
-		//m_forwardNow = m_moveSpeed;
 		m_forwardNow.Normalize();
 		m_forwardNow.y = 0.0f;
 	}
 
 	// レベルをゲームに教える（下部スプライト更新用）
-	m_game->UnderSprite_Level(Lv);
+	m_game->UnderSprite_Level(m_lv);
 
 	m_modelRender.SetPosition(m_position);
 	m_modelRender.Update();
@@ -354,7 +369,7 @@ void KnightPlayer::Attack()
 
 	//スキルを発動する処理
 	//Bボタンが押されたら
-	if (pushFlag == false && SkillEndFlag == false && SkillState == false && g_pad[m_playerNumber]->IsTrigger(enButtonB) && m_status.GetHp() > 0)
+	if (pushFlag == false && SkillEndFlag == false && m_isSkillReady == false && g_pad[m_playerNumber]->IsTrigger(enButtonB) && m_status.GetHp() > 0)
 	{
 		//スキルを使うときのスピードを使う
 		AnimationMove(SkillSpeed);
@@ -382,7 +397,7 @@ void KnightPlayer::Attack()
 			EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
 			EffectKnightSkillGround_->Play();
 			Vector3 effectPosition = m_position;
-			Quaternion EffRot = m_rot;
+			Quaternion EffRot = m_rotation;
 			EffRot.AddRotationDegY(360.0f);
 			EffectKnightSkillGround_->SetPosition(effectPosition);
 			EffectKnightSkillGround_->SetRotation(EffRot);
@@ -401,12 +416,12 @@ void KnightPlayer::Attack()
 		SkillEndFlag = true;
 		m_charState = enCharState_Skill;
 		pushFlag = true;
-		SkillState = true;
+		m_isSkillReady = true;
 	}
 
 	//必殺技を発動する処理
 	//Xボタンが押されたら
-	if (pushFlag == false && Lv >= 4 && g_pad[m_playerNumber]->IsTrigger(enButtonX))
+	if (pushFlag == false && m_lv >= 4 && g_pad[m_playerNumber]->IsTrigger(enButtonX))
 	{
 		//画面を暗くする
 		UltimateDarknessFlag = true;
@@ -531,7 +546,7 @@ void KnightPlayer::MakeUltSkill()
 		//攻撃するアクターのオブジェクト名をセット
 		wizardUlt->SetActor(actor->GetName());
 		//攻撃力を決める
-		wizardUlt->SetAboutUlt(Lv);
+		wizardUlt->SetAboutUlt(m_lv);
 		//攻撃するアクターの座標取得
 		Vector3 UltPos = actor->GetPosition();
 		UltPos.y += 100.0f;
@@ -565,14 +580,14 @@ void KnightPlayer::MakeUltSkill()
 	//knightUlt->SetCreatorName(GetName());
 	//// 制作者を教える
 	//knightUlt->SetActor(this);
-	//knightUlt->SetUltColorNumb(respawnNumber);
+	//knightUlt->SetUltColorNumb(m_respawnNumber);
 	////キャラのレベルを入れる
-	//knightUlt->GetCharLevel(Lv);
+	//knightUlt->GetCharLevel(m_lv);
 	////座標の設定
 	//Vector3 UltPos = m_position;
 	//UltPos.y += 60.0f;
 	//knightUlt->SetPosition(UltPos);
-	//knightUlt->SetRotation(m_rot);
+	//knightUlt->SetRotation(m_rotation);
 	//knightUlt->SetEnUlt(KnightUlt::enUltSkill_Player);
 	//knightUlt->SetGame(m_game);
 
@@ -581,10 +596,10 @@ void KnightPlayer::MakeUltSkill()
 void KnightPlayer::CoolTimeProcess()
 {
 	//スキルクールタイムの処理
-	CoolTime(Cooltime, SkillEndFlag, SkillTimer);
+	CoolTime(m_skillCoolTime, SkillEndFlag, m_skillTimer);
 
 	//回避クールタイムの処理
-	CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+	CoolTime(m_avoidanceCoolTime, AvoidanceEndFlag, m_avoidanceTimer);
 
 }
 
@@ -595,7 +610,7 @@ void KnightPlayer::GrayScaleUI()
 		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_1P);
 		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_1P);
 
-		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_1P);
+		if (m_lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_1P);
 		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_1P);
 	}
 	else if (IsMatchName("knightplayer2"))
@@ -603,8 +618,24 @@ void KnightPlayer::GrayScaleUI()
 		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_2P);
 		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_2P);
 
-		if (Lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_2P);
+		if (m_lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_2P);
 		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_2P);
+	}
+	else if (IsMatchName("knightplayer3"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_3P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_3P);
+
+		if (m_lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_3P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_3P);
+	}
+	else if (IsMatchName("knightplayer4"))
+	{
+		if (SkillEndFlag)	m_gameUI->SetSkillIconGrayScale(true, GameUI::enPlayerNumber_4P);
+		else				m_gameUI->SetSkillIconGrayScale(false, GameUI::enPlayerNumber_4P);
+
+		if (m_lv < 4)			m_gameUI->SetULTIconGrayScale(true, GameUI::enPlayerNumber_4P);
+		else				m_gameUI->SetULTIconGrayScale(false, GameUI::enPlayerNumber_4P);
 	}
 }
 
@@ -781,8 +812,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 		//カメラを揺らすフラグを立てる
-		GameCamera* gameCamera = FindGO<GameCamera>("gamecamera");
-		gameCamera->ChangeCameraShakeFlag(true);
+		m_gameCamera->ChangeCameraShakeFlag(true);
 		EffectEmitter* EffectKnight_TowerJump;
 		EffectKnight_TowerJump = NewGO <EffectEmitter>(0);
 		EffectKnight_TowerJump->Init(EnEFK::enEffect_Knight_TowerJump);
@@ -811,7 +841,7 @@ void KnightPlayer::OnAnimationEvent(const wchar_t* clipName, const wchar_t* even
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする
-		SkillState = false;
+		m_isSkillReady = false;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}
@@ -857,7 +887,7 @@ void KnightPlayer::CharacterUpperHpBar()
 			continue;
 		}
 
-		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, Lv);
+		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, m_lv);
 		m_enemyHpBar[i]->SetDrawFlag(false);
 		//HPバーを描画する条件を満たしたら
 		if (DrawHP(i))
@@ -874,7 +904,7 @@ void KnightPlayer::AvoidanceSprite()
 {
 	Vector3 AvoidanceScale = Vector3::One;
 	//HPバーの減っていく割合。
-	AvoidanceScale.x = (float)AvoidanceTimer / (float)AvoidanceCoolTime;
+	AvoidanceScale.x = (float)m_avoidanceTimer / (float)m_avoidanceCoolTime;
 	m_Avoidance_barRender.SetScale(AvoidanceScale);
 
 	m_Avoidance_flameRender.Update();
@@ -905,11 +935,11 @@ void KnightPlayer::Render(RenderContext& rc)
 	}
 
 	//スキルのクールタイムとタイマーが違う時だけ表示
-	/*if(SkillTimer!=Cooltime)
+	/*if(m_skillTimer!=m_skillCoolTime)
 	Skillfont.Draw(rc);*/
 
 	//回避のクールタイムとタイマーが違う時だけ表示
-	/*if (AvoidanceTimer != AvoidanceCoolTime)
+	/*if (m_avoidanceTimer != m_avoidanceCoolTime)
 	{
 		m_Avoidance_flameRender.Draw(rc);
 		m_Avoidance_barRender.Draw(rc);

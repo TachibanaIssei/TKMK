@@ -63,7 +63,7 @@ namespace nsK2EngineLow {
 		/// スカイキューブのタイプを設定。
 		/// </summary>
 		/// <param name="type"></param>
-		void SetType(const EnSkyCubeType type)
+		void SetType(EnSkyCubeType type)
 		{
 			m_type = type;
 		}
@@ -75,19 +75,20 @@ namespace nsK2EngineLow {
 		{
 			m_luminance = lum;
 		}
-		const wchar_t* GetTextureFilePath() const
+		const wchar_t* GetTextureFilePath()
 		{
 			return m_textureFilePaths[m_type];
 		}
 
 	private:
-		ModelRender m_modelRender;								//モデルレンダー
-		Texture m_texture[enSkyCubeType_Num];					//空テクスチャ
-		const wchar_t* m_textureFilePaths[enSkyCubeType_Num];	//テクスチャファイルパス
-		Vector3 m_position = g_vec3Zero;						//座標
-		Vector3 m_scale = g_vec3One * 1000.0f;					//大きさ
-		float m_luminance = 1.0f;								//明るさ
-		bool m_isDirty = false;									//変更されたらtrue
-		EnSkyCubeType m_type = enSkyCubeType_Day;				//空の種類
+		ModelRender m_modelRender;
+
+		Texture m_texture[enSkyCubeType_Num];
+		const wchar_t* m_textureFilePaths[enSkyCubeType_Num];
+		Vector3 m_position = g_vec3Zero;
+		Vector3 m_scale = g_vec3One * 1000.0f;
+		float m_luminance = 1.0f;
+		bool m_isDirty = false;
+		EnSkyCubeType m_type = enSkyCubeType_Day;
 	};
 }

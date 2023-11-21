@@ -9,7 +9,7 @@ namespace nsK2EngineLow {
 	/// <summary>
 	/// スプライトレンダー
 	/// </summary>
-	class SpriteRender
+	class SpriteRender : public Noncopyable
 	{
 	public:
 		/// <summary>
@@ -35,7 +35,7 @@ namespace nsK2EngineLow {
 		/// <param name="x">X座標</param>
 		/// <param name="y">Y座標</param>
 		/// <param name="z">Z座標</param>
-		void SetPosition(float x, float y, float z = 0.0f)
+		void SetPosition(const float x, const float y, const float z = 0.0f)
 		{
 			SetPosition({ x, y, z });
 		}
@@ -62,7 +62,7 @@ namespace nsK2EngineLow {
 		/// <param name="x">X軸</param>
 		/// <param name="y">Y軸</param>
 		/// <param name="z">Z軸</param>
-		void SetScale(float x, float y, float z = 1.0f)
+		void SetScale(const float x, const float y, const float z = 1.0f)
 		{
 			SetScale({ x, y, z });
 		}
@@ -143,7 +143,12 @@ namespace nsK2EngineLow {
 		/// 描画処理
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		void Draw(RenderContext& rc, bool drawTiming = false, int viewportNo = -1);
+		void Draw(RenderContext& rc, const bool drawTiming = false, const int viewportNo = -1);
+
+		/// <summary>
+		/// 文字より前面に描画する
+		/// </summary>
+		/// <param name="rc"></param>
 		void DrawFront(RenderContext& rc);
 
 		/// <summary>
@@ -155,7 +160,11 @@ namespace nsK2EngineLow {
 			m_sprite.Draw(rc);
 		}
 		
-		bool IsInit()
+		/// <summary>
+		/// 初期化済み？
+		/// </summary>
+		/// <returns>初期化済みならtrue</returns>
+		const bool IsInit()
 		{
 			if (m_isInit)	return true;
 			else			return false;
@@ -165,7 +174,7 @@ namespace nsK2EngineLow {
 		/// グレースケールを設定する
 		/// </summary>
 		/// <param name="flag">trueの場合グレースケールを行う</param>
-		void SetGrayScale(bool flag)
+		void SetGrayScale(const bool flag)
 		{
 			m_spriteCB.grayScale = flag;
 		}
@@ -173,7 +182,7 @@ namespace nsK2EngineLow {
 		/// グレースケール中か判定
 		/// </summary>
 		/// <returns>trueの場合グレースケール中</returns>
-		bool IsGrayScale()
+		const bool IsGrayScale()
 		{
 			return m_spriteCB.grayScale;
 		}
@@ -185,7 +194,7 @@ namespace nsK2EngineLow {
 		Vector2		m_pivot = Sprite::DEFAULT_PIVOT;		//ピボット
 		Vector3		m_position = Vector3::Zero;				//座標
 		Vector3		m_scale = Vector3::One;					//大きさ
-		Quaternion	m_rotation = Quaternion::Identity;	//回転
+		Quaternion	m_rotation = Quaternion::Identity;		//回転
 		bool		m_isInit = false;
 	};
 }

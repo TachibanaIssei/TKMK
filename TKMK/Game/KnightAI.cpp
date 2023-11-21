@@ -38,17 +38,18 @@ bool KnightAI::Start() {
 
 	//リスポーンする座標0番の取得
 	GetRespawnPos();
-	//m_respawnPos[respawnNumber].y /*+= m_position_YUp*/;
-	////リスポーンする座標のセット
-	////キャラコン
-	m_charCon.SetPosition(m_respawnPos[respawnNumber]);
-	//剣士
-	m_modelRender.SetPosition(m_respawnPos[respawnNumber]);
+	//リスポーンする座標のセット
+	//キャラコン
+	m_position = m_respawnPos[m_respawnNumber];
+	m_rotation = m_respawnRotation[m_respawnNumber];
+	m_charCon.SetPosition(m_position);
+	m_modelRender.SetPosition(m_position);
+	m_modelRender.SetRotation(m_rotation);
+
+	m_modelRender.Update();
 
 	//リスポーン時に向いている方向の前方向を取得
 	ForwardSet();
-
-	m_modelRender.Update();
 
 	m_knightPlayer = FindGO<KnightPlayer>("m_knightplayer");
 
@@ -146,7 +147,7 @@ void KnightAI::Update()
 	//カントダウン中だったら
 	if (m_game->NowGameState() == 0)
 	{
-		m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
+		m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
 
 		//ステート
 		ManageState();
@@ -156,13 +157,13 @@ void KnightAI::Update()
 	if (m_game->NowGameState() < 3 && m_game->NowGameState() != 0)
 	{
 		//今のフレームと前のフレームのレベルが違っていたら
-		if (oldLv != Lv) {
+		if (oldLv != m_lv) {
 			//エフェクトを出す
-			IsLevelEffect(oldLv, Lv);
+			IsLevelEffect(oldLv, m_lv);
 		}
 
 		//前フレームのレベルを取得
-		oldLv = Lv;
+		oldLv = m_lv;
 
 		//リスポーンしたときしか使えない
 		//飛び降りる処理
@@ -188,7 +189,7 @@ void KnightAI::Update()
 		//回避
 		AvoidanceSprite();
 		//スキルクールタイムの処理
-		CoolTime(Cooltime, SkillEndFlag, SkillTimer);
+		CoolTime(m_skillCoolTime, SkillEndFlag, m_skillTimer);
 		
 		// 次のアクションを抽選 
 		LotNextAction();
@@ -196,16 +197,18 @@ void KnightAI::Update()
 		//追跡
 		ChaseAndEscape();
 
-		if (SkillState == true && CantMove == false && SkillEndFlag == false)
+		if (m_isSkillReady == true && CantMove == false && SkillEndFlag == false)
 		{
 			m_charState = enCharState_Skill;
 			//スキルを使うときのスピードを使う
 			Vector3 move = m_skillMove;
-			m_rot.SetRotationYFromDirectionXZ(move);
+			m_rotation.SetRotationYFromDirectionXZ(move);
 			move.y = 0.0f;
 			move *= 200.0f;
 
-			m_position = m_charCon.Execute(move, g_gameTime->GetFrameDeltaTime());
+			m_position = m_charCon.Execute(move, 1.0f / 60.0f);
+			move.Normalize();
+			m_forwardNow = move;
 		}
 
 		//攻撃
@@ -217,14 +220,16 @@ void KnightAI::Update()
 		if (m_charState == enCharState_LastAttack)
 		{
 			Vector3 LastAttackMove = m_LastAttackMove;
-			m_rot.SetRotationYFromDirectionXZ(m_LastAttackMove);
+			m_rotation.SetRotationYFromDirectionXZ(m_LastAttackMove);
 			LastAttackMove.y = 0.0f;
 			LastAttackMove *= 100.0f;
-			m_position = m_charCon.Execute(LastAttackMove, g_gameTime->GetFrameDeltaTime());
+			m_position = m_charCon.Execute(LastAttackMove, 1.0f / 60.0f);
+			LastAttackMove.Normalize();
+			m_forwardNow = LastAttackMove;
 		}
 		
 		//回避クールタイムの処理
-		CoolTime(AvoidanceCoolTime, AvoidanceEndFlag, AvoidanceTimer);
+		CoolTime(m_avoidanceCoolTime, AvoidanceEndFlag, m_avoidanceTimer);
 	}
 	else
 	{
@@ -238,7 +243,7 @@ void KnightAI::Update()
 	}
 
 	m_modelRender.SetPosition(m_position);
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 	m_modelRender.Update();
 }
 
@@ -350,10 +355,10 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	}
 
 	//自分より相手のポイントが高い
-	if (actor->GetPoint() - Point >= 10)
+	if (actor->GetPoint() - m_point >= 10)
 	{
 		eval += 5000;
-		if (actor->GetLevel() > 5 && Lv >= 5)
+		if (actor->GetLevel() > 5 && m_lv >= 5)
 		{
 			eval += 2000;
 		}
@@ -391,15 +396,15 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	//今狙ってるアクターのレベルを取得する
 	int actorlv = actor->GetLevel();
 	//相手より自分のレベルが高かったら評価値は高くなる
-	eval += (Lv - actorlv) * 500;
+	eval += (m_lv - actorlv) * 500;
 
 	//自分のレベルが一定以上達したらキルモードに入る
-	if (Lv >= 7)
+	if (m_lv >= 7)
 	{
 		eval += 2000;
 	}
 
-	if (Lv <= 6)
+	if (m_lv <= 6)
 	{
 		if (m_game->GetMinutesTimer() >= 2.0f && m_game->GetSecondsTimer() >= 30.0f)
 		{
@@ -423,7 +428,7 @@ KnightAI::EvalData KnightAI::CalculateTargetAI(Actor* actor)
 	
 
 	//相手のレベルが自分よりたかったら逃げる
-	if (actor->GetLevel()- Lv > 5)
+	if (actor->GetLevel()- m_lv > 5)
 	{
 		eval += 2000;
 		chaseOrEscape=true;
@@ -486,12 +491,12 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 	}
 
 	//自分のレベルが低い時はエネミーを狙ってほしい
-	if (Lv <= 3)
+	if (m_lv <= 3)
 	{
 		eval += 3000;
 	}
 	//レベルがMAXなら中立はあまり狙わない
-	if (Lv >= 10)
+	if (m_lv >= 10)
 	{
 		eval -= 4000;
 	}
@@ -512,7 +517,7 @@ KnightAI::EvalData KnightAI::CalculateTargetEnemy(Neutral_Enemy* enemy)
 		eval += 600;
 	}
 	// ウサギを優先
-	if (ColorEnemy == Neutral_Enemy::enEnemyKinds_Rabbit && Lv >= 4 && Lv <= 8)
+	if (ColorEnemy == Neutral_Enemy::enEnemyKinds_Rabbit && m_lv >= 4 && m_lv <= 8)
 	{
 		eval += 800;
 	}
@@ -780,8 +785,9 @@ void KnightAI::ChaseAndEscape()
 	}
 
 	// 移動する（衝突解決）
-	m_position = m_charCon.Execute(m_moveSpeed, g_gameTime->GetFrameDeltaTime());
-	
+	m_position = m_charCon.Execute(m_moveSpeed, 1.0f / 60.0f);
+	m_forwardNow = m_moveSpeed;
+	m_forwardNow.Normalize();
 }
 
 void KnightAI::Move()
@@ -810,7 +816,7 @@ void KnightAI::Move()
 }
 const bool KnightAI::CanSkill()
 {
-	if (SkillState == false)
+	if (m_isSkillReady == false)
 	{
 		Vector3 diff = TargePos - m_position;
 
@@ -882,7 +888,7 @@ void KnightAI::Attack()
 			{
 				//m_charState = enCharState_Skill;
 				//スキルを打つ
-				SkillState = true;
+				m_isSkillReady = true;
 				m_skillMove = TargePos - m_position;
 				m_skillMove.Normalize();
 
@@ -906,7 +912,7 @@ void KnightAI::Attack()
 				EffectKnightSkillGround_->SetScale(Vector3::One * 40.0f);
 				EffectKnightSkillGround_->Play();
 				Vector3 effectPosition = m_position;
-				//Quaternion EffRot = m_rot;
+				//Quaternion EffRot = m_rotation;
 				//EffRot.AddRotationDegY(360.0f);
 				Quaternion EffRot = Quaternion::Identity;
 				EffRot.SetRotationYFromDirectionXZ(m_skillMove);
@@ -936,7 +942,7 @@ void KnightAI::Attack()
 		if (AtkState == false)
 		{
 			Vector3 diff = TargePos - m_position;
-			m_rot.SetRotationYFromDirectionXZ(diff);
+			m_rotation.SetRotationYFromDirectionXZ(diff);
 			m_charState = enCharState_Attack;
 			m_AtkTmingState = SecondAtk_State;
 
@@ -958,7 +964,7 @@ void KnightAI::Attack()
 			return;
 		}
 		//必殺技を発動する処理
-		if (m_targetActor != nullptr && Lv >= 6 && /*(m_status.m_maxHp - m_status.m_hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
+		if (m_targetActor != nullptr && m_lv >= 6 && /*(m_status.m_maxHp - m_status.m_hp) <= 120 && m_targetActor->GetHP() <= 200 &&*/ m_game->GetUltCanUseFlag() == false)
 		{
 			//画面を暗くする
 			m_game->SetUltTimeSkyFlag(true);
@@ -1082,7 +1088,7 @@ void KnightAI::MakeUltSkill()
 		//攻撃するアクターのオブジェクト名をセット
 		wizardUlt->SetActor(actor->GetName());
 		//攻撃力を決める
-		wizardUlt->SetAboutUlt(Lv);
+		wizardUlt->SetAboutUlt(m_lv);
 		//攻撃するアクターの座標取得
 		Vector3 UltPos = actor->GetPosition();
 		UltPos.y += 100.0f;
@@ -1307,7 +1313,7 @@ void KnightAI::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventNam
 		m_AtkTmingState = Num_State;
 		AtkState = false;
 		//スキルの移動処理をしないようにする
-		SkillState = false;
+		m_isSkillReady = false;
 		//剣のコリジョンを生成しない
 		AtkCollistionFlag = false;
 	}
@@ -1401,7 +1407,7 @@ void KnightAI::CharacterUpperHpBar()
 {
 	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
 	{
-		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, Lv);
+		m_enemyHpBar[i]->CalcHpBarPosition(i, &m_status, m_position, m_lv);
 		m_enemyHpBar[i]->SetDrawFlag(false);
 		//HPバーを描画する条件を満たしたら
 		if (DrawHP(i))

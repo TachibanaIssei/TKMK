@@ -169,7 +169,7 @@ bool Neutral_Enemy::Start()
     //座標を設定
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
 	//大きさ調整
@@ -191,7 +191,7 @@ bool Neutral_Enemy::Start()
 	srand((unsigned)time(NULL));
 
 	m_forward = Vector3::AxisY;
-	m_rot.Apply(m_forward);
+	m_rotation.Apply(m_forward);
 
 	//ステータスを読み込む
 	if (m_enemyKinds == enEnemyKinds_Rabbit)
@@ -352,7 +352,7 @@ void Neutral_Enemy::Update()
 	}
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
 
@@ -413,14 +413,14 @@ if (fabsf(m_moveSpeed.x) < 0.001f
 	float angle = atan2(-m_moveSpeed.x, m_moveSpeed.z);
 	//atanが返してくる角度はラジアン単位なので
 	//SetRotationDegではなくSetRotationを使用する。
-	m_rot.SetRotationY(-angle);
+	m_rotation.SetRotationY(-angle);
 
 	//回転を設定する。
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
-	m_rot.Apply(m_forward);
+	m_rotation.Apply(m_forward);
 }
 
 void Neutral_Enemy::Chase()
@@ -1238,7 +1238,7 @@ void Neutral_Enemy::modelUpdate()
 	//座標を設定
 	m_modelRender.SetPosition(m_position);
 	//回転を設定する。
-	m_modelRender.SetRotation(m_rot);
+	m_modelRender.SetRotation(m_rotation);
 	//大きさを設定する。
 	m_modelRender.SetScale(m_scale);
 

@@ -464,7 +464,7 @@ private:
 	std::array<Player*,4> player = {nullptr,nullptr,nullptr,nullptr };
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
-	Fade* fade = nullptr;
+	Fade* m_fade = nullptr;
 	Pause* pause = nullptr;
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;

@@ -235,21 +235,21 @@ public:
 			}
 		}
 
-		if (EffectKnightSkill != nullptr) {
-			if (EffectKnightSkill->GetEffect()->IsPlay() == false) {
-				EffectKnightSkill = nullptr;
+		if (m_effectKnightSkill != nullptr) {
+			if (m_effectKnightSkill->GetEffect()->IsPlay() == false) {
+				m_effectKnightSkill = nullptr;
 			}
 		}
 
-		if (EffectKnightSkillGround != nullptr) {
-			if (EffectKnightSkillGround->GetEffect()->IsPlay() == false) {
-				EffectKnightSkillGround = nullptr;
+		if (m_effectKnightSkillGround != nullptr) {
+			if (m_effectKnightSkillGround->GetEffect()->IsPlay() == false) {
+				m_effectKnightSkillGround = nullptr;
 			}
 		}
 
-		if (FootSmoke != nullptr) {
-			if (FootSmoke->GetEffect()->IsPlay() == false) {
-				FootSmoke = nullptr;
+		if (m_footSmoke != nullptr) {
+			if (m_footSmoke->GetEffect()->IsPlay() == false) {
+				m_footSmoke = nullptr;
 			}
 		}
 
@@ -272,16 +272,16 @@ public:
 			GetHoimi->ResetTarget();
 		}
 
-		if (EffectKnightSkill != nullptr) {
-			EffectKnightSkill->ResetTarget();
+		if (m_effectKnightSkill != nullptr) {
+			m_effectKnightSkill->ResetTarget();
 		}
 
-		if (EffectKnightSkillGround != nullptr) {
-			EffectKnightSkillGround->ResetTarget();
+		if (m_effectKnightSkillGround != nullptr) {
+			m_effectKnightSkillGround->ResetTarget();
 		}
 
-		if (FootSmoke != nullptr) {
-			FootSmoke->ResetTarget();
+		if (m_footSmoke != nullptr) {
+			m_footSmoke->ResetTarget();
 		}
 
 		if (LevelUp_efk != nullptr) {
@@ -459,9 +459,9 @@ protected:
 	bool CantMove = false;
 
 	// 追尾エフェクト
-	ChaseEFK* EffectKnightSkill = nullptr;
-	ChaseEFK* EffectKnightSkillGround = nullptr;
-	ChaseEFK* FootSmoke = nullptr;
+	ChaseEFK* m_effectKnightSkill = nullptr;
+	ChaseEFK* m_effectKnightSkillGround = nullptr;
+	ChaseEFK* m_footSmoke = nullptr;
 
 	std::array<Actor*, enPlayerNumber_Num> m_player;		//プレイヤーのインスタンスを共有
 };

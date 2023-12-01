@@ -89,8 +89,8 @@ CharacterSelect::~CharacterSelect()
 
 bool CharacterSelect::Start()
 {
-	fade = FindGO<Fade>("fade");
-	fade->StartFadeOut(1.0f);
+	m_fade = FindGO<Fade>("fade");
+	m_fade->StartFadeOut(1.0f);
 
 	m_skyCube = NewGO<SkyCube>(0, "skyCube");
 	m_skyCube->SetScale(300.0f);
@@ -373,7 +373,7 @@ void CharacterSelect::InitFont()
 //ゲームに遷移する前にフェードアウトする
 void CharacterSelect::Ready()
 {
-	if (fade->GetCurrentAlpha(Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip) >= 1.0f)
+	if (m_fade->GetCurrentAlpha(Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip) >= 1.0f)
 	{
 		g_renderingEngine->SetGameModeToRenderingEngine(m_gameMode);
 		Game* game = NewGO<Game>(5, "game");
@@ -615,7 +615,7 @@ void CharacterSelect::OnAnimationEvent(const wchar_t* clipName, const wchar_t* e
 	if (wcscmp(eventName, L"start_game") == 0)
 	{
 		//フェードアウトを始める
-		fade->StartFadeIn(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
+		m_fade->StartFadeIn(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
 		m_readyFlag = true;
 	}
 }

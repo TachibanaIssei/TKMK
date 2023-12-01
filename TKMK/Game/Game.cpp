@@ -116,10 +116,10 @@ bool Game::Start()
 
 	InitSkyCube();
 
-	fade = FindGO<Fade>("fade");
+	m_fade = FindGO<Fade>("fade");
 	//フェードインしているのでフェードアウトする
 	//画面を明るくする
-	fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
+	m_fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
 
 	//スタジアムの生成
 	m_level3DRender.Init("Assets/level3D/stadium05Level.tkl", [&](LevelObjectData& objData) {
@@ -192,7 +192,7 @@ void Game::Update()
 
 void Game::BattleStart()
 {
-	if (fade->GetCurrentAlpha() > 0.0f)
+	if (m_fade->GetCurrentAlpha() > 0.0f)
 	{
 		return;
 	}
@@ -338,13 +338,13 @@ void Game::End()
 	if (m_EndtoResultTimer >= 5.0f)
 	{
 		m_GameState = enGameState_Rezult;
-		fade->StartFadeIn(1.0f);
+		m_fade->StartFadeIn(1.0f);
 	}
 }
 
 void Game::GoResult()
 {
-	if (fade->GetCurrentAlpha() >= 1.0f)
+	if (m_fade->GetCurrentAlpha() >= 1.0f)
 	{
 		Result* result = NewGO<Result>(0, "Result");
 	}

@@ -381,7 +381,7 @@ float Actor::SoundSet(Player* player, float Max, float Min)
 /// キャラがやられてからリスポーンするまでの時間を計る
 /// </summary>
 /// /// <param name="DeathToRespwanFlag"></param>
-bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFlag)
+bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* m_fade,bool fadeFlag)
 {
 	//キャラがやられたら
 	if (DeathToRespwanFlag == true)
@@ -396,11 +396,11 @@ bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFla
 				{
 					if (m_enPlayerNumber == enPlayerNumber_1P)
 					{
-						fade->StartFadeOut(1.0f,Fade::enFadeSpriteType_Left);
+						m_fade->StartFadeOut(1.0f,Fade::enFadeSpriteType_Left);
 					}
 					else if (m_enPlayerNumber == enPlayerNumber_2P)
 					{
-						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Right);
+						m_fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_Right);
 					}
 				}
 				else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay ||
@@ -408,25 +408,25 @@ bool Actor::DeathToRespawnTimer(bool& DeathToRespwanFlag,Fade* fade,bool fadeFla
 				{
 					if (m_enPlayerNumber == enPlayerNumber_1P)
 					{
-						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftUp);
+						m_fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftUp);
 					}
 					else if (m_enPlayerNumber == enPlayerNumber_2P)
 					{
-						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightUp);
+						m_fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightUp);
 					}
 					else if (m_enPlayerNumber == enPlayerNumber_3P)
 					{
-						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftDown);
+						m_fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_LeftDown);
 					}
 					else if (m_enPlayerNumber == enPlayerNumber_4P)
 					{
-						fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightDown);
+						m_fade->StartFadeOut(1.0f, Fade::enFadeSpriteType_RightDown);
 					}
 				}
 				else {
 					//フェードアウト
 					//画面を明るくする
-					fade->StartFadeOut(1.0f);
+					m_fade->StartFadeOut(1.0f);
 				}
 			}
 			//

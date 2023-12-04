@@ -62,7 +62,7 @@ public:
 		m_game = Cgame;
 	}
 
-	void ChangeEXPUpFlag(bool flag)
+	void ChangeEXPUpFlag(const bool flag)
 	{
 		m_expUpFlag[enPlayerNumber_1P] = flag;
 		m_expUpFlag[enPlayerNumber_2P] = flag;

@@ -29,7 +29,6 @@ namespace {
 	const Vector3 TOWER_X_POS = Vector3(20.0f, -410.0f, 0.0f);
 	const Vector3 RABBIT_POS = Vector3(700.0f, 350.0f, 0.0f);
 	const Vector3 RabbitSpriteScale = Vector3(0.5f, 0.5f, 0.0f);
-	const Vector3 SpriteScale = Vector3::One;
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);//ディレクションライトのカラー
 	const Vector3 AMBIENT_COLOR = Vector3(0.6f, 0.6f, 0.6f);//環境光のカラー
 
@@ -238,10 +237,9 @@ void Game::BattleStart()
 void Game::Battle()
 {
 	//↑の表示の処理
-	if (player[0]->GetCharcterPosition().y <= 10 && m_underSprite_TowerDown == false)
+	if (player[0]->GetCharcterPosition().y <= 10 && m_towerDownFlag == false)
 	{
-		m_underSprite_TowerDown = true;
-		UnderSpriteUpdate();
+		m_towerDownFlag = true;
 	}
 
 	//foractor
@@ -637,11 +635,17 @@ void Game::InitSoloPlay()
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
 
+	m_underSpriteTowerDown.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
+	m_underSpriteTowerDown.SetPosition(TOWER_X_POS);
+	m_underSpriteTowerDown.Update();
 
-	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
-	m_underSprite.SetPosition(TOWER_X_POS);
-	m_underSprite.SetScale(SpriteScale);
-	m_underSprite.Update();
+	m_underSpriteFirstAttack.Init("Assets/sprite/FirstAttack.DDS", 886.0f, 255.0f);
+	m_underSpriteFirstAttack.SetPosition(TOWER_X_POS);
+	m_underSpriteFirstAttack.Update();
+
+	m_underSpriteUltimate.Init("Assets/sprite/Ult.DDS", 797.0f, 229.0f);
+	m_underSpriteUltimate.SetScale(Vector3(0.9f, 0.9f, 0.9f));
+	m_underSpriteUltimate.Update();
 
 	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
 	m_RabbitSprite.SetPosition(RABBIT_POS);
@@ -727,17 +731,6 @@ void Game::InitDuoPlay()
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
-
-
-	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
-	m_underSprite.SetPosition(TOWER_X_POS);
-	m_underSprite.SetScale(SpriteScale);
-	m_underSprite.Update();
-
-	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
-	m_RabbitSprite.SetPosition(RABBIT_POS);
-	m_RabbitSprite.SetScale(RabbitSpriteScale);
-	m_RabbitSprite.Update();
 }
 
 void Game::InitTrioPlay()
@@ -813,16 +806,6 @@ void Game::InitTrioPlay()
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
-
-	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
-	m_underSprite.SetPosition(TOWER_X_POS);
-	m_underSprite.SetScale(SpriteScale);
-	m_underSprite.Update();
-
-	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
-	m_RabbitSprite.SetPosition(RABBIT_POS);
-	m_RabbitSprite.SetScale(RabbitSpriteScale);
-	m_RabbitSprite.Update();
 }
 
 void Game::InitQuartePlay()
@@ -886,16 +869,6 @@ void Game::InitQuartePlay()
 	//GameUIの生成
 	m_gameUI = NewGO<GameUI>(0, "m_gameUI");
 	m_gameUI->SetSGame(this);
-
-	m_underSprite.Init("Assets/sprite/TowerDown.DDS", 886.0f, 255.0f);
-	m_underSprite.SetPosition(TOWER_X_POS);
-	m_underSprite.SetScale(SpriteScale);
-	m_underSprite.Update();
-
-	m_RabbitSprite.Init("Assets/sprite/rabbit.DDS", 886.0f, 255.0f);
-	m_RabbitSprite.SetPosition(RABBIT_POS);
-	m_RabbitSprite.SetScale(RabbitSpriteScale);
-	m_RabbitSprite.Update();
 }
 
 void Game::SetKnightPlayerActor()
@@ -1364,10 +1337,11 @@ void Game::Render(RenderContext& rc)
 
 			if (m_underSprite_Ult == false && m_GameState == enGameState_Battle) {
 
-				if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level == false) {
+				if (m_attackFlag && m_skillFlag && m_underSprite_Level == false) 
+				{
 					return;
 				}
-				m_underSprite.Draw(rc);
+				UnderSpriteUpdate(rc);
 			}
 		}
 	}

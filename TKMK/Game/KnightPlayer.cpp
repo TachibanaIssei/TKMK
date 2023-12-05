@@ -37,7 +37,13 @@ KnightPlayer::KnightPlayer()
 
 KnightPlayer::~KnightPlayer()
 {
-
+	for (int i = 0; i < m_enemyHpBar.size(); i++)
+	{
+		if (m_enemyHpBar[i] != nullptr)
+		{
+			DeleteGO(m_enemyHpBar[i]);
+		}
+	}
 }
 
 bool KnightPlayer::Start() {
@@ -153,7 +159,7 @@ void KnightPlayer::Update()
 
 	//アニメーションの再生
 	PlayAnimation();
-	
+
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定
@@ -378,17 +384,17 @@ void KnightPlayer::Attack()
 			m_game->UnderSprite_Skill();
 
 			//剣にまとわせるエフェクト
-			if (EffectKnightSkill != nullptr) {
-				EffectKnightSkill->DeleteEffect();
+			if (m_effectKnightSkill != nullptr) {
+				m_effectKnightSkill->DeleteEffect();
 			}
-			EffectKnightSkill = NewGO <ChaseEFK>(4);
-			EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
-			EffectKnightSkill->AutoRot(true);
-			EffectKnightSkill->SetAutoRotAddY(360.0f);
+			m_effectKnightSkill = NewGO <ChaseEFK>(4);
+			m_effectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
+			m_effectKnightSkill->AutoRot(true);
+			m_effectKnightSkill->SetAutoRotAddY(360.0f);
 			// 座標の加算量を計算
 			Vector3 effectAddPos = Vector3::Zero;
 			effectAddPos.y = 50.0f;
-			EffectKnightSkill->SetAddPos(effectAddPos);
+			m_effectKnightSkill->SetAddPos(effectAddPos);
 
 			//床のエフェクト
 			EffectEmitter* EffectKnightSkillGround_;
@@ -404,12 +410,12 @@ void KnightPlayer::Attack()
 			EffectKnightSkillGround_->Update();
 
 			//土煙のエフェクト
-			if (FootSmoke != nullptr) {
-				FootSmoke->DeleteEffect();
+			if (m_footSmoke != nullptr) {
+				m_footSmoke->DeleteEffect();
 			}
-			FootSmoke = NewGO<ChaseEFK>(4);
-			FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
-			FootSmoke->AutoRot(true);
+			m_footSmoke = NewGO<ChaseEFK>(4);
+			m_footSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
+			m_footSmoke->AutoRot(true);
 
 		}
 

@@ -9,7 +9,6 @@ public:
 	ExpforKnight();
 	~ExpforKnight();
 	bool Start();
-	void OnDestroy();
 	void Update();
 	void Render(RenderContext& rc);
 

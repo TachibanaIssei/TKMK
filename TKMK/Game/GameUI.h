@@ -4,7 +4,6 @@ class Player;
 class Game;
 class Actor;
 class Fade;
-class ExpforKnight;
 class KnightAI;
 
 class GameUI:public IGameObject
@@ -15,7 +14,7 @@ public:
 
 	enum EnPlayerNumber
 	{
-		enPlayerNumber_1P,
+		enPlayerNumber_1P = 0,
 		enPlayerNumber_2P,
 		enPlayerNumber_3P,
 		enPlayerNumber_4P,
@@ -62,13 +61,7 @@ public:
 		m_game = Cgame;
 	}
 
-	void ChangeEXPUpFlag(bool flag)
-	{
-		m_expUpFlag[enPlayerNumber_1P] = flag;
-		m_expUpFlag[enPlayerNumber_2P] = flag;
-		m_expUpFlag[enPlayerNumber_3P] = flag;
-		m_expUpFlag[enPlayerNumber_4P] = flag;
-	}
+	void ChangeEXPUpFlag(const bool flag);
 
 	/// <summary>
 	/// プレイヤーのレベルに合わせてレベルの画像を変更する
@@ -201,6 +194,18 @@ private:
 	/// </summary>
 	/// <param name="rc"></param>
 	void RenderIcon(RenderContext& rc);
+
+	struct SLevelSprite
+	{
+		SpriteRender levelSprite[10];
+		int levelCount;
+	};
+
+	struct SRespawnCountSprite
+	{
+		SpriteRender respawnCountSprite[3];
+		int respawnCount;
+	};
 private:
 	FontRender m_ExpFont;
 
@@ -209,7 +214,7 @@ private:
 
 	std::array < FontRender, 4> m_PointFont;
 	std::array < FontRender, 4> m_LevelFont;
-	std::array <SpriteRender, 4> m_playerCpuName;	//プレイヤーとCPUの名前画像
+	std::array < SpriteRender, 4> m_playerCpuName;	//プレイヤーとCPUの名前画像
 
 	Player* m_player1P = nullptr;
 	Player* m_player2P = nullptr;
@@ -219,7 +224,6 @@ private:
 	Game* m_game = nullptr;
 	Actor* actor = nullptr;
 	Fade* m_fade = nullptr;
-	ExpforKnight* expforKnight = nullptr;
 
 	std::vector<Actor*> m_Actors;
 
@@ -235,8 +239,8 @@ private:
 	std::array<SpriteRender, enPlayerNumber_Num>    m_UltRenderOUT;		//必殺アイコンのフレーム
 	SpriteRender            m_TimeAndPointRender;				//制限時間と獲得ポイント
 	std::array<SpriteRender, enPlayerNumber_Num>	m_Lv;
-	std::array<SpriteRender, enPlayerNumber_Num>	m_LvNumber;
-	std::array<SpriteRender, enPlayerNumber_Num>	m_LvNumber_back;							//レベルの裏
+	std::array<SLevelSprite, enPlayerNumber_Num>	m_LvNumber;
+	std::array<SLevelSprite, enPlayerNumber_Num>	m_LvNumber_back;							//レベルの裏
 	float					m_LvNumberColor = 1.0f;
 	bool					m_flashNumberFlag = false;
 	std::array<SpriteRender, enPlayerNumber_Num>	m_MaxLv;
@@ -251,7 +255,7 @@ private:
 	SpriteRender			m_CountNumper;						//カウントダウン
 	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnIn;						//Respawn inの画像
 	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnBack;						//リスポーン時の背景
-	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnCountNumber;				//リスポーン時のカウントダウン
+	std::array<SRespawnCountSprite, enPlayerNumber_Num>	m_respawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);

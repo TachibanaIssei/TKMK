@@ -130,7 +130,7 @@ private:
 private:
 	SkyCube* m_skyCube = nullptr;
 
-	Fade* fade = nullptr;
+	Fade* m_fade = nullptr;
 	SoundSource* m_bgm = nullptr;
 
 	CharacterState m_charState = enCharacterState_Idel;		//キャラクターの状態

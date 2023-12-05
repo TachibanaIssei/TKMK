@@ -528,7 +528,7 @@ public:
 	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
 	/// <param name="DeathToRespwanFlag"></param>
-	bool DeathToRespawnTimer(bool& DeathToRespwanFlag, Fade* fade, bool fadeFlag);
+	bool DeathToRespawnTimer(bool& DeathToRespwanFlag, Fade* m_fade, bool fadeFlag);
 
 	/// <summary>
 	/// リスポーン待機時間を返す

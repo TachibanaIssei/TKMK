@@ -108,12 +108,12 @@ bool Result::Start()
 	g_soundEngine->ResistWaveFileBank(enSound_ResultDramRoll, "Assets/sound/resultBGM/dram_roll.wav");
 	g_soundEngine->ResistWaveFileBank(enSound_ResultDramJaan, "Assets/sound/resultBGM/dram_jaan.wav");
 
-	fade = FindGO<Fade>("fade");
+	m_fade = FindGO<Fade>("fade");
 	Game* game = FindGO<Game>("game");
 	m_gameMode = g_renderingEngine->GetGameMode();
 	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
 
-	fade->StartFadeOut(1.0f);
+	m_fade->StartFadeOut(1.0f);
 
 	game->GetActorPoints(charPoints.data());
 
@@ -195,7 +195,7 @@ void Result::Update()
 	if (m_change == enChange_first)
 	{
 		Rank();
-		if (fade->GetCurrentAlpha() <= 0.0f)
+		if (m_fade->GetCurrentAlpha() <= 0.0f)
 		{
 			m_change = enChange_4th;
 		}

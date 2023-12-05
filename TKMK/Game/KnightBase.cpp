@@ -243,17 +243,6 @@ void KnightBase::AtkCollisiton()
 	collisionObject->SetWorldMatrix(matrix);
 }
 
-
-/// <summary>
-/// 必殺技発動時の当たり判定の処理
-/// </summary>
-/// <param name="oldpostion">前フレームの座標</param>
-/// <param name="position">現在の座標</param>
-void KnightBase::UltimateSkillCollistion(Vector3& oldpostion,Vector3& position)
-{	
-	
-}
-
 void KnightBase::Collision()
 {
 	if (m_invincibleTimer > 0)

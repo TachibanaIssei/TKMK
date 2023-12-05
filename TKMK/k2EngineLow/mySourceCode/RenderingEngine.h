@@ -1,8 +1,8 @@
 #pragma once
 
-#include "PostEffect.h"
-#include "Light.h"
-#include "Shadow.h"
+#include "PostEffect/PostEffect.h"
+#include "Light/Light.h"
+#include "Shadow/Shadow.h"
 
 namespace nsK2EngineLow {
 	static const int MAX_VIEWPORT = 4;

@@ -1,8 +1,7 @@
 #pragma once
 #include "Effect.h"
-#include "Level3DRender.h"
+#include "../k2EngineLow/mySourceCode/Level/Level3DRender.h"
 #include "Sounds.h"
-#include <array>
 
 class BackGround;
 class Result;

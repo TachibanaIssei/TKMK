@@ -2,8 +2,6 @@
 #include "k2EngineLow.h"
 #include "graphics/Texture.h"
 
-#include "RenderingEngine.h"
-
 namespace nsK2EngineLow {
 	K2EngineLow* g_engine = nullptr;
 	GameTime* g_gameTime = nullptr;

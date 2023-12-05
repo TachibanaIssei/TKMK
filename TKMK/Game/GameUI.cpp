@@ -12,6 +12,7 @@
 namespace
 {
 	const int MAX_LEVEL = 10;
+	const int MAX_RESPAWN_COUNT = 3;
 
 	const float FLAME_WIDTH = 1200.0f;
 	const float FLAME_HEIGHT = 500.0f;
@@ -581,6 +582,18 @@ void GameUI::SkillCoolTimeFont()
 
 void GameUI::InitRespawnUI()
 {
+	std::string levelSpriteFilePath = "Assets/sprite/gameUI/RespawnConut";
+	std::string ddsFilePath = ".DDS";
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			std::string levelCountStr = std::to_string(j);
+			std::string filePath = levelSpriteFilePath + levelCountStr + ddsFilePath;
+			m_respawnCountNumber[i].respawnCountSprite[j].Init(filePath.c_str(), 300, 500.0f);
+		}
+	}
+
 	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 	{
 		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
@@ -589,7 +602,6 @@ void GameUI::InitRespawnUI()
 			m_respawnBack[i].SetScale(RESPAWN_DUOPLAY_SCALE);
 			m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
 			m_respawnIn[i].SetScale(RESPAWN_IN_DUOPLAY_SCALE);
-			m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
 		}
 		m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
 		m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
@@ -598,8 +610,11 @@ void GameUI::InitRespawnUI()
 		m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
 
 		//リスポーンのカウントダウンの画像
-		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
-		m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
+			m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+		}
 
 	}
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay || g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
@@ -610,8 +625,10 @@ void GameUI::InitRespawnUI()
 			m_respawnBack[i].SetScale(RESPAWN_QUARTER_SCALE);
 			m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
 			m_respawnIn[i].SetScale(RESPAWN_QUARTER_SCALE);
-			m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300.0f, 500.0f);
-			m_respawnCountNumber[i].SetScale(RESPAWN_QUARTER_SCALE);
+			for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+			{
+				m_respawnCountNumber[i].respawnCountSprite[j].SetScale(RESPAWN_QUARTER_SCALE);
+			}
 		}
 		m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_QUARTER_LEFT_UP_POS);
 		m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_QUARTER_RIGHT_UP_POS);
@@ -624,10 +641,13 @@ void GameUI::InitRespawnUI()
 		m_respawnIn[enPlayerNumber_4P].SetPosition(RESPAWN_IN_QUARTER_RIGHT_DOWN_POS);
 
 		//リスポーンのカウントダウンの画像
-		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_UP_POS);
-		m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_UP_POS);
-		m_respawnCountNumber[enPlayerNumber_3P].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_DOWN_POS);
-		m_respawnCountNumber[enPlayerNumber_4P].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_DOWN_POS);
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_UP_POS);
+			m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_UP_POS);
+			m_respawnCountNumber[enPlayerNumber_3P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_DOWN_POS);
+			m_respawnCountNumber[enPlayerNumber_4P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_DOWN_POS);
+		}
 	}
 	else
 	{
@@ -639,15 +659,20 @@ void GameUI::InitRespawnUI()
 		m_respawnBack[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
 
 		//リスポーンのカウントダウンの画像
-		m_respawnCountNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
-		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_POS);
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_POS);
+		}
 	}
 
 	for (int i = 0; i < enPlayerNumber_Num; i++)
 	{
 		m_respawnIn[i].Update();
 		m_respawnBack[i].Update();
-		m_respawnCountNumber[i].Update();
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[i].respawnCountSprite[j].Update();
+		}
 	}
 }
 
@@ -1460,30 +1485,30 @@ void GameUI::CountDown()
 //リスポーンするまでのカウントダウン
 void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 {
-	int respornCountDown = 0;
+	int respawnCountDown = 0;
 	if (playerNumber == enPlayerNumber_1P)
 	{
 		//カウントダウン
-		respornCountDown = (int)m_player1P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player1P->CharGetRespawnTime();
 	}
 	else if (playerNumber == enPlayerNumber_2P) {
-		respornCountDown = (int)m_player2P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player2P->CharGetRespawnTime();
 	}
 	else if (playerNumber == enPlayerNumber_3P)
 	{
-		respornCountDown = (int)m_player3P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player3P->CharGetRespawnTime();
 	}
 	else
 	{
-		respornCountDown = (int)m_player4P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player4P->CharGetRespawnTime();
 	}
 
-	if (oldRespawnCount[playerNumber] != respornCountDown)
+	if (oldRespawnCount[playerNumber] != respawnCountDown)
 	{
-		switch (respornCountDown)
+		switch (respawnCountDown)
 		{
 		case 0:
-			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].respawnCount = respawnCountDown;
 			//画面を暗くしてゆく
 			if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 			{
@@ -1518,19 +1543,19 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 			m_fade->StartFadeIn(2.0f);
 			break;
 		case 1:
-			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].respawnCount = respawnCountDown;
 			break;
 		case 2:
-			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].respawnCount = respawnCountDown;
 			break;
 		default:
 			break;
 		}
 	}
 
-	oldRespawnCount[playerNumber] = respornCountDown;
+	oldRespawnCount[playerNumber] = respawnCountDown;
 
-	m_respawnCountNumber[playerNumber].Update();
+	m_respawnCountNumber[playerNumber].respawnCountSprite[m_respawnCountNumber[playerNumber].respawnCount].Update();
 }
 
 //プレイヤーのHPの表示の処理
@@ -2238,13 +2263,13 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			{
 				m_respawnBack[enPlayerNumber_1P].Draw(rc);
 				m_respawnIn[enPlayerNumber_1P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 			}
 			if (m_player2P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_2P].Draw(rc);
 				m_respawnIn[enPlayerNumber_2P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_2P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_2P].respawnCount].Draw(rc);
 			}
 		}
 	}
@@ -2264,19 +2289,19 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			{
 				m_respawnBack[enPlayerNumber_1P].Draw(rc);
 				m_respawnIn[enPlayerNumber_1P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 			}
 			if (m_player2P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_2P].Draw(rc);
 				m_respawnIn[enPlayerNumber_2P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_2P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_2P].respawnCount].Draw(rc);
 			}
 			if (m_player3P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_3P].Draw(rc);
 				m_respawnIn[enPlayerNumber_3P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_3P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_3P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_3P].respawnCount].Draw(rc);
 			}
 		}
 	}
@@ -2297,25 +2322,25 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			{
 				m_respawnBack[enPlayerNumber_1P].Draw(rc);
 				m_respawnIn[enPlayerNumber_1P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 			}
 			if (m_player2P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_2P].Draw(rc);
 				m_respawnIn[enPlayerNumber_2P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_2P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_2P].respawnCount].Draw(rc);
 			}
 			if (m_player3P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_3P].Draw(rc);
 				m_respawnIn[enPlayerNumber_3P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_3P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_3P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_3P].respawnCount].Draw(rc);
 			}
 			if (m_player4P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_4P].Draw(rc);
 				m_respawnIn[enPlayerNumber_4P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_4P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_4P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_4P].respawnCount].Draw(rc);
 			}
 		}
 	}
@@ -2332,7 +2357,7 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			m_respawnBack[enPlayerNumber_1P].Draw(rc);
 
 			m_respawnIn[enPlayerNumber_1P].Draw(rc);
-			m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 
 		}
 	}

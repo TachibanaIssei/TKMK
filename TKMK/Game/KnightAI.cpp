@@ -21,7 +21,13 @@ KnightAI::KnightAI()
 
 KnightAI::~KnightAI()
 {
-
+	for (int i = 0; i < m_enemyHpBar.size(); i++)
+	{
+		if (m_enemyHpBar[i] != nullptr)
+		{
+			DeleteGO(m_enemyHpBar[i]);
+		}
+	}
 }
 
 bool KnightAI::Start() {

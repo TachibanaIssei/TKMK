@@ -200,6 +200,12 @@ private:
 		SpriteRender levelSprite[10];
 		int levelCount;
 	};
+
+	struct SRespawnCountSprite
+	{
+		SpriteRender respawnCountSprite[3];
+		int respawnCount;
+	};
 private:
 	FontRender m_ExpFont;
 
@@ -249,7 +255,7 @@ private:
 	SpriteRender			m_CountNumper;						//カウントダウン
 	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnIn;						//Respawn inの画像
 	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnBack;						//リスポーン時の背景
-	std::array<SpriteRender, enPlayerNumber_Num>	m_respawnCountNumber;				//リスポーン時のカウントダウン
+	std::array<SRespawnCountSprite, enPlayerNumber_Num>	m_respawnCountNumber;				//リスポーン時のカウントダウン
 	SpriteRender			m_FinishCountNumber;				//制限時間残り10秒のカウントダウン
 
 	Vector3				m_gameCountScale = Vector3(0.2f,0.2f,0.0f);

@@ -37,7 +37,13 @@ KnightPlayer::KnightPlayer()
 
 KnightPlayer::~KnightPlayer()
 {
-
+	for (int i = 0; i < m_enemyHpBar.size(); i++)
+	{
+		if (m_enemyHpBar[i] != nullptr)
+		{
+			DeleteGO(m_enemyHpBar[i]);
+		}
+	}
 }
 
 bool KnightPlayer::Start() {
@@ -153,7 +159,7 @@ void KnightPlayer::Update()
 
 	//アニメーションの再生
 	PlayAnimation();
-	
+
 	//無敵時間
 	if (Invincible() == false) {
 		//当たり判定

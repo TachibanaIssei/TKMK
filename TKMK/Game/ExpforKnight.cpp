@@ -60,10 +60,6 @@ bool ExpforKnight::Start()
 		{
 			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
 		}
-		else if (m_playerActor->IsMatchName("knightplayer4"))
-		{
-			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
-		}
 		else if (m_playerActor->IsMatchName("KnightAI1"))
 		{
 			g_camera3D[3]->CalcScreenPositionFromWorldPosition(m_effectScreenPosition, m_enemyPos);
@@ -92,29 +88,22 @@ bool ExpforKnight::Start()
 	return true;
 }
 
-void ExpforKnight::OnDestroy()
-{
-	GameUI* gameUI = FindGO<GameUI>("m_gameUI");
-	gameUI->ChangeEXPUpFlag(true);
-}
-
 void ExpforKnight::Update()
 {
+	if ((m_timer >= 0.98) || (m_leftTimer >= 1))
+	{
+		GameUI* gameUI = FindGO<GameUI>("m_gameUI");
+		gameUI->ChangeEXPUpFlag(true);
+		DeleteGO(this);
+
+		return;
+	}
 	Bezier();
 
-	if (m_timer >= 0.98)
-	{
-		DeleteGO(this);
-	}
-	if (m_leftTimer >= 1)
-	{
-		DeleteGO(this);
-	}
 }
 
 void ExpforKnight::Bezier()
 {
-
 	m_movePos.Lerp(m_leftTimer, m_effectScreenPosition, m_center);
 	m_movePos2.Lerp(m_timer, m_center, m_experienceBarPosition);
 	m_movePos3.Lerp(m_timer, m_movePos, m_movePos2);
@@ -132,8 +121,6 @@ void ExpforKnight::Bezier()
 		m_leftTimer += 0.02f;
 		m_timer += 0.03f;
 	}
-
-
 }
 
 void ExpforKnight::SetPlayerNumber()

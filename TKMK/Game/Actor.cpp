@@ -179,26 +179,6 @@ void Actor::levelDown(int& Level, int downLevel)
 		m_status.SetSpeed(speed);
 		Level -= 1;
 	}
-
-
-	//Level-= downLevel;
-	////もしレベルが0なら1にする
-	//if (Level == 0) {
-	//	Level = 1; 
-	//	return;
-	//}
-	//
-
-	//m_status.m_maxHp-= downLevel* LvUPStatus.LvHp;
-	////もしHPがMaxHpを上回るなら
-	//if (m_status.m_hp > m_status.m_maxHp)
-	//{
-	//	//HPとMaxHpを同じにする
-	//	m_status.m_hp = m_status.m_maxHp;
-	//}
-
-	//m_status.m_attackPower -= downLevel* LvUPStatus.LvAtk;
-	//m_status.m_speed -= downLevel* LvUPStatus.LvSpeed;
 }
 /// <summary>
 /// 中立の敵を倒したときの経験値の処理

@@ -644,6 +644,7 @@ void Game::InitSoloPlay()
 	m_underSpriteFirstAttack.Update();
 
 	m_underSpriteUltimate.Init("Assets/sprite/Ult.DDS", 797.0f, 229.0f);
+	m_underSpriteUltimate.SetPosition(TOWER_X_POS);
 	m_underSpriteUltimate.SetScale(Vector3(0.9f, 0.9f, 0.9f));
 	m_underSpriteUltimate.Update();
 
@@ -1228,7 +1229,6 @@ void Game::UltTimeSkyDarkness()
 	directionLightColor2.x += m_fluctuateDirectionColor;
 	directionLightColor2.y += m_fluctuateDirectionColor;
 	directionLightColor2.z += m_fluctuateDirectionColor;
-	//Vector3 directionLightColor = Vector3::One* m_fluctuateDirectionColor;
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor2);
 	g_renderingEngine->SetAmbient(m_fluctuateAmbientColor);
 }

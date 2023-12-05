@@ -84,11 +84,6 @@ public:
 	void AtkCollisiton();
 
 	/// <summary>
-	/// 必殺技の当たり判定の処理
-	/// </summary>
-	void UltimateSkillCollistion(Vector3& oldpostion, Vector3& position);
-
-	/// <summary>
 	/// アニメーションのステートの管理
 	/// </summary>
 	void ManageState();

@@ -1948,41 +1948,41 @@ void GameUI::LevelUp(const Player* player, const EnPlayerNumber playerNumber)
 		return;
 	}
 
-	////まだセーブした経験値が残っているなら
-	//if (m_saveExp[playerNumber] > 0) {
-	//	//セーブした経験値をリセット
-	//	//m_saveExpとプレイヤーのセーブした経験値を同じにする
-	//	if (player->CharGetSaveEXP() > 0) {
-	//		//セーブした経験値が変わらない
-	//		player->CharResatSaveEXP(m_saveExp[playerNumber]);
-	//	}
+	//まだセーブした経験値が残っているなら
+	if (m_saveExp[playerNumber] > 0) {
+		//セーブした経験値をリセット
+		//m_saveExpとプレイヤーのセーブした経験値を同じにする
+		if (player->CharGetSaveEXP() > 0) {
+			//セーブした経験値が変わらない
+			player->CharResatSaveEXP(m_saveExp[playerNumber]);
+		}
 
-	//	m_oldSaveExp[playerNumber] = player->CharGetSaveEXP();
-	//	m_enExpProcessState[playerNumber] = enUpExpState;
-	//}
-	////もうレベルアップの処理が終わりなら
-	//else if (m_saveExp[playerNumber] <= 0) {
+		m_oldSaveExp[playerNumber] = player->CharGetSaveEXP();
+		m_enExpProcessState[playerNumber] = enUpExpState;
+	}
+	//もうレベルアップの処理が終わりなら
+	else if (m_saveExp[playerNumber] <= 0) {
 
-	//	m_expUpFlag[playerNumber] = false;
+		m_expUpFlag[playerNumber] = false;
 
-	//	//レベルアップの処理の間に中立の敵を倒していたなら
-	//	if (player->CharGetEXP() > 0) {
-	//		player->CharResatSaveEXP(player->CharGetEXP());
-	//		m_saveExp[playerNumber] = player->CharGetSaveEXP();
-	//		m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
-	//		//経験値の処理にいく
-	//		m_enExpProcessState[playerNumber] = enUpExpState;
-	//	}
-	//	else
-	//	{
-	//		//セーブした経験値をリセット
-	//		player->CharResatSaveEXP(0);
-	//		m_saveExp[playerNumber] = player->CharGetSaveEXP();
-	//		m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+		//レベルアップの処理の間に中立の敵を倒していたなら
+		if (player->CharGetEXP() > 0) {
+			player->CharResatSaveEXP(player->CharGetEXP());
+			m_saveExp[playerNumber] = player->CharGetSaveEXP();
+			m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
+			//経験値の処理にいく
+			m_enExpProcessState[playerNumber] = enUpExpState;
+		}
+		else
+		{
+			//セーブした経験値をリセット
+			player->CharResatSaveEXP(0);
+			m_saveExp[playerNumber] = player->CharGetSaveEXP();
+			m_oldSaveExp[playerNumber] = m_saveExp[playerNumber];
 
-	//		m_enExpProcessState[playerNumber] = enChackExpState;
-	//	}
-	//}
+			m_enExpProcessState[playerNumber] = enChackExpState;
+		}
+	}
 }
 
 void GameUI::DownExp(const EnPlayerNumber playerNumber)

@@ -238,6 +238,7 @@
     <ClCompile Include="mySourceCode\Shadow\Shadow.cpp" />
     <ClCompile Include="mySourceCode\Camera\SpringCamera.cpp" />
     <ClCompile Include="mySourceCode\SkyCube.cpp" />
+    <ClCompile Include="mySourceCode\IRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -525,6 +526,8 @@
     <ClInclude Include="mySourceCode\Shadow\Shadow.h" />
     <ClInclude Include="mySourceCode\Camera\SpringCamera.h" />
     <ClInclude Include="mySourceCode\SkyCube.h" />
+    <ClInclude Include="mySourceCode\IRenderer.h" />
+    <ClInclude Include="mySourceCode\MyRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

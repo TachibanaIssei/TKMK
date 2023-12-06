@@ -1,7 +1,5 @@
 #pragma once
 namespace nsK2EngineLow {
-	const int MAX_DIRECTIONAL_LIGHT = 4;	//ディレクションライトの最大数
-
 	/// <summary>
 	/// ディレクションライト構造体
 	/// </summary>

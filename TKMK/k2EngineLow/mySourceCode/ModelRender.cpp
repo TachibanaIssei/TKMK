@@ -3,62 +3,15 @@
 
 namespace nsK2EngineLow
 {
-	void ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, const int numAnimationClips, const EnModelUpAxis enModelUpAxis, const bool shadow)
+	void ModelRender::Init(const char* tkmFilepath, AnimationClip* animationClips, const int numAnimationClips, const EnModelUpAxis enModelUpAxis, const bool isShadowReceiver, const bool isFrontCullingOnDrawShadowMap)
 	{
-		//tkmファイルパスを設定
-		m_modelInitData.m_tkmFilePath = tkmFilepath;
-		//シェーダーファイルパスを設定
-		m_modelInitData.m_fxFilePath = "Assets/shader/model.fx";
-		//モデルの上方向を設定
-		m_modelInitData.m_modelUpAxis = enModelUpAxis;
-
 		// スケルトンを初期化。
 		InitSkeleton(tkmFilepath);
 		// アニメーションを初期化。
 		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
-
-		//アニメーションが設定されていたら。
-		if (m_animationClips != nullptr)
-		{
-			//スケルトンを指定する
-			m_modelInitData.m_skeleton = &m_skeleton;
-			//スキンがある用の頂点シェーダーを設定する。
-			m_modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
-		}
-
-		//モデルクラスの初期化
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			//ディレクションライトの情報を作成
-			MakeDirectionData(i);
-			m_model[i].Init(m_modelInitData);
-		}
-
-		for (int i = 0; i < MAX_VIEWPORT; i++) {
-			//シャドウマップ描画用のモデルの初期化
-			if (shadow)
-			{
-				m_modelInitData.m_psEntryPointFunc = "PSShadowMapMain";
-				m_modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32_FLOAT;
-
-				m_shadowModel[i].Init(m_modelInitData);
-			}
-		}
-	}
-
-	void ModelRender::InitBackGround(const char* tkmFilepath)
-	{
-		m_modelInitData.m_tkmFilePath = tkmFilepath;
-		m_modelInitData.m_fxFilePath = "Assets/shader/ShadowReciever.fx";
-
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			m_modelInitData.m_expandShaderResoruceView[0] = &g_renderingEngine->GetShadowMapTexture(i);
-			//ライトカメラのビュープロジェクション行列を設定する
-			g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
-			MakeDirectionData(i);
-			m_model[i].Init(m_modelInitData);
-		}
+		InitModelOnFowardRendering(tkmFilepath, enModelUpAxis, isShadowReceiver);
+		
+		InitModelOnShadowMap(tkmFilepath, enModelUpAxis, isFrontCullingOnDrawShadowMap);
 	}
 
 	void ModelRender::InitSkyCube(ModelInitData& initData)
@@ -98,10 +51,19 @@ namespace nsK2EngineLow
 		m_animation.Progress(g_gameTime->GetFrameDeltaTime() * m_animationSpeed);
 	}
 
-	void ModelRender::MakeDirectionData(const int lightNumber)
+	void ModelRender::Draw(RenderContext& rc)
 	{
-		m_modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight(lightNumber);
-		m_modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight(lightNumber));
+		g_renderingEngine->AddRenderObject(this);
+	}
+
+	void ModelRender::OnForwardRender(RenderContext& rc)
+	{
+		if (m_model[g_renderingEngine->GetCameraDrawing()].IsInited())
+		{
+			m_model[g_renderingEngine->GetCameraDrawing()].Draw(
+				rc, 1, g_renderingEngine->GetCameraDrawing()
+			);
+		}
 	}
 
 	void ModelRender::InitSkeleton(const char* filePath)
@@ -125,6 +87,82 @@ namespace nsK2EngineLow
 				m_animationClips,
 				numAnimationClips
 			);
+		}
+	}
+
+	void ModelRender::InitModelOnFowardRendering(const char* tkmFilePath, const EnModelUpAxis enModelUpAxis, const bool isShadowReciever)
+	{
+		ModelInitData modelInitData;
+		modelInitData.m_fxFilePath = "Assets/shader/model.fx";
+
+		//頂点シェーダーのエントリーポイント設定
+		SetupVertexShaderEntryPointFunc(modelInitData);
+
+		if (m_animationClips != nullptr)
+		{
+			//スケルトンを指定する
+			modelInitData.m_skeleton = &m_skeleton;
+		}
+
+		modelInitData.m_modelUpAxis = enModelUpAxis;
+		modelInitData.m_tkmFilePath = tkmFilePath;
+		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		//モデルクラスの初期化
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			//ライトの情報を定数バッファへ渡す
+			modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight(i);
+			modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight(i));
+
+			m_model[i].Init(modelInitData);
+		}
+	}
+
+	void ModelRender::InitModelOnShadowMap(const char* tkmFilePath, EnModelUpAxis modelUpAxis, bool isFrontCullingOnDrawShadowMap)
+	{
+		ModelInitData modelInitData;
+		modelInitData.m_tkmFilePath = tkmFilePath;
+		modelInitData.m_modelUpAxis = modelUpAxis;
+		if (isFrontCullingOnDrawShadowMap)
+		{
+			//表カリングを行う
+			modelInitData.m_cullMode = D3D12_CULL_MODE_FRONT;
+		}
+		SetupVertexShaderEntryPointFunc(modelInitData);
+
+		if (m_animationClips != nullptr)
+		{
+			modelInitData.m_skeleton = &m_skeleton;
+		}
+		//modelInitData.m_fxFilePath = "Assets/shader/preProcess/DrawShadowMap.fx";
+
+		/*if (g_renderingEngine->IsSoftShadow())
+		{
+			modelInitData.m_colorBufferFormat[0] = g_softShadowMapFormat.colorBufferFormat;
+		}
+		else
+		{
+			modelInitData.m_colorBufferFormat[0] = g_hardShadowMapFormat.colorBufferFormat;
+		}*/
+
+		/*for (int ligNo = 0; ligNo < MAX_DIRECTIONAL_LIGHT; ligNo++)
+		{
+			Model* shadowModelArray = m_shadowModels[ligNo];
+			for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
+			{
+				shadowModelArray[shadowMapNo].Init(modelInitData);
+			}
+		}*/
+	}
+
+	void ModelRender::SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData)
+	{
+		modelInitData.m_vsSkinEntryPointFunc = "VSMain";
+		modelInitData.m_vsEntryPointFunc = "VSMain";
+
+		if (m_animationClips != nullptr) {
+			// アニメーションあり。
+			modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
 		}
 	}
 }

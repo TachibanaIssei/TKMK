@@ -179,7 +179,9 @@ void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 
 			rc.SetViewport(m_duoViewPorts[i]);
 			//モデル描画
-			ModelRendering(rc);
+			for (auto& renderObj : m_renderObjects) {
+				renderObj->OnForwardRender(rc);
+			}
 			//敵のHPバーなどの画像と文字を描画
 			SpriteViewportRendering(rc, i);
 			FontViewportRendering(rc, i);
@@ -209,7 +211,9 @@ void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 
 			rc.SetViewport(m_quarteViewPorts[i]);
 			//モデル描画
-			ModelRendering(rc);
+			for (auto& renderObj : m_renderObjects) {
+				renderObj->OnForwardRender(rc);
+			}
 			//敵のHPバーなどの画像と文字を描画
 			SpriteViewportRendering(rc, i);
 			FontViewportRendering(rc, i);
@@ -220,21 +224,32 @@ void nsK2EngineLow::RenderingEngine::DrawModelInViewPorts(RenderContext& rc)
 	{
 		rc.SetViewport(m_soloViewPort);
 		m_cameraDrawing = enCameraDrawing_Solo;
-		ModelRendering(rc);
+		for (auto& renderObj : m_renderObjects) {
+			renderObj->OnForwardRender(rc);
+		}
 	}
 }
 
-void nsK2EngineLow::RenderingEngine::ModelRendering(RenderContext& rc)
+void nsK2EngineLow::RenderingEngine::FowardRendering(RenderContext& rc)
 {
-	for (auto& modelObj : m_modelList) {
-		modelObj->OnRenderModel(rc);
-	}
+	BeginGPUEvent("FowardRendering");
+
+	rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
+	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
+	rc.ClearRenderTargetView(m_mainRenderTarget);
+
+	DrawModelInViewPorts(rc);
+
+	//レンダリングターゲットへの書き込み終了待ち
+	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+
+	EndGPUEvent();
 }
 
 void nsK2EngineLow::RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera, int number)
 {
-	for (auto& modelObj : m_modelList) {
-		modelObj->OnRenderShadowModel(rc, camera, number);
+	for (auto& renderObj : m_renderObjects) {
+		renderObj->OnRenderShadowModel(rc, camera, number);
 	}
 }
 
@@ -416,7 +431,7 @@ void nsK2EngineLow::RenderingEngine::Render2D(RenderContext& rc)
 
 void nsK2EngineLow::RenderingEngine::ClearRenderList()
 {
-	m_modelList.clear();
+	m_renderObjects.clear();
 	m_spriteList.clear();
 	m_laterSpriteList.clear();
 	m_fontList.clear();
@@ -438,18 +453,10 @@ void nsK2EngineLow::RenderingEngine::Execute(RenderContext& rc)
 		g_camera3D[enCameraDrawing_RightDown]->GetPosition());
 
 	//影を描画する
-	m_shadow.Render(rc);
+	//m_shadow.Render(rc);
 
-	//レンダリングターゲットを変更
-	rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
-	rc.SetRenderTargetAndViewport(m_mainRenderTarget);
-	rc.ClearRenderTargetView(m_mainRenderTarget);
-
-	//ビューポートにモデルを描画する
-	DrawModelInViewPorts(rc);
-
-	//書き込み終了待ち
-	rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+	//フォワードレンダリング
+	FowardRendering(rc);
 
 	//ポストエフェクト
 	m_postEffect.Render(rc, m_mainRenderTarget);

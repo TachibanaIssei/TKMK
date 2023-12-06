@@ -1,7 +1,7 @@
 #pragma once
 
 namespace nsK2EngineLow {
-	class ModelRender : public Noncopyable
+	class ModelRender : public IRenderer
 	{
 	//メンバ関数
 	public:
@@ -17,15 +17,8 @@ namespace nsK2EngineLow {
 			AnimationClip* animationClips = nullptr,
 			const int numAnimationClips = 0,
 			const EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
-			const bool shadow = true
-		);
-
-		/// <summary>
-		/// 影を受けるモデルの初期化
-		/// </summary>
-		/// <param name="tkmFilepath"></param>
-		void InitBackGround(
-			const char* tkmFilepath
+			const bool isShadowReceiver = true,
+			const bool isFrontCullingOnDrawShadowMap = false
 		);
 
 		/// <summary>
@@ -114,21 +107,9 @@ namespace nsK2EngineLow {
 		/// 描画処理
 		/// </summary>
 		/// <param name="rc">レンダリングコンテキスト</param>
-		void Draw(RenderContext& rc)
-		{
-			g_renderingEngine->AddModelList(this);
-		};
+		void Draw(RenderContext& rc);
 
-		/// <summary>
-		/// モデルを描画する
-		/// </summary>
-		/// <param name="rc"></param>
-		void OnRenderModel(RenderContext& rc)
-		{
-			m_model[g_renderingEngine->GetCameraDrawing()].Draw(rc,1,g_renderingEngine->GetCameraDrawing());
-		}
-
-		void OnRenderShadowModel(RenderContext& rc,Camera& camera, const int number)
+		void OnRenderShadowModel(RenderContext& rc,Camera& camera, const int number) override
 		{
 			m_shadowModel[number].Draw(rc, camera);
 		}
@@ -207,11 +188,33 @@ namespace nsK2EngineLow {
 			const int numAnimationClips,
 			const EnModelUpAxis enModelUpAxis
 		);
-
 		/// <summary>
-		/// ディレクションライトの情報を作成
+		/// フォワードレンダリング用のモデルを初期化
 		/// </summary>
-		void MakeDirectionData(const int lightNumber);
+		/// <param name="tkmFilePath"></param>
+		/// <param name="enModelUpAxis"></param>
+		/// <param name="isShadowReciever"></param>
+		void InitModelOnFowardRendering(
+			const char* tkmFilePath,
+			const EnModelUpAxis enModelUpAxis,
+			const bool isShadowReciever
+		);
+
+		void InitModelOnShadowMap(
+			const char* tkmFilePath,
+			EnModelUpAxis modelUpAxis,
+			bool isFrontCullingOnDrawShadowMap
+		);
+		/// <summary>
+		/// 頂点シェーダーのエントリ－ポイントを設定
+		/// </summary>
+		/// <param name="initData">モデル初期化データ</param>
+		void SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData);
+		/// <summary>
+		/// フォワードレンダリングでのモデル描画
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnForwardRender(RenderContext& rc) override;
 
 	//メンバ変数
 	private:
@@ -220,14 +223,10 @@ namespace nsK2EngineLow {
 		int							m_numAnimationClips = 0;					//アニメーションクリップの数。
 		Animation					m_animation;								//アニメーション。
 		float						m_animationSpeed	= 1.0f;					//アニメーションスピード
-
 		Vector3						m_position			= Vector3::Zero;		//座標
 		Vector3						m_scale				= Vector3::One;			//大きさ
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
-
 		Model						m_model[MAX_VIEWPORT];						//Modelクラス
-		ModelInitData				m_modelInitData;							//ModelInitDataクラス
-
 		Model						m_shadowModel[MAX_VIEWPORT];				//シャドウマップ描画用
 	};
 

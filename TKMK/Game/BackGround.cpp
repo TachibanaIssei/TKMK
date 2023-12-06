@@ -13,7 +13,7 @@ bool BackGround::Start()
 {
 
 	//地面
-	m_modelRenderGround.InitBackGround("Assets/modelData/background/stadium_ground.tkm");
+	m_modelRenderGround.Init("Assets/modelData/background/stadium_ground.tkm");
 
 	m_modelRenderGround.SetPosition(m_position);
 	m_modelRenderGround.SetRotation(m_rotation);

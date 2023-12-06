@@ -254,6 +254,7 @@
     <ClCompile Include="AI\PathFinding\NaviMesh.cpp" />
     <ClCompile Include="AI\PathFinding\Path.cpp" />
     <ClCompile Include="AI\PathFinding\PathFinding.cpp" />
+    <ClCompile Include="mySourceCode\IRenderer.cpp" />
     <ClCompile Include="mySourceCode\PostEffect\Bloom.cpp" />
     <ClCompile Include="mySourceCode\Camera\CameraCollisionSolver.cpp" />
     <ClCompile Include="mySourceCode\Collision\CollisionObject.cpp" />
@@ -349,6 +350,8 @@
     <ClInclude Include="AI\PathFinding\NaviMesh.h" />
     <ClInclude Include="AI\PathFinding\Path.h" />
     <ClInclude Include="AI\PathFinding\PathFinding.h" />
+    <ClInclude Include="mySourceCode\IRenderer.h" />
+    <ClInclude Include="mySourceCode\MyRenderer.h" />
     <ClInclude Include="mySourceCode\PostEffect\Bloom.h" />
     <ClInclude Include="mySourceCode\Camera\CameraCollisionSolver.h" />
     <ClInclude Include="mySourceCode\Collision\CollisionObject.h" />

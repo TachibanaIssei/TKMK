@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MyRenderer.h"
 #include "PostEffect/PostEffect.h"
 #include "Light/Light.h"
 #include "Shadow/Shadow.h"
@@ -8,6 +9,7 @@ namespace nsK2EngineLow {
 	static const int MAX_VIEWPORT = 4;
 	static const int DUO_VIEWPORT = 2;
 
+	class IRenderer;
 	class ModelRender;
 	class SpriteRender;
 	class FontRender;
@@ -43,13 +45,14 @@ namespace nsK2EngineLow {
 		void InitCopyToFrameBufferSprite();
 
 		/// <summary>
-		/// モデルレンダークラスをリストに追加する
+		/// 描画オブジェクトを追加
 		/// </summary>
-		/// <param name="modelRender">モデルレンダー</param>
-		void AddModelList(ModelRender* modelRender)
+		/// <param name="renderObject">描画オブジェクト</param>
+		void AddRenderObject(IRenderer* renderObject)
 		{
-			m_modelList.push_back(modelRender);
+			m_renderObjects.emplace_back(renderObject);
 		}
+
 		/// <summary>
 		/// スプライトレンダークラスをリストに追加する
 		/// </summary>
@@ -637,10 +640,10 @@ namespace nsK2EngineLow {
 		void DrawModelInViewPorts(RenderContext& rc);
 
 		/// <summary>
-		/// モデルを描画する
+		/// フォワードレンダリングでのモデル描画
 		/// </summary>
-		/// <param name="rc">レンダーコンテキスト</param>
-		void ModelRendering(RenderContext& rc);
+		/// <param name="rc"></param>
+		void FowardRendering(RenderContext& rc);
 		/// <summary>
 		/// スプライトを描画する
 		/// </summary>
@@ -680,7 +683,7 @@ namespace nsK2EngineLow {
 		void ClearRenderList();
 
 	private:
-		std::vector<ModelRender*>	m_modelList;							//モデルクラスのリスト
+		std::vector<IRenderer*>		m_renderObjects;
 		std::vector<SpriteRender*>	m_spriteList;							//スプライトクラスのリスト
 		std::vector<SpriteRender*>	m_laterSpriteList;						//描画順が遅いスプライトクラスのリスト
 		std::vector<SpriteRender*>	m_spriteDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するスプライトのリスト

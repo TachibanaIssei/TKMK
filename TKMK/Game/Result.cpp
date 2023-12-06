@@ -409,7 +409,7 @@ void Result::InitModel()
 	m_animationClips[enAnimationClip_4th].SetLoopFlag(true);
 
 	//’n–Ê
-	m_backGround.InitBackGround("Assets/modelData/background/stadium_ground.tkm");
+	m_backGround.Init("Assets/modelData/background/stadium_ground.tkm");
 	m_backGround.SetPosition(ResultSpriteConst::BACK_MODEL_POS);
 
 	//•Ç

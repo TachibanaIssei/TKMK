@@ -441,7 +441,7 @@ void CharacterSelect::SetModel()
 	m_knight[3].Init("Assets/modelData/character/Knight/Knight_Green2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	for (int i = 0; i < m_knight.size(); i++)
 	{
-		m_platform[i].InitBackGround("Assets/modelData/platform/platform.tkm");
+		m_platform[i].Init("Assets/modelData/platform/platform.tkm");
 
 		//アニメーションイベント用の関数を設定する。
 		m_knight[i].AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -460,12 +460,12 @@ void CharacterSelect::SetModel()
 		m_platform[i].Update();
 	}
 
-	m_stage.InitBackGround("Assets/modelData/background/stadium05_ground.tkm");
+	m_stage.Init("Assets/modelData/background/stadium05_ground.tkm");
 	m_stage.SetPosition(SelectConst::STAGE_POS);
 	m_stage.SetScale(1.0f, 1.2f, 1.0f);
 	m_stage.Update();
 
-	m_wall.InitBackGround("Assets/modelData/background/stadium05_Wall.tkm");
+	m_wall.Init("Assets/modelData/background/stadium05_Wall.tkm");
 	m_wall.SetPosition(SelectConst::STAGE_POS);
 	m_wall.SetScale(1.0f, 0.7f, 1.0f);
 	m_wall.Update();

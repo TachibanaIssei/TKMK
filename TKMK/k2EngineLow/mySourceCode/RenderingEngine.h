@@ -4,6 +4,7 @@
 #include "PostEffect/PostEffect.h"
 #include "Light/SceneLight.h"
 #include "Shadow/Shadow.h"
+#include "Shadow/ShadowMapRender.h"
 
 namespace nsK2EngineLow {
 	static const int MAX_VIEWPORT = 4;
@@ -20,7 +21,7 @@ namespace nsK2EngineLow {
 		struct SLightingCB
 		{
 			Light m_light;	//ライト
-			//Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
+			Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
 		};
 
 		enum EnGameMode {
@@ -44,7 +45,7 @@ namespace nsK2EngineLow {
 			enCameraDrawing_RightDown = 3	//右下
 		};
 
-		void Init();
+		void Init(const bool isSoftShadow);
 
 		void InitRenderTargets();
 		void InitCopyToFrameBufferSprite();
@@ -155,6 +156,30 @@ namespace nsK2EngineLow {
 		}
 
 		/// <summary>
+		/// シャドウマップテクスチャにクエリを行う
+		/// </summary>
+		/// <param name="queryFunc"></param>
+		void QueryShadowMapTexture(std::function< void(Texture& shadowMap) > queryFunc)
+		{
+			for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
+			{
+				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+				{
+					queryFunc(m_shadowMapRenders[i].GetShadowMap(areaNo));
+				}
+			}
+		}
+
+		/// <summary>
+		/// ソフトシャドウをtrueなら行う
+		/// </summary>
+		/// <returns></returns>
+		const bool IsSoftShadow() const
+		{
+			return m_isSoftShadow;
+		}
+
+		/// <summary>
 		/// ディレクションライトを設定
 		/// </summary>
 		/// <param name="lightNo">ライト番号</param>
@@ -218,6 +243,10 @@ namespace nsK2EngineLow {
 
 	private:
 		/// <summary>
+		/// シャドウマップレンダーを初期化
+		/// </summary>
+		void InitShadowMapRender();
+		/// <summary>
 		/// ビューポートをInitする
 		/// </summary>
 		void InitViewPorts();
@@ -233,6 +262,11 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc"></param>
 		void FowardRendering(RenderContext& rc);
+		/// <summary>
+		/// シャドウマップへの描画
+		/// </summary>
+		/// <param name="rc"></param>
+		void RenderToShadowMap(RenderContext& rc);
 		/// <summary>
 		/// スプライトを描画する
 		/// </summary>
@@ -294,6 +328,7 @@ namespace nsK2EngineLow {
 		Sprite						m_mainSprite;
 		Sprite						m_copyToFrameBufferSprite;				//テクスチャを貼り付けるためのスプライトを初期化
 
+		ShadowMapRender				m_shadowMapRenders[MAX_DIRECTIONAL_LIGHT];		//シャドウマップへの描画処理
 		Shadow						m_shadow;								//シャドウマップ
 		PostEffect					m_postEffect;							//ポストエフェクト
 
@@ -303,5 +338,7 @@ namespace nsK2EngineLow {
 		D3D12_VIEWPORT m_duoViewPorts[DUO_VIEWPORT];						//2画面分割用のビューポート
 		D3D12_VIEWPORT m_quarteViewPorts[MAX_VIEWPORT];						//4画面分割用のビューポート
 		EnGameMode m_gameMode = enGameMode_SoloPlay;
+
+		bool						m_isSoftShadow = false;					//ソフトシャドウを行う？
 	};
 }

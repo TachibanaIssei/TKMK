@@ -8,8 +8,10 @@ namespace {
 
 namespace nsK2EngineLow
 {
-	void RenderingEngine::Init()
+	void RenderingEngine::Init(const bool isSoftShadow)
 	{
+		m_isSoftShadow = isSoftShadow;
+
 		InitViewPorts();
 		InitRenderTargets();
 		m_shadow.Init();
@@ -93,6 +95,14 @@ namespace nsK2EngineLow
 		}
 		else {
 			EffectEngine::GetInstance()->BeginFrame(enCameraDrawing_Solo);
+		}
+	}
+
+	void RenderingEngine::InitShadowMapRender()
+	{
+		for (auto& ShadowMapRender : m_shadowMapRenders)
+		{
+			ShadowMapRender.Init(m_isSoftShadow);
 		}
 	}
 
@@ -245,6 +255,30 @@ namespace nsK2EngineLow
 		//レンダリングターゲットへの書き込み終了待ち
 		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
 
+		EndGPUEvent();
+	}
+
+	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
+	{
+		BeginGPUEvent("RenderToShadowMap");
+		int ligNo = 0;
+		for (int viewportNumber = 0; viewportNumber < MAX_VIEWPORT; viewportNumber++)
+		{
+			for (auto& shadowMapRender : m_shadowMapRenders)
+			{
+				if (m_sceneLight[viewportNumber].IsCastShadow(ligNo))
+				{
+					shadowMapRender.Render(
+						rc,
+						ligNo,
+						m_lightingCB[viewportNumber].m_light.directionalLight[ligNo].direction,
+						m_renderObjects,
+						viewportNumber
+					);
+				}
+				ligNo++;
+			}
+		}
 		EndGPUEvent();
 	}
 
@@ -454,6 +488,13 @@ namespace nsK2EngineLow
 			m_lightingCB[i].m_light = m_sceneLight[i].GetSceneLight();
 			m_lightingCB[i].m_light.eyePos = g_camera3D[i]->GetPosition();
 			m_lightingCB[i].m_light.mViewProjInv.Inverse(g_camera3D[i]->GetViewProjectionMatrix());
+			for (int j = 0; j < MAX_DIRECTIONAL_LIGHT; j++)
+			{
+				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+				{
+					m_lightingCB[i].mlvp[j][areaNo] = m_shadowMapRenders[j].GetLVPMatrix(areaNo);
+				}
+			}
 		}
 	}
 
@@ -461,9 +502,7 @@ namespace nsK2EngineLow
 	{
 		SetLightingCB();
 
-		//影を描画する
-		//m_shadow.Render(rc);
-
+		RenderToShadowMap(rc);
 		//フォワードレンダリング
 		FowardRendering(rc);
 

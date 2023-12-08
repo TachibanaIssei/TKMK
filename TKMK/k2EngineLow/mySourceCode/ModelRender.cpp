@@ -10,7 +10,7 @@ namespace nsK2EngineLow
 		// アニメーションを初期化。
 		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
 		InitModelOnFowardRendering(tkmFilepath, enModelUpAxis, isShadowReceiver);
-		
+
 		InitModelOnShadowMap(tkmFilepath, enModelUpAxis, isFrontCullingOnDrawShadowMap);
 	}
 
@@ -39,11 +39,16 @@ namespace nsK2EngineLow
 				m_skeleton.Update(m_model[i].GetWorldMatrix());
 			}
 
-			//シャドウモデルが初期化されていたら
-			if (m_shadowModel[i].IsInited())
+			for (auto& models : m_shadowModelsViewportArray[i].shadowModels)
 			{
-				m_shadowModel[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
-				//g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
+				for (auto& model : models)
+				{
+					//シャドウモデルが初期化されていたら
+					if (model.IsInited())
+					{
+						model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+					}
+				}
 			}
 		}
 
@@ -56,12 +61,26 @@ namespace nsK2EngineLow
 		g_renderingEngine->AddRenderObject(this);
 	}
 
+
 	void ModelRender::OnForwardRender(RenderContext& rc)
 	{
 		if (m_model[g_renderingEngine->GetCameraDrawing()].IsInited())
 		{
 			m_model[g_renderingEngine->GetCameraDrawing()].Draw(
 				rc, 1, g_renderingEngine->GetCameraDrawing()
+			);
+		}
+	}
+
+	void ModelRender::OnRenderShadowMap(RenderContext& rc, const int ligNo, const int shadowMapNo, const Matrix& lvpMatrix, const int viewportNumber)
+	{
+		if (m_shadowModelsViewportArray[viewportNumber].shadowModels[ligNo][shadowMapNo].IsInited())
+		{
+			m_shadowModelsViewportArray[viewportNumber].shadowModels[ligNo][shadowMapNo].Draw(
+				rc,
+				g_matIdentity,
+				lvpMatrix,
+				1
 			);
 		}
 	}
@@ -104,24 +123,30 @@ namespace nsK2EngineLow
 			modelInitData.m_skeleton = &m_skeleton;
 		}
 
-		/*if (g_renderingEngine->IsSoftShadow())
+		if (g_renderingEngine->IsSoftShadow())
 		{
 			modelInitData.m_psEntryPointFunc = "PSMainSoftShadow";
 		}
 		else
-		{*/
+		{
 			modelInitData.m_psEntryPointFunc = "PSMainHardShadow";
-		//}
+		}
 
 		modelInitData.m_modelUpAxis = enModelUpAxis;
 		modelInitData.m_tkmFilePath = tkmFilePath;
 		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		int expandSRVNo = 0;
+		g_renderingEngine->QueryShadowMapTexture([&](Texture& shadowMap) {
+			modelInitData.m_expandShaderResoruceView[expandSRVNo] = &shadowMap;
+			expandSRVNo++;
+		});
 		//モデルクラスの初期化
 		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
 			//ライトの情報を定数バッファへ渡す
 			modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight(i);
 			modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight(i));
+
 
 			m_model[i].Init(modelInitData);
 		}
@@ -143,25 +168,28 @@ namespace nsK2EngineLow
 		{
 			modelInitData.m_skeleton = &m_skeleton;
 		}
-		//modelInitData.m_fxFilePath = "Assets/shader/preProcess/DrawShadowMap.fx";
+		modelInitData.m_fxFilePath = "Assets/shader/preProcess/DrawShadowMap.fx";
 
-		/*if (g_renderingEngine->IsSoftShadow())
+		if (g_renderingEngine->IsSoftShadow())
 		{
 			modelInitData.m_colorBufferFormat[0] = g_softShadowMapFormat.colorBufferFormat;
 		}
 		else
 		{
 			modelInitData.m_colorBufferFormat[0] = g_hardShadowMapFormat.colorBufferFormat;
-		}*/
+		}
 
-		/*for (int ligNo = 0; ligNo < MAX_DIRECTIONAL_LIGHT; ligNo++)
+		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
-			Model* shadowModelArray = m_shadowModels[ligNo];
-			for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
+			for (int ligNo = 0; ligNo < MAX_DIRECTIONAL_LIGHT; ligNo++)
 			{
-				shadowModelArray[shadowMapNo].Init(modelInitData);
+				Model* shadowModelArray = m_shadowModelsViewportArray[i].shadowModels[ligNo];
+				for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
+				{
+					shadowModelArray[shadowMapNo].Init(modelInitData);
+				}
 			}
-		}*/
+		}
 	}
 
 	void ModelRender::SetupVertexShaderEntryPointFunc(ModelInitData& modelInitData)

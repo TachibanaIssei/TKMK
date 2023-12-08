@@ -239,6 +239,8 @@
     <ClCompile Include="mySourceCode\Camera\SpringCamera.cpp" />
     <ClCompile Include="mySourceCode\SkyCube.cpp" />
     <ClCompile Include="mySourceCode\IRenderer.cpp" />
+    <ClCompile Include="mySourceCode\Shadow\ShadowMapRender.cpp" />
+    <ClCompile Include="mySourceCode\Shadow\CascadeShadowMapMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -528,6 +530,8 @@
     <ClInclude Include="mySourceCode\SkyCube.h" />
     <ClInclude Include="mySourceCode\IRenderer.h" />
     <ClInclude Include="mySourceCode\MyRenderer.h" />
+    <ClInclude Include="mySourceCode\Shadow\ShadowMapRender.h" />
+    <ClInclude Include="mySourceCode\Shadow\CascadeShadowMapMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

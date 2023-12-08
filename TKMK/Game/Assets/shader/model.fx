@@ -148,15 +148,15 @@ float4 PSMainCore( SPSIn In, uniform int isSoftShadow)
     {
         // 影の落ち具合を計算する。
         float shadow = 0.0f;
-        // if( light.directionalLight[ligNo].castShadow == 1){
-        //     //影を生成するなら。
-        //     shadow = CalcShadowRate( 
-        //         g_shadowMap, 
-        //         light.mlvp, 
-        //         ligNo, 
-        //         worldPos, 
-        //         isSoftShadow ) * shadowParam;
-        // }
+        if( light.directionalLight[ligNo].castShadow == 1){
+            //影を生成するなら。
+            shadow = CalcShadowRate( 
+                g_shadowMap, 
+                light.mlvp, 
+                ligNo, 
+                worldPos, 
+                isSoftShadow ) * shadowParam;
+        }
         
         lig += CalcLighting(
             light.directionalLight[ligNo].direction,

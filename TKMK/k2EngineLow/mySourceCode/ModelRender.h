@@ -171,6 +171,10 @@ namespace nsK2EngineLow {
 		}
 
 	private:
+		struct ShadowModels
+		{
+			Model	shadowModels[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	//シャドウマップに描画されるモデル
+		};
 		/// <summary>
 		/// スケルトンの初期化。
 		/// </summary>
@@ -215,6 +219,14 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc"></param>
 		void OnForwardRender(RenderContext& rc) override;
+		/// <summary>
+		/// シャドウマップ描画パスから呼ばれる処理
+		/// </summary>
+		/// <param name="rc">レンダーコンテキスト</param>
+		/// <param name="ligNo">ライト番号</param>
+		/// <param name="shadowMapNo">シャドウマップ番号</param>
+		/// <param name="lvpMatrix">ライトビュープロジェクション行列</param>
+		virtual void OnRenderShadowMap(RenderContext& rc, const int ligNo, const int shadowMapNo, const Matrix& lvpMatrix, const int viewportNumber) override;
 
 	//メンバ変数
 	private:
@@ -228,6 +240,6 @@ namespace nsK2EngineLow {
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
 		Model						m_model[MAX_VIEWPORT];						//Modelクラス
 		Model						m_shadowModel[MAX_VIEWPORT];				//シャドウマップ描画用
+		ShadowModels				m_shadowModelsViewportArray[MAX_VIEWPORT];
 	};
-
 }

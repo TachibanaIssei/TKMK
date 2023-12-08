@@ -16,7 +16,8 @@ namespace nsK2EngineLow {
 			RenderContext& rc,
 			const int ligNo,
 			const int shadowMapNo,
-			const Matrix& lvpMatrix
+			const Matrix& lvpMatrix,
+			const int viewportNumber
 		)
 		{
 

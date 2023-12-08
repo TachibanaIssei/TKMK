@@ -254,6 +254,7 @@
     <ClCompile Include="AI\PathFinding\NaviMesh.cpp" />
     <ClCompile Include="AI\PathFinding\Path.cpp" />
     <ClCompile Include="AI\PathFinding\PathFinding.cpp" />
+    <ClCompile Include="mySourceCode\Shadow\CascadeShadowMapMatrix.cpp" />
     <ClCompile Include="mySourceCode\IRenderer.cpp" />
     <ClCompile Include="mySourceCode\PostEffect\Bloom.cpp" />
     <ClCompile Include="mySourceCode\Camera\CameraCollisionSolver.cpp" />
@@ -334,6 +335,7 @@
     <ClCompile Include="mySourceCode\RenderingEngine.cpp" />
     <ClCompile Include="mySourceCode\Shadow\Shadow.cpp" />
     <ClCompile Include="mySourceCode\SkyCube.cpp" />
+    <ClCompile Include="mySourceCode\Shadow\ShadowMapRender.cpp" />
     <ClCompile Include="sound\SoundEngine.cpp" />
     <ClCompile Include="sound\SoundSource.cpp" />
     <ClCompile Include="sound\WaveFile.cpp" />
@@ -350,6 +352,7 @@
     <ClInclude Include="AI\PathFinding\NaviMesh.h" />
     <ClInclude Include="AI\PathFinding\Path.h" />
     <ClInclude Include="AI\PathFinding\PathFinding.h" />
+    <ClInclude Include="mySourceCode\Shadow\CascadeShadowMapMatrix.h" />
     <ClInclude Include="mySourceCode\IRenderer.h" />
     <ClInclude Include="mySourceCode\MyRenderer.h" />
     <ClInclude Include="mySourceCode\PostEffect\Bloom.h" />
@@ -439,6 +442,7 @@
     <ClInclude Include="mySourceCode\RenderingEngine.h" />
     <ClInclude Include="mySourceCode\Shadow\Shadow.h" />
     <ClInclude Include="mySourceCode\SkyCube.h" />
+    <ClInclude Include="mySourceCode\Shadow\ShadowMapRender.h" />
     <ClInclude Include="sound\SoundEngine.h" />
     <ClInclude Include="sound\SoundSource.h" />
     <ClInclude Include="sound\WaveFile.h" />

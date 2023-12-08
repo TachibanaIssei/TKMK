@@ -21,7 +21,7 @@ struct LightCB
     float4x4 mViewProjInv;  // ビュープロジェクション行列の逆行列
     float3 eyePos;          // カメラの視点
     float3 ambientLight;    // 環境光
-   // float4x4 mlvp[NUM_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];
+    float4x4 mlvp[NUM_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];
 };
 
 #endif

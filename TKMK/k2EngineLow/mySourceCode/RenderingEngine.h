@@ -178,9 +178,9 @@ namespace nsK2EngineLow {
 		/// ライティングの定数バッファを取得
 		/// </summary>
 		/// <returns>定数バッファ</returns>
-		SLightingCB& GetLightingCB()
+		SLightingCB& GetLightingCB(const int number)
 		{
-			return m_lightingCB;
+			return m_lightingCB[number];
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -270,6 +270,10 @@ namespace nsK2EngineLow {
 		/// 描画リストをclearする
 		/// </summary>
 		void ClearRenderList();
+		/// <summary>
+		/// ライトの定数バッファにライト情報を設定する
+		/// </summary>
+		void SetLightingCB();
 
 	private:
 		std::vector<IRenderer*>		m_renderObjects;
@@ -282,7 +286,7 @@ namespace nsK2EngineLow {
 		std::vector<FontRender*>	m_fontDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するフォントクラスのリスト
 
 		SceneLight					m_sceneLight[MAX_VIEWPORT];				//シーンライト
-		SLightingCB					m_lightingCB;							//ライトの定数バッファ
+		SLightingCB					m_lightingCB[MAX_VIEWPORT];							//ライトの定数バッファ
 
 		RenderTarget				m_mainRenderTarget;						//メインレンダーターゲット
 		RenderTarget				m_2DRenderTarget;						//2Dレンダーターゲット

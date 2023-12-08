@@ -447,8 +447,20 @@ namespace nsK2EngineLow
 		}
 	}
 
+	void RenderingEngine::SetLightingCB()
+	{
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			m_lightingCB[i].m_light = m_sceneLight[i].GetSceneLight();
+			m_lightingCB[i].m_light.eyePos = g_camera3D[i]->GetPosition();
+			m_lightingCB[i].m_light.mViewProjInv.Inverse(g_camera3D[i]->GetViewProjectionMatrix());
+		}
+	}
+
 	void RenderingEngine::Execute(RenderContext& rc)
 	{
+		SetLightingCB();
+
 		//影を描画する
 		//m_shadow.Render(rc);
 

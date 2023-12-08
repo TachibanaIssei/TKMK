@@ -115,6 +115,6 @@ static const int MAX_BONE = 512;	// É{Å[ÉìÇÃç≈ëÂêîÅB
 #include "mySourceCode/ModelRender.h"
 #include "mySourceCode/SpriteRender.h"
 #include "mySourceCode/FontRender.h"
-#include "mySourceCode/Light/Light.h"
+#include "mySourceCode/Light/SceneLight.h"
 #include "mySourceCode/SkyCube.h"
 #include "mySourceCode/Collision/CollisionObject.h"

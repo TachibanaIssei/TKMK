@@ -230,7 +230,7 @@
     <ClCompile Include="mySourceCode\FontRender.cpp" />
     <ClCompile Include="mySourceCode\RenderingEngine.cpp" />
     <ClCompile Include="k2EngineLow.cpp" />
-    <ClCompile Include="mySourceCode\Light\Light.cpp" />
+    <ClCompile Include="mySourceCode\Light\SceneLight.cpp" />
     <ClCompile Include="mySourceCode\Collision\CollisionObject.cpp" />
     <ClCompile Include="mySourceCode\Camera\CameraCollisionSolver.cpp" />
     <ClCompile Include="mySourceCode\PostEffect\PostEffect.cpp" />
@@ -518,7 +518,7 @@
     <ClInclude Include="mySourceCode\SpriteRender.h" />
     <ClInclude Include="mySourceCode\FontRender.h" />
     <ClInclude Include="mySourceCode\RenderingEngine.h" />
-    <ClInclude Include="mySourceCode\Light\Light.h" />
+    <ClInclude Include="mySourceCode\Light\SceneLight.h" />
     <ClInclude Include="mySourceCode\Collision\CollisionObject.h" />
     <ClInclude Include="mySourceCode\Camera\CameraCollisionSolver.h" />
     <ClInclude Include="mySourceCode\PostEffect\PostEffect.h" />

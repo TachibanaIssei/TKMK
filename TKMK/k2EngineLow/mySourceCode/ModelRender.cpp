@@ -43,7 +43,7 @@ namespace nsK2EngineLow
 			if (m_shadowModel[i].IsInited())
 			{
 				m_shadowModel[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
-				g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
+				//g_renderingEngine->SetmLVP(i, g_renderingEngine->GetLightCamera(i).GetViewProjectionMatrix());
 			}
 		}
 
@@ -104,6 +104,15 @@ namespace nsK2EngineLow
 			modelInitData.m_skeleton = &m_skeleton;
 		}
 
+		/*if (g_renderingEngine->IsSoftShadow())
+		{
+			modelInitData.m_psEntryPointFunc = "PSMainSoftShadow";
+		}
+		else
+		{*/
+			modelInitData.m_psEntryPointFunc = "PSMainHardShadow";
+		//}
+
 		modelInitData.m_modelUpAxis = enModelUpAxis;
 		modelInitData.m_tkmFilePath = tkmFilePath;
 		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
@@ -162,7 +171,7 @@ namespace nsK2EngineLow
 
 		if (m_animationClips != nullptr) {
 			// アニメーションあり。
-			modelInitData.m_vsSkinEntryPointFunc = "VSSkinMain";
+			modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
 		}
 	}
 }

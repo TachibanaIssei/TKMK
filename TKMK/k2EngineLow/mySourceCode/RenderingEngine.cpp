@@ -14,6 +14,7 @@ namespace nsK2EngineLow
 
 		InitViewPorts();
 		InitRenderTargets();
+		InitShadowMapRender();
 		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
@@ -261,9 +262,9 @@ namespace nsK2EngineLow
 	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
 	{
 		BeginGPUEvent("RenderToShadowMap");
-		int ligNo = 0;
 		for (int viewportNumber = 0; viewportNumber < MAX_VIEWPORT; viewportNumber++)
 		{
+			int ligNo = 0;
 			for (auto& shadowMapRender : m_shadowMapRenders)
 			{
 				if (m_sceneLight[viewportNumber].IsCastShadow(ligNo))

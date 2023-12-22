@@ -160,7 +160,7 @@ bool Result::Start()
 
 	Vector3 dir = { 0.1f,-1.0f,0.5f };
 	dir.Normalize();
-	Vector3 color = { 0.7f,0.7f,0.7f };
+	Vector3 color = { 3.0f,3.0f,3.0f };
 	g_renderingEngine->SetDirectionLight(0, dir, color);
 	Vector3 ambient = { 0.6f,0.6f,0.6f };
 	g_renderingEngine->SetAmbient(ambient);

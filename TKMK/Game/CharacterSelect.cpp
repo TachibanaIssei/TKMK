@@ -104,10 +104,10 @@ bool CharacterSelect::Start()
 	g_camera3D[0]->SetPosition(SelectConst::CAMERA_POSITION);
 	g_camera3D[0]->Update();
 
-	g_renderingEngine->SetAmbient(Vector3(1.0f, 1.0f, 1.0f));
+	g_renderingEngine->SetAmbient(Vector3::One * 0.7f);
 	Vector3 dir = Vector3(0.0f, -1.0f, 0.5f);
 	dir.Normalize();
-	Vector3 color = { 0.5f,0.5f,0.5f };
+	Vector3 color = Vector3::One * 5.0f;
 	g_renderingEngine->SetDirectionLight(0, dir, color);
 
 	//剣士のモデル、アニメーション
@@ -460,7 +460,7 @@ void CharacterSelect::SetModel()
 		m_platform[i].Update();
 	}
 
-	m_stage.Init("Assets/modelData/background/stadium05_ground.tkm");
+	m_stage.Init("Assets/modelData/background/stadium_ground.tkm");
 	m_stage.SetPosition(SelectConst::STAGE_POS);
 	m_stage.SetScale(1.0f, 1.2f, 1.0f);
 	m_stage.Update();

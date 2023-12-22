@@ -29,8 +29,8 @@ namespace {
 	const Vector3 TOWER_X_POS = Vector3(20.0f, -410.0f, 0.0f);
 	const Vector3 RABBIT_POS = Vector3(700.0f, 350.0f, 0.0f);
 	const Vector3 RabbitSpriteScale = Vector3(0.5f, 0.5f, 0.0f);
-	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(0.5f, 0.5f, 0.5f);//ディレクションライトのカラー
-	const Vector3 AMBIENT_COLOR = Vector3(1.0f, 1.0f, 1.0f);//環境光のカラー
+	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f) * 6.0f;//ディレクションライトのカラー
+	const Vector3 AMBIENT_COLOR = Vector3(1.0f,1.0f,1.0f) * 0.5f;//環境光のカラー
 
 	//const Vector3 DARKNESS_DIRECTION = Vector3(0.4f, 0.4f, 0.4f);//必殺技発動時のディレクションライトのカラー
 	const float DARKNESS_DIRECTION = 0.4f;
@@ -211,7 +211,7 @@ void Game::BattleStart()
 				//リスポーン番号1～8まで生成
 				//中立の敵の生成
 				if (objData.number != 0 && objData.number <= 8) {
-					CreateEnemy(objData.position, objData.rotation);
+					//CreateEnemy(objData.position, objData.rotation);
 					return true;
 				}
 
@@ -404,7 +404,7 @@ void Game::Respawn()
 			//中立の敵のリスポーンする座標を決める
 			SetEnemyRespawnPos();
 			//中立の敵を生成
-			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], false);
+			//CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], false);
 
 		}
 	}
@@ -424,7 +424,7 @@ void Game::RabbitRespawn()
 	RandamRespawnPosNumber = rand() % 19 + 1;	//中立の敵のリスポーンする座標を決める
 	SetEnemyRespawnPos();
 	//中立の敵を生成
-	CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], true);
+	//CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], true);
 
 }
 

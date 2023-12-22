@@ -22,6 +22,23 @@ namespace nsK2EngineLow {
 		);
 
 		/// <summary>
+		/// フォワードレンダリングでの初期化
+		/// </summary>
+		/// <param name="tkmFilepath"></param>
+		/// <param name="animationClips"></param>
+		/// <param name="numAnimationClips"></param>
+		/// <param name="enModelUpAxis"></param>
+		/// <param name="isShadowReceiver"></param>
+		/// <param name="isFrontCullingOnDrawShadowMap"></param>
+		void InitForwardRender(const char* tkmFilepath,
+			AnimationClip* animationClips = nullptr,
+			const int numAnimationClips = 0,
+			const EnModelUpAxis enModelUpAxis = enModelUpAxisZ,
+			const bool isShadowReceiver = true,
+			const bool isFrontCullingOnDrawShadowMap = false
+		);
+
+		/// <summary>
 		/// スカイキューブを初期化する
 		/// </summary>
 		/// <param name="initData"></param>
@@ -31,10 +48,7 @@ namespace nsK2EngineLow {
 		/// モデルを取得する
 		/// </summary>
 		/// <returns>モデル</returns>
-		Model& GetModel()
-		{
-			return m_model[0];
-		}
+		Model& GetModel();
 
 		/// <summary>
 		/// 座標、回転、拡大をすべて設定
@@ -176,6 +190,10 @@ namespace nsK2EngineLow {
 			Model	shadowModels[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	//シャドウマップに描画されるモデル
 		};
 		/// <summary>
+		/// 各種モデルのワールド行列を更新する
+		/// </summary>
+		void UpdateWorldMatrixInModels();
+		/// <summary>
 		/// スケルトンの初期化。
 		/// </summary>
 		/// <param name="filePath">ファイルパス。</param>
@@ -204,6 +222,17 @@ namespace nsK2EngineLow {
 			const bool isShadowReciever
 		);
 
+		/// <summary>
+		/// GBuffer描画用のモデルを初期化
+		/// </summary>
+		/// <param name="tkmFilePath">tkmファイルパス</param>
+		/// <param name="enModelUpAxis">モデルの上方向</param>
+		void InitModelOnRenderGBuffer(
+			const char* tkmFilePath,
+			const EnModelUpAxis enModelUpAxis,
+			const bool isShadowReciever
+		);
+
 		void InitModelOnShadowMap(
 			const char* tkmFilePath,
 			EnModelUpAxis modelUpAxis,
@@ -219,6 +248,11 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc"></param>
 		void OnForwardRender(RenderContext& rc) override;
+		/// <summary>
+		/// GBuffer描画パスから呼ばれる処理
+		/// </summary>
+		/// <param name="rc"></param>
+		void OnRenderToGBuffer(RenderContext& rc) override;
 		/// <summary>
 		/// シャドウマップ描画パスから呼ばれる処理
 		/// </summary>
@@ -240,6 +274,7 @@ namespace nsK2EngineLow {
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
 		Model						m_model[MAX_VIEWPORT];						//Modelクラス
 		Model						m_shadowModel[MAX_VIEWPORT];				//シャドウマップ描画用
+		Model						m_renderToGBufferModel[MAX_VIEWPORT];						//RenderToGBufferで描画されるモデル
 		ShadowModels				m_shadowModelsViewportArray[MAX_VIEWPORT];
 	};
 }

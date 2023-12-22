@@ -14,13 +14,17 @@ namespace nsK2EngineLow
 
 		InitViewPorts();
 		InitRenderTargets();
+		InitGBuffer();
 		InitShadowMapRender();
 		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
+		InitDeferredLightingSprite();
 
-		m_sceneLight[enCameraDrawing_Left].Init();
-		m_sceneLight[enCameraDrawing_Right].Init();
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			m_sceneLight[i].Init();
+		}
 	}
 
 	void RenderingEngine::InitRenderTargets()
@@ -97,6 +101,85 @@ namespace nsK2EngineLow
 		else {
 			EffectEngine::GetInstance()->BeginFrame(enCameraDrawing_Solo);
 		}
+	}
+
+	void RenderingEngine::InitGBuffer()
+	{
+		int frameBuffer_w = g_graphicsEngine->GetFrameBufferWidth();
+		int frameBuffer_h = g_graphicsEngine->GetFrameBufferHeight();
+
+		// アルベドカラーを出力用のレンダリングターゲットを初期化する
+		float clearColor[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+		m_gBuffer[enGBufferAlbedoDepth].Create(
+			frameBuffer_w,
+			frameBuffer_h,
+			1,
+			1,
+			DXGI_FORMAT_R32G32B32A32_FLOAT,
+			DXGI_FORMAT_D32_FLOAT,
+			clearColor
+		);
+
+		// 法線出力用のレンダリングターゲットを初期化する
+		m_gBuffer[enGBufferNormal].Create(
+			frameBuffer_w,
+			frameBuffer_h,
+			1,
+			1,
+			DXGI_FORMAT_R8G8B8A8_SNORM,
+			DXGI_FORMAT_UNKNOWN
+		);
+
+		// メタリック、影パラメータ、スムース出力用のレンダリングターゲットを初期化する    
+		m_gBuffer[enGBufferMetaricShadowSmooth].Create(
+			frameBuffer_w,
+			frameBuffer_h,
+			1,
+			1,
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			DXGI_FORMAT_UNKNOWN
+		);
+	}
+
+	void RenderingEngine::InitDeferredLightingSprite()
+	{
+		SpriteInitData spriteInitData;
+
+		// 画面全体にレンダリングするので幅と高さはフレームバッファーの幅と高さと同じ
+		spriteInitData.m_width = g_graphicsEngine->GetFrameBufferWidth();
+		spriteInitData.m_height = g_graphicsEngine->GetFrameBufferHeight();
+
+		// ディファードライティングで使用するテクスチャを設定
+		int texNo = 0;
+		for (auto& gBuffer : m_gBuffer)
+		{
+			spriteInitData.m_textures[texNo++] = &gBuffer.GetRenderTargetTexture();
+		}
+		spriteInitData.m_fxFilePath = "Assets/shader/DeferredLighting.fx";
+
+		if (m_isSoftShadow)
+		{
+			spriteInitData.m_psEntryPoinFunc = "PSMainSoftShadow";
+		}
+		else
+		{
+			spriteInitData.m_psEntryPoinFunc = "PSMainHardShadow";
+		}
+
+		//ライトの情報を定数バッファに渡す
+		spriteInitData.m_expandConstantBuffer = &m_lightingCB[0];
+		spriteInitData.m_expandConstantBufferSize = sizeof(m_lightingCB[0]);
+
+		for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
+		{
+			for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+			{
+				//spriteInitData.m_textures[texNo++] = &m_shadowMapRenders[i].GetShadowMap(areaNo);
+			}
+		}
+
+		spriteInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+		m_diferredLightingSprite.Init(spriteInitData);
 	}
 
 	void RenderingEngine::InitShadowMapRender()
@@ -243,13 +326,133 @@ namespace nsK2EngineLow
 		}
 	}
 
+	void RenderingEngine::RenderToGBuffer(RenderContext& rc)
+	{
+		BeginGPUEvent("RenderToGBuffer");
+		// レンダリングターゲットをG-Bufferに変更
+		RenderTarget* rts[enGBufferNum] = {
+			&m_gBuffer[enGBufferAlbedoDepth],         // 0番目のレンダリングターゲット
+			&m_gBuffer[enGBufferNormal],              // 1番目のレンダリングターゲット
+			&m_gBuffer[enGBufferMetaricShadowSmooth], // 2番目のレンダリングターゲット
+		};
+
+		// まず、レンダリングターゲットとして設定できるようになるまで待つ
+		rc.WaitUntilToPossibleSetRenderTargets(ARRAYSIZE(rts), rts);
+
+		// レンダリングターゲットを設定
+		rc.SetRenderTargets(ARRAYSIZE(rts), rts);
+
+		// レンダリングターゲットをクリア
+		rc.ClearRenderTargetViews(ARRAYSIZE(rts), rts);
+
+		DrawModelOnGBuffer(rc);
+
+		// レンダリングターゲットへの書き込み待ち
+		rc.WaitUntilFinishDrawingToRenderTargets(ARRAYSIZE(rts), rts);
+		EndGPUEvent();
+	}
+
+	void RenderingEngine::DrawModelOnGBuffer(RenderContext& rc)
+	{
+		//2画面分割に描画
+		if (m_gameMode == enGameMode_DuoPlay)
+		{
+			for (int i = 0; i < DUO_VIEWPORT; i++)
+			{
+				if (i == enCameraDrawing_Left)
+				{
+					m_cameraDrawing = enCameraDrawing_Left;
+				}
+				else if (i == enCameraDrawing_Right)
+				{
+					m_cameraDrawing = enCameraDrawing_Right;
+				}
+
+				rc.SetViewport(m_duoViewPorts[i]);
+				//モデル描画
+				for (auto& renderObj : m_renderObjects) {
+					renderObj->OnRenderToGBuffer(rc);
+				}
+			}
+		}
+		//4画面分割に描画
+		else if (m_gameMode == enGameMode_TrioPlay || m_gameMode == enGameMode_QuartetPlay)
+		{
+			for (int i = 0; i < MAX_VIEWPORT; i++)
+			{
+				if (i == enCameraDrawing_LeftUp)
+				{
+					m_cameraDrawing = enCameraDrawing_LeftUp;
+				}
+				else if (i == enCameraDrawing_RightUp)
+				{
+					m_cameraDrawing = enCameraDrawing_RightUp;
+				}
+				else if (i == enCameraDrawing_LeftDown)
+				{
+					m_cameraDrawing = enCameraDrawing_LeftDown;
+				}
+				else if (i == enCameraDrawing_RightDown)
+				{
+					m_cameraDrawing = enCameraDrawing_RightDown;
+				}
+
+				rc.SetViewport(m_quarteViewPorts[i]);
+				//モデル描画
+				for (auto& renderObj : m_renderObjects) {
+					renderObj->OnRenderToGBuffer(rc);
+				}
+			}
+		}
+		//画面分割をしない
+		else
+		{
+			rc.SetViewport(m_soloViewPort);
+			m_cameraDrawing = enCameraDrawing_Solo;
+			for (auto& renderObj : m_renderObjects) {
+				renderObj->OnRenderToGBuffer(rc);
+			}
+		}
+	}
+
+	void RenderingEngine::DeferredLighting(RenderContext& rc)
+	{
+		BeginGPUEvent("DeferredLighting");
+
+		// ディファードライティングに必要なライト情報を更新する
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			m_lightingCB[i].m_light.eyePos = g_camera3D[i]->GetPosition();
+			m_lightingCB[i].m_light.mViewProjInv.Inverse(g_camera3D[i]->GetViewProjectionMatrix());
+			/*for (int j = 0; j < MAX_DIRECTIONAL_LIGHT; j++)
+			{
+				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+				{
+					m_lightingCB[i].mlvp[j][areaNo] = m_shadowMapRenders[j].GetLVPMatrix(areaNo);
+				}
+			}*/
+		}
+
+		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
+		rc.SetRenderTargetAndViewport(m_mainRenderTarget);
+
+		// G-Bufferの内容を元にしてディファードライティング
+		m_diferredLightingSprite.Draw(rc);
+
+		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+
+		EndGPUEvent();
+	}
+
 	void RenderingEngine::FowardRendering(RenderContext& rc)
 	{
 		BeginGPUEvent("FowardRendering");
 
 		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
-		rc.SetRenderTargetAndViewport(m_mainRenderTarget);
-		rc.ClearRenderTargetView(m_mainRenderTarget);
+		rc.SetRenderTarget(
+			m_mainRenderTarget.GetRTVCpuDescriptorHandle(),
+			m_gBuffer[enGBufferAlbedoDepth].GetDSVCpuDescriptorHandle()
+		);
 
 		DrawModelInViewPorts(rc);
 
@@ -350,6 +553,12 @@ namespace nsK2EngineLow
 
 	void RenderingEngine::ExcuteEffectRender(RenderContext& rc)
 	{
+		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
+		rc.SetRenderTarget(
+			m_mainRenderTarget.GetRTVCpuDescriptorHandle(),
+			m_gBuffer[enGBufferAlbedoDepth].GetDSVCpuDescriptorHandle()
+		);
+
 		if (m_gameMode == enGameMode_DuoPlay) {
 			g_camera2D->SetWidth(FRAME_BUFFER_WIDTH_HALF);
 			EffectEngine::GetInstance()->Update(g_gameTime->GetFrameDeltaTime(), enCameraDrawing_Left);
@@ -430,6 +639,8 @@ namespace nsK2EngineLow
 			EffectEngine::GetInstance()->EndDraw();
 			EffectEngine::GetInstance()->Flush();
 		}
+		rc.WaitUntilFinishDrawingToRenderTarget(m_mainRenderTarget);
+
 	}
 
 	void RenderingEngine::Render2D(RenderContext& rc)
@@ -487,15 +698,6 @@ namespace nsK2EngineLow
 		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
 			m_lightingCB[i].m_light = m_sceneLight[i].GetSceneLight();
-			m_lightingCB[i].m_light.eyePos = g_camera3D[i]->GetPosition();
-			m_lightingCB[i].m_light.mViewProjInv.Inverse(g_camera3D[i]->GetViewProjectionMatrix());
-			for (int j = 0; j < MAX_DIRECTIONAL_LIGHT; j++)
-			{
-				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
-				{
-					m_lightingCB[i].mlvp[j][areaNo] = m_shadowMapRenders[j].GetLVPMatrix(areaNo);
-				}
-			}
 		}
 	}
 
@@ -503,8 +705,9 @@ namespace nsK2EngineLow
 	{
 		SetLightingCB();
 
-		RenderToShadowMap(rc);
-		//フォワードレンダリング
+		//RenderToShadowMap(rc);
+		RenderToGBuffer(rc);
+		DeferredLighting(rc);
 		FowardRendering(rc);
 
 		//ポストエフェクト

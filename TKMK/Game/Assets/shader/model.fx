@@ -39,54 +39,6 @@ struct SPSIn{
 ///////////////////////////////////////
 #include "Shadowing.h"
 
-//ディレクションライト構造体
-struct DirectionLight
-{
-    float3 direction;   //ライトの方向
-    float3 color;       //ライトの色
-};
-
-//ポイントライト構造体
-struct PointLight
-{
-    float3  position;   //ライトの座標
-    int     isUse;      //使用中フラグ
-    float3  color;      //ライトの色
-    float3  range;      //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
-};
-
-//スポットライト構造体
-struct SpotLight
-{
-    float3  position;    //ライトの座標
-    float3  angle;       //照射角度
-    float3  color;       //色
-    float3  range;       //xがライトの影響範囲、yが影響範囲に累乗するパラメータ
-    int isUse;           //使用中フラグ
-    float3  direction;   //照射方向
-};
-
-//半球ライト構造体
-struct  HemisphereLight
-{
-    float3 groundColor;     //照り返しのライト
-    int isUse;
-    float3 skyColor;        //天球ライト
-    float3 groundNormal;    //地面の法線
-};
-////////////////////////////////////////////////
-// 定数バッファ。
-////////////////////////////////////////////////
-cbuffer LightCB : register(b1)
-{
-    DirectionLight  directionLight;
-    PointLight      pointLight;
-    SpotLight       spotLight;
-    HemisphereLight hemisphereLight;
-    float3          CameraEyePos;   //カメラの座標
-    float3          ambient;        //環境光
-}
-
 ////////////////////////////////////////////////
 // 関数定義。
 ////////////////////////////////////////////////
@@ -137,6 +89,8 @@ float4 PSMainCore( SPSIn In, uniform int isSoftShadow)
     //スムース
     float smooth = metallicShadowSmoothTexture.SampleLevel(Sampler, In.uv, 0).a;
     
+    return float4(normal.xyz,1.0f);
+
     //影生成用のパラメータ
     float shadowParam = 1.0f;
     
@@ -148,15 +102,15 @@ float4 PSMainCore( SPSIn In, uniform int isSoftShadow)
     {
         // 影の落ち具合を計算する。
         float shadow = 0.0f;
-        if( light.directionalLight[ligNo].castShadow == 1){
-            //影を生成するなら。
-            shadow = CalcShadowRate( 
-                g_shadowMap, 
-                light.mlvp, 
-                ligNo, 
-                worldPos, 
-                isSoftShadow ) * shadowParam;
-        }
+        // if( light.directionalLight[ligNo].castShadow == 1){
+        //     //影を生成するなら。
+        //     shadow = CalcShadowRate( 
+        //         g_shadowMap, 
+        //         light.mlvp, 
+        //         ligNo, 
+        //         worldPos, 
+        //         isSoftShadow ) * shadowParam;
+        // }
         
         lig += CalcLighting(
             light.directionalLight[ligNo].direction,

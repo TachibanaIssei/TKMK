@@ -242,6 +242,11 @@ namespace nsK2EngineLow {
 		void EffectBeginRender();
 
 	private:
+		void InitGBuffer();
+		/// <summary>
+		/// ディファードライティングで使用する画像の初期化
+		/// </summary>
+		void InitDeferredLightingSprite();
 		/// <summary>
 		/// シャドウマップレンダーを初期化
 		/// </summary>
@@ -256,7 +261,17 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
 		void DrawModelInViewPorts(RenderContext& rc);
-
+		/// <summary>
+		/// G-Bufferへの描画
+		/// </summary>
+		/// <param name="rc"></param>
+		void RenderToGBuffer(RenderContext& rc);
+		void DrawModelOnGBuffer(RenderContext& rc);
+		/// <summary>
+		/// ディファードライティング
+		/// </summary>
+		/// <param name="rc"></param>
+		void DeferredLighting(RenderContext& rc);
 		/// <summary>
 		/// フォワードレンダリングでのモデル描画
 		/// </summary>
@@ -310,6 +325,16 @@ namespace nsK2EngineLow {
 		void SetLightingCB();
 
 	private:
+		// GBufferの定義
+		enum EnGBuffer
+		{
+			enGBufferAlbedoDepth,           // アルベドと深度値。αに深度値が記憶されています。
+			enGBufferNormal,                // 法線
+			enGBufferMetaricShadowSmooth,   // メタリック、影パラメータ、スムース。
+			// メタリックがr、影パラメータがg、スムースがa。bは未使用。
+			enGBufferNum,                   // G-Bufferの数
+		};
+
 		std::vector<IRenderer*>		m_renderObjects;
 		std::vector<SpriteRender*>	m_spriteList;							//スプライトクラスのリスト
 		std::vector<SpriteRender*>	m_laterSpriteList;						//描画順が遅いスプライトクラスのリスト
@@ -320,14 +345,15 @@ namespace nsK2EngineLow {
 		std::vector<FontRender*>	m_fontDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するフォントクラスのリスト
 
 		SceneLight					m_sceneLight[MAX_VIEWPORT];				//シーンライト
-		SLightingCB					m_lightingCB[MAX_VIEWPORT];							//ライトの定数バッファ
+		SLightingCB					m_lightingCB[MAX_VIEWPORT];				//ライトの定数バッファ
 
 		RenderTarget				m_mainRenderTarget;						//メインレンダーターゲット
 		RenderTarget				m_2DRenderTarget;						//2Dレンダーターゲット
+		RenderTarget				m_gBuffer[enGBufferNum];
 		Sprite						m_2DSprite;
 		Sprite						m_mainSprite;
 		Sprite						m_copyToFrameBufferSprite;				//テクスチャを貼り付けるためのスプライトを初期化
-
+		Sprite						m_diferredLightingSprite;				//ディファードライティングを行うためのスプライト
 		ShadowMapRender				m_shadowMapRenders[MAX_DIRECTIONAL_LIGHT];		//シャドウマップへの描画処理
 		Shadow						m_shadow;								//シャドウマップ
 		PostEffect					m_postEffect;							//ポストエフェクト

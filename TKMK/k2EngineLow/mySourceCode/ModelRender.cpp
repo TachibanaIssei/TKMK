@@ -9,9 +9,23 @@ namespace nsK2EngineLow
 		InitSkeleton(tkmFilepath);
 		// アニメーションを初期化。
 		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
+		// GBuffer描画用のモデルを初期化
+		InitModelOnRenderGBuffer(tkmFilepath, enModelUpAxis, isShadowReceiver);
+
+		//InitModelOnShadowMap(tkmFilepath, enModelUpAxis, isFrontCullingOnDrawShadowMap);
+		UpdateWorldMatrixInModels();
+	}
+
+	void ModelRender::InitForwardRender(const char* tkmFilepath, AnimationClip* animationClips, const int numAnimationClips, const EnModelUpAxis enModelUpAxis, const bool isShadowReceiver, const bool isFrontCullingOnDrawShadowMap)
+	{
+		// スケルトンを初期化。
+		InitSkeleton(tkmFilepath);
+		// アニメーションを初期化。
+		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
 		InitModelOnFowardRendering(tkmFilepath, enModelUpAxis, isShadowReceiver);
 
-		InitModelOnShadowMap(tkmFilepath, enModelUpAxis, isFrontCullingOnDrawShadowMap);
+		//InitModelOnShadowMap(tkmFilepath, enModelUpAxis, isFrontCullingOnDrawShadowMap);
+		UpdateWorldMatrixInModels();
 	}
 
 	void ModelRender::InitSkyCube(ModelInitData& initData)
@@ -27,27 +41,20 @@ namespace nsK2EngineLow
 
 	void ModelRender::Update()
 	{
+		UpdateWorldMatrixInModels();
 		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
-			//ワールド行列の更新(座標、回転、大きさ)
-			m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
-
 			//スケルトンが初期化されていたら
 			if (m_skeleton.IsInited())
 			{
 				//スケルトンを更新する
-				m_skeleton.Update(m_model[i].GetWorldMatrix());
-			}
-
-			for (auto& models : m_shadowModelsViewportArray[i].shadowModels)
-			{
-				for (auto& model : models)
+				if (m_model[i].IsInited())
 				{
-					//シャドウモデルが初期化されていたら
-					if (model.IsInited())
-					{
-						model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
-					}
+					m_skeleton.Update(m_model[i].GetWorldMatrix());
+				}
+				else if (m_renderToGBufferModel[i].IsInited())
+				{
+					m_skeleton.Update(m_renderToGBufferModel[i].GetWorldMatrix());
 				}
 			}
 		}
@@ -72,6 +79,16 @@ namespace nsK2EngineLow
 		}
 	}
 
+	void ModelRender::OnRenderToGBuffer(RenderContext& rc)
+	{
+		if (m_renderToGBufferModel[g_renderingEngine->GetCameraDrawing()].IsInited())
+		{
+			m_renderToGBufferModel[g_renderingEngine->GetCameraDrawing()].Draw(
+				rc, 1, g_renderingEngine->GetCameraDrawing()
+			);
+		}
+	}
+
 	void ModelRender::OnRenderShadowMap(RenderContext& rc, const int ligNo, const int shadowMapNo, const Matrix& lvpMatrix, const int viewportNumber)
 	{
 		if (m_shadowModelsViewportArray[viewportNumber].shadowModels[ligNo][shadowMapNo].IsInited())
@@ -82,6 +99,34 @@ namespace nsK2EngineLow
 				lvpMatrix,
 				1
 			);
+		}
+	}
+
+	void ModelRender::UpdateWorldMatrixInModels()
+	{
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			//ワールド行列の更新(座標、回転、大きさ)
+			if (m_model[i].IsInited())
+			{
+				m_model[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
+			}
+			if (m_renderToGBufferModel[i].IsInited())
+			{
+				m_renderToGBufferModel[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
+			}
+
+			for (auto& models : m_shadowModelsViewportArray[i].shadowModels)
+			{
+				for (auto& model : models)
+				{
+					//シャドウモデルが初期化されていたら
+					if (model.IsInited())
+					{
+						model.UpdateWorldMatrix(m_position, m_rotation, m_scale);
+					}
+				}
+			}
 		}
 	}
 
@@ -152,6 +197,36 @@ namespace nsK2EngineLow
 		}
 	}
 
+	void ModelRender::InitModelOnRenderGBuffer(
+		const char* tkmFilePath, 
+		const EnModelUpAxis enModelUpAxis, 
+		const bool isShadowReciever)
+	{
+		ModelInitData modelInitData;
+		modelInitData.m_fxFilePath = "Assets/shader/preProcess/RenderToGBufferFor3DModel.fx";
+
+		//頂点シェーダーのエントリーポイントを設定
+		SetupVertexShaderEntryPointFunc(modelInitData);
+		if (m_animationClips != nullptr) {
+			modelInitData.m_skeleton = &m_skeleton;
+		}
+
+		if (isShadowReciever) {
+			modelInitData.m_psEntryPointFunc = "PSMainShadowReciever";
+		}
+
+		modelInitData.m_modelUpAxis = enModelUpAxis;
+		modelInitData.m_tkmFilePath = tkmFilePath;
+		modelInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		modelInitData.m_colorBufferFormat[1] = DXGI_FORMAT_R8G8B8A8_SNORM;
+		modelInitData.m_colorBufferFormat[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			m_renderToGBufferModel[i].Init(modelInitData);
+		}
+	}
+
 	void ModelRender::InitModelOnShadowMap(const char* tkmFilePath, EnModelUpAxis modelUpAxis, bool isFrontCullingOnDrawShadowMap)
 	{
 		ModelInitData modelInitData;
@@ -200,6 +275,18 @@ namespace nsK2EngineLow
 		if (m_animationClips != nullptr) {
 			// アニメーションあり。
 			modelInitData.m_vsSkinEntryPointFunc = "VSMainSkin";
+		}
+	}
+
+	Model& ModelRender::GetModel()
+	{
+		if (m_model[0].IsInited())
+		{
+			return m_model[0];
+		}
+		else if(m_renderToGBufferModel[0].IsInited())
+		{
+			return m_renderToGBufferModel[0];
 		}
 	}
 }

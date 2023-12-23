@@ -184,22 +184,20 @@ namespace nsK2EngineLow
 		g_renderingEngine->QueryShadowMapTexture([&](Texture& shadowMap) {
 			modelInitData.m_expandShaderResoruceView[expandSRVNo] = &shadowMap;
 			expandSRVNo++;
-		});
+			});
+		//ライトの情報を定数バッファへ渡す
+		modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight();
+		modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight());
 		//モデルクラスの初期化
 		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
-			//ライトの情報を定数バッファへ渡す
-			modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetSceneLight(i);
-			modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetSceneLight(i));
-
-
 			m_model[i].Init(modelInitData);
 		}
 	}
 
 	void ModelRender::InitModelOnRenderGBuffer(
-		const char* tkmFilePath, 
-		const EnModelUpAxis enModelUpAxis, 
+		const char* tkmFilePath,
+		const EnModelUpAxis enModelUpAxis,
 		const bool isShadowReciever)
 	{
 		ModelInitData modelInitData;
@@ -221,6 +219,8 @@ namespace nsK2EngineLow
 		modelInitData.m_colorBufferFormat[1] = DXGI_FORMAT_R8G8B8A8_SNORM;
 		modelInitData.m_colorBufferFormat[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
+		modelInitData.m_expandConstantBuffer = &g_renderingEngine->GetGBufferCB();
+		modelInitData.m_expandConstantBufferSize = sizeof(g_renderingEngine->GetGBufferCB());
 		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
 			m_renderToGBufferModel[i].Init(modelInitData);
@@ -284,7 +284,7 @@ namespace nsK2EngineLow
 		{
 			return m_model[0];
 		}
-		else if(m_renderToGBufferModel[0].IsInited())
+		else if (m_renderToGBufferModel[0].IsInited())
 		{
 			return m_renderToGBufferModel[0];
 		}

@@ -20,6 +20,16 @@ struct SPSOut
     float4 metaricShadowSmooth : SV_Target2;  // メタリック、影パラメータ、スムース。rにメタリック、gに影パラメータ、aにスムース。
 };
 
+struct GBufferCB
+{
+    int drawCameraNumber;
+};
+
+cbuffer cb_0 : register(b1)
+{
+    GBufferCB gbufferCB;  // ライトデータ
+};
+
 ///////////////////////////////////////
 // 頂点シェーダーの共通処理をインクルードする。
 ///////////////////////////////////////
@@ -81,7 +91,7 @@ SPSOut PSMainCore( SPSIn psIn, int isShadowReciever)
     // 法線を出力
     psOut.normal.xyz = GetNormalFromNormalMap( 
         g_normal, g_sampler, psIn.normal, psIn.tangent, psIn.biNormal, psIn.uv ) ;
-    psOut.normal.w = 1.0f;
+    psOut.normal.w = gbufferCB.drawCameraNumber;
     // メタリックスムースを出力。
     psOut.metaricShadowSmooth = g_spacular.Sample(g_sampler, psIn.uv);
     // 影パラメータ。

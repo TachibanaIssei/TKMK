@@ -2,6 +2,11 @@
 
 namespace nsK2EngineLow
 {
+	//ビューポートの最大数
+	const int MAX_VIEWPORT = 4;
+	//2人プレイ時のビューポート数
+	const int DUO_VIEWPORT = 2;
+
 	// シーンのディレクションライトの最大数
 	const int MAX_DIRECTIONAL_LIGHT = 4;
 

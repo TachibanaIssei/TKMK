@@ -7,9 +7,6 @@
 #include "Shadow/ShadowMapRender.h"
 
 namespace nsK2EngineLow {
-	static const int MAX_VIEWPORT = 4;
-	static const int DUO_VIEWPORT = 2;
-
 	class IRenderer;
 	class SpriteRender;
 	class FontRender;
@@ -22,6 +19,11 @@ namespace nsK2EngineLow {
 		{
 			Light m_light;	//ライト
 			Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
+		};
+
+		struct GBufferCB
+		{
+			int drawCameraNumber;	//描画中のカメラの番号
 		};
 
 		enum EnGameMode {
@@ -129,9 +131,9 @@ namespace nsK2EngineLow {
 		/// シーンライトを取得
 		/// </summary>
 		/// <returns>シーンライト</returns>
-		SceneLight& GetSceneLight(const int lightNumber)
+		SceneLight& GetSceneLight()
 		{
-			return m_sceneLight[lightNumber];
+			return m_sceneLight;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -203,9 +205,17 @@ namespace nsK2EngineLow {
 		/// ライティングの定数バッファを取得
 		/// </summary>
 		/// <returns>定数バッファ</returns>
-		SLightingCB& GetLightingCB(const int number)
+		SLightingCB& GetLightingCB()
 		{
-			return m_lightingCB[number];
+			return m_lightingCB;
+		}
+		/// <summary>
+		/// G-Bufferの定数バッファを取得
+		/// </summary>
+		/// <returns>定数バッファ</returns>
+		GBufferCB& GetGBufferCB()
+		{
+			return m_gbufferCB;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -344,8 +354,9 @@ namespace nsK2EngineLow {
 		std::vector<FontRender*>	m_laterFontList;						//laterSpriteの上から文字を描画
 		std::vector<FontRender*>	m_fontDrawViewportList[MAX_VIEWPORT];	//画面分割中のビューポートに描画するフォントクラスのリスト
 
-		SceneLight					m_sceneLight[MAX_VIEWPORT];				//シーンライト
-		SLightingCB					m_lightingCB[MAX_VIEWPORT];				//ライトの定数バッファ
+		SceneLight					m_sceneLight;				//シーンライト
+		SLightingCB					m_lightingCB;				//ライトの定数バッファ
+		GBufferCB					m_gbufferCB;				//G-Bufferの定数バッファ
 
 		RenderTarget				m_mainRenderTarget;						//メインレンダーターゲット
 		RenderTarget				m_2DRenderTarget;						//2Dレンダーターゲット

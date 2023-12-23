@@ -10,14 +10,22 @@ namespace nsK2EngineLow {
 		Vector4 color;		//ライトのカラー
 	};
 
+	/// <summary>
+	/// カメラ情報の構造体
+	/// </summary>
+	struct EyeInfo
+	{
+		Matrix mViewProjInv[MAX_VIEWPORT];	//ビュープロジェクション行列の逆行列
+		Vector4 eyePos[MAX_VIEWPORT];		//カメラの位置
+		int drawCameraNumber;				//描画しているカメラの番号
+	};
+
 	struct Light
 	{
 		std::array<DirectionalLight, MAX_DIRECTIONAL_LIGHT> directionalLight;	//ディレクショナルライトの配列
-		Matrix mViewProjInv;	//ビュープロジェクション行列の逆行列
-		Vector3 eyePos;			//カメラの位置
-		float pad0;				//パディング0
-		Vector3 ambientLight;	//環境光
-		float pad1;				//パディング1
+		Vector3 ambientLight;			//環境光
+		float pad0;						//パディング0
+		EyeInfo eyeInfomation;			//カメラの情報
 	};
 
 	class SceneLight {
@@ -70,6 +78,14 @@ namespace nsK2EngineLow {
 		void SetAmbient(const Vector3 ambient)
 		{
 			m_light.ambientLight = ambient;
+		}
+		/// <summary>
+		/// 描画中のカメラの番号
+		/// </summary>
+		/// <param name="number"></param>
+		void SetDrawCameraNumber(const int number)
+		{
+			m_light.eyeInfomation.drawCameraNumber = number;
 		}
 
 	private:

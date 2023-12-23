@@ -113,7 +113,7 @@ float3 CalcDirectionLight(
         
         lig += CalcLighting(
             light.directionalLight[ligNo].direction,
-            light.directionalLight[ligNo].color.rbg,
+            light.directionalLight[ligNo].color.xyz,
             normal,
             toEye,
             albedoColor,
@@ -133,8 +133,10 @@ float4 PSMainCore(PSInput In, uniform int isSoftShadow)
     float4 albedoColor = albedoTexture.Sample(Sampler, In.uv);
     //法線をサンプリング
     float3 normal = normalTexture.Sample(Sampler, In.uv).xyz;
+    //描画中のカメラの番号
+    int cameraNumber = normalTexture.Sample(Sampler,In.uv).a;
     //ワールド座標をサンプリング
-    float3 worldPos = CalcWorldPosFromUVZ(In.uv, albedoColor.w, light.mViewProjInv);
+    float3 worldPos = CalcWorldPosFromUVZ(In.uv, albedoColor.w, light.eyeInfomation.mViewProjInv[cameraNumber]);
     //スペキュラカラーをサンプリング
     float3 specColor = albedoColor.xyz;
     //金属度をサンプリング
@@ -146,7 +148,7 @@ float4 PSMainCore(PSInput In, uniform int isSoftShadow)
     float shadowParam = metallicShadowSmoothTexture.Sample(Sampler, In.uv).g;
 
     // 視線に向かって伸びるベクトルを計算する
-    float3 toEye = normalize(light.eyePos - worldPos);
+    float3 toEye = normalize(light.eyeInfomation.eyePos[cameraNumber] - worldPos);
     
     // ディレクションライトを計算
     float3 lig = CalcDirectionLight(

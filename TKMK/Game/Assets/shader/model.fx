@@ -95,7 +95,7 @@ float4 PSMainCore( SPSIn In, uniform int isSoftShadow)
     float shadowParam = 1.0f;
     
 	// 視線に向かって伸びるベクトルを計算する
-    float3 toEye = normalize(light.eyePos - worldPos);
+    float3 toEye = normalize(light.eyeInfomation.eyePos[light.eyeInfomation.drawCameraNumber] - worldPos);
 
 	float3 lig = 0;
     for(int ligNo = 0; ligNo < NUM_DIRECTIONAL_LIGHT; ligNo++)
@@ -106,7 +106,7 @@ float4 PSMainCore( SPSIn In, uniform int isSoftShadow)
         //     //影を生成するなら。
         //     shadow = CalcShadowRate( 
         //         g_shadowMap, 
-        //         light.mlvp, 
+        //         light.eyeInfomation.mlvp[light.eyeInfomation.drawCameraNumber], 
         //         ligNo, 
         //         worldPos, 
         //         isSoftShadow ) * shadowParam;

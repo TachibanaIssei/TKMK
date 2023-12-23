@@ -29,6 +29,7 @@ namespace {
 	const Vector3 TOWER_X_POS = Vector3(20.0f, -410.0f, 0.0f);
 	const Vector3 RABBIT_POS = Vector3(700.0f, 350.0f, 0.0f);
 	const Vector3 RabbitSpriteScale = Vector3(0.5f, 0.5f, 0.0f);
+	const Vector3 DIRECTION_RIGHT_DIRECTION = Vector3(0.0f, -1.0f, 1.0f);
 	const Vector3 DIRECTION_RIGHT_COLOR = Vector3(1.0f, 1.0f, 1.0f) * 6.0f;//ディレクションライトのカラー
 	const Vector3 AMBIENT_COLOR = Vector3(1.0f,1.0f,1.0f) * 0.5f;//環境光のカラー
 
@@ -102,7 +103,7 @@ bool Game::Start()
 	//エフェクト読み込み
 	SetEffects();
 
-	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
+	Vector3 directionLightDir = DIRECTION_RIGHT_DIRECTION;
 	directionLightDir.Normalize();
 	Vector3 directionLightColor = DIRECTION_RIGHT_COLOR;
 	g_renderingEngine->SetDirectionLight(0, directionLightDir, directionLightColor);
@@ -1221,8 +1222,7 @@ void Game::UltTimeSkyDarkness()
 
 
 	m_skyCube->SetLuminance(m_fluctuateSkyColor);
-	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
-
+	Vector3 directionLightDir = DIRECTION_RIGHT_DIRECTION;
 	directionLightDir.Normalize();
 	directionLightColor2 = Vector3::Zero;
 	directionLightColor2.x += m_fluctuateDirectionColor;
@@ -1274,8 +1274,7 @@ void Game::LightReset()
 	}
 
 	m_skyCube->SetLuminance(m_fluctuateSkyColor);
-	Vector3 directionLightDir = Vector3{ 0.0f,-1.0f,-1.0f };
-
+	Vector3 directionLightDir = DIRECTION_RIGHT_DIRECTION;
 	directionLightDir.Normalize();
 	directionLightColor2 = Vector3::Zero;
 	directionLightColor2.x += m_fluctuateDirectionColor;

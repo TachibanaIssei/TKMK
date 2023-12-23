@@ -21,10 +21,7 @@ namespace nsK2EngineLow
 		InitCopyToFrameBufferSprite();
 		InitDeferredLightingSprite();
 
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			m_sceneLight[i].Init();
-		}
+		m_sceneLight.Init();
 	}
 
 	void RenderingEngine::InitRenderTargets()
@@ -167,8 +164,8 @@ namespace nsK2EngineLow
 		}
 
 		//ライトの情報を定数バッファに渡す
-		spriteInitData.m_expandConstantBuffer = &m_lightingCB[0];
-		spriteInitData.m_expandConstantBufferSize = sizeof(m_lightingCB[0]);
+		spriteInitData.m_expandConstantBuffer = &m_lightingCB;
+		spriteInitData.m_expandConstantBufferSize = sizeof(m_lightingCB);
 
 		for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
 		{
@@ -362,10 +359,12 @@ namespace nsK2EngineLow
 				if (i == enCameraDrawing_Left)
 				{
 					m_cameraDrawing = enCameraDrawing_Left;
+					m_gbufferCB.drawCameraNumber = enCameraDrawing_Left;
 				}
 				else if (i == enCameraDrawing_Right)
 				{
 					m_cameraDrawing = enCameraDrawing_Right;
+					m_gbufferCB.drawCameraNumber = enCameraDrawing_Right;
 				}
 
 				rc.SetViewport(m_duoViewPorts[i]);
@@ -383,18 +382,22 @@ namespace nsK2EngineLow
 				if (i == enCameraDrawing_LeftUp)
 				{
 					m_cameraDrawing = enCameraDrawing_LeftUp;
+					m_gbufferCB.drawCameraNumber = enCameraDrawing_LeftUp;
 				}
 				else if (i == enCameraDrawing_RightUp)
 				{
 					m_cameraDrawing = enCameraDrawing_RightUp;
+					m_gbufferCB.drawCameraNumber = enCameraDrawing_RightUp;
 				}
 				else if (i == enCameraDrawing_LeftDown)
 				{
 					m_cameraDrawing = enCameraDrawing_LeftDown;
+					m_gbufferCB.drawCameraNumber = enCameraDrawing_LeftDown;
 				}
 				else if (i == enCameraDrawing_RightDown)
 				{
 					m_cameraDrawing = enCameraDrawing_RightDown;
+					m_gbufferCB.drawCameraNumber = enCameraDrawing_RightDown;
 				}
 
 				rc.SetViewport(m_quarteViewPorts[i]);
@@ -409,6 +412,7 @@ namespace nsK2EngineLow
 		{
 			rc.SetViewport(m_soloViewPort);
 			m_cameraDrawing = enCameraDrawing_Solo;
+			m_gbufferCB.drawCameraNumber = enCameraDrawing_Solo;
 			for (auto& renderObj : m_renderObjects) {
 				renderObj->OnRenderToGBuffer(rc);
 			}
@@ -417,21 +421,21 @@ namespace nsK2EngineLow
 
 	void RenderingEngine::DeferredLighting(RenderContext& rc)
 	{
-		BeginGPUEvent("DeferredLighting");
-
 		// ディファードライティングに必要なライト情報を更新する
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			m_lightingCB[i].m_light.eyePos = g_camera3D[i]->GetPosition();
-			m_lightingCB[i].m_light.mViewProjInv.Inverse(g_camera3D[i]->GetViewProjectionMatrix());
-			/*for (int j = 0; j < MAX_DIRECTIONAL_LIGHT; j++)
-			{
-				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
-				{
-					m_lightingCB[i].mlvp[j][areaNo] = m_shadowMapRenders[j].GetLVPMatrix(areaNo);
-				}
-			}*/
-		}
+		//for (int i = 0; i < MAX_VIEWPORT; i++)
+		//{
+		//	m_lightingCB.m_light.eyeInfomation.eyePos[i] = g_camera3D[i]->GetPosition();
+		//	m_lightingCB.m_light.eyeInfomation.mViewProjInv[i].Inverse(g_camera3D[i]->GetViewProjectionMatrix());
+		//	/*for (int j = 0; j < MAX_DIRECTIONAL_LIGHT; j++)
+		//	{
+		//		for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+		//		{
+		//			m_lightingCB[i].mlvp[j][areaNo] = m_shadowMapRenders[j].GetLVPMatrix(areaNo);
+		//		}
+		//	}*/
+		//}
+
+		BeginGPUEvent("DeferredLighting");
 
 		rc.WaitUntilToPossibleSetRenderTarget(m_mainRenderTarget);
 		rc.SetRenderTargetAndViewport(m_mainRenderTarget);
@@ -470,12 +474,12 @@ namespace nsK2EngineLow
 			int ligNo = 0;
 			for (auto& shadowMapRender : m_shadowMapRenders)
 			{
-				if (m_sceneLight[viewportNumber].IsCastShadow(ligNo))
+				if (m_sceneLight.IsCastShadow(ligNo))
 				{
 					shadowMapRender.Render(
 						rc,
 						ligNo,
-						m_lightingCB[viewportNumber].m_light.directionalLight[ligNo].direction,
+						m_lightingCB.m_light.directionalLight[ligNo].direction,
 						m_renderObjects,
 						viewportNumber
 					);
@@ -695,10 +699,7 @@ namespace nsK2EngineLow
 
 	void RenderingEngine::SetLightingCB()
 	{
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			m_lightingCB[i].m_light = m_sceneLight[i].GetSceneLight();
-		}
+		m_lightingCB.m_light = m_sceneLight.GetSceneLight();
 	}
 
 	void RenderingEngine::Execute(RenderContext& rc)
@@ -732,24 +733,15 @@ namespace nsK2EngineLow
 
 	void RenderingEngine::SetDirectionLight(const int lightNo, const Vector3 direction, const Vector3 color)
 	{
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			m_sceneLight[i].SetDirectionLight(lightNo, direction, color);
-		}
+		m_sceneLight.SetDirectionLight(lightNo, direction, color);
 	}
 
 	void RenderingEngine::SetDirectionLightCastShadow(const int lightNo, const bool flag)
 	{
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			m_sceneLight[i].SetDirectionLightCastShadow(lightNo, flag);
-		}
+		m_sceneLight.SetDirectionLightCastShadow(lightNo, flag);
 	}
 	void RenderingEngine::SetAmbient(const Vector3 ambient)
 	{
-		for (int i = 0; i < MAX_VIEWPORT; i++)
-		{
-			m_sceneLight[i].SetAmbient(ambient);
-		}
+		m_sceneLight.SetAmbient(ambient);
 	}
 }

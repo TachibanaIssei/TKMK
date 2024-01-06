@@ -19,6 +19,7 @@ namespace nsK2EngineLow {
 		{
 			Light m_light;	//ライト
 			Matrix mlvp[NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
+			int gameMode;
 		};
 
 		struct GBufferCB

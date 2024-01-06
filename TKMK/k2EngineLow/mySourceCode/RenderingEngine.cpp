@@ -687,6 +687,7 @@ namespace nsK2EngineLow
 	void RenderingEngine::SetLightingCB()
 	{
 		m_lightingCB.m_light = m_sceneLight.GetSceneLight();
+		m_lightingCB.gameMode = m_gameMode;
 	}
 
 	void RenderingEngine::Execute(RenderContext& rc)

@@ -62,19 +62,40 @@ PSInput VSMain(VSInput In)
  *@param[in]	zInScreen		スクリーン座標系の深度値
  *@param[in]	mViewProjInv	ビュープロジェクション行列の逆行列。
  */
-float3 CalcWorldPosFromUVZ( float2 uv, float zInScreen, float4x4 mViewProjInv, int cameraNumber )
+float3 CalcWorldPosFromUVZ( 
+    float2 uv, 
+    float zInScreen, 
+    float4x4 mViewProjInv, 
+    int cameraNumber,
+    int gameMode
+    )
 {
 	float3 screenPos;
-    float2 uvOffset[MAX_VIEWPORT] = 
+
+    if(gameMode == 2)
     {
-        float2( 0.0f,  0.0f ),
-        float2(-0.5f,  0.0f ),
-        float2( 0.0f, -0.5f ),
-        float2(-0.5f, -0.5f ),
-    };
-    // UV座標を各ビューポートの正規化座標系に変換する
-    uv += uvOffset[cameraNumber];
-    uv *= 2.0f;
+        float2 uvOffset[DUO_VIEWPORT] = 
+        {
+            float2( 0.0f,   0.0f ),
+            float2(-0.5f,  0.0f )
+        };
+        // UV座標を各ビューポートの正規化座標系に変換する
+        uv += uvOffset[cameraNumber];
+        uv.x *= 2.0f;
+    }
+    if(gameMode == 4)
+    {
+        float2 uvOffset[MAX_VIEWPORT] = 
+        {
+            float2( 0.0f,  0.0f ),
+            float2(-0.5f,  0.0f ),
+            float2( 0.0f, -0.5f ),
+            float2(-0.5f, -0.5f ),
+        };
+        // UV座標を各ビューポートの正規化座標系に変換する
+        uv += uvOffset[cameraNumber];
+        uv *= 2.0f;
+    }
     
 	screenPos.xy = (uv * float2(2.0f, -2.0f)) + float2( -1.0f, 1.0f);
 	screenPos.z = zInScreen;
@@ -153,7 +174,8 @@ float4 PSMainCore(PSInput In, uniform int isSoftShadow)
         In.uv, 
         albedoColor.w, 
         light.eyeInfomation.mViewProjInv[cameraNumber],
-        cameraNumber);
+        cameraNumber,
+        light.gameMode);
     //スペキュラカラーをサンプリング
     float3 specColor = albedoColor.xyz;
     //金属度をサンプリング

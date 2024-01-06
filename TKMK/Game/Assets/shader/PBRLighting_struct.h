@@ -29,6 +29,7 @@ struct LightCB
     float3 ambientLight;    // ŠÂ‹«Œõ
     EyeInfo eyeInfomation;
     float4x4 mlvp[NUM_SHADOW_MAP];
+    int gameMode;           //ƒQ[ƒ€ƒ‚[ƒh(0:1‰æ–Ê,2:2‰æ–Ê,4:4‰æ–Ê)
 };
 
 #endif

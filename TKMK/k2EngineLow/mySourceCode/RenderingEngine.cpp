@@ -16,7 +16,6 @@ namespace nsK2EngineLow
 		InitRenderTargets();
 		InitGBuffer();
 		InitShadowMapRender();
-		m_shadow.Init();
 		m_postEffect.Init(m_mainRenderTarget);
 		InitCopyToFrameBufferSprite();
 		InitDeferredLightingSprite();
@@ -167,12 +166,9 @@ namespace nsK2EngineLow
 		spriteInitData.m_expandConstantBuffer = &m_lightingCB;
 		spriteInitData.m_expandConstantBufferSize = sizeof(m_lightingCB);
 
-		for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
+		for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
 		{
-			for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
-			{
-				//spriteInitData.m_textures[texNo++] = &m_shadowMapRenders[i].GetShadowMap(areaNo);
-			}
+			spriteInitData.m_textures[texNo++] = &m_shadowMapRender.GetShadowMap(areaNo);
 		}
 
 		spriteInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
@@ -181,10 +177,7 @@ namespace nsK2EngineLow
 
 	void RenderingEngine::InitShadowMapRender()
 	{
-		for (auto& ShadowMapRender : m_shadowMapRenders)
-		{
-			ShadowMapRender.Init(m_isSoftShadow);
-		}
+		m_shadowMapRender.Init(m_isSoftShadow);
 	}
 
 	void RenderingEngine::InitViewPorts()
@@ -351,6 +344,14 @@ namespace nsK2EngineLow
 
 	void RenderingEngine::DrawModelOnGBuffer(RenderContext& rc)
 	{
+		//シザリング矩形も設定する。
+		D3D12_RECT scissorRect;
+		scissorRect.bottom = static_cast<LONG>(m_soloViewPort.Height);
+		scissorRect.top = 0;
+		scissorRect.left = 0;
+		scissorRect.right = static_cast<LONG>(m_soloViewPort.Width);
+		rc.SetScissorRect(scissorRect);
+
 		//2画面分割に描画
 		if (m_gameMode == enGameMode_DuoPlay)
 		{
@@ -383,6 +384,7 @@ namespace nsK2EngineLow
 				{
 					m_cameraDrawing = enCameraDrawing_LeftUp;
 					m_gbufferCB.drawCameraNumber = enCameraDrawing_LeftUp;
+					
 				}
 				else if (i == enCameraDrawing_RightUp)
 				{
@@ -422,18 +424,15 @@ namespace nsK2EngineLow
 	void RenderingEngine::DeferredLighting(RenderContext& rc)
 	{
 		// ディファードライティングに必要なライト情報を更新する
-		//for (int i = 0; i < MAX_VIEWPORT; i++)
-		//{
-		//	m_lightingCB.m_light.eyeInfomation.eyePos[i] = g_camera3D[i]->GetPosition();
-		//	m_lightingCB.m_light.eyeInfomation.mViewProjInv[i].Inverse(g_camera3D[i]->GetViewProjectionMatrix());
-		//	/*for (int j = 0; j < MAX_DIRECTIONAL_LIGHT; j++)
-		//	{
-		//		for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
-		//		{
-		//			m_lightingCB[i].mlvp[j][areaNo] = m_shadowMapRenders[j].GetLVPMatrix(areaNo);
-		//		}
-		//	}*/
-		//}
+		for (int i = 0; i < MAX_VIEWPORT; i++)
+		{
+			m_lightingCB.m_light.eyeInfomation.eyePos[i] = g_camera3D[i]->GetPosition();
+			m_lightingCB.m_light.eyeInfomation.mViewProjInv[i].Inverse(g_camera3D[i]->GetViewProjectionMatrix());
+		}
+		for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+		{
+			m_lightingCB.mlvp[areaNo] = m_shadowMapRender.GetLVPMatrix(areaNo);
+		}
 
 		BeginGPUEvent("DeferredLighting");
 
@@ -469,32 +468,20 @@ namespace nsK2EngineLow
 	void RenderingEngine::RenderToShadowMap(RenderContext& rc)
 	{
 		BeginGPUEvent("RenderToShadowMap");
-		for (int viewportNumber = 0; viewportNumber < MAX_VIEWPORT; viewportNumber++)
+		for (int viewportNumber = 0; viewportNumber < m_gameMode; viewportNumber++)
 		{
-			int ligNo = 0;
-			for (auto& shadowMapRender : m_shadowMapRenders)
+			if (m_sceneLight.IsCastShadow())
 			{
-				if (m_sceneLight.IsCastShadow(ligNo))
-				{
-					shadowMapRender.Render(
-						rc,
-						ligNo,
-						m_lightingCB.m_light.directionalLight[ligNo].direction,
-						m_renderObjects,
-						viewportNumber
-					);
-				}
-				ligNo++;
+				m_shadowMapRender.Render(
+					rc,
+					0,
+					m_lightingCB.m_light.directionalLight[0].direction,
+					m_renderObjects,
+					viewportNumber
+				);
 			}
 		}
 		EndGPUEvent();
-	}
-
-	void RenderingEngine::ShadowModelRendering(RenderContext& rc, Camera& camera, int number)
-	{
-		for (auto& renderObj : m_renderObjects) {
-			renderObj->OnRenderShadowModel(rc, camera, number);
-		}
 	}
 
 	void RenderingEngine::SpriteRendering(RenderContext& rc, const bool drawTiming)
@@ -584,7 +571,7 @@ namespace nsK2EngineLow
 			//1画面のスプライトのアスペクト比に合わせる。
 			g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
 			//ビューポートを画面全体用に切り替える
-			rc.SetViewportAndScissor(m_soloViewPort);
+			rc.SetViewport(m_soloViewPort);
 		}
 
 		else if (m_gameMode == enGameMode_TrioPlay || m_gameMode == enGameMode_QuartetPlay)
@@ -625,7 +612,7 @@ namespace nsK2EngineLow
 			g_camera2D->SetWidth(static_cast<float>(g_graphicsEngine->GetFrameBufferWidth()));
 			g_camera2D->SetHeight(static_cast<float>(g_graphicsEngine->GetFrameBufferHeight()));
 			//ビューポートを画面全体用に切り替える
-			rc.SetViewportAndScissor(m_soloViewPort);
+			rc.SetViewport(m_soloViewPort);
 		}
 
 		//1画面
@@ -706,7 +693,7 @@ namespace nsK2EngineLow
 	{
 		SetLightingCB();
 
-		//RenderToShadowMap(rc);
+		RenderToShadowMap(rc);
 		RenderToGBuffer(rc);
 		DeferredLighting(rc);
 		FowardRendering(rc);
@@ -736,9 +723,9 @@ namespace nsK2EngineLow
 		m_sceneLight.SetDirectionLight(lightNo, direction, color);
 	}
 
-	void RenderingEngine::SetDirectionLightCastShadow(const int lightNo, const bool flag)
+	void RenderingEngine::SetDirectionLightCastShadow(const bool flag)
 	{
-		m_sceneLight.SetDirectionLightCastShadow(lightNo, flag);
+		m_sceneLight.SetDirectionLightCastShadow(flag);
 	}
 	void RenderingEngine::SetAmbient(const Vector3 ambient)
 	{

@@ -62,9 +62,20 @@ PSInput VSMain(VSInput In)
  *@param[in]	zInScreen		スクリーン座標系の深度値
  *@param[in]	mViewProjInv	ビュープロジェクション行列の逆行列。
  */
-float3 CalcWorldPosFromUVZ( float2 uv, float zInScreen, float4x4 mViewProjInv )
+float3 CalcWorldPosFromUVZ( float2 uv, float zInScreen, float4x4 mViewProjInv, int cameraNumber )
 {
 	float3 screenPos;
+    float2 uvOffset[MAX_VIEWPORT] = 
+    {
+        float2( 0.0f,  0.0f ),
+        float2(-0.5f,  0.0f ),
+        float2( 0.0f, -0.5f ),
+        float2(-0.5f, -0.5f ),
+    };
+    // UV座標を各ビューポートの正規化座標系に変換する
+    uv += uvOffset[cameraNumber];
+    uv *= 2.0f;
+    
 	screenPos.xy = (uv * float2(2.0f, -2.0f)) + float2( -1.0f, 1.0f);
 	screenPos.z = zInScreen;
 	
@@ -97,20 +108,21 @@ float3 CalcDirectionLight(
     float shadowParam
 ){
     float3 lig = 0;
+    
+    // 影の落ち具合を計算する。
+    float shadow = 0.0f;
+    if( light.directionalLight[0].castShadow == 1){
+        //影を生成するなら。
+        shadow = CalcShadowRate( 
+            g_shadowMap, 
+            light.mlvp, 
+            0, 
+            worldPos, 
+            isSoftShadow ) * shadowParam;
+        }
+
     for(int ligNo = 0; ligNo < NUM_DIRECTIONAL_LIGHT; ligNo++)
-    {
-        // 影の落ち具合を計算する。
-        float shadow = 0.0f;
-        // if( light.directionalLight[ligNo].castShadow == 1){
-        //     //影を生成するなら。
-        //     shadow = CalcShadowRate( 
-        //         g_shadowMap, 
-        //         light.mlvp, 
-        //         ligNo, 
-        //         worldPos, 
-        //         isSoftShadow ) * shadowParam;
-        // }
-        
+    {        
         lig += CalcLighting(
             light.directionalLight[ligNo].direction,
             light.directionalLight[ligNo].color.xyz,
@@ -134,9 +146,14 @@ float4 PSMainCore(PSInput In, uniform int isSoftShadow)
     //法線をサンプリング
     float3 normal = normalTexture.Sample(Sampler, In.uv).xyz;
     //描画中のカメラの番号
-    int cameraNumber = normalTexture.Sample(Sampler,In.uv).a;
+    int cameraNumber = round(normalTexture.Sample(Sampler,In.uv).a * 10.0f);
+
     //ワールド座標をサンプリング
-    float3 worldPos = CalcWorldPosFromUVZ(In.uv, albedoColor.w, light.eyeInfomation.mViewProjInv[cameraNumber]);
+    float3 worldPos = CalcWorldPosFromUVZ(
+        In.uv, 
+        albedoColor.w, 
+        light.eyeInfomation.mViewProjInv[cameraNumber],
+        cameraNumber);
     //スペキュラカラーをサンプリング
     float3 specColor = albedoColor.xyz;
     //金属度をサンプリング

@@ -123,11 +123,6 @@ namespace nsK2EngineLow {
 		/// <param name="rc">レンダリングコンテキスト</param>
 		void Draw(RenderContext& rc);
 
-		void OnRenderShadowModel(RenderContext& rc,Camera& camera, const int number) override
-		{
-			m_shadowModel[number].Draw(rc, camera);
-		}
-
 		/// <summary>
 		/// ボーンの名前からボーン番号を検索
 		/// </summary>
@@ -185,10 +180,6 @@ namespace nsK2EngineLow {
 		}
 
 	private:
-		struct ShadowModels
-		{
-			Model	shadowModels[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	//シャドウマップに描画されるモデル
-		};
 		/// <summary>
 		/// 各種モデルのワールド行列を更新する
 		/// </summary>
@@ -257,10 +248,10 @@ namespace nsK2EngineLow {
 		/// シャドウマップ描画パスから呼ばれる処理
 		/// </summary>
 		/// <param name="rc">レンダーコンテキスト</param>
-		/// <param name="ligNo">ライト番号</param>
+		/// <param name="viewportNumber">ビューポート番号</param>
 		/// <param name="shadowMapNo">シャドウマップ番号</param>
 		/// <param name="lvpMatrix">ライトビュープロジェクション行列</param>
-		virtual void OnRenderShadowMap(RenderContext& rc, const int ligNo, const int shadowMapNo, const Matrix& lvpMatrix, const int viewportNumber) override;
+		virtual void OnRenderShadowMap(RenderContext& rc, const int viewportNumber, const int shadowMapNo, const Matrix& lvpMatrix) override;
 
 	//メンバ変数
 	private:
@@ -273,8 +264,7 @@ namespace nsK2EngineLow {
 		Vector3						m_scale				= Vector3::One;			//大きさ
 		Quaternion					m_rotation			= Quaternion::Identity;	//回転
 		Model						m_model[MAX_VIEWPORT];						//Modelクラス
-		Model						m_shadowModel[MAX_VIEWPORT];				//シャドウマップ描画用
-		Model						m_renderToGBufferModel[MAX_VIEWPORT];						//RenderToGBufferで描画されるモデル
-		ShadowModels				m_shadowModelsViewportArray[MAX_VIEWPORT];
+		Model						m_renderToGBufferModel[MAX_VIEWPORT];		//RenderToGBufferで描画されるモデル
+		Model						m_shadowModels[MAX_VIEWPORT][NUM_SHADOW_MAP];	//シャドウマップに描画されるモデル
 	};
 }

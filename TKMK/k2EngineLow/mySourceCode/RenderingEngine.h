@@ -18,7 +18,7 @@ namespace nsK2EngineLow {
 		struct SLightingCB
 		{
 			Light m_light;	//ライト
-			Matrix mlvp[MAX_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
+			Matrix mlvp[NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
 		};
 
 		struct GBufferCB
@@ -139,36 +139,15 @@ namespace nsK2EngineLow {
 		////////////////////////////////////////////////////////////////////////////////
 		///シャドウマップの関数
 		////////////////////////////////////////////////////////////////////////////////
-			/// <summary>
-			/// シャドウマップのテクスチャを取得
-			/// </summary>
-			/// <returns>シャドウマップのテクスチャ</returns>
-		Texture& GetShadowMapTexture(const int number)
-		{
-			return m_shadow.GetShadowMapTexture(number);
-		}
-
-		/// <summary>
-		/// ライトカメラを取得
-		/// </summary>
-		/// <returns>ライトカメラ</returns>
-		Camera& GetLightCamera(const int number)
-		{
-			return m_shadow.GetLightCamera(number);
-		}
-
 		/// <summary>
 		/// シャドウマップテクスチャにクエリを行う
 		/// </summary>
 		/// <param name="queryFunc"></param>
 		void QueryShadowMapTexture(std::function< void(Texture& shadowMap) > queryFunc)
 		{
-			for (int i = 0; i < MAX_DIRECTIONAL_LIGHT; i++)
+			for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
 			{
-				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
-				{
-					queryFunc(m_shadowMapRenders[i].GetShadowMap(areaNo));
-				}
+				queryFunc(m_shadowMapRender.GetShadowMap(areaNo));
 			}
 		}
 
@@ -191,9 +170,8 @@ namespace nsK2EngineLow {
 		/// <summary>
 		/// キャストシャドウフラグを取得
 		/// </summary>
-		/// <param name="lightNo">ライト番号</param>
 		/// <returns>trueだったら影を落とす</returns>
-		void SetDirectionLightCastShadow(const int lightNo, const bool flag);
+		void SetDirectionLightCastShadow(const bool flag);
 
 		/// <summary>
 		/// 環境光を設定
@@ -238,12 +216,47 @@ namespace nsK2EngineLow {
 			return m_gameMode;
 		}
 		/// <summary>
+		/// 描画中のカメラ番号を設定する
+		/// </summary>
+		/// <param name="cameraDraw"></param>
+		void SetCameraDrawing(const EnCameraDrawing cameraDraw)
+		{
+			m_cameraDrawing = cameraDraw;
+		}
+		/// <summary>
 		/// どちらのカメラを描画中か
 		/// </summary>
 		/// <returns></returns>
 		const EnCameraDrawing GetCameraDrawing() const
 		{
 			return m_cameraDrawing;
+		}
+
+		/// <summary>
+		/// 1画面のビューポートを取得
+		/// </summary>
+		/// <returns></returns>
+		D3D12_VIEWPORT& GetSoloViewPort()
+		{
+			return m_soloViewPort;
+		}
+		/// <summary>
+		/// 2画面のビューポートを取得
+		/// </summary>
+		/// <param name="number">左が0、右が1</param>
+		/// <returns></returns>
+		D3D12_VIEWPORT& GetDuoViewPort(const int number)
+		{
+			return m_duoViewPorts[number];
+		}
+		/// <summary>
+		/// 4画面のビューポートを取得
+		/// </summary>
+		/// <param name="number">左上が0、右上が1、左下が2、右下が3</param>
+		/// <returns></returns>
+		D3D12_VIEWPORT& GetQuarteViewPort(const int number)
+		{
+			return m_quarteViewPorts[number];
 		}
 
 		/// <summary>
@@ -365,8 +378,7 @@ namespace nsK2EngineLow {
 		Sprite						m_mainSprite;
 		Sprite						m_copyToFrameBufferSprite;				//テクスチャを貼り付けるためのスプライトを初期化
 		Sprite						m_diferredLightingSprite;				//ディファードライティングを行うためのスプライト
-		ShadowMapRender				m_shadowMapRenders[MAX_DIRECTIONAL_LIGHT];		//シャドウマップへの描画処理
-		Shadow						m_shadow;								//シャドウマップ
+		ShadowMapRender				m_shadowMapRender;						//シャドウマップへの描画処理
 		PostEffect					m_postEffect;							//ポストエフェクト
 
 		EnCameraDrawing m_cameraDrawing = enCameraDrawing_Left;

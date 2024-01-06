@@ -33,8 +33,8 @@ float Chebyshev(float2 moments, float depth)
 }
 
 float CalcShadowRate(
-    Texture2D<float4> shadowMap[NUM_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP],
-    float4x4 mlvp[NUM_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP], 
+    Texture2D<float4> shadowMap[NUM_SHADOW_MAP],
+    float4x4 mlvp[NUM_SHADOW_MAP], 
     int ligNo, 
     float3 worldPos, 
     int isSoftShadow
@@ -43,7 +43,7 @@ float CalcShadowRate(
     float shadow = 0.0f;
     for(int cascadeIndex = 0; cascadeIndex < NUM_SHADOW_MAP; cascadeIndex++)
     {
-        float4 posInLVP = mul( mlvp[ligNo][cascadeIndex], float4( worldPos, 1.0f ));
+        float4 posInLVP = mul( mlvp[cascadeIndex], float4( worldPos, 1.0f ));
         float2 shadowMapUV = posInLVP.xy / posInLVP.w;
         float zInLVP = posInLVP.z / posInLVP.w;
         shadowMapUV *= float2(0.5f, -0.5f);
@@ -54,7 +54,7 @@ float CalcShadowRate(
             && zInLVP < 0.98f && zInLVP > 0.02f)
         {
             // シャドウマップから値をサンプリング
-            float4 shadowValue = shadowMap[ligNo][cascadeIndex].Sample(Sampler, shadowMapUV);
+            float4 shadowValue = shadowMap[cascadeIndex].Sample(Sampler, shadowMapUV);
             zInLVP -= 0.001f;
             float pos = exp(INFINITY * zInLVP);
             if( isSoftShadow ){

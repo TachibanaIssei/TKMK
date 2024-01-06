@@ -18,6 +18,7 @@ namespace nsK2EngineLow {
 		Matrix mViewProjInv[MAX_VIEWPORT];	//ビュープロジェクション行列の逆行列
 		Vector4 eyePos[MAX_VIEWPORT];		//カメラの位置
 		int drawCameraNumber;				//描画しているカメラの番号
+		float pad[3];
 	};
 
 	struct Light
@@ -58,18 +59,18 @@ namespace nsK2EngineLow {
 		/// </summary>
 		/// <param name="lightNo">ライト番号</param>
 		/// <param name="flag"></param>
-		void SetDirectionLightCastShadow(const int lightNo, const bool flag)
+		void SetDirectionLightCastShadow(const bool flag)
 		{
-			m_light.directionalLight[lightNo].castShadow = flag;
+			m_light.directionalLight[0].castShadow = flag;
 		}
 		/// <summary>
 		/// キャストシャドウフラグを取得
 		/// </summary>
 		/// <param name="lightNo">ライト番号</param>
 		/// <returns>trueだったら影を落とす</returns>
-		const bool IsCastShadow(const int lightNo) const
+		const bool IsCastShadow() const
 		{
-			return m_light.directionalLight[lightNo].castShadow;
+			return m_light.directionalLight[0].castShadow;
 		}
 		/// <summary>
 		/// 環境光を設定する

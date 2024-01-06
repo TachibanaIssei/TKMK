@@ -91,7 +91,7 @@ SPSOut PSMainCore( SPSIn psIn, int isShadowReciever)
     // 法線を出力
     psOut.normal.xyz = GetNormalFromNormalMap( 
         g_normal, g_sampler, psIn.normal, psIn.tangent, psIn.biNormal, psIn.uv ) ;
-    psOut.normal.w = gbufferCB.drawCameraNumber;
+    psOut.normal.w = gbufferCB.drawCameraNumber/10.0f;
     // メタリックスムースを出力。
     psOut.metaricShadowSmooth = g_spacular.Sample(g_sampler, psIn.uv);
     // 影パラメータ。

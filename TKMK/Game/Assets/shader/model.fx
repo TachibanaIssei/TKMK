@@ -98,20 +98,21 @@ float4 PSMainCore( SPSIn In, uniform int isSoftShadow)
     float3 toEye = normalize(light.eyeInfomation.eyePos[light.eyeInfomation.drawCameraNumber] - worldPos);
 
 	float3 lig = 0;
+
+    // 影の落ち具合を計算する。
+    float shadow = 0.0f;
+    if( light.directionalLight[0].castShadow == 1){
+        //影を生成するなら。
+        shadow = CalcShadowRate( 
+            g_shadowMap, 
+            light.mlvp, 
+            0, 
+            worldPos, 
+            isSoftShadow ) * shadowParam;
+        }
+    
     for(int ligNo = 0; ligNo < NUM_DIRECTIONAL_LIGHT; ligNo++)
-    {
-        // 影の落ち具合を計算する。
-        float shadow = 0.0f;
-        // if( light.directionalLight[ligNo].castShadow == 1){
-        //     //影を生成するなら。
-        //     shadow = CalcShadowRate( 
-        //         g_shadowMap, 
-        //         light.eyeInfomation.mlvp[light.eyeInfomation.drawCameraNumber], 
-        //         ligNo, 
-        //         worldPos, 
-        //         isSoftShadow ) * shadowParam;
-        // }
-        
+    {        
         lig += CalcLighting(
             light.directionalLight[ligNo].direction,
             light.directionalLight[ligNo].color.xyz,

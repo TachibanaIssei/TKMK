@@ -1,5 +1,5 @@
 ///////////////////////////////////////
-// PBRƒx[ƒX‚ÌƒfƒBƒtƒ@[ƒhƒ‰ƒCƒeƒBƒ“ƒO‚ÌSRV_UAVƒŒƒWƒXƒ^İ’è
+// PBRï¿½xï¿½[ï¿½Xï¿½Ìƒfï¿½Bï¿½tï¿½@ï¿½[ï¿½hï¿½ï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½SRV_UAVï¿½ï¿½ï¿½Wï¿½Xï¿½^ï¿½İ’ï¿½
 ///////////////////////////////////////
 
 #ifndef _DEFERREDLIGHTING_SRV_UAV_REGISTER_H_
@@ -7,9 +7,9 @@
 
 #include "Shadowing_const.h"
 
-Texture2D<float4> albedoTexture : register(t0);                                         // ƒAƒ‹ƒxƒh
-Texture2D<float4> normalTexture : register(t1);                                         // –@ü
-Texture2D<float4> metallicShadowSmoothTexture : register(t2);                           // ƒƒ^ƒŠƒbƒNAƒVƒƒƒhƒEAƒXƒ€[ƒXƒeƒNƒXƒ`ƒƒBr‚É‹à‘®“xAg‚É‰eƒpƒ‰ƒ[ƒ^Aa‚ÉŠŠ‚ç‚©‚³B
-Texture2D<float4> g_shadowMap[NUM_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP] : register(t3);    //ƒVƒƒƒhƒEƒ}ƒbƒv(t3~t14‚Ü‚Åg—p)
+Texture2D<float4> albedoTexture : register(t0);                                         // ï¿½Aï¿½ï¿½ï¿½xï¿½h
+Texture2D<float4> normalTexture : register(t1);                                         // ï¿½@ï¿½ï¿½
+Texture2D<float4> metallicShadowSmoothTexture : register(t2);                           // ï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½bï¿½Nï¿½Aï¿½Vï¿½ï¿½ï¿½hï¿½Eï¿½Aï¿½Xï¿½ï¿½ï¿½[ï¿½Xï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Brï¿½É‹ï¿½ï¿½ï¿½ï¿½xï¿½Agï¿½É‰eï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½Aaï¿½ÉŠï¿½ï¿½ç‚©ï¿½ï¿½ï¿½B
+Texture2D<float4> g_shadowMap[NUM_SHADOW_MAP] : register(t3);    //ï¿½Vï¿½ï¿½ï¿½hï¿½Eï¿½}ï¿½bï¿½v(t3~t14ï¿½Ü‚Ågï¿½p)
 
 #endif

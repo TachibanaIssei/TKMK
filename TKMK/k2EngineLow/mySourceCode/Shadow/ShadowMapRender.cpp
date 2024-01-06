@@ -59,9 +59,9 @@ namespace nsK2EngineLow
 	}
 
 	void ShadowMapRender::Render(
-		RenderContext& rc, 
-		int ligNo, 
-		Vector3& lightDirection, 
+		RenderContext& rc,
+		int ligNo,
+		Vector3& lightDirection,
 		std::vector<IRenderer*> renderObjects,
 		const int cameraNumber
 	)
@@ -87,10 +87,9 @@ namespace nsK2EngineLow
 			{
 				renderer->OnRenderShadowMap(
 					rc,
-					ligNo,
+					cameraNumber,
 					shadowMapNo,
-					m_cascadeShadowMapMatrix.GetLightViewProjectionCropMatrix(shadowMapNo),
-					g_renderingEngine->GetCameraDrawing()
+					m_cascadeShadowMapMatrix.GetLightViewProjectionCropMatrix(shadowMapNo)
 				);
 			}
 			rc.WaitUntilFinishDrawingToRenderTarget(shadowMap);
@@ -99,11 +98,13 @@ namespace nsK2EngineLow
 
 		if (m_isSoftShadow)
 		{
+			BeginGPUEvent("BlurStart");
 			//ÉuÉâÅ[Çé¿çs
 			for (auto& blur : m_gausBlur)
 			{
 				blur.ExecuteOnGPU(rc, 1.0f);
 			}
+			EndGPUEvent();
 		}
 	}
 }

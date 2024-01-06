@@ -11,8 +11,8 @@ namespace nsK2EngineLow
 		InitAnimation(animationClips, numAnimationClips, enModelUpAxis);
 		// GBuffer描画用のモデルを初期化
 		InitModelOnRenderGBuffer(tkmFilepath, enModelUpAxis, isShadowReceiver);
-
-		//InitModelOnShadowMap(tkmFilepath, enModelUpAxis, isFrontCullingOnDrawShadowMap);
+		//影のモデルを初期化
+		InitModelOnShadowMap(tkmFilepath, enModelUpAxis, isFrontCullingOnDrawShadowMap);
 		UpdateWorldMatrixInModels();
 	}
 
@@ -56,6 +56,13 @@ namespace nsK2EngineLow
 				{
 					m_skeleton.Update(m_renderToGBufferModel[i].GetWorldMatrix());
 				}
+				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+				{
+					if (m_shadowModels[i][areaNo].IsInited())
+					{
+						m_skeleton.Update(m_shadowModels[i][areaNo].GetWorldMatrix());
+					}
+				}
 			}
 		}
 
@@ -89,11 +96,11 @@ namespace nsK2EngineLow
 		}
 	}
 
-	void ModelRender::OnRenderShadowMap(RenderContext& rc, const int ligNo, const int shadowMapNo, const Matrix& lvpMatrix, const int viewportNumber)
+	void ModelRender::OnRenderShadowMap(RenderContext& rc, const int viewportNumber, const int shadowMapNo, const Matrix& lvpMatrix)
 	{
-		if (m_shadowModelsViewportArray[viewportNumber].shadowModels[ligNo][shadowMapNo].IsInited())
+		if (m_shadowModels[viewportNumber][shadowMapNo].IsInited())
 		{
-			m_shadowModelsViewportArray[viewportNumber].shadowModels[ligNo][shadowMapNo].Draw(
+			m_shadowModels[viewportNumber][shadowMapNo].Draw(
 				rc,
 				g_matIdentity,
 				lvpMatrix,
@@ -116,7 +123,7 @@ namespace nsK2EngineLow
 				m_renderToGBufferModel[i].UpdateWorldMatrix(m_position, m_rotation, m_scale);
 			}
 
-			for (auto& models : m_shadowModelsViewportArray[i].shadowModels)
+			for (auto& models : m_shadowModels)
 			{
 				for (auto& model : models)
 				{
@@ -256,14 +263,11 @@ namespace nsK2EngineLow
 
 		for (int i = 0; i < MAX_VIEWPORT; i++)
 		{
-			for (int ligNo = 0; ligNo < MAX_DIRECTIONAL_LIGHT; ligNo++)
-			{
-				Model* shadowModelArray = m_shadowModelsViewportArray[i].shadowModels[ligNo];
+				Model* shadowModelArray = m_shadowModels[i];
 				for (int shadowMapNo = 0; shadowMapNo < NUM_SHADOW_MAP; shadowMapNo++)
 				{
 					shadowModelArray[shadowMapNo].Init(modelInitData);
 				}
-			}
 		}
 	}
 

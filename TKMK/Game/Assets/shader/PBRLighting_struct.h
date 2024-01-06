@@ -18,7 +18,8 @@ struct DirectionalLight
 struct EyeInfo
 {
     float4x4 mViewProjInv[MAX_VIEWPORT];  // ビュープロジェクション行列の逆行列
-    float4 eyePos[MAX_VIEWPORT];          // カメラの視点
+    float3 eyePos[MAX_VIEWPORT];          // カメラの視点
+    float pad;
     int drawCameraNumber;   //描画しているカメラの番号
 };
 
@@ -27,7 +28,7 @@ struct LightCB
     DirectionalLight directionalLight[NUM_DIRECTIONAL_LIGHT];
     float3 ambientLight;    // 環境光
     EyeInfo eyeInfomation;
-    float4x4 mlvp[NUM_DIRECTIONAL_LIGHT][NUM_SHADOW_MAP];
+    float4x4 mlvp[NUM_SHADOW_MAP];
 };
 
 #endif

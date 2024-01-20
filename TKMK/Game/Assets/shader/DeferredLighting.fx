@@ -83,7 +83,7 @@ float3 CalcWorldPosFromUVZ(
         uv += uvOffset[cameraNumber];
         uv.x *= 2.0f;
     }
-    if(gameMode == 4)
+    if(gameMode >= 3)
     {
         float2 uvOffset[MAX_VIEWPORT] = 
         {
@@ -125,6 +125,7 @@ float3 CalcDirectionLight(
     float smooth, 
     float3 specColor,
     float3 worldPos,
+    int cameraNumber,
     bool isSoftShadow,
     float shadowParam
 ){
@@ -136,25 +137,23 @@ float3 CalcDirectionLight(
         //âeÇê∂ê¨Ç∑ÇÈÇ»ÇÁÅB
         shadow = CalcShadowRate( 
             g_shadowMap, 
-            light.mlvp, 
-            0, 
-            worldPos, 
+            light.mlvp,
+            worldPos,
+            cameraNumber, 
             isSoftShadow ) * shadowParam;
-        }
-
-    for(int ligNo = 0; ligNo < NUM_DIRECTIONAL_LIGHT; ligNo++)
-    {        
-        lig += CalcLighting(
-            light.directionalLight[ligNo].direction,
-            light.directionalLight[ligNo].color.xyz,
-            normal,
-            toEye,
-            albedoColor,
-            metaric,
-            smooth,
-            specColor
-        ) * ( 1.0f - shadow );
     }
+
+    lig += CalcLighting(
+        light.directionalLight[0].direction,
+        light.directionalLight[0].color.xyz,
+        normal,
+        toEye,
+        albedoColor,
+        metaric,
+        smooth,
+        specColor
+    ) * ( 1.0f - shadow );
+
     return lig;
 }
 
@@ -198,6 +197,7 @@ float4 PSMainCore(PSInput In, uniform int isSoftShadow)
         smooth, 
         specColor,
         worldPos,
+        cameraNumber,
         isSoftShadow,
         shadowParam
     );

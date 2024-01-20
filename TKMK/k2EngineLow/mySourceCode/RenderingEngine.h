@@ -18,7 +18,7 @@ namespace nsK2EngineLow {
 		struct SLightingCB
 		{
 			Light m_light;	//ライト
-			Matrix mlvp[NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
+			Matrix mlvp[MAX_VIEWPORT][NUM_SHADOW_MAP];	//ライトビュープロジェクション行列
 			int gameMode;
 		};
 
@@ -146,9 +146,12 @@ namespace nsK2EngineLow {
 		/// <param name="queryFunc"></param>
 		void QueryShadowMapTexture(std::function< void(Texture& shadowMap) > queryFunc)
 		{
-			for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+			for (int viewportNo = 0; viewportNo < MAX_VIEWPORT; viewportNo++)
 			{
-				queryFunc(m_shadowMapRender.GetShadowMap(areaNo));
+				for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+				{
+					queryFunc(m_shadowMapRenders[viewportNo].GetShadowMap(areaNo));
+				}
 			}
 		}
 
@@ -379,7 +382,7 @@ namespace nsK2EngineLow {
 		Sprite						m_mainSprite;
 		Sprite						m_copyToFrameBufferSprite;				//テクスチャを貼り付けるためのスプライトを初期化
 		Sprite						m_diferredLightingSprite;				//ディファードライティングを行うためのスプライト
-		ShadowMapRender				m_shadowMapRender;						//シャドウマップへの描画処理
+		std::array<ShadowMapRender, MAX_VIEWPORT>	m_shadowMapRenders;		//シャドウマップへの描画処理
 		PostEffect					m_postEffect;							//ポストエフェクト
 
 		EnCameraDrawing m_cameraDrawing = enCameraDrawing_Left;

@@ -212,7 +212,7 @@ void Game::BattleStart()
 				//リスポーン番号1～8まで生成
 				//中立の敵の生成
 				if (objData.number != 0 && objData.number <= 8) {
-					//CreateEnemy(objData.position, objData.rotation);
+					CreateEnemy(objData.position, objData.rotation);
 					return true;
 				}
 
@@ -405,7 +405,7 @@ void Game::Respawn()
 			//中立の敵のリスポーンする座標を決める
 			SetEnemyRespawnPos();
 			//中立の敵を生成
-			//CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], false);
+			CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], false);
 
 		}
 	}

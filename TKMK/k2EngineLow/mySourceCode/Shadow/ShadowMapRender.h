@@ -52,7 +52,7 @@ namespace nsK2EngineLow
 	private:
 		CascadeShadowMapMatrix								m_cascadeShadowMapMatrix;						//カスケードシャドウマップの行列を扱うオブジェクト
 		std::array<RenderTarget, NUM_SHADOW_MAP>			m_shadowMaps;									//レンダーターゲット
-		std::array<float, NUM_SHADOW_MAP>					m_cascadeAreaRateArray = { 0.05f, 0.3f,1.0f };	//カスケードシャドウの近～遠距離の比率
+		std::array<float, NUM_SHADOW_MAP>					m_cascadeAreaRateArray = { 0.1f, 0.3f,1.0f };	//カスケードシャドウの近～遠距離の比率
 		std::array<GaussianBlur, NUM_SHADOW_MAP>			m_gausBlur;										//シャドウマップにブラーをかける。ソフトシャドウで使用
 		bool												m_isSoftShadow = false;							//ソフトシャドウを行う？
 	};

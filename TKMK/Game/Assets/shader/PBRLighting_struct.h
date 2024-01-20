@@ -28,7 +28,7 @@ struct LightCB
     DirectionalLight directionalLight[NUM_DIRECTIONAL_LIGHT];
     float3 ambientLight;    // ŠÂ‹«Œõ
     EyeInfo eyeInfomation;
-    float4x4 mlvp[NUM_SHADOW_MAP];
+    float4x4 mlvp[MAX_VIEWPORT][NUM_SHADOW_MAP];
     int gameMode;           //ƒQ[ƒ€ƒ‚[ƒh(0:1‰æ–Ê,2:2‰æ–Ê,4:4‰æ–Ê)
 };
 

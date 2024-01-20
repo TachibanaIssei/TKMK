@@ -166,18 +166,23 @@ namespace nsK2EngineLow
 		spriteInitData.m_expandConstantBuffer = &m_lightingCB;
 		spriteInitData.m_expandConstantBufferSize = sizeof(m_lightingCB);
 
-		for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+		for (int viewportNo = 0; viewportNo < MAX_VIEWPORT; viewportNo++)
 		{
-			spriteInitData.m_textures[texNo++] = &m_shadowMapRender.GetShadowMap(areaNo);
+			for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+			{
+				spriteInitData.m_textures[texNo++] = &m_shadowMapRenders[viewportNo].GetShadowMap(areaNo);
+			}
 		}
-
 		spriteInitData.m_colorBufferFormat[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
 		m_diferredLightingSprite.Init(spriteInitData);
 	}
 
 	void RenderingEngine::InitShadowMapRender()
 	{
-		m_shadowMapRender.Init(m_isSoftShadow);
+		for (auto& shadowMapRender : m_shadowMapRenders)
+		{
+			shadowMapRender.Init(m_isSoftShadow);
+		}
 	}
 
 	void RenderingEngine::InitViewPorts()
@@ -384,7 +389,7 @@ namespace nsK2EngineLow
 				{
 					m_cameraDrawing = enCameraDrawing_LeftUp;
 					m_gbufferCB.drawCameraNumber = enCameraDrawing_LeftUp;
-					
+
 				}
 				else if (i == enCameraDrawing_RightUp)
 				{
@@ -424,14 +429,14 @@ namespace nsK2EngineLow
 	void RenderingEngine::DeferredLighting(RenderContext& rc)
 	{
 		// ディファードライティングに必要なライト情報を更新する
-		for (int i = 0; i < MAX_VIEWPORT; i++)
+		for (int currentViewport = 0; currentViewport < m_gameMode; currentViewport++)
 		{
-			m_lightingCB.m_light.eyeInfomation.eyePos[i] = g_camera3D[i]->GetPosition();
-			m_lightingCB.m_light.eyeInfomation.mViewProjInv[i].Inverse(g_camera3D[i]->GetViewProjectionMatrix());
-		}
-		for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
-		{
-			m_lightingCB.mlvp[areaNo] = m_shadowMapRender.GetLVPMatrix(areaNo);
+			m_lightingCB.m_light.eyeInfomation.eyePos[currentViewport] = g_camera3D[currentViewport]->GetPosition();
+			m_lightingCB.m_light.eyeInfomation.mViewProjInv[currentViewport].Inverse(g_camera3D[currentViewport]->GetViewProjectionMatrix());
+			for (int areaNo = 0; areaNo < NUM_SHADOW_MAP; areaNo++)
+			{
+				m_lightingCB.mlvp[currentViewport][areaNo] = m_shadowMapRenders[currentViewport].GetLVPMatrix(areaNo);
+			}
 		}
 
 		BeginGPUEvent("DeferredLighting");
@@ -472,9 +477,8 @@ namespace nsK2EngineLow
 		{
 			if (m_sceneLight.IsCastShadow())
 			{
-				m_shadowMapRender.Render(
+				m_shadowMapRenders[viewportNumber].Render(
 					rc,
-					0,
 					m_lightingCB.m_light.directionalLight[0].direction,
 					m_renderObjects,
 					viewportNumber

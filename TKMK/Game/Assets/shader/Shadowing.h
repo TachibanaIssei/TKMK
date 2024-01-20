@@ -33,17 +33,17 @@ float Chebyshev(float2 moments, float depth)
 }
 
 float CalcShadowRate(
-    Texture2D<float4> shadowMap[NUM_SHADOW_MAP],
-    float4x4 mlvp[NUM_SHADOW_MAP], 
-    int ligNo, 
+    Texture2D<float4> shadowMap[MAX_VIEWPORT][NUM_SHADOW_MAP],
+    float4x4 mlvp[MAX_VIEWPORT][NUM_SHADOW_MAP], 
     float3 worldPos, 
+    int cameraNumber,
     int isSoftShadow
 )
 {
     float shadow = 0.0f;
     for(int cascadeIndex = 0; cascadeIndex < NUM_SHADOW_MAP; cascadeIndex++)
     {
-        float4 posInLVP = mul( mlvp[cascadeIndex], float4( worldPos, 1.0f ));
+        float4 posInLVP = mul( mlvp[cameraNumber][cascadeIndex], float4( worldPos, 1.0f ));
         float2 shadowMapUV = posInLVP.xy / posInLVP.w;
         float zInLVP = posInLVP.z / posInLVP.w;
         shadowMapUV *= float2(0.5f, -0.5f);
@@ -54,7 +54,12 @@ float CalcShadowRate(
             && zInLVP < 0.98f && zInLVP > 0.02f)
         {
             // シャドウマップから値をサンプリング
-            float4 shadowValue = shadowMap[cascadeIndex].Sample(Sampler, shadowMapUV);
+            float4 shadowValue;
+            if(cameraNumber == 0) shadowValue = shadowMap[0][cascadeIndex].Sample(Sampler, shadowMapUV);
+            else if(cameraNumber == 1) shadowValue = shadowMap[1][cascadeIndex].Sample(Sampler, shadowMapUV);
+            else if(cameraNumber == 2) shadowValue = shadowMap[2][cascadeIndex].Sample(Sampler, shadowMapUV);
+            else shadowValue = shadowMap[3][cascadeIndex].Sample(Sampler, shadowMapUV);
+
             zInLVP -= 0.001f;
             float pos = exp(INFINITY * zInLVP);
             if( isSoftShadow ){

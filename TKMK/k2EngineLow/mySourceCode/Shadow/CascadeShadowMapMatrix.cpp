@@ -29,14 +29,14 @@ namespace nsK2EngineLow
 		lightCamera.SetWidth(5000.0f);
 		lightCamera.SetHeight(5000.0f);
 		lightCamera.SetNear(1.0f);
-		lightCamera.SetFar(g_camera3D[cameraNumber]->GetFar());
+		lightCamera.SetFar(g_camera3D[cameraNumber]->GetFar()*0.65f);
 		lightCamera.Update();
 
 		const auto& lvpMatrix = lightCamera.GetViewProjectionMatrix();
 
 		float cascadeAreaTbl[NUM_SHADOW_MAP] = {
 			g_camera3D[cameraNumber]->GetFar() * cascadeAreaRateTbl[SHADOW_MAP_AREA_NEAR],		//‹ß‰e‚ğ‰f‚·Å‘å[“x’l
-			g_camera3D[cameraNumber]->GetFar() * cascadeAreaRateTbl[SHADOW_MAP_AREA_MIDDLE],		//’†‰e‚ğ‰f‚·Å‘å[“x’l
+			g_camera3D[cameraNumber]->GetFar() * cascadeAreaRateTbl[SHADOW_MAP_AREA_MIDDLE],	//’†‰e‚ğ‰f‚·Å‘å[“x’l
 			g_camera3D[cameraNumber]->GetFar()													//‰“‰e‚ğ‰f‚·Å‘å[“x’l
 		};
 

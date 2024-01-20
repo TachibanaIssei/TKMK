@@ -60,7 +60,6 @@ namespace nsK2EngineLow
 
 	void ShadowMapRender::Render(
 		RenderContext& rc,
-		int ligNo,
 		Vector3& lightDirection,
 		std::vector<IRenderer*> renderObjects,
 		const int cameraNumber

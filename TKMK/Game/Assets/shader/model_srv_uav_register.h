@@ -10,6 +10,6 @@
 Texture2D<float4> albedoTexture : register(t0);                 // アルベド
 Texture2D<float4> normalTexture : register(t1);                 // 法線
 Texture2D<float4> metallicShadowSmoothTexture : register(t2);   // メタリック、シャドウ、スムーステクスチャ。rに金属度、gに影パラメータ、aに滑らかさ。
-Texture2D<float4> g_shadowMap[NUM_SHADOW_MAP] : register(t10);  //シャドウマップ。
+Texture2D<float4> g_shadowMap[MAX_VIEWPORT][NUM_SHADOW_MAP] : register(t10);  //シャドウマップ。
 
 #endif

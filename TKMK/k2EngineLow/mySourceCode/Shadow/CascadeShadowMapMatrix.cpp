@@ -5,7 +5,7 @@ namespace nsK2EngineLow
 {
 	void CascadeShadowMapMatrix::CalcLightViewProjectionCropMatrix(
 		const Vector3 lightDirection, 
-		const float cascadeAreaRateTbl[NUM_SHADOW_MAP],
+		const std::array<float,NUM_SHADOW_MAP> cascadeAreaRateTbl,
 		const int cameraNumber
 	)
 	{

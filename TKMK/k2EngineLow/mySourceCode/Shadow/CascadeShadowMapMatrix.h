@@ -10,15 +10,16 @@ namespace nsK2EngineLow
 		/// <param name="lightDirection">ライトの方向</param>
 		void CalcLightViewProjectionCropMatrix(
 			const Vector3 lightDirection,
-			const float cascadeAreaRateTbl[NUM_SHADOW_MAP],
+			const std::array<float, NUM_SHADOW_MAP> cascadeAreaRateTbl,
 			const int cameraNumber
 		);
 		/// <summary>
 		/// 計算されたライトビュープロジェクションクロップ行列を取得
 		/// </summary>
 		/// <param name="shadowMapNo">シャドウマップの番号</param>
+		/// <param name="cameraNumber">描画中のカメラの番号</param>
 		/// <returns></returns>
-		const Matrix& GetLightViewProjectionCropMatrix(int shadowMapNo) const
+		const Matrix& GetLightViewProjectionCropMatrix(const int shadowMapNo) const
 		{
 			return m_lvpcMatrix[shadowMapNo];
 		}

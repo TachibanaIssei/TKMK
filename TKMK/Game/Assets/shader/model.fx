@@ -106,8 +106,8 @@ float4 PSMainCore( SPSIn In, uniform int isSoftShadow)
         shadow = CalcShadowRate( 
             g_shadowMap, 
             light.mlvp, 
-            0, 
             worldPos, 
+            0, 
             isSoftShadow ) * shadowParam;
         }
     

@@ -559,7 +559,6 @@ void	btDiscreteDynamicsWorld::removeRigidBody(btRigidBody* body)
 	btCollisionWorld::removeCollisionObject(body);
 }
 
-
 void	btDiscreteDynamicsWorld::addRigidBody(btRigidBody* body)
 {
 	if (!body->isStaticOrKinematicObject() && !(body->getFlags() &BT_DISABLE_WORLD_GRAVITY))

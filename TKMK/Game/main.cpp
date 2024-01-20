@@ -22,6 +22,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	g_camera3D[0]->SetTarget({0.0f, 50.0f, 0.0f});
 	g_camera3D[1]->SetPosition({ 0.0f, 100.0f, -200.0f });
 	g_camera3D[1]->SetTarget({ 0.0f, 50.0f, 0.0f });
+	g_camera3D[2]->SetPosition({ 0.0f, 100.0f, -200.0f });
+	g_camera3D[2]->SetTarget({ 0.0f, 50.0f, 0.0f });
+	g_camera3D[3]->SetPosition({ 0.0f, 100.0f, -200.0f });
+	g_camera3D[3]->SetTarget({ 0.0f, 50.0f, 0.0f });
 
 	Tittle* tittle = NewGO<Tittle>(0, "tittle");
 	//フェードクラス生成

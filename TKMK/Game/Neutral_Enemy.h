@@ -4,7 +4,7 @@
 #include "AI/PathFinding/Path.h"
 #include "AI/PathFinding/PathFinding.h"
 #include "Status.h"
-#include "Level3DRender.h"
+#include "../k2EngineLow/mySourceCode/Level/Level3DRender.h"
 //クラス宣言
 class KnightPlayer;
 class Game;

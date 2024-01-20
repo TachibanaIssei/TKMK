@@ -2,8 +2,6 @@
 #include "k2EngineLow.h"
 #include "graphics/Texture.h"
 
-#include "RenderingEngine.h"
-
 namespace nsK2EngineLow {
 	K2EngineLow* g_engine = nullptr;
 	GameTime* g_gameTime = nullptr;
@@ -50,7 +48,7 @@ namespace nsK2EngineLow {
 
 		//レンダリングエンジンのインスタンスを作成する
 		g_renderingEngine = new RenderingEngine;
-		g_renderingEngine->Init();
+		g_renderingEngine->Init(true);
 		g_collisionObjectManager = new CollisionObjectManager;
 
 

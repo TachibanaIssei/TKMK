@@ -1,7 +1,6 @@
 #pragma once
 
-#include <array>
-#include "SpringCamera.h"
+#include "../k2EngineLow/mySourceCode/Camera/SpringCamera.h"
 
 class Tittle;
 class Fade;

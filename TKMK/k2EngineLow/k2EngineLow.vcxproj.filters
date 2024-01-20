@@ -224,20 +224,23 @@
     <ClCompile Include="graphics\FrameBuffer.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="ModelRender.cpp" />
-    <ClCompile Include="Level3DRender.cpp" />
-    <ClCompile Include="SpriteRender.cpp" />
-    <ClCompile Include="FontRender.cpp" />
-    <ClCompile Include="RenderingEngine.cpp" />
+    <ClCompile Include="mySourceCode\ModelRender.cpp" />
+    <ClCompile Include="mySourceCode\Level\Level3DRender.cpp" />
+    <ClCompile Include="mySourceCode\SpriteRender.cpp" />
+    <ClCompile Include="mySourceCode\FontRender.cpp" />
+    <ClCompile Include="mySourceCode\RenderingEngine.cpp" />
     <ClCompile Include="k2EngineLow.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="CollisionObject.cpp" />
-    <ClCompile Include="CameraCollisionSolver.cpp" />
-    <ClCompile Include="PostEffect.cpp" />
-    <ClCompile Include="Bloom.cpp" />
-    <ClCompile Include="Shadow.cpp" />
-    <ClCompile Include="SpringCamera.cpp" />
-    <ClCompile Include="SkyCube.cpp" />
+    <ClCompile Include="mySourceCode\Light\SceneLight.cpp" />
+    <ClCompile Include="mySourceCode\Collision\CollisionObject.cpp" />
+    <ClCompile Include="mySourceCode\Camera\CameraCollisionSolver.cpp" />
+    <ClCompile Include="mySourceCode\PostEffect\PostEffect.cpp" />
+    <ClCompile Include="mySourceCode\PostEffect\Bloom.cpp" />
+    <ClCompile Include="mySourceCode\Shadow\Shadow.cpp" />
+    <ClCompile Include="mySourceCode\Camera\SpringCamera.cpp" />
+    <ClCompile Include="mySourceCode\SkyCube.cpp" />
+    <ClCompile Include="mySourceCode\IRenderer.cpp" />
+    <ClCompile Include="mySourceCode\Shadow\ShadowMapRender.cpp" />
+    <ClCompile Include="mySourceCode\Shadow\CascadeShadowMapMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="k2EngineLowPreCompile.h" />
@@ -512,19 +515,23 @@
     <ClInclude Include="graphics\FrameBuffer.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="ModelRender.h" />
-    <ClInclude Include="Level3DRender.h" />
-    <ClInclude Include="SpriteRender.h" />
-    <ClInclude Include="FontRender.h" />
-    <ClInclude Include="RenderingEngine.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="CollisionObject.h" />
-    <ClInclude Include="CameraCollisionSolver.h" />
-    <ClInclude Include="PostEffect.h" />
-    <ClInclude Include="Bloom.h" />
-    <ClInclude Include="Shadow.h" />
-    <ClInclude Include="SpringCamera.h" />
-    <ClInclude Include="SkyCube.h" />
+    <ClInclude Include="mySourceCode\ModelRender.h" />
+    <ClInclude Include="mySourceCode\Level\Level3DRender.h" />
+    <ClInclude Include="mySourceCode\SpriteRender.h" />
+    <ClInclude Include="mySourceCode\FontRender.h" />
+    <ClInclude Include="mySourceCode\RenderingEngine.h" />
+    <ClInclude Include="mySourceCode\Light\SceneLight.h" />
+    <ClInclude Include="mySourceCode\Collision\CollisionObject.h" />
+    <ClInclude Include="mySourceCode\Camera\CameraCollisionSolver.h" />
+    <ClInclude Include="mySourceCode\PostEffect\PostEffect.h" />
+    <ClInclude Include="mySourceCode\PostEffect\Bloom.h" />
+    <ClInclude Include="mySourceCode\Shadow\Shadow.h" />
+    <ClInclude Include="mySourceCode\Camera\SpringCamera.h" />
+    <ClInclude Include="mySourceCode\SkyCube.h" />
+    <ClInclude Include="mySourceCode\IRenderer.h" />
+    <ClInclude Include="mySourceCode\MyRenderer.h" />
+    <ClInclude Include="mySourceCode\Shadow\ShadowMapRender.h" />
+    <ClInclude Include="mySourceCode\Shadow\CascadeShadowMapMatrix.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="graphics">

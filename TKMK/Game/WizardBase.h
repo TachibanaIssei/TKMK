@@ -1,6 +1,5 @@
 #pragma once
 #include "Actor.h"
-#include "CameraCollisionSolver.h"
 
 class Game;
 class GameUI;

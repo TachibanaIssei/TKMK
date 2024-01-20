@@ -1,6 +1,5 @@
 #pragma once
-#include "CameraCollisionSolver.h"
-#include "SpringCamera.h"
+#include "../k2EngineLow/mySourceCode/Camera/SpringCamera.h"
 
 class KnightPlayer;
 class WizardPlayer;

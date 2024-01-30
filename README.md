@@ -171,8 +171,6 @@
 ## 4.1 通常攻撃
 Aボタンを押すことで発動できます。最大3段の攻撃を行うことができます。
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/UagepSQ0UOk?si=mK_mUT1xgQu7ZRE3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
 # 5. 敵CPUについて
 
 # 5. 技術紹介(グラフィックス)

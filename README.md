@@ -177,10 +177,9 @@ Aボタンを押すことで発動できます。最大3段の攻撃を行うこ
 </a>
 
 ### 工夫した点 <!-- omit in toc -->
-1. 攻撃が連続して出ていることを視覚的に分かりやすくするためにエフェクトを出しました
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/24056bde-6eee-43db-94ae-0932c53b0b87" width="250" alt="normalAttack_effect"><br>
 1. 3段目の攻撃後にカメラを揺らすことで叩きつける感じを表現しています
-<img src="" width="250" alt="normalAttack_cameraNock"><br>
+1. 攻撃が連続して出ていることを視覚的に分かりやすくするためにエフェクトを出しました<br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/24056bde-6eee-43db-94ae-0932c53b0b87" width="250" alt="normalAttack_effect"><br>
 
 ### スキル
 Bボタンを押すことで発動できます。前方に進みながら剣で攻撃をします。クールタイムは5秒です。

@@ -175,6 +175,9 @@ Aボタンを押すことで発動できます。最大3段の攻撃を行うこ
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/632b3bd2-6afc-477c-91b3-ee8e3ac6552d" style="width:480px; "alt="通常攻撃">
 </a>
 
+### 工夫した点 <!-- omit in toc -->
+1. 攻撃が連続して出ていることを視覚的に分かりやすくするためにエフェクトを出しました
+
 # 5. 敵CPUについて
 
 # 6. 技術紹介(グラフィックス)

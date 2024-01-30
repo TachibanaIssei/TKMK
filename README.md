@@ -9,6 +9,7 @@
 - [3. 操作説明](#3-操作説明)
 - [4. プレイヤー](#4-プレイヤー)
   - [4.1. 通常攻撃](#41-通常攻撃)
+    - [スキル](#スキル)
 - [5. 敵CPUについて](#5-敵cpuについて)
 - [6. 技術紹介(グラフィックス)](#6-技術紹介グラフィックス)
   - [6.1. デプスシャドウ](#61-デプスシャドウ)
@@ -177,7 +178,13 @@ Aボタンを押すことで発動できます。最大3段の攻撃を行うこ
 
 ### 工夫した点 <!-- omit in toc -->
 1. 攻撃が連続して出ていることを視覚的に分かりやすくするためにエフェクトを出しました
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/24056bde-6eee-43db-94ae-0932c53b0b87" width="480" alt="normalAttack_effect"><br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/24056bde-6eee-43db-94ae-0932c53b0b87" width="250" alt="normalAttack_effect"><br>
+1. 3段目の攻撃後にカメラを揺らすことで叩きつける感じを表現しています
+<img src="" width="250" alt="normalAttack_cameraNock"><br>
+
+### スキル
+Bボタンを押すことで発動できます。前方に進みながら剣で攻撃をします。クールタイムは5秒です。
+
 
 # 5. 敵CPUについて
 

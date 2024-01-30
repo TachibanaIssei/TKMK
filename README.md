@@ -177,6 +177,7 @@ Aボタンを押すことで発動できます。最大3段の攻撃を行うこ
 
 ### 工夫した点 <!-- omit in toc -->
 1. 攻撃が連続して出ていることを視覚的に分かりやすくするためにエフェクトを出しました
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/24056bde-6eee-43db-94ae-0932c53b0b87" width="480" alt="normalAttack_effect"><br>
 
 # 5. 敵CPUについて
 

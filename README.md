@@ -158,8 +158,8 @@
 </div>
 
 # 3. 操作説明
-<img src="README_IMAGE/nonGameHowToPlay.jpg" width="480" alt="タイトル～ゲーム開始前・リザルト画面"><br>
-<img src="README_IMAGE/inGameHowToPlay.jpg" width="480" alt="ゲームプレイ中"><br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/35fb175a-1b44-42a6-87f9-3cb4ddd9111d" width="480" alt="タイトル～ゲーム開始前・リザルト画面"><br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/37fc138b-6d92-4bed-a6f3-20c278384dad" width="480" alt="ゲームプレイ中"><br>
 
 <div style="text-align: right;">
 
@@ -199,7 +199,7 @@ float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
 ```
 上記のピクセルシェーダーを実行するとこのようなシャドウマップが作成されます。
 
-<img src="README_IMAGE/shadowMapTexture.png" width="480" alt="シャドウマップ">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/efdbf696-e882-4ffa-bab4-5dd9aec715ce" width="480" alt="シャドウマップ">
 
 ---
 
@@ -224,7 +224,7 @@ if(zInLVP > zInShadowMap)
 }
 ```
 ↓実際のゲーム画面<br>
-<img src="README_IMAGE/depthShadow.png" width="480" alt="デプスシャドウ">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/15dc35c1-4a44-4960-ad04-759dfde81d3d" width="480" alt="デプスシャドウ">
 
 <div style="text-align: right;">
 
@@ -254,14 +254,14 @@ if(zInLVP > zInShadowMap)
 ポストエフェクトはレンダリングした絵に対し、レタッチを行ってエフェクトを追加していく処理のことです。
 <br>そのため、まず全てのモデルを描画していきます。
 
-<img src="README_IMAGE/bloomBefore.png" width="480" alt="モデル描画">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/cc102a1d-d98f-4961-9e16-5c58cb254fd2" width="480" alt="モデル描画">
 
 ---
 
 ### 6.2.2. 輝度抽出をする
 レンダリング後の画面から輝度抽出をします。
 
-<img src="README_IMAGE/luminance.png" width="480" alt="輝度抽出">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/8902cc43-fc5d-4ac5-8d86-9514aa1a1b0a" width="480" alt="輝度抽出">
 
 ---
 
@@ -270,34 +270,34 @@ if(zInLVP > zInShadowMap)
 解像度を1920x1080 → 960x540 にダウンサンプリングしています。<br>
 ダウンサンプリングをすることで頂点シェーダーの実行回数が減り処理速度が向上します。<br>
 
-<img src="README_IMAGE/boke1.png" width="480" alt="ボケ画像1">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/e17878b2-ba40-4306-ac54-6ded88ee472a" width="480" alt="ボケ画像1">
 
 ---
 
 ### 6.2.4. 3で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 3で作成したボケ画像を960x540 → 480x270にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
-<img src="README_IMAGE/boke2.png" width="480" alt="ボケ画像2">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/9487a792-a09c-433e-969f-f64d394599e7" width="480" alt="ボケ画像2">
 
 ---
 
 ### 6.2.5. 4で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 4で作成したボケ画像を480x270 → 240x135にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
-<img src="README_IMAGE/boke3.png" width="480" alt="ボケ画像3">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/0310b03e-6537-4c38-a751-d7b99e7ae6a5" width="480" alt="ボケ画像3">
 
 ---
 
 ### 6.2.6. 5で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 5で作成したボケ画像を240x135 → 120x67にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
-<img src="README_IMAGE/boke4.png" width="480" alt="ボケ画像4">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/49566cab-f9d5-403b-a37b-500e48126b73" width="480" alt="ボケ画像4">
 
 ---
 
 ### 6.2.7. 4枚のボケ画像の合成し、シーンに加算合成する
 作成した4枚のボケ画像の平均を取って合成し、シーンに加算合成します。<br>
-<img src="README_IMAGE/bloomAfter.png" width="480" alt="ブルーム">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/9df53879-dada-420c-b5b7-6d13e06981b3" width="480" alt="ブルーム">
 
 ---
 

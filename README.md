@@ -171,7 +171,9 @@
 ## 4.1. 通常攻撃
 Aボタンを押すことで発動できます。最大3段の攻撃を行うことができます。
 
-[![通常攻撃](https://github.com/TachibanaIssei/TKMK/assets/121418275/632b3bd2-6afc-477c-91b3-ee8e3ac6552d)](https://youtu.be/5uqOoY6OSqI)
+<a href="https://youtu.be/5uqOoY6OSqI">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/632b3bd2-6afc-477c-91b3-ee8e3ac6552d" style="width:480px; "alt="通常攻撃">
+</a>
 
 # 5. 敵CPUについて
 

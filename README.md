@@ -184,6 +184,9 @@ Aボタンを押すことで発動できます。最大3段の攻撃を行うこ
 ### スキル
 Bボタンを押すことで発動できます。前方に進みながら剣で攻撃をします。クールタイムは5秒です。
 
+<a href="https://youtu.be/BAr0PuAihBU">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/5fb6584c-14ea-406d-aaa6-4f591293edb7" style="width:480px; "alt="スキル">
+</a>
 
 # 5. 敵CPUについて
 

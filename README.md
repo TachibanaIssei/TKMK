@@ -188,6 +188,9 @@ Bボタンを押すことで発動できます。前方に進みながら剣で�
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/5fb6584c-14ea-406d-aaa6-4f591293edb7" style="width:480px; "alt="スキル">
 </a>
 
+### 工夫した点 <!-- omit in toc -->
+1. 滑っているように見えることを防ぐために足元に砂埃のエフェクトを発生させました<br>
+
 # 5. 敵CPUについて
 
 # 6. 技術紹介(グラフィックス)

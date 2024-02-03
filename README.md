@@ -29,6 +29,8 @@
 # 1. 作品概要
 * タイトル<br>
   * **SWORD ARENA**
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/dcdef1a9-5495-4f71-896f-767dfb74e30f" width="480" alt="タイトル">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/2b6bfb3e-ed21-43c8-adf2-a946752aceb6" width="480" alt="必殺技"><br>
 
 * ゲーム内容
   * プレイヤー剣士が、AI剣士3名とアリーナ内で戦い3分間でポイントの多さを競うアクションゲーム
@@ -190,6 +192,8 @@ Bボタンを押すことで発動できます。前方に進みながら剣で�
 
 ### 工夫した点 <!-- omit in toc -->
 1. 滑っているように見えることを防ぐために足元に砂埃のエフェクトを発生させました<br>
+
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/7b88d675-c376-4bec-bec8-b32e6d3d55a0" width="480" alt="スキル砂埃"><br>
 
 # 5. 敵CPUについて
 

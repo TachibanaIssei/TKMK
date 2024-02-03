@@ -200,7 +200,7 @@ Bボタンを押すことで発動できます。前方に進みながら剣で�
 レベル4以上のときにXボタンを押すことで発動できます。雷の魔法を使用して敵全体に高威力のダメージを与えます。使用するとレベルは1になります。
 
 <a href="https://youtu.be/AsS_TNDLVYY">
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/5fb6584c-14ea-406d-aaa6-4f591293edb7" style="width:480px; "alt="必殺技">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/e688cd89-9150-435b-a498-3c7bf2a7deee" style="width:480px; "alt="必殺技">
 </a>
 
 # 5. 敵CPUについて

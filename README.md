@@ -355,5 +355,6 @@ if(zInLVP > zInShadowMap)
 などがあり、そこを補い更に良くするために、以下の項目を実装しました。
 
 # 複数人プレイ
-画面を分割することで複数人でのプレイができるようにしました。画面は2人プレイ時は左右の2画面、3～4人プレイ時は4画面に分割されるようにしています。
-
+画面を分割することで複数人でのプレイができるようにしました。画面は2人プレイ時は左右の2画面、3～4人プレイ時は4画面に分割されるようにしています。<br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/b965678a-9c87-47ca-b0da-f5e1cd0325f0" width="480" alt="2人プレイ">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/9b4754a6-bd9b-4105-a477-760919d68d88" width="480" alt="4人プレイ">　<br>

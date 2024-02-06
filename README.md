@@ -19,7 +19,11 @@
   - [7.1. デプスシャドウ](#71-デプスシャドウ)
   - [7.2. 川瀬式ブルームフィルター](#72-川瀬式ブルームフィルター)
 - [8. U22プログラミング・コンテスト2023に向けた個人での取り組み](#8-u22プログラミングコンテスト2023に向けた個人での取り組み)
-- [複数人プレイ](#複数人プレイ)
+- [9. 複数人プレイ](#9-複数人プレイ)
+  - [9.1. 画面分割](#91-画面分割)
+- [10. ゲームUIの変更](#10-ゲームuiの変更)
+  - [10.1. ミニマップの削除](#101-ミニマップの削除)
+  - [10.2. ポイント表示UIの位置変更](#102-ポイント表示uiの位置変更)
 
 ---
 # 1. 作品概要
@@ -347,14 +351,73 @@ if(zInLVP > zInShadowMap)
 &emsp;この作品はU22プログラミング・コンテスト2023でSAJ賞を受賞しました。<br>
 &emsp;日本ゲーム大賞に向けた取り組みの後、8月からはU22プログラミング・コンテスト2023に向けて個人でこの作品のブラッシュアップを行っていきましたのでその取り組みについて説明していきます。<br>
 &emsp;この作品を学園祭などで多くの人にプレイしていただきコメントをうけたものや、自身でも課題に感じていた部分が
-* 複数人プレイの実装
+* 複数人で遊べるようにしたい
 * 画面の見づらさ
 * グラフィック面の強化
 <br>
 
 などがあり、そこを補い更に良くするために、以下の項目を実装しました。
 
-# 複数人プレイ
+# 9. 複数人プレイ
 画面を分割することで複数人でのプレイができるようにしました。画面は2人プレイ時は左右の2画面、3～4人プレイ時は4画面に分割されるようにしています。<br>
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/b965678a-9c87-47ca-b0da-f5e1cd0325f0" width="480" alt="2人プレイ">
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/9b4754a6-bd9b-4105-a477-760919d68d88" width="480" alt="4人プレイ">　<br>
+
+## 9.1. 画面分割
+画面分割の実装方法について説明します。<br>
+
+### ビューポートを用意する
+ビューポートを下の表にある縦幅、横幅、数だけ用意します。
+
+|                   | 1人プレイ | 2人プレイ | 3～4人プレイ | 
+| ----------------- | --------- | --------- | ------------ | 
+| ビューポート:縦幅 | 1920      | 960       | 960          | 
+| ビューポート:横幅 | 1080      | 1080      | 540          | 
+| ビューポート:数   | 1         | 2         | 4            | 
+
+下のコードは2画面分割で使用するビューポートの初期化処理です。<br>
+ビューポートの位置を左右や斜めに設定する必要があるため、```TopLeftX``` ```TopLeftY```に座標を代入しています。
+
+```c++
+//FRAME_BUFFER_WIDTH_HALF = 960
+//FRAME_BUFFER_H = 1080
+
+//左の画面
+m_duoViewPorts[enCameraDrawing_Left].Width = FRAME_BUFFER_WIDTH_HALF; //横幅
+m_duoViewPorts[enCameraDrawing_Left].Height = FRAME_BUFFER_H;         //縦幅
+m_duoViewPorts[enCameraDrawing_Left].TopLeftX = 0;                    //左横の座標
+m_duoViewPorts[enCameraDrawing_Left].TopLeftY = 0;                    //左縦の座標
+
+//右の画面
+m_duoViewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF;
+m_duoViewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;
+m_duoViewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF; //左横を画面の中心に持ってくる
+m_duoViewPorts[enCameraDrawing_Right].TopLeftY = 0;
+m_duoViewPorts[enCameraDrawing_Right].MinDepth = 0.0f;
+m_duoViewPorts[enCameraDrawing_Right].MaxDepth = 1.0f;
+```
+### ビューポートにモデルを描画する
+1つのビューポートにモデルを描画した後、別のビューポートに切り替えモデルを描画していきます。<br>
+
+//画像
+
+下のプログラムは2画面分割でフォワードレンダリングのモデル描画を行っているコードです。
+``` C++
+//ビューポートの数だけ繰り返す
+for (int currentViewport = 0; currentViewport < DUO_VIEWPORT; currentViewport++)
+{
+	rc.SetViewport(m_duoViewPorts[currentViewport]);  //ビューポートを設定する
+	for (auto& renderObj : m_renderObjects) {
+		renderObj->OnForwardRender(rc);   //モデル描画
+	}
+}
+```
+
+# 10. ゲームUIの変更
+ブラッシュアップを行うなかで画面が見づらいという意見があったためゲームUIの見直しを行いました。
+## 10.1. ミニマップの削除
+左上にあったミニマップを削除しました。<br>
+理由は、画面の占有率が高いかつ必要性が低かったからです。
+## 10.2. ポイント表示UIの位置変更
+画面左側にあったポイント表示を画面上部のタイマーと同じ高さに配置しました。<br>
+移動したことにより画面横部分にUIがなくなったため見やすさが向上したと思います。

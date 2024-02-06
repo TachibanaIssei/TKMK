@@ -32,8 +32,12 @@
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/dcdef1a9-5495-4f71-896f-767dfb74e30f" width="480" alt="タイトル">
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/2b6bfb3e-ed21-43c8-adf2-a946752aceb6" width="480" alt="必殺技"><br>
 
-* ゲーム内容
-  * プレイヤー剣士が、AI剣士3名とアリーナ内で戦い3分間でポイントの多さを競うアクションゲーム
+* ゲーム内容<br>
+プレイヤー剣士が、AI剣士3名とアリーナ内で戦い3分間でポイントの多さを競うアクションゲーム
+<a href="https://youtu.be/Aard8Ffjhc0">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/bfff498d-bd4b-4ec1-9067-101fa1596f57" style="width:480px; "alt="動画">
+</a>
+
 * ルール
   * 時間は3分間
   * フィールド上にいるエネミー(ゴーストとうさぎ)を倒すと経験値を獲得し、Lvが上がる
@@ -43,6 +47,7 @@
   * 勝利条件は、ポイントの多寡で決まる
   * ポイントは自分以外の剣士を倒すと獲得できる
 
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/14379387-f21b-4ff7-af1f-f98b81bc6da4" width="480" alt="リザルト"><br>
 * 学校
   * 河原電子ビジネス専門学校
 
@@ -354,7 +359,6 @@ if(zInLVP > zInShadowMap)
 * 複数人で遊べるようにしたい
 * 画面の見づらさ
 * グラフィック面の強化
-<br>
 
 などがあり、そこを補い更に良くするために、以下の項目を実装しました。
 
@@ -393,8 +397,6 @@ m_duoViewPorts[enCameraDrawing_Right].Width = FRAME_BUFFER_WIDTH_HALF;
 m_duoViewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;
 m_duoViewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF; //左横を画面の中心に持ってくる
 m_duoViewPorts[enCameraDrawing_Right].TopLeftY = 0;
-m_duoViewPorts[enCameraDrawing_Right].MinDepth = 0.0f;
-m_duoViewPorts[enCameraDrawing_Right].MaxDepth = 1.0f;
 ```
 ### ビューポートにモデルを描画する
 1つのビューポートにモデルを描画した後、別のビューポートに切り替えモデルを描画していきます。<br>
@@ -421,3 +423,4 @@ for (int currentViewport = 0; currentViewport < DUO_VIEWPORT; currentViewport++)
 ## 10.2. ポイント表示UIの位置変更
 画面左側にあったポイント表示を画面上部のタイマーと同じ高さに配置しました。<br>
 移動したことにより画面横部分にUIがなくなったため見やすさが向上したと思います。
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/f12e6b4f-ffd2-409c-83d3-b38677c9b592" width="480" alt="ゲームUI変更点">

@@ -263,7 +263,7 @@ void KnightAI::CalculatAIAttackEvaluationValue()
 	for (auto actor : actors)
 	{
 		EvalData eval = CalculateTargetAI(actor);
-		Evaluation_valueActor.push_back(eval);
+		m_evaluationValueActor.push_back(eval);
 	}
 }
 
@@ -603,7 +603,7 @@ void KnightAI::LotNextAction()
 	
 	//初期化
 	Evaluation_valueEnemy.clear();
-	Evaluation_valueActor.clear();
+	m_evaluationValueActor.clear();
 
 	//中立の敵の評価値の計算
 	CalculatEnemyAttackEvaluationValue();
@@ -639,23 +639,23 @@ void KnightAI::LotNextAction()
 
 	//アクターを判定する
 	std::vector<Actor*> actors = m_game->GetActors();
-	for (int i = 0; i < Evaluation_valueActor.size(); i++)
+	for (int i = 0; i < m_evaluationValueActor.size(); i++)
 	{
 		// 追いかける判定
-		if (Evaluation_valueActor[i].eval > noweval_Target &&
-			Evaluation_valueActor[i].chaseOrEscape == false &&
+		if (m_evaluationValueActor[i].eval > noweval_Target &&
+			m_evaluationValueActor[i].chaseOrEscape == false &&
 			actors[i] != this)
 		{
-			noweval_Target = Evaluation_valueActor[i].eval;
+			noweval_Target = m_evaluationValueActor[i].eval;
 			m_nowActorTarget = actors[i];
 			TargetChange = true;
 		}
 
 		// 逃げる判定
-		if (Evaluation_valueActor[i].eval > noweval_Escape &&
-			Evaluation_valueActor[i].chaseOrEscape == true)
+		if (m_evaluationValueActor[i].eval > noweval_Escape &&
+			m_evaluationValueActor[i].chaseOrEscape == true)
 		{
-			noweval_Escape = Evaluation_valueActor[i].eval;
+			noweval_Escape = m_evaluationValueActor[i].eval;
 			m_nowActorEscape = actors[i];
 		}
 	}

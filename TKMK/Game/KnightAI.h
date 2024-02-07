@@ -124,7 +124,7 @@ private:
 	//エネミーの評価値
 	std::vector<EvalData> Evaluation_valueEnemy;
 	//アクターの評価値
-	std::vector<EvalData> Evaluation_valueActor;
+	std::vector<EvalData> m_evaluationValueActor;
 	//今自分の近くにいるエネミーのリスト
 	std::vector<Neutral_Enemy*> be_Enemy;
 	

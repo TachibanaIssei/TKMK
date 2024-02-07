@@ -28,15 +28,16 @@
 ---
 # 1. 作品概要
 * タイトル<br>
-  * **SWORD ARENA**<br>
+ **SWORD ARENA**<br>
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/dcdef1a9-5495-4f71-896f-767dfb74e30f" width="480" alt="タイトル">
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/2b6bfb3e-ed21-43c8-adf2-a946752aceb6" width="480" alt="必殺技"><br>
 
 * ゲーム内容<br>
 プレイヤー剣士が、AI剣士3名とアリーナ内で戦い3分間でポイントの多さを競うアクションゲーム
-<a href="https://youtu.be/Aard8Ffjhc0">
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/bfff498d-bd4b-4ec1-9067-101fa1596f57" style="width:480px; "alt="動画">
-</a>
+
+  <a href="https://youtu.be/Aard8Ffjhc0">
+  <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/bfff498d-bd4b-4ec1-9067-101fa1596f57" style="width:480px; "alt="動画">
+  </a>
 
 * ルール
   * 時間は3分間
@@ -47,7 +48,7 @@
   * 勝利条件は、ポイントの多寡で決まる
   * ポイントは自分以外の剣士を倒すと獲得できる
 
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/14379387-f21b-4ff7-af1f-f98b81bc6da4" width="480" alt="リザルト"><br>
+  <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/14379387-f21b-4ff7-af1f-f98b81bc6da4" width="480" alt="リザルト"><br>
 * 学校
   * 河原電子ビジネス専門学校
 
@@ -219,7 +220,56 @@ Bボタンを押すことで発動できます。前方に進みながら剣で�
 アリーナ内にはプレイヤー以外の剣士として敵CPUが存在しています。この敵CPUについて説明していきます。
 ## 6.1. 評価値
 &emsp;それぞれの剣士が保有しているポイントやレベルによる強さの関係などを考慮したCPUの動作を実装したかったため、評価値を使用しました。<br>
-&emsp;
+&emsp;この評価値は、主に他の剣士を追うもしくは逃げる対象にするかの判断の際に使用しました。
+
+### 6.1.1. 評価値を計算する
+条件によって評価値を増減させ最終的な評価値を計算していきます。<br>
+下のプログラムは、敵が近くにいるとき評価値を上げる処理のコードです。
+``` C++
+//自分に近い敵が居たらを評価値を上げる
+if (Distance <= 200.0f)
+{
+	eval += 2500; //評価値を上げる
+}
+
+//さらに近い敵がいる場合評価値を上げる
+if (Distance <= 50.0f)
+{
+	eval += 5000;
+}
+```
+### 6.1.2. 剣士の数だけ評価値の計算を行う
+フィールド上には自身以外に3体の剣士が存在しています。そのため評価値の計算を各剣士行い、```std::vector```型に格納しています。
+```C++
+//剣士の数だけ繰り返す
+for (auto actor : actors)
+{
+	EvalData eval = CalculateTargetAI(actor); //評価値を計算
+	m_evaluationValueActor.push_back(eval);   //結果をstd::vector型に格納
+}
+```
+### 6.1.3. 評価値を比較しターゲットを決定する
+最後に、計算した各剣士の評価値を比較し、ターゲットとする剣士を決定します。<br>
+下のプログラムは、追いかけるターゲットを決定しているコードです。
+``` C++
+//評価値を計算した剣士の数だけ繰り返す
+for (int i = 0; i < m_evaluationValueActor.size(); i++)
+{
+	// 追いかける判定
+	if (
+        //評価値を比較し、現在のターゲットより大きい場合はtrueとする
+        m_evaluationValueActor[i].eval > noweval_Target && 
+        //追いかけるモードの場合trueとする
+		m_evaluationValueActor[i].chaseOrEscape == false &&
+		actors[i] != this)
+	{
+        //ターゲットにする剣士の評価値を代入
+		noweval_Target = m_evaluationValueActor[i].eval;
+        //ターゲットにする剣士を更新する
+		m_nowActorTarget = actors[i];
+	}
+}
+```
 
 # 7. 技術紹介(グラフィックス)
 ## 7.1. デプスシャドウ
@@ -231,7 +281,7 @@ Bボタンを押すことで発動できます。前方に進みながら剣で�
 2. ライトビュースクリーン空間でのZ値を計算する
 3. シャドウマップに書き込まれているZ値と比較する
 
-### 6.1.1. シャドウマップを作成する
+### 7.1.1. シャドウマップを作成する
 Z値を書き込んでシャドウマップを作成します。
 ```HLSL
 /// <summary>
@@ -249,7 +299,7 @@ float4 PSShadowMapMain(SPSIn psIn) : SV_Target0
 
 ---
 
-### 6.1.2. ライトビュースクリーン空間でのZ値を計算する
+### 7.1.2. ライトビュースクリーン空間でのZ値を計算する
 影を受けるモデルのライトビュースクリーン空間でZ値を計算します。
 ```HLSL
 float zInLVP = psIn.posInLVP.z / psIn.posInLVP.w;
@@ -257,7 +307,7 @@ float zInLVP = psIn.posInLVP.z / psIn.posInLVP.w;
 
 ---
 
-### 6.1.3. シャドウマップに書き込まれているZ値と比較する
+### 7.1.3. シャドウマップに書き込まれているZ値と比較する
 シャドウマップに書き込まれているZ値と2.で求めたライトビュースクリーン空間でのZ値を比較して、遮蔽されていれば影を落とします。
 ```HLSL
 // シャドウマップに描き込まれているZ値と比較する
@@ -296,7 +346,7 @@ if(zInLVP > zInShadowMap)
    
 ---
 
-### 6.2.1. モデルを描画する
+### 7.2.1. モデルを描画する
 ポストエフェクトはレンダリングした絵に対し、レタッチを行ってエフェクトを追加していく処理のことです。
 <br>そのため、まず全てのモデルを描画していきます。
 
@@ -304,14 +354,14 @@ if(zInLVP > zInShadowMap)
 
 ---
 
-### 6.2.2. 輝度抽出をする
+### 7.2.2. 輝度抽出をする
 レンダリング後の画面から輝度抽出をします。
 
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/8902cc43-fc5d-4ac5-8d86-9514aa1a1b0a" width="480" alt="輝度抽出">
 
 ---
 
-### 6.2.3. 輝度抽出したテクスチャにガウシアンブラーをかけボケ画像を作成
+### 7.2.3. 輝度抽出したテクスチャにガウシアンブラーをかけボケ画像を作成
 輝度抽出したテクスチャをダウンサンプリングして、ガウシアンブラーをかけます。<br>
 解像度を1920x1080 → 960x540 にダウンサンプリングしています。<br>
 ダウンサンプリングをすることで頂点シェーダーの実行回数が減り処理速度が向上します。<br>
@@ -320,28 +370,28 @@ if(zInLVP > zInShadowMap)
 
 ---
 
-### 6.2.4. 3で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
+### 7.2.4. 3で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 3で作成したボケ画像を960x540 → 480x270にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/9487a792-a09c-433e-969f-f64d394599e7" width="480" alt="ボケ画像2">
 
 ---
 
-### 6.2.5. 4で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
+### 7.2.5. 4で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 4で作成したボケ画像を480x270 → 240x135にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/0310b03e-6537-4c38-a751-d7b99e7ae6a5" width="480" alt="ボケ画像3">
 
 ---
 
-### 6.2.6. 5で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
+### 7.2.6. 5で作成したボケ画像にさらにガウシアンブラーをかけボケ画像を作成
 5で作成したボケ画像を240x135 → 120x67にダウンサンプリングしてさらにガウシアンブラーをかけます。<br>
 
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/49566cab-f9d5-403b-a37b-500e48126b73" width="480" alt="ボケ画像4">
 
 ---
 
-### 6.2.7. 4枚のボケ画像の合成し、シーンに加算合成する
+### 7.2.7. 4枚のボケ画像の合成し、シーンに加算合成する
 作成した4枚のボケ画像の平均を取って合成し、シーンに加算合成します。<br>
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/9df53879-dada-420c-b5b7-6d13e06981b3" width="480" alt="ブルーム">
 
@@ -370,7 +420,7 @@ if(zInLVP > zInShadowMap)
 ## 9.1. 画面分割
 画面分割の実装方法について説明します。<br>
 
-### ビューポートを用意する
+### 9.1.1. ビューポートを用意する
 ビューポートを下の表にある縦幅、横幅、数だけ用意します。
 
 |                   | 1人プレイ | 2人プレイ | 3～4人プレイ | 
@@ -398,7 +448,7 @@ m_duoViewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;
 m_duoViewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF; //左横を画面の中心に持ってくる
 m_duoViewPorts[enCameraDrawing_Right].TopLeftY = 0;
 ```
-### ビューポートにモデルを描画する
+### 9.1.2. ビューポートにモデルを描画する
 1つのビューポートにモデルを描画した後、別のビューポートに切り替えモデルを描画していきます。<br>
 
 //画像
@@ -423,4 +473,5 @@ for (int currentViewport = 0; currentViewport < DUO_VIEWPORT; currentViewport++)
 ## 10.2. ポイント表示UIの位置変更
 画面左側にあったポイント表示を画面上部のタイマーと同じ高さに配置しました。<br>
 移動したことにより画面横部分にUIがなくなったため見やすさが向上したと思います。
+
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/f12e6b4f-ffd2-409c-83d3-b38677c9b592" width="480" alt="ゲームUI変更点">

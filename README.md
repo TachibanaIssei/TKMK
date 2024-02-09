@@ -450,6 +450,8 @@ m_duoViewPorts[enCameraDrawing_Right].Height = FRAME_BUFFER_H;
 m_duoViewPorts[enCameraDrawing_Right].TopLeftX = FRAME_BUFFER_WIDTH_HALF; //左横を画面の中心に持ってくる
 m_duoViewPorts[enCameraDrawing_Right].TopLeftY = 0;
 ```
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/1b19fc4a-805b-4784-aac0-8a04d898a0a9" width="480" alt="ビューポート図">
+
 ### 9.1.2. ビューポートにモデルを描画する
 1つのビューポートにモデルを描画した後、別のビューポートに切り替えモデルを描画していきます。<br>
 

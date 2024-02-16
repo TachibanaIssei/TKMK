@@ -656,3 +656,6 @@ float cascadeAreaTbl[NUM_SHADOW_MAP] = {
 &emsp;今回の実装では、太陽光からの影を表現したかったためプロジェクション行列に平行投影行列を利用しています。平行投影行列を利用することで、遠近感がない絵を描画することができ、光源から近くても遠くても大きさが変わらないようにすることができます。
 
 #### 分割エリアの定義に従って、各エリアを内包する視錐台の8頂点を求める
+![camera_vertexCalc](https://github.com/TachibanaIssei/TKMK/assets/121418275/5261bd11-5d7a-4a00-9397-6ab23e2bffcc)
+![cascadeShadowMap](https://github.com/TachibanaIssei/TKMK/assets/121418275/1242e742-ac3c-4af4-9ef8-e57f7e477b49)
+![camera_vertex](https://github.com/TachibanaIssei/TKMK/assets/121418275/fe9a3e4a-51bb-4dd8-8e95-c17d4e9786e2)

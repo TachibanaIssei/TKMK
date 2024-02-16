@@ -615,6 +615,8 @@ int cameraNumber = round(normalTexture.Sample(Sampler,In.uv).a * 10.0f);
 ### 苦労した点 <!-- omit in toc -->
 実装の際にDrawコールを実行しているが空が描画されない問題が発生しました。<br>
 この問題の原因はフォワードレンダリングで描画する際に使用する深度ステンシルビューをメインレンダーターゲットのものを使用しており、正しい前後関係が得られておらず空が描画はされているが奥に描画されていて見えていないというものでした。<br>
-深度ステンシルビューをG-Bufferを作成したときに作られたものを使用するように変更することで正しい前後関係を得ることができ、空が見えるようになりました。
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/062fa6af-999d-4e06-9140-d8f4e1531cf0" width="480" alt="foward_depth"> <br>
+深度ステンシルビューをG-Bufferを作成したときに作られたものを使用するように変更することで正しい前後関係を得ることができ、空が見えるようになりました。<br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/17e24af9-1234-48ce-aa5f-4134efd610e2" width="480" alt="foward_depth">
 
 # 13. カスケードシャドウ

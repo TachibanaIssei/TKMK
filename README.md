@@ -3,8 +3,9 @@
 ### 氏名：橘　一生　<!-- omit in toc -->
 ---
 
-# 目次 <!-- omit in toc -->
+# 目次
 
+- [目次](#目次)
 - [1. 作品概要](#1-作品概要)
 - [2. 担当ソースコード](#2-担当ソースコード)
 - [3. 操作説明](#3-操作説明)
@@ -45,9 +46,7 @@
 * ゲーム内容<br>
 プレイヤー剣士が、AI剣士3名とアリーナ内で戦い3分間でポイントの多さを競うアクションゲーム
 
-  <a href="https://youtu.be/Aard8Ffjhc0">
-  <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/bfff498d-bd4b-4ec1-9067-101fa1596f57" style="width:480px; "alt="動画">
-  </a>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/Aard8Ffjhc0?si=MKWk1p_Up7zXTu6X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 * ルール
   * 時間は3分間
@@ -194,9 +193,7 @@
 ## 5.1. 通常攻撃
 Aボタンを押すことで発動できます。最大3段の攻撃を行うことができます。
 
-<a href="https://youtu.be/5uqOoY6OSqI">
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/632b3bd2-6afc-477c-91b3-ee8e3ac6552d" style="width:480px; "alt="通常攻撃">
-</a>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5uqOoY6OSqI?si=fIyWE4ZwXVfUfRAP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### 工夫した点 <!-- omit in toc -->
 1. 3段目の攻撃後にカメラを揺らすことで叩きつける感じを表現しています
@@ -206,9 +203,7 @@ Aボタンを押すことで発動できます。最大3段の攻撃を行うこ
 ## 5.2. スキル
 Bボタンを押すことで発動できます。前方に進みながら剣で攻撃をします。クールタイムは5秒です。
 
-<a href="https://youtu.be/BAr0PuAihBU">
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/5fb6584c-14ea-406d-aaa6-4f591293edb7" style="width:480px; "alt="スキル">
-</a>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/BAr0PuAihBU?si=htDkcLhvz6E3IVoZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### 工夫した点 <!-- omit in toc -->
 1. 滑っているように見えることを防ぐために足元に砂埃のエフェクトを発生させました<br>
@@ -217,14 +212,17 @@ Bボタンを押すことで発動できます。前方に進みながら剣で�
 ## 5.3. 必殺技
 レベル4以上のときにXボタンを押すことで発動できます。雷の魔法を使用して敵全体に高威力のダメージを与えます。使用するとレベルは1になります。
 
-<a href="https://youtu.be/AsS_TNDLVYY">
-<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/e688cd89-9150-435b-a498-3c7bf2a7deee" style="width:480px; "alt="必殺技">
-</a>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AsS_TNDLVYY?si=tBul6AUzRjM6TGUq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ### 工夫した点 <!-- omit in toc -->
 1. 必殺技が敵全体に当たっているということをプレイヤーに伝えるために必殺技が当たった敵の正面をカメラで映すようにしました。<br>
 1. 雷が落ちる雰囲気を演出するために空を徐々に暗くなるようにしました。<br>
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/45649542-5e18-496b-9634-2123850ae41a" width="480" alt="空の色変化"><br>
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
 
 # 6. 敵CPU
 アリーナ内にはプレイヤー以外の剣士として敵CPUが存在しています。この敵CPUについて説明していきます。
@@ -282,6 +280,11 @@ for (int i = 0; i < m_evaluationValueActor.size(); i++)
 	}
 }
 ```
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
 
 # 7. 技術紹介(グラフィックス)
 ## 7.1. デプスシャドウ
@@ -476,6 +479,11 @@ for (int currentViewport = 0; currentViewport < DUO_VIEWPORT; currentViewport++)
 }
 ```
 
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
+
 # 10. ゲームUIの変更
 ブラッシュアップを行うなかで画面が見づらいという意見があったためゲームUIの見直しを行いました。<br>
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/f12e6b4f-ffd2-409c-83d3-b38677c9b592" width="480" alt="ゲームUI変更点">
@@ -485,6 +493,11 @@ for (int currentViewport = 0; currentViewport < DUO_VIEWPORT; currentViewport++)
 ## 10.2. ポイント表示UIの位置変更
 画面左側にあったポイント表示を画面上部のタイマーと同じ高さに配置しました。<br>
 移動したことにより画面横部分にUIがなくなったため見やすさが向上したと思います。
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
 
 # 11. PBR(物理ベースレンダリング)
 グラフィック面を強化するためにライティングの方法をPhongの反射モデルからPBRライティングに変更しました。<br>
@@ -579,6 +592,11 @@ float3 CalcLighting(
 }
 ```
 
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
+
 # 12. ディファードレンダリング
 &emsp;ディファードレンダリングとは、G-Bufferの内容を使ってポストエフェクト的にライティングの計算を行うレンダリング方法のことです。
 
@@ -617,6 +635,11 @@ int cameraNumber = round(normalTexture.Sample(Sampler,In.uv).a * 10.0f);
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/062fa6af-999d-4e06-9140-d8f4e1531cf0" width="480" alt="foward_depth"> <br>
 深度ステンシルビューをG-Bufferを作成したときに作られたものを使用するように変更することで正しい前後関係を得ることができ、空が見えるようになりました。<br>
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/17e24af9-1234-48ce-aa5f-4134efd610e2" width="480" alt="foward_depth">
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>
 
 # 13. カスケードシャドウ
 &emsp;影はデプスシャドウを実装していましたが影を描画できる範囲が限られておりステージ全体に落とすことが難しい状態でした。そのためカスケードシャドウを実装することにしました。<br>
@@ -696,7 +719,7 @@ float yOffset = (vMax.y + vMin.y) * -0.5f * yScale;
 ```
 
 #### クロップ行列を求める　<!-- omit in toc -->
-8頂点を内包するAABBと、それをシャドウマップにピッタリ収めるための拡大率と平行移動量を求められたためこれらを利用して、クロップ行列を計算します。
+&emsp;8頂点を内包するAABBと、それをシャドウマップにピッタリ収めるための拡大率と平行移動量を求められたためこれらを利用して、クロップ行列を計算します。
 ``` C++
 Matrix clopMatrix;
 clopMatrix.m[0][0] = xScale;
@@ -706,12 +729,17 @@ clopMatrix.m[3][1] = yOffset;
 ```
 
 #### 13.1.2.5. ライトビュープロジェクション行列とクロップ行列を乗算して最終的な行列を求める
-求めたクロップ行列をライトビュープロジェクション行列に乗算し、最終的な行列を求めます。
+&emsp;求めたクロップ行列をライトビュープロジェクション行列に乗算し、最終的な行列を求めます。
 ```C++
 m_lvpcMatrix[areaNo] = lvpMatrix * clopMatrix;
 ```
 
 ## 13.2. 影を描画する
-デプスシャドウマップと同じように、作成した行列を使って座標変換し、シャドウマップに描画して、モデルに影を落とします。
+&emsp;デプスシャドウマップと同じように、作成した行列を使って座標変換し、シャドウマップに描画して、モデルに影を落とします。<br>
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/abe308d5-33dc-48cd-8f12-a0271f030ae8" width="480" alt="shadowMap">
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/87207175-e18f-46b0-9fdb-7b35137bee25" width="480" alt="cascadeShadow">
+
+<div style="text-align: right;">
+
+[目次へ](#目次)
+</div>

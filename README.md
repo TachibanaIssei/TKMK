@@ -33,6 +33,7 @@
   - [12.1. G-Buffer](#121-g-buffer)
 - [13. カスケードシャドウ](#13-カスケードシャドウ)
   - [アルゴリズムの流れ](#アルゴリズムの流れ)
+  - [影を描画する](#影を描画する)
 
 ---
 # 1. 作品概要
@@ -631,7 +632,10 @@ int cameraNumber = round(normalTexture.Sample(Sampler,In.uv).a * 10.0f);
 
 ### 分割エリアの定義
 カメラからどこまでの距離を「近距離」「中距離」「遠距離」とするか、分割エリアを定義します。<br>
-今回はカメラの遠平面までの距離に分割エリアの比率を乗算することで求めています。
+今回はカメラの遠平面までの距離に分割エリアの比率を乗算することで求めています。<br>
+
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/1242e742-ac3c-4af4-9ef8-e57f7e477b49" width="480" alt="cascadeShadowMap">
+
 ```C++
 std::array<float, NUM_SHADOW_MAP>	 m_cascadeAreaRateArray = { 0.1f, 0.3f,1.0f };	//カスケードシャドウの近～遠距離の比率
 
@@ -642,6 +646,7 @@ float cascadeAreaTbl[NUM_SHADOW_MAP] = {
 	g_camera3D[cameraNumber]->GetFar()													//遠影を映す最大深度値
 };
 ```
+
 ### 分割エリアを描画するためのライトビュープロジェクション行列の計算
 各エリアのオブジェクトを正しくシャドウマップに描画するためのライトビュープロジェクション行列を計算する必要があります。その手順は以下の通りです。
 
@@ -656,6 +661,55 @@ float cascadeAreaTbl[NUM_SHADOW_MAP] = {
 &emsp;今回の実装では、太陽光からの影を表現したかったためプロジェクション行列に平行投影行列を利用しています。平行投影行列を利用することで、遠近感がない絵を描画することができ、光源から近くても遠くても大きさが変わらないようにすることができます。
 
 #### 分割エリアの定義に従って、各エリアを内包する視錐台の8頂点を求める
-![camera_vertexCalc](https://github.com/TachibanaIssei/TKMK/assets/121418275/5261bd11-5d7a-4a00-9397-6ab23e2bffcc)
-![cascadeShadowMap](https://github.com/TachibanaIssei/TKMK/assets/121418275/1242e742-ac3c-4af4-9ef8-e57f7e477b49)
-![camera_vertex](https://github.com/TachibanaIssei/TKMK/assets/121418275/fe9a3e4a-51bb-4dd8-8e95-c17d4e9786e2)
+下の図の赤丸でマークしている16頂点を求めていきます。<br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/fe9a3e4a-51bb-4dd8-8e95-c17d4e9786e2" width="480" alt="camera_vertex"><br>
+
+この頂点は、カメラの各種情報(位置、画角、前方方向、アスペクト比、カメラの上方向)がわかっていれば、三角比を利用して求められます。<br>
+下の図は視錐台を横から見た図です。図中1.~3.にあるとおり、辺の長さは、画角と分割エリアの範囲がわかっていれば、tan関数を利用することで求めることができます。<br>
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/5261bd11-5d7a-4a00-9397-6ab23e2bffcc" width="480" alt="camera_vertex"><br>
+
+#### 各エリアの8頂点をライトビュープロジェクション空間に変換する
+前のステップで求めた8頂点をライトビュープロジェクション空間に変換します。<br>
+プログラムは以下のとおりです。
+```C++
+for (auto& v : vertex)
+{
+	lvpMatrix.Apply(v);
+}
+```
+
+#### 8頂点の最大値と最小値を利用して、ライトビュープロジェクション空間に収めるクロップ行列を計算する
+&emsp;シャドウマップにすべてのオブジェクトを描画するために、変換した視錐台の8頂点を正規化スクリーン座標系の-1~1の範囲に収める必要があります。そのためにクロップ行列を計算していきます。<br>
+&emsp;クロップ行列とは、$拡大行列×平行移動行列$で求められる行列のことです。
+
+#### AABBを求める <!-- omit in toc -->
+&emsp;ライトビュースクリーン空間に座標変換した8頂点を画面に収めるために、8頂点の最大値と最小値を求め、8頂点を内包するAABBを求めます。<br>
+&emsp;8頂点の最大値と最小値を求めたら、このAABBが正規化スクリーン座標系にピッタリフィットするような拡大率を求めます。正規化スクリーン座標系の幅と高さの長さは2なので、拡大率を求めるプログラムは以下のようになります。
+``` C++
+float xScale = 2.0f / (vMax.x - vMin.x);
+float yScale = 2.0f / (vMax.y - vMin.y);
+```
+&emsp;最後に座標を-1~1の範囲に収まるようにずらします。方法は、8頂点の最大値と最小値を利用して、AABBの中心座標を求め、その中心座標分だけ反対向きに平行移動させます。
+``` C++
+float xOffset = (vMax.x + vMin.x) * -0.5f * xScale;
+float yOffset = (vMax.y + vMin.y) * -0.5f * yScale;
+```
+
+#### クロップ行列を求める　<!-- omit in toc -->
+8頂点を内包するAABBと、それをシャドウマップにピッタリ収めるための拡大率と平行移動量を求められたためこれらを利用して、クロップ行列を計算します。
+``` C++
+Matrix clopMatrix;
+clopMatrix.m[0][0] = xScale;
+clopMatrix.m[1][1] = yScale;
+clopMatrix.m[3][0] = xOffset;
+clopMatrix.m[3][1] = yOffset;
+```
+
+#### ライトビュープロジェクション行列とクロップ行列を乗算して最終的な行列を求める
+求めたクロップ行列をライトビュープロジェクション行列に乗算し、最終的な行列を求めます。
+```C++
+m_lvpcMatrix[areaNo] = lvpMatrix * clopMatrix;
+```
+
+## 影を描画する
+デプスシャドウマップと同じように、作成した行列を使って座標変換し、シャドウマップに描画して、モデルに影を落とします。

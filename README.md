@@ -713,3 +713,5 @@ m_lvpcMatrix[areaNo] = lvpMatrix * clopMatrix;
 
 ## 影を描画する
 デプスシャドウマップと同じように、作成した行列を使って座標変換し、シャドウマップに描画して、モデルに影を落とします。
+![shadowMap](https://github.com/TachibanaIssei/TKMK/assets/121418275/abe308d5-33dc-48cd-8f12-a0271f030ae8)
+![cascadeShadow](https://github.com/TachibanaIssei/TKMK/assets/121418275/87207175-e18f-46b0-9fdb-7b35137bee25)

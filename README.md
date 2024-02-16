@@ -585,5 +585,6 @@ float3 CalcLighting(
 
 ## 12.1. G-Buffer
 ディファードレンダリングでは、ポリゴンをレンダリングするときにはライティングの計算は行わず、MRT(Multi Rendering Target)を活用して、G-Bufferと呼ばれる複数枚のテクスチャに「テクスチャカラー」「法線情報」「スペキュラ強度」「深度値」などを書き込みます。
+![DefferdRendering](https://github.com/TachibanaIssei/TKMK/assets/121418275/19f972c2-1551-4c8a-8684-a69fb548ce06)
 
 # 13. カスケードシャドウ

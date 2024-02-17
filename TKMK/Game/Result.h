@@ -1,7 +1,6 @@
 #pragma once
 
-#include <array>
-#include "SpringCamera.h"
+#include "../k2EngineLow/mySourceCode/Camera/SpringCamera.h"
 
 class Tittle;
 class Fade;
@@ -137,7 +136,7 @@ private:
 
 	Tittle* tittle = nullptr;
 	SoundSource* m_bgm = nullptr;
-	Fade* fade = nullptr;
+	Fade* m_fade = nullptr;
 
 	//フォントの線形補間前の座標
 	std::array<Vector3, m_maxPlayer> m_lerpStartPos = {	//順位

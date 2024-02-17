@@ -1,8 +1,7 @@
 #pragma once
 #include "Effect.h"
-#include "Level3DRender.h"
+#include "../k2EngineLow/mySourceCode/Level/Level3DRender.h"
 #include "Sounds.h"
-#include <array>
 
 class BackGround;
 class Result;
@@ -298,7 +297,7 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="flag"></param>
-	void SetUltCanUseFlag(bool flag)
+	void SetUltCanUseFlag(const bool flag)
 	{
 		UltCanUseFlag = flag;
 	}
@@ -311,35 +310,32 @@ public:
 	}
 
 	void UnderSprite_Attack() {
-		if (m_underSprite_Attack) {
+		if (m_attackFlag) {
 			return;
 		}
 
-		if (m_underSprite_TowerDown) {
-			m_underSprite_Attack = true;
+		if (m_towerDownFlag) {
+			m_attackFlag = true;
 		}
-		UnderSpriteUpdate();
 	}
 
 	void UnderSprite_Skill() {
-		if (m_underSprite_Skill) {
+		if (m_skillFlag) {
 			return;
 		}
 
-		if (m_underSprite_TowerDown) {
-			m_underSprite_Skill = true;
+		if (m_towerDownFlag) {
+			m_skillFlag = true;
 		}
-		UnderSpriteUpdate();
 	}
 
-	void UnderSprite_Level(int lv) {
+	void UnderSprite_Level(const int lv) {
 		if (m_underSprite_Level) {
 			return;
 		}
 
 		if (lv >= 4) {
 			m_underSprite_Level = true;
-			UnderSpriteUpdate();
 		}
 	}
 
@@ -348,13 +344,10 @@ public:
 			return;
 		}
 
-		if (m_underSprite_Attack && m_underSprite_Skill) {
+		if (m_attackFlag && m_skillFlag) {
 			m_underSprite_Ult = true;
 		}
-		UnderSpriteUpdate();
 	}
-
-	/*bool IsActorGroundChack(Actor* actor);*/
 
 	//ゲームが制限時間時間に達したかのフラグを返す
 	bool IsGameEnd() const
@@ -400,18 +393,20 @@ private:
 	/// </summary>
 	void InitSkyCube();
 
-	void UnderSpriteUpdate() {
+	void UnderSpriteUpdate(RenderContext& rc) {
 
 		// Attack/Skill
-		if (m_underSprite_Attack && m_underSprite_Skill && m_underSprite_Level) {
-			m_underSprite.Init("Assets/sprite/Ult.DDS", 797.0f, 229.0f);
-			m_underSprite.SetScale(Vector3(0.9f, 0.9f, 0.9f));
+		if (m_attackFlag && m_skillFlag && m_underSprite_Level) {
+			m_underSpriteUltimate.Draw(rc);
 			return;
 		}
 		// Down
-		if (m_underSprite_TowerDown) {
-			m_underSprite.Init("Assets/sprite/FirstAttack.DDS", 886.0f, 255.0f);
+		if (m_towerDownFlag) {
+			m_underSpriteFirstAttack.Draw(rc);
 			return;
+		}
+		else {
+			m_underSpriteTowerDown.Draw(rc);
 		}
 	}
 
@@ -440,12 +435,14 @@ private:
 	Quaternion EnemyReapawnPot[45];
 
 	//ゲームの説明
-	SpriteRender m_underSprite;			//下部に表示する説明の画像
-	SpriteRender m_RabbitSprite;		//ウサギ出現の画像
+	SpriteRender m_underSpriteTowerDown;	//下部に表示する説明の画像
+	SpriteRender m_underSpriteFirstAttack;
+	SpriteRender m_underSpriteUltimate;
+	SpriteRender m_RabbitSprite;			//ウサギ出現の画像
 
-	bool m_underSprite_TowerDown = false;
-	bool m_underSprite_Attack = false;
-	bool m_underSprite_Skill = false;
+	bool m_towerDownFlag = false;
+	bool m_attackFlag = false;
+	bool m_skillFlag = false;
 	bool m_underSprite_Level = false;
 	bool m_underSprite_Ult = false;
 
@@ -464,7 +461,7 @@ private:
 	std::array<Player*,4> player = {nullptr,nullptr,nullptr,nullptr };
 	CharUltFlag* charUltFlag = nullptr;
 	Lamp* lamp = nullptr;
-	Fade* fade = nullptr;
+	Fade* m_fade = nullptr;
 	Pause* pause = nullptr;
 
 	std::vector<Neutral_Enemy*> m_neutral_Enemys;

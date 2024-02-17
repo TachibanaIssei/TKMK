@@ -108,12 +108,12 @@ bool Result::Start()
 	g_soundEngine->ResistWaveFileBank(enSound_ResultDramRoll, "Assets/sound/resultBGM/dram_roll.wav");
 	g_soundEngine->ResistWaveFileBank(enSound_ResultDramJaan, "Assets/sound/resultBGM/dram_jaan.wav");
 
-	fade = FindGO<Fade>("fade");
+	m_fade = FindGO<Fade>("fade");
 	Game* game = FindGO<Game>("game");
 	m_gameMode = g_renderingEngine->GetGameMode();
 	g_renderingEngine->SetGameModeToRenderingEngine(RenderingEngine::enGameMode_SoloPlay);
 
-	fade->StartFadeOut(1.0f);
+	m_fade->StartFadeOut(1.0f);
 
 	game->GetActorPoints(charPoints.data());
 
@@ -160,7 +160,7 @@ bool Result::Start()
 
 	Vector3 dir = { 0.1f,-1.0f,0.5f };
 	dir.Normalize();
-	Vector3 color = { 0.7f,0.7f,0.7f };
+	Vector3 color = { 3.0f,3.0f,3.0f };
 	g_renderingEngine->SetDirectionLight(0, dir, color);
 	Vector3 ambient = { 0.6f,0.6f,0.6f };
 	g_renderingEngine->SetAmbient(ambient);
@@ -195,7 +195,7 @@ void Result::Update()
 	if (m_change == enChange_first)
 	{
 		Rank();
-		if (fade->GetCurrentAlpha() <= 0.0f)
+		if (m_fade->GetCurrentAlpha() <= 0.0f)
 		{
 			m_change = enChange_4th;
 		}
@@ -409,7 +409,7 @@ void Result::InitModel()
 	m_animationClips[enAnimationClip_4th].SetLoopFlag(true);
 
 	//’n–Ê
-	m_backGround.InitBackGround("Assets/modelData/background/stadium_ground.tkm");
+	m_backGround.Init("Assets/modelData/background/stadium_ground.tkm");
 	m_backGround.SetPosition(ResultSpriteConst::BACK_MODEL_POS);
 
 	//•Ç

@@ -6,13 +6,13 @@
 #include "WizardPlayer.h"
 #include "Player.h"
 #include "Fade.h"
-#include "ExpforKnight.h"
 #include "Sounds.h"
 #include "KnightAI.h"
 
 namespace
 {
-	const int Characters = 4;
+	const int MAX_LEVEL = 10;
+	const int MAX_RESPAWN_COUNT = 3;
 
 	const float FLAME_WIDTH = 1200.0f;
 	const float FLAME_HEIGHT = 500.0f;
@@ -582,6 +582,18 @@ void GameUI::SkillCoolTimeFont()
 
 void GameUI::InitRespawnUI()
 {
+	std::string levelSpriteFilePath = "Assets/sprite/gameUI/RespawnConut";
+	std::string ddsFilePath = ".DDS";
+	for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
+	{
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			std::string levelCountStr = std::to_string(j);
+			std::string filePath = levelSpriteFilePath + levelCountStr + ddsFilePath;
+			m_respawnCountNumber[i].respawnCountSprite[j].Init(filePath.c_str(), 300, 500.0f);
+		}
+	}
+
 	if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay)
 	{
 		for (int i = 0; i < g_renderingEngine->GetGameMode(); i++)
@@ -590,7 +602,6 @@ void GameUI::InitRespawnUI()
 			m_respawnBack[i].SetScale(RESPAWN_DUOPLAY_SCALE);
 			m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
 			m_respawnIn[i].SetScale(RESPAWN_IN_DUOPLAY_SCALE);
-			m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
 		}
 		m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_DUOPLAY_LEFT_POS);
 		m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_DUOPLAY_RIGHT_POS);
@@ -599,8 +610,11 @@ void GameUI::InitRespawnUI()
 		m_respawnIn[enPlayerNumber_2P].SetPosition(RESPAWN_IN_DUOPLAY_RIGHT_POS);
 
 		//リスポーンのカウントダウンの画像
-		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
-		m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_DUOPLAY_LEFT_POS);
+			m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_DUOPLAY_RIGHT_POS);
+		}
 
 	}
 	else if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_TrioPlay || g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_QuartetPlay)
@@ -611,8 +625,10 @@ void GameUI::InitRespawnUI()
 			m_respawnBack[i].SetScale(RESPAWN_QUARTER_SCALE);
 			m_respawnIn[i].Init("Assets/sprite/gameUI/RespawnIn.DDS", 900.0f, 200.0f);
 			m_respawnIn[i].SetScale(RESPAWN_QUARTER_SCALE);
-			m_respawnCountNumber[i].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300.0f, 500.0f);
-			m_respawnCountNumber[i].SetScale(RESPAWN_QUARTER_SCALE);
+			for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+			{
+				m_respawnCountNumber[i].respawnCountSprite[j].SetScale(RESPAWN_QUARTER_SCALE);
+			}
 		}
 		m_respawnBack[enPlayerNumber_1P].SetPosition(RESPAWN_QUARTER_LEFT_UP_POS);
 		m_respawnBack[enPlayerNumber_2P].SetPosition(RESPAWN_QUARTER_RIGHT_UP_POS);
@@ -625,10 +641,13 @@ void GameUI::InitRespawnUI()
 		m_respawnIn[enPlayerNumber_4P].SetPosition(RESPAWN_IN_QUARTER_RIGHT_DOWN_POS);
 
 		//リスポーンのカウントダウンの画像
-		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_UP_POS);
-		m_respawnCountNumber[enPlayerNumber_2P].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_UP_POS);
-		m_respawnCountNumber[enPlayerNumber_3P].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_DOWN_POS);
-		m_respawnCountNumber[enPlayerNumber_4P].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_DOWN_POS);
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_UP_POS);
+			m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_UP_POS);
+			m_respawnCountNumber[enPlayerNumber_3P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_LEFT_DOWN_POS);
+			m_respawnCountNumber[enPlayerNumber_4P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_QUARTER_RIGHT_DOWN_POS);
+		}
 	}
 	else
 	{
@@ -640,15 +659,20 @@ void GameUI::InitRespawnUI()
 		m_respawnBack[enPlayerNumber_1P].Init("Assets/sprite/gameUI/Respawn_back.DDS", 1920, 1080.0f);
 
 		//リスポーンのカウントダウンの画像
-		m_respawnCountNumber[enPlayerNumber_1P].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
-		m_respawnCountNumber[enPlayerNumber_1P].SetPosition(RESPAWN_COUNT_POS);
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[j].SetPosition(RESPAWN_COUNT_POS);
+		}
 	}
 
 	for (int i = 0; i < enPlayerNumber_Num; i++)
 	{
 		m_respawnIn[i].Update();
 		m_respawnBack[i].Update();
-		m_respawnCountNumber[i].Update();
+		for (int j = 0; j < MAX_RESPAWN_COUNT; j++)
+		{
+			m_respawnCountNumber[i].respawnCountSprite[j].Update();
+		}
 	}
 }
 
@@ -657,8 +681,6 @@ void GameUI::InitExpelienceUI()
 	for (int i = 0; i < enPlayerNumber_Num; i++)
 	{
 		m_Lv[i].Init("Assets/sprite/gameUI/Lv.DDS", LEVEL_SPRITE_WIDTH, LEVEL_SPRITE_HEIGHT);
-		m_LvNumber[i].Init("Assets/sprite/gameUI/Lv1.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[i].Init("Assets/sprite/gameUI/Lv1_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
 		m_MaxLv[i].Init("Assets/sprite/gameUI/maxLv.DDS", LEVEL_MAX_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
 		m_ExperienceFlame[i].Init("Assets/sprite/gameUI/ExperienceBar.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
 		m_experienceBarBack[i].Init("Assets/sprite/gameUI/ExperienceBar_back.DDS", EXPBAR_FLAME_WIDTH, EXPBAR_FLAME_HEIGHT);
@@ -669,6 +691,23 @@ void GameUI::InitExpelienceUI()
 		m_experienceBarFlont[i].SetPivot(EXPERIENCEGAUGE_PIVOT);
 		m_skillFont[i].SetColor(g_vec4Red);
 		m_skillFont[i].SetShadowParam(true, SKILL_COOLTIME_FONT_SHADOW_OFFSET, g_vec4Black);
+
+		//レベル数値の画像初期化
+		int levelCount = 1;
+		std::string levelSpriteFilePath = "Assets/sprite/gameUI/Lv";
+		std::string ddsFilePath = ".DDS";
+		for (int j = 0; j < MAX_LEVEL; j++)
+		{
+			std::string levelCountStr = std::to_string(levelCount);
+			std::string filePath = levelSpriteFilePath + levelCountStr + ddsFilePath;
+			m_LvNumber[i].levelSprite[j].Init(filePath.c_str(), LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+
+			int pos = filePath.find(".DDS");
+			filePath.replace(pos, 9, "_back.DDS");
+			m_LvNumber_back[i].levelSprite[j].Init(filePath.c_str(), LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
+
+			levelCount++;
+		}
 
 		if (m_gameMode == RenderingEngine::enGameMode_TrioPlay || m_gameMode == RenderingEngine::enGameMode_QuartetPlay)
 		{
@@ -729,13 +768,16 @@ void GameUI::InitExpelienceUI()
 		m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_1P);
 		m_Lv[enPlayerNumber_2P].SetPosition(LEVEL_SPRITE_POS_2P);
 
-		//Lv1の画像を読み込む
-		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
-		m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+		for (int i = 0; i < MAX_LEVEL; i++)
+		{
+			//Lv1の画像を読み込む
+			m_LvNumber[enPlayerNumber_1P].levelSprite[i].SetPosition(LEVEL_NUMBER_POS_1P);
+			m_LvNumber[enPlayerNumber_2P].levelSprite[i].SetPosition(LEVEL_NUMBER_POS_2P);
 
-		//Lv1の裏の画像の読み込み
-		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_1P);
-		m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_POS_2P);
+			//Lv1の裏の画像の読み込み
+			m_LvNumber_back[enPlayerNumber_1P].levelSprite[i].SetPosition(LEVEL_NUMBER_POS_1P);
+			m_LvNumber_back[enPlayerNumber_2P].levelSprite[i].SetPosition(LEVEL_NUMBER_POS_2P);
+		}
 
 		//10の画像を読み込む
 		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_1P);
@@ -771,11 +813,15 @@ void GameUI::InitExpelienceUI()
 			m_skillFont[i].SetScale(SKILL_COOLTIME_FONT_SCALE_QUARTET);
 			m_Lv[i].SetScale(LEVEL_SPRITE_SCALE_QUARTET);
 			m_MaxLv[i].SetScale(MAX_LEVEL_SCALE_QUARTET);
-			m_LvNumber[i].SetScale(LEVEL_NUMBER_SCALE_QUARTET);
-			m_LvNumber_back[i].SetScale(LEVEL_NUMBER_SCALE_QUARTET);
 			m_ExperienceFlame[i].SetScale(EXPERIENCE_SCALE_QUARTET);
 			m_experienceBarBack[i].SetScale(EXPERIENCE_SCALE_QUARTET);
 			m_experienceBarFlont[i].SetScale(EXPERIENCE_BAR_SCALE_QUARTET);
+
+			for (int j = 0; j < MAX_LEVEL; j++)
+			{
+				m_LvNumber[i].levelSprite[j].SetScale(LEVEL_NUMBER_SCALE_QUARTET);
+				m_LvNumber_back[i].levelSprite[j].SetScale(LEVEL_NUMBER_SCALE_QUARTET);
+			}
 		}
 		m_Flame[enPlayerNumber_1P].SetPosition(FLAME_QUARTET_POS_1P);
 		m_Flame[enPlayerNumber_2P].SetPosition(FLAME_QUARTET_POS_2P);
@@ -829,17 +875,20 @@ void GameUI::InitExpelienceUI()
 		m_Lv[enPlayerNumber_3P].SetPosition(LEVEL_SPRITE_QUARTET_POS_3P);
 		m_Lv[enPlayerNumber_4P].SetPosition(LEVEL_SPRITE_QUARTET_POS_4P);
 
-		//Lv1の画像を読み込む
-		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_QUARTET_POS_1P);
-		m_LvNumber[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_QUARTET_POS_2P);
-		m_LvNumber[enPlayerNumber_3P].SetPosition(LEVEL_NUMBER_QUARTET_POS_3P);
-		m_LvNumber[enPlayerNumber_4P].SetPosition(LEVEL_NUMBER_QUARTET_POS_4P);
+		for (int i = 0; i < MAX_LEVEL; i++)
+		{
+			//Lv1の画像を読み込む
+			m_LvNumber[enPlayerNumber_1P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_1P);
+			m_LvNumber[enPlayerNumber_2P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_2P);
+			m_LvNumber[enPlayerNumber_3P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_3P);
+			m_LvNumber[enPlayerNumber_4P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_4P);
 
-		//Lv1の裏の画像の読み込み
-		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_QUARTET_POS_1P);
-		m_LvNumber_back[enPlayerNumber_2P].SetPosition(LEVEL_NUMBER_QUARTET_POS_2P);
-		m_LvNumber_back[enPlayerNumber_3P].SetPosition(LEVEL_NUMBER_QUARTET_POS_3P);
-		m_LvNumber_back[enPlayerNumber_4P].SetPosition(LEVEL_NUMBER_QUARTET_POS_4P);
+			//Lv1の裏の画像の読み込み
+			m_LvNumber_back[enPlayerNumber_1P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_1P);
+			m_LvNumber_back[enPlayerNumber_2P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_2P);
+			m_LvNumber_back[enPlayerNumber_3P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_3P);
+			m_LvNumber_back[enPlayerNumber_4P].levelSprite[i].SetPosition(LEVEL_NUMBER_QUARTET_POS_4P);
+		}
 
 		//10の画像を読み込む
 		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_QUARTET_POS_1P);
@@ -912,13 +961,16 @@ void GameUI::InitExpelienceUI()
 		m_Lv[enPlayerNumber_1P].SetPosition(LEVEL_SPRITE_POS_SOLO);
 		m_Lv[enPlayerNumber_1P].SetScale(LEVEL_SPRITE_SCALE_DUO);
 
-		//Lv1の画像を読み込む
-		m_LvNumber[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_SOLO);
-		m_LvNumber[enPlayerNumber_1P].SetScale(LEVEL_NUMBER_SCALE_SOLO);
+		for (int i = 0; i < MAX_LEVEL; i++)
+		{
+			//Lv1の画像を読み込む
+			m_LvNumber[enPlayerNumber_1P].levelSprite[i].SetPosition(LEVEL_NUMBER_POS_SOLO);
+			m_LvNumber[enPlayerNumber_1P].levelSprite[i].SetScale(LEVEL_NUMBER_SCALE_SOLO);
 
-		//Lv1の裏の画像の読み込み
-		m_LvNumber_back[enPlayerNumber_1P].SetPosition(LEVEL_NUMBER_POS_SOLO);
-		m_LvNumber_back[enPlayerNumber_1P].SetScale(LEVEL_NUMBER_SCALE_SOLO);
+			//Lv1の裏の画像の読み込み
+			m_LvNumber_back[enPlayerNumber_1P].levelSprite[i].SetPosition(LEVEL_NUMBER_POS_SOLO);
+			m_LvNumber_back[enPlayerNumber_1P].levelSprite[i].SetScale(LEVEL_NUMBER_SCALE_SOLO);
+		}
 
 		//10の画像を読み込む
 		m_MaxLv[enPlayerNumber_1P].SetPosition(MAX_LEVEL_POS_SOLO);
@@ -955,8 +1007,12 @@ void GameUI::InitExpelienceUI()
 		m_SkillRenderOUT[i].Update();
 		m_UltRenderIN[i].Update();
 		m_UltRenderOUT[i].Update();
-		m_LvNumber[i].Update();
-		m_LvNumber_back[i].Update();
+
+		for (int j = 0; j < MAX_LEVEL; j++)
+		{
+			m_LvNumber[i].levelSprite[j].Update();
+			m_LvNumber_back[i].levelSprite[j].Update();
+		}
 		m_MaxLv[i].Update();
 		m_ExperienceFlame[i].Update();
 		m_experienceBarBack[i].Update();
@@ -1189,7 +1245,7 @@ void GameUI::InitTimerUI()
 		m_seconds.SetPosition(SECONDS_FONT_POS);
 		m_coron.SetPosition(CORON_FONT_POS);
 	}
-	
+
 	Vector2 pivotOffSet = { 30.0f, -20.0f };
 	//オフセットの設定
 	m_minutes.SetPivotOffSet(pivotOffSet);
@@ -1271,10 +1327,10 @@ void GameUI::Update()
 			m_flashNumberFlag = true;
 		}
 
-		m_LvNumber_back[enPlayerNumber_1P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
-		m_LvNumber_back[enPlayerNumber_2P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
-		m_LvNumber_back[enPlayerNumber_3P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
-		m_LvNumber_back[enPlayerNumber_4P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_1P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_2P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_3P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_4P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
 	else if (m_flashNumberFlag == true)
 	{
@@ -1286,15 +1342,15 @@ void GameUI::Update()
 			m_flashNumberFlag = false;
 		}
 
-		m_LvNumber_back[enPlayerNumber_1P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
-		m_LvNumber_back[enPlayerNumber_2P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
-		m_LvNumber_back[enPlayerNumber_3P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
-		m_LvNumber_back[enPlayerNumber_4P].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_1P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_2P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_3P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
+		m_LvNumber_back[enPlayerNumber_4P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].SetMulColor(Vector4(1.0f, 1.0f, 1.0f, m_LvNumberColor));
 	}
-	m_LvNumber_back[enPlayerNumber_1P].Update();
-	m_LvNumber_back[enPlayerNumber_2P].Update();
-	m_LvNumber_back[enPlayerNumber_3P].Update();
-	m_LvNumber_back[enPlayerNumber_4P].Update();
+	m_LvNumber_back[enPlayerNumber_1P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].Update();
+	m_LvNumber_back[enPlayerNumber_2P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].Update();
+	m_LvNumber_back[enPlayerNumber_3P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].Update();
+	m_LvNumber_back[enPlayerNumber_4P].levelSprite[m_LvNumber_back[enPlayerNumber_1P].levelCount].Update();
 
 	ExpState(m_player1P);
 	HPBar(m_player1P);
@@ -1429,30 +1485,30 @@ void GameUI::CountDown()
 //リスポーンするまでのカウントダウン
 void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 {
-	int respornCountDown = 0;
+	int respawnCountDown = 0;
 	if (playerNumber == enPlayerNumber_1P)
 	{
 		//カウントダウン
-		respornCountDown = (int)m_player1P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player1P->CharGetRespawnTime();
 	}
 	else if (playerNumber == enPlayerNumber_2P) {
-		respornCountDown = (int)m_player2P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player2P->CharGetRespawnTime();
 	}
 	else if (playerNumber == enPlayerNumber_3P)
 	{
-		respornCountDown = (int)m_player3P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player3P->CharGetRespawnTime();
 	}
 	else
 	{
-		respornCountDown = (int)m_player4P->CharGetRespawnTime();
+		respawnCountDown = (int)m_player4P->CharGetRespawnTime();
 	}
 
-	if (oldRespawnCount[playerNumber] != respornCountDown)
+	if (oldRespawnCount[playerNumber] != respawnCountDown)
 	{
-		switch (respornCountDown)
+		switch (respawnCountDown)
 		{
 		case 0:
-			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut0.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].respawnCount = respawnCountDown;
 			//画面を暗くしてゆく
 			if (m_gameMode == RenderingEngine::enGameMode_DuoPlay)
 			{
@@ -1487,19 +1543,19 @@ void GameUI::RespawnCountDown(EnPlayerNumber playerNumber)
 			m_fade->StartFadeIn(2.0f);
 			break;
 		case 1:
-			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut1.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].respawnCount = respawnCountDown;
 			break;
 		case 2:
-			m_respawnCountNumber[playerNumber].Init("Assets/sprite/gameUI/RespawnConut2.DDS", 300, 500.0f);
+			m_respawnCountNumber[playerNumber].respawnCount = respawnCountDown;
 			break;
 		default:
 			break;
 		}
 	}
 
-	oldRespawnCount[playerNumber] = respornCountDown;
+	oldRespawnCount[playerNumber] = respawnCountDown;
 
-	m_respawnCountNumber[playerNumber].Update();
+	m_respawnCountNumber[playerNumber].respawnCountSprite[m_respawnCountNumber[playerNumber].respawnCount].Update();
 }
 
 //プレイヤーのHPの表示の処理
@@ -1637,9 +1693,9 @@ void GameUI::Level()
 	int num = 0;
 	for (auto actor : m_Actors)
 	{
-		int m_lv = actor->GetLevel();
+		int level = actor->GetLevel();
 		wchar_t AILv[255];
-		swprintf_s(AILv, 255, L"Lv%2d", m_lv);
+		swprintf_s(AILv, 255, L"Lv%2d", level);
 		m_LevelFont[num].SetText(AILv);
 		num++;
 	}
@@ -2176,51 +2232,18 @@ void GameUI::CharPoint()
 
 
 
+void GameUI::ChangeEXPUpFlag(const bool flag)
+{
+	m_expUpFlag[enPlayerNumber_1P] = flag;
+	m_expUpFlag[enPlayerNumber_2P] = flag;
+	m_expUpFlag[enPlayerNumber_3P] = flag;
+	m_expUpFlag[enPlayerNumber_4P] = flag;
+}
+
 void GameUI::LevelSpriteChange(const int lv, const EnPlayerNumber playerNumber)
 {
-	switch (lv)
-	{
-	case 1:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv1.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv1_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 2:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv2.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv2_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 3:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv3.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv3_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 4:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv4.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv4_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 5:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv5.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv5_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 6:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv6.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv6_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 7:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv7.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv7_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 8:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv8.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv8_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 9:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv9.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv9_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	case 10:
-		m_LvNumber[playerNumber].Init("Assets/sprite/gameUI/Lv10.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		m_LvNumber_back[playerNumber].Init("Assets/sprite/gameUI/Lv10_back.DDS", LEVEL_NUMBER_RESOLUTION, LEVEL_NUMBER_RESOLUTION);
-		break;
-	}
+	m_LvNumber[playerNumber].levelCount = lv - 1;
+	m_LvNumber_back[playerNumber].levelCount = lv - 1;
 }
 
 void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
@@ -2240,13 +2263,13 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			{
 				m_respawnBack[enPlayerNumber_1P].Draw(rc);
 				m_respawnIn[enPlayerNumber_1P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 			}
 			if (m_player2P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_2P].Draw(rc);
 				m_respawnIn[enPlayerNumber_2P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_2P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_2P].respawnCount].Draw(rc);
 			}
 		}
 	}
@@ -2266,19 +2289,19 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			{
 				m_respawnBack[enPlayerNumber_1P].Draw(rc);
 				m_respawnIn[enPlayerNumber_1P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 			}
 			if (m_player2P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_2P].Draw(rc);
 				m_respawnIn[enPlayerNumber_2P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_2P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_2P].respawnCount].Draw(rc);
 			}
 			if (m_player3P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_3P].Draw(rc);
 				m_respawnIn[enPlayerNumber_3P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_3P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_3P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_3P].respawnCount].Draw(rc);
 			}
 		}
 	}
@@ -2299,25 +2322,25 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			{
 				m_respawnBack[enPlayerNumber_1P].Draw(rc);
 				m_respawnIn[enPlayerNumber_1P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 			}
 			if (m_player2P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_2P].Draw(rc);
 				m_respawnIn[enPlayerNumber_2P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_2P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_2P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_2P].respawnCount].Draw(rc);
 			}
 			if (m_player3P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_3P].Draw(rc);
 				m_respawnIn[enPlayerNumber_3P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_3P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_3P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_3P].respawnCount].Draw(rc);
 			}
 			if (m_player4P->CharGetRespawnTime() > 0)
 			{
 				m_respawnBack[enPlayerNumber_4P].Draw(rc);
 				m_respawnIn[enPlayerNumber_4P].Draw(rc);
-				m_respawnCountNumber[enPlayerNumber_4P].Draw(rc);
+				m_respawnCountNumber[enPlayerNumber_4P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_4P].respawnCount].Draw(rc);
 			}
 		}
 	}
@@ -2334,7 +2357,7 @@ void GameUI::RenderDeathPlayerSprite(RenderContext& rc)
 			m_respawnBack[enPlayerNumber_1P].Draw(rc);
 
 			m_respawnIn[enPlayerNumber_1P].Draw(rc);
-			m_respawnCountNumber[enPlayerNumber_1P].Draw(rc);
+			m_respawnCountNumber[enPlayerNumber_1P].respawnCountSprite[m_respawnCountNumber[enPlayerNumber_1P].respawnCount].Draw(rc);
 
 		}
 	}
@@ -2443,8 +2466,8 @@ void GameUI::RenderExpelience(RenderContext& rc)
 		m_ExperienceFlame[i].Draw(rc);
 
 		m_Lv[i].Draw(rc);
-		m_LvNumber_back[i].Draw(rc);
-		m_LvNumber[i].Draw(rc);
+		m_LvNumber_back[i].levelSprite[m_LvNumber_back[i].levelCount].Draw(rc);
+		m_LvNumber[i].levelSprite[m_LvNumber[i].levelCount].Draw(rc);
 		m_MaxLv[i].Draw(rc);
 	}
 }

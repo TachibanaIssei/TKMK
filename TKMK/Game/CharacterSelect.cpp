@@ -89,8 +89,8 @@ CharacterSelect::~CharacterSelect()
 
 bool CharacterSelect::Start()
 {
-	fade = FindGO<Fade>("fade");
-	fade->StartFadeOut(1.0f);
+	m_fade = FindGO<Fade>("fade");
+	m_fade->StartFadeOut(1.0f);
 
 	m_skyCube = NewGO<SkyCube>(0, "skyCube");
 	m_skyCube->SetScale(300.0f);
@@ -104,10 +104,10 @@ bool CharacterSelect::Start()
 	g_camera3D[0]->SetPosition(SelectConst::CAMERA_POSITION);
 	g_camera3D[0]->Update();
 
-	g_renderingEngine->SetAmbient(Vector3(0.5f, 0.5f, 0.5f));
+	g_renderingEngine->SetAmbient(Vector3::One * 0.7f);
 	Vector3 dir = Vector3(0.0f, -1.0f, 0.5f);
 	dir.Normalize();
-	Vector3 color = { 0.5f,0.5f,0.5f };
+	Vector3 color = Vector3::One * 5.0f;
 	g_renderingEngine->SetDirectionLight(0, dir, color);
 
 	//剣士のモデル、アニメーション
@@ -373,7 +373,7 @@ void CharacterSelect::InitFont()
 //ゲームに遷移する前にフェードアウトする
 void CharacterSelect::Ready()
 {
-	if (fade->GetCurrentAlpha(Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip) >= 1.0f)
+	if (m_fade->GetCurrentAlpha(Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip) >= 1.0f)
 	{
 		g_renderingEngine->SetGameModeToRenderingEngine(m_gameMode);
 		Game* game = NewGO<Game>(5, "game");
@@ -441,7 +441,7 @@ void CharacterSelect::SetModel()
 	m_knight[3].Init("Assets/modelData/character/Knight/Knight_Green2.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisZ);
 	for (int i = 0; i < m_knight.size(); i++)
 	{
-		m_platform[i].InitBackGround("Assets/modelData/platform/platform.tkm");
+		m_platform[i].Init("Assets/modelData/platform/platform.tkm");
 
 		//アニメーションイベント用の関数を設定する。
 		m_knight[i].AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -460,12 +460,12 @@ void CharacterSelect::SetModel()
 		m_platform[i].Update();
 	}
 
-	m_stage.InitBackGround("Assets/modelData/background/stadium05_ground.tkm");
+	m_stage.Init("Assets/modelData/background/stadium_ground.tkm");
 	m_stage.SetPosition(SelectConst::STAGE_POS);
 	m_stage.SetScale(1.0f, 1.2f, 1.0f);
 	m_stage.Update();
 
-	m_wall.InitBackGround("Assets/modelData/background/stadium05_Wall.tkm");
+	m_wall.Init("Assets/modelData/background/stadium05_Wall.tkm");
 	m_wall.SetPosition(SelectConst::STAGE_POS);
 	m_wall.SetScale(1.0f, 0.7f, 1.0f);
 	m_wall.Update();
@@ -615,7 +615,7 @@ void CharacterSelect::OnAnimationEvent(const wchar_t* clipName, const wchar_t* e
 	if (wcscmp(eventName, L"start_game") == 0)
 	{
 		//フェードアウトを始める
-		fade->StartFadeIn(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
+		m_fade->StartFadeIn(1.0f, Fade::enFadeSpriteType_Full, Fade::enFadeSpriteCategory_Tip);
 		m_readyFlag = true;
 	}
 }

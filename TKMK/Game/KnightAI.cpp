@@ -21,7 +21,13 @@ KnightAI::KnightAI()
 
 KnightAI::~KnightAI()
 {
-
+	for (int i = 0; i < m_enemyHpBar.size(); i++)
+	{
+		if (m_enemyHpBar[i] != nullptr)
+		{
+			DeleteGO(m_enemyHpBar[i]);
+		}
+	}
 }
 
 bool KnightAI::Start() {
@@ -257,7 +263,7 @@ void KnightAI::CalculatAIAttackEvaluationValue()
 	for (auto actor : actors)
 	{
 		EvalData eval = CalculateTargetAI(actor);
-		Evaluation_valueActor.push_back(eval);
+		m_evaluationValueActor.push_back(eval);
 	}
 }
 
@@ -597,7 +603,7 @@ void KnightAI::LotNextAction()
 	
 	//初期化
 	Evaluation_valueEnemy.clear();
-	Evaluation_valueActor.clear();
+	m_evaluationValueActor.clear();
 
 	//中立の敵の評価値の計算
 	CalculatEnemyAttackEvaluationValue();
@@ -633,23 +639,23 @@ void KnightAI::LotNextAction()
 
 	//アクターを判定する
 	std::vector<Actor*> actors = m_game->GetActors();
-	for (int i = 0; i < Evaluation_valueActor.size(); i++)
+	for (int i = 0; i < m_evaluationValueActor.size(); i++)
 	{
 		// 追いかける判定
-		if (Evaluation_valueActor[i].eval > noweval_Target &&
-			Evaluation_valueActor[i].chaseOrEscape == false &&
+		if (m_evaluationValueActor[i].eval > noweval_Target &&
+			m_evaluationValueActor[i].chaseOrEscape == false &&
 			actors[i] != this)
 		{
-			noweval_Target = Evaluation_valueActor[i].eval;
+			noweval_Target = m_evaluationValueActor[i].eval;
 			m_nowActorTarget = actors[i];
 			TargetChange = true;
 		}
 
 		// 逃げる判定
-		if (Evaluation_valueActor[i].eval > noweval_Escape &&
-			Evaluation_valueActor[i].chaseOrEscape == true)
+		if (m_evaluationValueActor[i].eval > noweval_Escape &&
+			m_evaluationValueActor[i].chaseOrEscape == true)
 		{
-			noweval_Escape = Evaluation_valueActor[i].eval;
+			noweval_Escape = m_evaluationValueActor[i].eval;
 			m_nowActorEscape = actors[i];
 		}
 	}
@@ -893,17 +899,17 @@ void KnightAI::Attack()
 				m_skillMove.Normalize();
 
 				//剣にまとわせるエフェクト
-				if (EffectKnightSkill != nullptr) {
-					EffectKnightSkill->DeleteEffect();
+				if (m_effectKnightSkill != nullptr) {
+					m_effectKnightSkill->DeleteEffect();
 				}
-				EffectKnightSkill = NewGO <ChaseEFK>(4);
-				EffectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
-				EffectKnightSkill->AutoRot(true);
-				EffectKnightSkill->SetAutoRotAddY(360.0f);
+				m_effectKnightSkill = NewGO <ChaseEFK>(4);
+				m_effectKnightSkill->SetEffect(EnEFK::enEffect_Knight_Skill, this, Vector3::One * 30.0f);
+				m_effectKnightSkill->AutoRot(true);
+				m_effectKnightSkill->SetAutoRotAddY(360.0f);
 				// 座標の加算量を計算
 				Vector3 effectAddPos = Vector3::Zero;
 				effectAddPos.y = 50.0f;
-				EffectKnightSkill->SetAddPos(effectAddPos);
+				m_effectKnightSkill->SetAddPos(effectAddPos);
 
 				//床のエフェクト
 				EffectEmitter* EffectKnightSkillGround_;
@@ -922,12 +928,12 @@ void KnightAI::Attack()
 				EffectKnightSkillGround_->Update();
 
 				//土煙のエフェクト
-				if (FootSmoke != nullptr) {
-					FootSmoke->DeleteEffect();
+				if (m_footSmoke != nullptr) {
+					m_footSmoke->DeleteEffect();
 				}
-				FootSmoke = NewGO<ChaseEFK>(4);
-				FootSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
-				FootSmoke->AutoRot(true);
+				m_footSmoke = NewGO<ChaseEFK>(4);
+				m_footSmoke->SetEffect(EnEFK::enEffect_Knight_FootSmoke, this, Vector3::One * 20.0f);
+				m_footSmoke->AutoRot(true);
 
 			}
 	}

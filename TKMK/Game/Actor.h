@@ -1,6 +1,6 @@
 #pragma once
 #include "Status.h"
-#include "Level3DRender.h"
+#include "../k2EngineLow/mySourceCode/Level/Level3DRender.h"
 #include "Effect.h"
 #include "ChaseEFK.h"
 #include "Sounds.h"
@@ -528,7 +528,7 @@ public:
 	/// キャラがやられてからリスポーンするまでの時間を計る
 	/// </summary>
 	/// <param name="DeathToRespwanFlag"></param>
-	bool DeathToRespawnTimer(bool& DeathToRespwanFlag, Fade* fade, bool fadeFlag);
+	bool DeathToRespawnTimer(bool& DeathToRespwanFlag, Fade* m_fade, bool fadeFlag);
 
 	/// <summary>
 	/// リスポーン待機時間を返す

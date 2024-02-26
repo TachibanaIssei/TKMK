@@ -618,6 +618,8 @@ f_d = \frac{baseColor}{π}(1+(F_{D90}-1)(1-\cos{\theta_l})^5)(1+(F_{D90}-1)(1-\c
 
 <!--
 <img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/5fe14c6d-0fe5-40a5-ae91-9b304645c12b" width="480" alt="フレネル反射">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/7f4fc74a-28af-4848-bd15-16807aed0f37" width="480" alt="PBR計算式">
+<img src="https://github.com/TachibanaIssei/TKMK/assets/121418275/7b8722f7-dc83-478d-9819-ad9d7cfae991" width="480" alt="PBR計算式2">
 -->
 
 ## 12.3. 鏡面反射光

@@ -23,8 +23,8 @@ namespace nsK2EngineLow
 
 		//近景用のシャドウマップ
 		m_shadowMaps[SHADOW_MAP_AREA_NEAR].Create(
-			4096,
-			4096,
+			2048,
+			2048,
 			1,
 			1,
 			colorFormat,
@@ -32,8 +32,8 @@ namespace nsK2EngineLow
 		);
 		//中景用のシャドウマップ
 		m_shadowMaps[SHADOW_MAP_AREA_MIDDLE].Create(
-			2048,
-			2048,
+			1024,
+			1024,
 			1,
 			1,
 			colorFormat,
@@ -41,8 +41,8 @@ namespace nsK2EngineLow
 		);
 		//遠景用のシャドウマップ
 		m_shadowMaps[SHADOW_MAP_AREA_FAR].Create(
-			1024,
-			1024,
+			512,
+			512,
 			1,
 			1,
 			colorFormat,

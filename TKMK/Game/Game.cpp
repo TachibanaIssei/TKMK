@@ -425,7 +425,7 @@ void Game::RabbitRespawn()
 	RandamRespawnPosNumber = rand() % 19 + 1;	//中立の敵のリスポーンする座標を決める
 	SetEnemyRespawnPos();
 	//中立の敵を生成
-	//CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], true);
+	CreateEnemy(EnemyRespawnPosition[SearchRespawnPosNumber], EnemyReapawnPot[SearchRespawnPosNumber], true);
 
 }
 

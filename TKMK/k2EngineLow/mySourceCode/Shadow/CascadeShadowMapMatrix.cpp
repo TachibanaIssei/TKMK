@@ -26,8 +26,8 @@ namespace nsK2EngineLow
 			lightCamera.SetUp(g_vec3AxisY);
 		}
 		lightCamera.SetUpdateProjMatrixFunc(Camera::enUpdateProjMatrixFunc_Ortho);
-		lightCamera.SetWidth(5000.0f);
-		lightCamera.SetHeight(5000.0f);
+		lightCamera.SetWidth(2500.0f);
+		lightCamera.SetHeight(2500.0f);
 		lightCamera.SetNear(1.0f);
 		lightCamera.SetFar(g_camera3D[cameraNumber]->GetFar()*0.65f);
 		lightCamera.Update();

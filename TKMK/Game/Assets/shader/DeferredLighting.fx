@@ -140,7 +140,8 @@ float3 CalcDirectionLight(
             light.mlvp,
             worldPos,
             cameraNumber, 
-            isSoftShadow ) * shadowParam;
+            isSoftShadow,
+            light.gameMode) * shadowParam;
     }
 
     lig += CalcLighting(

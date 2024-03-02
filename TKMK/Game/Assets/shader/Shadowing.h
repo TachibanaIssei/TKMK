@@ -37,11 +37,18 @@ float CalcShadowRate(
     float4x4 mlvp[MAX_VIEWPORT][NUM_SHADOW_MAP], 
     float3 worldPos, 
     int cameraNumber,
-    int isSoftShadow
+    int isSoftShadow,
+    int gameMode
 )
 {
     float shadow = 0.0f;
-    for(int cascadeIndex = 0; cascadeIndex < NUM_SHADOW_MAP; cascadeIndex++)
+    int maxShadowMapCount = NUM_SHADOW_MAP;
+
+    //2人プレイの場合は軽量化のためにカスケードシャドウを2枚だけにする
+    if(gameMode == 2) maxShadowMapCount = 2;
+    else if(gameMode >= 3) maxShadowMapCount = 1;
+
+    for(int cascadeIndex = 0; cascadeIndex < maxShadowMapCount; cascadeIndex++)
     {
         float4 posInLVP = mul( mlvp[cameraNumber][cascadeIndex], float4( worldPos, 1.0f ));
         float2 shadowMapUV = posInLVP.xy / posInLVP.w;

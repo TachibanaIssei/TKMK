@@ -93,6 +93,16 @@ namespace nsK2EngineLow
 			}
 			rc.WaitUntilFinishDrawingToRenderTarget(shadowMap);
 			shadowMapNo++;
+
+			//2画面分割は軽量化のためにシャドウマップを2枚だけ使う
+			if (g_renderingEngine->GetGameMode() == RenderingEngine::enGameMode_DuoPlay && shadowMapNo >= 2)
+			{
+				break;
+			}
+			else if (g_renderingEngine->GetGameMode() >= RenderingEngine::enGameMode_TrioPlay && shadowMapNo >= 1)
+			{
+				break;
+			}
 		}
 
 		if (m_isSoftShadow)

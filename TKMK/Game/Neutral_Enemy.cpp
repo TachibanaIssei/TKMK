@@ -53,10 +53,7 @@ Neutral_Enemy::~Neutral_Enemy()
 		Rabbit_kirakira->AutoDelete(true);
 		Rabbit_kirakira->Stop();
 		DeleteGO(Rabbit_kirakira);
-	}
-
-	DeleteGO(this);
-	
+	}	
 }
 
 //衝突したときに呼ばれる関数オブジェクト(すり抜ける壁用)
